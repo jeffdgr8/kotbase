@@ -36,7 +36,7 @@ internal constructor(actual: com.couchbase.lite.Result) :
         actual.getBoolean(index)
 
     public actual fun getBlob(index: Int): Blob? =
-        actual.getBlob(index)
+        actual.getBlob(index)?.asBlob()
 
     public actual fun getDate(index: Int): Instant? =
         actual.getDate(index)?.toKotlinInstant()
@@ -78,7 +78,7 @@ internal constructor(actual: com.couchbase.lite.Result) :
         actual.getBoolean(key)
 
     public actual fun getBlob(key: String): Blob? =
-        actual.getBlob(key)
+        actual.getBlob(key)?.asBlob()
 
     public actual fun getDate(key: String): Instant? =
         actual.getDate(key)?.toKotlinInstant()

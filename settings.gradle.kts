@@ -6,5 +6,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "CouchbaseLiteKotlin"
+rootProject.name = "CouchbaseLite-KMM"
 include(":shared")

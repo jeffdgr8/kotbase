@@ -1,9 +1,15 @@
 package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLBlob
+import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.toByteArray
 import com.udobny.kmm.ext.toNSData
+import com.udobny.kmm.ext.wrapError
+import okio.Source
+import okio.buffer
+import platform.Foundation.NSError
+import platform.Foundation.NSURL
 
 public actual class Blob
 internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
@@ -12,18 +18,24 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
         CBLBlob(contentType, content.toNSData())
     )
 
-    //TODO: use https://github.com/Kotlin/kotlinx-io
-    //constructor(contentType: String, stream: InputStream)
-
     // TODO:
-    //@Throws(IOException::class)
-    //constructor(contentType: String, fileURL: URL)
+    //public actual constructor(contentType: String, stream: Source) : this(
+    //    CBLBlob(contentType, stream.buffer().source())
+    //)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual constructor(contentType: String, fileURL: String) : this(
+        wrapError(NSError::toCouchbaseLiteException) { error ->
+            CBLBlob(contentType, NSURL(string = fileURL), error)
+        }
+    )
 
     public actual fun getContent(): ByteArray? =
         actual.content?.toByteArray()
 
-    //TODO: use https://github.com/Kotlin/kotlinx-io
-    //public actual fun getContentStream(): InputStream?
+    // TODO:
+    //public actual fun getContentStream(): Source? =
+    //    actual.contentStream?.source()
 
     public actual fun getContentType(): String =
         actual.contentType!!

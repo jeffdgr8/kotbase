@@ -4,7 +4,7 @@ public abstract class DelegatedClass<D : Any>
 internal constructor(internal open val actual: D) {
 
     override fun equals(other: Any?): Boolean =
-        actual == other
+        actual == (other as? DelegatedClass<*>)?.actual
 
     override fun hashCode(): Int =
         actual.hashCode()

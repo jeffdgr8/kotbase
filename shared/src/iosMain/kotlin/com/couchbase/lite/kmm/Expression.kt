@@ -3,9 +3,10 @@ package com.couchbase.lite.kmm
 import cocoapods.CouchbaseLite.CBLQueryExpression
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.actuals
-import com.udobny.kmm.ext.toNSNumber
+import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
+import platform.Foundation.NSNumber
 
 public actual open class Expression
 internal constructor(actual: CBLQueryExpression) :
@@ -20,10 +21,10 @@ internal constructor(actual: CBLQueryExpression) :
             Expression(CBLQueryExpression.string(value))
 
         public actual fun number(value: Number?): Expression =
-            Expression(CBLQueryExpression.number(value?.toNSNumber()))
+            Expression(CBLQueryExpression.number(value as NSNumber?))
 
         public actual fun intValue(value: Int): Expression =
-            Expression(CBLQueryExpression.integer(value.toLong()))
+            Expression(CBLQueryExpression.integer(value.convert()))
 
         public actual fun longValue(value: Long): Expression =
             Expression(CBLQueryExpression.longLong(value))

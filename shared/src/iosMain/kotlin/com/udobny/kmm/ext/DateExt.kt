@@ -20,7 +20,7 @@ public actual fun List<*>.toNativeDatesDeep(): List<*> =
 public actual fun <K> Map<K, *>.toNativeDateValuesDeep(): Map<K, *> =
     mapValues { it.value?.toNativeDateDeep() }
 
-public fun Any.toKotlinInstantDeep(): Any {
+public actual fun Any.toKotlinInstantDeep(): Any {
     return when (this) {
         is NSDate -> toKotlinInstant()
         is List<*> -> toKotlinInstantsDeep()
@@ -29,8 +29,8 @@ public fun Any.toKotlinInstantDeep(): Any {
     }
 }
 
-public fun List<*>.toKotlinInstantsDeep(): List<*> =
+public actual fun List<*>.toKotlinInstantsDeep(): List<*> =
     map { it?.toKotlinInstantDeep() }
 
-public fun <K> Map<K, *>.toKotlinInstantValuesDeep(): Map<K, *> =
+public actual fun <K> Map<K, *>.toKotlinInstantValuesDeep(): Map<K, *> =
     mapValues { it.value?.toKotlinInstantDeep() }

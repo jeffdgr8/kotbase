@@ -2,7 +2,6 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLDictionary
 import com.udobny.kmm.DelegatedClass
-import com.udobny.kmm.ext.toNumber
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 
@@ -27,7 +26,7 @@ internal constructor(actual: CBLDictionary) :
         actual.stringForKey(key)
 
     public actual fun getNumber(key: String): Number? =
-        actual.numberForKey(key)?.toNumber()
+        actual.numberForKey(key) as Number?
 
     public actual fun getInt(key: String): Int =
         actual.integerForKey(key).toInt()

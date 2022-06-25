@@ -4,6 +4,7 @@ import cocoapods.CouchbaseLite.*
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.toByteArray
 import com.udobny.kmm.ext.toCFData
+import kotlinx.cinterop.convert
 import platform.Security.SecCertificateCopyData
 import platform.Security.SecCertificateCreateWithData
 
@@ -88,7 +89,7 @@ internal constructor(actual: CBLReplicatorConfiguration) :
     public actual var maxAttempts: Int
         get() = actual.maxAttempts.toInt()
         set(value) {
-            actual.maxAttempts = value.toULong()
+            actual.maxAttempts = value.convert()
         }
 
     public actual var maxAttemptWaitTime: Int

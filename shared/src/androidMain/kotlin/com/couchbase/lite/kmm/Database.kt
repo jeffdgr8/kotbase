@@ -5,8 +5,10 @@ import com.couchbase.lite.UnitOfWork
 import com.couchbase.lite.ValueIndexConfiguration
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.toDate
+import com.udobny.kmm.ext.toFile
 import com.udobny.kmm.ext.toKotlinInstant
 import kotlinx.datetime.Instant
+import java.io.File
 
 public actual class Database
 internal constructor(actual: com.couchbase.lite.Database) :
@@ -22,6 +24,19 @@ internal constructor(actual: com.couchbase.lite.Database) :
     public actual companion object {
 
         public actual val log: Log by lazy { Log(com.couchbase.lite.Database.log) }
+
+        @Throws(CouchbaseLiteException::class)
+        public actual fun delete(name: String, directory: String?) {
+            com.couchbase.lite.Database.delete(name, directory?.toFile())
+        }
+
+        public actual fun exists(name: String, directory: String): Boolean =
+            com.couchbase.lite.Database.exists(name, File(directory))
+
+        @Throws(CouchbaseLiteException::class)
+        public actual fun copy(path: String, name: String, config: DatabaseConfiguration) {
+            com.couchbase.lite.Database.copy(File(path), name, config)
+        }
     }
 
     public actual val name: String

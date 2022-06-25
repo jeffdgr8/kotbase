@@ -15,9 +15,9 @@ kotlin {
     cocoapods {
         summary = "Couchbase Lite Kotlin Multiplatform"
         homepage = "https://udobny.com/couchbase-lite-kotlin"
-        ios.deploymentTarget = "14.1"
+        ios.deploymentTarget = "10.0"
         framework {
-            baseName = "CouchbaseLiteKotlin"
+            baseName = "CouchbaseLite-KMM"
         }
         pod("CouchbaseLite", version = "~> 3.0.0", moduleName = "CouchbaseLite")
     }
@@ -29,7 +29,7 @@ kotlin {
         // Link CocoaPods frameworks to tests binary
         binaries {
             getTest("DEBUG").apply {
-                val frameworkPath = "${buildDir.absolutePath}/cocoapods/synthetic/IOS/shared/Pods/CouchbaseLite-Enterprise/iOS"
+                val frameworkPath = "${buildDir.absolutePath}/cocoapods/synthetic/IOS/shared/Pods/CouchbaseLite/iOS"
                 linkerOpts("-F$frameworkPath")
                 linkerOpts("-rpath", frameworkPath)
                 linkerOpts("-framework", "CouchbaseLite")
@@ -41,6 +41,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.3")
+                implementation("com.squareup.okio:okio:3.1.0")
             }
         }
         val commonTest by getting {
@@ -53,7 +54,11 @@ kotlin {
                 implementation("com.couchbase.lite:couchbase-lite-android-ktx:3.0.0")
             }
         }
-        val androidTest by getting
+        val androidTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+            }
+        }
         val iosMain by getting
         val iosTest by getting
     }

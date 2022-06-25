@@ -2,9 +2,10 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLQueryParameters
 import com.udobny.kmm.DelegatedClass
-import com.udobny.kmm.ext.toNSNumber
+import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
+import platform.Foundation.NSNumber
 
 public actual class Parameters
 internal constructor(actual: CBLQueryParameters) :
@@ -22,11 +23,11 @@ internal constructor(actual: CBLQueryParameters) :
     }
 
     public actual fun setNumber(name: String, value: Number?): Parameters = chain {
-        setNumber(value?.toNSNumber(), name)
+        setNumber(value as NSNumber?, name)
     }
 
     public actual fun setInt(name: String, value: Int): Parameters = chain {
-        setInteger(value.toLong(), name)
+        setInteger(value.convert(), name)
     }
 
     public actual fun setLong(name: String, value: Long): Parameters = chain {

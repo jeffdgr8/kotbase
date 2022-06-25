@@ -1,5 +1,7 @@
 package com.couchbase.lite.kmm
 
+import okio.Source
+
 /**
  * A Couchbase Lite Blob.
  * A Blob appears as a property of a Document and contains arbitrary binary data, tagged with MIME type.
@@ -28,8 +30,8 @@ constructor(contentType: String, content: ByteArray) {
      * @param contentType The type of content this Blob will represent
      * @param stream      The stream of data that this Blob will consume
      */
-    // TODO: use https://github.com/Kotlin/kotlinx-io
-    //public constructor(contentType: String, stream: InputStream)
+    // TODO:
+    //public constructor(contentType: String, stream: Source)
 
     /**
      * Construct a Blob with the content of a file.
@@ -41,9 +43,8 @@ constructor(contentType: String, content: ByteArray) {
      * @param fileURL     A URL to a file containing the data that this Blob will represent.
      * @throws IOException on failure to open the file URL
      */
-    // TODO:
-    //@Throws(IOException::class)
-    //public constructor(contentType: String, fileURL: URL)
+    @Throws(CouchbaseLiteException::class)
+    public constructor(contentType: String, fileURL: String)
 
     /**
      * Gets the contents of this blob as in in-memory byte array.
@@ -61,8 +62,8 @@ constructor(contentType: String, content: ByteArray) {
      *
      * @return a stream of of this blobs contents; null if none exists or if this blob was initialized with a stream
      */
-    // TODO: use https://github.com/Kotlin/kotlinx-io
-    //public fun getContentStream(): InputStream?
+    // TODO:
+    //public fun getContentStream(): Source?
 
     /**
      * Return the type of of the content this blob contains.  By convention this is a MIME type.

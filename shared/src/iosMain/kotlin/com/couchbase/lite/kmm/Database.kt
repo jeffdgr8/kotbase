@@ -33,6 +33,23 @@ internal constructor(actual: CBLDatabase) :
         public actual val log: Log by lazy {
             Log(CBLDatabase.log())
         }
+
+        @Throws(CouchbaseLiteException::class)
+        public actual fun delete(name: String, directory: String?) {
+            wrapError(NSError::toCouchbaseLiteException) { error ->
+                CBLDatabase.deleteDatabase(name, directory, error)
+            }
+        }
+
+        public actual fun exists(name: String, directory: String): Boolean =
+            CBLDatabase.databaseExists(name, directory)
+
+        @Throws(CouchbaseLiteException::class)
+        public actual fun copy(path: String, name: String, config: DatabaseConfiguration) {
+            wrapError(NSError::toCouchbaseLiteException) { error ->
+                CBLDatabase.copyFromPath(path, name, config.actual, error)
+            }
+        }
     }
 
     public actual val name: String

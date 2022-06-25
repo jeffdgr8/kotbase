@@ -2,6 +2,7 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLLogFileConfiguration
 import com.udobny.kmm.DelegatedClass
+import kotlinx.cinterop.convert
 
 public actual class LogFileConfiguration
 internal constructor(actual: CBLLogFileConfiguration) :
@@ -35,14 +36,14 @@ internal constructor(actual: CBLLogFileConfiguration) :
         actual.maxRotateCount.toInt()
 
     public actual fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration = chain {
-        setMaxRotateCount(maxRotateCount.toLong())
+        setMaxRotateCount(maxRotateCount.convert())
     }
 
     public actual fun getMaxSize(): Long =
         actual.maxSize.toLong()
 
     public actual fun setMaxSize(maxSize: Long): LogFileConfiguration = chain {
-        setMaxSize(maxSize.toULong())
+        setMaxSize(maxSize.convert())
     }
 
     public actual fun usesPlaintext(): Boolean =

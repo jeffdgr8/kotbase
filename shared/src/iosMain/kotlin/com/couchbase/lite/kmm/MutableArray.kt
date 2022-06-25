@@ -5,9 +5,11 @@ import com.couchbase.lite.kmm.ext.throwError
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.udobny.kmm.chain
 import com.udobny.kmm.ext.*
+import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSError
+import platform.Foundation.NSNumber
 
 public actual class MutableArray
 internal constructor(override val actual: CBLMutableArray) : Array(actual) {
@@ -35,51 +37,51 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun setValue(index: Int, value: Any?): MutableArray = chain {
-        setValue(value?.toNativeDateDeep(), index.toULong())
+        setValue(value?.toNativeDateDeep(), index.convert())
     }
 
     public actual fun setString(index: Int, value: String?): MutableArray = chain {
-        setString(value, index.toULong())
+        setString(value, index.convert())
     }
 
     public actual fun setNumber(index: Int, value: Number?): MutableArray = chain {
-        setNumber(value?.toNSNumber(), index.toULong())
+        setNumber(value as NSNumber?, index.convert())
     }
 
     public actual fun setInt(index: Int, value: Int): MutableArray = chain {
-        setInteger(value.toLong(), index.toULong())
+        setInteger(value.convert(), index.convert())
     }
 
     public actual fun setLong(index: Int, value: Long): MutableArray = chain {
-        setLongLong(value, index.toULong())
+        setLongLong(value, index.convert())
     }
 
     public actual fun setFloat(index: Int, value: Float): MutableArray = chain {
-        setFloat(value, index.toULong())
+        setFloat(value, index.convert())
     }
 
     public actual fun setDouble(index: Int, value: Double): MutableArray = chain {
-        setDouble(value, index.toULong())
+        setDouble(value, index.convert())
     }
 
     public actual fun setBoolean(index: Int, value: Boolean): MutableArray = chain {
-        setBoolean(value, index.toULong())
+        setBoolean(value, index.convert())
     }
 
     public actual fun setBlob(index: Int, value: Blob?): MutableArray = chain {
-        setBlob(value?.actual, index.toULong())
+        setBlob(value?.actual, index.convert())
     }
 
     public actual fun setArray(index: Int, value: Array?): MutableArray = chain {
-        setArray(value?.actual, index.toULong())
+        setArray(value?.actual, index.convert())
     }
 
     public actual fun setDate(index: Int, value: Instant?): MutableArray = chain {
-        setDate(value?.toNSDate(), index.toULong())
+        setDate(value?.toNSDate(), index.convert())
     }
 
     public actual fun setDictionary(index: Int, value: Dictionary?): MutableArray = chain {
-        setDictionary(value?.actual, index.toULong())
+        setDictionary(value?.actual, index.convert())
     }
 
     public actual fun addValue(value: Any?): MutableArray = chain {
@@ -91,11 +93,11 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun addNumber(value: Number?): MutableArray = chain {
-        addNumber(value?.toNSNumber())
+        addNumber(value as NSNumber?)
     }
 
     public actual fun addInt(value: Int): MutableArray = chain {
-        addInteger(value.toLong())
+        addInteger(value.convert())
     }
 
     public actual fun addLong(value: Long): MutableArray = chain {
@@ -131,62 +133,62 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun insertValue(index: Int, value: Any?): MutableArray = chain {
-        insertValue(value?.toNativeDateDeep(), index.toULong())
+        insertValue(value?.toNativeDateDeep(), index.convert())
     }
 
     public actual fun insertString(index: Int, value: String?): MutableArray = chain {
-        insertString(value, index.toULong())
+        insertString(value, index.convert())
     }
 
     public actual fun insertNumber(index: Int, value: Number?): MutableArray = chain {
-        insertNumber(value?.toNSNumber(), index.toULong())
+        insertNumber(value as NSNumber?, index.convert())
     }
 
     public actual fun insertInt(index: Int, value: Int): MutableArray = chain {
-        insertInteger(value.toLong(), index.toULong())
+        insertInteger(value.convert(), index.convert())
     }
 
     public actual fun insertLong(index: Int, value: Long): MutableArray = chain {
-        insertLongLong(value, index.toULong())
+        insertLongLong(value, index.convert())
     }
 
     public actual fun insertFloat(index: Int, value: Float): MutableArray = chain {
-        insertFloat(value, index.toULong())
+        insertFloat(value, index.convert())
     }
 
     public actual fun insertDouble(index: Int, value: Double): MutableArray = chain {
-        insertDouble(value, index.toULong())
+        insertDouble(value, index.convert())
     }
 
     public actual fun insertBoolean(index: Int, value: Boolean): MutableArray = chain {
-        insertBoolean(value, index.toULong())
+        insertBoolean(value, index.convert())
     }
 
     public actual fun insertBlob(index: Int, value: Blob?): MutableArray = chain {
-        insertBlob(value?.actual, index.toULong())
+        insertBlob(value?.actual, index.convert())
     }
 
     public actual fun insertDate(index: Int, value: Instant?): MutableArray = chain {
-        insertDate(value?.toNSDate(), index.toULong())
+        insertDate(value?.toNSDate(), index.convert())
     }
 
     public actual fun insertArray(index: Int, value: Array?): MutableArray = chain {
-        insertArray(value?.actual, index.toULong())
+        insertArray(value?.actual, index.convert())
     }
 
     public actual fun insertDictionary(index: Int, value: Dictionary?): MutableArray = chain {
-        insertDictionary(value?.actual, index.toULong())
+        insertDictionary(value?.actual, index.convert())
     }
 
     public actual fun remove(index: Int): MutableArray = chain {
-        removeValueAtIndex(index.toULong())
+        removeValueAtIndex(index.convert())
     }
 
     actual override fun getArray(index: Int): MutableArray? =
-        actual.arrayAtIndex(index.toULong())?.asMutableArray()
+        actual.arrayAtIndex(index.convert())?.asMutableArray()
 
     actual override fun getDictionary(index: Int): MutableDictionary? =
-        actual.dictionaryAtIndex(index.toULong())?.asMutableDictionary()
+        actual.dictionaryAtIndex(index.convert())?.asMutableDictionary()
 }
 
 internal fun CBLMutableArray.asMutableArray() = MutableArray(this)

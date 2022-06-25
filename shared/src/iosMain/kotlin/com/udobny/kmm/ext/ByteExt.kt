@@ -9,7 +9,7 @@ import platform.Foundation.create
 import platform.posix.memcpy
 
 public fun ByteArray.toNSData(): NSData = memScoped {
-    NSData.create(bytes = allocArrayOf(this@toNSData), length = size.toULong())
+    NSData.create(bytes = allocArrayOf(this@toNSData), length = size.convert())
 }
 
 public fun NSData.toByteArray(): ByteArray = ByteArray(length.toInt()).apply {
@@ -22,7 +22,7 @@ public fun ByteArray.toCFData(): CFDataRef {
     return CFDataCreate(
         null,
         asUByteArray().refTo(0),
-        size.toLong()
+        size.convert()
     )!!
 }
 

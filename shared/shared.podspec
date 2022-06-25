@@ -6,14 +6,14 @@ Pod::Spec.new do |spec|
     spec.authors                  = ''
     spec.license                  = ''
     spec.summary                  = 'Couchbase Lite Kotlin Multiplatform'
-    spec.vendored_frameworks      = 'build/cocoapods/framework/CouchbaseLiteKotlin.framework'
+    spec.vendored_frameworks      = 'build/cocoapods/framework/CouchbaseLite-KMM.framework'
     spec.libraries                = 'c++'
-    spec.ios.deployment_target = '14.1'
+    spec.ios.deployment_target = '10.0'
     spec.dependency 'CouchbaseLite', '~> 3.0.0'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':shared',
-        'PRODUCT_MODULE_NAME' => 'CouchbaseLiteKotlin',
+        'PRODUCT_MODULE_NAME' => 'CouchbaseLite-KMM',
     }
                 
     spec.script_phases = [

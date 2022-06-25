@@ -51,7 +51,7 @@ internal constructor(actual: com.couchbase.lite.Document) :
         actual.getBoolean(key)
 
     public actual fun getBlob(key: String): Blob? =
-        actual.getBlob(key)
+        actual.getBlob(key)?.asBlob()
 
     public actual fun getDate(key: String): Instant? =
         actual.getDate(key)?.toKotlinInstant()

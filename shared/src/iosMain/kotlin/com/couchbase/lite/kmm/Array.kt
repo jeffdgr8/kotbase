@@ -2,7 +2,7 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLArray
 import com.udobny.kmm.DelegatedClass
-import com.udobny.kmm.ext.toNumber
+import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 
@@ -17,40 +17,40 @@ internal constructor(actual: CBLArray) :
         get() = actual.count.toInt()
 
     public actual fun getValue(index: Int): Any? =
-        actual.valueAtIndex(index.toULong())
+        actual.valueAtIndex(index.convert())
 
     public actual fun getString(index: Int): String? =
-        actual.stringAtIndex(index.toULong())
+        actual.stringAtIndex(index.convert())
 
     public actual fun getNumber(index: Int): Number? =
-        actual.numberAtIndex(index.toULong())?.toNumber()
+        actual.numberAtIndex(index.convert()) as Number?
 
     public actual fun getInt(index: Int): Int =
-        actual.integerAtIndex(index.toULong()).toInt()
+        actual.integerAtIndex(index.convert()).toInt()
 
     public actual fun getLong(index: Int): Long =
-        actual.longLongAtIndex(index.toULong())
+        actual.longLongAtIndex(index.convert())
 
     public actual fun getFloat(index: Int): Float =
-        actual.floatAtIndex(index.toULong())
+        actual.floatAtIndex(index.convert())
 
     public actual fun getDouble(index: Int): Double =
-        actual.doubleAtIndex(index.toULong())
+        actual.doubleAtIndex(index.convert())
 
     public actual fun getBoolean(index: Int): Boolean =
-        actual.booleanAtIndex(index.toULong())
+        actual.booleanAtIndex(index.convert())
 
     public actual fun getBlob(index: Int): Blob? =
-        actual.blobAtIndex(index.toULong())?.asBlob()
+        actual.blobAtIndex(index.convert())?.asBlob()
 
     public actual fun getDate(index: Int): Instant? =
-        actual.dateAtIndex(index.toULong())?.toKotlinInstant()
+        actual.dateAtIndex(index.convert())?.toKotlinInstant()
 
     public actual open fun getArray(index: Int): Array? =
-        actual.arrayAtIndex(index.toULong())?.asArray()
+        actual.arrayAtIndex(index.convert())?.asArray()
 
     public actual open fun getDictionary(index: Int): Dictionary? =
-        actual.dictionaryAtIndex(index.toULong())?.asDictionary()
+        actual.dictionaryAtIndex(index.convert())?.asDictionary()
 
     public actual fun toList(): List<Any?> =
         actual.toArray()

@@ -50,8 +50,8 @@ constructor(config: ReplicatorConfiguration) {
      *
      * @return this replicator's server certificates.
      */
-    // TODO:
-    //public fun getServerCertificates(): List<Certificate>?
+    // platform-specific implementations
+    //public val serverCertificates: List<Certificate>?
 
     /**
      * Get a best effort list of documents still pending replication.
@@ -73,10 +73,8 @@ constructor(config: ReplicatorConfiguration) {
     /**
      * Adds a change listener for the changes in the replication status and progress.
      *
-     *
      * The changes will be delivered on the UI thread for the Android platform
      * On other Java platforms, the callback will occur on an arbitrary thread.
-     *
      *
      * When developing a Java Desktop application using Swing or JavaFX that needs to update the UI after
      * receiving the changes, make sure to schedule the UI update on the UI thread by using

@@ -4,13 +4,14 @@ import cocoapods.CouchbaseLite.CBLMutableDocument
 import com.couchbase.lite.kmm.ext.throwError
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.udobny.kmm.chain
-import com.udobny.kmm.ext.toNSNumber
 import com.udobny.kmm.ext.toNativeDateDeep
 import com.udobny.kmm.ext.toNativeDateValuesDeep
 import com.udobny.kmm.ext.wrapError
+import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSError
+import platform.Foundation.NSNumber
 
 public actual class MutableDocument
 internal constructor(override val actual: CBLMutableDocument) :
@@ -61,11 +62,11 @@ internal constructor(override val actual: CBLMutableDocument) :
     }
 
     public actual fun setNumber(key: String, value: Number?): MutableDocument = chain {
-        setNumber(value?.toNSNumber(), key)
+        setNumber(value as NSNumber?, key)
     }
 
     public actual fun setInt(key: String, value: Int): MutableDocument = chain {
-        setInteger(value.toLong(), key)
+        setInteger(value.convert(), key)
     }
 
     public actual fun setLong(key: String, value: Long): MutableDocument = chain {

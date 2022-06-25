@@ -21,7 +21,7 @@ public fun Exception.toNSError(): NSError {
     return when (this) {
         is NSErrorException -> nsError
         else -> NSError(
-            null,
+            "Kotlin",
             0,
             mapOf(
                 NSLocalizedDescriptionKey to message,
