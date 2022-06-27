@@ -16,9 +16,14 @@
 //// limitations under the License.
 ////
 //import com.couchbase.lite.internal.utils.Report
+//import okio.IOException
+//import kotlin.test.AfterTest
+//import kotlin.test.BeforeTest
+//import kotlin.test.assertTrue
 //
 //
 //abstract class BaseTest : PlatformBaseTest() {
+//
 //    protected var testSerialExecutor: CloseableExecutor? = null
 //    private var testName: String? = null
 //    private var startTime: Long = 0
@@ -30,7 +35,7 @@
 //        }
 //    }
 //
-//    @Before
+//    @BeforeTest
 //    fun setUpBaseTest() {
 //        Report.log(LogLevel.INFO, ">>>>>>>> Test started: $testName")
 //        com.couchbase.lite.internal.support.Log.initLogging()
@@ -39,9 +44,9 @@
 //            val executor: java.util.concurrent.ExecutorService =
 //                java.util.concurrent.Executors.newSingleThreadExecutor()
 //
-//            override fun execute(@NonNull task: java.lang.Runnable) {
+//            override fun execute(@NonNull task: Runnable) {
 //                Report.log("task enqueued: $task")
-//                executor.execute(java.lang.Runnable {
+//                executor.execute(Runnable {
 //                    Report.log("task started: $task")
 //                    task.run()
 //                    Report.log("task finished: $task")
@@ -56,10 +61,10 @@
 //                return true
 //            }
 //        }
-//        startTime = java.lang.System.currentTimeMillis()
+//        startTime = System.currentTimeMillis()
 //    }
 //
-//    @After
+//    @AfterTest
 //    fun tearDownBaseTest() {
 //        var succeeded = false
 //        if (testSerialExecutor != null) {
@@ -69,19 +74,19 @@
 //        Report.log(
 //            LogLevel.INFO,
 //            "<<<<<<<< Test completed(%s): %s",
-//            formatInterval(java.lang.System.currentTimeMillis() - startTime),
+//            formatInterval(System.currentTimeMillis() - startTime),
 //            testName
 //        )
 //    }
 //
-//    protected fun skipTestWhen(@NonNull tag: String?) {
+//    protected fun skipTestWhen(tag: String) {
 //        val exclusion: Exclusion = getExclusions(tag)
 //        if (exclusion != null) {
 //            Assume.assumeFalse(exclusion.msg, exclusion.test.get())
 //        }
 //    }
 //
-//    protected fun getUniqueName(@NonNull prefix: String?): String {
+//    protected fun getUniqueName(prefix: String): String {
 //        return com.couchbase.lite.internal.utils.StringUtils.getUniqueName(prefix, 12)
 //    }
 //
@@ -91,56 +96,51 @@
 //    ) {
 //        val delay: Long = 100
 //        if (maxTime <= delay) {
-//            org.junit.Assert.assertTrue(test.get())
+//            assertTrue(test.get())
 //        }
-//        val endTimes: Long = java.lang.System.currentTimeMillis() + maxTime - delay
+//        val endTimes: Long = System.currentTimeMillis() + maxTime - delay
 //        do {
 //            try {
-//                java.lang.Thread.sleep(delay)
-//            } catch (e: java.lang.InterruptedException) {
+//                Thread.sleep(delay)
+//            } catch (e: InterruptedException) {
 //                break
 //            }
 //            if (test.get()) {
 //                return
 //            }
-//        } while (java.lang.System.currentTimeMillis() < endTimes)
+//        } while (System.currentTimeMillis() < endTimes)
 //
 //        // assertTrue() provides a more relevant message than fail()
-//        org.junit.Assert.assertTrue(false)
+//        assertTrue(false)
 //    }
 //
-//    protected fun getScratchDirectoryPath(@NonNull name: String): String {
+//    protected fun getScratchDirectoryPath(name: String): String {
 //        return try {
 //            val path: String = com.couchbase.lite.internal.utils.FileUtils.verifyDir(
-//                java.io.File(
+//                File(
 //                    getTmpDir(),
 //                    name
 //                )
 //            ).getCanonicalPath()
 //            BaseTest.Companion.SCRATCH_DIRS.add(path)
 //            path
-//        } catch (e: java.io.IOException) {
-//            throw java.lang.IllegalStateException("Failed creating scratch directory: $name", e)
+//        } catch (e: IOException) {
+//            throw IllegalStateException("Failed creating scratch directory: $name", e)
 //        }
 //    }
 //
 //    // Prefer this method to any other way of creating a new database
-//    // Prefer this method to any other way of creating a new database
 //    @Throws(CouchbaseLiteException::class)
 //    protected fun createDb(
-//        @NonNull name: String?,
-//        @Nullable config: DatabaseConfiguration? = null
+//        name: String,
+//        config: DatabaseConfiguration = DatabaseConfiguration()
 //    ): Database {
-//        var config = config
-//        if (config == null) {
-//            config = DatabaseConfiguration()
-//        }
 //        val dbName = getUniqueName(name)
-//        val dbDir: java.io.File =
-//            java.io.File(config.getDirectory(), dbName + C4Database.DB_EXTENSION)
-//        org.junit.Assert.assertFalse(dbDir.exists())
+//        val dbDir: File =
+//            File(config.getDirectory(), dbName + C4Database.DB_EXTENSION)
+//        assertFalse(dbDir.exists())
 //        val db = Database(dbName, config)
-//        org.junit.Assert.assertTrue(dbDir.exists())
+//        assertTrue(dbDir.exists())
 //        return db
 //    }
 //
@@ -161,7 +161,7 @@
 //        @Nullable config: DatabaseConfiguration? = null
 //    ): Database {
 //        val dbName = db.name
-//        org.junit.Assert.assertTrue(closeDb(db))
+//        assertTrue(closeDb(db))
 //        return Database(
 //            dbName,
 //            config ?: DatabaseConfiguration()
@@ -174,7 +174,7 @@
 //        @Nullable config: DatabaseConfiguration? = null
 //    ): Database {
 //        val dbName = db.name
-//        org.junit.Assert.assertTrue(deleteDb(db))
+//        assertTrue(deleteDb(db))
 //        return Database(
 //            dbName,
 //            config ?: DatabaseConfiguration()

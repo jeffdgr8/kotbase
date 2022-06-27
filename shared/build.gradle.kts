@@ -41,6 +41,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3-native-mt")
                 implementation("com.squareup.okio:okio:3.1.0")
             }
         }
@@ -54,11 +55,7 @@ kotlin {
                 implementation("com.couchbase.lite:couchbase-lite-android-ktx:3.0.0")
             }
         }
-        val androidTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
+        val androidTest by getting
         val iosMain by getting
         val iosTest by getting
     }

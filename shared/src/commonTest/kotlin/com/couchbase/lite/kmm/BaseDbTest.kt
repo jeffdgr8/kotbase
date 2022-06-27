@@ -1,5 +1,4 @@
 //package com.couchbase.lite.kmm
-//import com.couchbase.lite.DictionaryInterface
 //
 ////
 //// Copyright (c) 2020 Couchbase, Inc.
@@ -17,23 +16,26 @@
 //// limitations under the License.
 ////
 //import com.couchbase.lite.internal.utils.Report
+//import com.couchbase.lite.DictionaryInterface
+//import kotlin.test.*
 //
 //
 //abstract class BaseDbTest : BaseTest() {
-//    @java.lang.FunctionalInterface
-//    interface DocValidator : ConsumerThrows<Document?, CouchbaseLiteException?>
+//
+//    fun interface DocValidator : ConsumerThrows<Document?, CouchbaseLiteException?>
 //
 //    protected var baseTestDb: Database? = null
-//    @Before
+//
+//    @BeforeTest
 //    @Throws(CouchbaseLiteException::class)
 //    fun setUpBaseDbTest() {
 //        baseTestDb = createDb("base_db")
-//        Report.log(LogLevel.INFO, "Created base test DB: $baseTestDb")
-//        org.junit.Assert.assertNotNull(baseTestDb)
-//        synchronized(baseTestDb.getDbLock()) { org.junit.Assert.assertTrue(baseTestDb.isOpen()) }
+//        println("${LogLevel.INFO} Created base test DB: $baseTestDb")
+//        assertNotNull(baseTestDb)
+//        synchronized(baseTestDb.getDbLock()) { assertTrue(baseTestDb.isOpen()) }
 //    }
 //
-//    @After
+//    @AfterTest
 //    fun tearDownBaseDbTest() {
 //        deleteDb(baseTestDb)
 //        Report.log(LogLevel.INFO, "Deleted baseTestDb: $baseTestDb")
@@ -45,29 +47,28 @@
 //        val doc = MutableDocument(docID)
 //        doc.setValue("key", 1)
 //        val savedDoc = saveDocInBaseTestDb(doc)
-//        org.junit.Assert.assertEquals(n + 1, baseTestDb!!.count)
-//        org.junit.Assert.assertEquals(1, savedDoc!!.sequence)
+//        assertEquals(n + 1, baseTestDb!!.count)
+//        assertEquals(1, savedDoc!!.sequence)
 //        return savedDoc
 //    }
 //
 //    @Throws(CouchbaseLiteException::class)
 //    protected fun createDocsInDb(first: Int, count: Int, db: Database) {
-//        db.inBatch(kotlin.jvm.functions.Function0<Unit><Unit> {
+//        db.inBatch {
 //            for (i in first until first + count) {
-//                val doc =
-//                    MutableDocument("doc-$i")
+//                val doc = MutableDocument("doc-$i")
 //                doc.setNumber("count", i)
 //                doc.setString("inverse", "minus-$i")
 //                db.save(doc)
 //            }
-//        })
+//        }
 //    }
 //
 //    @Throws(CouchbaseLiteException::class)
 //    protected fun saveDocInBaseTestDb(doc: MutableDocument): Document? {
 //        baseTestDb!!.save(doc)
 //        val savedDoc = baseTestDb!!.getDocument(doc.id)
-//        org.junit.Assert.assertNotNull(savedDoc)
+//        assertNotNull(savedDoc)
 //        assertEquals(doc.id, savedDoc!!.id)
 //        return savedDoc
 //    }
@@ -242,255 +243,255 @@
 //
 //    @Throws(org.json.JSONException::class)
 //    protected fun verifyArray(jArray: JSONArray) {
-//        org.junit.Assert.assertEquals(27, jArray.length().toLong())
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jArray.get(0))
-//        org.junit.Assert.assertEquals(true, jArray.get(1))
-//        org.junit.Assert.assertEquals(false, jArray.get(2))
-//        org.junit.Assert.assertEquals(0, jArray.get(3))
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE, jArray.get(4))
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE, jArray.get(5))
-//        org.junit.Assert.assertEquals(0, jArray.get(6))
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE, jArray.get(7))
-//        org.junit.Assert.assertEquals(Long.MAX_VALUE, jArray.get(8))
-//        org.junit.Assert.assertEquals(0.0, jArray.getDouble(9), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(27, jArray.length().toLong())
+//        assertEquals(JSONObject.NULL, jArray.get(0))
+//        assertEquals(true, jArray.get(1))
+//        assertEquals(false, jArray.get(2))
+//        assertEquals(0, jArray.get(3))
+//        assertEquals(Int.MIN_VALUE, jArray.get(4))
+//        assertEquals(Int.MAX_VALUE, jArray.get(5))
+//        assertEquals(0, jArray.get(6))
+//        assertEquals(Long.MIN_VALUE, jArray.get(7))
+//        assertEquals(Long.MAX_VALUE, jArray.get(8))
+//        assertEquals(0.0, jArray.getDouble(9), 0.001)
+//        assertEquals(
 //            Float.MIN_VALUE.toDouble(),
 //            jArray.getDouble(10).toFloat().toDouble(),
 //            0.001
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            Float.MAX_VALUE.toDouble(),
 //            jArray.getDouble(11).toFloat().toDouble(),
 //            100.0
 //        )
-//        org.junit.Assert.assertEquals(0.0, jArray.getDouble(12), 0.001)
-//        org.junit.Assert.assertEquals(Double.MIN_VALUE, jArray.getDouble(13), 0.001)
-//        org.junit.Assert.assertEquals(Double.MAX_VALUE, jArray.getDouble(14), 1.0)
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jArray.get(15))
-//        org.junit.Assert.assertEquals(0, jArray.getLong(16))
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE.toDouble(), jArray.getDouble(17), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(0.0, jArray.getDouble(12), 0.001)
+//        assertEquals(Double.MIN_VALUE, jArray.getDouble(13), 0.001)
+//        assertEquals(Double.MAX_VALUE, jArray.getDouble(14), 1.0)
+//        assertEquals(JSONObject.NULL, jArray.get(15))
+//        assertEquals(0, jArray.getLong(16))
+//        assertEquals(Float.MIN_VALUE.toDouble(), jArray.getDouble(17), 0.001)
+//        assertEquals(
 //            Long.MIN_VALUE.toDouble(),
 //            jArray.getLong(18).toDouble(),
 //            0.001
 //        )
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jArray.get(19))
-//        org.junit.Assert.assertEquals("Harry", jArray.get(20))
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jArray.get(21))
-//        org.junit.Assert.assertEquals(BaseDbTest.Companion.TEST_DATE, jArray.get(22))
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jArray.get(23))
-//        org.junit.Assert.assertEquals(JSONArray::class.java, jArray.get(24).javaClass)
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jArray.get(25))
-//        org.junit.Assert.assertEquals(JSONObject::class.java, jArray.get(26).javaClass)
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jArray.get(25))
-//        org.junit.Assert.assertEquals(JSONObject::class.java, jArray.get(26).javaClass)
+//        assertEquals(JSONObject.NULL, jArray.get(19))
+//        assertEquals("Harry", jArray.get(20))
+//        assertEquals(JSONObject.NULL, jArray.get(21))
+//        assertEquals(BaseDbTest.Companion.TEST_DATE, jArray.get(22))
+//        assertEquals(JSONObject.NULL, jArray.get(23))
+//        assertEquals(JSONArray::class.java, jArray.get(24).javaClass)
+//        assertEquals(JSONObject.NULL, jArray.get(25))
+//        assertEquals(JSONObject::class.java, jArray.get(26).javaClass)
+//        assertEquals(JSONObject.NULL, jArray.get(25))
+//        assertEquals(JSONObject::class.java, jArray.get(26).javaClass)
 //    }
 //
 //    protected fun verifyArray(@Nullable array: ArrayInterface) {
-//        org.junit.Assert.assertNotNull(array)
+//        assertNotNull(array)
 //        assertEquals(27, array.count())
 //
 //        //#0 array.addValue(null);
-//        org.junit.Assert.assertNull(array.getValue(0))
-//        org.junit.Assert.assertFalse(array.getBoolean(0))
+//        assertNull(array.getValue(0))
+//        assertFalse(array.getBoolean(0))
 //        assertEquals(0, array.getInt(0))
 //        assertEquals(0L, array.getLong(0))
 //        assertEquals(0.0f, array.getFloat(0), 0.001f)
 //        assertEquals(0.0, array.getDouble(0), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(0))
-//        org.junit.Assert.assertNull(array.getString(0))
-//        org.junit.Assert.assertNull(array.getDate(0))
-//        org.junit.Assert.assertNull(array.getBlob(0))
-//        org.junit.Assert.assertNull(array.getArray(0))
-//        org.junit.Assert.assertNull(array.getDictionary(0))
+//        assertNull(array.getNumber(0))
+//        assertNull(array.getString(0))
+//        assertNull(array.getDate(0))
+//        assertNull(array.getBlob(0))
+//        assertNull(array.getArray(0))
+//        assertNull(array.getDictionary(0))
 //
 //        //#1 array.addBoolean(true);
 //        assertEquals(java.lang.Boolean.TRUE, array.getValue(1))
-//        org.junit.Assert.assertTrue(array.getBoolean(1))
+//        assertTrue(array.getBoolean(1))
 //        assertEquals(1, array.getInt(1))
 //        assertEquals(1L, array.getLong(1))
 //        assertEquals(1.0f, array.getFloat(1), 0.001f)
 //        assertEquals(1.0, array.getDouble(1), 0.001)
 //        assertEquals(1, array.getNumber(1))
-//        org.junit.Assert.assertNull(array.getString(1))
-//        org.junit.Assert.assertNull(array.getDate(1))
-//        org.junit.Assert.assertNull(array.getBlob(1))
-//        org.junit.Assert.assertNull(array.getArray(1))
-//        org.junit.Assert.assertNull(array.getDictionary(1))
+//        assertNull(array.getString(1))
+//        assertNull(array.getDate(1))
+//        assertNull(array.getBlob(1))
+//        assertNull(array.getArray(1))
+//        assertNull(array.getDictionary(1))
 //
 //        //#2 array.addBoolean(false);
 //        assertEquals(java.lang.Boolean.FALSE, array.getValue(2))
-//        org.junit.Assert.assertFalse(array.getBoolean(2))
+//        assertFalse(array.getBoolean(2))
 //        assertEquals(0, array.getInt(2))
 //        assertEquals(0L, array.getLong(2))
 //        assertEquals(0.0f, array.getFloat(2), 0.001f)
 //        assertEquals(0.0, array.getDouble(2), 0.001)
 //        assertEquals(0, array.getNumber(2))
-//        org.junit.Assert.assertNull(array.getString(2))
-//        org.junit.Assert.assertNull(array.getDate(2))
-//        org.junit.Assert.assertNull(array.getBlob(2))
-//        org.junit.Assert.assertNull(array.getArray(2))
-//        org.junit.Assert.assertNull(array.getDictionary(2))
+//        assertNull(array.getString(2))
+//        assertNull(array.getDate(2))
+//        assertNull(array.getBlob(2))
+//        assertNull(array.getArray(2))
+//        assertNull(array.getDictionary(2))
 //
 //        //#3 array.addInt(0);
 //        assertEquals(0L, array.getValue(3))
-//        org.junit.Assert.assertFalse(array.getBoolean(3))
+//        assertFalse(array.getBoolean(3))
 //        assertEquals(0, array.getInt(3))
 //        assertEquals(0L, array.getLong(3))
 //        assertEquals(0.0f, array.getFloat(3), 0.001f)
 //        assertEquals(0.0, array.getDouble(3), 0.001)
 //        assertEquals(0L, array.getNumber(3))
-//        org.junit.Assert.assertNull(array.getString(3))
-//        org.junit.Assert.assertNull(array.getDate(3))
-//        org.junit.Assert.assertNull(array.getBlob(3))
-//        org.junit.Assert.assertNull(array.getArray(3))
-//        org.junit.Assert.assertNull(array.getDictionary(3))
+//        assertNull(array.getString(3))
+//        assertNull(array.getDate(3))
+//        assertNull(array.getBlob(3))
+//        assertNull(array.getArray(3))
+//        assertNull(array.getDictionary(3))
 //
 //        //#4 array.addInt(Integer.MIN_VALUE);
 //        assertEquals(java.lang.Long.valueOf(Int.MIN_VALUE.toLong()), array.getValue(4))
-//        org.junit.Assert.assertTrue(array.getBoolean(4))
+//        assertTrue(array.getBoolean(4))
 //        assertEquals(Int.MIN_VALUE, array.getInt(4))
 //        assertEquals(Int.MIN_VALUE.toLong(), array.getLong(4))
 //        assertEquals(Int.MIN_VALUE.toFloat(), array.getFloat(4), 0.001f)
 //        assertEquals(Int.MIN_VALUE.toDouble(), array.getDouble(4), 0.001)
 //        assertEquals(java.lang.Long.valueOf(Int.MIN_VALUE.toLong()), array.getNumber(4))
-//        org.junit.Assert.assertNull(array.getString(4))
-//        org.junit.Assert.assertNull(array.getDate(4))
-//        org.junit.Assert.assertNull(array.getBlob(4))
-//        org.junit.Assert.assertNull(array.getArray(4))
-//        org.junit.Assert.assertNull(array.getDictionary(4))
+//        assertNull(array.getString(4))
+//        assertNull(array.getDate(4))
+//        assertNull(array.getBlob(4))
+//        assertNull(array.getArray(4))
+//        assertNull(array.getDictionary(4))
 //
 //        //#5 array.addInt(Integer.MAX_VALUE);
 //        assertEquals(java.lang.Long.valueOf(Int.MAX_VALUE.toLong()), array.getValue(5))
-//        org.junit.Assert.assertTrue(array.getBoolean(5))
+//        assertTrue(array.getBoolean(5))
 //        assertEquals(Int.MAX_VALUE, array.getInt(5))
 //        assertEquals(Int.MAX_VALUE.toLong(), array.getLong(5))
 //        assertEquals(Int.MAX_VALUE.toFloat(), array.getFloat(5), 100.0f)
 //        assertEquals(Int.MAX_VALUE.toDouble(), array.getDouble(5), 100.0)
 //        assertEquals(java.lang.Long.valueOf(Int.MAX_VALUE.toLong()), array.getNumber(5))
-//        org.junit.Assert.assertNull(array.getString(5))
-//        org.junit.Assert.assertNull(array.getDate(5))
-//        org.junit.Assert.assertNull(array.getBlob(5))
-//        org.junit.Assert.assertNull(array.getArray(5))
-//        org.junit.Assert.assertNull(array.getDictionary(5))
+//        assertNull(array.getString(5))
+//        assertNull(array.getDate(5))
+//        assertNull(array.getBlob(5))
+//        assertNull(array.getArray(5))
+//        assertNull(array.getDictionary(5))
 //
 //        //#6 array.addLong(0L);
 //        assertEquals(java.lang.Long.valueOf(0L), array.getValue(6))
-//        org.junit.Assert.assertFalse(array.getBoolean(6))
+//        assertFalse(array.getBoolean(6))
 //        assertEquals(0, array.getInt(6))
 //        assertEquals(0L, array.getLong(6))
 //        assertEquals(0.0f, array.getFloat(6), 0.001f)
 //        assertEquals(0.0, array.getDouble(6), 0.001)
 //        assertEquals(java.lang.Long.valueOf(0L), array.getNumber(6))
-//        org.junit.Assert.assertNull(array.getString(6))
-//        org.junit.Assert.assertNull(array.getDate(6))
-//        org.junit.Assert.assertNull(array.getBlob(6))
-//        org.junit.Assert.assertNull(array.getArray(6))
-//        org.junit.Assert.assertNull(array.getDictionary(6))
+//        assertNull(array.getString(6))
+//        assertNull(array.getDate(6))
+//        assertNull(array.getBlob(6))
+//        assertNull(array.getArray(6))
+//        assertNull(array.getDictionary(6))
 //
 //        //#7 array.addLong(Long.MIN_VALUE);
 //        assertEquals(java.lang.Long.valueOf(Long.MIN_VALUE), array.getValue(7))
-//        org.junit.Assert.assertFalse(array.getBoolean(7))
+//        assertFalse(array.getBoolean(7))
 //        assertEquals(java.lang.Long.valueOf(Long.MIN_VALUE).toInt(), array.getInt(7))
 //        assertEquals(Long.MIN_VALUE, array.getLong(7))
 //        assertEquals(Long.MIN_VALUE.toFloat(), array.getFloat(7), 0.001f)
 //        assertEquals(Long.MIN_VALUE.toDouble(), array.getDouble(7), 0.001)
 //        assertEquals(java.lang.Long.valueOf(Long.MIN_VALUE), array.getNumber(7))
-//        org.junit.Assert.assertNull(array.getString(7))
-//        org.junit.Assert.assertNull(array.getDate(7))
-//        org.junit.Assert.assertNull(array.getBlob(7))
-//        org.junit.Assert.assertNull(array.getArray(7))
-//        org.junit.Assert.assertNull(array.getDictionary(7))
+//        assertNull(array.getString(7))
+//        assertNull(array.getDate(7))
+//        assertNull(array.getBlob(7))
+//        assertNull(array.getArray(7))
+//        assertNull(array.getDictionary(7))
 //
 //        //#8 array.addLong(Long.MAX_VALUE);
 //        assertEquals(java.lang.Long.valueOf(Long.MAX_VALUE), array.getValue(8))
-//        org.junit.Assert.assertTrue(array.getBoolean(8))
+//        assertTrue(array.getBoolean(8))
 //        assertEquals(java.lang.Long.valueOf(Long.MAX_VALUE).toInt(), array.getInt(8))
 //        assertEquals(Long.MAX_VALUE, array.getLong(8))
 //        assertEquals(Long.MAX_VALUE.toFloat(), array.getFloat(8), 100.0f)
 //        assertEquals(Long.MAX_VALUE.toDouble(), array.getDouble(8), 100.0)
 //        assertEquals(java.lang.Long.valueOf(Long.MAX_VALUE), array.getNumber(8))
-//        org.junit.Assert.assertNull(array.getString(8))
-//        org.junit.Assert.assertNull(array.getDate(8))
-//        org.junit.Assert.assertNull(array.getBlob(8))
-//        org.junit.Assert.assertNull(array.getArray(8))
-//        org.junit.Assert.assertNull(array.getDictionary(8))
+//        assertNull(array.getString(8))
+//        assertNull(array.getDate(8))
+//        assertNull(array.getBlob(8))
+//        assertNull(array.getArray(8))
+//        assertNull(array.getDictionary(8))
 //
 //        //#9 array.addFloat(0.0F);
 //        assertEquals(java.lang.Float.valueOf(0.0f), array.getValue(9))
-//        org.junit.Assert.assertFalse(array.getBoolean(9))
+//        assertFalse(array.getBoolean(9))
 //        assertEquals(0, array.getInt(9))
 //        assertEquals(0L, array.getLong(9))
 //        assertEquals(0.0f, array.getFloat(9), 0.001f)
 //        assertEquals(0.0, array.getDouble(9), 0.001)
 //        assertEquals(java.lang.Float.valueOf(0.0f), array.getNumber(9))
-//        org.junit.Assert.assertNull(array.getString(9))
-//        org.junit.Assert.assertNull(array.getDate(9))
-//        org.junit.Assert.assertNull(array.getBlob(9))
-//        org.junit.Assert.assertNull(array.getArray(9))
-//        org.junit.Assert.assertNull(array.getDictionary(9))
+//        assertNull(array.getString(9))
+//        assertNull(array.getDate(9))
+//        assertNull(array.getBlob(9))
+//        assertNull(array.getArray(9))
+//        assertNull(array.getDictionary(9))
 //
 //        //#10 array.addFloat(Float.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(array.getValue(10))
 //        )
-//        org.junit.Assert.assertFalse(array.getBoolean(10))
+//        assertFalse(array.getBoolean(10))
 //        assertEquals(java.lang.Float.valueOf(Float.MIN_VALUE).toInt(), array.getInt(10), 0.001f)
 //        assertEquals(java.lang.Float.valueOf(Float.MIN_VALUE).toLong(), array.getLong(10), 0.001f)
 //        assertEquals(Float.MIN_VALUE, array.getFloat(10), 0.001f)
 //        assertEquals(Float.MIN_VALUE.toDouble(), array.getDouble(10), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(array.getNumber(10))
 //        )
-//        org.junit.Assert.assertNull(array.getString(10))
-//        org.junit.Assert.assertNull(array.getDate(10))
-//        org.junit.Assert.assertNull(array.getBlob(10))
-//        org.junit.Assert.assertNull(array.getArray(10))
-//        org.junit.Assert.assertNull(array.getDictionary(10))
+//        assertNull(array.getString(10))
+//        assertNull(array.getDate(10))
+//        assertNull(array.getBlob(10))
+//        assertNull(array.getArray(10))
+//        assertNull(array.getDictionary(10))
 //
 //        //#11 array.addFloat(Float.MAX_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MAX_VALUE),
 //            demoteToFloat(array.getValue(11))
 //        )
-//        org.junit.Assert.assertTrue(array.getBoolean(11))
+//        assertTrue(array.getBoolean(11))
 //        // !!! Fails: assertEquals(Float.valueOf(Float.MAX_VALUE).intValue(), array.getInt(11));
 //        // !!! Fails: assertEquals(Float.valueOf(Float.MAX_VALUE).longValue(), array.getLong(11));
 //        assertEquals(Float.MAX_VALUE, array.getFloat(11), 100.0f)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            Float.MAX_VALUE.toDouble(),
 //            demoteToFloat(array.getDouble(11)).toDouble(),
 //            100.0
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MAX_VALUE),
 //            demoteToFloat(array.getNumber(11))
 //        )
-//        org.junit.Assert.assertNull(array.getString(11))
-//        org.junit.Assert.assertNull(array.getDate(11))
-//        org.junit.Assert.assertNull(array.getBlob(11))
-//        org.junit.Assert.assertNull(array.getArray(11))
-//        org.junit.Assert.assertNull(array.getDictionary(11))
+//        assertNull(array.getString(11))
+//        assertNull(array.getDate(11))
+//        assertNull(array.getBlob(11))
+//        assertNull(array.getArray(11))
+//        assertNull(array.getDictionary(11))
 //
 //        //#12 array.addDouble(0.0);
 //        assertEquals(java.lang.Float.valueOf(0f), array.getValue(12))
-//        org.junit.Assert.assertFalse(array.getBoolean(12))
+//        assertFalse(array.getBoolean(12))
 //        assertEquals(0, array.getInt(12))
 //        assertEquals(0L, array.getLong(12))
 //        assertEquals(0.0f, array.getFloat(12), 0.001f)
 //        assertEquals(0.0, array.getDouble(12), 0.001)
 //        assertEquals(java.lang.Float.valueOf(0f), array.getNumber(12))
-//        org.junit.Assert.assertNull(array.getString(12))
-//        org.junit.Assert.assertNull(array.getDate(12))
-//        org.junit.Assert.assertNull(array.getBlob(12))
-//        org.junit.Assert.assertNull(array.getArray(12))
-//        org.junit.Assert.assertNull(array.getDictionary(12))
+//        assertNull(array.getString(12))
+//        assertNull(array.getDate(12))
+//        assertNull(array.getBlob(12))
+//        assertNull(array.getArray(12))
+//        assertNull(array.getDictionary(12))
 //
 //        //#13 array.addDouble(Double.MIN_VALUE);
 //        assertEquals(java.lang.Double.valueOf(Double.MIN_VALUE), array.getValue(13))
-//        org.junit.Assert.assertFalse(array.getBoolean(13))
+//        assertFalse(array.getBoolean(13))
 //        assertEquals(java.lang.Double.valueOf(Double.MIN_VALUE).toInt(), array.getInt(13))
 //        assertEquals(java.lang.Double.valueOf(Double.MIN_VALUE).toLong(), array.getLong(13))
 //        assertEquals(
@@ -500,15 +501,15 @@
 //        )
 //        assertEquals(Double.MIN_VALUE, array.getDouble(13), 0.001)
 //        assertEquals(java.lang.Double.valueOf(Double.MIN_VALUE), array.getNumber(13))
-//        org.junit.Assert.assertNull(array.getString(13))
-//        org.junit.Assert.assertNull(array.getDate(13))
-//        org.junit.Assert.assertNull(array.getBlob(13))
-//        org.junit.Assert.assertNull(array.getArray(13))
-//        org.junit.Assert.assertNull(array.getDictionary(13))
+//        assertNull(array.getString(13))
+//        assertNull(array.getDate(13))
+//        assertNull(array.getBlob(13))
+//        assertNull(array.getArray(13))
+//        assertNull(array.getDictionary(13))
 //
 //        //#14 array.addDouble(Double.MAX_VALUE);
 //        assertEquals(java.lang.Double.valueOf(Double.MAX_VALUE), array.getValue(14))
-//        org.junit.Assert.assertTrue(array.getBoolean(14))
+//        assertTrue(array.getBoolean(14))
 //        // !!! Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).intValue(), array.getInt(14));
 //        // !!! Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).longValue(), array.getLong(14));
 //        assertEquals(
@@ -518,185 +519,185 @@
 //        )
 //        assertEquals(Double.MAX_VALUE, array.getDouble(14), 100.0)
 //        assertEquals(java.lang.Double.valueOf(Double.MAX_VALUE), array.getNumber(14))
-//        org.junit.Assert.assertNull(array.getString(14))
-//        org.junit.Assert.assertNull(array.getDate(14))
-//        org.junit.Assert.assertNull(array.getBlob(14))
-//        org.junit.Assert.assertNull(array.getArray(14))
-//        org.junit.Assert.assertNull(array.getDictionary(14))
+//        assertNull(array.getString(14))
+//        assertNull(array.getDate(14))
+//        assertNull(array.getBlob(14))
+//        assertNull(array.getArray(14))
+//        assertNull(array.getDictionary(14))
 //
 //        //#15 array.addNumber(null);
-//        org.junit.Assert.assertNull(array.getValue(15))
-//        org.junit.Assert.assertFalse(array.getBoolean(15))
+//        assertNull(array.getValue(15))
+//        assertFalse(array.getBoolean(15))
 //        assertEquals(0, array.getInt(15))
 //        assertEquals(0L, array.getLong(15))
 //        assertEquals(0.0f, array.getFloat(15), 0.001f)
 //        assertEquals(0.0, array.getDouble(15), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(15))
-//        org.junit.Assert.assertNull(array.getString(15))
-//        org.junit.Assert.assertNull(array.getDate(15))
-//        org.junit.Assert.assertNull(array.getBlob(15))
-//        org.junit.Assert.assertNull(array.getArray(15))
-//        org.junit.Assert.assertNull(array.getDictionary(15))
+//        assertNull(array.getNumber(15))
+//        assertNull(array.getString(15))
+//        assertNull(array.getDate(15))
+//        assertNull(array.getBlob(15))
+//        assertNull(array.getArray(15))
+//        assertNull(array.getDictionary(15))
 //
 //        //#16 array.addNumber(0);
 //        assertEquals(0L, array.getValue(16))
-//        org.junit.Assert.assertFalse(array.getBoolean(16))
+//        assertFalse(array.getBoolean(16))
 //        assertEquals(0, array.getInt(16))
 //        assertEquals(0L, array.getLong(16))
 //        assertEquals(0.0f, array.getFloat(16), 0.001f)
 //        assertEquals(0.0, array.getDouble(16), 0.001)
 //        assertEquals(0L, array.getNumber(16))
-//        org.junit.Assert.assertNull(array.getString(16))
-//        org.junit.Assert.assertNull(array.getDate(16))
-//        org.junit.Assert.assertNull(array.getBlob(16))
-//        org.junit.Assert.assertNull(array.getArray(16))
-//        org.junit.Assert.assertNull(array.getDictionary(16))
+//        assertNull(array.getString(16))
+//        assertNull(array.getDate(16))
+//        assertNull(array.getBlob(16))
+//        assertNull(array.getArray(16))
+//        assertNull(array.getDictionary(16))
 //
 //        //#17 array.addNumber(Float.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(array.getValue(17))
 //        )
-//        org.junit.Assert.assertFalse(array.getBoolean(17))
+//        assertFalse(array.getBoolean(17))
 //        assertEquals(java.lang.Float.valueOf(Float.MIN_VALUE).toInt(), array.getInt(17), 0.001f)
 //        assertEquals(java.lang.Float.valueOf(Float.MIN_VALUE).toLong(), array.getLong(17), 0.001f)
 //        assertEquals(Float.MIN_VALUE, array.getFloat(17), 0.001f)
 //        assertEquals(Float.MIN_VALUE.toDouble(), array.getDouble(17), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(array.getNumber(17))
 //        )
-//        org.junit.Assert.assertNull(array.getString(17))
-//        org.junit.Assert.assertNull(array.getDate(17))
-//        org.junit.Assert.assertNull(array.getBlob(17))
-//        org.junit.Assert.assertNull(array.getArray(17))
-//        org.junit.Assert.assertNull(array.getDictionary(17))
+//        assertNull(array.getString(17))
+//        assertNull(array.getDate(17))
+//        assertNull(array.getBlob(17))
+//        assertNull(array.getArray(17))
+//        assertNull(array.getDictionary(17))
 //
 //        //#18 array.addNumber(Long.MIN_VALUE);
 //        assertEquals(java.lang.Long.valueOf(Long.MIN_VALUE), array.getValue(18))
-//        org.junit.Assert.assertFalse(array.getBoolean(18))
+//        assertFalse(array.getBoolean(18))
 //        assertEquals(java.lang.Long.valueOf(Long.MIN_VALUE).toInt(), array.getInt(18))
 //        assertEquals(Long.MIN_VALUE, array.getLong(18))
 //        assertEquals(Long.MIN_VALUE.toFloat(), array.getFloat(18), 0.001f)
 //        assertEquals(Long.MIN_VALUE.toDouble(), array.getDouble(18), 0.001)
 //        assertEquals(java.lang.Long.valueOf(Long.MIN_VALUE), array.getNumber(18))
-//        org.junit.Assert.assertNull(array.getString(18))
-//        org.junit.Assert.assertNull(array.getDate(18))
-//        org.junit.Assert.assertNull(array.getBlob(18))
-//        org.junit.Assert.assertNull(array.getArray(18))
-//        org.junit.Assert.assertNull(array.getDictionary(18))
+//        assertNull(array.getString(18))
+//        assertNull(array.getDate(18))
+//        assertNull(array.getBlob(18))
+//        assertNull(array.getArray(18))
+//        assertNull(array.getDictionary(18))
 //
 //        //#19 array.addString(null);
-//        org.junit.Assert.assertNull(array.getValue(19))
-//        org.junit.Assert.assertFalse(array.getBoolean(19))
+//        assertNull(array.getValue(19))
+//        assertFalse(array.getBoolean(19))
 //        assertEquals(0, array.getInt(19))
 //        assertEquals(0L, array.getLong(19))
 //        assertEquals(0.0f, array.getFloat(19), 0.001f)
 //        assertEquals(0.0, array.getDouble(19), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(19))
-//        org.junit.Assert.assertNull(array.getString(19))
-//        org.junit.Assert.assertNull(array.getDate(19))
-//        org.junit.Assert.assertNull(array.getBlob(19))
-//        org.junit.Assert.assertNull(array.getArray(19))
-//        org.junit.Assert.assertNull(array.getDictionary(19))
+//        assertNull(array.getNumber(19))
+//        assertNull(array.getString(19))
+//        assertNull(array.getDate(19))
+//        assertNull(array.getBlob(19))
+//        assertNull(array.getArray(19))
+//        assertNull(array.getDictionary(19))
 //
 //        //#20 array.addString("Quatro");
 //        assertEquals("Harry", array.getValue(20))
-//        org.junit.Assert.assertTrue(array.getBoolean(20))
+//        assertTrue(array.getBoolean(20))
 //        assertEquals(0, array.getInt(20))
 //        assertEquals(0, array.getLong(20))
 //        assertEquals(0.0f, array.getFloat(20), 0.001f)
 //        assertEquals(0.0, array.getDouble(20), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(20))
+//        assertNull(array.getNumber(20))
 //        assertEquals("Harry", array.getString(20))
-//        org.junit.Assert.assertNull(array.getDate(20))
-//        org.junit.Assert.assertNull(array.getBlob(20))
-//        org.junit.Assert.assertNull(array.getArray(20))
-//        org.junit.Assert.assertNull(array.getDictionary(20))
+//        assertNull(array.getDate(20))
+//        assertNull(array.getBlob(20))
+//        assertNull(array.getArray(20))
+//        assertNull(array.getDictionary(20))
 //
 //        //#21 array.addDate(null);
-//        org.junit.Assert.assertNull(array.getValue(21))
-//        org.junit.Assert.assertFalse(array.getBoolean(21))
+//        assertNull(array.getValue(21))
+//        assertFalse(array.getBoolean(21))
 //        assertEquals(0, array.getInt(21))
 //        assertEquals(0L, array.getLong(21))
 //        assertEquals(0.0f, array.getFloat(21), 0.001f)
 //        assertEquals(0.0, array.getDouble(21), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(21))
-//        org.junit.Assert.assertNull(array.getString(21))
-//        org.junit.Assert.assertNull(array.getDate(21))
-//        org.junit.Assert.assertNull(array.getBlob(21))
-//        org.junit.Assert.assertNull(array.getArray(21))
-//        org.junit.Assert.assertNull(array.getDictionary(21))
+//        assertNull(array.getNumber(21))
+//        assertNull(array.getString(21))
+//        assertNull(array.getDate(21))
+//        assertNull(array.getBlob(21))
+//        assertNull(array.getArray(21))
+//        assertNull(array.getDictionary(21))
 //
 //        //#22 array.addDate(JSONUtils.toDate(TEST_DATE));
 //        assertEquals(BaseDbTest.Companion.TEST_DATE, array.getValue(22))
-//        org.junit.Assert.assertTrue(array.getBoolean(22))
+//        assertTrue(array.getBoolean(22))
 //        assertEquals(0, array.getInt(22))
 //        assertEquals(0L, array.getLong(22))
 //        assertEquals(0.0f, array.getFloat(22), 0.001f)
 //        assertEquals(0.0, array.getDouble(22), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(22))
+//        assertNull(array.getNumber(22))
 //        assertEquals(BaseDbTest.Companion.TEST_DATE, array.getString(22))
 //        assertEquals(JSONUtils.toDate(BaseDbTest.Companion.TEST_DATE), array.getDate(22))
-//        org.junit.Assert.assertNull(array.getBlob(22))
-//        org.junit.Assert.assertNull(array.getArray(22))
-//        org.junit.Assert.assertNull(array.getDictionary(22))
+//        assertNull(array.getBlob(22))
+//        assertNull(array.getArray(22))
+//        assertNull(array.getDictionary(22))
 //
 //        //#23 array.addArray(null);
-//        org.junit.Assert.assertNull(array.getValue(23))
-//        org.junit.Assert.assertFalse(array.getBoolean(23))
+//        assertNull(array.getValue(23))
+//        assertFalse(array.getBoolean(23))
 //        assertEquals(0, array.getInt(23))
 //        assertEquals(0L, array.getLong(23))
 //        assertEquals(0.0f, array.getFloat(23), 0.001f)
 //        assertEquals(0.0, array.getDouble(23), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(23))
-//        org.junit.Assert.assertNull(array.getString(23))
-//        org.junit.Assert.assertNull(array.getDate(23))
-//        org.junit.Assert.assertNull(array.getBlob(23))
-//        org.junit.Assert.assertNull(array.getArray(23))
-//        org.junit.Assert.assertNull(array.getDictionary(23))
+//        assertNull(array.getNumber(23))
+//        assertNull(array.getString(23))
+//        assertNull(array.getDate(23))
+//        assertNull(array.getBlob(23))
+//        assertNull(array.getArray(23))
+//        assertNull(array.getDictionary(23))
 //
 //        //#24 array.addArray(simpleArray);
-//        org.junit.Assert.assertTrue(array.getValue(24) is Array)
-//        org.junit.Assert.assertTrue(array.getBoolean(24))
+//        assertTrue(array.getValue(24) is Array)
+//        assertTrue(array.getBoolean(24))
 //        assertEquals(0, array.getInt(24))
 //        assertEquals(0L, array.getLong(24))
 //        assertEquals(0.0f, array.getFloat(24), 0.001f)
 //        assertEquals(0.0, array.getDouble(24), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(24))
-//        org.junit.Assert.assertNull(array.getString(24))
-//        org.junit.Assert.assertNull(array.getDate(24))
-//        org.junit.Assert.assertNull(array.getBlob(24))
-//        org.junit.Assert.assertTrue(array.getArray(24) is Array)
-//        org.junit.Assert.assertNull(array.getDictionary(24))
+//        assertNull(array.getNumber(24))
+//        assertNull(array.getString(24))
+//        assertNull(array.getDate(24))
+//        assertNull(array.getBlob(24))
+//        assertTrue(array.getArray(24) is Array)
+//        assertNull(array.getDictionary(24))
 //
 //        //#25 array.addDictionary(null);
-//        org.junit.Assert.assertNull(array.getValue(25))
-//        org.junit.Assert.assertFalse(array.getBoolean(25))
+//        assertNull(array.getValue(25))
+//        assertFalse(array.getBoolean(25))
 //        assertEquals(0, array.getInt(25))
 //        assertEquals(0L, array.getLong(25))
 //        assertEquals(0.0f, array.getFloat(25), 0.001f)
 //        assertEquals(0.0, array.getDouble(25), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(25))
-//        org.junit.Assert.assertNull(array.getString(25))
-//        org.junit.Assert.assertNull(array.getDate(25))
-//        org.junit.Assert.assertNull(array.getBlob(25))
-//        org.junit.Assert.assertNull(array.getArray(25))
-//        org.junit.Assert.assertNull(array.getDictionary(25))
+//        assertNull(array.getNumber(25))
+//        assertNull(array.getString(25))
+//        assertNull(array.getDate(25))
+//        assertNull(array.getBlob(25))
+//        assertNull(array.getArray(25))
+//        assertNull(array.getDictionary(25))
 //
 //        //#26 array.addDictionary(simpleDict);
-//        org.junit.Assert.assertTrue(array.getValue(26) is Dictionary)
-//        org.junit.Assert.assertTrue(array.getBoolean(26))
+//        assertTrue(array.getValue(26) is Dictionary)
+//        assertTrue(array.getBoolean(26))
 //        assertEquals(0, array.getInt(26))
 //        assertEquals(0L, array.getLong(26))
 //        assertEquals(0.0f, array.getFloat(26), 0.001f)
 //        assertEquals(0.0, array.getDouble(26), 0.001)
-//        org.junit.Assert.assertNull(array.getNumber(26))
-//        org.junit.Assert.assertNull(array.getString(26))
-//        org.junit.Assert.assertNull(array.getDate(26))
-//        org.junit.Assert.assertNull(array.getBlob(26))
-//        org.junit.Assert.assertNull(array.getArray(26))
-//        org.junit.Assert.assertTrue(array.getDictionary(26) is Dictionary)
+//        assertNull(array.getNumber(26))
+//        assertNull(array.getString(26))
+//        assertNull(array.getDate(26))
+//        assertNull(array.getBlob(26))
+//        assertNull(array.getArray(26))
+//        assertTrue(array.getDictionary(26) is Dictionary)
 //    }
 //
 //    @NonNull
@@ -745,533 +746,533 @@
 //
 //    @Throws(org.json.JSONException::class)
 //    protected fun verifyDict(jObj: JSONObject) {
-//        org.junit.Assert.assertEquals(27, jObj.length().toLong())
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("dict-1"))
-//        org.junit.Assert.assertEquals(true, jObj.get("dict-2"))
-//        org.junit.Assert.assertEquals(false, jObj.get("dict-3"))
-//        org.junit.Assert.assertEquals(0, jObj.get("dict-4"))
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE, jObj.get("dict-5"))
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE, jObj.get("dict-6"))
-//        org.junit.Assert.assertEquals(0, jObj.get("dict-7"))
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE, jObj.get("dict-8"))
-//        org.junit.Assert.assertEquals(Long.MAX_VALUE, jObj.get("dict-9"))
-//        org.junit.Assert.assertEquals(0.0, jObj.getDouble("dict-10"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(27, jObj.length().toLong())
+//        assertEquals(JSONObject.NULL, jObj.get("dict-1"))
+//        assertEquals(true, jObj.get("dict-2"))
+//        assertEquals(false, jObj.get("dict-3"))
+//        assertEquals(0, jObj.get("dict-4"))
+//        assertEquals(Int.MIN_VALUE, jObj.get("dict-5"))
+//        assertEquals(Int.MAX_VALUE, jObj.get("dict-6"))
+//        assertEquals(0, jObj.get("dict-7"))
+//        assertEquals(Long.MIN_VALUE, jObj.get("dict-8"))
+//        assertEquals(Long.MAX_VALUE, jObj.get("dict-9"))
+//        assertEquals(0.0, jObj.getDouble("dict-10"), 0.001)
+//        assertEquals(
 //            Float.MIN_VALUE.toDouble(),
 //            jObj.getDouble("dict-11").toFloat().toDouble(),
 //            0.001
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            Float.MAX_VALUE.toDouble(),
 //            jObj.getDouble("dict-12").toFloat().toDouble(),
 //            100.0
 //        )
-//        org.junit.Assert.assertEquals(0.0, jObj.getDouble("dict-13"), 0.001)
-//        org.junit.Assert.assertEquals(Double.MIN_VALUE, jObj.getDouble("dict-14"), 0.001)
-//        org.junit.Assert.assertEquals(Double.MAX_VALUE, jObj.getDouble("dict-15"), 1.0)
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("dict-16"))
-//        org.junit.Assert.assertEquals(0, jObj.getLong("dict-17"))
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE.toDouble(), jObj.getDouble("dict-18"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(0.0, jObj.getDouble("dict-13"), 0.001)
+//        assertEquals(Double.MIN_VALUE, jObj.getDouble("dict-14"), 0.001)
+//        assertEquals(Double.MAX_VALUE, jObj.getDouble("dict-15"), 1.0)
+//        assertEquals(JSONObject.NULL, jObj.get("dict-16"))
+//        assertEquals(0, jObj.getLong("dict-17"))
+//        assertEquals(Float.MIN_VALUE.toDouble(), jObj.getDouble("dict-18"), 0.001)
+//        assertEquals(
 //            Long.MIN_VALUE.toDouble(),
 //            jObj.getLong("dict-19").toDouble(),
 //            0.001
 //        )
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("dict-20"))
-//        org.junit.Assert.assertEquals("Quatro", jObj.get("dict-21"))
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("dict-22"))
-//        org.junit.Assert.assertEquals(BaseDbTest.Companion.TEST_DATE, jObj.get("dict-23"))
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("dict-24"))
-//        org.junit.Assert.assertEquals(JSONArray::class.java, jObj.get("dict-25").javaClass)
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("dict-26"))
-//        org.junit.Assert.assertEquals(JSONObject::class.java, jObj.get("dict-27").javaClass)
+//        assertEquals(JSONObject.NULL, jObj.get("dict-20"))
+//        assertEquals("Quatro", jObj.get("dict-21"))
+//        assertEquals(JSONObject.NULL, jObj.get("dict-22"))
+//        assertEquals(BaseDbTest.Companion.TEST_DATE, jObj.get("dict-23"))
+//        assertEquals(JSONObject.NULL, jObj.get("dict-24"))
+//        assertEquals(JSONArray::class.java, jObj.get("dict-25").javaClass)
+//        assertEquals(JSONObject.NULL, jObj.get("dict-26"))
+//        assertEquals(JSONObject::class.java, jObj.get("dict-27").javaClass)
 //    }
 //
 //    protected fun verifyDict(@Nullable dict: DictionaryInterface) {
-//        org.junit.Assert.assertNotNull(dict)
-//        org.junit.Assert.assertEquals(27, dict.count().toLong())
+//        assertNotNull(dict)
+//        assertEquals(27, dict.count().toLong())
 //
 //        //#0 dict.setValue(null);
-//        org.junit.Assert.assertNull(dict.getValue("dict-1"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-1"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-1").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-1"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-1"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-1"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-1"))
-//        org.junit.Assert.assertNull(dict.getString("dict-1"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-1"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-1"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-1"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-1"))
+//        assertNull(dict.getValue("dict-1"))
+//        assertFalse(dict.getBoolean("dict-1"))
+//        assertEquals(0, dict.getInt("dict-1").toLong())
+//        assertEquals(0L, dict.getLong("dict-1"))
+//        assertEquals(0.0f, dict.getFloat("dict-1"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-1"), 0.001)
+//        assertNull(dict.getNumber("dict-1"))
+//        assertNull(dict.getString("dict-1"))
+//        assertNull(dict.getDate("dict-1"))
+//        assertNull(dict.getBlob("dict-1"))
+//        assertNull(dict.getArray("dict-1"))
+//        assertNull(dict.getDictionary("dict-1"))
 //
 //        //#1 dict.setBoolean(true);
-//        org.junit.Assert.assertEquals(java.lang.Boolean.TRUE, dict.getValue("dict-2"))
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-2"))
-//        org.junit.Assert.assertEquals(1, dict.getInt("dict-2").toLong())
-//        org.junit.Assert.assertEquals(1L, dict.getLong("dict-2"))
-//        org.junit.Assert.assertEquals(1.0f, dict.getFloat("dict-2"), 0.001f)
-//        org.junit.Assert.assertEquals(1.0, dict.getDouble("dict-2"), 0.001)
-//        org.junit.Assert.assertEquals(1, dict.getNumber("dict-2"))
-//        org.junit.Assert.assertNull(dict.getString("dict-2"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-2"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-2"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-2"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-2"))
+//        assertEquals(java.lang.Boolean.TRUE, dict.getValue("dict-2"))
+//        assertTrue(dict.getBoolean("dict-2"))
+//        assertEquals(1, dict.getInt("dict-2").toLong())
+//        assertEquals(1L, dict.getLong("dict-2"))
+//        assertEquals(1.0f, dict.getFloat("dict-2"), 0.001f)
+//        assertEquals(1.0, dict.getDouble("dict-2"), 0.001)
+//        assertEquals(1, dict.getNumber("dict-2"))
+//        assertNull(dict.getString("dict-2"))
+//        assertNull(dict.getDate("dict-2"))
+//        assertNull(dict.getBlob("dict-2"))
+//        assertNull(dict.getArray("dict-2"))
+//        assertNull(dict.getDictionary("dict-2"))
 //
 //        //#2 dict.setBoolean(false);
-//        org.junit.Assert.assertEquals(java.lang.Boolean.FALSE, dict.getValue("dict-3"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-3"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-3").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-3"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-3"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-3"), 0.001)
-//        org.junit.Assert.assertEquals(0, dict.getNumber("dict-3"))
-//        org.junit.Assert.assertNull(dict.getString("dict-3"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-3"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-3"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-3"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-3"))
+//        assertEquals(java.lang.Boolean.FALSE, dict.getValue("dict-3"))
+//        assertFalse(dict.getBoolean("dict-3"))
+//        assertEquals(0, dict.getInt("dict-3").toLong())
+//        assertEquals(0L, dict.getLong("dict-3"))
+//        assertEquals(0.0f, dict.getFloat("dict-3"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-3"), 0.001)
+//        assertEquals(0, dict.getNumber("dict-3"))
+//        assertNull(dict.getString("dict-3"))
+//        assertNull(dict.getDate("dict-3"))
+//        assertNull(dict.getBlob("dict-3"))
+//        assertNull(dict.getArray("dict-3"))
+//        assertNull(dict.getDictionary("dict-3"))
 //
 //        //#3 dict.setInt(0);
-//        org.junit.Assert.assertEquals(0L, dict.getValue("dict-4"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-4"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-4").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-4"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-4"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-4"), 0.001)
-//        org.junit.Assert.assertEquals(0L, dict.getNumber("dict-4"))
-//        org.junit.Assert.assertNull(dict.getString("dict-4"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-4"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-4"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-4"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-4"))
+//        assertEquals(0L, dict.getValue("dict-4"))
+//        assertFalse(dict.getBoolean("dict-4"))
+//        assertEquals(0, dict.getInt("dict-4").toLong())
+//        assertEquals(0L, dict.getLong("dict-4"))
+//        assertEquals(0.0f, dict.getFloat("dict-4"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-4"), 0.001)
+//        assertEquals(0L, dict.getNumber("dict-4"))
+//        assertNull(dict.getString("dict-4"))
+//        assertNull(dict.getDate("dict-4"))
+//        assertNull(dict.getBlob("dict-4"))
+//        assertNull(dict.getArray("dict-4"))
+//        assertNull(dict.getDictionary("dict-4"))
 //
 //        //#4 dict.setInt(Integer.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Int.MIN_VALUE.toLong()),
 //            dict.getValue("dict-5")
 //        )
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-5"))
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE.toLong(), dict.getInt("dict-5").toLong())
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE.toLong(), dict.getLong("dict-5"))
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE.toFloat(), dict.getFloat("dict-5"), 0.001f)
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE.toDouble(), dict.getDouble("dict-5"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertTrue(dict.getBoolean("dict-5"))
+//        assertEquals(Int.MIN_VALUE.toLong(), dict.getInt("dict-5").toLong())
+//        assertEquals(Int.MIN_VALUE.toLong(), dict.getLong("dict-5"))
+//        assertEquals(Int.MIN_VALUE.toFloat(), dict.getFloat("dict-5"), 0.001f)
+//        assertEquals(Int.MIN_VALUE.toDouble(), dict.getDouble("dict-5"), 0.001)
+//        assertEquals(
 //            java.lang.Long.valueOf(Int.MIN_VALUE.toLong()),
 //            dict.getNumber("dict-5")
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-5"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-5"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-5"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-5"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-5"))
+//        assertNull(dict.getString("dict-5"))
+//        assertNull(dict.getDate("dict-5"))
+//        assertNull(dict.getBlob("dict-5"))
+//        assertNull(dict.getArray("dict-5"))
+//        assertNull(dict.getDictionary("dict-5"))
 //
 //        //#5 dict.setInt(Integer.MAX_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Int.MAX_VALUE.toLong()),
 //            dict.getValue("dict-6")
 //        )
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-6"))
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE.toLong(), dict.getInt("dict-6").toLong())
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE.toLong(), dict.getLong("dict-6"))
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE.toFloat(), dict.getFloat("dict-6"), 100.0f)
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE.toDouble(), dict.getDouble("dict-6"), 100.0)
-//        org.junit.Assert.assertEquals(
+//        assertTrue(dict.getBoolean("dict-6"))
+//        assertEquals(Int.MAX_VALUE.toLong(), dict.getInt("dict-6").toLong())
+//        assertEquals(Int.MAX_VALUE.toLong(), dict.getLong("dict-6"))
+//        assertEquals(Int.MAX_VALUE.toFloat(), dict.getFloat("dict-6"), 100.0f)
+//        assertEquals(Int.MAX_VALUE.toDouble(), dict.getDouble("dict-6"), 100.0)
+//        assertEquals(
 //            java.lang.Long.valueOf(Int.MAX_VALUE.toLong()),
 //            dict.getNumber("dict-6")
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-6"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-6"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-6"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-6"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-6"))
+//        assertNull(dict.getString("dict-6"))
+//        assertNull(dict.getDate("dict-6"))
+//        assertNull(dict.getBlob("dict-6"))
+//        assertNull(dict.getArray("dict-6"))
+//        assertNull(dict.getDictionary("dict-6"))
 //
 //        //#6 dict.setLong(0L);
-//        org.junit.Assert.assertEquals(java.lang.Long.valueOf(0L), dict.getValue("dict-7"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-7"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-7").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-7"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-7"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-7"), 0.001)
-//        org.junit.Assert.assertEquals(java.lang.Long.valueOf(0L), dict.getNumber("dict-7"))
-//        org.junit.Assert.assertNull(dict.getString("dict-7"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-7"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-7"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-7"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-7"))
+//        assertEquals(java.lang.Long.valueOf(0L), dict.getValue("dict-7"))
+//        assertFalse(dict.getBoolean("dict-7"))
+//        assertEquals(0, dict.getInt("dict-7").toLong())
+//        assertEquals(0L, dict.getLong("dict-7"))
+//        assertEquals(0.0f, dict.getFloat("dict-7"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-7"), 0.001)
+//        assertEquals(java.lang.Long.valueOf(0L), dict.getNumber("dict-7"))
+//        assertNull(dict.getString("dict-7"))
+//        assertNull(dict.getDate("dict-7"))
+//        assertNull(dict.getBlob("dict-7"))
+//        assertNull(dict.getArray("dict-7"))
+//        assertNull(dict.getDictionary("dict-7"))
 //
 //        //#7 dict.setLong(Long.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE),
 //            dict.getValue("dict-8")
 //        )
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-8"))
-//        org.junit.Assert.assertEquals(
+//        assertFalse(dict.getBoolean("dict-8"))
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE).toInt().toLong(),
 //            dict.getInt("dict-8").toLong()
 //        )
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE, dict.getLong("dict-8"))
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE.toFloat(), dict.getFloat("dict-8"), 0.001f)
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE.toDouble(), dict.getDouble("dict-8"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Long.MIN_VALUE, dict.getLong("dict-8"))
+//        assertEquals(Long.MIN_VALUE.toFloat(), dict.getFloat("dict-8"), 0.001f)
+//        assertEquals(Long.MIN_VALUE.toDouble(), dict.getDouble("dict-8"), 0.001)
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE),
 //            dict.getNumber("dict-8")
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-8"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-8"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-8"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-8"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-8"))
+//        assertNull(dict.getString("dict-8"))
+//        assertNull(dict.getDate("dict-8"))
+//        assertNull(dict.getBlob("dict-8"))
+//        assertNull(dict.getArray("dict-8"))
+//        assertNull(dict.getDictionary("dict-8"))
 //
 //        //#8 dict.setLong(Long.MAX_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MAX_VALUE),
 //            dict.getValue("dict-9")
 //        )
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-9"))
-//        org.junit.Assert.assertEquals(
+//        assertTrue(dict.getBoolean("dict-9"))
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MAX_VALUE).toInt().toLong(),
 //            dict.getInt("dict-9").toLong()
 //        )
-//        org.junit.Assert.assertEquals(Long.MAX_VALUE, dict.getLong("dict-9"))
-//        org.junit.Assert.assertEquals(Long.MAX_VALUE.toFloat(), dict.getFloat("dict-9"), 100.0f)
-//        org.junit.Assert.assertEquals(Long.MAX_VALUE.toDouble(), dict.getDouble("dict-9"), 100.0)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Long.MAX_VALUE, dict.getLong("dict-9"))
+//        assertEquals(Long.MAX_VALUE.toFloat(), dict.getFloat("dict-9"), 100.0f)
+//        assertEquals(Long.MAX_VALUE.toDouble(), dict.getDouble("dict-9"), 100.0)
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MAX_VALUE),
 //            dict.getNumber("dict-9")
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-9"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-9"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-9"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-9"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-9"))
+//        assertNull(dict.getString("dict-9"))
+//        assertNull(dict.getDate("dict-9"))
+//        assertNull(dict.getBlob("dict-9"))
+//        assertNull(dict.getArray("dict-9"))
+//        assertNull(dict.getDictionary("dict-9"))
 //
 //        //#9 dict.setFloat(0.0F);
-//        org.junit.Assert.assertEquals(java.lang.Float.valueOf(0.0f), dict.getValue("dict-10"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-10"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-10").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-10"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-10"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-10"), 0.001)
-//        org.junit.Assert.assertEquals(java.lang.Float.valueOf(0.0f), dict.getNumber("dict-10"))
-//        org.junit.Assert.assertNull(dict.getString("dict-10"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-10"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-10"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-10"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-10"))
+//        assertEquals(java.lang.Float.valueOf(0.0f), dict.getValue("dict-10"))
+//        assertFalse(dict.getBoolean("dict-10"))
+//        assertEquals(0, dict.getInt("dict-10").toLong())
+//        assertEquals(0L, dict.getLong("dict-10"))
+//        assertEquals(0.0f, dict.getFloat("dict-10"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-10"), 0.001)
+//        assertEquals(java.lang.Float.valueOf(0.0f), dict.getNumber("dict-10"))
+//        assertNull(dict.getString("dict-10"))
+//        assertNull(dict.getDate("dict-10"))
+//        assertNull(dict.getBlob("dict-10"))
+//        assertNull(dict.getArray("dict-10"))
+//        assertNull(dict.getDictionary("dict-10"))
 //
 //        //#10 dict.setFloat(Float.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(dict.getValue("dict-11"))
 //        )
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-11"))
-//        org.junit.Assert.assertEquals(
+//        assertFalse(dict.getBoolean("dict-11"))
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE).toInt().toFloat(),
 //            dict.getInt("dict-11").toFloat(),
 //            0.001f
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE).toLong().toFloat(),
 //            dict.getLong("dict-11").toFloat(),
 //            0.001f
 //        )
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE, dict.getFloat("dict-11"), 0.001f)
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE.toDouble(), dict.getDouble("dict-11"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Float.MIN_VALUE, dict.getFloat("dict-11"), 0.001f)
+//        assertEquals(Float.MIN_VALUE.toDouble(), dict.getDouble("dict-11"), 0.001)
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(dict.getNumber("dict-11"))
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-11"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-11"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-11"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-11"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-11"))
+//        assertNull(dict.getString("dict-11"))
+//        assertNull(dict.getDate("dict-11"))
+//        assertNull(dict.getBlob("dict-11"))
+//        assertNull(dict.getArray("dict-11"))
+//        assertNull(dict.getDictionary("dict-11"))
 //
 //        //#11 dict.setFloat(Float.MAX_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MAX_VALUE),
 //            demoteToFloat(dict.getValue("dict-12"))
 //        )
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-12"))
+//        assertTrue(dict.getBoolean("dict-12"))
 //        // !!! Fails: assertEquals(Float.valueOf(Float.MAX_VALUE).intValue(), dict.getInt("dict-12"));
 //        // !!! Fails: assertEquals(Float.valueOf(Float.MAX_VALUE).longValue(), dict.getLong("dict-12"));
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            Float.MAX_VALUE.toDouble(),
 //            dict.getFloat("dict-12").toDouble(),
 //            1.0E32
 //        )
-//        org.junit.Assert.assertEquals(Float.MAX_VALUE.toDouble(), dict.getDouble("dict-12"), 1.0E32)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Float.MAX_VALUE.toDouble(), dict.getDouble("dict-12"), 1.0E32)
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MAX_VALUE),
 //            demoteToFloat(dict.getNumber("dict-12"))
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-12"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-12"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-12"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-12"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-12"))
+//        assertNull(dict.getString("dict-12"))
+//        assertNull(dict.getDate("dict-12"))
+//        assertNull(dict.getBlob("dict-12"))
+//        assertNull(dict.getArray("dict-12"))
+//        assertNull(dict.getDictionary("dict-12"))
 //
 //        //#12 dict.setDouble(0.0);
-//        org.junit.Assert.assertEquals(java.lang.Float.valueOf(0f), dict.getValue("dict-13"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-13"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-13").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-13"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-13"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-13"), 0.001)
-//        org.junit.Assert.assertEquals(java.lang.Float.valueOf(0f), dict.getNumber("dict-13"))
-//        org.junit.Assert.assertNull(dict.getString("dict-13"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-13"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-13"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-13"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-13"))
+//        assertEquals(java.lang.Float.valueOf(0f), dict.getValue("dict-13"))
+//        assertFalse(dict.getBoolean("dict-13"))
+//        assertEquals(0, dict.getInt("dict-13").toLong())
+//        assertEquals(0L, dict.getLong("dict-13"))
+//        assertEquals(0.0f, dict.getFloat("dict-13"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-13"), 0.001)
+//        assertEquals(java.lang.Float.valueOf(0f), dict.getNumber("dict-13"))
+//        assertNull(dict.getString("dict-13"))
+//        assertNull(dict.getDate("dict-13"))
+//        assertNull(dict.getBlob("dict-13"))
+//        assertNull(dict.getArray("dict-13"))
+//        assertNull(dict.getDictionary("dict-13"))
 //
 //        //#13 dict.setDouble(Double.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE),
 //            dict.getValue("dict-14")
 //        )
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-14"))
-//        org.junit.Assert.assertEquals(
+//        assertFalse(dict.getBoolean("dict-14"))
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE).toInt().toLong(),
 //            dict.getInt("dict-14").toLong()
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE).toLong(),
 //            dict.getLong("dict-14")
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE).toFloat(),
 //            dict.getFloat("dict-14"),
 //            0.001f
 //        )
-//        org.junit.Assert.assertEquals(Double.MIN_VALUE, dict.getDouble("dict-14"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Double.MIN_VALUE, dict.getDouble("dict-14"), 0.001)
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE),
 //            dict.getNumber("dict-14")
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-14"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-14"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-14"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-14"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-14"))
+//        assertNull(dict.getString("dict-14"))
+//        assertNull(dict.getDate("dict-14"))
+//        assertNull(dict.getBlob("dict-14"))
+//        assertNull(dict.getArray("dict-14"))
+//        assertNull(dict.getDictionary("dict-14"))
 //
 //        //#14 dict.setDouble(Double.MAX_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MAX_VALUE),
 //            dict.getValue("dict-15")
 //        )
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-15"))
+//        assertTrue(dict.getBoolean("dict-15"))
 //        // !!! Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).intValue(), dict.getInt("dict-15"));
 //        // !!! Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).longValue(), dict.getLong("dict-15"));
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MAX_VALUE).toFloat(),
 //            dict.getFloat("dict-15"),
 //            100.0f
 //        )
-//        org.junit.Assert.assertEquals(Double.MAX_VALUE, dict.getDouble("dict-15"), 100.0)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Double.MAX_VALUE, dict.getDouble("dict-15"), 100.0)
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MAX_VALUE),
 //            dict.getNumber("dict-15")
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-15"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-15"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-15"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-15"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-15"))
+//        assertNull(dict.getString("dict-15"))
+//        assertNull(dict.getDate("dict-15"))
+//        assertNull(dict.getBlob("dict-15"))
+//        assertNull(dict.getArray("dict-15"))
+//        assertNull(dict.getDictionary("dict-15"))
 //
 //        //#15 dict.setNumber(null);
-//        org.junit.Assert.assertNull(dict.getValue("dict-16"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-16"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-16").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-16"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-16"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-16"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-16"))
-//        org.junit.Assert.assertNull(dict.getString("dict-16"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-16"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-16"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-16"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-16"))
+//        assertNull(dict.getValue("dict-16"))
+//        assertFalse(dict.getBoolean("dict-16"))
+//        assertEquals(0, dict.getInt("dict-16").toLong())
+//        assertEquals(0L, dict.getLong("dict-16"))
+//        assertEquals(0.0f, dict.getFloat("dict-16"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-16"), 0.001)
+//        assertNull(dict.getNumber("dict-16"))
+//        assertNull(dict.getString("dict-16"))
+//        assertNull(dict.getDate("dict-16"))
+//        assertNull(dict.getBlob("dict-16"))
+//        assertNull(dict.getArray("dict-16"))
+//        assertNull(dict.getDictionary("dict-16"))
 //
 //        //#16 dict.setNumber(0);
-//        org.junit.Assert.assertEquals(0L, dict.getValue("dict-17"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-17"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-17").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-17"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-17"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-17"), 0.001)
-//        org.junit.Assert.assertEquals(0L, dict.getNumber("dict-17"))
-//        org.junit.Assert.assertNull(dict.getString("dict-17"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-17"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-17"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-17"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-17"))
+//        assertEquals(0L, dict.getValue("dict-17"))
+//        assertFalse(dict.getBoolean("dict-17"))
+//        assertEquals(0, dict.getInt("dict-17").toLong())
+//        assertEquals(0L, dict.getLong("dict-17"))
+//        assertEquals(0.0f, dict.getFloat("dict-17"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-17"), 0.001)
+//        assertEquals(0L, dict.getNumber("dict-17"))
+//        assertNull(dict.getString("dict-17"))
+//        assertNull(dict.getDate("dict-17"))
+//        assertNull(dict.getBlob("dict-17"))
+//        assertNull(dict.getArray("dict-17"))
+//        assertNull(dict.getDictionary("dict-17"))
 //
 //        //#17 dict.setNumber(Float.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(dict.getValue("dict-18"))
 //        )
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-18"))
-//        org.junit.Assert.assertEquals(
+//        assertFalse(dict.getBoolean("dict-18"))
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE).toInt().toLong(),
 //            dict.getInt("dict-18").toLong()
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE).toLong(),
 //            dict.getLong("dict-18")
 //        )
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE, dict.getFloat("dict-18"), 0.001f)
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE.toDouble(), dict.getDouble("dict-18"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Float.MIN_VALUE, dict.getFloat("dict-18"), 0.001f)
+//        assertEquals(Float.MIN_VALUE.toDouble(), dict.getDouble("dict-18"), 0.001)
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(dict.getNumber("dict-18"))
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-18"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-18"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-18"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-18"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-18"))
+//        assertNull(dict.getString("dict-18"))
+//        assertNull(dict.getDate("dict-18"))
+//        assertNull(dict.getBlob("dict-18"))
+//        assertNull(dict.getArray("dict-18"))
+//        assertNull(dict.getDictionary("dict-18"))
 //
 //        //#18 dict.setNumber(Long.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE),
 //            dict.getValue("dict-19")
 //        )
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-19"))
-//        org.junit.Assert.assertEquals(
+//        assertFalse(dict.getBoolean("dict-19"))
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE).toInt().toLong(),
 //            dict.getInt("dict-19").toLong()
 //        )
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE, dict.getLong("dict-19"))
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE.toFloat(), dict.getFloat("dict-19"), 0.001f)
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE.toDouble(), dict.getDouble("dict-19"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Long.MIN_VALUE, dict.getLong("dict-19"))
+//        assertEquals(Long.MIN_VALUE.toFloat(), dict.getFloat("dict-19"), 0.001f)
+//        assertEquals(Long.MIN_VALUE.toDouble(), dict.getDouble("dict-19"), 0.001)
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE),
 //            dict.getNumber("dict-19")
 //        )
-//        org.junit.Assert.assertNull(dict.getString("dict-19"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-19"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-19"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-19"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-19"))
+//        assertNull(dict.getString("dict-19"))
+//        assertNull(dict.getDate("dict-19"))
+//        assertNull(dict.getBlob("dict-19"))
+//        assertNull(dict.getArray("dict-19"))
+//        assertNull(dict.getDictionary("dict-19"))
 //
 //        //#19 dict.setString(null);
-//        org.junit.Assert.assertNull(dict.getValue("dict-20"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-20"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-20").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-20"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-20"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-20"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-20"))
-//        org.junit.Assert.assertNull(dict.getString("dict-20"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-20"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-20"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-20"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-20"))
+//        assertNull(dict.getValue("dict-20"))
+//        assertFalse(dict.getBoolean("dict-20"))
+//        assertEquals(0, dict.getInt("dict-20").toLong())
+//        assertEquals(0L, dict.getLong("dict-20"))
+//        assertEquals(0.0f, dict.getFloat("dict-20"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-20"), 0.001)
+//        assertNull(dict.getNumber("dict-20"))
+//        assertNull(dict.getString("dict-20"))
+//        assertNull(dict.getDate("dict-20"))
+//        assertNull(dict.getBlob("dict-20"))
+//        assertNull(dict.getArray("dict-20"))
+//        assertNull(dict.getDictionary("dict-20"))
 //
 //        //#20 dict.setString("Quatro");
-//        org.junit.Assert.assertEquals("Quatro", dict.getValue("dict-21"))
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-21"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-21").toLong())
-//        org.junit.Assert.assertEquals(0, dict.getLong("dict-21"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-21"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-21"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-21"))
-//        org.junit.Assert.assertEquals("Quatro", dict.getString("dict-21"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-21"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-21"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-21"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-21"))
+//        assertEquals("Quatro", dict.getValue("dict-21"))
+//        assertTrue(dict.getBoolean("dict-21"))
+//        assertEquals(0, dict.getInt("dict-21").toLong())
+//        assertEquals(0, dict.getLong("dict-21"))
+//        assertEquals(0.0f, dict.getFloat("dict-21"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-21"), 0.001)
+//        assertNull(dict.getNumber("dict-21"))
+//        assertEquals("Quatro", dict.getString("dict-21"))
+//        assertNull(dict.getDate("dict-21"))
+//        assertNull(dict.getBlob("dict-21"))
+//        assertNull(dict.getArray("dict-21"))
+//        assertNull(dict.getDictionary("dict-21"))
 //
 //        //#21 dict.setDate(null);
-//        org.junit.Assert.assertNull(dict.getValue("dict-22"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-22"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-22").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-22"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-22"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-22"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-22"))
-//        org.junit.Assert.assertNull(dict.getString("dict-22"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-22"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-22"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-22"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-22"))
+//        assertNull(dict.getValue("dict-22"))
+//        assertFalse(dict.getBoolean("dict-22"))
+//        assertEquals(0, dict.getInt("dict-22").toLong())
+//        assertEquals(0L, dict.getLong("dict-22"))
+//        assertEquals(0.0f, dict.getFloat("dict-22"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-22"), 0.001)
+//        assertNull(dict.getNumber("dict-22"))
+//        assertNull(dict.getString("dict-22"))
+//        assertNull(dict.getDate("dict-22"))
+//        assertNull(dict.getBlob("dict-22"))
+//        assertNull(dict.getArray("dict-22"))
+//        assertNull(dict.getDictionary("dict-22"))
 //
 //        //#22 dict.setDate(JSONUtils.toDate(TEST_DATE));
-//        org.junit.Assert.assertEquals(BaseDbTest.Companion.TEST_DATE, dict.getValue("dict-23"))
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-23"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-23").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-23"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-23"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-23"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-23"))
-//        org.junit.Assert.assertEquals(BaseDbTest.Companion.TEST_DATE, dict.getString("dict-23"))
-//        org.junit.Assert.assertEquals(
+//        assertEquals(BaseDbTest.Companion.TEST_DATE, dict.getValue("dict-23"))
+//        assertTrue(dict.getBoolean("dict-23"))
+//        assertEquals(0, dict.getInt("dict-23").toLong())
+//        assertEquals(0L, dict.getLong("dict-23"))
+//        assertEquals(0.0f, dict.getFloat("dict-23"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-23"), 0.001)
+//        assertNull(dict.getNumber("dict-23"))
+//        assertEquals(BaseDbTest.Companion.TEST_DATE, dict.getString("dict-23"))
+//        assertEquals(
 //            JSONUtils.toDate(BaseDbTest.Companion.TEST_DATE),
 //            dict.getDate("dict-23")
 //        )
-//        org.junit.Assert.assertNull(dict.getBlob("dict-23"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-23"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-23"))
+//        assertNull(dict.getBlob("dict-23"))
+//        assertNull(dict.getArray("dict-23"))
+//        assertNull(dict.getDictionary("dict-23"))
 //
 //        //#23 dict.setArray(null);
-//        org.junit.Assert.assertNull(dict.getValue("dict-24"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-24"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-24").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-24"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-24"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-24"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-24"))
-//        org.junit.Assert.assertNull(dict.getString("dict-24"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-24"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-24"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-24"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-24"))
+//        assertNull(dict.getValue("dict-24"))
+//        assertFalse(dict.getBoolean("dict-24"))
+//        assertEquals(0, dict.getInt("dict-24").toLong())
+//        assertEquals(0L, dict.getLong("dict-24"))
+//        assertEquals(0.0f, dict.getFloat("dict-24"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-24"), 0.001)
+//        assertNull(dict.getNumber("dict-24"))
+//        assertNull(dict.getString("dict-24"))
+//        assertNull(dict.getDate("dict-24"))
+//        assertNull(dict.getBlob("dict-24"))
+//        assertNull(dict.getArray("dict-24"))
+//        assertNull(dict.getDictionary("dict-24"))
 //
 //        //#24 dict.setArray(simpleArray);
-//        org.junit.Assert.assertTrue(dict.getValue("dict-25") is Array)
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-25"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-25").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-25"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-25"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-25"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-25"))
-//        org.junit.Assert.assertNull(dict.getString("dict-25"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-25"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-25"))
-//        org.junit.Assert.assertTrue(dict.getArray("dict-25") is Array)
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-25"))
+//        assertTrue(dict.getValue("dict-25") is Array)
+//        assertTrue(dict.getBoolean("dict-25"))
+//        assertEquals(0, dict.getInt("dict-25").toLong())
+//        assertEquals(0L, dict.getLong("dict-25"))
+//        assertEquals(0.0f, dict.getFloat("dict-25"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-25"), 0.001)
+//        assertNull(dict.getNumber("dict-25"))
+//        assertNull(dict.getString("dict-25"))
+//        assertNull(dict.getDate("dict-25"))
+//        assertNull(dict.getBlob("dict-25"))
+//        assertTrue(dict.getArray("dict-25") is Array)
+//        assertNull(dict.getDictionary("dict-25"))
 //
 //        //#25 dict.setDictionary(null);
-//        org.junit.Assert.assertNull(dict.getValue("dict-26"))
-//        org.junit.Assert.assertFalse(dict.getBoolean("dict-26"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-26").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-26"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-26"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-26"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-26"))
-//        org.junit.Assert.assertNull(dict.getString("dict-26"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-26"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-26"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-26"))
-//        org.junit.Assert.assertNull(dict.getDictionary("dict-26"))
+//        assertNull(dict.getValue("dict-26"))
+//        assertFalse(dict.getBoolean("dict-26"))
+//        assertEquals(0, dict.getInt("dict-26").toLong())
+//        assertEquals(0L, dict.getLong("dict-26"))
+//        assertEquals(0.0f, dict.getFloat("dict-26"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-26"), 0.001)
+//        assertNull(dict.getNumber("dict-26"))
+//        assertNull(dict.getString("dict-26"))
+//        assertNull(dict.getDate("dict-26"))
+//        assertNull(dict.getBlob("dict-26"))
+//        assertNull(dict.getArray("dict-26"))
+//        assertNull(dict.getDictionary("dict-26"))
 //
 //        //#26 dict.setDictionary(simpleDict);
-//        org.junit.Assert.assertTrue(dict.getValue("dict-27") is Dictionary)
-//        org.junit.Assert.assertTrue(dict.getBoolean("dict-27"))
-//        org.junit.Assert.assertEquals(0, dict.getInt("dict-27").toLong())
-//        org.junit.Assert.assertEquals(0L, dict.getLong("dict-27"))
-//        org.junit.Assert.assertEquals(0.0f, dict.getFloat("dict-27"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, dict.getDouble("dict-27"), 0.001)
-//        org.junit.Assert.assertNull(dict.getNumber("dict-27"))
-//        org.junit.Assert.assertNull(dict.getString("dict-27"))
-//        org.junit.Assert.assertNull(dict.getDate("dict-27"))
-//        org.junit.Assert.assertNull(dict.getBlob("dict-27"))
-//        org.junit.Assert.assertNull(dict.getArray("dict-27"))
-//        org.junit.Assert.assertTrue(dict.getDictionary("dict-27") is Dictionary)
+//        assertTrue(dict.getValue("dict-27") is Dictionary)
+//        assertTrue(dict.getBoolean("dict-27"))
+//        assertEquals(0, dict.getInt("dict-27").toLong())
+//        assertEquals(0L, dict.getLong("dict-27"))
+//        assertEquals(0.0f, dict.getFloat("dict-27"), 0.001f)
+//        assertEquals(0.0, dict.getDouble("dict-27"), 0.001)
+//        assertNull(dict.getNumber("dict-27"))
+//        assertNull(dict.getString("dict-27"))
+//        assertNull(dict.getDate("dict-27"))
+//        assertNull(dict.getBlob("dict-27"))
+//        assertNull(dict.getArray("dict-27"))
+//        assertTrue(dict.getDictionary("dict-27") is Dictionary)
 //    }
 //
 //    protected fun makeBlob(): Blob {
@@ -1283,22 +1284,22 @@
 //
 //    @Throws(org.json.JSONException::class)
 //    protected fun verifyBlob(jBlob: JSONObject) {
-//        org.junit.Assert.assertEquals(4, jBlob.length().toLong())
+//        assertEquals(4, jBlob.length().toLong())
 //        assertEquals(Blob.TYPE_BLOB, jBlob.get(Blob.META_PROP_TYPE))
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            "sha1-C+QguVamTgLjyDQ9RzRtyCv6x60=",
 //            jBlob.get(Blob.PROP_DIGEST)
 //        )
-//        org.junit.Assert.assertEquals(59, jBlob.getLong(Blob.PROP_LENGTH))
-//        org.junit.Assert.assertEquals("text/plain", jBlob.get(Blob.PROP_CONTENT_TYPE))
+//        assertEquals(59, jBlob.getLong(Blob.PROP_LENGTH))
+//        assertEquals("text/plain", jBlob.get(Blob.PROP_CONTENT_TYPE))
 //    }
 //
 //    protected fun verifyBlob(@Nullable blob: Blob) {
-//        org.junit.Assert.assertNotNull(blob)
+//        assertNotNull(blob)
 //        assertEquals("sha1-C+QguVamTgLjyDQ9RzRtyCv6x60=", blob.digest())
-//        org.junit.Assert.assertEquals(59, blob.length())
+//        assertEquals(59, blob.length())
 //        assertEquals("text/plain", blob.getContentType())
-//        org.junit.Assert.assertEquals(BaseDbTest.Companion.BLOB_CONTENT, String(blob.getContent()))
+//        assertEquals(BaseDbTest.Companion.BLOB_CONTENT, String(blob.getContent()))
 //    }
 //
 //    protected fun makeDocument(): MutableDocument {
@@ -1338,519 +1339,519 @@
 //
 //    @Throws(org.json.JSONException::class)
 //    protected fun verifyDocument(jObj: JSONObject) {
-//        org.junit.Assert.assertEquals(29, jObj.length().toLong())
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("doc-1"))
-//        org.junit.Assert.assertEquals(true, jObj.get("doc-2"))
-//        org.junit.Assert.assertEquals(false, jObj.get("doc-3"))
-//        org.junit.Assert.assertEquals(0, jObj.get("doc-4"))
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE, jObj.get("doc-5"))
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE, jObj.get("doc-6"))
-//        org.junit.Assert.assertEquals(0, jObj.get("doc-7"))
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE, jObj.get("doc-8"))
-//        org.junit.Assert.assertEquals(Long.MAX_VALUE, jObj.get("doc-9"))
-//        org.junit.Assert.assertEquals(0.0, jObj.getDouble("doc-10"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(29, jObj.length().toLong())
+//        assertEquals(JSONObject.NULL, jObj.get("doc-1"))
+//        assertEquals(true, jObj.get("doc-2"))
+//        assertEquals(false, jObj.get("doc-3"))
+//        assertEquals(0, jObj.get("doc-4"))
+//        assertEquals(Int.MIN_VALUE, jObj.get("doc-5"))
+//        assertEquals(Int.MAX_VALUE, jObj.get("doc-6"))
+//        assertEquals(0, jObj.get("doc-7"))
+//        assertEquals(Long.MIN_VALUE, jObj.get("doc-8"))
+//        assertEquals(Long.MAX_VALUE, jObj.get("doc-9"))
+//        assertEquals(0.0, jObj.getDouble("doc-10"), 0.001)
+//        assertEquals(
 //            Float.MIN_VALUE.toDouble(),
 //            jObj.getDouble("doc-11").toFloat().toDouble(),
 //            0.001
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            Float.MAX_VALUE.toDouble(),
 //            jObj.getDouble("doc-12").toFloat().toDouble(),
 //            100.0
 //        )
-//        org.junit.Assert.assertEquals(0.0, jObj.getDouble("doc-13"), 0.001)
-//        org.junit.Assert.assertEquals(Double.MIN_VALUE, jObj.getDouble("doc-14"), 0.001)
-//        org.junit.Assert.assertEquals(Double.MAX_VALUE, jObj.getDouble("doc-15"), 1.0)
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("doc-16"))
-//        org.junit.Assert.assertEquals(0, jObj.getLong("doc-17"))
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE.toDouble(), jObj.getDouble("doc-18"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(0.0, jObj.getDouble("doc-13"), 0.001)
+//        assertEquals(Double.MIN_VALUE, jObj.getDouble("doc-14"), 0.001)
+//        assertEquals(Double.MAX_VALUE, jObj.getDouble("doc-15"), 1.0)
+//        assertEquals(JSONObject.NULL, jObj.get("doc-16"))
+//        assertEquals(0, jObj.getLong("doc-17"))
+//        assertEquals(Float.MIN_VALUE.toDouble(), jObj.getDouble("doc-18"), 0.001)
+//        assertEquals(
 //            Long.MIN_VALUE.toDouble(),
 //            jObj.getLong("doc-19").toDouble(),
 //            0.001
 //        )
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("doc-20"))
-//        org.junit.Assert.assertEquals("Jett", jObj.get("doc-21"))
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("doc-22"))
-//        org.junit.Assert.assertEquals(BaseDbTest.Companion.TEST_DATE, jObj.get("doc-23"))
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("doc-24"))
+//        assertEquals(JSONObject.NULL, jObj.get("doc-20"))
+//        assertEquals("Jett", jObj.get("doc-21"))
+//        assertEquals(JSONObject.NULL, jObj.get("doc-22"))
+//        assertEquals(BaseDbTest.Companion.TEST_DATE, jObj.get("doc-23"))
+//        assertEquals(JSONObject.NULL, jObj.get("doc-24"))
 //        verifyArray(jObj.get("doc-25") as JSONArray)
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("doc-26"))
+//        assertEquals(JSONObject.NULL, jObj.get("doc-26"))
 //        verifyDict(jObj.get("doc-27") as JSONObject)
-//        org.junit.Assert.assertEquals(JSONObject.NULL, jObj.get("doc-28"))
+//        assertEquals(JSONObject.NULL, jObj.get("doc-28"))
 //        verifyBlob(jObj.getJSONObject("doc-29"))
 //    }
 //
 //    protected fun verifyDocument(doc: DictionaryInterface) {
-//        org.junit.Assert.assertEquals(29, doc.count().toLong())
+//        assertEquals(29, doc.count().toLong())
 //
 //        //#0 doc.setValue(null);
-//        org.junit.Assert.assertNull(doc.getValue("doc-1"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-1"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-1").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-1"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-1"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-1"), 0.001)
-//        org.junit.Assert.assertNull(doc.getNumber("doc-1"))
-//        org.junit.Assert.assertNull(doc.getString("doc-1"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-1"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-1"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-1"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-1"))
+//        assertNull(doc.getValue("doc-1"))
+//        assertFalse(doc.getBoolean("doc-1"))
+//        assertEquals(0, doc.getInt("doc-1").toLong())
+//        assertEquals(0L, doc.getLong("doc-1"))
+//        assertEquals(0.0f, doc.getFloat("doc-1"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-1"), 0.001)
+//        assertNull(doc.getNumber("doc-1"))
+//        assertNull(doc.getString("doc-1"))
+//        assertNull(doc.getDate("doc-1"))
+//        assertNull(doc.getBlob("doc-1"))
+//        assertNull(doc.getArray("doc-1"))
+//        assertNull(doc.getDictionary("doc-1"))
 //
 //        //#1 doc.setBoolean(true);
-//        org.junit.Assert.assertEquals(java.lang.Boolean.TRUE, doc.getValue("doc-2"))
-//        org.junit.Assert.assertTrue(doc.getBoolean("doc-2"))
-//        org.junit.Assert.assertEquals(1, doc.getInt("doc-2").toLong())
-//        org.junit.Assert.assertEquals(1L, doc.getLong("doc-2"))
-//        org.junit.Assert.assertEquals(1.0f, doc.getFloat("doc-2"), 0.001f)
-//        org.junit.Assert.assertEquals(1.0, doc.getDouble("doc-2"), 0.001)
-//        org.junit.Assert.assertEquals(1, doc.getNumber("doc-2"))
-//        org.junit.Assert.assertNull(doc.getString("doc-2"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-2"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-2"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-2"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-2"))
+//        assertEquals(java.lang.Boolean.TRUE, doc.getValue("doc-2"))
+//        assertTrue(doc.getBoolean("doc-2"))
+//        assertEquals(1, doc.getInt("doc-2").toLong())
+//        assertEquals(1L, doc.getLong("doc-2"))
+//        assertEquals(1.0f, doc.getFloat("doc-2"), 0.001f)
+//        assertEquals(1.0, doc.getDouble("doc-2"), 0.001)
+//        assertEquals(1, doc.getNumber("doc-2"))
+//        assertNull(doc.getString("doc-2"))
+//        assertNull(doc.getDate("doc-2"))
+//        assertNull(doc.getBlob("doc-2"))
+//        assertNull(doc.getArray("doc-2"))
+//        assertNull(doc.getDictionary("doc-2"))
 //
 //        //#2 doc.setBoolean(false);
-//        org.junit.Assert.assertEquals(java.lang.Boolean.FALSE, doc.getValue("doc-3"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-3"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-3").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-3"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-3"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-3"), 0.001)
-//        org.junit.Assert.assertEquals(0, doc.getNumber("doc-3"))
-//        org.junit.Assert.assertNull(doc.getString("doc-3"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-3"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-3"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-3"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-3"))
+//        assertEquals(java.lang.Boolean.FALSE, doc.getValue("doc-3"))
+//        assertFalse(doc.getBoolean("doc-3"))
+//        assertEquals(0, doc.getInt("doc-3").toLong())
+//        assertEquals(0L, doc.getLong("doc-3"))
+//        assertEquals(0.0f, doc.getFloat("doc-3"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-3"), 0.001)
+//        assertEquals(0, doc.getNumber("doc-3"))
+//        assertNull(doc.getString("doc-3"))
+//        assertNull(doc.getDate("doc-3"))
+//        assertNull(doc.getBlob("doc-3"))
+//        assertNull(doc.getArray("doc-3"))
+//        assertNull(doc.getDictionary("doc-3"))
 //
 //        //#3 doc.setInt(0);
-//        org.junit.Assert.assertEquals(0L, doc.getValue("doc-4"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-4"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-4").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-4"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-4"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-4"), 0.001)
-//        org.junit.Assert.assertEquals(0L, doc.getNumber("doc-4"))
-//        org.junit.Assert.assertNull(doc.getString("doc-4"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-4"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-4"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-4"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-4"))
+//        assertEquals(0L, doc.getValue("doc-4"))
+//        assertFalse(doc.getBoolean("doc-4"))
+//        assertEquals(0, doc.getInt("doc-4").toLong())
+//        assertEquals(0L, doc.getLong("doc-4"))
+//        assertEquals(0.0f, doc.getFloat("doc-4"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-4"), 0.001)
+//        assertEquals(0L, doc.getNumber("doc-4"))
+//        assertNull(doc.getString("doc-4"))
+//        assertNull(doc.getDate("doc-4"))
+//        assertNull(doc.getBlob("doc-4"))
+//        assertNull(doc.getArray("doc-4"))
+//        assertNull(doc.getDictionary("doc-4"))
 //
 //        //#4 doc.setInt(Integer.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Int.MIN_VALUE.toLong()),
 //            doc.getValue("doc-5")
 //        )
-//        org.junit.Assert.assertTrue(doc.getBoolean("doc-5"))
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE.toLong(), doc.getInt("doc-5").toLong())
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE.toLong(), doc.getLong("doc-5"))
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE.toFloat(), doc.getFloat("doc-5"), 0.001f)
-//        org.junit.Assert.assertEquals(Int.MIN_VALUE.toDouble(), doc.getDouble("doc-5"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertTrue(doc.getBoolean("doc-5"))
+//        assertEquals(Int.MIN_VALUE.toLong(), doc.getInt("doc-5").toLong())
+//        assertEquals(Int.MIN_VALUE.toLong(), doc.getLong("doc-5"))
+//        assertEquals(Int.MIN_VALUE.toFloat(), doc.getFloat("doc-5"), 0.001f)
+//        assertEquals(Int.MIN_VALUE.toDouble(), doc.getDouble("doc-5"), 0.001)
+//        assertEquals(
 //            java.lang.Long.valueOf(Int.MIN_VALUE.toLong()),
 //            doc.getNumber("doc-5")
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-5"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-5"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-5"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-5"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-5"))
+//        assertNull(doc.getString("doc-5"))
+//        assertNull(doc.getDate("doc-5"))
+//        assertNull(doc.getBlob("doc-5"))
+//        assertNull(doc.getArray("doc-5"))
+//        assertNull(doc.getDictionary("doc-5"))
 //
 //        //#5 doc.setInt(Integer.MAX_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Int.MAX_VALUE.toLong()),
 //            doc.getValue("doc-6")
 //        )
-//        org.junit.Assert.assertTrue(doc.getBoolean("doc-6"))
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE.toLong(), doc.getInt("doc-6").toLong())
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE.toLong(), doc.getLong("doc-6"))
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE.toFloat(), doc.getFloat("doc-6"), 100.0f)
-//        org.junit.Assert.assertEquals(Int.MAX_VALUE.toDouble(), doc.getDouble("doc-6"), 100.0)
-//        org.junit.Assert.assertEquals(
+//        assertTrue(doc.getBoolean("doc-6"))
+//        assertEquals(Int.MAX_VALUE.toLong(), doc.getInt("doc-6").toLong())
+//        assertEquals(Int.MAX_VALUE.toLong(), doc.getLong("doc-6"))
+//        assertEquals(Int.MAX_VALUE.toFloat(), doc.getFloat("doc-6"), 100.0f)
+//        assertEquals(Int.MAX_VALUE.toDouble(), doc.getDouble("doc-6"), 100.0)
+//        assertEquals(
 //            java.lang.Long.valueOf(Int.MAX_VALUE.toLong()),
 //            doc.getNumber("doc-6")
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-6"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-6"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-6"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-6"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-6"))
+//        assertNull(doc.getString("doc-6"))
+//        assertNull(doc.getDate("doc-6"))
+//        assertNull(doc.getBlob("doc-6"))
+//        assertNull(doc.getArray("doc-6"))
+//        assertNull(doc.getDictionary("doc-6"))
 //
 //        //#6 doc.setLong(0L);
-//        org.junit.Assert.assertEquals(java.lang.Long.valueOf(0L), doc.getValue("doc-7"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-7"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-7").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-7"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-7"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-7"), 0.001)
-//        org.junit.Assert.assertEquals(java.lang.Long.valueOf(0L), doc.getNumber("doc-7"))
-//        org.junit.Assert.assertNull(doc.getString("doc-7"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-7"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-7"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-7"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-7"))
+//        assertEquals(java.lang.Long.valueOf(0L), doc.getValue("doc-7"))
+//        assertFalse(doc.getBoolean("doc-7"))
+//        assertEquals(0, doc.getInt("doc-7").toLong())
+//        assertEquals(0L, doc.getLong("doc-7"))
+//        assertEquals(0.0f, doc.getFloat("doc-7"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-7"), 0.001)
+//        assertEquals(java.lang.Long.valueOf(0L), doc.getNumber("doc-7"))
+//        assertNull(doc.getString("doc-7"))
+//        assertNull(doc.getDate("doc-7"))
+//        assertNull(doc.getBlob("doc-7"))
+//        assertNull(doc.getArray("doc-7"))
+//        assertNull(doc.getDictionary("doc-7"))
 //
 //        //#7 doc.setLong(Long.MIN_VALUE);
-//        org.junit.Assert.assertEquals(java.lang.Long.valueOf(Long.MIN_VALUE), doc.getValue("doc-8"))
+//        assertEquals(java.lang.Long.valueOf(Long.MIN_VALUE), doc.getValue("doc-8"))
 //        // !!! Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-8"));
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE).toInt().toLong(),
 //            doc.getInt("doc-8").toLong()
 //        )
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE, doc.getLong("doc-8"))
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-8"), 0.001f)
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-8"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Long.MIN_VALUE, doc.getLong("doc-8"))
+//        assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-8"), 0.001f)
+//        assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-8"), 0.001)
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE),
 //            doc.getNumber("doc-8")
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-8"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-8"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-8"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-8"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-8"))
+//        assertNull(doc.getString("doc-8"))
+//        assertNull(doc.getDate("doc-8"))
+//        assertNull(doc.getBlob("doc-8"))
+//        assertNull(doc.getArray("doc-8"))
+//        assertNull(doc.getDictionary("doc-8"))
 //
 //        //#8 doc.setLong(Long.MAX_VALUE);
-//        org.junit.Assert.assertEquals(java.lang.Long.valueOf(Long.MAX_VALUE), doc.getValue("doc-9"))
-//        org.junit.Assert.assertTrue(doc.getBoolean("doc-9"))
-//        org.junit.Assert.assertEquals(
+//        assertEquals(java.lang.Long.valueOf(Long.MAX_VALUE), doc.getValue("doc-9"))
+//        assertTrue(doc.getBoolean("doc-9"))
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MAX_VALUE).toInt().toLong(),
 //            doc.getInt("doc-9").toLong()
 //        )
-//        org.junit.Assert.assertEquals(Long.MAX_VALUE, doc.getLong("doc-9"))
-//        org.junit.Assert.assertEquals(Long.MAX_VALUE.toFloat(), doc.getFloat("doc-9"), 100.0f)
-//        org.junit.Assert.assertEquals(Long.MAX_VALUE.toDouble(), doc.getDouble("doc-9"), 100.0)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Long.MAX_VALUE, doc.getLong("doc-9"))
+//        assertEquals(Long.MAX_VALUE.toFloat(), doc.getFloat("doc-9"), 100.0f)
+//        assertEquals(Long.MAX_VALUE.toDouble(), doc.getDouble("doc-9"), 100.0)
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MAX_VALUE),
 //            doc.getNumber("doc-9")
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-9"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-9"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-9"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-9"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-9"))
+//        assertNull(doc.getString("doc-9"))
+//        assertNull(doc.getDate("doc-9"))
+//        assertNull(doc.getBlob("doc-9"))
+//        assertNull(doc.getArray("doc-9"))
+//        assertNull(doc.getDictionary("doc-9"))
 //
 //        //#9 doc.setFloat(0.0F);
-//        org.junit.Assert.assertEquals(java.lang.Float.valueOf(0.0f), doc.getValue("doc-10"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-10"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-10").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-10"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-10"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-10"), 0.001)
-//        org.junit.Assert.assertEquals(java.lang.Float.valueOf(0.0f), doc.getNumber("doc-10"))
-//        org.junit.Assert.assertNull(doc.getString("doc-10"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-10"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-10"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-10"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-10"))
+//        assertEquals(java.lang.Float.valueOf(0.0f), doc.getValue("doc-10"))
+//        assertFalse(doc.getBoolean("doc-10"))
+//        assertEquals(0, doc.getInt("doc-10").toLong())
+//        assertEquals(0L, doc.getLong("doc-10"))
+//        assertEquals(0.0f, doc.getFloat("doc-10"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-10"), 0.001)
+//        assertEquals(java.lang.Float.valueOf(0.0f), doc.getNumber("doc-10"))
+//        assertNull(doc.getString("doc-10"))
+//        assertNull(doc.getDate("doc-10"))
+//        assertNull(doc.getBlob("doc-10"))
+//        assertNull(doc.getArray("doc-10"))
+//        assertNull(doc.getDictionary("doc-10"))
 //
 //        //#10 doc.setFloat(Float.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(doc.getValue("doc-11"))
 //        )
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-11"))
-//        org.junit.Assert.assertEquals(
+//        assertFalse(doc.getBoolean("doc-11"))
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE).toInt().toFloat(),
 //            doc.getInt("doc-11").toFloat(),
 //            0.001f
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE).toLong().toFloat(),
 //            doc.getLong("doc-11").toFloat(),
 //            0.001f
 //        )
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE, doc.getFloat("doc-11"), 0.001f)
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-11"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Float.MIN_VALUE, doc.getFloat("doc-11"), 0.001f)
+//        assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-11"), 0.001)
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(doc.getValue("doc-11"))
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-11"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-11"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-11"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-11"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-11"))
+//        assertNull(doc.getString("doc-11"))
+//        assertNull(doc.getDate("doc-11"))
+//        assertNull(doc.getBlob("doc-11"))
+//        assertNull(doc.getArray("doc-11"))
+//        assertNull(doc.getDictionary("doc-11"))
 //
 //        //#11 doc.setFloat(Float.MAX_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MAX_VALUE),
 //            demoteToFloat(doc.getValue("doc-12"))
 //        )
-//        org.junit.Assert.assertTrue(doc.getBoolean("doc-12"))
+//        assertTrue(doc.getBoolean("doc-12"))
 //        // !!! Fails: assertEquals(Float.valueOf(Float.MAX_VALUE).intValue(), doc.getInt("doc-12"));
 //        // !!! Fails: assertEquals(Float.valueOf(Float.MAX_VALUE).longValue(), doc.getLong("doc-12"));
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            Float.MAX_VALUE.toDouble(),
 //            doc.getFloat("doc-12").toDouble(),
 //            1.0E32
 //        )
-//        org.junit.Assert.assertEquals(Float.MAX_VALUE.toDouble(), doc.getDouble("doc-12"), 1.0E32)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Float.MAX_VALUE.toDouble(), doc.getDouble("doc-12"), 1.0E32)
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MAX_VALUE),
 //            demoteToFloat(doc.getNumber("doc-12"))
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-12"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-12"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-12"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-12"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-12"))
+//        assertNull(doc.getString("doc-12"))
+//        assertNull(doc.getDate("doc-12"))
+//        assertNull(doc.getBlob("doc-12"))
+//        assertNull(doc.getArray("doc-12"))
+//        assertNull(doc.getDictionary("doc-12"))
 //
 //        //#12 doc.setDouble(0.0);
-//        org.junit.Assert.assertEquals(java.lang.Float.valueOf(0f), doc.getValue("doc-13"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-13"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-13").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-13"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-13"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-13"), 0.001)
-//        org.junit.Assert.assertEquals(java.lang.Float.valueOf(0f), doc.getNumber("doc-13"))
-//        org.junit.Assert.assertNull(doc.getString("doc-13"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-13"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-13"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-13"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-13"))
+//        assertEquals(java.lang.Float.valueOf(0f), doc.getValue("doc-13"))
+//        assertFalse(doc.getBoolean("doc-13"))
+//        assertEquals(0, doc.getInt("doc-13").toLong())
+//        assertEquals(0L, doc.getLong("doc-13"))
+//        assertEquals(0.0f, doc.getFloat("doc-13"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-13"), 0.001)
+//        assertEquals(java.lang.Float.valueOf(0f), doc.getNumber("doc-13"))
+//        assertNull(doc.getString("doc-13"))
+//        assertNull(doc.getDate("doc-13"))
+//        assertNull(doc.getBlob("doc-13"))
+//        assertNull(doc.getArray("doc-13"))
+//        assertNull(doc.getDictionary("doc-13"))
 //
 //        //#13 doc.setDouble(Double.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE),
 //            doc.getValue("doc-14")
 //        )
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-14"))
-//        org.junit.Assert.assertEquals(
+//        assertFalse(doc.getBoolean("doc-14"))
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE).toInt().toLong(),
 //            doc.getInt("doc-14").toLong()
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE).toLong(),
 //            doc.getLong("doc-14")
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE).toFloat(),
 //            doc.getFloat("doc-14"),
 //            0.001f
 //        )
-//        org.junit.Assert.assertEquals(Double.MIN_VALUE, doc.getDouble("doc-14"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Double.MIN_VALUE, doc.getDouble("doc-14"), 0.001)
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MIN_VALUE),
 //            doc.getNumber("doc-14")
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-14"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-14"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-14"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-14"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-14"))
+//        assertNull(doc.getString("doc-14"))
+//        assertNull(doc.getDate("doc-14"))
+//        assertNull(doc.getBlob("doc-14"))
+//        assertNull(doc.getArray("doc-14"))
+//        assertNull(doc.getDictionary("doc-14"))
 //
 //        //#14 doc.setDouble(Double.MAX_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MAX_VALUE),
 //            doc.getValue("doc-15")
 //        )
 //        // !!! Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).intValue(), doc.getInt("doc-15"));
 //        // !!! Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).longValue(), doc.getLong("doc-15"));
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MAX_VALUE).toFloat(),
 //            doc.getFloat("doc-15"),
 //            100.0f
 //        )
-//        org.junit.Assert.assertEquals(Double.MAX_VALUE, doc.getDouble("doc-15"), 100.0)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Double.MAX_VALUE, doc.getDouble("doc-15"), 100.0)
+//        assertEquals(
 //            java.lang.Double.valueOf(Double.MAX_VALUE),
 //            doc.getNumber("doc-15")
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-15"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-15"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-15"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-15"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-15"))
+//        assertNull(doc.getString("doc-15"))
+//        assertNull(doc.getDate("doc-15"))
+//        assertNull(doc.getBlob("doc-15"))
+//        assertNull(doc.getArray("doc-15"))
+//        assertNull(doc.getDictionary("doc-15"))
 //
 //        //#15 doc.setNumber(null);
-//        org.junit.Assert.assertNull(doc.getValue("doc-16"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-16"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-16").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-16"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-16"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-16"), 0.001)
-//        org.junit.Assert.assertNull(doc.getNumber("doc-16"))
-//        org.junit.Assert.assertNull(doc.getString("doc-16"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-16"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-16"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-16"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-16"))
+//        assertNull(doc.getValue("doc-16"))
+//        assertFalse(doc.getBoolean("doc-16"))
+//        assertEquals(0, doc.getInt("doc-16").toLong())
+//        assertEquals(0L, doc.getLong("doc-16"))
+//        assertEquals(0.0f, doc.getFloat("doc-16"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-16"), 0.001)
+//        assertNull(doc.getNumber("doc-16"))
+//        assertNull(doc.getString("doc-16"))
+//        assertNull(doc.getDate("doc-16"))
+//        assertNull(doc.getBlob("doc-16"))
+//        assertNull(doc.getArray("doc-16"))
+//        assertNull(doc.getDictionary("doc-16"))
 //
 //        //#16 doc.setNumber(0);
-//        org.junit.Assert.assertEquals(0L, doc.getValue("doc-17"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-17"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-17").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-17"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-17"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-17"), 0.001)
-//        org.junit.Assert.assertEquals(0L, doc.getNumber("doc-17"))
-//        org.junit.Assert.assertNull(doc.getString("doc-17"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-17"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-17"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-17"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-17"))
+//        assertEquals(0L, doc.getValue("doc-17"))
+//        assertFalse(doc.getBoolean("doc-17"))
+//        assertEquals(0, doc.getInt("doc-17").toLong())
+//        assertEquals(0L, doc.getLong("doc-17"))
+//        assertEquals(0.0f, doc.getFloat("doc-17"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-17"), 0.001)
+//        assertEquals(0L, doc.getNumber("doc-17"))
+//        assertNull(doc.getString("doc-17"))
+//        assertNull(doc.getDate("doc-17"))
+//        assertNull(doc.getBlob("doc-17"))
+//        assertNull(doc.getArray("doc-17"))
+//        assertNull(doc.getDictionary("doc-17"))
 //
 //        //#17 doc.setNumber(Float.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(doc.getValue("doc-18"))
 //        )
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-18"))
-//        org.junit.Assert.assertEquals(
+//        assertFalse(doc.getBoolean("doc-18"))
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE).toInt().toLong(),
 //            doc.getInt("doc-18").toLong()
 //        )
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE).toLong(),
 //            doc.getLong("doc-18")
 //        )
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE, doc.getFloat("doc-18"), 0.001f)
-//        org.junit.Assert.assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-18"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Float.MIN_VALUE, doc.getFloat("doc-18"), 0.001f)
+//        assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-18"), 0.001)
+//        assertEquals(
 //            java.lang.Float.valueOf(Float.MIN_VALUE),
 //            demoteToFloat(doc.getNumber("doc-18"))
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-18"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-18"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-18"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-18"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-18"))
+//        assertNull(doc.getString("doc-18"))
+//        assertNull(doc.getDate("doc-18"))
+//        assertNull(doc.getBlob("doc-18"))
+//        assertNull(doc.getArray("doc-18"))
+//        assertNull(doc.getDictionary("doc-18"))
 //
 //        //#18 doc.setNumber(Long.MIN_VALUE);
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE),
 //            doc.getValue("doc-19")
 //        )
 //        // !!! Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-19"));
-//        org.junit.Assert.assertEquals(
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE).toInt().toLong(),
 //            doc.getInt("doc-19").toLong()
 //        )
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE, doc.getLong("doc-19"))
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-19"), 0.001f)
-//        org.junit.Assert.assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-19"), 0.001)
-//        org.junit.Assert.assertEquals(
+//        assertEquals(Long.MIN_VALUE, doc.getLong("doc-19"))
+//        assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-19"), 0.001f)
+//        assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-19"), 0.001)
+//        assertEquals(
 //            java.lang.Long.valueOf(Long.MIN_VALUE),
 //            doc.getNumber("doc-19")
 //        )
-//        org.junit.Assert.assertNull(doc.getString("doc-19"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-19"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-19"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-19"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-19"))
+//        assertNull(doc.getString("doc-19"))
+//        assertNull(doc.getDate("doc-19"))
+//        assertNull(doc.getBlob("doc-19"))
+//        assertNull(doc.getArray("doc-19"))
+//        assertNull(doc.getDictionary("doc-19"))
 //
 //        //#19 doc.setString(null);
-//        org.junit.Assert.assertNull(doc.getValue("doc-20"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-20"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-20").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-20"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-20"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-20"), 0.001)
-//        org.junit.Assert.assertNull(doc.getNumber("doc-20"))
-//        org.junit.Assert.assertNull(doc.getString("doc-20"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-20"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-20"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-20"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-20"))
+//        assertNull(doc.getValue("doc-20"))
+//        assertFalse(doc.getBoolean("doc-20"))
+//        assertEquals(0, doc.getInt("doc-20").toLong())
+//        assertEquals(0L, doc.getLong("doc-20"))
+//        assertEquals(0.0f, doc.getFloat("doc-20"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-20"), 0.001)
+//        assertNull(doc.getNumber("doc-20"))
+//        assertNull(doc.getString("doc-20"))
+//        assertNull(doc.getDate("doc-20"))
+//        assertNull(doc.getBlob("doc-20"))
+//        assertNull(doc.getArray("doc-20"))
+//        assertNull(doc.getDictionary("doc-20"))
 //
 //        //#20 doc.setString("Quatro");
-//        org.junit.Assert.assertEquals("Jett", doc.getValue("doc-21"))
-//        org.junit.Assert.assertTrue(doc.getBoolean("doc-21"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-21").toLong())
-//        org.junit.Assert.assertEquals(0, doc.getLong("doc-21"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-21"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-21"), 0.001)
-//        org.junit.Assert.assertNull(doc.getNumber("doc-21"))
-//        org.junit.Assert.assertEquals("Jett", doc.getString("doc-21"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-21"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-21"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-21"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-21"))
+//        assertEquals("Jett", doc.getValue("doc-21"))
+//        assertTrue(doc.getBoolean("doc-21"))
+//        assertEquals(0, doc.getInt("doc-21").toLong())
+//        assertEquals(0, doc.getLong("doc-21"))
+//        assertEquals(0.0f, doc.getFloat("doc-21"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-21"), 0.001)
+//        assertNull(doc.getNumber("doc-21"))
+//        assertEquals("Jett", doc.getString("doc-21"))
+//        assertNull(doc.getDate("doc-21"))
+//        assertNull(doc.getBlob("doc-21"))
+//        assertNull(doc.getArray("doc-21"))
+//        assertNull(doc.getDictionary("doc-21"))
 //
 //        //#21 doc.setDate(null);
-//        org.junit.Assert.assertNull(doc.getValue("doc-22"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-22"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-22").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-22"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-22"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-22"), 0.001)
-//        org.junit.Assert.assertNull(doc.getNumber("doc-22"))
-//        org.junit.Assert.assertNull(doc.getString("doc-22"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-22"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-22"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-22"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-22"))
+//        assertNull(doc.getValue("doc-22"))
+//        assertFalse(doc.getBoolean("doc-22"))
+//        assertEquals(0, doc.getInt("doc-22").toLong())
+//        assertEquals(0L, doc.getLong("doc-22"))
+//        assertEquals(0.0f, doc.getFloat("doc-22"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-22"), 0.001)
+//        assertNull(doc.getNumber("doc-22"))
+//        assertNull(doc.getString("doc-22"))
+//        assertNull(doc.getDate("doc-22"))
+//        assertNull(doc.getBlob("doc-22"))
+//        assertNull(doc.getArray("doc-22"))
+//        assertNull(doc.getDictionary("doc-22"))
 //
 //        //#22 doc.setDate(JSONUtils.toDate(TEST_DATE));
-//        org.junit.Assert.assertEquals(BaseDbTest.Companion.TEST_DATE, doc.getValue("doc-23"))
-//        org.junit.Assert.assertTrue(doc.getBoolean("doc-23"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-23").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-23"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-23"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-23"), 0.001)
-//        org.junit.Assert.assertNull(doc.getNumber("doc-23"))
-//        org.junit.Assert.assertEquals(BaseDbTest.Companion.TEST_DATE, doc.getString("doc-23"))
-//        org.junit.Assert.assertEquals(
+//        assertEquals(BaseDbTest.Companion.TEST_DATE, doc.getValue("doc-23"))
+//        assertTrue(doc.getBoolean("doc-23"))
+//        assertEquals(0, doc.getInt("doc-23").toLong())
+//        assertEquals(0L, doc.getLong("doc-23"))
+//        assertEquals(0.0f, doc.getFloat("doc-23"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-23"), 0.001)
+//        assertNull(doc.getNumber("doc-23"))
+//        assertEquals(BaseDbTest.Companion.TEST_DATE, doc.getString("doc-23"))
+//        assertEquals(
 //            JSONUtils.toDate(BaseDbTest.Companion.TEST_DATE),
 //            doc.getDate("doc-23")
 //        )
-//        org.junit.Assert.assertNull(doc.getBlob("doc-23"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-23"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-23"))
+//        assertNull(doc.getBlob("doc-23"))
+//        assertNull(doc.getArray("doc-23"))
+//        assertNull(doc.getDictionary("doc-23"))
 //
 //        //#23 doc.setArray(null);
-//        org.junit.Assert.assertNull(doc.getValue("doc-24"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-24"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-24").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-24"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-24"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-24"), 0.001)
-//        org.junit.Assert.assertNull(doc.getNumber("doc-24"))
-//        org.junit.Assert.assertNull(doc.getString("doc-24"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-24"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-24"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-24"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-24"))
+//        assertNull(doc.getValue("doc-24"))
+//        assertFalse(doc.getBoolean("doc-24"))
+//        assertEquals(0, doc.getInt("doc-24").toLong())
+//        assertEquals(0L, doc.getLong("doc-24"))
+//        assertEquals(0.0f, doc.getFloat("doc-24"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-24"), 0.001)
+//        assertNull(doc.getNumber("doc-24"))
+//        assertNull(doc.getString("doc-24"))
+//        assertNull(doc.getDate("doc-24"))
+//        assertNull(doc.getBlob("doc-24"))
+//        assertNull(doc.getArray("doc-24"))
+//        assertNull(doc.getDictionary("doc-24"))
 //
 //        //#24 doc.setDictionary(null);
 //        verifyArray(doc.getArray("doc-25"))
 //
 //        //#25 doc.setDictionary(null);
-//        org.junit.Assert.assertNull(doc.getValue("doc-26"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-26"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-26").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-26"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-26"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-26"), 0.001)
-//        org.junit.Assert.assertNull(doc.getNumber("doc-26"))
-//        org.junit.Assert.assertNull(doc.getString("doc-26"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-26"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-26"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-26"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-26"))
+//        assertNull(doc.getValue("doc-26"))
+//        assertFalse(doc.getBoolean("doc-26"))
+//        assertEquals(0, doc.getInt("doc-26").toLong())
+//        assertEquals(0L, doc.getLong("doc-26"))
+//        assertEquals(0.0f, doc.getFloat("doc-26"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-26"), 0.001)
+//        assertNull(doc.getNumber("doc-26"))
+//        assertNull(doc.getString("doc-26"))
+//        assertNull(doc.getDate("doc-26"))
+//        assertNull(doc.getBlob("doc-26"))
+//        assertNull(doc.getArray("doc-26"))
+//        assertNull(doc.getDictionary("doc-26"))
 //
 //        //#26 doc.setDictionary(simpleDict);
 //        verifyDict(doc.getDictionary("doc-27"))
 //
 //        //#27 doc.setDictionary(null);
-//        org.junit.Assert.assertNull(doc.getValue("doc-28"))
-//        org.junit.Assert.assertFalse(doc.getBoolean("doc-28"))
-//        org.junit.Assert.assertEquals(0, doc.getInt("doc-28").toLong())
-//        org.junit.Assert.assertEquals(0L, doc.getLong("doc-28"))
-//        org.junit.Assert.assertEquals(0.0f, doc.getFloat("doc-28"), 0.001f)
-//        org.junit.Assert.assertEquals(0.0, doc.getDouble("doc-28"), 0.001)
-//        org.junit.Assert.assertNull(doc.getNumber("doc-28"))
-//        org.junit.Assert.assertNull(doc.getString("doc-28"))
-//        org.junit.Assert.assertNull(doc.getDate("doc-28"))
-//        org.junit.Assert.assertNull(doc.getBlob("doc-28"))
-//        org.junit.Assert.assertNull(doc.getArray("doc-28"))
-//        org.junit.Assert.assertNull(doc.getDictionary("doc-28"))
+//        assertNull(doc.getValue("doc-28"))
+//        assertFalse(doc.getBoolean("doc-28"))
+//        assertEquals(0, doc.getInt("doc-28").toLong())
+//        assertEquals(0L, doc.getLong("doc-28"))
+//        assertEquals(0.0f, doc.getFloat("doc-28"), 0.001f)
+//        assertEquals(0.0, doc.getDouble("doc-28"), 0.001)
+//        assertNull(doc.getNumber("doc-28"))
+//        assertNull(doc.getString("doc-28"))
+//        assertNull(doc.getDate("doc-28"))
+//        assertNull(doc.getBlob("doc-28"))
+//        assertNull(doc.getArray("doc-28"))
+//        assertNull(doc.getDictionary("doc-28"))
 //        verifyBlob(doc.getBlob("doc-29"))
 //    }
 //

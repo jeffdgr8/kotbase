@@ -142,7 +142,7 @@ internal constructor(actual: com.couchbase.lite.Database) :
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
         // TODO: casting required until actual type com.couchbase.lite.IndexConfiguration is visible
-        // https://forums.couchbase.com/t/can-indexconfiguration-be-made-public/33772
+        //  https://forums.couchbase.com/t/can-indexconfiguration-be-made-public/33772
         when (val actualConfig = config.actual) {
             is FullTextIndexConfiguration -> actual.createIndex(name, actualConfig)
             is ValueIndexConfiguration -> actual.createIndex(name, actualConfig)
