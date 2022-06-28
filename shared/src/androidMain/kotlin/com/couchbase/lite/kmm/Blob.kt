@@ -15,7 +15,7 @@ internal constructor(actual: com.couchbase.lite.Blob) :
         com.couchbase.lite.Blob(contentType, content)
     )
 
-    // TODO:
+    // TODO: https://github.com/square/okio/pull/1123
     //public actual constructor(contentType: String, stream: Source) : this(
     //    com.couchbase.lite.Blob(contentType, stream.buffer().inputStream())
     //)
@@ -32,7 +32,7 @@ internal constructor(actual: com.couchbase.lite.Blob) :
     public actual fun getContent(): ByteArray? =
         actual.content
 
-    // TODO:
+    // TODO: https://github.com/square/okio/pull/1123
     //public actual fun getContentStream(): Source? =
     //    actual.contentStream?.source()
 

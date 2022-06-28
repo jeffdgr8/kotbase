@@ -30,7 +30,7 @@ constructor(contentType: String, content: ByteArray) {
      * @param contentType The type of content this Blob will represent
      * @param stream      The stream of data that this Blob will consume
      */
-    // TODO:
+    // TODO: https://github.com/square/okio/pull/1123
     //public constructor(contentType: String, stream: Source)
 
     /**
@@ -62,7 +62,7 @@ constructor(contentType: String, content: ByteArray) {
      *
      * @return a stream of of this blobs contents; null if none exists or if this blob was initialized with a stream
      */
-    // TODO:
+    // TODO: https://github.com/square/okio/pull/1123
     //public fun getContentStream(): Source?
 
     /**

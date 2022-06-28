@@ -74,20 +74,20 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         setBoolean(value, key)
     }
 
-    public actual fun setBlob(key: String, value: Blob): MutableDictionary = chain {
-        setBlob(value.actual, key)
+    public actual fun setBlob(key: String, value: Blob?): MutableDictionary = chain {
+        setBlob(value?.actual, key)
     }
 
-    public actual fun setDate(key: String, value: Instant): MutableDictionary = chain {
-        setDate(value.toNSDate(), key)
+    public actual fun setDate(key: String, value: Instant?): MutableDictionary = chain {
+        setDate(value?.toNSDate(), key)
     }
 
-    public actual fun setArray(key: String, value: Array): MutableDictionary = chain {
-        setArray(value.actual, key)
+    public actual fun setArray(key: String, value: Array?): MutableDictionary = chain {
+        setArray(value?.actual, key)
     }
 
-    public actual fun setDictionary(key: String, value: Dictionary): MutableDictionary = chain {
-        setDictionary(value.actual, key)
+    public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary = chain {
+        setDictionary(value?.actual, key)
     }
 
     public actual fun remove(key: String): MutableDictionary = chain {

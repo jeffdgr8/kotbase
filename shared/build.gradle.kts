@@ -48,6 +48,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
             }
         }
         val androidMain by getting {
@@ -55,7 +56,11 @@ kotlin {
                 implementation("com.couchbase.lite:couchbase-lite-android-ktx:3.0.0")
             }
         }
-        val androidTest by getting
+        val androidTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+            }
+        }
         val iosMain by getting
         val iosTest by getting
     }

@@ -18,7 +18,7 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
         CBLBlob(contentType, content.toNSData())
     )
 
-    // TODO:
+    // TODO: https://github.com/square/okio/pull/1123
     //public actual constructor(contentType: String, stream: Source) : this(
     //    CBLBlob(contentType, stream.buffer().source())
     //)
@@ -33,7 +33,7 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
     public actual fun getContent(): ByteArray? =
         actual.content?.toByteArray()
 
-    // TODO:
+    // TODO: https://github.com/square/okio/pull/1123
     //public actual fun getContentStream(): Source? =
     //    actual.contentStream?.source()
 

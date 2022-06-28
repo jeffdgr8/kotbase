@@ -131,7 +131,7 @@ public expect class MutableDictionary : Dictionary {
      * @param value The Blob object.
      * @return The self object.
      */
-    public fun setBlob(key: String, value: Blob): MutableDictionary
+    public fun setBlob(key: String, value: Blob?): MutableDictionary
 
     /**
      * Set a Date object for the given key.
@@ -140,7 +140,7 @@ public expect class MutableDictionary : Dictionary {
      * @param value The Date object.
      * @return The self object.
      */
-    public fun setDate(key: String, value: Instant): MutableDictionary
+    public fun setDate(key: String, value: Instant?): MutableDictionary
 
     /**
      * Set an Array object for the given key.
@@ -149,7 +149,7 @@ public expect class MutableDictionary : Dictionary {
      * @param value The Array object.
      * @return The self object.
      */
-    public fun setArray(key: String, value: Array): MutableDictionary
+    public fun setArray(key: String, value: Array?): MutableDictionary
 
     /**
      * Set a Dictionary object for the given key.
@@ -158,7 +158,7 @@ public expect class MutableDictionary : Dictionary {
      * @param value The Dictionary object.
      * @return The self object.
      */
-    public fun setDictionary(key: String, value: Dictionary): MutableDictionary
+    public fun setDictionary(key: String, value: Dictionary?): MutableDictionary
 
     /**
      * Removes the mapping for a key from this Dictionary
