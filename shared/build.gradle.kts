@@ -41,24 +41,28 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3-native-mt")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3")
                 implementation("com.squareup.okio:okio:3.1.0")
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("androidx.test.ext:junit-ktx:1.1.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
             }
         }
         val androidMain by getting {
             dependencies {
                 implementation("com.couchbase.lite:couchbase-lite-android-ktx:3.0.0")
+                //implementation(fileTree("libs"))
             }
         }
         val androidTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
+                implementation("androidx.test:core-ktx:1.4.0")
+                implementation("org.robolectric:robolectric:4.8.1")
             }
         }
         val iosMain by getting
@@ -73,4 +77,6 @@ android {
         minSdk = 22
         targetSdk = 32
     }
+
+    testOptions.unitTests.isIncludeAndroidResources = true
 }

@@ -16,7 +16,7 @@ internal constructor(actual: CBLQueryParameters) :
     )
 
     public actual fun getValue(name: String): Any? =
-        actual.valueForName(name)
+        actual.valueForName(name)?.delegateIfNecessary()
 
     public actual fun setString(name: String, value: String?): Parameters = chain {
         setString(value, name)
@@ -63,7 +63,7 @@ internal constructor(actual: CBLQueryParameters) :
     }
 
     public actual fun setValue(name: String, value: Any?): Parameters = chain {
-        setValue(value, name)
+        setValue(value?.actualIfDelegated(), name)
     }
 }
 

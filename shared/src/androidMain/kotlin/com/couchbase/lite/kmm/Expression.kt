@@ -12,7 +12,7 @@ internal constructor(actual: com.couchbase.lite.Expression) :
     public actual companion object {
 
         public actual fun value(value: Any?): Expression =
-            Expression(com.couchbase.lite.Expression.value(value))
+            Expression(com.couchbase.lite.Expression.value(value?.actualIfDelegated()))
 
         public actual fun string(value: String?): Expression =
             Expression(com.couchbase.lite.Expression.string(value))
@@ -39,10 +39,10 @@ internal constructor(actual: com.couchbase.lite.Expression) :
             Expression(com.couchbase.lite.Expression.date(value?.toDate()))
 
         public actual fun map(value: Map<String, Any?>?): Expression =
-            Expression(com.couchbase.lite.Expression.map(value))
+            Expression(com.couchbase.lite.Expression.map(value?.actualIfDelegated()))
 
         public actual fun list(value: List<Any?>?): Expression =
-            Expression(com.couchbase.lite.Expression.list(value))
+            Expression(com.couchbase.lite.Expression.list(value?.actualIfDelegated()))
 
         public actual fun all(): PropertyExpression =
             PropertyExpression(com.couchbase.lite.Expression.all())

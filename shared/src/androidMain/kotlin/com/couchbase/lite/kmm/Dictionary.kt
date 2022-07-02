@@ -18,7 +18,7 @@ internal constructor(actual: com.couchbase.lite.Dictionary) :
         get() = actual.keys
 
     public actual fun getValue(key: String): Any? =
-        actual.getValue(key)
+        actual.getValue(key)?.delegateIfNecessary()
 
     public actual fun getString(key: String): String? =
         actual.getString(key)
@@ -54,7 +54,7 @@ internal constructor(actual: com.couchbase.lite.Dictionary) :
         actual.getDictionary(key)?.asDictionary()
 
     public actual fun toMap(): Map<String, Any?> =
-        actual.toMap()
+        actual.toMap().delegateIfNecessary()
 
     public actual fun toJSON(): String =
         actual.toJSON()

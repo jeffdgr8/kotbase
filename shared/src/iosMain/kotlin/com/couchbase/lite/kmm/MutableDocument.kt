@@ -4,8 +4,6 @@ import cocoapods.CouchbaseLite.CBLMutableDocument
 import com.couchbase.lite.kmm.ext.throwError
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.udobny.kmm.chain
-import com.udobny.kmm.ext.toNativeDateDeep
-import com.udobny.kmm.ext.toNativeDateValuesDeep
 import com.udobny.kmm.ext.wrapError
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
@@ -22,13 +20,11 @@ internal constructor(override val actual: CBLMutableDocument) :
     public actual constructor(id: String?) : this(CBLMutableDocument(id))
 
     public actual constructor(data: Map<String, Any?>) : this(
-        @Suppress("UNCHECKED_CAST")
-        CBLMutableDocument(data as Map<Any?, *>)
+        CBLMutableDocument(data.actualIfDelegated())
     )
 
     public actual constructor(id: String?, data: Map<String, Any?>) : this(
-        @Suppress("UNCHECKED_CAST")
-        CBLMutableDocument(id, data as Map<Any?, *>)
+        CBLMutableDocument(id, data.actualIfDelegated())
     )
 
     public actual constructor(id: String?, json: String) : this(
@@ -43,8 +39,7 @@ internal constructor(override val actual: CBLMutableDocument) :
         MutableDocument(actual.toMutable())
 
     public actual fun setData(data: Map<String, Any?>): MutableDocument = chain {
-        @Suppress("UNCHECKED_CAST")
-        setData((data as Map<Any?, *>).toNativeDateValuesDeep())
+        setData(data.actualIfDelegated())
     }
 
     public actual fun setJSON(json: String): MutableDocument = chain {
@@ -54,7 +49,7 @@ internal constructor(override val actual: CBLMutableDocument) :
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDocument = chain {
-        setValue(value?.toNativeDateDeep(), key)
+        setValue(value?.actualIfDelegated(), key)
     }
 
     public actual fun setString(key: String, value: String?): MutableDocument = chain {

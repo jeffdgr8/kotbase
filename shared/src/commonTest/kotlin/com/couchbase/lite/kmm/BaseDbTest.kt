@@ -1,7 +1,8 @@
 package com.couchbase.lite.kmm
 
-import com.couchbase.lite.kmm.utils.JSONUtils
-import com.couchbase.lite.kmm.utils.PlatformUtils
+import com.couchbase.lite.kmm.internal.utils.JSONUtils
+import com.couchbase.lite.kmm.internal.utils.PlatformUtils
+import com.couchbase.lite.kmm.internal.utils.Report
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.*
 import okio.IOException
@@ -22,14 +23,14 @@ abstract class BaseDbTest : BaseTest() {
     @Throws(CouchbaseLiteException::class)
     fun setUpBaseDbTest() {
         baseTestDb = createDb("base_db")
-        println("${LogLevel.INFO} Created base test DB: $baseTestDb")
+        Report.log(LogLevel.INFO, "Created base test DB: $baseTestDb")
         assertNotNull(baseTestDb)
     }
 
     @AfterTest
     fun tearDownBaseDbTest() {
         deleteDb(baseTestDb)
-        println("${LogLevel.INFO} Deleted baseTestDb: $baseTestDb")
+        Report.log(LogLevel.INFO, "Deleted baseTestDb: $baseTestDb")
     }
 
     @Throws(CouchbaseLiteException::class)
@@ -276,7 +277,7 @@ abstract class BaseDbTest : BaseTest() {
     protected fun verifyArray(array: Array?) {
         assertNotNull(array)
 
-        assertEquals(27, array.count())
+        assertEquals(27, array.count)
 
         //#0 array.addValue(null);
         assertNull(array.getValue(0))
@@ -765,7 +766,7 @@ abstract class BaseDbTest : BaseTest() {
     protected fun verifyDict(dict: Dictionary?) {
         assertNotNull(dict)
 
-        assertEquals(27, dict.count())
+        assertEquals(27, dict.count)
 
         //#0 dict.setValue(null);
         assertNull(dict.getValue("dict-1"))
@@ -1273,7 +1274,7 @@ abstract class BaseDbTest : BaseTest() {
     }
 
     protected fun verifyDocument(doc: Dictionary) {
-        assertEquals(29, doc.count())
+        assertEquals(29, doc.count)
 
         //#0 doc.setValue(null);
         assertNull(doc.getValue("doc-1"))

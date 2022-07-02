@@ -13,7 +13,7 @@ internal constructor(actual: com.couchbase.lite.Parameters) :
     )
 
     public actual fun getValue(name: String): Any? =
-        actual.getValue(name)
+        actual.getValue(name)?.delegateIfNecessary()
 
     public actual fun setString(name: String, value: String?): Parameters = chain {
         setString(name, value)
@@ -48,7 +48,7 @@ internal constructor(actual: com.couchbase.lite.Parameters) :
     }
 
     public actual fun setBlob(name: String, value: Blob?): Parameters = chain {
-        setBlob(name, value)
+        setBlob(name, value?.actual)
     }
 
     public actual fun setDictionary(name: String, value: Dictionary?): Parameters = chain {
@@ -60,7 +60,7 @@ internal constructor(actual: com.couchbase.lite.Parameters) :
     }
 
     public actual fun setValue(name: String, value: Any?): Parameters = chain {
-        setValue(name, value)
+        setValue(name, value?.actualIfDelegated())
     }
 }
 

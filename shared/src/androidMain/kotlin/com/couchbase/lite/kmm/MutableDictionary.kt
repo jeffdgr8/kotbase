@@ -2,8 +2,6 @@ package com.couchbase.lite.kmm
 
 import com.udobny.kmm.chain
 import com.udobny.kmm.ext.toDate
-import com.udobny.kmm.ext.toNativeDateDeep
-import com.udobny.kmm.ext.toNativeDateValuesDeep
 import kotlinx.datetime.Instant
 
 public actual class MutableDictionary
@@ -13,7 +11,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
     public actual constructor() : this(com.couchbase.lite.MutableDictionary())
 
     public actual constructor(data: Map<String, Any?>) : this(
-        com.couchbase.lite.MutableDictionary(data.toNativeDateValuesDeep())
+        com.couchbase.lite.MutableDictionary(data.actualIfDelegated())
     )
 
     public actual constructor(json: String) : this(com.couchbase.lite.MutableDictionary(json))
@@ -22,7 +20,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
         chain(actual, action)
 
     public actual fun setData(data: Map<String, Any?>): MutableDictionary = chain {
-        setData(data.toNativeDateValuesDeep())
+        setData(data.actualIfDelegated())
     }
 
     public actual fun setJSON(json: String): MutableDictionary = chain {
@@ -30,7 +28,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDictionary = chain {
-        setValue(key, value?.toNativeDateDeep())
+        setValue(key, value?.actualIfDelegated())
     }
 
     public actual fun setString(key: String, value: String?): MutableDictionary = chain {

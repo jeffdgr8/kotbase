@@ -12,7 +12,7 @@ internal constructor(actual: com.couchbase.lite.Result) :
         get() = actual.count()
 
     public actual fun getValue(index: Int): Any? =
-        actual.getValue(index)
+        actual.getValue(index)?.delegateIfNecessary()
 
     public actual fun getString(index: Int): String? =
         actual.getString(index)
@@ -48,13 +48,13 @@ internal constructor(actual: com.couchbase.lite.Result) :
         actual.getDictionary(index)?.asDictionary()
 
     public actual fun toList(): List<Any?> =
-        actual.toList()
+        actual.toList().delegateIfNecessary()
 
     public actual val keys: List<String>
         get() = actual.keys
 
     public actual fun getValue(key: String): Any? =
-        actual.getValue(key)
+        actual.getValue(key)?.delegateIfNecessary()
 
     public actual fun getString(key: String): String? =
         actual.getString(key)
@@ -90,7 +90,7 @@ internal constructor(actual: com.couchbase.lite.Result) :
         actual.getDictionary(key)?.asDictionary()
 
     public actual fun toMap(): Map<String, Any?> =
-        actual.toMap()
+        actual.toMap().delegateIfNecessary()
 
     public actual fun toJSON(): String =
         actual.toJSON()

@@ -3,7 +3,7 @@
 
 package com.couchbase.lite.kmm
 
-import com.couchbase.lite.expressions
+//import com.couchbase.lite.expressions
 
 // TODO: https://forums.couchbase.com/t/cblvalueindexconfiguration-and-cblfulltextindexconfiguration-missing-from-objc-framework-for-x86-64/33815
 //public actual fun FullTextIndexConfiguration?.create(

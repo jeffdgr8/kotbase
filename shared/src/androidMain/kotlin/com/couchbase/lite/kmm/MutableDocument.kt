@@ -12,11 +12,11 @@ internal constructor(override val actual: com.couchbase.lite.MutableDocument) : 
     public actual constructor(id: String?) : this(com.couchbase.lite.MutableDocument(id))
 
     public actual constructor(data: Map<String, Any?>) : this(
-        com.couchbase.lite.MutableDocument(data)
+        com.couchbase.lite.MutableDocument(data.actualIfDelegated())
     )
 
     public actual constructor(id: String?, data: Map<String, Any?>) : this(
-        com.couchbase.lite.MutableDocument(id, data)
+        com.couchbase.lite.MutableDocument(id, data.actualIfDelegated())
     )
 
     public actual constructor(id: String?, json: String) : this(
@@ -30,7 +30,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDocument) : 
         MutableDocument(actual.toMutable())
 
     public actual fun setData(data: Map<String, Any?>): MutableDocument = chain {
-        setData(data.toNativeDateValuesDeep())
+        setData(data.actualIfDelegated())
     }
 
     public actual fun setJSON(json: String): MutableDocument = chain {
@@ -38,7 +38,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDocument) : 
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDocument = chain {
-        setValue(key, value?.toNativeDateDeep())
+        setValue(key, value?.actualIfDelegated())
     }
 
     public actual fun setString(key: String, value: String?): MutableDocument = chain {
@@ -70,7 +70,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDocument) : 
     }
 
     public actual fun setBlob(key: String, value: Blob?): MutableDocument = chain {
-        setBlob(key, value)
+        setBlob(key, value?.actual)
     }
 
     public actual fun setDate(key: String, value: Instant?): MutableDocument = chain {

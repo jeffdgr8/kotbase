@@ -17,7 +17,7 @@ internal constructor(actual: CBLArray) :
         get() = actual.count.toInt()
 
     public actual fun getValue(index: Int): Any? =
-        actual.valueAtIndex(index.convert())
+        actual.valueAtIndex(index.convert())?.delegateIfNecessary()
 
     public actual fun getString(index: Int): String? =
         actual.stringAtIndex(index.convert())
@@ -53,13 +53,13 @@ internal constructor(actual: CBLArray) :
         actual.dictionaryAtIndex(index.convert())?.asDictionary()
 
     public actual fun toList(): List<Any?> =
-        actual.toArray()
+        actual.toArray().delegateIfNecessary()
 
     public actual fun toJSON(): String =
         actual.toJSON()
 
     override operator fun iterator(): Iterator<Any?> =
-        ArrayIterator(count())
+        ArrayIterator(count)
 
     private inner class ArrayIterator(private val count: Int) : Iterator<Any?> {
 

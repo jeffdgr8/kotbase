@@ -2,8 +2,6 @@ package com.couchbase.lite.kmm
 
 import com.udobny.kmm.chain
 import com.udobny.kmm.ext.toDate
-import com.udobny.kmm.ext.toNativeDateDeep
-import com.udobny.kmm.ext.toNativeDatesDeep
 import kotlinx.datetime.Instant
 
 public actual class MutableArray
@@ -12,7 +10,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
     public actual constructor() : this(com.couchbase.lite.MutableArray())
 
     public actual constructor(data: List<Any?>) : this(
-        com.couchbase.lite.MutableArray(data.toNativeDatesDeep())
+        com.couchbase.lite.MutableArray(data.actualIfDelegated())
     )
 
     public actual constructor(json: String) : this(com.couchbase.lite.MutableArray(json))
@@ -21,7 +19,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
         chain(actual, action)
 
     public actual fun setData(data: List<Any?>): MutableArray = chain {
-        setData(data.toNativeDatesDeep())
+        setData(data.actualIfDelegated())
     }
 
     public actual fun setJSON(json: String): MutableArray = chain {
@@ -29,7 +27,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
     }
 
     public actual fun setValue(index: Int, value: Any?): MutableArray = chain {
-        setValue(index, value?.toNativeDateDeep())
+        setValue(index, value?.actualIfDelegated())
     }
 
     public actual fun setString(index: Int, value: String?): MutableArray = chain {
@@ -61,7 +59,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
     }
 
     public actual fun setBlob(index: Int, value: Blob?): MutableArray = chain {
-        setBlob(index, value)
+        setBlob(index, value?.actual)
     }
 
     public actual fun setArray(index: Int, value: Array?): MutableArray = chain {
@@ -77,7 +75,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
     }
 
     public actual fun addValue(value: Any?): MutableArray = chain {
-        addValue(value?.toNativeDateDeep())
+        addValue(value?.actualIfDelegated())
     }
 
     public actual fun addString(value: String?): MutableArray = chain {
@@ -109,7 +107,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
     }
 
     public actual fun addBlob(value: Blob?): MutableArray = chain {
-        addBlob(value)
+        addBlob(value?.actual)
     }
 
     public actual fun addDate(value: Instant?): MutableArray = chain {
@@ -125,7 +123,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
     }
 
     public actual fun insertValue(index: Int, value: Any?): MutableArray = chain {
-        insertValue(index, value?.toNativeDateDeep())
+        insertValue(index, value?.actualIfDelegated())
     }
 
     public actual fun insertString(index: Int, value: String?): MutableArray = chain {
@@ -157,7 +155,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
     }
 
     public actual fun insertBlob(index: Int, value: Blob?): MutableArray = chain {
-        insertBlob(index, value)
+        insertBlob(index, value?.actual)
     }
 
     public actual fun insertDate(index: Int, value: Instant?): MutableArray = chain {

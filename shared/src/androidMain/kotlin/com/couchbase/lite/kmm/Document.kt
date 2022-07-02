@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.toKotlinInstant
 import kotlinx.datetime.Instant
+import java.util.*
 
 public actual open class Document
 internal constructor(actual: com.couchbase.lite.Document) :
@@ -27,7 +28,7 @@ internal constructor(actual: com.couchbase.lite.Document) :
         get() = actual.keys
 
     public actual fun getValue(key: String): Any? =
-        actual.getValue(key)
+        actual.getValue(key)?.delegateIfNecessary()
 
     public actual fun getString(key: String): String? =
         actual.getString(key)
@@ -63,7 +64,7 @@ internal constructor(actual: com.couchbase.lite.Document) :
         actual.getDictionary(key)?.asDictionary()
 
     public actual fun toMap(): Map<String, Any?> =
-        actual.toMap()
+        actual.toMap().delegateIfNecessary()
 
     public actual fun toJSON(): String? =
         actual.toJSON()

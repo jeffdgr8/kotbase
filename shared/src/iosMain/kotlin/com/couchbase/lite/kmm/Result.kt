@@ -14,7 +14,7 @@ internal constructor(actual: CBLQueryResult) :
         get() = actual.count().toInt()
 
     public actual fun getValue(index: Int): Any? =
-        actual.valueAtIndex(index.convert())
+        actual.valueAtIndex(index.convert())?.delegateIfNecessary()
 
     public actual fun getString(index: Int): String? =
         actual.stringAtIndex(index.convert())
@@ -50,14 +50,14 @@ internal constructor(actual: CBLQueryResult) :
         actual.dictionaryAtIndex(index.convert())?.asDictionary()
 
     public actual fun toList(): List<Any?> =
-        actual.toArray()
+        actual.toArray().delegateIfNecessary()
 
     @Suppress("UNCHECKED_CAST")
     public actual val keys: List<String>
         get() = actual.keys as List<String>
 
     public actual fun getValue(key: String): Any? =
-        actual.valueForKey(key)
+        actual.valueForKey(key)?.delegateIfNecessary()
 
     public actual fun getString(key: String): String? =
         actual.stringForKey(key)
@@ -94,7 +94,7 @@ internal constructor(actual: CBLQueryResult) :
 
     @Suppress("UNCHECKED_CAST")
     public actual fun toMap(): Map<String, Any?> =
-        actual.toDictionary() as Map<String, Any?>
+        actual.toDictionary().delegateIfNecessary() as Map<String, Any?>
 
     public actual fun toJSON(): String =
         actual.toJSON()

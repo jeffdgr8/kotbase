@@ -29,7 +29,7 @@ internal constructor(actual: CBLDocument) :
         get() = actual.keys as List<String>
 
     public actual fun getValue(key: String): Any? =
-        actual.valueForKey(key)
+        actual.valueForKey(key)?.delegateIfNecessary()
 
     public actual fun getString(key: String): String? =
         actual.stringForKey(key)
@@ -66,7 +66,7 @@ internal constructor(actual: CBLDocument) :
 
     @Suppress("UNCHECKED_CAST")
     public actual fun toMap(): Map<String, Any?> =
-        actual.toDictionary() as Map<String, Any?>
+        actual.toDictionary().delegateIfNecessary() as Map<String, Any?>
 
     public actual fun toJSON(): String? =
         actual.toJSON()

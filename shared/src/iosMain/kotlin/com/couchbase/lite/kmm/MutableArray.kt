@@ -16,7 +16,9 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual constructor() : this(CBLMutableArray())
 
-    public actual constructor(data: List<Any?>) : this(CBLMutableArray(data.toNativeDatesDeep()))
+    public actual constructor(data: List<Any?>) : this(
+        CBLMutableArray(data.actualIfDelegated())
+    )
 
     public actual constructor(json: String) : this(
         wrapError(NSError::toCouchbaseLiteException) { error ->
@@ -27,7 +29,8 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     private inline fun chain(action: CBLMutableArray.() -> Unit) = chain(actual, action)
 
     public actual fun setData(data: List<Any?>): MutableArray = chain {
-        setData(data.toNativeDatesDeep())
+        data.forEach { checkSelf(it) }
+        setData(data.actualIfDelegated())
     }
 
     public actual fun setJSON(json: String): MutableArray = chain {
@@ -37,7 +40,8 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun setValue(index: Int, value: Any?): MutableArray = chain {
-        setValue(value?.toNativeDateDeep(), index.convert())
+        checkSelf(value)
+        setValue(value?.actualIfDelegated(), index.convert())
     }
 
     public actual fun setString(index: Int, value: String?): MutableArray = chain {
@@ -73,6 +77,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun setArray(index: Int, value: Array?): MutableArray = chain {
+        checkSelf(value)
         setArray(value?.actual, index.convert())
     }
 
@@ -85,7 +90,8 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun addValue(value: Any?): MutableArray = chain {
-        addValue(value?.toNativeDateDeep())
+        checkSelf(value)
+        addValue(value?.actualIfDelegated())
     }
 
     public actual fun addString(value: String?): MutableArray = chain {
@@ -125,6 +131,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun addArray(value: Array?): MutableArray = chain {
+        checkSelf(value)
         addArray(value?.actual)
     }
 
@@ -133,7 +140,8 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun insertValue(index: Int, value: Any?): MutableArray = chain {
-        insertValue(value?.toNativeDateDeep(), index.convert())
+        checkSelf(value)
+        insertValue(value?.actualIfDelegated(), index.convert())
     }
 
     public actual fun insertString(index: Int, value: String?): MutableArray = chain {
@@ -173,6 +181,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun insertArray(index: Int, value: Array?): MutableArray = chain {
+        checkSelf(value)
         insertArray(value?.actual, index.convert())
     }
 
@@ -189,6 +198,13 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     actual override fun getDictionary(index: Int): MutableDictionary? =
         actual.dictionaryAtIndex(index.convert())?.asMutableDictionary()
+
+    // Java performs this check, but Objective-C does not
+    private fun checkSelf(value: Any?) {
+        if (value === this) {
+            throw IllegalArgumentException("Arrays cannot ba added to themselves")
+        }
+    }
 }
 
 internal fun CBLMutableArray.asMutableArray() = MutableArray(this)

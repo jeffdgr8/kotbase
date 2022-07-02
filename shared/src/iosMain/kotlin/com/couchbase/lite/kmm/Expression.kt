@@ -15,7 +15,7 @@ internal constructor(actual: CBLQueryExpression) :
     public actual companion object {
 
         public actual fun value(value: Any?): Expression =
-            Expression(CBLQueryExpression.value(value))
+            Expression(CBLQueryExpression.value(value?.actualIfDelegated()))
 
         public actual fun string(value: String?): Expression =
             Expression(CBLQueryExpression.string(value))
@@ -41,12 +41,11 @@ internal constructor(actual: CBLQueryExpression) :
         public actual fun date(value: Instant?): Expression =
             Expression(CBLQueryExpression.date(value?.toNSDate()))
 
-        @Suppress("UNCHECKED_CAST")
         public actual fun map(value: Map<String, Any?>?): Expression =
-            Expression(CBLQueryExpression.dictionary(value as Map<Any?, *>))
+            Expression(CBLQueryExpression.dictionary(value?.actualIfDelegated()))
 
         public actual fun list(value: List<Any?>?): Expression =
-            Expression(CBLQueryExpression.array(value))
+            Expression(CBLQueryExpression.array(value?.actualIfDelegated()))
 
         public actual fun all(): PropertyExpression =
             PropertyExpression("") // CBLPropertyExpression.kCBLAllPropertiesName = ""

@@ -4,8 +4,6 @@ import cocoapods.CouchbaseLite.CBLMutableDictionary
 import com.couchbase.lite.kmm.ext.throwError
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.udobny.kmm.chain
-import com.udobny.kmm.ext.toNativeDateDeep
-import com.udobny.kmm.ext.toNativeDateValuesDeep
 import com.udobny.kmm.ext.wrapError
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
@@ -19,8 +17,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
     public actual constructor() : this(CBLMutableDictionary())
 
     public actual constructor(data: Map<String, Any?>) : this(
-        @Suppress("UNCHECKED_CAST")
-        CBLMutableDictionary((data as Map<Any?, *>).toNativeDateValuesDeep())
+        CBLMutableDictionary(data.actualIfDelegated())
     )
 
     public actual constructor(json: String) : this(
@@ -32,8 +29,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
     private inline fun chain(action: CBLMutableDictionary.() -> Unit) = chain(actual, action)
 
     public actual fun setData(data: Map<String, Any?>): MutableDictionary = chain {
-        @Suppress("UNCHECKED_CAST")
-        setData((data as Map<Any?, *>).toNativeDateValuesDeep())
+        setData(data.actualIfDelegated())
     }
 
     public actual fun setJSON(json: String): MutableDictionary = chain {
@@ -43,7 +39,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDictionary = chain {
-        setValue(value?.toNativeDateDeep(), key)
+        setValue(value?.actualIfDelegated(), key)
     }
 
     public actual fun setString(key: String, value: String?): MutableDictionary = chain {

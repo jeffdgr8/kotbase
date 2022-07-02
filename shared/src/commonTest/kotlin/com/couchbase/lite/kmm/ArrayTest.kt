@@ -13,7 +13,7 @@ class ArrayTest : BaseDbTest() {
     @Throws(CouchbaseLiteException::class)
     fun testCreate() {
         val array = MutableArray()
-        assertEquals(0, array.count())
+        assertEquals(0, array.count)
         assertEquals(emptyList(), array.toList())
         val doc = MutableDocument("doc1")
         doc.setValue("array", array)
@@ -30,12 +30,12 @@ class ArrayTest : BaseDbTest() {
         data.add("2")
         data.add("3")
         val array = MutableArray(data)
-        assertEquals(3, array.count())
+        assertEquals(3, array.count)
         assertEquals(data, array.toList())
         val doc = MutableDocument("doc1")
         doc.setValue("array", array)
         assertEquals(array, doc.getArray("array"))
-        val savedDoc: Document = saveDocInBaseTestDb(doc)
+        val savedDoc = saveDocInBaseTestDb(doc)
         assertEquals(data, savedDoc.getArray("array")?.toList())
     }
 
@@ -56,14 +56,14 @@ class ArrayTest : BaseDbTest() {
         data.add("3")
         var array = MutableArray()
         array.setData(data)
-        assertEquals(3, array.count())
+        assertEquals(3, array.count)
         assertEquals(data, array.toList())
         val doc = MutableDocument("doc1")
         doc.setValue("array", array)
         assertEquals(array, doc.getArray("array"))
 
         // save
-        val savedDoc: Document = saveDocInBaseTestDb(doc)
+        val savedDoc = saveDocInBaseTestDb(doc)
         assertEquals(data, savedDoc.getArray("array")?.toList())
 
         // update
@@ -73,7 +73,7 @@ class ArrayTest : BaseDbTest() {
         data.add("5")
         data.add("6")
         array.setData(data)
-        assertEquals(data.size, array.count())
+        assertEquals(data.size, array.count)
         assertEquals(data, array.toList())
     }
 
@@ -84,7 +84,7 @@ class ArrayTest : BaseDbTest() {
         array.addValue(null)
         val doc = MutableDocument("doc1")
         save(doc, "array", array) { a ->
-            assertEquals(1, a.count())
+            assertEquals(1, a.count)
             assertNull(a.getValue(0))
         }
     }
@@ -103,7 +103,7 @@ class ArrayTest : BaseDbTest() {
             }
             val doc = MutableDocument("doc1")
             save(doc, "array", array) { a ->
-                assertEquals(12, a.count())
+                assertEquals(12, a.count)
                 assertEquals(true, a.getValue(0))
                 assertEquals(false, a.getValue(1))
                 assertEquals("string", a.getValue(2))
@@ -156,7 +156,7 @@ class ArrayTest : BaseDbTest() {
             // Get an existing array:
             array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
 
             // Update:
             if (i % 2 == 0) {
@@ -164,9 +164,9 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(24, array.count())
+            assertEquals(24, array.count)
             save(doc, "array", array) { a ->
-                assertEquals(24, a.count())
+                assertEquals(24, a.count)
                 assertEquals(true, a.getValue(12))
                 assertEquals(false, a.getValue(12 + 1))
                 assertEquals("string", a.getValue(12 + 2))
@@ -216,7 +216,7 @@ class ArrayTest : BaseDbTest() {
         }
         val doc = MutableDocument("doc1")
         save(doc, "array", array) { a ->
-            assertEquals(12, a.count())
+            assertEquals(12, a.count)
             assertEquals(true, a.getValue(0))
             assertEquals(false, a.getValue(1))
             assertEquals("string", a.getValue(2))
@@ -266,14 +266,14 @@ class ArrayTest : BaseDbTest() {
             doc = saveDocInBaseTestDb(doc).toMutable()
             val gotArray = doc.getArray("array")!!
             val data = arrayOfAllTypes()
-            assertEquals(data.size, gotArray.count())
+            assertEquals(data.size, gotArray.count)
 
             // reverse the array
             for (j in data.indices) {
                 gotArray.setValue(j, data[data.size - j - 1])
             }
             save(doc, "array", gotArray) { a ->
-                assertEquals(12, a.count())
+                assertEquals(12, a.count)
                 assertEquals(true, a.getValue(11))
                 assertEquals(false, a.getValue(10))
                 assertEquals("string", a.getValue(9))
@@ -318,25 +318,25 @@ class ArrayTest : BaseDbTest() {
     fun testInsertObject() {
         val array = MutableArray()
         array.insertValue(0, "a")
-        assertEquals(1, array.count())
+        assertEquals(1, array.count)
         assertEquals("a", array.getValue(0))
         array.insertValue(0, "c")
-        assertEquals(2, array.count())
+        assertEquals(2, array.count)
         assertEquals("c", array.getValue(0))
         assertEquals("a", array.getValue(1))
         array.insertValue(1, "d")
-        assertEquals(3, array.count())
+        assertEquals(3, array.count)
         assertEquals("c", array.getValue(0))
         assertEquals("d", array.getValue(1))
         assertEquals("a", array.getValue(2))
         array.insertValue(2, "e")
-        assertEquals(4, array.count())
+        assertEquals(4, array.count)
         assertEquals("c", array.getValue(0))
         assertEquals("d", array.getValue(1))
         assertEquals("e", array.getValue(2))
         assertEquals("a", array.getValue(3))
         array.insertValue(4, "f")
-        assertEquals(5, array.count())
+        assertEquals(5, array.count)
         assertEquals("c", array.getValue(0))
         assertEquals("d", array.getValue(1))
         assertEquals("e", array.getValue(2))
@@ -355,7 +355,7 @@ class ArrayTest : BaseDbTest() {
         assertNotNull(mArray)
         mArray.insertValue(0, "a")
         doc = save(mDoc, "array", mArray) { a ->
-            assertEquals(1, a.count())
+            assertEquals(1, a.count)
             assertEquals("a", a.getValue(0))
         }
         mDoc = doc.toMutable()
@@ -363,7 +363,7 @@ class ArrayTest : BaseDbTest() {
         assertNotNull(mArray)
         mArray.insertValue(0, "c")
         doc = save(mDoc, "array", mArray) { a ->
-            assertEquals(2, a.count())
+            assertEquals(2, a.count)
             assertEquals("c", a.getValue(0))
             assertEquals("a", a.getValue(1))
         }
@@ -372,7 +372,7 @@ class ArrayTest : BaseDbTest() {
         assertNotNull(mArray)
         mArray.insertValue(1, "d")
         doc = save(mDoc, "array", mArray) { a ->
-            assertEquals(3, a.count())
+            assertEquals(3, a.count)
             assertEquals("c", a.getValue(0))
             assertEquals("d", a.getValue(1))
             assertEquals("a", a.getValue(2))
@@ -382,7 +382,7 @@ class ArrayTest : BaseDbTest() {
         assertNotNull(mArray)
         mArray.insertValue(2, "e")
         doc = save(mDoc, "array", mArray) { a ->
-            assertEquals(4, a.count())
+            assertEquals(4, a.count)
             assertEquals("c", a.getValue(0))
             assertEquals("d", a.getValue(1))
             assertEquals("e", a.getValue(2))
@@ -393,7 +393,7 @@ class ArrayTest : BaseDbTest() {
         assertNotNull(mArray)
         mArray.insertValue(4, "f")
         save(mDoc, "array", mArray) { a ->
-            assertEquals(5, a.count())
+            assertEquals(5, a.count)
             assertEquals("c", a.getValue(0))
             assertEquals("d", a.getValue(1))
             assertEquals("e", a.getValue(2))
@@ -420,13 +420,13 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            for (j in array.count() - 1 downTo 0) {
+            for (j in array.count - 1 downTo 0) {
                 array.remove(j)
             }
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
-                assertEquals(0, a.count())
+                assertEquals(0, a.count)
                 assertEquals(emptyList(), a.toList())
             }
         }
@@ -447,11 +447,11 @@ class ArrayTest : BaseDbTest() {
             doc.setValue("array", array)
             doc = saveDocInBaseTestDb(doc).toMutable()
             array = doc.getArray("array")!!
-            for (j in array.count() - 1 downTo 0) {
+            for (j in array.count - 1 downTo 0) {
                 array.remove(j)
             }
             save(doc, "array", array) { a ->
-                assertEquals(0, a.count())
+                assertEquals(0, a.count)
                 assertEquals(emptyList(), a.toList())
             }
         }
@@ -478,7 +478,7 @@ class ArrayTest : BaseDbTest() {
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
-                assertEquals(12, a.count())
+                assertEquals(12, a.count)
             }
         }
     }
@@ -493,7 +493,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -524,7 +524,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -554,7 +554,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -584,7 +584,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -614,7 +614,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -644,7 +644,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -769,7 +769,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -799,7 +799,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -829,7 +829,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -861,7 +861,7 @@ class ArrayTest : BaseDbTest() {
             } else {
                 populateDataByType(array)
             }
-            assertEquals(12, array.count())
+            assertEquals(12, array.count)
             val docID = "doc$i"
             val doc = MutableDocument(docID)
             save(doc, "array", array) { a ->
@@ -893,11 +893,11 @@ class ArrayTest : BaseDbTest() {
         array3.addValue("c")
         val doc = MutableDocument("doc1")
         save(doc, "array", array1) { a1 ->
-            assertEquals(1, a1.count())
+            assertEquals(1, a1.count)
             val a2 = a1.getArray(0)!!
-            assertEquals(1, a2.count())
+            assertEquals(1, a2.count)
             val a3 = a2.getArray(0)!!
-            assertEquals(3, a3.count())
+            assertEquals(3, a3.count)
             assertEquals("a", a3.getValue(0))
             assertEquals("b", a3.getValue(1))
             assertEquals("c", a3.getValue(2))
@@ -912,14 +912,14 @@ class ArrayTest : BaseDbTest() {
         array1.addValue("a")
         array1.addValue("b")
         array1.addValue("c")
-        assertEquals(3, array1.count())
+        assertEquals(3, array1.count)
         assertEquals(listOf("a", "b", "c"), array1.toList())
         doc.setValue("array", array1)
         var array2 = MutableArray()
         array2.addValue("x")
         array2.addValue("y")
         array2.addValue("z")
-        assertEquals(3, array2.count())
+        assertEquals(3, array2.count)
         assertEquals(listOf("x", "y", "z"), array2.toList())
 
         // Replace:
@@ -927,11 +927,11 @@ class ArrayTest : BaseDbTest() {
 
         // array1 should be now detached:
         array1.addValue("d")
-        assertEquals(4, array1.count())
+        assertEquals(4, array1.count)
         assertEquals(listOf("a", "b", "c", "d"), array1.toList())
 
         // Check array2:
-        assertEquals(3, array2.count())
+        assertEquals(3, array2.count)
         assertEquals(listOf("x", "y", "z"), array2.toList())
 
         // Save:
@@ -940,7 +940,7 @@ class ArrayTest : BaseDbTest() {
         // Check current array:
         assertNotSame(doc.getArray("array"), array2)
         array2 = doc.getArray("array")!!
-        assertEquals(3, array2.count())
+        assertEquals(3, array2.count)
         assertEquals(listOf("x", "y", "z"), array2.toList())
     }
 
@@ -952,7 +952,7 @@ class ArrayTest : BaseDbTest() {
         array1.addValue("a")
         array1.addValue("b")
         array1.addValue("c")
-        assertEquals(3, array1.count())
+        assertEquals(3, array1.count)
         assertEquals(listOf("a", "b", "c"), array1.toList())
         doc.setValue("array", array1)
 
@@ -961,7 +961,7 @@ class ArrayTest : BaseDbTest() {
 
         // array1 should be now detached:
         array1.addValue("d")
-        assertEquals(4, array1.count())
+        assertEquals(4, array1.count)
         assertEquals(listOf("a", "b", "c", "d"), array1.toList())
 
         // Save:
@@ -985,7 +985,7 @@ class ArrayTest : BaseDbTest() {
             counter++
         }
         assertEquals(content, result)
-        assertEquals(array.count(), counter)
+        assertEquals(array.count, counter)
 
         // Update:
         array.remove(1)
@@ -1018,7 +1018,7 @@ class ArrayTest : BaseDbTest() {
         for (i in 0..2) {
             array.addValue(i)
         }
-        assertEquals(3, array.count())
+        assertEquals(3, array.count)
         assertContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
         var n = 0
         val itr = array.iterator()
@@ -1028,7 +1028,7 @@ class ArrayTest : BaseDbTest() {
             }
             itr.next()
         }
-        assertEquals(4, array.count())
+        assertEquals(4, array.count)
         assertContentEquals(arrayOf(0, 1, 2, 3), array.toList().toTypedArray())
     }
 
@@ -1040,7 +1040,7 @@ class ArrayTest : BaseDbTest() {
         for (i in 0..2) {
             array!!.addValue(i)
         }
-        assertEquals(3, array!!.count())
+        assertEquals(3, array!!.count)
         assertContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
         val doc = MutableDocument("doc1").setValue("array", array)
         array = saveDocInBaseTestDb(doc).toMutable().getArray("array")
@@ -1053,7 +1053,7 @@ class ArrayTest : BaseDbTest() {
             }
             itr.next()
         }
-        assertEquals(4, array.count())
+        assertEquals(4, array.count)
         // this is friggin' bizarre:
         // after a roundtrip through the db those integers turn into longs
         assertContentEquals(arrayOf(0L, 1L, 2L, 3), array.toList().toTypedArray())
@@ -1072,11 +1072,11 @@ class ArrayTest : BaseDbTest() {
         mArray.addDictionary(null)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(6, array.count())
+            assertEquals(6, array.count)
             assertNull(array.getValue(0))
             assertNull(array.getValue(1))
             assertNull(array.getValue(2))
@@ -1371,11 +1371,11 @@ class ArrayTest : BaseDbTest() {
         mArray.addInt(Int.MIN_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals(0, array.getInt(0))
             assertEquals(Int.MAX_VALUE, array.getInt(1))
             assertEquals(Int.MIN_VALUE, array.getInt(2))
@@ -1395,11 +1395,11 @@ class ArrayTest : BaseDbTest() {
         mArray.setInt(2, 0)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals(0, array.getInt(2))
             assertEquals(Int.MAX_VALUE, array.getInt(0))
             assertEquals(Int.MIN_VALUE, array.getInt(1))
@@ -1417,11 +1417,11 @@ class ArrayTest : BaseDbTest() {
         mArray.insertInt(2, Int.MIN_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(4, array.count())
+            assertEquals(4, array.count)
             assertEquals(0, array.getInt(0))
             assertEquals(Int.MAX_VALUE, array.getInt(1))
             assertEquals(Int.MIN_VALUE, array.getInt(2))
@@ -1439,11 +1439,11 @@ class ArrayTest : BaseDbTest() {
         mArray.addLong(Long.MIN_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals(0, array.getLong(0))
             assertEquals(Long.MAX_VALUE, array.getLong(1))
             assertEquals(Long.MIN_VALUE, array.getLong(2))
@@ -1463,11 +1463,11 @@ class ArrayTest : BaseDbTest() {
         mArray.setLong(2, 0)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals(0, array.getLong(2))
             assertEquals(Long.MAX_VALUE, array.getLong(0))
             assertEquals(Long.MIN_VALUE, array.getLong(1))
@@ -1485,11 +1485,11 @@ class ArrayTest : BaseDbTest() {
         mArray.insertLong(2, Long.MIN_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(4, array.count())
+            assertEquals(4, array.count)
             assertEquals(0, array.getLong(0))
             assertEquals(Long.MAX_VALUE, array.getLong(1))
             assertEquals(Long.MIN_VALUE, array.getLong(2))
@@ -1507,11 +1507,11 @@ class ArrayTest : BaseDbTest() {
         mArray.addFloat(Float.MIN_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals(0.0f, array.getFloat(0), 0.0f)
             assertEquals(Float.MAX_VALUE, array.getFloat(1), 0.0f)
             assertEquals(Float.MIN_VALUE, array.getFloat(2), 0.0f)
@@ -1531,11 +1531,11 @@ class ArrayTest : BaseDbTest() {
         mArray.setFloat(2, 0f)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals(0.0f, array.getLong(2).toFloat(), 0.0f)
             assertEquals(Float.MAX_VALUE, array.getFloat(0), 0.0f)
             assertEquals(Float.MIN_VALUE, array.getFloat(1), 0.0f)
@@ -1553,11 +1553,11 @@ class ArrayTest : BaseDbTest() {
         mArray.insertFloat(2, Float.MIN_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(4, array.count())
+            assertEquals(4, array.count)
             assertEquals(0f, array.getFloat(0), 0f)
             assertEquals(Float.MAX_VALUE, array.getFloat(1), 0f)
             assertEquals(Float.MIN_VALUE, array.getFloat(2), 0f)
@@ -1575,11 +1575,11 @@ class ArrayTest : BaseDbTest() {
         mArray.addDouble(Double.MIN_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals(0.0, array.getDouble(0), 0.0)
             assertEquals(Double.MAX_VALUE, array.getDouble(1), 0.0)
             assertEquals(Double.MIN_VALUE, array.getDouble(2), 0.0)
@@ -1599,11 +1599,11 @@ class ArrayTest : BaseDbTest() {
         mArray.setDouble(2, 0.0)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals(0.0, array.getDouble(2), 0.0)
             assertEquals(Double.MAX_VALUE, array.getDouble(0), 0.0)
             assertEquals(Double.MIN_VALUE, array.getDouble(1), 0.0)
@@ -1621,11 +1621,11 @@ class ArrayTest : BaseDbTest() {
         mArray.insertDouble(2, Double.MIN_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(4, array.count())
+            assertEquals(4, array.count)
             assertEquals(0.0, array.getDouble(0), 0.0)
             assertEquals(Double.MAX_VALUE, array.getDouble(1), 0.0)
             assertEquals(Double.MIN_VALUE, array.getDouble(2), 0.0)
@@ -1643,11 +1643,11 @@ class ArrayTest : BaseDbTest() {
         mArray.addNumber(Double.MAX_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
 
             assertEquals(Int.MAX_VALUE, array.getNumber(0)?.toInt())
             assertEquals(Long.MAX_VALUE, array.getNumber(1)?.toLong())
@@ -1668,11 +1668,11 @@ class ArrayTest : BaseDbTest() {
         mArray.setNumber(2, Int.MAX_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals(Int.MAX_VALUE, array.getNumber(2)?.toInt())
             assertEquals(Long.MAX_VALUE, array.getNumber(0)?.toLong())
             assertEquals(Double.MAX_VALUE, array.getNumber(1)!!.toDouble(), 0.0)
@@ -1690,11 +1690,11 @@ class ArrayTest : BaseDbTest() {
         mArray.insertNumber(2, Double.MAX_VALUE)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(4, array.count())
+            assertEquals(4, array.count)
             assertEquals(Int.MAX_VALUE, array.getInt(0))
             assertEquals(Long.MAX_VALUE, array.getLong(1))
             assertEquals(Double.MAX_VALUE, array.getDouble(2), 0.0)
@@ -1712,11 +1712,11 @@ class ArrayTest : BaseDbTest() {
         mArray.addString("World")
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals("", array.getString(0))
             assertEquals("Hello", array.getString(1))
             assertEquals("World", array.getString(2))
@@ -1736,11 +1736,11 @@ class ArrayTest : BaseDbTest() {
         mArray.setString(2, "")
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(3, array.count())
+            assertEquals(3, array.count)
             assertEquals("", array.getString(2))
             assertEquals("Hello", array.getString(0))
             assertEquals("World", array.getString(1))
@@ -1758,11 +1758,11 @@ class ArrayTest : BaseDbTest() {
         mArray.insertString(2, "!")
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(4, array.count())
+            assertEquals(4, array.count)
             assertEquals("Hello", array.getString(0))
             assertEquals("World", array.getString(1))
             assertEquals("!", array.getString(2))
@@ -1779,11 +1779,11 @@ class ArrayTest : BaseDbTest() {
         mArray.addBoolean(false)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(2, array.count())
+            assertEquals(2, array.count)
             assertTrue(array.getBoolean(0))
             assertFalse(array.getBoolean(1))
         }
@@ -1800,11 +1800,11 @@ class ArrayTest : BaseDbTest() {
         mArray.setBoolean(1, true)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(2, array.count())
+            assertEquals(2, array.count)
             assertTrue(array.getBoolean(1))
             assertFalse(array.getBoolean(0))
         }
@@ -1821,11 +1821,11 @@ class ArrayTest : BaseDbTest() {
         mArray.insertBoolean(1, false)
         mDoc.setArray("array", mArray)
         saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count())
+            assertEquals(1, doc.count)
             assertTrue(doc.contains("array"))
             val array = doc.getArray("array")
             assertNotNull(array)
-            assertEquals(4, array.count())
+            assertEquals(4, array.count)
             assertTrue(array.getBoolean(0))
             assertFalse(array.getBoolean(1))
             assertFalse(array.getBoolean(2))

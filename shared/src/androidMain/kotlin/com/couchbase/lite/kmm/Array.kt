@@ -15,7 +15,7 @@ internal constructor(actual: com.couchbase.lite.Array) :
         get() = actual.count()
 
     public actual fun getValue(index: Int): Any? =
-        actual.getValue(index)
+        actual.getValue(index)?.delegateIfNecessary()
 
     public actual fun getString(index: Int): String? =
         actual.getString(index)
@@ -51,13 +51,21 @@ internal constructor(actual: com.couchbase.lite.Array) :
         actual.getDictionary(index)?.asDictionary()
 
     public actual fun toList(): List<Any?> =
-        actual.toList()
+        actual.toList().delegateIfNecessary()
 
     public actual fun toJSON(): String =
         actual.toJSON()
 
-    override operator fun iterator(): Iterator<Any?> =
-        actual.iterator()
+    override operator fun iterator(): Iterator<Any?> {
+        return object : Iterator<Any?> {
+
+            private val itr = actual.iterator()
+
+            override fun hasNext(): Boolean = itr.hasNext()
+
+            override fun next(): Any? = itr.next()?.delegateIfNecessary()
+        }
+    }
 }
 
 internal fun com.couchbase.lite.Array.asArray() = Array(this)
