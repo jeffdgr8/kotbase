@@ -7,4 +7,4 @@ pluginManagement {
 }
 
 rootProject.name = "CouchbaseLite-KMM"
-include(":shared")
+include(":lib")
