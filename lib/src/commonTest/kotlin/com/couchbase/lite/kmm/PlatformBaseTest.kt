@@ -5,7 +5,7 @@ import com.udobny.kmm.test.AndroidInstrumented
 /**
  * Contains methods required for the tests to run on both Android and Java platforms.
  */
-// annotate all test subclasses this way to ignore in androidTest
+// annotate all test subclasses this way to ignore in androidTest unit tests
 @AndroidInstrumented
 expect abstract class PlatformBaseTest() {
 
@@ -13,7 +13,7 @@ expect abstract class PlatformBaseTest() {
     fun setupPlatform()
 
     /* get a scratch directory */
-    //val tmpDir: java.io.File?
+    val tmpDir: String
 
     /* Reload the cross-platform error messages. */
     fun reloadStandardErrorMessages()

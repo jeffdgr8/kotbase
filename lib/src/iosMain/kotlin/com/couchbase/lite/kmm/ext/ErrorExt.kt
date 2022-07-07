@@ -11,7 +11,7 @@ import platform.darwin.NSObject
 @Suppress("UNCHECKED_CAST")
 internal fun NSError.toCouchbaseLiteException(): CouchbaseLiteException =
     CouchbaseLiteException(
-        description,
+        localizedDescription,
         null,
         domain,
         code.toInt(),

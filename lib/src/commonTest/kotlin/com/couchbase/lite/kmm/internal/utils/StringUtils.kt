@@ -7,7 +7,7 @@ object StringUtils {
     const val ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     const val NUMERIC = "0123456789"
     val ALPHANUMERIC = NUMERIC + ALPHA + ALPHA.lowercase()
-    private val CHARS: CharArray = ALPHANUMERIC.toCharArray()
+    private val CHARS = ALPHANUMERIC.toCharArray()
 
     fun getUniqueName(prefix: String, len: Int): String {
         return prefix + '_' + randomString(len)
@@ -16,9 +16,7 @@ object StringUtils {
     fun randomString(len: Int): String {
         val buf = CharArray(len)
         for (idx in buf.indices) {
-            buf[idx] = CHARS.get(
-                Random.nextInt(CHARS.size)
-            )
+            buf[idx] = CHARS[Random.nextInt(CHARS.size)]
         }
         return buf.concatToString()
     }
@@ -41,3 +39,9 @@ object StringUtils {
         return buf.toString()
     }
 }
+
+fun Int.paddedString(length: Int): String =
+    toString().padStart(length, '0')
+
+fun Long.paddedString(length: Int): String =
+    toString().padStart(length, '0')

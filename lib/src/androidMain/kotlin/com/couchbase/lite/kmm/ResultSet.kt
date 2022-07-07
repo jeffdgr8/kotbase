@@ -4,7 +4,7 @@ import com.udobny.kmm.DelegatedClass
 
 public actual class ResultSet
 internal constructor(actual: com.couchbase.lite.ResultSet) :
-    DelegatedClass<com.couchbase.lite.ResultSet>(actual), Iterable<Result> {
+    DelegatedClass<com.couchbase.lite.ResultSet>(actual), Iterable<Result>, AutoCloseable {
 
     public actual operator fun next(): Result? =
         actual.next()?.asResult()
@@ -24,6 +24,10 @@ internal constructor(actual: com.couchbase.lite.ResultSet) :
             override fun next(): Result =
                 Result(iter.next())
         }
+    }
+
+    override fun close() {
+        actual.close()
     }
 }
 

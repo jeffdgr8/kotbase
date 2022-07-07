@@ -1,20 +1,17 @@
 package com.couchbase.lite.kmm
 
 /**
- * Platform test class for Android.
+ * Dummy class (unused in unit tests)
  */
 actual abstract class PlatformBaseTest {
 
-    actual fun setupPlatform() {
-    }
+    actual fun setupPlatform() {}
 
-    actual fun reloadStandardErrorMessages() {
-    }
+    actual val tmpDir: String = ""
 
-    actual fun executeAsync(delayMs: Long, task: () -> Unit) {
-    }
+    actual fun reloadStandardErrorMessages() {}
 
-    actual fun getExclusions(tag: String): Exclusion? {
-        return null
-    }
+    actual fun executeAsync(delayMs: Long, task: () -> Unit) {}
+
+    actual fun getExclusions(tag: String): Exclusion? = null
 }

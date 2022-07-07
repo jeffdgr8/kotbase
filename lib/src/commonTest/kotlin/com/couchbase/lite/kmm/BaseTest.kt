@@ -1,31 +1,43 @@
 package com.couchbase.lite.kmm
 
+import com.couchbase.lite.dbPath
+import com.couchbase.lite.isOpen
+import com.couchbase.lite.kmm.internal.utils.FileUtils
 import com.couchbase.lite.kmm.internal.utils.Report
 import com.couchbase.lite.kmm.internal.utils.StringUtils
+import com.couchbase.lite.kmm.internal.utils.paddedString
+import com.couchbase.lite.withLock
 import com.udobny.kmm.test.AfterClass
 import com.udobny.kmm.test.BeforeClass
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import okio.IOException
 import kotlin.jvm.JvmStatic
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Duration
 
 abstract class BaseTest : PlatformBaseTest() {
 
 //    protected var testSerialExecutor: CloseableExecutor? = null
 //    private var testName: String? = null
-//    private var startTime: Long = 0
-//
+    private var startTime: Instant = Instant.DISTANT_PAST
+
 //    @org.junit.Rule
 //    var watcher: TestRule = object : TestWatcher() {
 //        protected override fun starting(description: org.junit.runner.Description) {
 //            testName = description.getMethodName()
 //        }
 //    }
-//
-//    @BeforeTest
-//    fun setUpBaseTest() {
+
+    @BeforeTest
+    fun setUpBaseTest() {
 //        Report.log(LogLevel.INFO, ">>>>>>>> Test started: $testName")
+        Report.log(LogLevel.INFO, ">>>>>>>> Test started")
 //        com.couchbase.lite.internal.support.Log.initLogging()
-//        setupPlatform()
+        setupPlatform()
 //        testSerialExecutor = object : CloseableExecutor() {
 //            val executor: java.util.concurrent.ExecutorService =
 //                java.util.concurrent.Executors.newSingleThreadExecutor()
@@ -47,11 +59,11 @@ abstract class BaseTest : PlatformBaseTest() {
 //                return true
 //            }
 //        }
-//        startTime = System.currentTimeMillis()
-//    }
-//
-//    @AfterTest
-//    fun tearDownBaseTest() {
+        startTime = Clock.System.now()
+    }
+
+    @AfterTest
+    fun tearDownBaseTest() {
 //        var succeeded = false
 //        if (testSerialExecutor != null) {
 //            succeeded = testSerialExecutor.stop(2, java.util.concurrent.TimeUnit.SECONDS)
@@ -60,15 +72,20 @@ abstract class BaseTest : PlatformBaseTest() {
 //        Report.log(
 //            LogLevel.INFO,
 //            "<<<<<<<< Test completed(%s): %s",
-//            formatInterval(System.currentTimeMillis() - startTime),
+//            formatInterval(Clock.System.now() - startTime),
 //            testName
 //        )
-//    }
-//
+        Report.log(
+            LogLevel.INFO,
+            "<<<<<<<< Test completed(%s)",
+            formatInterval(Clock.System.now() - startTime)
+        )
+    }
+
 //    protected fun skipTestWhen(tag: String) {
-//        val exclusion: Exclusion = getExclusions(tag)
+//        val exclusion = getExclusions(tag)
 //        if (exclusion != null) {
-//            Assume.assumeFalse(exclusion.msg, exclusion.test.get())
+//            Assume.assumeFalse(exclusion.msg, exclusion.test())
 //        }
 //    }
 
@@ -99,21 +116,16 @@ abstract class BaseTest : PlatformBaseTest() {
 //        // assertTrue() provides a more relevant message than fail()
 //        assertTrue(false)
 //    }
-//
-//    protected fun getScratchDirectoryPath(name: String): String {
-//        return try {
-//            val path: String = com.couchbase.lite.internal.utils.FileUtils.verifyDir(
-//                File(
-//                    getTmpDir(),
-//                    name
-//                )
-//            ).getCanonicalPath()
-//            SCRATCH_DIRS.add(path)
-//            path
-//        } catch (e: IOException) {
-//            throw IllegalStateException("Failed creating scratch directory: $name", e)
-//        }
-//    }
+
+    protected fun getScratchDirectoryPath(name: String): String {
+        return try {
+            val path = FileUtils.getCanonicalPath(FileUtils.verifyDir("$tmpDir/$name"))
+            SCRATCH_DIRS.add(path)
+            path
+        } catch (e: IOException) {
+            throw IllegalStateException("Failed creating scratch directory: $name", e)
+        }
+    }
 
     // Prefer this method to any other way of creating a new database
     @Throws(CouchbaseLiteException::class)
@@ -123,9 +135,9 @@ abstract class BaseTest : PlatformBaseTest() {
     ): Database {
         val dbName = getUniqueName(name)
         val dbDir = "${config.getDirectory()}/$dbName.cblite2" // C4Database.DB_EXTENSION
-        assertFalse(dirExists(dbDir))
+        assertFalse(FileUtils.dirExists(dbDir))
         val db = Database(dbName, config)
-        assertTrue(dirExists(dbDir))
+        assertTrue(FileUtils.dirExists(dbDir))
         return db
     }
 
@@ -149,50 +161,43 @@ abstract class BaseTest : PlatformBaseTest() {
     }
 
     protected fun closeDb(db: Database?): Boolean {
-        // TODO:
         if (db == null) {
             return true
         }
-        return doSafely("Close db " + db.name) {
-            db.close()
+        return db.withLock {
+            if (!db.isOpen) {
+                true
+            } else {
+                doSafely("Close db " + db.name, db::close)
+            }
         }
-//        synchronized(db.getDbLock()) {
-//            if (db == null || !db.isOpen()) {
-//                return true
-//            }
-//        }
-//        return doSafely("Close db " + db!!.name, TaskThrows<CouchbaseLiteException> { db.close() })
     }
 
     protected fun deleteDb(db: Database?): Boolean {
-        // TODO:
         if (db == null) {
             return true
         }
-        return doSafely("Delete db " + db.name) {
-            db.delete()
+        val isOpen = db.withLock {
+            db.isOpen
         }
-//        if (db == null) {
-//            return true
-//        }
-//        var isOpen: Boolean
-//        synchronized(db.getDbLock()) { isOpen = db.isOpen() }
-//        // there is a race here... probably small.
-//        return if (isOpen) doSafely(
-//            "Delete db " + db.name,
-//            TaskThrows<CouchbaseLiteException> { db.delete() }) else com.couchbase.lite.internal.utils.FileUtils.eraseFileOrDir(
-//            db.getDbFile()
-//        )
+        println("path = ${db.path}")
+        println("dbPath = ${db.dbPath}")
+        // there is a race here... probably small.
+        return if (isOpen) {
+            doSafely("Delete db " + db.name, db::delete)
+        } else {
+            db.dbPath?.let { path ->
+                FileUtils.eraseFileOrDir(path)
+            } ?: true
+        }
     }
 
-//    protected fun formatInterval(ms: Long): String {
-//        var ms = ms
-//        val min: Long = java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(ms)
-//        ms -= java.util.concurrent.TimeUnit.MINUTES.toMillis(min)
-//        val sec: Long = java.util.concurrent.TimeUnit.MILLISECONDS.toSeconds(ms)
-//        ms -= java.util.concurrent.TimeUnit.SECONDS.toMillis(sec)
-//        return String.format("%02d:%02d.%03d", min, sec, ms)
-//    }
+    protected fun formatInterval(duration: Duration): String {
+        return duration.toComponents { min, sec, nano ->
+            val mil = nano / 1_000_000
+            "${min.paddedString(2)}:${sec.paddedString(2)}.${mil.paddedString(3)}"
+        }
+    }
 
     protected fun doSafely(
         taskDesc: String,
@@ -209,6 +214,7 @@ abstract class BaseTest : PlatformBaseTest() {
     }
 
     companion object {
+
         const val STD_TIMEOUT_SEC: Long = 10
         const val LONG_TIMEOUT_SEC: Long = 30
         val STD_TIMEOUT_MS = STD_TIMEOUT_SEC * 1000L
@@ -225,13 +231,10 @@ abstract class BaseTest : PlatformBaseTest() {
         @JvmStatic
         fun tearDownBaseTestSuite() {
             for (path in SCRATCH_DIRS) {
-                // TODO:
-                //com.couchbase.lite.internal.utils.FileUtils.eraseFileOrDir(path)
+                FileUtils.eraseFileOrDir(path)
             }
             SCRATCH_DIRS.clear()
             Report.log(LogLevel.INFO, "<<<<<<<<<<<< Suite completed")
         }
     }
 }
-
-expect fun dirExists(dir: String): Boolean

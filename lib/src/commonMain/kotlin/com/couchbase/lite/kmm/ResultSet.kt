@@ -1,10 +1,12 @@
 package com.couchbase.lite.kmm
 
+import com.udobny.kmm.AutoCloseable
+
 /**
  * A result set representing the query result. The result set is an iterator of
  * the [Result] objects.
  */
-public expect class ResultSet : Iterable<Result> {
+public expect class ResultSet : Iterable<Result>, AutoCloseable {
 
     /**
      * Move the cursor forward one row from its current row position.

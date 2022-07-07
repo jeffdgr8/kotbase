@@ -22,7 +22,7 @@ internal constructor(
 
     private val code = if (code > 0) code else 10
 
-    private val domain: String = domain ?: "CouchbaseLite"
+    private val domain: String = domain ?: CBLError.Domain.CBLITE
 
     public actual fun getDomain(): String = domain
 

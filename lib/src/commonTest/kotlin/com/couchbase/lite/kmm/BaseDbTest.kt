@@ -1,8 +1,11 @@
 package com.couchbase.lite.kmm
 
+import com.couchbase.lite.isOpen
 import com.couchbase.lite.kmm.internal.utils.JSONUtils
 import com.couchbase.lite.kmm.internal.utils.PlatformUtils
 import com.couchbase.lite.kmm.internal.utils.Report
+import com.couchbase.lite.kmm.internal.utils.paddedString
+import com.couchbase.lite.withLock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.*
 import okio.IOException
@@ -17,7 +20,7 @@ abstract class BaseDbTest : BaseTest() {
         fun accept(document: Document)
     }
 
-    protected var baseTestDb: Database? = null
+    protected lateinit var baseTestDb: Database
 
     @BeforeTest
     @Throws(CouchbaseLiteException::class)
@@ -25,21 +28,26 @@ abstract class BaseDbTest : BaseTest() {
         baseTestDb = createDb("base_db")
         Report.log(LogLevel.INFO, "Created base test DB: $baseTestDb")
         assertNotNull(baseTestDb)
+        baseTestDb.withLock { assertTrue(baseTestDb.isOpen) }
     }
 
     @AfterTest
     fun tearDownBaseDbTest() {
-        deleteDb(baseTestDb)
-        Report.log(LogLevel.INFO, "Deleted baseTestDb: $baseTestDb")
+        if (::baseTestDb.isInitialized) {
+            deleteDb(baseTestDb)
+            Report.log(LogLevel.INFO, "Deleted baseTestDb: $baseTestDb")
+        } else {
+            Report.log(LogLevel.INFO, "baseTestDb never initialized")
+        }
     }
 
     @Throws(CouchbaseLiteException::class)
     protected fun createSingleDocInBaseTestDb(docID: String?): Document {
-        val n = baseTestDb!!.count
+        val n = baseTestDb.count
         val doc = MutableDocument(docID)
         doc.setValue("key", 1)
         val savedDoc = saveDocInBaseTestDb(doc)
-        assertEquals(n + 1, baseTestDb!!.count)
+        assertEquals(n + 1, baseTestDb.count)
         assertEquals(1, savedDoc.sequence)
         return savedDoc
     }
@@ -58,8 +66,8 @@ abstract class BaseDbTest : BaseTest() {
 
     @Throws(CouchbaseLiteException::class)
     protected fun saveDocInBaseTestDb(doc: MutableDocument): Document {
-        baseTestDb!!.save(doc)
-        val savedDoc = baseTestDb!!.getDocument(doc.id)
+        baseTestDb.save(doc)
+        val savedDoc = baseTestDb.getDocument(doc.id)
         assertNotNull(savedDoc)
         assertEquals(doc.id, savedDoc.id)
         return savedDoc
@@ -145,8 +153,7 @@ abstract class BaseDbTest : BaseTest() {
                     val line = bufferedFileSource.readUtf8Line() ?: break
                     if (line.isBlank()) continue
 
-                    val id = n++.toString().padStart(3, '0')
-                    val doc = MutableDocument("doc-$id")
+                    val doc = MutableDocument("doc-${n++.paddedString(3)}")
                     doc.setData(JSONUtils.fromJSON(Json.parseToJsonElement(line).jsonObject))
 
                     saveDocInBaseTestDb(doc)
@@ -1170,10 +1177,10 @@ abstract class BaseDbTest : BaseTest() {
 
     protected fun verifyBlob(blob: Blob?) {
         assertNotNull(blob)
-        assertEquals("sha1-C+QguVamTgLjyDQ9RzRtyCv6x60=", blob.digest())
-        assertEquals(59, blob.length())
-        assertEquals("text/plain", blob.getContentType())
-        assertEquals(BLOB_CONTENT, blob.getContent()?.decodeToString())
+        assertEquals("sha1-C+QguVamTgLjyDQ9RzRtyCv6x60=", blob.digest)
+        assertEquals(59, blob.length)
+        assertEquals("text/plain", blob.contentType)
+        assertEquals(BLOB_CONTENT, blob.content?.decodeToString())
     }
 
     protected fun makeDocument(): MutableDocument {
@@ -1649,12 +1656,12 @@ abstract class BaseDbTest : BaseTest() {
 
     @Throws(CouchbaseLiteException::class)
     protected fun reopenBaseTestDb() {
-        baseTestDb = reopenDb(baseTestDb!!)
+        baseTestDb = reopenDb(baseTestDb)
     }
 
     @Throws(CouchbaseLiteException::class)
     protected fun recreateBastTestDb() {
-        baseTestDb = recreateDb(baseTestDb!!)
+        baseTestDb = recreateDb(baseTestDb)
     }
 
     // Some JSON encoding will promote a Float to a Double.

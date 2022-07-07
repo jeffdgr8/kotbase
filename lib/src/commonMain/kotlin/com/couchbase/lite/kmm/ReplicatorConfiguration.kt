@@ -115,3 +115,9 @@ public expect class ReplicatorConfiguration {
      */
     public val target: Endpoint
 }
+
+/**
+ * This is a long time: just under 25 days.
+ * This many seconds, however, is just less than Integer.MAX_INT millis, and will fit in the heartbeat property.
+ */
+public const val DISABLE_HEARTBEAT: Int = 2147483

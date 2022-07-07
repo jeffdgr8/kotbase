@@ -1118,7 +1118,7 @@ class ArrayTest : BaseDbTest() {
         mDoc.setArray("array3", mArray3)
         mDoc.setArray("array4", mArray4)
         mDoc.setArray("array5", mArray5)
-        val doc: Document = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInBaseTestDb(mDoc)
         val array1 = doc.getArray("array1")!!
         val array2 = doc.getArray("array2")!!
         val array3 = doc.getArray("array3")!!
@@ -1254,7 +1254,7 @@ class ArrayTest : BaseDbTest() {
         mDoc.setArray("array4", mArray4)
         mDoc.setArray("array5", mArray5)
 
-        val doc: Document = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInBaseTestDb(mDoc)
         val array1 = doc.getArray("array1")!!
         val array2 = doc.getArray("array2")!!
         val array3 = doc.getArray("array3")
@@ -1319,7 +1319,7 @@ class ArrayTest : BaseDbTest() {
         mArray.addValue(mNestedDict)
         val mDoc = MutableDocument("test")
         mDoc.setArray("array", mArray)
-        val doc: Document = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInBaseTestDb(mDoc)
         val array = doc.getArray("array")
         assertNotNull(array)
         assertNull(array.getDictionary(0))
@@ -1348,7 +1348,7 @@ class ArrayTest : BaseDbTest() {
         mArray.addValue(mNestedArray)
         val mDoc = MutableDocument("test")
         mDoc.setValue("array", mArray)
-        val doc: Document = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInBaseTestDb(mDoc)
         val array = doc.getArray("array")
         assertNotNull(array)
         assertNull(array.getArray(0))
@@ -1972,7 +1972,7 @@ class ArrayTest : BaseDbTest() {
     ): Document {
         validator(mArray)
         mDoc.setValue(key, mArray)
-        val doc: Document = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInBaseTestDb(mDoc)
         val array = doc.getArray(key)
         validator(array!!)
         return doc
@@ -1982,7 +1982,7 @@ class ArrayTest : BaseDbTest() {
         assertTrue(obj is Blob)
         val blob: Blob = obj
         assertNotNull(blob)
-        val contents = blob.getContent()
+        val contents = blob.content
         assertNotNull(contents)
         assertContentEquals(BLOB_CONTENT.encodeToByteArray(), contents)
         assertEquals(BLOB_CONTENT, contents.decodeToString())

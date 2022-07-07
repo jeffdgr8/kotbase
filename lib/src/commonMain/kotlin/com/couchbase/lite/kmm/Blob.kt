@@ -47,49 +47,39 @@ constructor(contentType: String, content: ByteArray) {
     public constructor(contentType: String, fileURL: String)
 
     /**
-     * Gets the contents of this blob as in in-memory byte array.
+     * Gets the contents of this blob as an in-memory byte array.
      * **Using this method will cause the entire contents of the blob to be read into memory!**
-     *
-     * @return the contents of a Blob as a block of memory
      */
-    public fun getContent(): ByteArray?
+    public val content: ByteArray?
 
     /**
-     * Get a the contents of this blob as a stream.
+     * Get the contents of this blob as a stream.
      * The caller is responsible for closing the stream returned by this call.
      * Closing or deleting the database before this call completes may cause it to fail.
      * **When called on a blob created from a stream (or a file path), this method will return null!**
-     *
-     * @return a stream of of this blobs contents; null if none exists or if this blob was initialized with a stream
      */
     // TODO: https://github.com/square/okio/pull/1123
-    //public fun getContentStream(): Source?
+    //public val contentStream: Source?
 
     /**
-     * Return the type of of the content this blob contains.  By convention this is a MIME type.
-     *
-     * @return the type of blobContent
+     * The type of of the content this blob contains.  By convention this is a MIME type.
      */
-    public fun getContentType(): String
+    public val contentType: String
 
     /**
-     * The number of byte of content this blob contains.
-     *
-     * @return The length of the blob or 0 if initialized with a stream.
+     * The number of bytes of content this blob contains
+     * or 0 if initialized with a stream.
      */
-    public fun length(): Long
+    public val length: Long
 
     /**
-     * The cryptographic digest of this Blob's contents, which uniquely identifies it.
-     *
-     * @return The cryptographic digest of this blob's contents; null if the content has not been saved in a database
+     * The cryptographic digest of this Blob's contents, which uniquely identifies it
+     * or null if the content has not been saved in a database
      */
-    public fun digest(): String?
+    public val digest: String?
 
     /**
-     * Get the blob metadata
-     *
-     * @return metadata for this Blob
+     * The blob metadata
      */
-    public fun getProperties(): Map<String, Any?>
+    public val properties: Map<String, Any?>
 }

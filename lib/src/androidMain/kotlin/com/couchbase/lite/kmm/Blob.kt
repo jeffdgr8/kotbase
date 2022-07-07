@@ -29,25 +29,24 @@ internal constructor(actual: com.couchbase.lite.Blob) :
         }
     )
 
-    public actual fun getContent(): ByteArray? =
-        actual.content
+    public actual val content: ByteArray?
+        get() = actual.content
 
     // TODO: https://github.com/square/okio/pull/1123
-    //public actual fun getContentStream(): Source? =
-    //    actual.contentStream?.source()
+    //public actual val contentStream: Source?
+    //    get() = actual.contentStream?.source()
 
-    public actual fun getContentType(): String =
-        actual.contentType
+    public actual val contentType: String
+        get() = actual.contentType
 
-    public actual fun length(): Long =
-        actual.length()
+    public actual val length: Long
+        get() = actual.length()
 
-    public actual fun digest(): String? =
-        actual.digest()
+    public actual val digest: String?
+        get() = actual.digest()
 
-    @Suppress("UNCHECKED_CAST")
-    public actual fun getProperties(): Map<String, Any?> =
-        actual.properties
+    public actual val properties: Map<String, Any?>
+        get() = actual.properties
 }
 
 internal fun com.couchbase.lite.Blob.asBlob() = Blob(this)

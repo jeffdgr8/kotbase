@@ -274,18 +274,50 @@ public expect class Database {
     @Throws(CouchbaseLiteException::class)
     public fun delete()
 
+    /**
+     * Create a SQL++ query.
+     *
+     * @param query a valid SQL++ query
+     * @return the Query object
+     */
     @Throws(CouchbaseLiteException::class)
     public fun createQuery(query: String): Query
 
+    /**
+     * Get a list of the names of indices on the default collection.
+     *
+     * @return the list of index names
+     * @throws CouchbaseLiteException on failure
+     */
     @Throws(CouchbaseLiteException::class)
     public fun getIndexes(): List<String>
 
+    /**
+     * Add an index to the default collection.
+     *
+     * @param name  index name
+     * @param index index description
+     * @throws CouchbaseLiteException on failure
+     */
     @Throws(CouchbaseLiteException::class)
     public fun createIndex(name: String, index: Index)
 
+    /**
+     * Add an index to the default collection.
+     *
+     * @param name   index name
+     * @param config index configuration
+     * @throws CouchbaseLiteException on failure
+     */
     @Throws(CouchbaseLiteException::class)
     public fun createIndex(name: String, config: IndexConfiguration)
 
+    /**
+     * Delete the named index from the default collection.
+     *
+     * @param name name of the index to delete
+     * @throws CouchbaseLiteException on failure
+     */
     @Throws(CouchbaseLiteException::class)
     public fun deleteIndex(name: String)
 

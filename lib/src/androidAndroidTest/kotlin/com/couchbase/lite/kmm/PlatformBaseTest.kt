@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.couchbase.lite.internal.AndroidExecutionService
 import com.couchbase.lite.internal.CouchbaseLiteInternal
 import com.couchbase.lite.internal.exec.AbstractExecutionService
+import com.couchbase.lite.kmm.internal.utils.FileUtils
 import org.junit.runner.RunWith
 import java.io.IOException
 import java.util.*
@@ -17,13 +18,6 @@ import java.util.concurrent.ThreadPoolExecutor
  */
 @RunWith(AndroidJUnit4::class)
 actual abstract class PlatformBaseTest {
-
-//    // appContext is unavailable in @BeforeClass
-//    @Before
-//    fun initCouchbaseLite() {
-//        // ok that we call this multiple times, only runs internally once
-//        CouchbaseLite.init(appContext, true)
-//    }
 
     companion object {
 
@@ -64,11 +58,11 @@ actual abstract class PlatformBaseTest {
         console.domains = LogDomain.ALL_DOMAINS
     }
 
-    val tmpDir: java.io.File
-        get() = com.couchbase.lite.internal.utils.FileUtils.verifyDir(
+    actual val tmpDir: String
+        get() = FileUtils.verifyDir(
             appContext.getExternalFilesDir(
                 SCRATCH_DIR_NAME
-            )!!
+            )!!.absolutePath
         )
 
     actual fun reloadStandardErrorMessages() {

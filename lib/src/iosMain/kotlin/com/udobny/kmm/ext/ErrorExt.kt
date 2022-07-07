@@ -10,10 +10,18 @@ public fun <R, E : Exception> wrapError(
     action: (error: CPointer<ObjCObjectVar<NSError?>>) -> R
 ): R = memScoped {
     val error = alloc<ObjCObjectVar<NSError?>>()
-    action(error.ptr).also {
+    try {
+        action(error.ptr).also {
+            error.value?.let {
+                throw exceptionFactory(it)
+            }
+        }
+    } catch (e: NullPointerException) {
+        // ObjC optional init constructors may throw NPE on error, throw error instead
         error.value?.let {
             throw exceptionFactory(it)
         }
+        throw e
     }
 }
 

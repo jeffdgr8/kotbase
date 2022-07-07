@@ -23,10 +23,11 @@ private constructor(actual: CBLQuerySelectResult) :
 
         internal companion object {
 
-            internal operator fun <T> invoke(
+            @Suppress("UNCHECKED_CAST")
+            internal operator fun <T : Any> invoke(
                 function: (T, String?) -> CBLQuerySelectResult,
                 param1: T
-            ): As = As(function, param1)
+            ): As = As(function as (Any, String?) -> CBLQuerySelectResult, param1 as Any)
         }
 
         public actual fun `as`(alias: String): SelectResult {
