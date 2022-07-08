@@ -2,13 +2,10 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLMutableArray
 import com.couchbase.lite.kmm.ext.throwError
-import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.udobny.kmm.chain
-import com.udobny.kmm.ext.*
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
-import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 
 public actual class MutableArray
@@ -18,7 +15,9 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual constructor(data: List<Any?>) : this(
         CBLMutableArray(data.actualIfDelegated())
-    )
+    ) {
+        setBooleans(data)
+    }
 
     public actual constructor(json: String) : this() {
         setJSON(json)
@@ -26,9 +25,19 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     private inline fun chain(action: CBLMutableArray.() -> Unit) = chain(actual, action)
 
+    private fun setBooleans(data: List<Any?>) {
+        data.forEachIndexed { index, value ->
+            if (value is Boolean) {
+                // Booleans treated as numbers unless explicitly using boolean API
+                setBoolean(index, value)
+            }
+        }
+    }
+
     public actual fun setData(data: List<Any?>): MutableArray = chain {
         data.forEach { checkSelf(it) }
         setData(data.actualIfDelegated())
+        setBooleans(data)
     }
 
     public actual fun setJSON(json: String): MutableArray = chain {
@@ -243,7 +252,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     override fun toJSON(): String =
-        throw IllegalStateException("Failed marshalling Array to JSON")
+        throw IllegalStateException("Mutable objects may not be encoded as JSON")
 
     // Java performs this check, but Objective-C does not
     private fun checkSelf(value: Any?) {

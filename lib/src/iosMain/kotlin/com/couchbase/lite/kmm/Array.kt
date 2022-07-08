@@ -2,6 +2,7 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLArray
 import com.udobny.kmm.DelegatedClass
+import com.udobny.kmm.ext.asNumber
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
@@ -28,11 +29,7 @@ internal constructor(actual: CBLArray) :
 
     public actual fun getNumber(index: Int): Number? {
         checkIndex(index)
-        // NSNumber can be kotlin.Boolean if added as a boolean
-        return when (val number: Any? = actual.numberAtIndex(index.convert())) {
-            is Boolean -> if (number) 1 else 0
-            else -> number as Number?
-        }
+        return actual.numberAtIndex(index.convert())?.asNumber()
     }
 
     public actual fun getInt(index: Int): Int {

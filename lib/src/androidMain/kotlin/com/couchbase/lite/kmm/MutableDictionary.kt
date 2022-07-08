@@ -61,22 +61,42 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
 
     // TODO: Remove !! when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setBlob(key: String, value: Blob?): MutableDictionary = chain {
-        setBlob(key, value!!.actual)
+        if (value == null) {
+            setValue(key, null)
+        } else {
+            setBlob(key, value.actual)
+        }
+        //setBlob(key, value?.actual)
     }
 
     // TODO: Remove !! when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setDate(key: String, value: Instant?): MutableDictionary = chain {
-        setDate(key, value!!.toDate())
+        if (value == null) {
+            setValue(key, null)
+        } else {
+            setDate(key, value.toDate())
+        }
+        //setDate(key, value?.toDate())
     }
 
     // TODO: Remove !! when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setArray(key: String, value: Array?): MutableDictionary = chain {
-        setArray(key, value!!.actual)
+        if (value == null) {
+            setValue(key, null)
+        } else {
+            setArray(key, value.actual)
+        }
+        //setArray(key, value?.actual)
     }
 
     // TODO: Remove !! when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary = chain {
-        setDictionary(key, value!!.actual)
+        if (value == null) {
+            setValue(key, null)
+        } else {
+            setDictionary(key, value.actual)
+        }
+        //setDictionary(key, value?.actual)
     }
 
     public actual fun remove(key: String): MutableDictionary = chain {

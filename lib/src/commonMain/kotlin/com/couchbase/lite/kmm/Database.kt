@@ -245,7 +245,10 @@ public expect class Database {
      * on the UI thread by using SwingUtilities.invokeLater(Runnable) or Platform.runLater(Runnable)
      * respectively.
      */
-    public fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken
+    public fun addDocumentChangeListener(
+        id: String,
+        listener: DocumentChangeListener
+    ): ListenerToken
 
     /**
      * Adds a change listener for the changes that occur to the specified document with an executor on which

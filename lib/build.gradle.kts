@@ -2,6 +2,7 @@
 
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.*
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
+import org.jetbrains.kotlin.gradle.tasks.DefFileTask
 
 plugins {
     kotlin("multiplatform")
@@ -89,6 +90,35 @@ android {
         minSdk = 22
         targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+}
+
+tasks.named<DefFileTask>("generateDefCouchbaseLite") {
+    doLast {
+        outputFile.appendText("""
+
+                ---
+
+                typedef uint32_t C4DocumentFlags; enum {
+                    kDocDeleted         = 0x01,
+                    kDocConflicted      = 0x02,
+                    kDocHasAttachments  = 0x04,
+                    kDocExists          = 0x1000
+                };
+
+                struct C4Document {
+                    void* _internal1;
+                    void* _internal2;
+                
+                    C4DocumentFlags flags;
+                };
+
+                @interface CBLC4Document : NSObject
+
+                @property (readonly, nonatomic) struct C4Document* rawDoc;
+
+                @end
+            """.trimIndent())
     }
 }
 

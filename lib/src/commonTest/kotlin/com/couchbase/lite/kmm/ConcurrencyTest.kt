@@ -575,7 +575,7 @@
 //                address.setValue("street", street)
 //                val phones = doc.getArray("phones")
 //                assertNotNull(phones)
-//                assertEquals(2, phones.count())
+//                assertEquals(2, phones.count)
 //                val phone = "650-000-${i.paddedString(4)}"
 //                phones.setValue(0, phone)
 //                doc.setValue("updated", Clock.System.now())

@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.toKotlinInstant
 import kotlinx.datetime.Instant
-import java.util.*
 
 public actual open class Document
 internal constructor(actual: com.couchbase.lite.Document) :

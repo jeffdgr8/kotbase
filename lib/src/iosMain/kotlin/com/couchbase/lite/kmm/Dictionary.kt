@@ -2,6 +2,7 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLDictionary
 import com.udobny.kmm.DelegatedClass
+import com.udobny.kmm.ext.asNumber
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 
@@ -26,7 +27,7 @@ internal constructor(actual: CBLDictionary) :
         actual.stringForKey(key)
 
     public actual fun getNumber(key: String): Number? =
-        actual.numberForKey(key) as Number?
+        actual.numberForKey(key)?.asNumber()
 
     public actual fun getInt(key: String): Int =
         actual.integerForKey(key).toInt()
@@ -59,7 +60,7 @@ internal constructor(actual: CBLDictionary) :
     public actual fun toMap(): Map<String, Any?> =
         actual.toDictionary().delegateIfNecessary() as Map<String, Any?>
 
-    public actual fun toJSON(): String =
+    public actual open fun toJSON(): String =
         actual.toJSON()
 
     public actual operator fun contains(key: String): Boolean =

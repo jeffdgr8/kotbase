@@ -2,13 +2,10 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLMutableDocument
 import com.couchbase.lite.kmm.ext.throwError
-import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.udobny.kmm.chain
-import com.udobny.kmm.ext.wrapError
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
-import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 
 public actual class MutableDocument
@@ -21,35 +18,53 @@ internal constructor(override val actual: CBLMutableDocument) :
 
     public actual constructor(data: Map<String, Any?>) : this(
         CBLMutableDocument(data.actualIfDelegated())
-    )
+    ) {
+        setBooleans(data)
+    }
 
     public actual constructor(id: String?, data: Map<String, Any?>) : this(
         CBLMutableDocument(id, data.actualIfDelegated())
     )
 
-    public actual constructor(id: String?, json: String) : this(
-        wrapError(NSError::toCouchbaseLiteException) { error ->
-            CBLMutableDocument(id, json, error)
-        }
-    )
+    public actual constructor(id: String?, json: String) : this(id) {
+        setJSON(json)
+    }
 
     private inline fun chain(action: CBLMutableDocument.() -> Unit) = chain(actual, action)
+
+    private fun setBooleans(data: Map<String, Any?>) {
+        data.forEach { (key, value) ->
+            if (value is Boolean) {
+                // Booleans treated as numbers unless explicitly using boolean API
+                setBoolean(key, value)
+            }
+        }
+    }
 
     actual override fun toMutable(): MutableDocument =
         MutableDocument(actual.toMutable())
 
     public actual fun setData(data: Map<String, Any?>): MutableDocument = chain {
         setData(data.actualIfDelegated())
+        setBooleans(data)
     }
 
     public actual fun setJSON(json: String): MutableDocument = chain {
-        throwError { error ->
-            setJSON(json, error)
+        try {
+            throwError { error ->
+                setJSON(json, error)
+            }
+        } catch (e: CouchbaseLiteException) {
+            throw IllegalArgumentException("Failed parsing JSON", e)
         }
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDocument = chain {
-        setValue(value?.actualIfDelegated(), key)
+        when (value) {
+            // Booleans treated as numbers unless explicitly using boolean API
+            is Boolean -> setBoolean(value, key)
+            else -> setValue(value?.actualIfDelegated(), key)
+        }
     }
 
     public actual fun setString(key: String, value: String?): MutableDocument = chain {
@@ -105,4 +120,8 @@ internal constructor(override val actual: CBLMutableDocument) :
 
     actual override fun getDictionary(key: String): MutableDictionary? =
         actual.dictionaryForKey(key)?.asMutableDictionary()
+
+    override fun toJSON(): String? {
+        throw IllegalStateException("Mutable objects may not be encoded as JSON")
+    }
 }

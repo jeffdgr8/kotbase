@@ -53,6 +53,8 @@ class DatabaseTest : BaseDbTest() {
 
             // get doc from other DB.
             assertEquals(1, otherDb.count)
+
+            verifyGetDocument(otherDb, docID)
             verifyGetDocument(otherDb, docID)
         } finally {
             closeDb(otherDb)
@@ -66,6 +68,7 @@ class DatabaseTest : BaseDbTest() {
 
         // Save 10 docs:
         createDocsInBaseTestDb(n)
+
         baseTestDb.inBatch { verifyDocuments(n) }
     }
 
@@ -108,6 +111,7 @@ class DatabaseTest : BaseDbTest() {
     private fun testSaveNewDocWithID(docID: String) {
         // store doc
         createSingleDocInBaseTestDb(docID)
+
         assertEquals(1, baseTestDb.count)
 
         // validate document by getDocument
@@ -149,6 +153,7 @@ class DatabaseTest : BaseDbTest() {
         // update doc
         doc.setValue("key", 2)
         saveDocInBaseTestDb(doc)
+
         assertEquals(1, baseTestDb.count)
 
         // validate document by getDocument
@@ -171,9 +176,7 @@ class DatabaseTest : BaseDbTest() {
             // Update doc & store it into different instance
             doc.setValue("key", 2)
             TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
-                otherDb.save(
-                    doc
-                )
+                otherDb.save(doc)
             }
         } finally {
             closeDb(otherDb)
@@ -196,9 +199,7 @@ class DatabaseTest : BaseDbTest() {
             // Update doc & store it into different instance
             doc.setValue("key", 2)
             TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
-                otherDb.save(
-                    doc
-                )
+                otherDb.save(doc)
             }
         } finally {
             // delete otherDb
@@ -220,6 +221,7 @@ class DatabaseTest : BaseDbTest() {
     @Throws(CouchbaseLiteException::class)
     fun testSaveInBatch() {
         val nDocs = 10
+
         baseTestDb.inBatch { createDocsInBaseTestDb(nDocs) }
         assertEquals(nDocs.toLong(), baseTestDb.count)
         verifyDocuments(nDocs)
@@ -230,8 +232,10 @@ class DatabaseTest : BaseDbTest() {
     fun testSaveDocToClosedDB() {
         assertFailsWith<IllegalStateException> {
             baseTestDb.close()
+
             val doc = MutableDocument("doc1")
             doc.setValue("key", 1)
+
             saveDocInBaseTestDb(doc)
         }
     }
@@ -242,8 +246,10 @@ class DatabaseTest : BaseDbTest() {
         assertFailsWith<IllegalStateException> {
             // Delete db:
             baseTestDb.delete()
+
             val doc = MutableDocument("doc1")
             doc.setValue("key", 1)
+
             saveDocInBaseTestDb(doc)
         }
     }
@@ -257,9 +263,7 @@ class DatabaseTest : BaseDbTest() {
         val doc = MutableDocument("doc1")
         doc.setValue("key", 1)
         TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND) {
-            baseTestDb.delete(
-                doc
-            )
+            baseTestDb.delete(doc)
         }
     }
 
@@ -289,10 +293,9 @@ class DatabaseTest : BaseDbTest() {
             assertEquals(1, otherDb.count)
 
             // Delete from the different db instance:
-            TestUtils.assertThrowsCBL(
-                CBLError.Domain.CBLITE,
-                CBLError.Code.INVALID_PARAMETER
-            ) { otherDb.delete(doc) }
+            TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherDb.delete(doc)
+            }
         } finally {
             closeDb(otherDb)
         }
@@ -311,10 +314,9 @@ class DatabaseTest : BaseDbTest() {
             assertNotSame(otherDb, baseTestDb)
 
             // Delete from the different db:
-            TestUtils.assertThrowsCBL(
-                CBLError.Domain.CBLITE,
-                CBLError.Code.INVALID_PARAMETER
-            ) { otherDb.delete(doc) }
+            TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherDb.delete(doc)
+            }
         } finally {
             deleteDb(otherDb)
         }
@@ -376,9 +378,7 @@ class DatabaseTest : BaseDbTest() {
         val doc = MutableDocument("doc1")
         assertEquals(0, baseTestDb.count)
         TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND) {
-            baseTestDb.purge(
-                doc
-            )
+            baseTestDb.purge(doc)
         }
         assertEquals(0, baseTestDb.count)
     }
@@ -408,10 +408,9 @@ class DatabaseTest : BaseDbTest() {
             assertEquals(1, otherDb.count)
 
             // purge document against other db instance:
-            TestUtils.assertThrowsCBL(
-                CBLError.Domain.CBLITE,
-                CBLError.Code.INVALID_PARAMETER
-            ) { otherDb.purge(doc) }
+            TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherDb.purge(doc)
+            }
         } finally {
             closeDb(otherDb)
         }
@@ -431,10 +430,9 @@ class DatabaseTest : BaseDbTest() {
             assertEquals(0, otherDb.count)
 
             // Purge document against other db:
-            TestUtils.assertThrowsCBL(
-                CBLError.Domain.CBLITE,
-                CBLError.Code.INVALID_PARAMETER
-            ) { otherDb.purge(doc) }
+            TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherDb.purge(doc)
+            }
         } finally {
             deleteDb(otherDb)
         }
@@ -465,6 +463,7 @@ class DatabaseTest : BaseDbTest() {
         val nDocs = 10
         // Save 10 docs:
         createDocsInBaseTestDb(nDocs)
+
         baseTestDb.inBatch {
             for (i in 0 until nDocs) {
                 val docID = "doc_${i.paddedString(3)}"
@@ -473,6 +472,7 @@ class DatabaseTest : BaseDbTest() {
                 assertEquals(9L - i, baseTestDb.count)
             }
         }
+
         assertEquals(0, baseTestDb.count)
     }
 
@@ -530,6 +530,7 @@ class DatabaseTest : BaseDbTest() {
         val docID = "doc1"
         val mDoc = MutableDocument(docID)
         mDoc.setInt("key", 1)
+
         val mDict = MutableDictionary() // nested dictionary
         mDict.setString("hello", "world")
         mDoc.setDictionary("dict", mDict)
@@ -541,9 +542,11 @@ class DatabaseTest : BaseDbTest() {
         // Content should be accessible & modifiable without error:
         assertEquals(docID, doc.id)
         assertEquals(1, (doc.getValue("key") as Number).toInt())
+
         val dict = doc.getDictionary("dict")
         assertNotNull(dict)
         assertEquals("world", dict.getString("hello"))
+
         val updateDoc = doc.toMutable()
         updateDoc.setValue("key", 2)
         updateDoc.setValue("key1", "value")
@@ -635,6 +638,7 @@ class DatabaseTest : BaseDbTest() {
             // delete db twice
             val path = baseTestDb.path!!
             assertTrue(FileUtils.dirExists(path))
+
             baseTestDb.delete()
             assertFalse(FileUtils.dirExists(path))
 
@@ -655,7 +659,7 @@ class DatabaseTest : BaseDbTest() {
 
         // Content should be accessible & modifiable without error:
         assertEquals(docID, doc.id)
-        assertEquals(1, (doc.getValue("key") as Number?)!!.toInt())
+        assertEquals(1, (doc.getValue("key") as Number).toInt())
         doc.setValue("key", 2)
         doc.setValue("key1", "value")
     }
@@ -675,6 +679,7 @@ class DatabaseTest : BaseDbTest() {
         // content should be accessible & modifiable without error
         val obj = doc.getValue("blob")
         assertNotNull(obj)
+
         assertTrue(obj is Blob)
         val blob: Blob = obj
         assertEquals(BLOB_CONTENT.length.toLong(), blob.length)
@@ -690,6 +695,7 @@ class DatabaseTest : BaseDbTest() {
 
         // delete db
         baseTestDb.delete()
+
         assertEquals(dbName, baseTestDb.name)
     }
 
@@ -729,10 +735,9 @@ class DatabaseTest : BaseDbTest() {
         try {
             assertNotSame(baseTestDb, otherDb)
             // delete db
-            TestUtils.assertThrowsCBL(
-                CBLError.Domain.CBLITE,
-                CBLError.Code.BUSY
-            ) { baseTestDb.delete() }
+            TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.BUSY) {
+                baseTestDb.delete()
+            }
         } finally {
             closeDb(otherDb)
         }
@@ -746,13 +751,17 @@ class DatabaseTest : BaseDbTest() {
     @Throws(CouchbaseLiteException::class)
     fun testDeleteWithDefaultDirDB() {
         val dbName = baseTestDb.name
+
         val path = baseTestDb.path
+
         assertNotNull(path)
         assertTrue(FileUtils.dirExists(path))
 
         // close db before delete
         baseTestDb.close()
+
         Database.delete(dbName, null)
+
         assertFalse(FileUtils.dirExists(path))
     }
 
@@ -761,10 +770,10 @@ class DatabaseTest : BaseDbTest() {
         val path = baseTestDb.path
         assertNotNull(path)
         assertTrue(FileUtils.dirExists(path))
-        TestUtils.assertThrowsCBL(
-            CBLError.Domain.CBLITE,
-            CBLError.Code.BUSY
-        ) { Database.delete(baseTestDb.name, null) }
+
+        TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.BUSY) {
+            Database.delete(baseTestDb.name, null)
+        }
     }
 
     @Test
@@ -776,12 +785,15 @@ class DatabaseTest : BaseDbTest() {
         val db = createDb("static_del_db", DatabaseConfiguration().setDirectory(dbDirPath))
         try {
             val dbName = db.name
+
             val dbPath = db.path!!
             assertTrue(FileUtils.dirExists(dbPath))
 
             // close db before delete
             db.close()
+
             Database.delete(dbName, dbDirPath)
+
             assertFalse(FileUtils.dirExists(dbPath))
         } finally {
             deleteDb(db)
@@ -792,6 +804,7 @@ class DatabaseTest : BaseDbTest() {
     @Throws(CouchbaseLiteException::class)
     fun testDeleteOpeningDBByStaticMethod() {
         val db = duplicateBaseTestDb()
+
         val dbName = db.name
         val dbDir = FileUtils.getParentDir(db.path!!)
         try {
@@ -826,18 +839,24 @@ class DatabaseTest : BaseDbTest() {
     @Throws(CouchbaseLiteException::class)
     fun testDatabaseExistsWithDir() {
         val dirName = getUniqueName("test-exists-dir")
+
         val dbDir = getScratchDirectoryPath(dirName)
+
         assertFalse(Database.exists(dirName, dbDir))
 
         // create db with custom directory
         val db = Database(dirName, DatabaseConfiguration().setDirectory(dbDir))
         try {
             assertTrue(Database.exists(dirName, dbDir))
+
             val dbPath = db.path!!
+
             db.close()
             assertTrue(Database.exists(dirName, dbDir))
+
             Database.delete(dirName, dbDir)
             assertFalse(Database.exists(dirName, dbDir))
+
             assertFalse(FileUtils.dirExists(dbPath))
         } finally {
             deleteDb(db)
@@ -859,14 +878,15 @@ class DatabaseTest : BaseDbTest() {
     fun testCompact() {
         val nDocs = 20
         val nUpdates = 25
+
         val docIDs: List<String> = createDocsInBaseTestDb(nDocs)
 
         // Update each doc 25 times:
         baseTestDb.inBatch {
             for (docID in docIDs) {
-                var savedDoc = baseTestDb.getDocument(docID)
+                var savedDoc = baseTestDb.getDocument(docID)!!
                 for (i in 0 until nUpdates) {
-                    val doc = savedDoc!!.toMutable()
+                    val doc = savedDoc.toMutable()
                     doc.setValue("number", i)
                     savedDoc = saveDocInBaseTestDb(doc)
                 }
@@ -879,7 +899,9 @@ class DatabaseTest : BaseDbTest() {
             doc.setValue("blob", Blob("text/plain", doc.id.encodeToByteArray()))
             saveDocInBaseTestDb(doc)
         }
+
         assertEquals(nDocs.toLong(), baseTestDb.count)
+
         val attsDir = "${baseTestDb.path}/Attachments"
         assertTrue(FileUtils.dirExists(attsDir))
         assertEquals(nDocs, FileUtils.listFiles(attsDir).size)
@@ -890,8 +912,8 @@ class DatabaseTest : BaseDbTest() {
 
         // Delete all docs:
         for (docID in docIDs) {
-            val savedDoc = baseTestDb.getDocument(docID)
-            baseTestDb.delete(savedDoc!!)
+            val savedDoc = baseTestDb.getDocument(docID)!!
+            baseTestDb.delete(savedDoc)
             assertNull(baseTestDb.getDocument(docID))
         }
 
@@ -938,7 +960,9 @@ class DatabaseTest : BaseDbTest() {
             doc.setValue("data", Blob("text/plain", docID.encodeToByteArray()))
             saveDocInBaseTestDb(doc)
         }
+
         val config = baseTestDb.config
+
         val dbName = getUniqueName("test_copy_db")
 
         // Copy:
@@ -946,21 +970,26 @@ class DatabaseTest : BaseDbTest() {
 
         // Verify:
         assertTrue(Database.exists(dbName, config.getDirectory()))
+
         val newDb = Database(dbName, config)
         try {
             assertNotNull(newDb)
             assertEquals(nDocs.toLong(), newDb.count)
+
             QueryBuilder.select(SelectResult.expression(Meta.id))
                 .from(DataSource.database(newDb))
                 .execute().use { rs ->
                     for (r in rs) {
                         val docID = r.getString(0)
                         assertNotNull(docID)
+
                         val doc = newDb.getDocument(docID)
                         assertNotNull(doc)
                         assertEquals(docID, doc.getString("name"))
+
                         val blob = doc.getBlob("data")
                         assertNotNull(blob)
+
                         assertEquals(docID, blob.content?.decodeToString())
                     }
                 }
@@ -973,6 +1002,7 @@ class DatabaseTest : BaseDbTest() {
     @Throws(CouchbaseLiteException::class)
     fun testCreateIndex() {
         assertEquals(0, baseTestDb.getIndexes().size)
+
         baseTestDb.createIndex(
             "index1",
             IndexBuilder.valueIndex(
@@ -988,6 +1018,7 @@ class DatabaseTest : BaseDbTest() {
             IndexBuilder.fullTextIndex(FullTextIndexItem.property("detail"))
         )
         assertEquals(2, baseTestDb.getIndexes().size)
+
         baseTestDb.createIndex(
             "index3",
             IndexBuilder.fullTextIndex(FullTextIndexItem.property("es-detail"))
@@ -1005,6 +1036,7 @@ class DatabaseTest : BaseDbTest() {
             )
         )
         assertEquals(4, baseTestDb.getIndexes().size)
+
         assertContents(baseTestDb.getIndexes(), "index1", "index2", "index3", "index4")
     }
 
@@ -1013,13 +1045,16 @@ class DatabaseTest : BaseDbTest() {
 //    @Throws(CouchbaseLiteException::class)
 //    fun testCreateIndexWithConfig() {
 //        assertEquals(0, baseTestDb.getIndexes().size)
+//
 //        baseTestDb.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
 //        assertEquals(1, baseTestDb.getIndexes().size)
+//
 //        baseTestDb.createIndex(
 //            "index2",
 //            FullTextIndexConfiguration("detail").ignoreAccents(true).setLanguage("es")
 //        )
 //        assertEquals(2, baseTestDb.getIndexes().size)
+//
 //        assertContents(baseTestDb.getIndexes(), "index1", "index2")
 //    }
 
@@ -1033,6 +1068,7 @@ class DatabaseTest : BaseDbTest() {
 
         // Call create index again:
         baseTestDb.createIndex("myindex", index)
+
         assertEquals(1, baseTestDb.getIndexes().size)
         assertContents(baseTestDb.getIndexes(), "myindex")
     }
@@ -1074,12 +1110,15 @@ class DatabaseTest : BaseDbTest() {
         baseTestDb.deleteIndex("index4")
         assertEquals(3, baseTestDb.getIndexes().size)
         assertContents(baseTestDb.getIndexes(), "index1", "index2", "index3")
+
         baseTestDb.deleteIndex("index1")
         assertEquals(2, baseTestDb.getIndexes().size)
         assertContents(baseTestDb.getIndexes(), "index2", "index3")
+
         baseTestDb.deleteIndex("index2")
         assertEquals(1, baseTestDb.getIndexes().size)
         assertContents(baseTestDb.getIndexes(), "index3")
+
         baseTestDb.deleteIndex("index3")
         assertEquals(0, baseTestDb.getIndexes().size)
         assertTrue(baseTestDb.getIndexes().isEmpty())
@@ -1106,6 +1145,7 @@ class DatabaseTest : BaseDbTest() {
     @Throws(CouchbaseLiteException::class)
     fun testDeleteAndOpenDB() {
         val config = DatabaseConfiguration()
+
         var database1: Database? = null
         var database2: Database? = null
         try {
@@ -1123,15 +1163,15 @@ class DatabaseTest : BaseDbTest() {
             val db = database2
             database2.inBatch {
                 // just create 100 documents
-                for (i in 0..99) {
-                    val doc =
-                        MutableDocument()
+                for (i in 0 until 100) {
+                    val doc = MutableDocument()
 
                     // each doc has 10 items
                     doc.setInt("index", i)
                     for (j in 0..9) {
                         doc.setInt("item_$j", j)
                     }
+
                     db.save(doc)
                 }
             }
@@ -1159,13 +1199,16 @@ class DatabaseTest : BaseDbTest() {
         doc.setLong("age", 20L) // Int vs Long assertEquals can not ignore diff.
         baseTestDb.save(doc)
         assertEquals(3, doc.sequence)
-        val expected: MutableMap<String, Any> = HashMap()
-        expected["firstName"] = "Daniel"
-        expected["lastName"] = "Tiger"
-        expected["age"] = 20L
+
+        val expected = mapOf<String, Any?>(
+            "firstName" to "Daniel",
+            "lastName" to "Tiger",
+            "age" to 20L
+        )
         assertEquals(expected, doc.toMap())
-        val savedDoc = baseTestDb.getDocument(doc.id)
-        assertEquals(expected, savedDoc!!.toMap())
+
+        val savedDoc = baseTestDb.getDocument(doc.id)!!
+        assertEquals(expected, savedDoc.toMap())
         assertEquals(3, savedDoc.sequence)
     }
 
@@ -1204,16 +1247,21 @@ class DatabaseTest : BaseDbTest() {
         doc.setString("firstName", "Daniel")
         doc.setString("lastName", "Tiger")
         baseTestDb.save(doc)
+
         baseTestDb.delete(doc)
         assertEquals(2, doc.sequence)
         assertNull(baseTestDb.getDocument(doc.id))
+
         doc.setString("firstName", "Scott")
         baseTestDb.save(doc)
         assertEquals(3, doc.sequence)
-        val expected: MutableMap<String, Any> = HashMap()
-        expected["firstName"] = "Scott"
-        expected["lastName"] = "Tiger"
+
+        val expected = mapOf<String, Any?>(
+            "firstName" to "Scott",
+            "lastName" to "Tiger"
+        )
         assertEquals(expected, doc.toMap())
+
         val savedDoc = baseTestDb.getDocument(doc.id)
         assertNotNull(savedDoc)
         assertEquals(expected, savedDoc.toMap())
@@ -1228,11 +1276,11 @@ class DatabaseTest : BaseDbTest() {
         baseTestDb.save(doc)
 
         // Get two doc1 document objects (doc1a and doc1b):
-        val doc1a = baseTestDb.getDocument("doc1")
+        val doc1a = baseTestDb.getDocument("doc1")!!
         val doc1b = baseTestDb.getDocument("doc1")!!.toMutable()
 
         // Delete doc1a:
-        baseTestDb.delete(doc1a!!)
+        baseTestDb.delete(doc1a)
         assertEquals(2, doc1a.sequence)
         assertNull(baseTestDb.getDocument(doc.id))
 
@@ -1246,24 +1294,22 @@ class DatabaseTest : BaseDbTest() {
     @Throws(CouchbaseLiteException::class)
     fun testDeleteNonExistingDoc() {
         val doc1a = createSingleDocInBaseTestDb("doc1")
-        val doc1b = baseTestDb.getDocument("doc1")
+        val doc1b = baseTestDb.getDocument("doc1")!!
 
         // purge doc
         baseTestDb.purge(doc1a)
         assertEquals(0, baseTestDb.count)
         assertNull(baseTestDb.getDocument(doc1a.id))
+
         TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND) {
-            baseTestDb.delete(
-                doc1a
-            )
+            baseTestDb.delete(doc1a)
         }
         TestUtils.assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND) {
-            baseTestDb.delete(
-                doc1b!!
-            )
+            baseTestDb.delete(doc1b)
         }
+
         assertEquals(0, baseTestDb.count)
-        assertNull(baseTestDb.getDocument(doc1b!!.id))
+        assertNull(baseTestDb.getDocument(doc1b.id))
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1652
@@ -1274,10 +1320,11 @@ class DatabaseTest : BaseDbTest() {
         var mdoc = MutableDocument("doc")
         mdoc.setBoolean("updated", false)
         baseTestDb.save(mdoc)
-        val doc = baseTestDb.getDocument("doc")
+
+        val doc = baseTestDb.getDocument("doc")!!
 
         // 2. update
-        mdoc = doc!!.toMutable()
+        mdoc = doc.toMutable()
         mdoc.setBoolean("updated", true)
         baseTestDb.save(mdoc)
 
@@ -1289,147 +1336,34 @@ class DatabaseTest : BaseDbTest() {
     // The following four tests verify, explicitly, the code that
     // mitigates the 2.8.0 bug (CBL-1408)
     // There is one more test for this in DatabaseEncryptionTest
-    // TODO:
-//    @Test
-//    @Throws(CouchbaseLiteException::class)
-//    fun testReOpenExistingDb() {
-//        val dbName = getUniqueName("test_db")
-//
-//        // verify that the db directory is no longer in the misguided 2.8.0 subdirectory
-//        val dbDirectory: String = CouchbaseLiteInternal.getDefaultDbDir().getAbsolutePath()
-//        assertFalse(dbDirectory.endsWith(".couchbase"))
-//        var db: Database? = null
-//        try {
-//            db = Database(dbName)
-//            val mDoc = MutableDocument()
-//            mDoc.setString("foo", "bar")
-//            db.save(mDoc)
-//            db.close()
-//            db = null
-//            db = Database(dbName)
-//            assertEquals(1L, db.count)
-//            val doc = db.getDocument(mDoc.id)
-//            assertEquals("bar", doc!!.getString("foo"))
-//        } finally {
-//            try {
-//                db?.delete()
-//            } catch (ignore: Exception) {
-//            }
-//        }
-//    }
-//
-//    @Test
-//    @Throws(CouchbaseLiteException::class, IOException::class)
-//    fun testReOpenExisting2Dot8DotOhDb() {
-//        val dbName = getUniqueName("test_db")
-//        val twoDot8DotOhDirPath: String =
-//            File(CouchbaseLiteInternal.getDefaultDbDir(), ".couchbase").getCanonicalPath()
-//        var db: Database? = null
-//        try {
-//            // Create a database in the misguided 2.8.0 directory
-//            val config = DatabaseConfiguration()
-//            config.setDirectory(twoDot8DotOhDirPath)
-//            db = Database(dbName, config)
-//            val mDoc = MutableDocument()
-//            mDoc.setString("foo", "bar")
-//            db.save(mDoc)
-//            db.close()
-//            db = null
-//
-//            // This should open the database created above
-//            db = Database(dbName)
-//            assertEquals(1L, db.count)
-//            val doc = db.getDocument(mDoc.id)
-//            assertEquals("bar", doc!!.getString("foo"))
-//        } finally {
-//            try {
-//                FileUtils.eraseFileOrDir(twoDot8DotOhDirPath)
-//                db?.delete()
-//            } catch (ignore: java.lang.Exception) {
-//            }
-//        }
-//    }
-//
-//    @Test
-//    @Throws(CouchbaseLiteException::class, IOException::class)
-//    fun testReOpenExisting2Dot8DotOhDbCopyFails() {
-//        val dbName = getUniqueName("test_db")
-//        val twoDot8DotOhDirPath: String =
-//            File(CouchbaseLiteInternal.getDefaultDbDir(), ".couchbase").getCanonicalPath()
-//        var db: Database? = null
-//        try {
-//            // Create a database in the misguided 2.8.0 directory
-//            val config = DatabaseConfiguration()
-//            config.setDirectory(twoDot8DotOhDirPath)
-//            db = Database(dbName, config)
-//            val mDoc = MutableDocument()
-//            mDoc.setString("foo", "bar")
-//            db.save(mDoc)
-//            db.close()
-//            db = null
-//            val twoDot8DotOhDir = File(twoDot8DotOhDirPath)
-//            FileUtils.deleteContents(C4Database.getDatabaseFile(twoDot8DotOhDir, dbName))
-//
-//            // this should try to copy the db created above, but fail
-//            try {
-//                db = Database(dbName)
-//                fail("DB open should have thrown an exception")
-//            } catch (ignore: CouchbaseLiteException) {
-//            }
-//
-//            // the (uncopyable) 2.8.0 db should still exist
-//            assertTrue(C4Database.getDatabaseFile(twoDot8DotOhDir, dbName).exists())
-//            // the copy should not exist
-//            assertFalse(
-//                C4Database.getDatabaseFile(CouchbaseLiteInternal.getDefaultDbDir(), dbName).exists()
-//            )
-//        } finally {
-//            try {
-//                FileUtils.eraseFileOrDir(twoDot8DotOhDirPath)
-//                db?.delete()
-//            } catch (ignore: java.lang.Exception) {
-//            }
-//        }
-//    }
-//
-//    @Test
-//    @Throws(CouchbaseLiteException::class, IOException::class)
-//    fun testReOpenExistingLegacyAnd2Dot8DotOhDb() {
-//        val dbName = getUniqueName("test_db")
-//        val twoDot8DotOhDirPath: String =
-//            File(CouchbaseLiteInternal.getDefaultDbDir(), ".couchbase").getCanonicalPath()
-//        var db: Database? = null
-//        try {
-//            db = Database(dbName)
-//            val mDoc1 = MutableDocument()
-//            mDoc1.setString("foo", "bar")
-//            db.save(mDoc1)
-//            db.close()
-//            db = null
-//
-//            // Create a database in the misguided 2.8.0 directory
-//            val config = DatabaseConfiguration()
-//            config.setDirectory(twoDot8DotOhDirPath)
-//            db = Database(dbName, config)
-//            val mDoc2 = MutableDocument()
-//            mDoc2.setString("foo", "baz")
-//            db.save(mDoc2)
-//            db.close()
-//            db = null
-//
-//            // This should open the database created above
-//            db = Database(dbName)
-//            assertEquals(1L, db.count)
-//            val doc = db.getDocument(mDoc1.id)
-//            assertEquals("bar", doc!!.getString("foo"))
-//        } finally {
-//            try {
-//                FileUtils.eraseFileOrDir(twoDot8DotOhDirPath)
-//                db?.delete()
-//            } catch (ignore: java.lang.Exception) {
-//            }
-//        }
-//    }
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testReOpenExistingDb() {
+        val dbName = getUniqueName("test_db")
+
+        // verify that the db directory is no longer in the misguided 2.8.0 subdirectory
+        val dbDirectory = DatabaseConfiguration().getDirectory()
+        assertFalse(dbDirectory.endsWith(".couchbase"))
+
+        var db: Database? = null
+        try {
+            db = Database(dbName)
+            val mDoc = MutableDocument()
+            mDoc.setString("foo", "bar")
+            db.save(mDoc)
+            db.close()
+            db = null
+
+            db = Database(dbName)
+            assertEquals(1L, db.count)
+            val doc = db.getDocument(mDoc.id)!!
+            assertEquals("bar", doc.getString("foo"))
+        } finally {
+            try {
+                db?.delete()
+            } catch (ignore: Exception) { }
+        }
+    }
 
     @Throws(CouchbaseLiteException::class)
     private fun openDatabase(): Database {
@@ -1444,11 +1378,13 @@ class DatabaseTest : BaseDbTest() {
     @Throws(CouchbaseLiteException::class)
     private fun duplicateBaseTestDb(count: Int): Database {
         val db = duplicateBaseTestDb()
+
         val actualCount = db.count
         if (count.toLong() != actualCount) {
             deleteDb(db)
             fail("Unexpected database count: $count <> $actualCount")
         }
+
         return db
     }
 
@@ -1459,6 +1395,7 @@ class DatabaseTest : BaseDbTest() {
                 FileUtils.getCanonicalPath(db.path!!)
                     .endsWith(".cblite2") // C4Database.DB_EXTENSION
             )
+
             db
         } catch (e: IOException) {
             deleteDb(db)
@@ -1512,7 +1449,7 @@ class DatabaseTest : BaseDbTest() {
         val doc = db.getDocument(docID)
         assertNotNull(doc)
         assertEquals(docID, doc.id)
-        assertEquals(value, (doc.getValue("key") as Number?)!!.toInt())
+        assertEquals(value, (doc.getValue("key") as Number).toInt())
     }
 
     // helper method to purge doc and verify doc.
@@ -1539,10 +1476,12 @@ class DatabaseTest : BaseDbTest() {
         baseTestDb.save(doc1a)
         doc1a.setString("nickName", "Scotty")
         baseTestDb.save(doc1a)
-        val expected: MutableMap<String, Any> = HashMap()
-        expected["firstName"] = "Scott"
-        expected["lastName"] = "Tiger"
-        expected["nickName"] = "Scotty"
+
+        val expected = mapOf<String, Any?>(
+            "firstName" to "Scott",
+            "lastName" to "Tiger",
+            "nickName" to "Scotty"
+        )
         assertEquals(expected, doc1a.toMap())
         assertEquals(3, doc1a.sequence)
 
@@ -1550,15 +1489,16 @@ class DatabaseTest : BaseDbTest() {
         doc1b.setString("lastName", "Lion")
         if (cc === ConcurrencyControl.LAST_WRITE_WINS) {
             assertTrue(baseTestDb.save(doc1b, cc))
-            val savedDoc = baseTestDb.getDocument(doc.id)
-            assertEquals(doc1b.toMap(), savedDoc!!.toMap())
+            val savedDoc = baseTestDb.getDocument(doc.id)!!
+            assertEquals(doc1b.toMap(), savedDoc.toMap())
             assertEquals(4, savedDoc.sequence)
         } else {
             assertFalse(baseTestDb.save(doc1b, cc))
-            val savedDoc = baseTestDb.getDocument(doc.id)
-            assertEquals(expected, savedDoc!!.toMap())
+            val savedDoc = baseTestDb.getDocument(doc.id)!!
+            assertEquals(expected, savedDoc.toMap())
             assertEquals(3, savedDoc.sequence)
         }
+
         recreateBastTestDb()
     }
 
@@ -1576,9 +1516,11 @@ class DatabaseTest : BaseDbTest() {
         // Modify doc1a:
         doc1a.setString("firstName", "Scott")
         baseTestDb.save(doc1a)
-        val expected: MutableMap<String, Any> = HashMap()
-        expected["firstName"] = "Scott"
-        expected["lastName"] = "Tiger"
+
+        val expected = mapOf<String, Any?>(
+            "firstName" to "Scott",
+            "lastName" to "Tiger"
+        )
         assertEquals(expected, doc1a.toMap())
         assertEquals(2, doc1a.sequence)
 
@@ -1590,10 +1532,11 @@ class DatabaseTest : BaseDbTest() {
             assertNull(baseTestDb.getDocument(doc1b.id))
         } else {
             assertFalse(baseTestDb.delete(doc1b, cc))
-            val savedDoc = baseTestDb.getDocument(doc.id)
-            assertEquals(expected, savedDoc!!.toMap())
+            val savedDoc = baseTestDb.getDocument(doc.id)!!
+            assertEquals(expected, savedDoc.toMap())
             assertEquals(2, savedDoc.sequence)
         }
+
         recreateBastTestDb()
     }
 
@@ -1603,23 +1546,26 @@ class DatabaseTest : BaseDbTest() {
         doc1a.setString("firstName", "Daniel")
         doc1a.setString("lastName", "Tiger")
         baseTestDb.save(doc1a)
-        var savedDoc = baseTestDb.getDocument(doc1a.id)
-        assertEquals(doc1a.toMap(), savedDoc!!.toMap())
+
+        var savedDoc = baseTestDb.getDocument(doc1a.id)!!
+        assertEquals(doc1a.toMap(), savedDoc.toMap())
         assertEquals(1, savedDoc.sequence)
+
         val doc1b = MutableDocument("doc1")
         doc1b.setString("firstName", "Scott")
         doc1b.setString("lastName", "Tiger")
         if (cc === ConcurrencyControl.LAST_WRITE_WINS) {
             assertTrue(baseTestDb.save(doc1b, cc))
-            savedDoc = baseTestDb.getDocument(doc1b.id)
-            assertEquals(doc1b.toMap(), savedDoc!!.toMap())
+            savedDoc = baseTestDb.getDocument(doc1b.id)!!
+            assertEquals(doc1b.toMap(), savedDoc.toMap())
             assertEquals(2, savedDoc.sequence)
         } else {
             assertFalse(baseTestDb.save(doc1b, cc))
-            savedDoc = baseTestDb.getDocument(doc1b.id)
-            assertEquals(doc1a.toMap(), savedDoc!!.toMap())
+            savedDoc = baseTestDb.getDocument(doc1b.id)!!
+            assertEquals(doc1a.toMap(), savedDoc.toMap())
             assertEquals(1, savedDoc.sequence)
         }
+
         recreateBastTestDb()
     }
 
@@ -1631,11 +1577,11 @@ class DatabaseTest : BaseDbTest() {
         baseTestDb.save(doc)
 
         // Get two doc1 document objects (doc1a and doc1b):
-        val doc1a = baseTestDb.getDocument("doc1")
+        val doc1a = baseTestDb.getDocument("doc1")!!
         val doc1b = baseTestDb.getDocument("doc1")!!.toMutable()
 
         // Delete doc1a:
-        baseTestDb.delete(doc1a!!)
+        baseTestDb.delete(doc1a)
         assertEquals(2, doc1a.sequence)
         assertNull(baseTestDb.getDocument(doc.id))
 
@@ -1643,13 +1589,14 @@ class DatabaseTest : BaseDbTest() {
         doc1b.setString("lastName", "Lion")
         if (cc === ConcurrencyControl.LAST_WRITE_WINS) {
             assertTrue(baseTestDb.save(doc1b, cc))
-            val savedDoc = baseTestDb.getDocument(doc.id)
-            assertEquals(doc1b.toMap(), savedDoc!!.toMap())
+            val savedDoc = baseTestDb.getDocument(doc.id)!!
+            assertEquals(doc1b.toMap(), savedDoc.toMap())
             assertEquals(3, savedDoc.sequence)
         } else {
             assertFalse(baseTestDb.save(doc1b, cc))
             assertNull(baseTestDb.getDocument(doc.id))
         }
+
         recreateBastTestDb()
     }
 }

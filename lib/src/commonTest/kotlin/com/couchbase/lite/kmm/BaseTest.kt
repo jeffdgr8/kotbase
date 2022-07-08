@@ -180,8 +180,6 @@ abstract class BaseTest : PlatformBaseTest() {
         val isOpen = db.withLock {
             db.isOpen
         }
-        println("path = ${db.path}")
-        println("dbPath = ${db.dbPath}")
         // there is a race here... probably small.
         return if (isOpen) {
             doSafely("Delete db " + db.name, db::delete)

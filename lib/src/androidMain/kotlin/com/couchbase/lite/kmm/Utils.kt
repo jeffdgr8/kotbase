@@ -9,7 +9,9 @@ import java.util.*
 internal fun Any.delegateIfNecessary(): Any {
     return when (this) {
         is com.couchbase.lite.Blob -> asBlob()
+        is com.couchbase.lite.MutableArray -> asMutableArray()
         is com.couchbase.lite.Array -> asArray()
+        is com.couchbase.lite.MutableDictionary -> asMutableDictionary()
         is com.couchbase.lite.Dictionary -> asDictionary()
         is Date -> toKotlinInstant()
         is List<*> -> delegateIfNecessary()
