@@ -16,7 +16,6 @@ import java.util.concurrent.ThreadPoolExecutor
 /**
  * Platform test class for Android.
  */
-@RunWith(AndroidJUnit4::class)
 actual abstract class PlatformBaseTest {
 
     companion object {

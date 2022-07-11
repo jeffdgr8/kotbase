@@ -3,13 +3,19 @@ package com.couchbase.lite.kmm
 import cocoapods.CouchbaseLite.CBLDatabase
 import com.couchbase.lite.kmm.ext.throwError
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
+import com.couchbase.lite.kmm.internal.testQueue
+import com.couchbase.lite.kmm.internal.useTestQueue
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.wrapError
 import kotlinx.cinterop.ObjCMethod
+import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSError
+import platform.darwin.DISPATCH_QUEUE_PRIORITY_DEFAULT
+import platform.darwin.dispatch_get_global_queue
+import platform.darwin.dispatch_queue_t
 
 public actual class Database
 internal constructor(actual: CBLDatabase) :
@@ -187,7 +193,13 @@ internal constructor(actual: CBLDatabase) :
 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {
         mustBeOpen()
-        return DelegatedListenerToken(actual.addChangeListener(listener.convert()))
+        return DelegatedListenerToken(
+            if (useTestQueue) {
+                actual.addChangeListenerWithQueue(testQueue, listener.convert())
+            } else {
+                actual.addChangeListener(listener.convert())
+            }
+        )
     }
 
     public actual fun removeChangeListener(token: ListenerToken) {
@@ -200,7 +212,11 @@ internal constructor(actual: CBLDatabase) :
     ): ListenerToken {
         mustBeOpen()
         return DelegatedListenerToken(
-            actual.addDocumentChangeListenerWithID(id, listener.convert())
+            if (useTestQueue) {
+                actual.addDocumentChangeListenerWithID(id, testQueue, listener.convert())
+            } else {
+                actual.addDocumentChangeListenerWithID(id, listener.convert())
+            }
         )
     }
 

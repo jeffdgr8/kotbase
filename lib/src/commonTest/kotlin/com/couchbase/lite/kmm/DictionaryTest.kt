@@ -1,14 +1,12 @@
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.kmm.internal.utils.TestUtils.assertThrows
-import com.udobny.kmm.test.AndroidInstrumented
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import okio.IOException
 import kotlin.test.*
 
-@AndroidInstrumented
 class DictionaryTest : BaseDbTest() {
 
     @Test

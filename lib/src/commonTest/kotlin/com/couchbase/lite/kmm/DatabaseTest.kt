@@ -4,7 +4,6 @@ import com.couchbase.lite.kmm.internal.utils.FileUtils
 import com.couchbase.lite.kmm.internal.utils.TestUtils
 import com.couchbase.lite.kmm.internal.utils.paddedString
 import com.couchbase.lite.kmm.internal.utils.getParentDir
-import com.udobny.kmm.test.AndroidInstrumented
 import com.udobny.kmm.use
 import okio.IOException
 import kotlin.test.*
@@ -13,7 +12,6 @@ import kotlin.test.*
 // baseTestDb is managed by the superclass
 // If a test opens a new database it guarantee that it is deleted.
 // If a test opens a copy of the baseTestDb, it must close (but NOT delete)
-@AndroidInstrumented
 class DatabaseTest : BaseDbTest() {
 
     private fun <T : Comparable<T>> assertContents(l1: List<T>, vararg contents: T) {

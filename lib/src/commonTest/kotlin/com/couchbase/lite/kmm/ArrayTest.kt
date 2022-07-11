@@ -1,6 +1,5 @@
 package com.couchbase.lite.kmm
 
-import com.udobny.kmm.test.AndroidInstrumented
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -8,7 +7,6 @@ import kotlinx.serialization.json.jsonArray
 import okio.IOException
 import kotlin.test.*
 
-@AndroidInstrumented
 class ArrayTest : BaseDbTest() {
 
     @Test

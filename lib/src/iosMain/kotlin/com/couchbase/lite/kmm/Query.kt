@@ -2,6 +2,8 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.*
 import com.couchbase.lite.kmm.ext.throwError
+import com.couchbase.lite.kmm.internal.testQueue
+import com.couchbase.lite.kmm.internal.useTestQueue
 import com.udobny.kmm.AbstractDelegatedClass
 
 internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Query {
@@ -29,8 +31,15 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
         }!!
     }
 
-    override fun addChangeListener(listener: QueryChangeListener): ListenerToken =
-        DelegatedListenerToken(actual.addChangeListener(listener.convert()))
+    override fun addChangeListener(listener: QueryChangeListener): ListenerToken {
+        return DelegatedListenerToken(
+            if (useTestQueue) {
+                actual.addChangeListenerWithQueue(testQueue, listener.convert())
+            } else {
+                actual.addChangeListener(listener.convert())
+            }
+        )
+    }
 
     override fun removeChangeListener(token: ListenerToken) =
         actual.removeChangeListenerWithToken(token.actual)

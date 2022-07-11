@@ -7,16 +7,14 @@ import com.couchbase.lite.kmm.BaseDbTest.DocValidator
 import com.couchbase.lite.kmm.internal.utils.StringUtils
 import com.couchbase.lite.kmm.internal.utils.TestUtils.assertThrowsCBL
 import com.couchbase.lite.saveBlob
-import com.udobny.kmm.test.AndroidInstrumented
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.Clock
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import okio.Buffer
 import okio.IOException
-import okio.use
 import kotlin.math.absoluteValue
 import kotlin.test.*
 import kotlin.time.Duration.Companion.days
@@ -24,7 +22,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
-@AndroidInstrumented
 class DocumentTest : BaseDbTest() {
 
     @Test
@@ -863,15 +860,15 @@ class DocumentTest : BaseDbTest() {
         val validator4Save = DocValidator { d ->
             assertEquals(
                 blob.properties["length"],
-                d.getBlob("blob")!!.properties.get("length")
+                d.getBlob("blob")!!.properties["length"]
             )
             assertEquals(
                 blob.properties["content-type"],
-                d.getBlob("blob")!!.properties.get("content-type")
+                d.getBlob("blob")!!.properties["content-type"]
             )
             assertEquals(
                 blob.properties["digest"],
-                d.getBlob("blob")!!.properties.get("digest")
+                d.getBlob("blob")!!.properties["digest"]
             )
             assertEquals(
                 blob.properties["length"],
@@ -1773,32 +1770,31 @@ class DocumentTest : BaseDbTest() {
         assertEquals("c", members.getValue(2))
     }
 
-    // TODO:
-//    @Test
-//    @Throws(CouchbaseLiteException::class)
-//    fun testDocumentChangeOnDocumentPurged() {
-//        baseTestDb.save(MutableDocument("doc1").setValue("theanswer", 18))
-//
-//        val mutex = Mutex()
-//        val token = baseTestDb.addDocumentChangeListener("doc1") { change ->
-//            try {
-//                assertNotNull(change)
-//                assertEquals("doc1", change.documentID)
-//            } finally {
-//                mutex.unlock()
-//            }
-//        }
-//        try {
-//            baseTestDb.setDocumentExpiration("doc1", Clock.System.now() + 100.milliseconds)
-//            withTimeout(STD_TIMEOUT_SEC.seconds) {
-//                mutex.lock()
-//            }
-//        } finally {
-//            // TODO: 3.1 API
-//            //token.remove()
-//            baseTestDb.removeChangeListener(token)
-//        }
-//    }
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testDocumentChangeOnDocumentPurged() = runBlocking {
+        baseTestDb.save(MutableDocument("doc1").setValue("theanswer", 18))
+
+        val mutex = Mutex(true)
+        val token = baseTestDb.addDocumentChangeListener("doc1") { change ->
+            try {
+                assertNotNull(change)
+                assertEquals("doc1", change.documentID)
+            } finally {
+                mutex.unlock()
+            }
+        }
+        try {
+            baseTestDb.setDocumentExpiration("doc1", Clock.System.now() + 100.milliseconds)
+            withTimeout(STD_TIMEOUT_SEC.seconds) {
+                mutex.lock()
+            }
+        } finally {
+            // TODO: 3.1 API
+            //token.remove()
+            baseTestDb.removeChangeListener(token)
+        }
+    }
 
     @Test
     @Throws(CouchbaseLiteException::class)
@@ -1878,28 +1874,27 @@ class DocumentTest : BaseDbTest() {
         assertNull(baseTestDb.getDocumentExpiration("doc3"))
     }
 
-    // TODO:
-//    @Test
-//    @Throws(CouchbaseLiteException::class)
-//    fun testSetExpirationOnDoc() {
-//        val now = Clock.System.now()
-//
-//        val doc1 = MutableDocument("doc1")
-//        doc1.setInt("answer", 12)
-//        doc1.setValue("question", "What is six plus six?")
-//        saveDocInBaseTestDb(doc1)
-//
-//        val doc2 = MutableDocument("doc2")
-//        doc2.setInt("answer", 12)
-//        doc2.setValue("question", "What is six plus six?")
-//        saveDocInBaseTestDb(doc2)
-//
-//        baseTestDb.setDocumentExpiration("doc1", now + 100.milliseconds)
-//        baseTestDb.setDocumentExpiration("doc2", now + LONG_TIMEOUT_MS.milliseconds)
-//        assertEquals(2, baseTestDb.count)
-//
-//        waitUntil(1000L) { 1 == baseTestDb.count }
-//    }
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testSetExpirationOnDoc() {
+        val now = Clock.System.now()
+
+        val doc1 = MutableDocument("doc1")
+        doc1.setInt("answer", 12)
+        doc1.setValue("question", "What is six plus six?")
+        saveDocInBaseTestDb(doc1)
+
+        val doc2 = MutableDocument("doc2")
+        doc2.setInt("answer", 12)
+        doc2.setValue("question", "What is six plus six?")
+        saveDocInBaseTestDb(doc2)
+
+        baseTestDb.setDocumentExpiration("doc1", now + 100.milliseconds)
+        baseTestDb.setDocumentExpiration("doc2", now + LONG_TIMEOUT_MS.milliseconds)
+        assertEquals(2, baseTestDb.count)
+
+        waitUntil(1000L) { 1L == baseTestDb.count }
+    }
 
     @Test
     @Throws(CouchbaseLiteException::class)

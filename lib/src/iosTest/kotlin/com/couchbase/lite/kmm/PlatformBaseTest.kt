@@ -1,11 +1,13 @@
 package com.couchbase.lite.kmm
 
+import com.couchbase.lite.kmm.internal.useTestQueue
 import platform.Foundation.NSFileManager
 import platform.Foundation.temporaryDirectory
 
 actual abstract class PlatformBaseTest {
 
     actual fun setupPlatform() {
+        useTestQueue = true
         // TODO:
     }
 

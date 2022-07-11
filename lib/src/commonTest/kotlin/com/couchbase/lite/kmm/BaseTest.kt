@@ -9,6 +9,9 @@ import com.couchbase.lite.kmm.internal.utils.paddedString
 import com.couchbase.lite.withLock
 import com.udobny.kmm.test.AfterClass
 import com.udobny.kmm.test.BeforeClass
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import okio.IOException
@@ -18,6 +21,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 abstract class BaseTest : PlatformBaseTest() {
 
@@ -93,29 +97,28 @@ abstract class BaseTest : PlatformBaseTest() {
         return StringUtils.getUniqueName(prefix, 12)
     }
 
-//    protected fun waitUntil(
-//        maxTime: Long,
-//        test: com.couchbase.lite.internal.utils.Fn.Provider<Boolean?>
-//    ) {
-//        val delay: Long = 100
-//        if (maxTime <= delay) {
-//            assertTrue(test.get())
-//        }
-//        val endTimes: Long = System.currentTimeMillis() + maxTime - delay
-//        do {
-//            try {
-//                Thread.sleep(delay)
-//            } catch (e: InterruptedException) {
-//                break
-//            }
-//            if (test.get()) {
-//                return
-//            }
-//        } while (System.currentTimeMillis() < endTimes)
-//
-//        // assertTrue() provides a more relevant message than fail()
-//        assertTrue(false)
-//    }
+    protected fun waitUntil(maxTime: Long, test: () -> Boolean) {
+        val delay = 100L
+        if (maxTime <= delay) {
+            assertTrue(test())
+        }
+        val endTimes = Clock.System.now() + (maxTime - delay).milliseconds
+        do {
+            try {
+                runBlocking {
+                    delay(delay)
+                }
+            } catch (e: CancellationException) {
+                break
+            }
+            if (test()) {
+                return
+            }
+        } while (Clock.System.now() < endTimes)
+
+        // assertTrue() provides a more relevant message than fail()
+        assertTrue(false)
+    }
 
     protected fun getScratchDirectoryPath(name: String): String {
         return try {

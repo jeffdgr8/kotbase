@@ -1,12 +1,8 @@
 package com.couchbase.lite.kmm
 
-import com.udobny.kmm.test.AndroidInstrumented
-
 /**
  * Contains methods required for the tests to run on both Android and Java platforms.
  */
-// annotate all test subclasses this way to ignore in androidTest unit tests
-@AndroidInstrumented
 expect abstract class PlatformBaseTest() {
 
     /* initialize the platform */
