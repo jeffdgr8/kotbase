@@ -1,0 +1,163 @@
+package com.couchbase.lite.kmm
+
+import com.couchbase.lite.generation
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.fail
+
+class ErrorCaseTest : BaseDbTest() {
+    
+    // -- DatabaseTest
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testDeleteSameDocTwice() {
+        // Store doc:
+        val docID = "doc1"
+        val doc = createSingleDocInBaseTestDb(docID)
+
+        // First time deletion:
+        baseTestDb.delete(doc)
+        assertEquals(0, baseTestDb.count)
+        assertNull(baseTestDb.getDocument(docID))
+
+        // Second time deletion:
+        // NOTE: doc is pointing to old revision. this cause conflict but this generate same revision
+        baseTestDb.delete(doc)
+        assertNull(baseTestDb.getDocument(docID))
+    }
+
+    // -- DatabaseTest
+    @Test
+    fun testDeleteUnsavedDocument() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        try {
+            baseTestDb.delete(doc)
+            fail()
+        } catch (e: CouchbaseLiteException) {
+            if (e.getCode() != CBLError.Code.NOT_FOUND) {
+                fail()
+            }
+        }
+        assertEquals("Scott Tiger", doc.getValue("name"))
+    }
+
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testSaveSavedMutableDocument() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        var saved = saveDocInBaseTestDb(doc)
+        doc.setValue("age", 20)
+        saved = saveDocInBaseTestDb(doc)
+        assertEquals(2, saved.generation())
+        assertEquals(20, saved.getInt("age").toLong())
+        assertEquals("Scott Tiger", saved.getString("name"))
+    }
+
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testDeleteSavedMutableDocument() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        val saved = saveDocInBaseTestDb(doc)
+        baseTestDb.delete(doc)
+        assertNull(baseTestDb.getDocument("doc1"))
+    }
+
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testDeleteDocAfterPurgeDoc() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        val saved = saveDocInBaseTestDb(doc)
+
+        // purge doc
+        baseTestDb.purge(saved)
+        try {
+            baseTestDb.delete(saved)
+            fail()
+        } catch (e: CouchbaseLiteException) {
+            if (e.getCode() != CBLError.Code.NOT_FOUND) {
+                fail()
+            }
+        }
+    }
+
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testDeleteDocAfterDeleteDoc() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        val saved = saveDocInBaseTestDb(doc)
+
+        // delete doc
+        baseTestDb.delete(saved)
+
+        // delete doc -> conflict resolver -> no-op
+        baseTestDb.delete(saved)
+    }
+
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testPurgeDocAfterDeleteDoc() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        val saved = saveDocInBaseTestDb(doc)
+
+        // delete doc
+        baseTestDb.delete(saved)
+
+        // purge doc
+        baseTestDb.purge(saved)
+    }
+
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testPurgeDocAfterPurgeDoc() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        val saved = saveDocInBaseTestDb(doc)
+
+        // purge doc
+        baseTestDb.purge(saved)
+        try {
+            baseTestDb.purge(saved)
+            fail()
+        } catch (e: CouchbaseLiteException) {
+            if (e.getCode() != CBLError.Code.NOT_FOUND) {
+                fail()
+            }
+        }
+    }
+
+    // -- ArrayTest
+    internal class CustomClass {
+        var text = "custom"
+    }
+
+    @Test
+    fun testAddValueUnExpectedObject() {
+        val mArray = MutableArray()
+        try {
+            mArray.addValue(CustomClass())
+            fail()
+        } catch (ex: IllegalArgumentException) {
+            println(ex.message)
+            // ok!!
+        }
+    }
+
+    @Test
+    fun testSetValueUnExpectedObject() {
+        val mArray = MutableArray()
+        mArray.addValue(0)
+        try {
+            mArray.setValue(0, CustomClass())
+            fail()
+        } catch (ex: IllegalArgumentException) {
+            // ok!!
+        }
+    }
+}

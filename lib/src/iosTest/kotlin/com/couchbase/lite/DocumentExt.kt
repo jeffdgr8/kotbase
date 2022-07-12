@@ -6,8 +6,10 @@ import com.couchbase.lite.kmm.Document
 import com.couchbase.lite.kmm.MutableDictionary
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ObjCMethod
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.get
 import platform.darwin.NSObject
+import platform.darwin.NSUInteger
 import platform.posix.u_int32_tVar
 
 @Suppress("UNCHECKED_CAST")
@@ -26,3 +28,9 @@ private external fun CBLDocument.c4Doc(): NSObject? // CBLC4Document?
 
 @ObjCMethod("rawDoc", "@16@0:8")
 private external fun NSObject.rawDoc(): CPointer<u_int32_tVar> // CBLC4Document.rawDoc(): C4Document
+
+internal actual fun Document.generation(): Long =
+    actual.generation().convert()
+
+@ObjCMethod("generation", "@16@0:8")
+private external fun CBLDocument.generation(): NSUInteger

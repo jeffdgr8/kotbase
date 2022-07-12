@@ -55,6 +55,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
 
     public actual fun setValue(key: String, value: Any?): MutableDictionary = chain {
         checkSelf(value)
+        checkType(value)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
             is Boolean -> setBoolean(value, key)

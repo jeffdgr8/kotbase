@@ -44,3 +44,21 @@ internal fun List<Any?>.actualIfDelegated(): List<Any?> =
 
 internal fun Map<*, *>.actualIfDelegated(): Map<Any?, *> =
     mapValues { it.value?.actualIfDelegated() }
+
+internal fun checkType(value: Any?) {
+    when (value ?: return) {
+        is Boolean,
+        is Number,
+        is String,
+        is Instant,
+        is Blob,
+        is Array,
+        is Dictionary,
+        is Map<*, *>,
+        is List<*> -> return
+    }
+    // Catch this error to throw IllegalArgumentException rather than eventual ObjC NSInternalInconsistencyException error
+    throw IllegalArgumentException(
+        "${value::class} is not a valid type. You may only pass MutableDictionary, Dictionary, MutableArray, Array, Instant, String, Number, Boolean, Blob, null, or a List or a Map whose members are one of the preceding types."
+    )
+}

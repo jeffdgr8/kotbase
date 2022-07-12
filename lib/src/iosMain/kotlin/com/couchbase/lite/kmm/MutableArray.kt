@@ -52,6 +52,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual fun setValue(index: Int, value: Any?): MutableArray = chain {
         checkSelf(value)
+        checkType(value)
         checkIndex(index)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
@@ -118,6 +119,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual fun addValue(value: Any?): MutableArray = chain {
         checkSelf(value)
+        checkType(value)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
             is Boolean -> addBoolean(value)
@@ -172,6 +174,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual fun insertValue(index: Int, value: Any?): MutableArray = chain {
         checkSelf(value)
+        checkType(value)
         checkInsertIndex(index)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API

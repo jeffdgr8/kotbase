@@ -4,6 +4,6 @@ import cocoapods.CouchbaseLite.CBLDocumentReplication
 
 internal fun DocumentReplicationListener.convert(): (CBLDocumentReplication?) -> Unit {
     return { replication ->
-        replication(DocumentReplication(replication!!))
+        invoke(DocumentReplication(replication!!))
     }
 }

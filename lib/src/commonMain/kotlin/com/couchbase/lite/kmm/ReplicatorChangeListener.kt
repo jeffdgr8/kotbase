@@ -2,13 +2,9 @@ package com.couchbase.lite.kmm
 
 /**
  * The listener interface for receiving Replicator change events.
+ *
+ * The callback function from Replicator
+ *
+ * @param change the Replicator change information
  */
-public fun interface ReplicatorChangeListener {
-
-    /**
-     * The callback function from Replicator
-     *
-     * @param change the Replicator change information
-     */
-    public fun changed(change: ReplicatorChange)
-}
+public typealias ReplicatorChangeListener = (change: ReplicatorChange) -> Unit

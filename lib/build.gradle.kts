@@ -20,11 +20,12 @@ kotlin {
     ios()
 
     cocoapods {
+        name = project.parent!!.name
         summary = "Couchbase Lite Kotlin Multiplatform"
-        homepage = "https://udobny.com/couchbase-lite-kotlin"
+        homepage = "https://udobny.com/couchbase-lite-kmm"
         ios.deploymentTarget = "10.0"
         framework {
-            baseName = "CouchbaseLite-KMM"
+            baseName = this@cocoapods.name.replace('-', '_')
         }
         pod("CouchbaseLite", version = "~> 3.0.0", moduleName = "CouchbaseLite")
     }
@@ -61,6 +62,7 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.3")
+                implementation("org.jetbrains.kotlinx:atomicfu:0.18.2")
             }
         }
         val androidMain by getting {

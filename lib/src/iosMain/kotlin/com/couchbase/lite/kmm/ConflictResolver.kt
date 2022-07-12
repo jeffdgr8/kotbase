@@ -13,5 +13,5 @@ internal constructor(internal val actual: ConflictResolver) :
     NSObject(), CBLConflictResolverProtocol {
 
     override fun resolve(conflict: CBLConflict): CBLDocument =
-        actual.resolve(Conflict(conflict)).actual
+        actual(Conflict(conflict)).actual
 }

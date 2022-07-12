@@ -5,6 +5,6 @@ import cocoapods.CouchbaseLite.CBLMutableDocument
 
 internal fun ConflictHandler.convert(): (CBLMutableDocument?, CBLDocument?) -> Boolean {
     return { document, oldDocument ->
-        handle(MutableDocument(document!!), oldDocument?.asDocument())
+        invoke(MutableDocument(document!!), oldDocument?.asDocument())
     }
 }

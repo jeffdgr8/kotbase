@@ -138,6 +138,7 @@ abstract class BaseTest : PlatformBaseTest() {
     ): Database {
         val dbName = getUniqueName(name)
         val dbDir = "${config.getDirectory()}/$dbName.cblite2" // C4Database.DB_EXTENSION
+        println("dbDir = $dbDir")
         assertFalse(FileUtils.dirExists(dbDir))
         val db = Database(dbName, config)
         assertTrue(FileUtils.dirExists(dbDir))

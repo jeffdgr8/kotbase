@@ -1,3 +1,5 @@
+@file:JvmName("ConflictResolverJvm") // https://youtrack.jetbrains.com/issue/KT-21186
+
 package com.couchbase.lite.kmm
 
 import com.udobny.kmm.DelegatedClass
@@ -11,5 +13,5 @@ internal constructor(actual : ConflictResolver) :
     com.couchbase.lite.ConflictResolver {
 
     override fun resolve(conflict: com.couchbase.lite.Conflict): com.couchbase.lite.Document =
-        actual.resolve(Conflict(conflict)).actual
+        actual(Conflict(conflict)).actual
 }

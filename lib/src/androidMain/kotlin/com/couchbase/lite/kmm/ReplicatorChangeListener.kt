@@ -1,7 +1,9 @@
+@file:JvmName("ReplicationChangeListenerJvm") // https://youtrack.jetbrains.com/issue/KT-21186
+
 package com.couchbase.lite.kmm
 
 internal fun ReplicatorChangeListener.convert(): com.couchbase.lite.ReplicatorChangeListener {
     return com.couchbase.lite.ReplicatorChangeListener { change ->
-        changed(ReplicatorChange(change))
+        invoke(ReplicatorChange(change))
     }
 }

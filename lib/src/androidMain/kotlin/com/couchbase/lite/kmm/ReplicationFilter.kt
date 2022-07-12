@@ -1,3 +1,5 @@
+@file:JvmName("ReplicationFilterJvm") // https://youtrack.jetbrains.com/issue/KT-21186
+
 package com.couchbase.lite.kmm
 
 import com.udobny.kmm.DelegatedClass
@@ -13,5 +15,5 @@ internal constructor(actual: ReplicationFilter) :
     override fun filtered(
         document: com.couchbase.lite.Document,
         flags: EnumSet<com.couchbase.lite.DocumentFlag>
-    ): Boolean = actual.filtered(Document(document), flags)
+    ): Boolean = actual(Document(document), flags)
 }

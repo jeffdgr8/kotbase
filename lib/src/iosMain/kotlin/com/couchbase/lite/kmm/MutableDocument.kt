@@ -60,6 +60,7 @@ internal constructor(override val actual: CBLMutableDocument) :
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDocument = chain {
+        checkType(value)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
             is Boolean -> setBoolean(value, key)
