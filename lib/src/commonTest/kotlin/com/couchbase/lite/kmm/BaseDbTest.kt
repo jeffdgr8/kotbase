@@ -1,10 +1,7 @@
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.isOpen
-import com.couchbase.lite.kmm.internal.utils.JSONUtils
-import com.couchbase.lite.kmm.internal.utils.PlatformUtils
-import com.couchbase.lite.kmm.internal.utils.Report
-import com.couchbase.lite.kmm.internal.utils.paddedString
+import com.couchbase.lite.kmm.internal.utils.*
 import com.couchbase.lite.withLock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.*
@@ -18,6 +15,11 @@ abstract class BaseDbTest : BaseTest() {
     fun interface DocValidator {
         @Throws(CouchbaseLiteException::class)
         fun accept(document: Document)
+    }
+
+    protected open fun <T : Comparable<T>?> assertContents(l1: List<T>, vararg contents: T) {
+        val l2 = contents.toList()
+        assertTrue(l1.containsAll(l2) && l2.containsAll(l1))
     }
 
     protected lateinit var baseTestDb: Database
@@ -1655,6 +1657,11 @@ abstract class BaseDbTest : BaseTest() {
     }
 
     @Throws(CouchbaseLiteException::class)
+    protected open fun openDatabase(): Database {
+        return verifyOrDeleteDb(createDb(getUniqueName("test_db")))
+    }
+
+    @Throws(CouchbaseLiteException::class)
     protected fun reopenBaseTestDb() {
         baseTestDb = reopenDb(baseTestDb)
     }
@@ -1662,6 +1669,11 @@ abstract class BaseDbTest : BaseTest() {
     @Throws(CouchbaseLiteException::class)
     protected fun recreateBastTestDb() {
         baseTestDb = recreateDb(baseTestDb)
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    protected open fun duplicateBaseTestDb(): Database {
+        return verifyOrDeleteDb(duplicateDb(baseTestDb))
     }
 
     // Some JSON encoding will promote a Float to a Double.
@@ -1673,6 +1685,23 @@ abstract class BaseDbTest : BaseTest() {
             return `val`.toFloat()
         }
         throw IllegalArgumentException("expected a floating point value")
+    }
+
+    private fun verifyOrDeleteDb(db: Database): Database {
+        return try {
+            assertNotNull(db)
+            assertTrue(FileUtils.getCanonicalPath(db.path!!).endsWith(DB_EXTENSION))
+            db
+        } catch (e: IOException) {
+            deleteDb(db)
+            // can't construct with cause
+            // https://youtrack.jetbrains.com/issue/KT-40728/Add-AssertionError-constructor-with-cause-Throwable-parameter-to-common-stdlib
+            // throw AssertionError("Unable to get db path", e)
+            throw AssertionError("Unable to get db path")
+        } catch (e: AssertionError) {
+            deleteDb(db)
+            throw e
+        }
     }
 
     companion object {

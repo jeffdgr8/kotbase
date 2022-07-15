@@ -1,5 +1,6 @@
 package com.couchbase.lite
 
+import com.couchbase.lite.kmm.BaseTest.Companion.DB_EXTENSION
 import com.couchbase.lite.kmm.Blob
 import com.couchbase.lite.kmm.Database
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
@@ -21,7 +22,7 @@ internal actual fun <R> Database.withLock(action: () -> R): R {
 internal actual val Database.dbPath: String?
     get() {
         // CBLDatabase.databasePath(name, dir)
-        val name = name.replace('/', ':') + ".cblite2" // kDBExtension
+        val name = name.replace('/', ':') + DB_EXTENSION
         val dir = config.getDirectory().dropLastWhile { it == '/' }
         return "$dir/$name"
     }

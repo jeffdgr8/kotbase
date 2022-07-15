@@ -8,13 +8,19 @@ import platform.Foundation.*
 
 actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
 
+    override fun gc() {
+        // TODO: Is this possible to request with Kotlin/Native?
+    }
+
     override fun getAsset(asset: String?): Source? {
         if (asset == null) {
             return null
         }
-        val pathParts = asset.split('.')
+        val dotIndex = asset.lastIndexOf('.')
+        val filePath = asset.substring(0, dotIndex)
+        val ext = asset.substring(dotIndex + 1)
         val path = NSBundle.mainBundle
-            .pathForResource("resources/${pathParts[0]}", pathParts[1])
+            .pathForResource("resources/$filePath", ext)
             ?: return null
         // TODO: stream when https://github.com/square/okio/pull/1123 is available
         //return NSInputStream(NSURL(path))?.source()

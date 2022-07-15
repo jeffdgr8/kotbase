@@ -23,14 +23,17 @@ internal actual fun Document.exists(): Boolean {
     return (flags and 0x1000u) != 0u              // kDocExists
 }
 
+// TODO: replace with .def pending https://github.com/JetBrains/kotlin/pull/4894
 @ObjCMethod("c4Doc", "@16@0:8")
 private external fun CBLDocument.c4Doc(): NSObject? // CBLC4Document?
 
+// TODO: replace with .def pending https://github.com/JetBrains/kotlin/pull/4894
 @ObjCMethod("rawDoc", "@16@0:8")
 private external fun NSObject.rawDoc(): CPointer<u_int32_tVar> // CBLC4Document.rawDoc(): C4Document
 
 internal actual fun Document.generation(): Long =
     actual.generation().convert()
 
+// TODO: replace with .def pending https://github.com/JetBrains/kotlin/pull/4894
 @ObjCMethod("generation", "@16@0:8")
 private external fun CBLDocument.generation(): NSUInteger

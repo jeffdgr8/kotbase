@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_VARIABLE")
+@file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.*
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
@@ -52,16 +52,16 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.3")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3")
-                api("com.squareup.okio:okio:3.1.0")
+                api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                api("com.squareup.okio:okio:3.2.0")
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
                 implementation("org.jetbrains.kotlinx:atomicfu:0.18.2")
             }
         }
@@ -78,6 +78,7 @@ kotlin {
             }
         }
         val androidAndroidTest by getting {
+            // doesn't work, so using a symlink
             //resources.srcDir("src/commonTest/resources")
             dependencies {
                 implementation("androidx.test:core-ktx:1.4.0")
@@ -87,7 +88,11 @@ kotlin {
             }
         }
         val iosMain by getting
-        val iosTest by getting
+        val iosTest by getting {
+            dependencies {
+                implementation("com.soywiz.korlibs.korio:korio:3.0.0-Beta6")
+            }
+        }
     }
 }
 
@@ -102,6 +107,7 @@ android {
     }
 }
 
+// TODO: replace @ObjCMethod pending https://github.com/JetBrains/kotlin/pull/4894
 /*tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
         outputFile.appendText("""

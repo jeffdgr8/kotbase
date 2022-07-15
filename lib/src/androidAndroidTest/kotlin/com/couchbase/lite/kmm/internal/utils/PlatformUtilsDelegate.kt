@@ -12,6 +12,10 @@ import java.util.*
 
 actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
 
+    override fun gc() {
+        System.gc()
+    }
+
     override fun getAsset(asset: String?): Source? {
         if (asset == null) {
             return null

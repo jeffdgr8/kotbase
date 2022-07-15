@@ -18,6 +18,9 @@ actual object FileUtils {
     actual fun getCanonicalPath(path: String): String =
         File(path).canonicalPath
 
+    actual fun mkDirs(path: String): Boolean =
+        File(path).mkdirs()
+
     actual fun verifyDir(dirPath: String): String =
         verifyDir(File(dirPath))
 

@@ -29,15 +29,16 @@ actual object FileUtils {
         }
     }
 
-    actual fun getCanonicalPath(path: String): String =
+    actual fun getCanonicalPath(path: String): String {
         try {
-            NSURL(fileURLWithPath = path).canonicalPath
+            return NSURL(fileURLWithPath = path).canonicalPath
         } catch (e: Exception) {
             println("Exception getCanonicalPath($path)")
             println(e)
             e.printStackTrace()
             throw e
         }
+    }
 
     private val NSURL.canonicalPath: String
         get() = memScoped {
@@ -56,6 +57,26 @@ actual object FileUtils {
             println("canonicalPath = ${canonicalPath.value}")
             canonicalPath.value as String
         }
+
+    actual fun mkDirs(path: String): Boolean {
+        return try {
+            return wrapError(NSError::toException) { error ->
+                NSFileManager.defaultManager.createDirectoryAtPath(path, true, null, error)
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun mkDirs(url: NSURL): Boolean {
+        return try {
+            return wrapError(NSError::toException) { error ->
+                NSFileManager.defaultManager.createDirectoryAtURL(url, true, null, error)
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     actual fun verifyDir(dirPath: String): String =
         verifyDir(NSURL(fileURLWithPath = dirPath))

@@ -6,6 +6,10 @@ object PlatformUtils {
 
     private val DELEGATE: Delegate = PlatformUtilsDelegate()
 
+    fun gc() {
+        DELEGATE.gc()
+    }
+
     fun getAsset(asset: String?): Source? {
         return DELEGATE.getAsset(asset)
     }
@@ -25,6 +29,7 @@ object PlatformUtils {
     }
 
     internal interface Delegate {
+        fun gc()
         fun getAsset(asset: String?): Source?
         val encoder: Base64Encoder
         val decoder: Base64Decoder

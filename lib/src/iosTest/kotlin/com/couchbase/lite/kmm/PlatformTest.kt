@@ -4,11 +4,14 @@ import com.couchbase.lite.kmm.internal.useTestQueue
 import platform.Foundation.NSFileManager
 import platform.Foundation.temporaryDirectory
 
-actual abstract class PlatformBaseTest {
+actual abstract class PlatformTest {
 
     actual fun setupPlatform() {
         useTestQueue = true
-        // TODO:
+        val console = Database.log.console
+        // iOS tests don't handle a lot of logging (may terminate prematurely on verbose log-level)
+        console.level = LogLevel.WARNING
+        console.domains = LogDomain.ALL_DOMAINS
     }
 
     actual val tmpDir: String

@@ -7,6 +7,11 @@
 //
 //abstract class BaseReplicatorTest : BaseDbTest() {
 //
+//    // Don't let the NetworkConnectivityManager confuse tests
+//    protected fun testReplicator(config: ReplicatorConfiguration?): Replicator {
+//        return Replicator(null, config)
+//    }
+//
 //    protected var baseTestReplicator: Replicator? = null
 //    protected var otherDB: Database? = null
 //
@@ -28,11 +33,6 @@
 //    @get:Throws(java.net.URISyntaxException::class)
 //    protected val remoteTargetEndpoint: URLEndpoint
 //        protected get() = URLEndpoint(java.net.URI("ws://foo.couchbase.com/db"))
-//
-//    // Don't let the NetworkConnectivityManager confuse tests
-//    protected fun testReplicator(config: ReplicatorConfiguration?): Replicator {
-//        return Replicator(null, config)
-//    }
 //
 //    protected fun makeConfig(
 //        target: Endpoint?,

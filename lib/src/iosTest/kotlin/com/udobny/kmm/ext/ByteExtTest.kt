@@ -1,9 +1,7 @@
 package com.udobny.kmm.ext
 
 import kotlinx.cinterop.*
-import okio.FileSystem
 import platform.Foundation.*
-import platform.darwin.UInt8Var
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

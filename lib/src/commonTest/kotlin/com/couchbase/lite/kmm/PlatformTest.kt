@@ -3,7 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * Contains methods required for the tests to run on both Android and Java platforms.
  */
-expect abstract class PlatformBaseTest() {
+expect abstract class PlatformTest() {
 
     /* initialize the platform */
     fun setupPlatform()

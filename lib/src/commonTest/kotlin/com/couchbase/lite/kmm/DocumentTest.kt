@@ -7,10 +7,12 @@ import com.couchbase.lite.kmm.BaseDbTest.DocValidator
 import com.couchbase.lite.kmm.internal.utils.StringUtils
 import com.couchbase.lite.kmm.internal.utils.TestUtils.assertThrowsCBL
 import com.couchbase.lite.saveBlob
+import com.udobny.kmm.toStringWithMillis
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -798,26 +800,26 @@ class DocumentTest : BaseDbTest() {
         var mDoc = MutableDocument("doc1")
 
         val date = Clock.System.now()
-        val dateStr = date.toString()
+        val dateStr = date.toStringWithMillis()
         assertTrue(dateStr.isNotEmpty())
         mDoc.setValue("date", date)
 
         val doc = saveDocInBaseTestDb(mDoc) { d ->
             assertEquals(dateStr, d.getValue("date"))
             assertEquals(dateStr, d.getString("date"))
-            assertEquals(dateStr, d.getDate("date").toString())
+            assertEquals(dateStr, d.getDate("date")!!.toStringWithMillis())
         }
 
         // Update:
         mDoc = doc.toMutable()
         val nuDate = date + 60.seconds
-        val nuDateStr = nuDate.toString()
+        val nuDateStr = nuDate.toStringWithMillis()
         mDoc.setValue("date", nuDate)
 
         saveDocInBaseTestDb(mDoc) { d ->
             assertEquals(nuDateStr, d.getValue("date"))
             assertEquals(nuDateStr, d.getString("date"))
-            assertEquals(nuDateStr, d.getDate("date").toString())
+            assertEquals(nuDateStr, d.getDate("date")!!.toStringWithMillis())
         }
     }
 

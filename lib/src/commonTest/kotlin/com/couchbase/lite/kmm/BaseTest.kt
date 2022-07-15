@@ -23,7 +23,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-abstract class BaseTest : PlatformBaseTest() {
+abstract class BaseTest : PlatformTest() {
 
 //    protected var testSerialExecutor: CloseableExecutor? = null
 //    private var testName: String? = null
@@ -41,7 +41,9 @@ abstract class BaseTest : PlatformBaseTest() {
 //        Report.log(LogLevel.INFO, ">>>>>>>> Test started: $testName")
         Report.log(LogLevel.INFO, ">>>>>>>> Test started")
 //        com.couchbase.lite.internal.support.Log.initLogging()
+
         setupPlatform()
+
 //        testSerialExecutor = object : CloseableExecutor() {
 //            val executor: java.util.concurrent.ExecutorService =
 //                java.util.concurrent.Executors.newSingleThreadExecutor()
@@ -63,6 +65,7 @@ abstract class BaseTest : PlatformBaseTest() {
 //                return true
 //            }
 //        }
+
         startTime = Clock.System.now()
     }
 
@@ -73,12 +76,14 @@ abstract class BaseTest : PlatformBaseTest() {
 //            succeeded = testSerialExecutor.stop(2, java.util.concurrent.TimeUnit.SECONDS)
 //        }
 //        Report.log(LogLevel.DEBUG, "Executor stopped: $succeeded")
+//
 //        Report.log(
 //            LogLevel.INFO,
 //            "<<<<<<<< Test completed(%s): %s",
 //            formatInterval(Clock.System.now() - startTime),
 //            testName
 //        )
+
         Report.log(
             LogLevel.INFO,
             "<<<<<<<< Test completed(%s)",
@@ -137,7 +142,7 @@ abstract class BaseTest : PlatformBaseTest() {
         config: DatabaseConfiguration = DatabaseConfiguration()
     ): Database {
         val dbName = getUniqueName(name)
-        val dbDir = "${config.getDirectory()}/$dbName.cblite2" // C4Database.DB_EXTENSION
+        val dbDir = "${config.getDirectory()}/$dbName$DB_EXTENSION"
         println("dbDir = $dbDir")
         assertFalse(FileUtils.dirExists(dbDir))
         val db = Database(dbName, config)
@@ -222,6 +227,7 @@ abstract class BaseTest : PlatformBaseTest() {
         val STD_TIMEOUT_MS = STD_TIMEOUT_SEC * 1000L
         val LONG_TIMEOUT_MS = LONG_TIMEOUT_SEC * 1000L
         private val SCRATCH_DIRS = mutableListOf<String>()
+        const val DB_EXTENSION = ".cblite2" // C4Database.DB_EXTENSION
 
         @BeforeClass
         @JvmStatic

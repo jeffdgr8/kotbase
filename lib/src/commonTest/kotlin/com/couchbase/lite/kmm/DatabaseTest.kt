@@ -5,7 +5,6 @@ import com.couchbase.lite.kmm.internal.utils.TestUtils
 import com.couchbase.lite.kmm.internal.utils.paddedString
 import com.couchbase.lite.kmm.internal.utils.getParentDir
 import com.udobny.kmm.use
-import okio.IOException
 import kotlin.test.*
 
 // The rules in this test are:
@@ -13,12 +12,6 @@ import kotlin.test.*
 // If a test opens a new database it guarantee that it is deleted.
 // If a test opens a copy of the baseTestDb, it must close (but NOT delete)
 class DatabaseTest : BaseDbTest() {
-
-    private fun <T : Comparable<T>> assertContents(l1: List<T>, vararg contents: T) {
-        val l2 = contents.toMutableList()
-        l2.sort()
-        assertEquals(l1.sorted(), l2)
-    }
 
     //---------------------------------------------
     //  Get Document
@@ -1350,7 +1343,6 @@ class DatabaseTest : BaseDbTest() {
             mDoc.setString("foo", "bar")
             db.save(mDoc)
             db.close()
-            db = null
 
             db = Database(dbName)
             assertEquals(1L, db.count)
@@ -1359,18 +1351,9 @@ class DatabaseTest : BaseDbTest() {
         } finally {
             try {
                 db?.delete()
-            } catch (ignore: Exception) { }
+            } catch (ignore: Exception) {
+            }
         }
-    }
-
-    @Throws(CouchbaseLiteException::class)
-    private fun openDatabase(): Database {
-        return verifyDb(createDb("test_db"))
-    }
-
-    @Throws(CouchbaseLiteException::class)
-    private fun duplicateBaseTestDb(): Database {
-        return verifyDb(duplicateDb(baseTestDb))
     }
 
     @Throws(CouchbaseLiteException::class)
@@ -1384,27 +1367,6 @@ class DatabaseTest : BaseDbTest() {
         }
 
         return db
-    }
-
-    private fun verifyDb(db: Database): Database {
-        return try {
-            assertNotNull(db)
-            assertTrue(
-                FileUtils.getCanonicalPath(db.path!!)
-                    .endsWith(".cblite2") // C4Database.DB_EXTENSION
-            )
-
-            db
-        } catch (e: IOException) {
-            deleteDb(db)
-            // can't construct with cause
-            // https://youtrack.jetbrains.com/issue/KT-40728/Add-AssertionError-constructor-with-cause-Throwable-parameter-to-common-stdlib
-            // throw AssertionError("Unable to get db path", e)
-            throw AssertionError("Unable to get db path")
-        } catch (e: AssertionError) {
-            deleteDb(db)
-            throw e
-        }
     }
 
     // helper method to save n number of docs
