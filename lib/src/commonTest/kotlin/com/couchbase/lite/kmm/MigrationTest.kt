@@ -60,7 +60,9 @@ class MigrationTest : BaseTest() {
         }
     }
 
-    @IgnoreIos // database is empty when opened on iOS
+    // TODO: Korio extracts empty files from zip on iOS
+    //  fixed in https://github.com/korlibs/korge/pull/842
+    @IgnoreIos
     @Test
     @Throws(Exception::class)
     fun testOpenExistingDB() {

@@ -1,8 +1,14 @@
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.kmm.internal.useTestQueue
+import kotlinx.cinterop.convert
 import platform.Foundation.NSFileManager
 import platform.Foundation.temporaryDirectory
+import platform.darwin.DISPATCH_TIME_NOW
+import platform.darwin.dispatch_after
+import platform.darwin.dispatch_get_global_queue
+import platform.darwin.dispatch_time
+import platform.posix.QOS_CLASS_DEFAULT
 
 actual abstract class PlatformTest {
 
@@ -17,16 +23,11 @@ actual abstract class PlatformTest {
     actual val tmpDir: String
         get() = NSFileManager.defaultManager.temporaryDirectory.absoluteString!!
 
-    actual fun reloadStandardErrorMessages() {
-        // TODO:
-    }
-
-    actual fun getExclusions(tag: String): Exclusion? {
-        // TODO:
-        return null
-    }
-
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
-        // TODO:
+        dispatch_after(
+            dispatch_time(DISPATCH_TIME_NOW, delayMs),
+            dispatch_get_global_queue(QOS_CLASS_DEFAULT.convert(), 0),
+            task
+        )
     }
 }

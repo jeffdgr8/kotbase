@@ -4,7 +4,7 @@ import com.couchbase.lite.copy
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.assertFailsWith
-import kotlinx.coroutines.experimental.sync.CountDownLatch
+import kotlinx.coroutines.sync.CountDownLatch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout

@@ -5,6 +5,8 @@ public actual object Function {
     public actual fun avg(operand: Expression): Expression =
         Expression(com.couchbase.lite.Function.avg(operand.actual))
 
+    // TODO: should be nullable (pending iOS as well)
+    //  https://forums.couchbase.com/t/function-count-docs-api-clarification/33876
     public actual fun count(operand: Expression): Expression =
         Expression(com.couchbase.lite.Function.count(operand.actual))
 

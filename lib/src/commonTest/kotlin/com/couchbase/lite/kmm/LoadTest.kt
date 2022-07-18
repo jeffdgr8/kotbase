@@ -60,7 +60,7 @@ class LoadTest : BaseDbTest() {
                 assertEquals(1, baseTestDb.count)
                 val doc = baseTestDb.getDocument(docID)
                 assertNotNull(doc)
-                assertEquals("Delete", doc!!.getString("tag"))
+                assertEquals("Delete", doc.getString("tag"))
                 baseTestDb.delete(doc)
                 assertEquals(0, baseTestDb.count)
             }

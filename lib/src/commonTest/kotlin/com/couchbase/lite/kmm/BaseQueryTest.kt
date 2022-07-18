@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 abstract class BaseQueryTest : BaseDbTest() {
 
     fun interface QueryResult {
-        fun check(n: Int, result: Result?)
+        fun check(n: Int, result: Result)
     }
 
     @Throws(CouchbaseLiteException::class)
@@ -54,8 +54,8 @@ abstract class BaseQueryTest : BaseDbTest() {
     private fun verifyQueryWithEnumerator(query: Query, queryResult: QueryResult): Int {
         var n = 0
         query.execute().use { rs ->
-            var result: Result?
-            while (rs.next().also { result = it } != null) {
+            while (true) {
+                val result = rs.next() ?: break
                 queryResult.check(++n, result)
             }
         }

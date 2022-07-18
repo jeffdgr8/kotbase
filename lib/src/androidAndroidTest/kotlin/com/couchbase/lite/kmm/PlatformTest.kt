@@ -23,14 +23,6 @@ actual abstract class PlatformTest {
         const val PRODUCT = "Android"
         const val SCRATCH_DIR_NAME = "cbl_test_scratch"
         const val LEGAL_FILE_NAME_CHARS = "`~@#$%^&()_+{}][=-.,;'12345ABCDEabcde"
-        private val PLATFORM_DEPENDENT_TESTS: Map<String, Exclusion> = mapOf(
-            "android<21" to Exclusion("Not supported on Android API < 21") { Build.VERSION.SDK_INT < 21 },
-            "NOT WINDOWS" to Exclusion("Supported only on Windows") { true },
-            "SWEDISH UNSUPPORTED" to Exclusion("Swedish locale not supported") {
-                !Locale.getAvailableLocales().asList()
-                    .contains(Locale("sv"))
-            }
-        )
 
         private val appContext: Context
             get() = ApplicationProvider.getApplicationContext()
@@ -64,24 +56,20 @@ actual abstract class PlatformTest {
             )!!.absolutePath
         )
 
-    actual fun reloadStandardErrorMessages() {
-        com.couchbase.lite.internal.support.Log.initLogging(
-            CouchbaseLiteInternal.loadErrorMessages(
-                appContext
-            )
-        )
-    }
-
-    fun getExecutionService(executor: ThreadPoolExecutor): AbstractExecutionService {
-        return AndroidExecutionService(executor)
-    }
+//    fun reloadStandardErrorMessages() {
+//        com.couchbase.lite.internal.support.Log.initLogging(
+//            CouchbaseLiteInternal.loadErrorMessages(
+//                appContext
+//            )
+//        )
+//    }
+//
+//    fun getExecutionService(executor: ThreadPoolExecutor): AbstractExecutionService {
+//        return AndroidExecutionService(executor)
+//    }
 
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         val executionService = CouchbaseLiteInternal.getExecutionService()
         executionService.postDelayedOnExecutor(delayMs, executionService.defaultExecutor, task)
-    }
-
-    actual fun getExclusions(tag: String): Exclusion? {
-        return PLATFORM_DEPENDENT_TESTS[tag]
     }
 }

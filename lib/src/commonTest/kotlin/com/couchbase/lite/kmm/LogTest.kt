@@ -10,8 +10,6 @@
 //import com.couchbase.lite.utils.KotlinHelpers
 //import com.udobny.kmm.test.AfterClass
 //import com.udobny.kmm.use
-//import java.util.*
-//import kotlin.Array
 //import kotlin.test.*
 //
 //class LogTest : BaseDbTest() {

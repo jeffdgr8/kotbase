@@ -17,10 +17,13 @@ public expect object Function {
     /**
      * Creates a COUNT(expr) function expression that returns the count of all values
      * in the group of the values expressed by the given expression.
+     * Null expression is count *
      *
      * @param operand The expression.
      * @return The COUNT(expr) function.
      */
+    // TODO: should be nullable (pending iOS as well)
+    //  https://forums.couchbase.com/t/function-count-docs-api-clarification/33876
     public fun count(operand: Expression): Expression
 
     /**

@@ -11,14 +11,6 @@ expect abstract class PlatformTest() {
     /* get a scratch directory */
     val tmpDir: String
 
-    /* Reload the cross-platform error messages. */
-    fun reloadStandardErrorMessages()
-
-    /* Skip the test on some platforms */
-    fun getExclusions(tag: String): Exclusion?
-
-    //fun getExecutionService(executor: java.util.concurrent.ThreadPoolExecutor): AbstractExecutionService
-
     /* Schedule a task to be executed asynchronously. */
     fun executeAsync(delayMs: Long, task: () -> Unit)
 }

@@ -48,6 +48,7 @@ class ErrorCaseTest : BaseDbTest() {
     fun testSaveSavedMutableDocument() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
+        @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
         var saved = saveDocInBaseTestDb(doc)
         doc.setValue("age", 20)
         saved = saveDocInBaseTestDb(doc)
@@ -61,7 +62,7 @@ class ErrorCaseTest : BaseDbTest() {
     fun testDeleteSavedMutableDocument() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
-        val saved = saveDocInBaseTestDb(doc)
+        saveDocInBaseTestDb(doc)
         baseTestDb.delete(doc)
         assertNull(baseTestDb.getDocument("doc1"))
     }

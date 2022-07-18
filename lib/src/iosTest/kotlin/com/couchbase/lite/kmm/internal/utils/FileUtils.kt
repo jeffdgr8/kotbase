@@ -47,26 +47,13 @@ actual object FileUtils {
             getResourceValue(canonicalPath.ptr, NSURLCanonicalPathKey, error.ptr)
             val nsError = error.value
             if (nsError != null) {
-                println("error = $nsError")
                 if (nsError.code == NSFileReadNoSuchFileError && nsError.domain == NSCocoaErrorDomain) {
-                    println("original path = $path")
                     return path!!
                 }
                 throw IOException(error.value?.localizedDescription, error.value?.toException())
             }
-            println("canonicalPath = ${canonicalPath.value}")
             canonicalPath.value as String
         }
-
-    actual fun mkDirs(path: String): Boolean {
-        return try {
-            return wrapError(NSError::toException) { error ->
-                NSFileManager.defaultManager.createDirectoryAtPath(path, true, null, error)
-            }
-        } catch (e: Exception) {
-            false
-        }
-    }
 
     fun mkDirs(url: NSURL): Boolean {
         return try {

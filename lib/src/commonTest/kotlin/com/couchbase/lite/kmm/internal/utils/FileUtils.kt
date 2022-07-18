@@ -8,8 +8,6 @@ expect object FileUtils {
 
     fun getCanonicalPath(path: String): String
 
-    fun mkDirs(path: String): Boolean
-
     fun verifyDir(dirPath: String): String
 
     fun eraseFileOrDir(fileOrDirectory: String): Boolean

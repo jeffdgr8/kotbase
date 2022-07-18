@@ -1,5 +1,5 @@
 // adapted from https://gist.github.com/konrad-kaminski/d7808070f4218349674589e1dc97264a
-package kotlinx.coroutines.experimental.sync
+package kotlinx.coroutines.sync
 
 /*
  * Copyright 2016-2017 JetBrains s.r.o.
