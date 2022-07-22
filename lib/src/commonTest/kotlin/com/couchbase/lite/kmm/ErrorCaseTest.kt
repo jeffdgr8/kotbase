@@ -1,13 +1,14 @@
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.generation
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.fail
+import kotlin.test.*
 
 class ErrorCaseTest : BaseDbTest() {
-    
+
+    internal class CustomClass {
+        var text = "custom"
+    }
+
     // -- DatabaseTest
     @Test
     @Throws(CouchbaseLiteException::class)
@@ -134,31 +135,17 @@ class ErrorCaseTest : BaseDbTest() {
     }
 
     // -- ArrayTest
-    internal class CustomClass {
-        var text = "custom"
-    }
-
     @Test
     fun testAddValueUnExpectedObject() {
-        val mArray = MutableArray()
-        try {
-            mArray.addValue(CustomClass())
-            fail()
-        } catch (ex: IllegalArgumentException) {
-            println(ex.message)
-            // ok!!
+        assertFailsWith<IllegalArgumentException> {
+            MutableArray().addValue(CustomClass())
         }
     }
 
     @Test
     fun testSetValueUnExpectedObject() {
-        val mArray = MutableArray()
-        mArray.addValue(0)
-        try {
-            mArray.setValue(0, CustomClass())
-            fail()
-        } catch (ex: IllegalArgumentException) {
-            // ok!!
+        assertFailsWith<IllegalArgumentException> {
+            MutableArray().setValue(0, CustomClass())
         }
     }
 }

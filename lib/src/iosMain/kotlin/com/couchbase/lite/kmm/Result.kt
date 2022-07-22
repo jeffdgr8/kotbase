@@ -2,6 +2,7 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLQueryResult
 import com.udobny.kmm.DelegatedClass
+import com.udobny.kmm.ext.asNumber
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
@@ -13,41 +14,65 @@ internal constructor(actual: CBLQueryResult) :
     public actual val count: Int
         get() = actual.count().toInt()
 
-    public actual fun getValue(index: Int): Any? =
-        actual.valueAtIndex(index.convert())?.delegateIfNecessary()
+    public actual fun getValue(index: Int): Any? {
+        assertInBounds(index)
+        return actual.valueAtIndex(index.convert())?.delegateIfNecessary()
+    }
 
-    public actual fun getString(index: Int): String? =
-        actual.stringAtIndex(index.convert())
+    public actual fun getString(index: Int): String? {
+        assertInBounds(index)
+        return actual.stringAtIndex(index.convert())
+    }
 
-    public actual fun getNumber(index: Int): Number? =
-        actual.numberAtIndex(index.convert()) as Number?
+    public actual fun getNumber(index: Int): Number? {
+        assertInBounds(index)
+        return actual.numberAtIndex(index.convert())?.asNumber()
+    }
 
-    public actual fun getInt(index: Int): Int =
-        actual.integerAtIndex(index.convert()).toInt()
+    public actual fun getInt(index: Int): Int {
+        assertInBounds(index)
+        return actual.integerAtIndex(index.convert()).toInt()
+    }
 
-    public actual fun getLong(index: Int): Long =
-        actual.longLongAtIndex(index.convert())
+    public actual fun getLong(index: Int): Long {
+        assertInBounds(index)
+        return actual.longLongAtIndex(index.convert())
+    }
 
-    public actual fun getFloat(index: Int): Float =
-        actual.floatAtIndex(index.convert())
+    public actual fun getFloat(index: Int): Float {
+        assertInBounds(index)
+        return actual.floatAtIndex(index.convert())
+    }
 
-    public actual fun getDouble(index: Int): Double =
-        actual.doubleAtIndex(index.convert())
+    public actual fun getDouble(index: Int): Double {
+        assertInBounds(index)
+        return actual.doubleAtIndex(index.convert())
+    }
 
-    public actual fun getBoolean(index: Int): Boolean =
-        actual.booleanAtIndex(index.convert())
+    public actual fun getBoolean(index: Int): Boolean {
+        assertInBounds(index)
+        return actual.booleanAtIndex(index.convert())
+    }
 
-    public actual fun getBlob(index: Int): Blob? =
-        actual.blobAtIndex(index.convert())?.asBlob()
+    public actual fun getBlob(index: Int): Blob? {
+        assertInBounds(index)
+        return actual.blobAtIndex(index.convert())?.asBlob()
+    }
 
-    public actual fun getDate(index: Int): Instant? =
-        actual.dateAtIndex(index.convert())?.toKotlinInstant()
+    public actual fun getDate(index: Int): Instant? {
+        assertInBounds(index)
+        return actual.dateAtIndex(index.convert())?.toKotlinInstant()
+    }
 
-    public actual fun getArray(index: Int): Array? =
-        actual.arrayAtIndex(index.convert())?.asArray()
+    public actual fun getArray(index: Int): Array? {
+        assertInBounds(index)
+        return actual.arrayAtIndex(index.convert())?.asArray()
+    }
 
-    public actual fun getDictionary(index: Int): Dictionary? =
-        actual.dictionaryAtIndex(index.convert())?.asDictionary()
+    public actual fun getDictionary(index: Int): Dictionary? {
+        assertInBounds(index)
+        return actual.dictionaryAtIndex(index.convert())?.asDictionary()
+    }
 
     public actual fun toList(): List<Any?> =
         actual.toArray().delegateIfNecessary()
@@ -63,7 +88,7 @@ internal constructor(actual: CBLQueryResult) :
         actual.stringForKey(key)
 
     public actual fun getNumber(key: String): Number? =
-        actual.numberForKey(key) as Number?
+        actual.numberForKey(key)?.asNumber()
 
     public actual fun getInt(key: String): Int =
         actual.integerForKey(key).toInt()
@@ -105,6 +130,16 @@ internal constructor(actual: CBLQueryResult) :
     @Suppress("UNCHECKED_CAST")
     actual override fun iterator(): Iterator<String> =
         (actual.keys as List<String>).iterator()
+
+    private fun isInBounds(index: Int): Boolean {
+        return index >= 0 && index < count()
+    }
+
+    private fun assertInBounds(index: Int) {
+        if (!isInBounds(index)) {
+            throw ArrayIndexOutOfBoundsException("index $index must be between 0 and $count")
+        }
+    }
 }
 
 internal fun CBLQueryResult.asResult() = Result(this)

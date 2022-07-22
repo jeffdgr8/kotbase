@@ -2,11 +2,8 @@ package com.couchbase.lite.kmm
 
 import com.udobny.kmm.test.IgnoreIos
 import com.udobny.kmm.use
-import kotlinx.atomicfu.AtomicArray
 import kotlinx.atomicfu.atomic
-import kotlinx.atomicfu.atomicArrayOfNulls
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
@@ -106,11 +103,11 @@ class LiveQueryTest : BaseDbTest() {
         }
     }
 
-    // When a result set is closed, we should still be able to introduce a change
     // TODO: iOS dispatches to the main thread and hangs live query after one callback
     //  even though listener is added with background queue
-    //  main loop isn't start by Kotlin test app
+    //  main loop isn't started by Kotlin test app
     @IgnoreIos
+    // When a result set is closed, we should still be able to introduce a change
     @Test
     @Throws(CouchbaseLiteException::class)
     fun testCloseResultsInLiveQueryListener() = runBlocking {
@@ -255,11 +252,11 @@ class LiveQueryTest : BaseDbTest() {
         }
     }
 
-    // CBL-2344: Live query may stop refreshing
     // TODO: iOS dispatches to the main thread and hangs live query after one callback
     //  even though listener is added with background queue
     //  main loop isn't start by Kotlin test app
     @IgnoreIos
+    // CBL-2344: Live query may stop refreshing
     @Test
     @Throws(CouchbaseLiteException::class)
     fun testLiveQueryRefresh() = runBlocking {

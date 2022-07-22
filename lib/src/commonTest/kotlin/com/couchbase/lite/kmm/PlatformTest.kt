@@ -14,5 +14,3 @@ expect abstract class PlatformTest() {
     /* Schedule a task to be executed asynchronously. */
     fun executeAsync(delayMs: Long, task: () -> Unit)
 }
-
-class Exclusion(val msg: String, val test: () -> Boolean)

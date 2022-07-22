@@ -25,78 +25,24 @@ import kotlin.time.Duration.Companion.milliseconds
 
 abstract class BaseTest : PlatformTest() {
 
-//    protected var testSerialExecutor: CloseableExecutor? = null
-//    private var testName: String? = null
     private var startTime: Instant = Instant.DISTANT_PAST
-
-//    @org.junit.Rule
-//    var watcher: TestRule = object : TestWatcher() {
-//        protected override fun starting(description: org.junit.runner.Description) {
-//            testName = description.getMethodName()
-//        }
-//    }
 
     @BeforeTest
     fun setUpBaseTest() {
-//        Report.log(LogLevel.INFO, ">>>>>>>> Test started: $testName")
-        Report.log(LogLevel.INFO, ">>>>>>>> Test started")
-//        com.couchbase.lite.internal.support.Log.initLogging()
+        Report.log(">>>>>>>> Test started")
 
         setupPlatform()
-
-//        testSerialExecutor = object : CloseableExecutor() {
-//            val executor: java.util.concurrent.ExecutorService =
-//                java.util.concurrent.Executors.newSingleThreadExecutor()
-//
-//            override fun execute(@NonNull task: Runnable) {
-//                Report.log("task enqueued: $task")
-//                executor.execute(Runnable {
-//                    Report.log("task started: $task")
-//                    task.run()
-//                    Report.log("task finished: $task")
-//                })
-//            }
-//
-//            override fun stop(
-//                timeout: Long,
-//                @NonNull unit: java.util.concurrent.TimeUnit
-//            ): Boolean {
-//                executor.shutdownNow()
-//                return true
-//            }
-//        }
 
         startTime = Clock.System.now()
     }
 
     @AfterTest
     fun tearDownBaseTest() {
-//        var succeeded = false
-//        if (testSerialExecutor != null) {
-//            succeeded = testSerialExecutor.stop(2, java.util.concurrent.TimeUnit.SECONDS)
-//        }
-//        Report.log(LogLevel.DEBUG, "Executor stopped: $succeeded")
-//
-//        Report.log(
-//            LogLevel.INFO,
-//            "<<<<<<<< Test completed(%s): %s",
-//            formatInterval(Clock.System.now() - startTime),
-//            testName
-//        )
-
         Report.log(
-            LogLevel.INFO,
             "<<<<<<<< Test completed(%s)",
             formatInterval(Clock.System.now() - startTime)
         )
     }
-
-//    protected fun skipTestWhen(tag: String) {
-//        val exclusion = getExclusions(tag)
-//        if (exclusion != null) {
-//            Assume.assumeFalse(exclusion.msg, exclusion.test())
-//        }
-//    }
 
     protected fun getUniqueName(prefix: String): String {
         return StringUtils.getUniqueName(prefix, 12)
@@ -143,7 +89,6 @@ abstract class BaseTest : PlatformTest() {
     ): Database {
         val dbName = getUniqueName(name)
         val dbDir = "${config.getDirectory()}/$dbName$DB_EXTENSION"
-        println("dbDir = $dbDir")
         assertFalse(FileUtils.dirExists(dbDir))
         val db = Database(dbName, config)
         assertTrue(FileUtils.dirExists(dbDir))
@@ -212,27 +157,25 @@ abstract class BaseTest : PlatformTest() {
     ): Boolean {
         try {
             task()
-            Report.log(LogLevel.DEBUG, "$taskDesc succeeded")
+            Report.log("$taskDesc succeeded")
             return true
         } catch (ex: CouchbaseLiteException) {
-            Report.log(LogLevel.WARNING, "$taskDesc failed", ex)
+            Report.log("$taskDesc failed", ex)
         }
         return false
     }
 
     companion object {
 
-        const val STD_TIMEOUT_SEC: Long = 10
-        const val LONG_TIMEOUT_SEC: Long = 30
-        val STD_TIMEOUT_MS = STD_TIMEOUT_SEC * 1000L
-        val LONG_TIMEOUT_MS = LONG_TIMEOUT_SEC * 1000L
+        const val STD_TIMEOUT_SEC = 10L
+        const val LONG_TIMEOUT_SEC = 30L
         private val SCRATCH_DIRS = mutableListOf<String>()
         const val DB_EXTENSION = ".cblite2" // C4Database.DB_EXTENSION
 
         @BeforeClass
         @JvmStatic
         fun setUpPlatformSuite() {
-            Report.log(LogLevel.INFO, ">>>>>>>>>>>> Suite started")
+            Report.log(">>>>>>>>>>>> Suite started")
         }
 
         @AfterClass
@@ -242,7 +185,7 @@ abstract class BaseTest : PlatformTest() {
                 FileUtils.eraseFileOrDir(path)
             }
             SCRATCH_DIRS.clear()
-            Report.log(LogLevel.INFO, "<<<<<<<<<<<< Suite completed")
+            Report.log("<<<<<<<<<<<< Suite completed")
         }
     }
 }

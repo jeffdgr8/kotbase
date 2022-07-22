@@ -28,7 +28,7 @@ abstract class BaseDbTest : BaseTest() {
     @Throws(CouchbaseLiteException::class)
     fun setUpBaseDbTest() {
         baseTestDb = createDb("base_db")
-        Report.log(LogLevel.INFO, "Created base test DB: $baseTestDb")
+        Report.log("Created base test DB: $baseTestDb")
         assertNotNull(baseTestDb)
         baseTestDb.withLock { assertTrue(baseTestDb.isOpen) }
     }
@@ -37,9 +37,9 @@ abstract class BaseDbTest : BaseTest() {
     fun tearDownBaseDbTest() {
         if (::baseTestDb.isInitialized) {
             deleteDb(baseTestDb)
-            Report.log(LogLevel.INFO, "Deleted baseTestDb: $baseTestDb")
+            Report.log("Deleted baseTestDb: $baseTestDb")
         } else {
-            Report.log(LogLevel.INFO, "baseTestDb never initialized")
+            Report.log("baseTestDb never initialized")
         }
     }
 
@@ -445,8 +445,8 @@ abstract class BaseDbTest : BaseTest() {
         //#11 array.addFloat(Float.MAX_VALUE);
         assertEquals(Float.MAX_VALUE, demoteToFloat(array.getValue(11)))
         assertTrue(array.getBoolean(11))
-        // !!! Fails: assertEquals(Float.MAX_VALUE.toInt(), array.getInt(11))
-        // !!! Fails: assertEquals(Float.MAX_VALUE.toLong(), array.getLong(11))
+        // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), array.getInt(11))
+        // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), array.getLong(11))
         assertEquals(Float.MAX_VALUE, array.getFloat(11), 100.0f)
         assertEquals(
             Float.MAX_VALUE.toDouble(),
@@ -491,8 +491,8 @@ abstract class BaseDbTest : BaseTest() {
         //#14 array.addDouble(Double.MAX_VALUE);
         assertEquals(Double.MAX_VALUE, array.getValue(14))
         assertTrue(array.getBoolean(14))
-        // !!! Fails: assertEquals(Double.MAX_VALUE.toInt(), array.getInt(14))
-        // !!! Fails: assertEquals(Double.MAX_VALUE.toLong(), array.getLong(14))
+        // ??? Fails: assertEquals(Double.MAX_VALUE.toInt(), array.getInt(14))
+        // ??? Fails: assertEquals(Double.MAX_VALUE.toLong(), array.getLong(14))
         assertEquals(Double.MAX_VALUE.toFloat(), array.getFloat(14), 100.0f)
         assertEquals(Double.MAX_VALUE, array.getDouble(14), 100.0)
         assertEquals(Double.MAX_VALUE, array.getNumber(14))
@@ -934,8 +934,8 @@ abstract class BaseDbTest : BaseTest() {
         //#11 dict.setFloat(Float.MAX_VALUE);
         assertEquals(Float.MAX_VALUE, demoteToFloat(dict.getValue("dict-12")))
         assertTrue(dict.getBoolean("dict-12"))
-        // !!! Fails: assertEquals(Float.MAX_VALUE.toInt(), dict.getInt("dict-12"))
-        // !!! Fails: assertEquals(Float.MAX_VALUE.toLong(), dict.getLong("dict-12"))
+        // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), dict.getInt("dict-12"))
+        // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), dict.getLong("dict-12"))
         assertEquals(
             Float.MAX_VALUE.toDouble(),
             dict.getFloat("dict-12").toDouble(),
@@ -980,8 +980,8 @@ abstract class BaseDbTest : BaseTest() {
         //#14 dict.setDouble(Double.MAX_VALUE);
         assertEquals(Double.MAX_VALUE, dict.getValue("dict-15"))
         assertTrue(dict.getBoolean("dict-15"))
-        // !!! Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).intValue(), dict.getInt("dict-15"));
-        // !!! Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).longValue(), dict.getLong("dict-15"));
+        // ??? Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).intValue(), dict.getInt("dict-15"));
+        // ??? Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).longValue(), dict.getLong("dict-15"));
         assertEquals(Double.MAX_VALUE.toFloat(), dict.getFloat("dict-15"), 100.0f)
         assertEquals(Double.MAX_VALUE, dict.getDouble("dict-15"), 100.0)
         assertEquals(Double.MAX_VALUE, dict.getNumber("dict-15"))
@@ -1385,7 +1385,7 @@ abstract class BaseDbTest : BaseTest() {
 
         //#7 doc.setLong(Long.MIN_VALUE);
         assertEquals(Long.MIN_VALUE, doc.getValue("doc-8"))
-        // !!! Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-8"));
+        // ??? Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-8"));
         assertEquals(Long.MIN_VALUE.toInt(), doc.getInt("doc-8"))
         assertEquals(Long.MIN_VALUE, doc.getLong("doc-8"))
         assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-8"), 0.001f)
@@ -1442,8 +1442,8 @@ abstract class BaseDbTest : BaseTest() {
         //#11 doc.setFloat(Float.MAX_VALUE);
         assertEquals(Float.MAX_VALUE, demoteToFloat(doc.getValue("doc-12")))
         assertTrue(doc.getBoolean("doc-12"))
-        // !!! Fails: assertEquals(Float.MAX_VALUE.toInt(), doc.getInt("doc-12"))
-        // !!! Fails: assertEquals(Float.MAX_VALUE.toLong(), doc.getLong("doc-12"))
+        // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), doc.getInt("doc-12"))
+        // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), doc.getLong("doc-12"))
         assertEquals(Float.MAX_VALUE, doc.getFloat("doc-12"), 1.0E32F)
         assertEquals(Float.MAX_VALUE.toDouble(), doc.getDouble("doc-12"), 1.0E32)
         assertEquals(Float.MAX_VALUE, demoteToFloat(doc.getNumber("doc-12")))
@@ -1483,8 +1483,8 @@ abstract class BaseDbTest : BaseTest() {
 
         //#14 doc.setDouble(Double.MAX_VALUE);
         assertEquals(Double.MAX_VALUE, doc.getValue("doc-15"))
-        // !!! Fails: assertEquals(Double.MAX_VALUE.toInt(), doc.getInt("doc-15"))
-        // !!! Fails: assertEquals(Double.MAX_VALUE.toLong(), doc.getLong("doc-15"))
+        // ??? Fails: assertEquals(Double.MAX_VALUE.toInt(), doc.getInt("doc-15"))
+        // ??? Fails: assertEquals(Double.MAX_VALUE.toLong(), doc.getLong("doc-15"))
         assertEquals(Double.MAX_VALUE.toFloat(), doc.getFloat("doc-15"), 100.0f)
         assertEquals(Double.MAX_VALUE, doc.getDouble("doc-15"), 100.0)
         assertEquals(Double.MAX_VALUE, doc.getNumber("doc-15"))
@@ -1538,7 +1538,382 @@ abstract class BaseDbTest : BaseTest() {
 
         //#18 doc.setNumber(Long.MIN_VALUE);
         assertEquals(Long.MIN_VALUE, doc.getValue("doc-19"))
-        // !!! Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-19"))
+        // ??? Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-19"))
+        assertEquals(Long.MIN_VALUE.toInt(), doc.getInt("doc-19"))
+        assertEquals(Long.MIN_VALUE, doc.getLong("doc-19"))
+        assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-19"), 0.001f)
+        assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-19"), 0.001)
+        assertEquals(Long.MIN_VALUE, doc.getNumber("doc-19"))
+        assertNull(doc.getString("doc-19"))
+        assertNull(doc.getDate("doc-19"))
+        assertNull(doc.getBlob("doc-19"))
+        assertNull(doc.getArray("doc-19"))
+        assertNull(doc.getDictionary("doc-19"))
+
+        //#19 doc.setString(null);
+        assertNull(doc.getValue("doc-20"))
+        assertFalse(doc.getBoolean("doc-20"))
+        assertEquals(0, doc.getInt("doc-20"))
+        assertEquals(0L, doc.getLong("doc-20"))
+        assertEquals(0.0f, doc.getFloat("doc-20"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-20"), 0.001)
+        assertNull(doc.getNumber("doc-20"))
+        assertNull(doc.getString("doc-20"))
+        assertNull(doc.getDate("doc-20"))
+        assertNull(doc.getBlob("doc-20"))
+        assertNull(doc.getArray("doc-20"))
+        assertNull(doc.getDictionary("doc-20"))
+
+        //#20 doc.setString("Quatro");
+        assertEquals("Jett", doc.getValue("doc-21"))
+        assertTrue(doc.getBoolean("doc-21"))
+        assertEquals(0, doc.getInt("doc-21"))
+        assertEquals(0, doc.getLong("doc-21"))
+        assertEquals(0.0f, doc.getFloat("doc-21"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-21"), 0.001)
+        assertNull(doc.getNumber("doc-21"))
+        assertEquals("Jett", doc.getString("doc-21"))
+        assertNull(doc.getDate("doc-21"))
+        assertNull(doc.getBlob("doc-21"))
+        assertNull(doc.getArray("doc-21"))
+        assertNull(doc.getDictionary("doc-21"))
+
+        //#21 doc.setDate(null);
+        assertNull(doc.getValue("doc-22"))
+        assertFalse(doc.getBoolean("doc-22"))
+        assertEquals(0, doc.getInt("doc-22"))
+        assertEquals(0L, doc.getLong("doc-22"))
+        assertEquals(0.0f, doc.getFloat("doc-22"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-22"), 0.001)
+        assertNull(doc.getNumber("doc-22"))
+        assertNull(doc.getString("doc-22"))
+        assertNull(doc.getDate("doc-22"))
+        assertNull(doc.getBlob("doc-22"))
+        assertNull(doc.getArray("doc-22"))
+        assertNull(doc.getDictionary("doc-22"))
+
+        //#22 doc.setDate(Instant.parse(TEST_DATE));
+        assertEquals(TEST_DATE, doc.getValue("doc-23"))
+        assertTrue(doc.getBoolean("doc-23"))
+        assertEquals(0, doc.getInt("doc-23"))
+        assertEquals(0L, doc.getLong("doc-23"))
+        assertEquals(0.0f, doc.getFloat("doc-23"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-23"), 0.001)
+        assertNull(doc.getNumber("doc-23"))
+        assertEquals(TEST_DATE, doc.getString("doc-23"))
+        assertEquals(Instant.parse(TEST_DATE), doc.getDate("doc-23"))
+        assertNull(doc.getBlob("doc-23"))
+        assertNull(doc.getArray("doc-23"))
+        assertNull(doc.getDictionary("doc-23"))
+
+        //#23 doc.setArray(null);
+        assertNull(doc.getValue("doc-24"))
+        assertFalse(doc.getBoolean("doc-24"))
+        assertEquals(0, doc.getInt("doc-24"))
+        assertEquals(0L, doc.getLong("doc-24"))
+        assertEquals(0.0f, doc.getFloat("doc-24"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-24"), 0.001)
+        assertNull(doc.getNumber("doc-24"))
+        assertNull(doc.getString("doc-24"))
+        assertNull(doc.getDate("doc-24"))
+        assertNull(doc.getBlob("doc-24"))
+        assertNull(doc.getArray("doc-24"))
+        assertNull(doc.getDictionary("doc-24"))
+
+        //#24 doc.setDictionary(null);
+        verifyArray(doc.getArray("doc-25"))
+
+        //#25 doc.setDictionary(null);
+        assertNull(doc.getValue("doc-26"))
+        assertFalse(doc.getBoolean("doc-26"))
+        assertEquals(0, doc.getInt("doc-26"))
+        assertEquals(0L, doc.getLong("doc-26"))
+        assertEquals(0.0f, doc.getFloat("doc-26"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-26"), 0.001)
+        assertNull(doc.getNumber("doc-26"))
+        assertNull(doc.getString("doc-26"))
+        assertNull(doc.getDate("doc-26"))
+        assertNull(doc.getBlob("doc-26"))
+        assertNull(doc.getArray("doc-26"))
+        assertNull(doc.getDictionary("doc-26"))
+
+        //#26 doc.setDictionary(simpleDict);
+        verifyDict(doc.getDictionary("doc-27"))
+
+        //#27 doc.setDictionary(null);
+        assertNull(doc.getValue("doc-28"))
+        assertFalse(doc.getBoolean("doc-28"))
+        assertEquals(0, doc.getInt("doc-28"))
+        assertEquals(0L, doc.getLong("doc-28"))
+        assertEquals(0.0f, doc.getFloat("doc-28"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-28"), 0.001)
+        assertNull(doc.getNumber("doc-28"))
+        assertNull(doc.getString("doc-28"))
+        assertNull(doc.getDate("doc-28"))
+        assertNull(doc.getBlob("doc-28"))
+        assertNull(doc.getArray("doc-28"))
+        assertNull(doc.getDictionary("doc-28"))
+        verifyBlob(doc.getBlob("doc-29"))
+    }
+
+    // identical to verifyDocument(doc: Dictionary) (since publicly they don't share an interface)
+    protected fun verifyDocument(doc: Result) {
+        assertEquals(29, doc.count)
+
+        //#0 doc.setValue(null);
+        assertNull(doc.getValue("doc-1"))
+        assertFalse(doc.getBoolean("doc-1"))
+        assertEquals(0, doc.getInt("doc-1"))
+        assertEquals(0L, doc.getLong("doc-1"))
+        assertEquals(0.0f, doc.getFloat("doc-1"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-1"), 0.001)
+        assertNull(doc.getNumber("doc-1"))
+        assertNull(doc.getString("doc-1"))
+        assertNull(doc.getDate("doc-1"))
+        assertNull(doc.getBlob("doc-1"))
+        assertNull(doc.getArray("doc-1"))
+        assertNull(doc.getDictionary("doc-1"))
+
+        //#1 doc.setBoolean(true);
+        assertEquals(true, doc.getValue("doc-2"))
+        assertTrue(doc.getBoolean("doc-2"))
+        assertEquals(1, doc.getInt("doc-2"))
+        assertEquals(1L, doc.getLong("doc-2"))
+        assertEquals(1.0f, doc.getFloat("doc-2"), 0.001f)
+        assertEquals(1.0, doc.getDouble("doc-2"), 0.001)
+        assertEquals(1, doc.getNumber("doc-2"))
+        assertNull(doc.getString("doc-2"))
+        assertNull(doc.getDate("doc-2"))
+        assertNull(doc.getBlob("doc-2"))
+        assertNull(doc.getArray("doc-2"))
+        assertNull(doc.getDictionary("doc-2"))
+
+        //#2 doc.setBoolean(false);
+        assertEquals(false, doc.getValue("doc-3"))
+        assertFalse(doc.getBoolean("doc-3"))
+        assertEquals(0, doc.getInt("doc-3"))
+        assertEquals(0L, doc.getLong("doc-3"))
+        assertEquals(0.0f, doc.getFloat("doc-3"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-3"), 0.001)
+        assertEquals(0, doc.getNumber("doc-3"))
+        assertNull(doc.getString("doc-3"))
+        assertNull(doc.getDate("doc-3"))
+        assertNull(doc.getBlob("doc-3"))
+        assertNull(doc.getArray("doc-3"))
+        assertNull(doc.getDictionary("doc-3"))
+
+        //#3 doc.setInt(0);
+        assertEquals(0L, doc.getValue("doc-4"))
+        assertFalse(doc.getBoolean("doc-4"))
+        assertEquals(0, doc.getInt("doc-4"))
+        assertEquals(0L, doc.getLong("doc-4"))
+        assertEquals(0.0f, doc.getFloat("doc-4"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-4"), 0.001)
+        assertEquals(0L, doc.getNumber("doc-4"))
+        assertNull(doc.getString("doc-4"))
+        assertNull(doc.getDate("doc-4"))
+        assertNull(doc.getBlob("doc-4"))
+        assertNull(doc.getArray("doc-4"))
+        assertNull(doc.getDictionary("doc-4"))
+
+        //#4 doc.setInt(Integer.MIN_VALUE);
+        assertEquals(Int.MIN_VALUE.toLong(), doc.getValue("doc-5"))
+        assertTrue(doc.getBoolean("doc-5"))
+        assertEquals(Int.MIN_VALUE, doc.getInt("doc-5"))
+        assertEquals(Int.MIN_VALUE.toLong(), doc.getLong("doc-5"))
+        assertEquals(Int.MIN_VALUE.toFloat(), doc.getFloat("doc-5"), 0.001f)
+        assertEquals(Int.MIN_VALUE.toDouble(), doc.getDouble("doc-5"), 0.001)
+        assertEquals(Int.MIN_VALUE.toLong(), doc.getNumber("doc-5"))
+        assertNull(doc.getString("doc-5"))
+        assertNull(doc.getDate("doc-5"))
+        assertNull(doc.getBlob("doc-5"))
+        assertNull(doc.getArray("doc-5"))
+        assertNull(doc.getDictionary("doc-5"))
+
+        //#5 doc.setInt(Integer.MAX_VALUE);
+        assertEquals(Int.MAX_VALUE.toLong(), doc.getValue("doc-6"))
+        assertTrue(doc.getBoolean("doc-6"))
+        assertEquals(Int.MAX_VALUE, doc.getInt("doc-6"))
+        assertEquals(Int.MAX_VALUE.toLong(), doc.getLong("doc-6"))
+        assertEquals(Int.MAX_VALUE.toFloat(), doc.getFloat("doc-6"), 100.0f)
+        assertEquals(Int.MAX_VALUE.toDouble(), doc.getDouble("doc-6"), 100.0)
+        assertEquals(Int.MAX_VALUE.toLong(), doc.getNumber("doc-6"))
+        assertNull(doc.getString("doc-6"))
+        assertNull(doc.getDate("doc-6"))
+        assertNull(doc.getBlob("doc-6"))
+        assertNull(doc.getArray("doc-6"))
+        assertNull(doc.getDictionary("doc-6"))
+
+        //#6 doc.setLong(0L);
+        assertEquals(0L, doc.getValue("doc-7"))
+        assertFalse(doc.getBoolean("doc-7"))
+        assertEquals(0, doc.getInt("doc-7"))
+        assertEquals(0L, doc.getLong("doc-7"))
+        assertEquals(0.0f, doc.getFloat("doc-7"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-7"), 0.001)
+        assertEquals(0L, doc.getNumber("doc-7"))
+        assertNull(doc.getString("doc-7"))
+        assertNull(doc.getDate("doc-7"))
+        assertNull(doc.getBlob("doc-7"))
+        assertNull(doc.getArray("doc-7"))
+        assertNull(doc.getDictionary("doc-7"))
+
+        //#7 doc.setLong(Long.MIN_VALUE);
+        assertEquals(Long.MIN_VALUE, doc.getValue("doc-8"))
+        // ??? Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-8"));
+        assertEquals(Long.MIN_VALUE.toInt(), doc.getInt("doc-8"))
+        assertEquals(Long.MIN_VALUE, doc.getLong("doc-8"))
+        assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-8"), 0.001f)
+        assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-8"), 0.001)
+        assertEquals(Long.MIN_VALUE, doc.getNumber("doc-8"))
+        assertNull(doc.getString("doc-8"))
+        assertNull(doc.getDate("doc-8"))
+        assertNull(doc.getBlob("doc-8"))
+        assertNull(doc.getArray("doc-8"))
+        assertNull(doc.getDictionary("doc-8"))
+
+        //#8 doc.setLong(Long.MAX_VALUE);
+        assertEquals(Long.MAX_VALUE, doc.getValue("doc-9"))
+        assertTrue(doc.getBoolean("doc-9"))
+        assertEquals(Long.MAX_VALUE.toInt(), doc.getInt("doc-9"))
+        assertEquals(Long.MAX_VALUE, doc.getLong("doc-9"))
+        assertEquals(Long.MAX_VALUE.toFloat(), doc.getFloat("doc-9"), 100.0f)
+        assertEquals(Long.MAX_VALUE.toDouble(), doc.getDouble("doc-9"), 100.0)
+        assertEquals(Long.MAX_VALUE, doc.getNumber("doc-9"))
+        assertNull(doc.getString("doc-9"))
+        assertNull(doc.getDate("doc-9"))
+        assertNull(doc.getBlob("doc-9"))
+        assertNull(doc.getArray("doc-9"))
+        assertNull(doc.getDictionary("doc-9"))
+
+        //#9 doc.setFloat(0.0F);
+        assertEquals(0.0f, doc.getValue("doc-10"))
+        assertFalse(doc.getBoolean("doc-10"))
+        assertEquals(0, doc.getInt("doc-10"))
+        assertEquals(0L, doc.getLong("doc-10"))
+        assertEquals(0.0f, doc.getFloat("doc-10"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-10"), 0.001)
+        assertEquals(0.0f, doc.getNumber("doc-10"))
+        assertNull(doc.getString("doc-10"))
+        assertNull(doc.getDate("doc-10"))
+        assertNull(doc.getBlob("doc-10"))
+        assertNull(doc.getArray("doc-10"))
+        assertNull(doc.getDictionary("doc-10"))
+
+        //#10 doc.setFloat(Float.MIN_VALUE);
+        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getValue("doc-11")))
+        // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-11")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
+        assertEquals(Float.MIN_VALUE.toInt(), doc.getInt("doc-11"))
+        assertEquals(Float.MIN_VALUE.toLong(), doc.getLong("doc-11"))
+        assertEquals(Float.MIN_VALUE, doc.getFloat("doc-11"), 0.001f)
+        assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-11"), 0.001)
+        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getValue("doc-11")))
+        assertNull(doc.getString("doc-11"))
+        assertNull(doc.getDate("doc-11"))
+        assertNull(doc.getBlob("doc-11"))
+        assertNull(doc.getArray("doc-11"))
+        assertNull(doc.getDictionary("doc-11"))
+
+        //#11 doc.setFloat(Float.MAX_VALUE);
+        assertEquals(Float.MAX_VALUE, demoteToFloat(doc.getValue("doc-12")))
+        assertTrue(doc.getBoolean("doc-12"))
+        // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), doc.getInt("doc-12"))
+        // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), doc.getLong("doc-12"))
+        assertEquals(Float.MAX_VALUE, doc.getFloat("doc-12"), 1.0E32F)
+        assertEquals(Float.MAX_VALUE.toDouble(), doc.getDouble("doc-12"), 1.0E32)
+        assertEquals(Float.MAX_VALUE, demoteToFloat(doc.getNumber("doc-12")))
+        assertNull(doc.getString("doc-12"))
+        assertNull(doc.getDate("doc-12"))
+        assertNull(doc.getBlob("doc-12"))
+        assertNull(doc.getArray("doc-12"))
+        assertNull(doc.getDictionary("doc-12"))
+
+        //#12 doc.setDouble(0.0);
+        assertEquals(0f, doc.getValue("doc-13"))
+        assertFalse(doc.getBoolean("doc-13"))
+        assertEquals(0, doc.getInt("doc-13"))
+        assertEquals(0L, doc.getLong("doc-13"))
+        assertEquals(0.0f, doc.getFloat("doc-13"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-13"), 0.001)
+        assertEquals(0f, doc.getNumber("doc-13"))
+        assertNull(doc.getString("doc-13"))
+        assertNull(doc.getDate("doc-13"))
+        assertNull(doc.getBlob("doc-13"))
+        assertNull(doc.getArray("doc-13"))
+        assertNull(doc.getDictionary("doc-13"))
+
+        //#13 doc.setDouble(Double.MIN_VALUE);
+        assertEquals(Double.MIN_VALUE, doc.getValue("doc-14"))
+        // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-14")) (any non-zero number should be true, but Double.MIN_VALUE is false on Android)
+        assertEquals(Double.MIN_VALUE.toInt(), doc.getInt("doc-14"))
+        assertEquals(Double.MIN_VALUE.toLong(), doc.getLong("doc-14"))
+        assertEquals(Double.MIN_VALUE.toFloat(), doc.getFloat("doc-14"), 0.001f)
+        assertEquals(Double.MIN_VALUE, doc.getDouble("doc-14"), 0.001)
+        assertEquals(Double.MIN_VALUE, doc.getNumber("doc-14"))
+        assertNull(doc.getString("doc-14"))
+        assertNull(doc.getDate("doc-14"))
+        assertNull(doc.getBlob("doc-14"))
+        assertNull(doc.getArray("doc-14"))
+        assertNull(doc.getDictionary("doc-14"))
+
+        //#14 doc.setDouble(Double.MAX_VALUE);
+        assertEquals(Double.MAX_VALUE, doc.getValue("doc-15"))
+        // ??? Fails: assertEquals(Double.MAX_VALUE.toInt(), doc.getInt("doc-15"))
+        // ??? Fails: assertEquals(Double.MAX_VALUE.toLong(), doc.getLong("doc-15"))
+        assertEquals(Double.MAX_VALUE.toFloat(), doc.getFloat("doc-15"), 100.0f)
+        assertEquals(Double.MAX_VALUE, doc.getDouble("doc-15"), 100.0)
+        assertEquals(Double.MAX_VALUE, doc.getNumber("doc-15"))
+        assertNull(doc.getString("doc-15"))
+        assertNull(doc.getDate("doc-15"))
+        assertNull(doc.getBlob("doc-15"))
+        assertNull(doc.getArray("doc-15"))
+        assertNull(doc.getDictionary("doc-15"))
+
+        //#15 doc.setNumber(null);
+        assertNull(doc.getValue("doc-16"))
+        assertFalse(doc.getBoolean("doc-16"))
+        assertEquals(0, doc.getInt("doc-16"))
+        assertEquals(0L, doc.getLong("doc-16"))
+        assertEquals(0.0f, doc.getFloat("doc-16"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-16"), 0.001)
+        assertNull(doc.getNumber("doc-16"))
+        assertNull(doc.getString("doc-16"))
+        assertNull(doc.getDate("doc-16"))
+        assertNull(doc.getBlob("doc-16"))
+        assertNull(doc.getArray("doc-16"))
+        assertNull(doc.getDictionary("doc-16"))
+
+        //#16 doc.setNumber(0);
+        assertEquals(0L, doc.getValue("doc-17"))
+        assertFalse(doc.getBoolean("doc-17"))
+        assertEquals(0, doc.getInt("doc-17"))
+        assertEquals(0L, doc.getLong("doc-17"))
+        assertEquals(0.0f, doc.getFloat("doc-17"), 0.001f)
+        assertEquals(0.0, doc.getDouble("doc-17"), 0.001)
+        assertEquals(0L, doc.getNumber("doc-17"))
+        assertNull(doc.getString("doc-17"))
+        assertNull(doc.getDate("doc-17"))
+        assertNull(doc.getBlob("doc-17"))
+        assertNull(doc.getArray("doc-17"))
+        assertNull(doc.getDictionary("doc-17"))
+
+        //#17 doc.setNumber(Float.MIN_VALUE);
+        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getValue("doc-18")))
+        // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-18")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
+        assertEquals(Float.MIN_VALUE.toInt(), doc.getInt("doc-18"))
+        assertEquals(Float.MIN_VALUE.toLong(), doc.getLong("doc-18"))
+        assertEquals(Float.MIN_VALUE, doc.getFloat("doc-18"), 0.001f)
+        assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-18"), 0.001)
+        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getNumber("doc-18")))
+        assertNull(doc.getString("doc-18"))
+        assertNull(doc.getDate("doc-18"))
+        assertNull(doc.getBlob("doc-18"))
+        assertNull(doc.getArray("doc-18"))
+        assertNull(doc.getDictionary("doc-18"))
+
+        //#18 doc.setNumber(Long.MIN_VALUE);
+        assertEquals(Long.MIN_VALUE, doc.getValue("doc-19"))
+        // ??? Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-19"))
         assertEquals(Long.MIN_VALUE.toInt(), doc.getInt("doc-19"))
         assertEquals(Long.MIN_VALUE, doc.getLong("doc-19"))
         assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-19"), 0.001f)
@@ -1695,7 +2070,7 @@ abstract class BaseDbTest : BaseTest() {
         } catch (e: IOException) {
             deleteDb(db)
             // can't construct with cause
-            // https://youtrack.jetbrains.com/issue/KT-40728/Add-AssertionError-constructor-with-cause-Throwable-parameter-to-common-stdlib
+            // https://youtrack.jetbrains.com/issue/KT-40728
             // throw AssertionError("Unable to get db path", e)
             throw AssertionError("Unable to get db path")
         } catch (e: AssertionError) {

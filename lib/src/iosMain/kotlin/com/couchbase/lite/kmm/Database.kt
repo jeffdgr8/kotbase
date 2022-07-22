@@ -1,21 +1,17 @@
 package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLDatabase
+import cocoapods.CouchbaseLite.isClosedLocked
 import com.couchbase.lite.kmm.ext.throwError
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.couchbase.lite.kmm.internal.testQueue
 import com.couchbase.lite.kmm.internal.useTestQueue
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.wrapError
-import kotlinx.cinterop.ObjCMethod
-import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSError
-import platform.darwin.DISPATCH_QUEUE_PRIORITY_DEFAULT
-import platform.darwin.dispatch_get_global_queue
-import platform.darwin.dispatch_queue_t
 
 public actual class Database
 internal constructor(actual: CBLDatabase) :
@@ -24,6 +20,7 @@ internal constructor(actual: CBLDatabase) :
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String) : this(
         wrapError(NSError::toCouchbaseLiteException) { error ->
+            require(name.isNotEmpty()) { "db name must not be empty" }
             CBLDatabase(name, error)
         }
     )
@@ -116,7 +113,16 @@ internal constructor(actual: CBLDatabase) :
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
         mustBeOpen()
         return throwError { error ->
-            saveDocument(document.actual, conflictHandler.convert(), error)
+            try {
+                saveDocument(document.actual, conflictHandler.convert(), error)
+            } catch (e: Exception) {
+                throw CouchbaseLiteException(
+                    "Conflict handler threw an exception",
+                    e,
+                    CBLError.Domain.CBLITE,
+                    CBLError.Code.CONFLICT
+                )
+            }
         }
     }
 
@@ -292,7 +298,3 @@ internal constructor(actual: CBLDatabase) :
     internal val isOpen: Boolean
         get() = !actual.isClosedLocked()
 }
-
-// TODO: replace with .def pending https://github.com/JetBrains/kotlin/pull/4894
-@ObjCMethod("isClosedLocked", "@16@0:8")
-private external fun CBLDatabase.isClosedLocked(): Boolean

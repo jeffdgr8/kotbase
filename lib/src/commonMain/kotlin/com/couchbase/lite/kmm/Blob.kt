@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmm
 
+import okio.IOException
 import okio.Source
 
 /**
@@ -43,7 +44,7 @@ constructor(contentType: String, content: ByteArray) {
      * @param fileURL     A URL to a file containing the data that this Blob will represent.
      * @throws IOException on failure to open the file URL
      */
-    @Throws(CouchbaseLiteException::class)
+    @Throws(IOException::class)
     public constructor(contentType: String, fileURL: String)
 
     /**

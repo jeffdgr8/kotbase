@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.copy
+import com.udobny.kmm.test.IgnoreIos
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.assertFailsWith
@@ -16,13 +17,15 @@ import kotlin.time.Duration.Companion.seconds
 
 class NotificationTest : BaseDbTest() {
 
+    // TODO: flaky on iOS (likely an issue with not having a test main run loop)
+    @IgnoreIos
     @Test
     @Throws(CouchbaseLiteException::class)
     fun testDatabaseChange() = runBlocking {
         val mutex = Mutex(true)
 
         val n = intArrayOf(0)
-        baseTestDb.addChangeListener { change ->
+        val token = baseTestDb.addChangeListener { change ->
             assertNotNull(change)
             assertEquals(baseTestDb, change.database)
             val ids: List<String> = change.documentIDs

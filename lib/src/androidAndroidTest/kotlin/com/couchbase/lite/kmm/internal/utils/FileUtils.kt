@@ -36,26 +36,20 @@ actual object FileUtils {
         throw IllegalStateException("Cannot create or access directory at $dir", err)
     }
 
-//    @Throws(IOException::class)
-//    fun copyFile(`in`: InputStream, out: OutputStream) {
-//        val buffer = ByteArray(1024)
-//        var read: Int
-//        while (`in`.read(buffer).also { read = it } != -1) {
-//            out.write(buffer, 0, read)
-//        }
-//    }
+    actual fun eraseFileOrDir(fileOrDirectory: String): Boolean =
+        eraseFileOrDir(File(fileOrDirectory))
 
-    actual fun eraseFileOrDir(fileOrDirectory: String): Boolean {
-        return eraseFileOrDir(File(fileOrDirectory))
-    }
+    private fun eraseFileOrDir(fileOrDirectory: File): Boolean =
+        deleteRecursive(fileOrDirectory)
 
-    private fun eraseFileOrDir(fileOrDirectory: File): Boolean {
-        return deleteRecursive(fileOrDirectory)
-    }
+    actual fun deleteContents(fileOrDirectory: String?): Boolean =
+        deleteContents(if (fileOrDirectory == null) null else File(fileOrDirectory))
 
-    actual fun deleteContents(fileOrDirectory: String?): Boolean {
-        return deleteContents(if (fileOrDirectory == null) null else File(fileOrDirectory))
-    }
+    actual fun write(bytes: ByteArray, path: String) =
+        File(path).writeBytes(bytes)
+
+    actual fun read(path: String): ByteArray =
+        File(path).readBytes()
 
     private fun deleteContents(fileOrDirectory: File?): Boolean {
         if (fileOrDirectory == null || !fileOrDirectory.isDirectory) {
@@ -72,31 +66,6 @@ actual object FileUtils {
         return succeeded
     }
 
-//    fun setPermissionRecursive(
-//        fileOrDirectory: File,
-//        readable: Boolean,
-//        writable: Boolean
-//    ): Boolean {
-//        if (fileOrDirectory.isDirectory) {
-//            val files = fileOrDirectory.listFiles()
-//            if (files != null) {
-//                for (child in files) {
-//                    setPermissionRecursive(child, readable, writable)
-//                }
-//            }
-//        }
-//        return fileOrDirectory.setReadable(readable) && fileOrDirectory.setWritable(writable)
-//    }
-//
-//    fun getCurrentDirectory(): File {
-//        return try {
-//            File("").canonicalFile
-//        } catch (e: IOException) {
-//            throw IllegalStateException("Can't open current directory", e)
-//        }
-//    }
-
-    private fun deleteRecursive(fileOrDirectory: File): Boolean {
-        return !fileOrDirectory.exists() || deleteContents(fileOrDirectory) && fileOrDirectory.delete()
-    }
+    private fun deleteRecursive(fileOrDirectory: File): Boolean =
+        !fileOrDirectory.exists() || deleteContents(fileOrDirectory) && fileOrDirectory.delete()
 }

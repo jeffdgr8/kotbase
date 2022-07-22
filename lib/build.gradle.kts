@@ -3,7 +3,10 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.*
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
+import org.jetbrains.kotlin.konan.target.KonanTarget
+import java.io.FileWriter
 
 plugins {
     kotlin("multiplatform")
@@ -34,16 +37,9 @@ kotlin {
         // Workaround for 'CBLQueryMeta' is going to be declared twice https://youtrack.jetbrains.com/issue/KT-41709
         compilations["main"].cinterops["CouchbaseLite"].extraOpts("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")
 
-        // Link CocoaPods frameworks to tests binary
-        binaries {
-            getTest("DEBUG").apply {
-                val frameworkPath = "${buildDir.absolutePath}/cocoapods/synthetic/IOS/lib/Pods/CouchbaseLite/iOS"
-                linkerOpts("-F$frameworkPath")
-                linkerOpts("-rpath", frameworkPath)
-                linkerOpts("-framework", "CouchbaseLite")
-            }
-        }
-
+        // Run tests on background thread
+        // TODO: main thread loop is still not available to dispatch to though
+        //  https://youtrack.jetbrains.com/issue/KT-53129
         compilations["test"].kotlinOptions {
             freeCompilerArgs += listOf("-trw")
         }
@@ -54,7 +50,9 @@ kotlin {
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                // TODO: https://github.com/square/okio/pull/1123
                 api("com.squareup.okio:okio:3.2.0")
+                //api(fileTree("libs/okio"))
             }
         }
         val commonTest by getting {
@@ -68,7 +66,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("com.couchbase.lite:couchbase-lite-android-ktx:3.0.0")
-                //implementation(fileTree("libs"))
+                //implementation(fileTree("libs/couchbase-lite"))
             }
         }
         val androidTest by getting {
@@ -107,73 +105,135 @@ android {
     }
 }
 
-// TODO: replace @ObjCMethod pending https://github.com/JetBrains/kotlin/pull/4894
-/*tasks.named<DefFileTask>("generateDefCouchbaseLite") {
+// Internal headers required for tests
+tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
-        outputFile.appendText("""
+        // TODO: remove above --- pending https://github.com/JetBrains/kotlin/pull/4894 in Kotlin 1.8
+        //outputFile.appendText("""
+        outputFile.writeText("""
+            language = Objective-C
+            headers = CouchbaseLite/CouchbaseLite.h
+            headerFilter = CouchbaseLite/**
 
-                ---
+            ---
 
-                typedef struct FLSlice {
-                    const void* buf;
-                    size_t size;
-                } FLSlice;
+            typedef struct FLSlice {
+                const void* buf;
+                size_t size;
+            } FLSlice;
 
-                typedef uint32_t C4DocumentFlags; enum {
-                    kDocDeleted         = 0x01,
-                    kDocConflicted      = 0x02,
-                    kDocHasAttachments  = 0x04,
-                    kDocExists          = 0x1000
-                };
+            typedef uint32_t C4DocumentFlags; enum {
+                kDocDeleted         = 0x01,
+                kDocConflicted      = 0x02,
+                kDocHasAttachments  = 0x04,
+                kDocExists          = 0x1000
+            };
 
-                typedef uint8_t C4RevisionFlags; enum {
-                    kRevDeleted        = 0x01,
-                    kRevLeaf           = 0x02,
-                    kRevNew            = 0x04,
-                    kRevHasAttachments = 0x08,
-                    kRevKeepBody       = 0x10,
-                    kRevIsConflict     = 0x20,
-                    kRevClosed         = 0x40,
-                    kRevPurged         = 0x80
-                };
+            typedef uint8_t C4RevisionFlags; enum {
+                kRevDeleted        = 0x01,
+                kRevLeaf           = 0x02,
+                kRevNew            = 0x04,
+                kRevHasAttachments = 0x08,
+                kRevKeepBody       = 0x10,
+                kRevIsConflict     = 0x20,
+                kRevClosed         = 0x40,
+                kRevPurged         = 0x80
+            };
 
-                typedef struct C4Revision {
-                    FLSlice revID;
-                    C4RevisionFlags flags;
-                    uint64_t sequence;
-                } C4Revision;
+            typedef struct C4Revision {
+                FLSlice revID;
+                C4RevisionFlags flags;
+                uint64_t sequence;
+            } C4Revision;
 
-                typedef struct C4ExtraInfo {
-                    void* pointer;
-                    void (* destructor)(void *ptr);
-                } C4ExtraInfo;
+            typedef struct C4ExtraInfo {
+                void* pointer;
+                void (* destructor)(void *ptr);
+            } C4ExtraInfo;
 
-                struct C4Document {
-                    void* _internal1;
-                    void* _internal2;
+            typedef struct C4Document {
+                void* _internal1;
+                void* _internal2;
 
-                    C4DocumentFlags flags;
-                    FLSlice docID;
-                    FLSlice revID;
-                    uint64_t sequence;
+                C4DocumentFlags flags;
+                FLSlice docID;
+                FLSlice revID;
+                uint64_t sequence;
 
-                    C4Revision selectedRev;
+                C4Revision selectedRev;
 
-                    C4ExtraInfo extraInfo;
-                };
+                C4ExtraInfo extraInfo;
+            } C4Document;
 
-                @interface CBLC4Document : NSObject
+            @interface CBLC4Document : NSObject
+            @property (readonly, nonatomic) C4Document* rawDoc;
+            @property (readonly, nonatomic) C4RevisionFlags revFlags;
+            @end
 
-                @property (readonly, nonatomic) struct C4Document* rawDoc;
+            @interface CBLDocument ()
+            @property (atomic, nullable) CBLC4Document* c4Doc;
+            @property (nonatomic, readonly) NSUInteger generation;
+            @end
 
-                @end
-            """.trimIndent())
+            @interface CBLDatabase ()
+            - (BOOL) isClosedLocked;
+            @end
+
+            @interface CBLQueryExpression ()
+            - (id) asJSON;
+            @end
+
+            @interface CBLQueryCollation ()
+            - (id) asJSON;
+            @end
+        """.trimIndent())
     }
-}*/
+}
 
-tasks.withType<Test> {
+// TODO: init constructor can't be added to .def with an ObjC category
+//  https://youtrack.jetbrains.com/issue/KT-53285
+//  workaround to add directly to CBLDocument.h
+tasks.withType<CInteropProcess> {
+    // https://github.com/JetBrains/kotlin/blob/7d6cf449b15a06ed4eb87efc56abf12a4103a507/libraries/tools/kotlin-gradle-plugin/src/common/kotlin/org/jetbrains/kotlin/gradle/targets/native/cocoapods/KotlinCocoapodsPlugin.kt#L101
+    val archSuffix = when (konanTarget) {
+        KonanTarget.IOS_X64, KonanTarget.IOS_SIMULATOR_ARM64 -> "iphonesimulator"
+        KonanTarget.IOS_ARM32, KonanTarget.IOS_ARM64 -> "iphoneos"
+        KonanTarget.WATCHOS_X86, KonanTarget.WATCHOS_X64, KonanTarget.WATCHOS_SIMULATOR_ARM64 -> "watchsimulator"
+        KonanTarget.WATCHOS_ARM32, KonanTarget.WATCHOS_ARM64 -> "watchos"
+        KonanTarget.TVOS_X64, KonanTarget.TVOS_SIMULATOR_ARM64 -> "appletvsimulator"
+        KonanTarget.TVOS_ARM64 -> "appletvos"
+        KonanTarget.MACOS_X64, KonanTarget.MACOS_ARM64 -> "macosx"
+        else -> throw IllegalArgumentException("Bad target $name.")
+    }
+    val headerDir = File(buildDir, "cocoapods/synthetic/IOS/build/Release-$archSuffix/XCFrameworkIntermediates/CouchbaseLite/CouchbaseLite.framework/Headers")
+    val header = File(headerDir, "CBLDocument.h")
+    val temp = File(headerDir, "CBLDocument.temp")
+    doFirst {
+        header.renameTo(temp)
+        FileWriter(header).use { w ->
+            temp.forEachLine { line ->
+                if (line.contains("@end")) {
+                    w.appendLine("""
+                        - (nullable instancetype) initWithDatabase: (CBLDatabase*)database
+                                                        documentID: (NSString*)documentID
+                                                    includeDeleted: (BOOL)includeDeleted
+                                                             error: (NSError**)outError;
+                    """.trimIndent())
+                    w.appendLine()
+                }
+                w.appendLine(line)
+            }
+        }
+    }
+    doLast {
+        header.delete()
+        temp.renameTo(header)
+    }
+}
+
+tasks.withType<AbstractTestTask> {
     testLogging {
-        events(FAILED, PASSED, STANDARD_OUT, STANDARD_ERROR)
+        events(FAILED, PASSED)
         exceptionFormat = FULL
         showExceptions = true
         showCauses = true

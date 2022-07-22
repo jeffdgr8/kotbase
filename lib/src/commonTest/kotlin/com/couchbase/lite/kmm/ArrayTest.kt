@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmm
 
+import com.udobny.kmm.toStringWithMillis
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -513,7 +514,7 @@ class ArrayTest : BaseDbTest() {
         }
     }
 
-    // !!! Fails on Nexus 4
+    // ??? Fails on Nexus 4
     @Test
     @Throws(CouchbaseLiteException::class)
     fun testGetNumber() {
@@ -810,7 +811,7 @@ class ArrayTest : BaseDbTest() {
                 assertNull(a.getDate(4))
                 assertNull(a.getDate(5))
                 assertNull(a.getDate(6))
-                assertEquals(TEST_DATE, a.getDate(7).toString())
+                assertEquals(TEST_DATE, a.getDate(7)!!.toStringWithMillis())
                 assertNull(a.getDate(8))
                 assertNull(a.getDate(9))
                 assertNull(a.getDate(10))

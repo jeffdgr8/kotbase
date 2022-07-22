@@ -12,7 +12,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -843,7 +842,7 @@ class DocumentTest : BaseDbTest() {
                 assertNull(d.getDate("one"))
                 assertNull(d.getDate("minus_one"))
                 assertNull(d.getDate("one_dot_one"))
-                assertEquals(TEST_DATE, d.getDate("date").toString())
+                assertEquals(TEST_DATE, d.getDate("date")!!.toStringWithMillis())
                 assertNull(d.getDate("dict"))
                 assertNull(d.getDate("array"))
                 assertNull(d.getDate("blob"))
@@ -1892,7 +1891,7 @@ class DocumentTest : BaseDbTest() {
         saveDocInBaseTestDb(doc2)
 
         baseTestDb.setDocumentExpiration("doc1", now + 100.milliseconds)
-        baseTestDb.setDocumentExpiration("doc2", now + LONG_TIMEOUT_MS.milliseconds)
+        baseTestDb.setDocumentExpiration("doc2", now + LONG_TIMEOUT_SEC.seconds)
         assertEquals(2, baseTestDb.count)
 
         waitUntil(1000L) { 1L == baseTestDb.count }

@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmm
 
+import com.couchbase.lite.testReplicator
 import com.udobny.kmm.DelegatedClass
 import java.security.cert.Certificate
 
@@ -9,6 +10,14 @@ internal constructor(actual: com.couchbase.lite.Replicator) :
 
     public actual constructor(config: ReplicatorConfiguration) : this(
         com.couchbase.lite.Replicator(config.actual)
+    )
+
+    internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(
+        if (test) {
+            testReplicator(config.actual)
+        } else {
+            com.couchbase.lite.Replicator(config.actual)
+        }
     )
 
     public actual fun start() {

@@ -13,3 +13,10 @@ internal expect fun Database.saveBlob(blob: Blob)
 
 internal fun Database.copy(): Database =
     Database(name, config)
+
+internal expect fun Database.getC4Document(id: String): C4Document
+
+internal expect class C4Document {
+
+    fun isRevDeleted(): Boolean
+}

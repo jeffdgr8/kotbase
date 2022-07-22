@@ -5,6 +5,7 @@ import okio.Source
 import okio.buffer
 import okio.source
 import java.io.IOException
+import java.net.MalformedURLException
 import java.net.URL
 
 public actual class Blob
@@ -22,11 +23,7 @@ internal constructor(actual: com.couchbase.lite.Blob) :
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(contentType: String, fileURL: String) : this(
-        try {
-            com.couchbase.lite.Blob(contentType, URL(fileURL))
-        } catch (e: IOException) {
-            throw CouchbaseLiteException(e.message, e, null, 0, null)
-        }
+        com.couchbase.lite.Blob(contentType, fileURL.toFileUrl())
     )
 
     public actual val content: ByteArray?
@@ -50,3 +47,11 @@ internal constructor(actual: com.couchbase.lite.Blob) :
 }
 
 internal fun com.couchbase.lite.Blob.asBlob() = Blob(this)
+
+private fun String.toFileUrl(): URL {
+    return try {
+        URL(this)
+    } catch (e: MalformedURLException) {
+        URL("file://$this")
+    }
+}

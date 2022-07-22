@@ -13,6 +13,10 @@ expect object FileUtils {
     fun eraseFileOrDir(fileOrDirectory: String): Boolean
 
     fun deleteContents(fileOrDirectory: String?): Boolean
+
+    fun write(bytes: ByteArray, path: String)
+
+    fun read(path: String): ByteArray
 }
 
 fun FileUtils.getParentDir(path: String): String {

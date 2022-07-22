@@ -20,9 +20,7 @@ actual abstract class PlatformTest {
 
     companion object {
 
-        const val PRODUCT = "Android"
         const val SCRATCH_DIR_NAME = "cbl_test_scratch"
-        const val LEGAL_FILE_NAME_CHARS = "`~@#$%^&()_+{}][=-.,;'12345ABCDEabcde"
 
         private val appContext: Context
             get() = ApplicationProvider.getApplicationContext()
@@ -55,18 +53,6 @@ actual abstract class PlatformTest {
                 SCRATCH_DIR_NAME
             )!!.absolutePath
         )
-
-//    fun reloadStandardErrorMessages() {
-//        com.couchbase.lite.internal.support.Log.initLogging(
-//            CouchbaseLiteInternal.loadErrorMessages(
-//                appContext
-//            )
-//        )
-//    }
-//
-//    fun getExecutionService(executor: ThreadPoolExecutor): AbstractExecutionService {
-//        return AndroidExecutionService(executor)
-//    }
 
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         val executionService = CouchbaseLiteInternal.getExecutionService()

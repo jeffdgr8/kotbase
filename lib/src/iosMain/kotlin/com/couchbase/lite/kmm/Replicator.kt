@@ -13,6 +13,10 @@ internal constructor(actual: CBLReplicator) :
 
     public actual constructor(config: ReplicatorConfiguration) : this(CBLReplicator(config.actual))
 
+    internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(
+        CBLReplicator(config.actual)
+    )
+
     public actual fun start() {
         actual.start()
     }

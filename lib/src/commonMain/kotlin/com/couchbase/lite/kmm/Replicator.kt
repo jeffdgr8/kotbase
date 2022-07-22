@@ -15,6 +15,8 @@ public expect class Replicator
  */
 constructor(config: ReplicatorConfiguration) {
 
+    internal constructor(config: ReplicatorConfiguration, test: Boolean)
+
     /**
      * Start the replicator.
      */

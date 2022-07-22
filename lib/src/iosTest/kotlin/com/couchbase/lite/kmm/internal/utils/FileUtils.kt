@@ -1,7 +1,9 @@
 package com.couchbase.lite.kmm.internal.utils
 
 import com.couchbase.lite.kmm.LogDomain
+import com.udobny.kmm.ext.toByteArray
 import com.udobny.kmm.ext.toException
+import com.udobny.kmm.ext.toNSData
 import com.udobny.kmm.ext.wrapError
 import kotlinx.cinterop.*
 import okio.IOException
@@ -9,10 +11,12 @@ import platform.Foundation.*
 
 actual object FileUtils {
 
+    private val fm = NSFileManager.defaultManager
+
     actual fun dirExists(dir: String): Boolean {
         return memScoped {
             val isDir = alloc<BooleanVar>()
-            NSFileManager.defaultManager.fileExistsAtPath(dir, isDir.ptr) && isDir.value
+            fm.fileExistsAtPath(dir, isDir.ptr) && isDir.value
         }
     }
 
@@ -20,7 +24,7 @@ actual object FileUtils {
         try {
             @Suppress("UNCHECKED_CAST")
             val files = wrapError(NSError::toException) { error ->
-                NSFileManager.defaultManager.contentsOfDirectoryAtPath(dir, error)
+                fm.contentsOfDirectoryAtPath(dir, error)
             } as List<String>
             val prefix = if (dir.endsWith('/')) dir else "$dir/"
             return files.map { prefix + it }
@@ -55,16 +59,6 @@ actual object FileUtils {
             canonicalPath.value as String
         }
 
-    fun mkDirs(url: NSURL): Boolean {
-        return try {
-            return wrapError(NSError::toException) { error ->
-                NSFileManager.defaultManager.createDirectoryAtURL(url, true, null, error)
-            }
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     actual fun verifyDir(dirPath: String): String =
         verifyDir(NSURL(fileURLWithPath = dirPath))
 
@@ -73,7 +67,7 @@ actual object FileUtils {
         if (!dirExists(path)) {
             try {
                 wrapError(NSError::toException) { error ->
-                    NSFileManager.defaultManager.createDirectoryAtURL(dir, true, null, error)
+                    fm.createDirectoryAtURL(dir, true, null, error)
                 }
             } catch (e: Exception) {
                 throw IllegalStateException("Cannot create or access directory at $dir", e)
@@ -82,9 +76,8 @@ actual object FileUtils {
         return dir.path!!
     }
 
-    actual fun eraseFileOrDir(fileOrDirectory: String): Boolean {
-        return deleteRecursive(fileOrDirectory)
-    }
+    actual fun eraseFileOrDir(fileOrDirectory: String): Boolean =
+        deleteRecursive(fileOrDirectory)
 
     actual fun deleteContents(fileOrDirectory: String?): Boolean {
         if (fileOrDirectory == null || !dirExists(fileOrDirectory)) {
@@ -101,17 +94,24 @@ actual object FileUtils {
         return succeeded
     }
 
+    actual fun write(bytes: ByteArray, path: String) {
+        bytes.toNSData().writeToFile(path, false)
+    }
+
+    actual fun read(path: String): ByteArray =
+        NSData.dataWithContentsOfFile(path)!!.toByteArray()
+
     private fun deleteRecursive(fileOrDirectory: String): Boolean {
         return !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)
     }
 
     private fun exists(file: String): Boolean =
-        NSFileManager.defaultManager.fileExistsAtPath(file)
+        fm.fileExistsAtPath(file)
 
     private fun delete(file: String): Boolean {
         return try {
             wrapError(NSError::toException) { error ->
-                NSFileManager.defaultManager.removeItemAtPath(file, error)
+                fm.removeItemAtPath(file, error)
             }
         } catch (e: Exception) {
             false

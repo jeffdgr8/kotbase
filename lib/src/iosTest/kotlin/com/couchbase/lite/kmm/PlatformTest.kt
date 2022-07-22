@@ -21,7 +21,7 @@ actual abstract class PlatformTest {
     }
 
     actual val tmpDir: String
-        get() = NSFileManager.defaultManager.temporaryDirectory.absoluteString!!
+        get() = NSFileManager.defaultManager.temporaryDirectory.path!!
 
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         dispatch_after(

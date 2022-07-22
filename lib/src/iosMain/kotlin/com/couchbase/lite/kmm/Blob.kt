@@ -7,6 +7,7 @@ import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.toByteArray
 import com.udobny.kmm.ext.toNSData
 import com.udobny.kmm.ext.wrapError
+import okio.IOException
 import okio.Source
 import okio.buffer
 import platform.Foundation.NSError
@@ -25,10 +26,10 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
     //    CBLBlob(contentType, stream.buffer().inputStream())
     //)
 
-    @Throws(CouchbaseLiteException::class)
+    @Throws(IOException::class)
     public actual constructor(contentType: String, fileURL: String) : this(
         wrapError(NSError::toCouchbaseLiteException) { error ->
-            CBLBlob(contentType, NSURL(fileURLWithPath = fileURL), error)
+            CBLBlob(contentType, fileURL.toFileUrl(), error)
         }
     )
 
@@ -64,3 +65,15 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
 }
 
 internal fun CBLBlob.asBlob() = Blob(this)
+
+private fun String.toFileUrl(): NSURL {
+    return NSURL(string = this).let {
+        if (it.scheme.equals("file", ignoreCase = true)) {
+            it
+        } else if (it.scheme == null) {
+            NSURL(fileURLWithPath = this)
+        } else {
+            throw IllegalArgumentException("$this must be a file-based URL.")
+        }
+    }
+}
