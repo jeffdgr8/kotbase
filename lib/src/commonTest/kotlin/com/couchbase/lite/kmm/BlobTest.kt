@@ -1,11 +1,17 @@
 package com.couchbase.lite.kmm
 
+import com.couchbase.lite.getBlob
 import com.couchbase.lite.kmm.internal.utils.FileUtils
 import com.couchbase.lite.kmm.internal.utils.PlatformUtils
 import com.couchbase.lite.kmm.internal.utils.StringUtils
 import com.couchbase.lite.kmm.internal.utils.TestUtils.assertThrows
+import com.couchbase.lite.saveBlob
+import com.udobny.kmm.test.IgnoreIos
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
 import okio.*
 import kotlin.test.*
+
 
 // There are other blob tests in test suites...
 class BlobTest : BaseDbTest() {
@@ -124,35 +130,35 @@ class BlobTest : BaseDbTest() {
     }
 
     // TODO: https://github.com/square/okio/pull/1123
-//    @Test
-//    @Throws(CouchbaseLiteException::class, IOException::class)
-//    fun testBlobContentStream() {
-//        PlatformUtils.getAsset("attachment.png")!!.use { input ->
-//            val blob = Blob("image/png", input)
-//            val mDoc = MutableDocument("doc1")
-//            mDoc.setBlob("blob", blob)
-//            baseTestDb.save(mDoc)
-//        }
-//
-//        val doc = baseTestDb.getDocument("doc1")
-//        val savedBlob = doc!!.getBlob("blob")
-//        assertNotNull(savedBlob)
-//
-//        val blobContent = PlatformUtils.getAsset("attachment.png")!!.use { input ->
-//            input.buffer().readByteArray()
-//        }
-//
-//        val buff = savedBlob.contentStream!!.use { input ->
-//            input.buffer().readByteArray()
-//        }
-//
-//        assertEquals(blobContent.size.toLong(), buff.size)
-//        assertContentEquals(blobContent, buff)
-//
-//        assertEquals(blobContent.size.toLong(), savedBlob.length)
-//
-//        assertEquals("image/png", savedBlob.contentType)
-//    }
+    @Test
+    @Throws(CouchbaseLiteException::class, IOException::class)
+    fun testBlobContentStream() {
+        PlatformUtils.getAsset("attachment.png")!!.use { input ->
+            val blob = Blob("image/png", input)
+            val mDoc = MutableDocument("doc1")
+            mDoc.setBlob("blob", blob)
+            baseTestDb.save(mDoc)
+        }
+
+        val doc = baseTestDb.getDocument("doc1")
+        val savedBlob = doc!!.getBlob("blob")
+        assertNotNull(savedBlob)
+
+        val blobContent = PlatformUtils.getAsset("attachment.png")!!.use { input ->
+            input.buffer().readByteArray()
+        }
+
+        val buff = savedBlob.contentStream!!.use { input ->
+            input.buffer().readByteArray()
+        }
+
+        assertEquals(blobContent.size, buff.size)
+        assertContentEquals(blobContent, buff)
+
+        assertEquals(blobContent.size.toLong(), savedBlob.length)
+
+        assertEquals("image/png", savedBlob.contentType)
+    }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1438
     @Test
@@ -220,107 +226,259 @@ class BlobTest : BaseDbTest() {
     }
 
     // TODO: https://github.com/square/okio/pull/1123
-//    @Test
-//    @Throws(IOException::class)
-//    fun testBlobReadByte() {
-//        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-//            input.buffer().readByteArray()
-//        }
-//
-//        val buffer = Buffer()
-//        Blob("application/json", data).contentStream.read(buffer, 1)
-//        assertEquals(buffer[0], data[0])
-//    }
+    @Test
+    @Throws(IOException::class)
+    fun testBlobReadByte() {
+        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
+            input.buffer().readByteArray()
+        }
+
+        val buffer = Buffer()
+        Blob("application/json", data).contentStream!!.read(buffer, 1)
+        assertEquals(data[0], buffer[0])
+    }
 
     // TODO: https://github.com/square/okio/pull/1123
-//    @Test
-//    @Throws(IOException::class)
-//    fun testBlobReadByteArray() {
-//        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-//            input.buffer().readByteArray()
-//        }
-//
-//        val blobContent = ByteArray(data.size)
-//        Blob("application/json", data).contentStream.buffer().read(blobContent, 0, data.size)
-//        assertContentEquals(blobContent, data)
-//    }
+    @Test
+    @Throws(IOException::class)
+    fun testBlobReadByteArray() {
+        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
+            input.buffer().readByteArray()
+        }
+
+        val blobContent = Blob("application/json", data).contentStream!!.buffer().readByteArray()
+        assertContentEquals(data, blobContent)
+    }
 
     // TODO: https://github.com/square/okio/pull/1123
-//    @Test
-//    @Throws(IOException::class)
-//    fun testBlobReadSkip() {
-//        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-//            input.buffer().readByteArray()
-//        }
-//
-//        val blobStream = Blob("application/json", data).contentStream.buffer()
-//        blobStream.skip(17)
-//        assertEquals(blobStream.readByte(), data[17])
-//    }
+    @Test
+    @Throws(IOException::class)
+    fun testBlobReadSkip() {
+        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
+            input.buffer().readByteArray()
+        }
+
+        val blobStream = Blob("application/json", data).contentStream!!.buffer()
+        blobStream.skip(17)
+        assertEquals(blobStream.readByte(), data[17])
+    }
 
     // TODO: https://github.com/square/okio/pull/1123
-//    @Test
-//    @Throws(IOException::class, CouchbaseLiteException::class)
-//    fun testReadBlobStream() {
-//        val bytes = PlatformUtils.getAsset("attachment.png")!!.use { input ->
-//            input.buffer().readByteArray()
-//        }
-//
-//        val blob = Blob("image/png", bytes)
-//        val mDoc = MutableDocument("doc1")
-//        mDoc.setBlob("blob", blob)
-//        val doc = saveDocInBaseTestDb(mDoc)
-//
-//        val savedBlob = doc.getBlob("blob")
-//        assertNotNull(savedBlob)
-//        assertEquals("image/png", savedBlob.contentType)
-//
-//        val buffer = ByteArray(1024)
-//
-//        savedBlob.contentStream!!.use { input ->
-//            val readBytes = input.buffer().readByteArray()
-//            assertContentEquals(bytes, readBytes)
-//        }
-//    }
+    @Test
+    @Throws(IOException::class, CouchbaseLiteException::class)
+    fun testReadBlobStream() {
+        val bytes = PlatformUtils.getAsset("attachment.png")!!.use { input ->
+            input.buffer().readByteArray()
+        }
+
+        val blob = Blob("image/png", bytes)
+        val mDoc = MutableDocument("doc1")
+        mDoc.setBlob("blob", blob)
+        val doc = saveDocInBaseTestDb(mDoc)
+
+        val savedBlob = doc.getBlob("blob")
+        assertNotNull(savedBlob)
+        assertEquals("image/png", savedBlob.contentType)
+
+        savedBlob.contentStream!!.use { input ->
+            val readBytes = input.buffer().readByteArray()
+            assertContentEquals(bytes, readBytes)
+        }
+    }
 
     ///////////////  JSON tests
 
     // 3.1.a
-//    @Test
-//    @Throws(JSONException::class)
-//    fun testDbSaveBlob() {
-//        val blob = makeBlob()
-//        baseTestDb.saveBlob(blob)
-//        verifyBlob(JSONObject(blob.toJSON()))
-//    }
-//
-//    // 3.1.b
-//    @Test
-//    fun testDbGetBlob() {
-//        val props: Map<String, Any> = getPropsForSavedBlob()
-//        val fetchProps: MutableMap<String, Any?> = HashMap()
-//        fetchProps[Blob.META_PROP_TYPE] = Blob.TYPE_BLOB
-//        fetchProps[Blob.PROP_DIGEST] = props[Blob.PROP_DIGEST]
-//        fetchProps[Blob.PROP_CONTENT_TYPE] = props[Blob.PROP_CONTENT_TYPE]
-//        val dbBlob: Blob = baseTestDb.getBlob(fetchProps)
-//        verifyBlob(dbBlob)
-//        assertEquals(BLOB_CONTENT, String(dbBlob.content))
-//    }
-//
-//    // 3.1.c
-//    @Test(expected = java.lang.IllegalStateException::class)
-//    fun testUnsavedBlobToJSON() {
-//        makeBlob().toJSON()
-//    }
-//
-//    // 3.1.d
-//    @Test
-//    fun testDbGetNonexistentBlob() {
-//        val props: MutableMap<String, Any> = HashMap()
-//        props[Blob.META_PROP_TYPE] = Blob.TYPE_BLOB
-//        props[Blob.PROP_DIGEST] = "sha1-C+ThisIsTheWayWeMakeItFail="
-//        assertNull(baseTestDb.getBlob(props))
-//    }
+    @Test
+    fun testDbSaveBlob() {
+        val blob = makeBlob()
+        baseTestDb.saveBlob(blob)
+        verifyBlob(Json.parseToJsonElement(blob.toJSON()).jsonObject)
+    }
 
+    // TODO: iOS doesn't update its size after DB get
+    //  https://forums.couchbase.com/t/objc-sdk-doesnt-set-length-after-database-getblob/34077
+    @IgnoreIos
+    // 3.1.b
+    @Test
+    fun testDbGetBlob() {
+        val props = getPropsForSavedBlob()
 
+        val fetchProps = mutableMapOf<String, Any?>()
+        fetchProps[META_PROP_TYPE] = TYPE_BLOB
+        fetchProps[PROP_DIGEST] = props[PROP_DIGEST]
+        fetchProps[PROP_CONTENT_TYPE] = props[PROP_CONTENT_TYPE]
+        val dbBlob = baseTestDb.getBlob(fetchProps)
+
+        verifyBlob(dbBlob)
+        assertEquals(BLOB_CONTENT, dbBlob?.content?.decodeToString())
+    }
+
+    // 3.1.c
+    @Test
+    fun testUnsavedBlobToJSON() {
+        assertFailsWith<IllegalStateException> {
+            makeBlob().toJSON()
+        }
+    }
+
+    // 3.1.d
+    @Test
+    fun testDbGetNonexistentBlob() {
+        val props = mutableMapOf<String, Any?>()
+        props[META_PROP_TYPE] = TYPE_BLOB
+        props[PROP_DIGEST] = "sha1-C+ThisIsTheWayWeMakeItFail="
+        assertNull(baseTestDb.getBlob(props))
+    }
+
+    // 3.1.e.1: empty param
+    @Test
+    fun testDbGetNotBlob1() {
+        assertFailsWith<IllegalArgumentException> {
+            val blob = makeBlob()
+            baseTestDb.saveBlob(blob)
+            assertNull(baseTestDb.getBlob(emptyMap()))
+        }
+    }
+
+    // 3.1.e.2: missing digest
+    @Test
+    fun testDbGetNotBlob2() {
+        assertFailsWith<IllegalArgumentException> {
+            val props = getPropsForSavedBlob().toMutableMap()
+            props.remove(PROP_DIGEST)
+            assertNull(baseTestDb.getBlob(props))
+        }
+    }
+
+    // 3.1.e.3: missing meta-type
+    @Test
+    fun testDbGetNotBlob3() {
+        assertFailsWith<IllegalArgumentException> {
+            val props = getPropsForSavedBlob().toMutableMap()
+            props.remove(META_PROP_TYPE)
+            assertNull(baseTestDb.getBlob(props))
+        }
+    }
+
+    // 3.1.e.4: length is not a number
+    @Test
+    fun testDbGetNotBlob4() {
+        assertFailsWith<IllegalArgumentException> {
+            val props = getPropsForSavedBlob().toMutableMap()
+            props[PROP_LENGTH] = "42"
+            assertNull(baseTestDb.getBlob(props))
+        }
+    }
+
+    // 3.1.e.5: bad content type
+    @Test
+    fun testDbGetNotBlob5() {
+        assertFailsWith<IllegalArgumentException> {
+            val props = getPropsForSavedBlob().toMutableMap()
+            props[PROP_CONTENT_TYPE] = Any()
+            assertNull(baseTestDb.getBlob(props))
+        }
+    }
+
+    // 3.1.e.6: extra arg
+    @Test
+    fun testDbGetNotBlob6() {
+        assertFailsWith<IllegalArgumentException> {
+            val props = getPropsForSavedBlob().toMutableMap()
+            props["foo"] = "bar"
+            assertNull(baseTestDb.getBlob(props))
+        }
+    }
+
+    // 3.1.f
+    @Test
+    fun testBlobInDocument() {
+        val mDoc = MutableDocument()
+        mDoc.setBlob("blob", makeBlob())
+
+        val dbBlob = saveDocInBaseTestDb(mDoc).getBlob("blob")
+
+        verifyBlob(dbBlob)
+
+        verifyBlob(Json.parseToJsonElement(dbBlob!!.toJSON()).jsonObject)
+    }
+
+    // 3.1.h
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testBlobGoneAfterCompact() {
+        val blob = makeBlob()
+        baseTestDb.saveBlob(blob)
+
+        assertTrue(baseTestDb.performMaintenance(MaintenanceType.COMPACT))
+
+        val props = mutableMapOf<String, Any?>()
+        props[META_PROP_TYPE] = TYPE_BLOB
+        props[PROP_DIGEST] = blob.digest
+
+        assertNull(baseTestDb.getBlob(props))
+    }
+
+    @Test
+    @Throws(IOException::class, CouchbaseLiteException::class)
+    fun testIsBlob() {
+        PlatformUtils.getAsset("attachment.png")!!.use { input ->
+            val blob = Blob("image/png", input)
+            val mDoc = MutableDocument("doc1")
+            mDoc.setBlob("blob", blob)
+            baseTestDb.save(mDoc)
+        }
+
+        assertTrue(
+            Blob.isBlob(
+                MutableDictionary().setJSON(
+                    baseTestDb.getDocument("doc1")!!.getBlob("blob")!!.toJSON()
+                ).toMap()
+            )
+        )
+    }
+
+    // https://issues.couchbase.com/browse/CBL-2320
+    @Test
+    @Throws(CouchbaseLiteException::class, IOException::class)
+    fun testBlobStreamReadNotNegative() {
+        val mDoc = MutableDocument("blobDoc")
+        mDoc.setBlob(
+            "blob",
+            Blob(
+                "application/octet-stream",
+                byteArrayOf(-1, 255.toByte(), 0xf0.toByte(), 0xa0.toByte())
+            )
+        )
+        saveDocInBaseTestDb(mDoc)
+
+        val blobStream = baseTestDb.getDocument("blobDoc")!!
+            .getBlob("blob")!!.contentStream!!.buffer()
+
+        assertEquals(255.toByte(), blobStream.readByte())
+        assertEquals(255.toByte(), blobStream.readByte())
+        assertEquals(0xf0.toByte(), blobStream.readByte())
+        assertEquals(0xa0.toByte(), blobStream.readByte())
+    }
+
+    private fun getPropsForSavedBlob(): Map<String, Any?> {
+        val blob = makeBlob()
+        baseTestDb.saveBlob(blob)
+        return blob.properties
+    }
+
+    companion object {
+
+        /**
+         * The sub-document property that identifies it as a special type of object.
+         * For example, a blob is represented as `{"@type":"blob", "digest":"xxxx", ...}`
+         */
+        const val META_PROP_TYPE = "@type"
+        const val TYPE_BLOB = "blob"
+
+        const val PROP_DIGEST = "digest"
+        const val PROP_LENGTH = "length"
+        const val PROP_CONTENT_TYPE = "content_type"
+    }
 }

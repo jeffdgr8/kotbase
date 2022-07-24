@@ -17,9 +17,9 @@ internal constructor(actual: com.couchbase.lite.Blob) :
     )
 
     // TODO: https://github.com/square/okio/pull/1123
-    //public actual constructor(contentType: String, stream: Source) : this(
-    //    com.couchbase.lite.Blob(contentType, stream.buffer().inputStream())
-    //)
+    public actual constructor(contentType: String, stream: Source) : this(
+        com.couchbase.lite.Blob(contentType, stream.buffer().inputStream())
+    )
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(contentType: String, fileURL: String) : this(
@@ -30,11 +30,14 @@ internal constructor(actual: com.couchbase.lite.Blob) :
         get() = actual.content
 
     // TODO: https://github.com/square/okio/pull/1123
-    //public actual val contentStream: Source?
-    //    get() = actual.contentStream?.source()
+    public actual val contentStream: Source?
+        get() = actual.contentStream?.source()
 
     public actual val contentType: String
         get() = actual.contentType
+
+    public actual fun toJSON(): String =
+        actual.toJSON()
 
     public actual val length: Long
         get() = actual.length()
@@ -44,6 +47,12 @@ internal constructor(actual: com.couchbase.lite.Blob) :
 
     public actual val properties: Map<String, Any?>
         get() = actual.properties
+
+    public actual companion object {
+
+        public actual fun isBlob(props: Map<String, Any?>?): Boolean =
+            com.couchbase.lite.Blob.isBlob(props)
+    }
 }
 
 internal fun com.couchbase.lite.Blob.asBlob() = Blob(this)

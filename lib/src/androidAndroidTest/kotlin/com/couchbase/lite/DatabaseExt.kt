@@ -4,6 +4,7 @@ package com.couchbase.lite
 
 import com.couchbase.lite.kmm.Blob
 import com.couchbase.lite.kmm.Database
+import com.couchbase.lite.kmm.asBlob
 import com.udobny.kmm.DelegatedClass
 
 internal actual val Database.isOpen: Boolean
@@ -17,6 +18,9 @@ internal actual val Database.dbPath: String?
 
 internal actual fun Database.saveBlob(blob: Blob) =
     actual.saveBlob(blob.actual)
+
+internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? =
+    actual.getBlob(props)?.asBlob()
 
 internal actual fun Database.getC4Document(id: String): C4Document =
     C4Document(actual.getC4Document(id))

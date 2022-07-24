@@ -1,4 +1,4 @@
-//// TODO:
+//// TODO: internal API
 //package com.couchbase.lite.kmm
 //
 //import com.couchbase.lite.internal.core.C4Constants
@@ -36,9 +36,8 @@
 //    }
 //
 //    private class LogTestLogger constructor(private val prefix: String?) : Logger {
-//        private val lineCounts: MutableMap<LogLevel, Int> = EnumMap(LogLevel::class.java)
+//        private val lineCounts = mutableMapOf<LogLevel, Int>()
 //        private val content = StringBuilder()
-//        private var level: LogLevel? = null
 //        val lineCount: Int
 //            get() {
 //                var total = 0
@@ -59,11 +58,7 @@
 //            content.append(message)
 //        }
 //
-//        override fun getLevel() = level!!
-//
-//        fun setLevel(level: LogLevel?) {
-//            this.level = level
-//        }
+//        override var level: LogLevel = LogLevel.NONE
 //
 //        fun getLineCount(level: LogLevel) = lineCounts[level] ?: 0
 //

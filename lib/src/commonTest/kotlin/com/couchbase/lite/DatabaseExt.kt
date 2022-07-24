@@ -11,6 +11,8 @@ internal expect val Database.dbPath: String?
 
 internal expect fun Database.saveBlob(blob: Blob)
 
+internal expect fun Database.getBlob(props: Map<String, Any?>): Blob?
+
 internal fun Database.copy(): Database =
     Database(name, config)
 

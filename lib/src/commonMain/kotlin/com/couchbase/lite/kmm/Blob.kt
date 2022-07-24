@@ -32,7 +32,7 @@ constructor(contentType: String, content: ByteArray) {
      * @param stream      The stream of data that this Blob will consume
      */
     // TODO: https://github.com/square/okio/pull/1123
-    //public constructor(contentType: String, stream: Source)
+    public constructor(contentType: String, stream: Source)
 
     /**
      * Construct a Blob with the content of a file.
@@ -60,12 +60,14 @@ constructor(contentType: String, content: ByteArray) {
      * **When called on a blob created from a stream (or a file path), this method will return null!**
      */
     // TODO: https://github.com/square/okio/pull/1123
-    //public val contentStream: Source?
+    public val contentStream: Source?
 
     /**
      * The type of of the content this blob contains.  By convention this is a MIME type.
      */
     public val contentType: String
+
+    public fun toJSON(): String
 
     /**
      * The number of bytes of content this blob contains
@@ -83,4 +85,9 @@ constructor(contentType: String, content: ByteArray) {
      * The blob metadata
      */
     public val properties: Map<String, Any?>
+
+    public companion object {
+
+        public fun isBlob(props: Map<String, Any?>?): Boolean
+    }
 }

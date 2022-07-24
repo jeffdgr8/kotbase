@@ -7,12 +7,8 @@ import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.toByteArray
 import com.udobny.kmm.ext.toNSData
 import com.udobny.kmm.ext.wrapError
-import okio.IOException
-import okio.Source
-import okio.buffer
-import platform.Foundation.NSError
-import platform.Foundation.NSURL
-import platform.Foundation.valueForKey
+import okio.*
+import platform.Foundation.*
 
 public actual class Blob
 internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
@@ -22,14 +18,18 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
     )
 
     // TODO: https://github.com/square/okio/pull/1123
-    //public actual constructor(contentType: String, stream: Source) : this(
-    //    CBLBlob(contentType, stream.buffer().inputStream())
-    //)
+    public actual constructor(contentType: String, stream: Source) : this(
+        CBLBlob(contentType, stream.buffer().inputStream())
+    )
 
     @Throws(IOException::class)
     public actual constructor(contentType: String, fileURL: String) : this(
         wrapError(NSError::toCouchbaseLiteException) { error ->
-            CBLBlob(contentType, fileURL.toFileUrl(), error)
+            val url = fileURL.toFileUrl()
+            if (!NSFileManager.defaultManager.fileExistsAtPath(url.path!!)) {
+                throw FileNotFoundException("${url.path}: open failed: ENOENT (No such file or directory)")
+            }
+            CBLBlob(contentType, url, error)
         }
     )
 
@@ -37,21 +37,31 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
         get() {
             val content = actual.content?.toByteArray()
             if (content == null) {
-                val db = Database(actual.valueForKey("_db") as CBLDatabase)
-                if (!db.isOpen) {
-                    // Java SDK throws exception rather than just returning null when database is closed
-                    throw IllegalStateException("Failed to read content from database for digest: $digest")
+                val cblDb = actual.valueForKey("_db") as CBLDatabase?
+                if (cblDb != null) {
+                    val db = Database(cblDb)
+                    if (!db.isOpen) {
+                        // Java SDK throws exception rather than just returning null when database is closed
+                        throw IllegalStateException("Failed to read content from database for digest: $digest")
+                    }
                 }
             }
             return content
         }
 
     // TODO: https://github.com/square/okio/pull/1123
-    //public actual val contentStream: Source?
-    //    get() = actual.contentStream?.source()
+    public actual val contentStream: Source?
+        get() = actual.contentStream?.source()
 
     public actual val contentType: String
         get() = actual.contentType!!
+
+    public actual fun toJSON(): String {
+        if (digest == null) {
+            throw IllegalStateException("A Blob may be encoded as JSON only after it has been saved in a database")
+        }
+        return actual.toJSON()
+    }
 
     public actual val length: Long
         get() = actual.length.toLong()
@@ -62,6 +72,15 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
     @Suppress("UNCHECKED_CAST")
     public actual val properties: Map<String, Any?>
         get() = actual.properties as Map<String, Any?>
+
+    public actual companion object {
+
+        public actual fun isBlob(props: Map<String, Any?>?): Boolean {
+            props ?: return false
+            @Suppress("UNCHECKED_CAST")
+            return CBLBlob.isBlob(props as Map<Any?, *>)
+        }
+    }
 }
 
 internal fun CBLBlob.asBlob() = Blob(this)

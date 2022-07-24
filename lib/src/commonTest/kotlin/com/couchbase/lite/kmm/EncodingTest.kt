@@ -1,4 +1,4 @@
-// TODO: internal test unecessary
+//// TODO: internal API
 //package com.couchbase.lite.kmm
 //
 //import com.couchbase.lite.kmm.internal.utils.Report.log
@@ -12,7 +12,6 @@
 //
 //    // https://github.com/couchbase/couchbase-lite-android/issues/1453
 //    @Test
-//    @Throws(Exception::class)
 //    fun testFLEncode() {
 //        testRoundTrip(42L)
 //        testRoundTrip(Long.MIN_VALUE)
@@ -28,7 +27,6 @@
 //    }
 //
 //    @Test
-//    @Throws(Exception::class)
 //    fun testFLEncodeUTF8() {
 //        testRoundTrip("Goodbye cruel world") // one byte utf-8 chars
 //        testRoundTrip("Goodbye cruel £ world") // a two byte utf-8 chars
@@ -39,16 +37,8 @@
 //    }
 //
 //    @Test
-//    @Throws(Exception::class)
 //    fun testFLEncodeBadUTF8() {
 //        testRoundTrip("Goodbye cruel \uD83D\uDE3A\uDE3A world", "") // a cat and a half
-//    }
-//
-//    // Oddly windows seems to parse this differently...
-//    @Test
-//    @Throws(Exception::class)
-//    fun testFLEncodeUTF8Win() {
-//        testRoundTrip("Goodbye cruel \uD83D\uDE3A\uDE3A world") // a cat and a half
 //    }
 //
 //    // These tests are built on the following fleece encoding.  Start at the end.
@@ -208,14 +198,16 @@
 //        )
 //    }
 //
-//    @Throws(LiteCoreException::class)
 //    private fun testRoundTrip(item: Any, expected: Any = item) {
 //        FLEncoder.getManagedEncoder().use { encoder ->
 //            assertTrue(encoder.writeValue(item))
+//
 //            encoder.finish2().use { slice ->
 //                assertNotNull(slice)
 //                val flValue: FLValue = FLValue.fromData(slice)
+//
 //                assertNotNull(flValue)
+//
 //                val obj: Any = FLValue.toObject(flValue)
 //                log("ROUND TRIP SLICE: '$obj'; FROM: '$item'; EXPECTING: '$expected'")
 //                assertEquals(expected, obj)
