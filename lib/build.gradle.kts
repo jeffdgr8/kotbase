@@ -71,8 +71,11 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation("com.couchbase.lite:couchbase-lite-android-ktx:3.0.0")
-                //implementation("com.couchbase.lite:couchbase-lite-android-ktx:3.1.0-SNAPSHOT")
+                // TODO: 3.0.2 required for public IndexConfiguration
+                //  https://forums.couchbase.com/t/can-indexconfiguration-be-made-public/33772
+                //implementation("com.couchbase.lite:couchbase-lite-android:3.0.0")
+                implementation("com.couchbase.lite:couchbase-lite-android:3.0.2-SNAPSHOT")
+                //implementation("com.couchbase.lite:couchbase-lite-android:3.1.0-SNAPSHOT")
                 //implementation(fileTree("libs/couchbase-lite"))
             }
         }
@@ -95,6 +98,8 @@ kotlin {
         val iosMain by getting
         val iosTest by getting {
             dependencies {
+                // TODO: update when PR released
+                //  https://github.com/korlibs/korge/pull/842
                 implementation("com.soywiz.korlibs.korio:korio:3.0.0-Beta6")
             }
         }

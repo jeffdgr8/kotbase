@@ -1,6 +1,6 @@
 package com.couchbase.lite.kmm
 
-import java.util.Locale
+import com.udobny.kmm.chain
 
 public actual class FullTextIndexConfiguration
 internal constructor(override val actual: com.couchbase.lite.FullTextIndexConfiguration) :
@@ -10,27 +10,26 @@ internal constructor(override val actual: com.couchbase.lite.FullTextIndexConfig
         com.couchbase.lite.FullTextIndexConfiguration(*expressions)
     )
 
-    public actual fun setLanguage(language: String?): FullTextIndexConfiguration {
-        this.language = language
-        return this
+    private inline fun chain(action: com.couchbase.lite.FullTextIndexConfiguration.() -> Unit) =
+        chain(actual, action)
+
+    public actual fun setLanguage(language: String?): FullTextIndexConfiguration = chain {
+        setLanguage(language)
     }
 
-    // TODO: use actual getter instead of field in 3.1
-    public actual var language: String? = Locale.getDefault().language
+    public actual var language: String?
+        get() = actual.language
         set(value) {
-            field = value
-            actual.setLanguage(value)
+            actual.language = value
         }
 
-    public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration {
-        isIgnoringAccents = ignoreAccents
-        return this
+    public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration = chain {
+        ignoreAccents(ignoreAccents)
     }
 
-    // TODO: use actual getter instead of field in 3.1
-    public actual var isIgnoringAccents: Boolean = false
+    public actual var isIgnoringAccents: Boolean
+        get() = actual.isIgnoringAccents
         set(value) {
-            field = value
             actual.ignoreAccents(value)
         }
 }

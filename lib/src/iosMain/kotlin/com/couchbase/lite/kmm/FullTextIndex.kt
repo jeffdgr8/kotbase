@@ -11,7 +11,19 @@ internal constructor(override val actual: CBLFullTextIndex) :
         setLanguage(language)
     }
 
+    public actual var language: String?
+        get() = actual.language
+        set(value) {
+            actual.language = value
+        }
+
     public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndex = chain {
         setIgnoreAccents(ignoreAccents)
     }
+
+    public actual var isIgnoringAccents: Boolean
+        get() = actual.ignoreAccents
+        set(value) {
+            actual.ignoreAccents = value
+        }
 }

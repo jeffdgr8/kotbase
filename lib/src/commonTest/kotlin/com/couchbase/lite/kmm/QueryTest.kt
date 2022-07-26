@@ -26,8 +26,6 @@ class QueryTest : BaseQueryTest() {
         val docIds = documentIDs.map { "doc$it" }
     }
 
-    // TODO: fails on iOS (31 works, 32 fails)
-    @IgnoreIos
     @Test
     @Throws(CouchbaseLiteException::class)
     fun testQueryGetColumnNameAfter32Items() {

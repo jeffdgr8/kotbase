@@ -13,8 +13,12 @@ public expect class FullTextIndex : Index {
      */
     public fun setLanguage(language: String?): FullTextIndex
 
+    public var language: String?
+
     /**
      * Set the true value to ignore accents/diacritical marks. The default value is false.
      */
     public fun ignoreAccents(ignoreAccents: Boolean): FullTextIndex
+
+    public var isIgnoringAccents: Boolean
 }

@@ -1,7 +1,6 @@
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.UnitOfWork
-import com.couchbase.lite.createIndexPackageProtected
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.toDate
 import com.udobny.kmm.ext.toFile
@@ -140,9 +139,7 @@ internal constructor(actual: com.couchbase.lite.Database) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
-        // TODO: extension in package required until com.couchbase.lite.IndexConfiguration is visible in 3.0.2 or 3.1
-        //  https://forums.couchbase.com/t/can-indexconfiguration-be-made-public/33772
-        createIndexPackageProtected(name, config)
+        actual.createIndex(name, config.actual)
     }
 
     @Throws(CouchbaseLiteException::class)
