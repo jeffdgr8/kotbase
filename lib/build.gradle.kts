@@ -22,7 +22,7 @@ kotlin {
     cocoapods {
         name = project.parent!!.name
         homepage = "https://udobny.com/couchbase-lite-kmm"
-        authors = "Couchbase, Udobny"
+        authors = "Couchbase, Jeff Lockhart"
         license = "Apache License, Version 2.0"
         summary = "Couchbase Lite for Kotlin Multiplatform"
         ios.deploymentTarget = "9.0"
@@ -90,9 +90,7 @@ kotlin {
         val iosMain by getting
         val iosTest by getting {
             dependencies {
-                // TODO: update when PR released
-                //  https://github.com/korlibs/korge/pull/842
-                implementation("com.soywiz.korlibs.korio:korio:3.0.0-Beta6")
+                implementation("com.soywiz.korlibs.korio:korio:3.0.0-Beta7")
             }
         }
     }

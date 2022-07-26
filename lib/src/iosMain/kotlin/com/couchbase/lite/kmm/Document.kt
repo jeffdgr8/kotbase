@@ -1,6 +1,5 @@
 package com.couchbase.lite.kmm
 
-import cocoapods.CouchbaseLite.CBLDictionary
 import cocoapods.CouchbaseLite.CBLDocument
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.asNumber

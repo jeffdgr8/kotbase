@@ -1,3 +1,5 @@
+@file:Suppress("LocalVariableName")
+
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.asJSON
@@ -474,7 +476,7 @@ class QueryTest : BaseQueryTest() {
             .where(FullTextFunction.match("sentence", "'Dummie woman'"))
             .orderBy(Ordering.expression(FullTextFunction.rank("sentence")).descending())
 
-        val numRows = verifyQuery(query) { n, result ->
+        val numRows = verifyQuery(query) { _, result ->
             assertNotNull(result.getString(0))
             assertNotNull(result.getString(1))
         }
@@ -2870,7 +2872,7 @@ class QueryTest : BaseQueryTest() {
             .orderBy(Ordering.property("local").ascending())
 
         verifyQuery(query) { n, result ->
-            assertEquals(expectedLocal.get(n - 1), result.getNumber(0))
+            assertEquals(expectedLocal[n - 1], result.getNumber(0))
             assertEquals(expectedJST[n - 1], result.getNumber(1))
             assertEquals(expectedJST[n - 1], result.getNumber(2))
             assertEquals(expectedPST[n - 1], result.getNumber(3))

@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.couchbase.lite.kmm.internal.utils
 
 import kotlinx.serialization.json.*

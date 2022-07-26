@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.dbPath
@@ -158,6 +160,7 @@ abstract class BaseTest : PlatformTest() {
         return false
     }
 
+    @Suppress("unused")
     companion object {
 
         const val STD_TIMEOUT_SEC = 10L

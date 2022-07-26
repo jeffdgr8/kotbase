@@ -39,6 +39,7 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
         actual.removeChangeListenerWithToken(token.actual)
 }
 
+@Suppress("MemberVisibilityCanBePrivate")
 internal class QueryState(
     var select: List<CBLQuerySelectResult>,
     var distinct: Boolean = false
@@ -55,7 +56,8 @@ internal class QueryState(
     override val actual: CBLQuery by lazy {
         val from = requireNotNull(from) { "From statement is required." }
         if (distinct) {
-            CBLQueryBuilder.selectDistinct(select, from, join, where, groupBy, having, orderBy, limit)
+            CBLQueryBuilder
+                .selectDistinct(select, from, join, where, groupBy, having, orderBy, limit)
         } else {
             CBLQueryBuilder.select(select, from, join, where, groupBy, having, orderBy, limit)
         }

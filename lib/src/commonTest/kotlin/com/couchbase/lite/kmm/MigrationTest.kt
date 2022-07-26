@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 import com.couchbase.lite.kmm.internal.utils.FileUtils
 import com.couchbase.lite.kmm.internal.utils.PlatformUtils
 import com.couchbase.lite.kmm.internal.utils.ZipUtils
-import com.udobny.kmm.test.IgnoreIos
 import kotlin.test.*
 
 class MigrationTest : BaseTest() {
@@ -49,7 +48,9 @@ class MigrationTest : BaseTest() {
     @Test
     @Throws(Exception::class)
     fun testOpenExistingDBv1xNoAttachment() {
-        ZipUtils.unzip(PlatformUtils.getAsset("replacedb/android140-sqlite-noattachment.cblite2.zip")!!, dbDir)
+        ZipUtils.unzip(
+            PlatformUtils.getAsset("replacedb/android140-sqlite-noattachment.cblite2.zip")!!, dbDir
+        )
 
         migrationTestDb = openDatabase()
         assertEquals(2, migrationTestDb!!.count)
@@ -60,9 +61,6 @@ class MigrationTest : BaseTest() {
         }
     }
 
-    // TODO: Korio extracts empty files from zip on iOS
-    //  fixed in https://github.com/korlibs/korge/pull/842
-    @IgnoreIos
     @Test
     @Throws(Exception::class)
     fun testOpenExistingDB() {

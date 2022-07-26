@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.udobny.kmm.test
 
 import android.os.Looper

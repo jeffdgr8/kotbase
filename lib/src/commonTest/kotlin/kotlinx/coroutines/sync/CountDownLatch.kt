@@ -53,7 +53,7 @@ interface CountDownLatch {
 
     /**
      * Causes the current coroutine to suspend until the latch has counted down to
-     * zero, unless the couroutine is cancelled.
+     * zero, unless the coroutine is cancelled.
      *
      * If the current count is zero then this method returns immediately.
      *
@@ -78,7 +78,7 @@ interface CountDownLatch {
 
     /**
      * Causes the current coroutine to suspend until the latch has counted down to
-     * zero, unless the couroutine is cancelled.
+     * zero, unless the coroutine is cancelled.
      *
      * If the current count is zero then this method returns immediately.
      *
@@ -125,7 +125,8 @@ interface CountDownLatch {
 internal class CountDownLatchImpl(initialCount: Int) : CountDownLatch {
     private var count = initialCount
 
-    private val continuations = mutableListOf<CancellableContinuation<Unit>>() // should probably use LockFreeLinkedListNode instead
+    // should probably use LockFreeLinkedListNode instead
+    private val continuations = mutableListOf<CancellableContinuation<Unit>>()
 
     private val lock = reentrantLock()
 

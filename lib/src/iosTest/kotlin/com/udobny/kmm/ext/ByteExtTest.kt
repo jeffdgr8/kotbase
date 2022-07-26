@@ -4,7 +4,6 @@ import kotlinx.cinterop.*
 import platform.Foundation.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotSame
 
 class ByteExtTest {
 

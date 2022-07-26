@@ -221,14 +221,14 @@ public expect class Database {
      */
     public fun addChangeListener(listener: DatabaseChangeListener): ListenerToken
 
-    /**
-     * Adds a change listener for the changes that occur in the database with an executor on which the changes will be
-     * posted to the listener. If the executor is not specified, the changes will be delivered on the UI thread for
-     * the Android platform and on an arbitrary thread for the Java platform.
-     *
-     * @param listener callback
-     */
     // TODO:
+    ///**
+    // * Adds a change listener for the changes that occur in the database with an executor on which the changes will be
+    // * posted to the listener. If the executor is not specified, the changes will be delivered on the UI thread for
+    // * the Android platform and on an arbitrary thread for the Java platform.
+    // *
+    // * @param listener callback
+    // */
     //public fun addChangeListener(executor: Executor?, listener: DatabaseChangeListener): ListenerToken
 
     /**
@@ -251,12 +251,12 @@ public expect class Database {
         listener: DocumentChangeListener
     ): ListenerToken
 
-    /**
-     * Adds a change listener for the changes that occur to the specified document with an executor on which
-     * the changes will be posted to the listener.  If the executor is not specified, the changes will be
-     * delivered on the UI thread for the Android platform and on an arbitrary thread for the Java platform.
-     */
     // TODO:
+    ///**
+    // * Adds a change listener for the changes that occur to the specified document with an executor on which
+    // * the changes will be posted to the listener.  If the executor is not specified, the changes will be
+    // * delivered on the UI thread for the Android platform and on an arbitrary thread for the Java platform.
+    // */
     //public fun addDocumentChangeListener(id: String, executor: Executor?, listener: DocumentChangeListener): ListenerToken
 
     /**

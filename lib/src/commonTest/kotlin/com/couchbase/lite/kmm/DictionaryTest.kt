@@ -1,10 +1,8 @@
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.kmm.internal.utils.TestUtils.assertThrows
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import okio.IOException
 import kotlin.test.*
 
 class DictionaryTest : BaseDbTest() {
@@ -309,7 +307,7 @@ class DictionaryTest : BaseDbTest() {
         }
     }
 
-    // ??? Surprisingly, no conncurrent modification exception.
+    // ??? Surprisingly, no concurrent modification exception.
     @Test
     fun testDictionaryEnumerationWithDataModification1() {
         val dict = MutableDictionary()

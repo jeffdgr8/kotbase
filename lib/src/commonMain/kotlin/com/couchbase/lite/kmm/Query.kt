@@ -59,17 +59,17 @@ public interface Query {
      */
     public fun addChangeListener(listener: QueryChangeListener): ListenerToken
 
-    /**
-     * Adds a change listener for the changes that occur in the query results with an executor
-     * on which the changes will be posted to the listener. If the executor is not specified,
-     * the changes will be delivered on the UI thread for the Android platform and on an
-     * arbitrary thread for the Java platform.
-     *
-     * @param executor The executor object that calls listener
-     * @param listener The listener to post changes.
-     * @return An opaque listener token object for removing the listener.
-     */
     // TODO:
+    ///**
+    // * Adds a change listener for the changes that occur in the query results with an executor
+    // * on which the changes will be posted to the listener. If the executor is not specified,
+    // * the changes will be delivered on the UI thread for the Android platform and on an
+    // * arbitrary thread for the Java platform.
+    // *
+    // * @param executor The executor object that calls listener
+    // * @param listener The listener to post changes.
+    // * @return An opaque listener token object for removing the listener.
+    // */
     //public fun addChangeListener(executor: Executor?, listener: QueryChangeListener): ListenerToken
 
     /**

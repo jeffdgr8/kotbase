@@ -87,15 +87,15 @@ constructor(config: ReplicatorConfiguration) {
      */
     public fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken
 
-    /**
-     * Adds a change listener for the changes in the replication status and progress with an executor on which
-     * the changes will be posted to the listener. If the executor is not specified, the changes will be delivered
-     * on the UI thread on Android platform and on an arbitrary thread on other Java platform.
-     *
-     * @param executor executor on which events will be delivered
-     * @param listener callback
-     */
     // TODO:
+    ///**
+    // * Adds a change listener for the changes in the replication status and progress with an executor on which
+    // * the changes will be posted to the listener. If the executor is not specified, the changes will be delivered
+    // * on the UI thread on Android platform and on an arbitrary thread on other Java platform.
+    // *
+    // * @param executor executor on which events will be delivered
+    // * @param listener callback
+    // */
     //public fun addChangeListener(executor: Executor?, listener: ReplicatorChangeListener): ListenerToken
 
     /**
@@ -110,15 +110,15 @@ constructor(config: ReplicatorConfiguration) {
      */
     public fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken
 
-    /**
-     * Adds a listener for receiving the replication status of the specified document with an executor on which
-     * the status will be posted to the listener. If the executor is not specified, the status will be delivered
-     * on the UI thread for the Android platform and on an arbitrary thread for the Java platform.
-     *
-     * @param executor executor on which events will be delivered
-     * @param listener callback
-     */
     // TODO:
+    ///**
+    // * Adds a listener for receiving the replication status of the specified document with an executor on which
+    // * the status will be posted to the listener. If the executor is not specified, the status will be delivered
+    // * on the UI thread for the Android platform and on an arbitrary thread for the Java platform.
+    // *
+    // * @param executor executor on which events will be delivered
+    // * @param listener callback
+    // */
     //public fun addDocumentReplicationListener(executor: Executor?, listener: DocumentReplicationListener): ListenerToken
 
     /**

@@ -4,7 +4,6 @@ import com.udobny.kmm.DelegatedClass
 import okio.Source
 import okio.buffer
 import okio.source
-import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 

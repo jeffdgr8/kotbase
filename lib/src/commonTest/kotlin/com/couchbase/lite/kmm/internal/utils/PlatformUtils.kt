@@ -14,24 +14,8 @@ object PlatformUtils {
         return DELEGATE.getAsset(asset)
     }
 
-    val encoder: Base64Encoder
-        get() = DELEGATE.encoder
-
-    val decoder: Base64Decoder
-        get() = DELEGATE.decoder
-
-    fun interface Base64Encoder {
-        fun encodeToString(src: ByteArray?): String?
-    }
-
-    fun interface Base64Decoder {
-        fun decodeString(src: String?): ByteArray?
-    }
-
     internal interface Delegate {
         fun gc()
         fun getAsset(asset: String?): Source?
-        val encoder: Base64Encoder
-        val decoder: Base64Decoder
     }
 }

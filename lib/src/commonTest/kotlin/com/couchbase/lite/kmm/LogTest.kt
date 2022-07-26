@@ -518,7 +518,7 @@
 //    }
 //
 //    // Verify that we can set the level for log domains that the platform doesn't recognize.
-//    // !!! I don't think this test is acutally testing anything.
+//    // !!! I don't think this test is actually testing anything.
 //    @Test
 //    fun testInternalLogging() {
 //        val c4Domain = "foo"

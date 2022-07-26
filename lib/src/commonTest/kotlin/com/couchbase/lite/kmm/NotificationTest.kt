@@ -321,7 +321,7 @@ class NotificationTest : BaseDbTest() {
 //            mutex1.lock()
 //        }
 //        val mutex2 = Mutex(true)
-//        val colListener = { changee: CollectionChange ->
+//        val colListener = { change: CollectionChange ->
 //            mutex2.unlock()
 //        }
 //        colListener(CollectionChange(baseTestDb.getDefaultCollection(), emptyList()))

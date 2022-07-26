@@ -19,6 +19,7 @@ expect object FileUtils {
     fun read(path: String): ByteArray
 }
 
+@Suppress("unused")
 fun FileUtils.getParentDir(path: String): String {
     val file = path.dropLastWhile { it == '/' }
     return file.substring(0, file.lastIndexOf('/'))

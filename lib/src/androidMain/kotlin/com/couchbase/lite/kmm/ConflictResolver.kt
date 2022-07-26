@@ -8,7 +8,7 @@ internal fun ConflictResolver.convert(): com.couchbase.lite.ConflictResolver =
     DelegatedConflictResolver(this)
 
 internal class DelegatedConflictResolver
-internal constructor(actual : ConflictResolver) :
+internal constructor(actual: ConflictResolver) :
     DelegatedClass<ConflictResolver>(actual),
     com.couchbase.lite.ConflictResolver {
 

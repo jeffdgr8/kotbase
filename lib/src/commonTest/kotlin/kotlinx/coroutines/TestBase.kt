@@ -1,10 +1,12 @@
+@file:Suppress("unused", "RedundantUnitReturnType", "RedundantVisibilityModifier", "Reformat",
+    "MayBeConstant"
+)
+
 // adapted from https://github.com/Kotlin/kotlinx.coroutines/blob/042720589c6f438f77d84254bd2dceb569f01841/kotlinx-coroutines-core/common/test/TestBase.common.kt
 // and native https://github.com/Kotlin/kotlinx.coroutines/blob/042720589c6f438f77d84254bd2dceb569f01841/kotlinx-coroutines-core/native/test/TestBase.kt
 /*
  * Copyright 2016-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
-
-@file:Suppress("unused")
 
 package kotlinx.coroutines
 

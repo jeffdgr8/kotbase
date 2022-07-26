@@ -2,13 +2,10 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLMutableDictionary
 import com.couchbase.lite.kmm.ext.throwError
-import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.udobny.kmm.chain
-import com.udobny.kmm.ext.wrapError
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
-import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 
 public actual class MutableDictionary

@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.couchbase.lite.kmm.internal.utils
 
 import kotlin.random.Random
@@ -19,10 +21,6 @@ object StringUtils {
             buf[idx] = CHARS[Random.nextInt(CHARS.size)]
         }
         return buf.concatToString()
-    }
-
-    fun getArrayString(strs: Array<String?>?, idx: Int): String {
-        return if (strs == null || idx < 0 || idx >= strs.size) "" else strs[idx]!!
     }
 
     fun toString(map: Map<*, *>?): String {
