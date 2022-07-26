@@ -46,7 +46,6 @@ class LiveQueryTest : BaseDbTest() {
      */
     @Ignore // TODO: Fails with 3.0, requires 3.1
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testMultipleListeners() = runBlocking {
         lateinit var token1: ListenerToken
         val query = QueryBuilder
@@ -104,7 +103,6 @@ class LiveQueryTest : BaseDbTest() {
 
     // When a result set is closed, we should still be able to introduce a change
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseResultsInLiveQueryListener() = runBlocking {
         val query = QueryBuilder
             .select(SelectResult.expression(Meta.id))
@@ -139,7 +137,6 @@ class LiveQueryTest : BaseDbTest() {
      */
     @Ignore // TODO: Fails with 3.0, requires 3.1
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testIterateRSWith2Listeners() = runBlocking {
         val query = QueryBuilder
             .select(SelectResult.expression(Meta.id))
@@ -189,7 +186,6 @@ class LiveQueryTest : BaseDbTest() {
 
     // Changing query parameters should cause an update within tolerable time
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testChangeParameters(): Unit = runBlocking {
         createDocNumbered(1)
         createDocNumbered(2)
@@ -249,7 +245,6 @@ class LiveQueryTest : BaseDbTest() {
 
     // CBL-2344: Live query may stop refreshing
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLiveQueryRefresh() = runBlocking {
         val mutexHolder = atomic(Mutex(true))
         val resultsHolder = atomic<List<Result>>(emptyList())
@@ -297,7 +292,6 @@ class LiveQueryTest : BaseDbTest() {
     }
 
     // create test docs
-    @Throws(CouchbaseLiteException::class)
     private fun createDocNumbered(i: Int) {
         val docID = "doc-$i"
         val doc = MutableDocument(docID)

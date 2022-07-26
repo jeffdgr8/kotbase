@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * A Join component representing a single JOIN clause in the query statement.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect open class Join {
 
     /**

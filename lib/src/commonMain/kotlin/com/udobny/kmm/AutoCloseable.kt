@@ -46,6 +46,7 @@ package com.udobny.kmm
  * non-I/O-based forms, `try`-with-resources blocks are in
  * general unnecessary when using non-I/O-based forms.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect interface AutoCloseable {
 
     /**

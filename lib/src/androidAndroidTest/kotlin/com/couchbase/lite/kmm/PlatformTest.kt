@@ -1,17 +1,10 @@
 package com.couchbase.lite.kmm
 
 import android.content.Context
-import android.os.Build
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.couchbase.lite.internal.AndroidExecutionService
 import com.couchbase.lite.internal.CouchbaseLiteInternal
-import com.couchbase.lite.internal.exec.AbstractExecutionService
 import com.couchbase.lite.kmm.internal.utils.FileUtils
-import org.junit.runner.RunWith
 import java.io.IOException
-import java.util.*
-import java.util.concurrent.ThreadPoolExecutor
 
 /**
  * Platform test class for Android.

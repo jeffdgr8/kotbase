@@ -27,7 +27,6 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryGetColumnNameAfter32Items() {
         val document = MutableDocument("doc")
         document.setString("key", "value")
@@ -68,7 +67,6 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryDocumentExpiration() = runBlocking {
         val now = Clock.System.now()
 
@@ -121,7 +119,6 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryDocumentIsNotDeleted() {
         val doc1a = MutableDocument("doc1")
         doc1a.setInt("answer", 42)
@@ -143,7 +140,6 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryDocumentIsDeleted() {
         val doc = MutableDocument("doc1")
         doc.setInt("answer", 42)
@@ -163,7 +159,6 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testNoWhereQuery() {
         loadJSONResource("names_100.json")
         val numRows = verifyQuery(
@@ -184,7 +179,6 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereComparison() {
         loadNumberedDocs(10)
         runTestCases(
@@ -205,7 +199,6 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereArithmetic() {
         loadNumberedDocs(10)
         runTestCases(

@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * A CouchbaseLiteException gets raised whenever a Couchbase Lite faces errors.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class CouchbaseLiteException : Exception {
 
     /**

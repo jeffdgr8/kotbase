@@ -5,6 +5,7 @@ package com.couchbase.lite.kmm
  * The GROUP BY clause is normally used with aggregate functions (AVG, COUNT, MAX, MIN, SUM)
  * to aggregate the group of the values.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class GroupBy : Query {
 
     /**

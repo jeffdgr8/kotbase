@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * A query data source, used for specifying the source of data for a query.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect open class DataSource {
 
     /**

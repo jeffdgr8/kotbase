@@ -11,7 +11,6 @@ import kotlin.test.*
 class ResultTest : BaseQueryTest() {
     
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetValueByKey() {
         for (i in 1..2) {
             val docID = prepareData(i)
@@ -43,7 +42,6 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetValue() {
         for (i in 1..2) {
             val docID = prepareData(i)
@@ -77,7 +75,6 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetStringByKey() {
         for (i in 1..2) {
             val docID = prepareData(i)
@@ -108,7 +105,6 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetString() {
         for (i in 1..2) {
             val docID = prepareData(i)
@@ -141,7 +137,6 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetNumberByKey() {
         for (i in 1..2) {
             val docID = prepareData(i)
@@ -172,7 +167,6 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetNumber() {
         for (i in 1..2) {
             val docID = prepareData(i)

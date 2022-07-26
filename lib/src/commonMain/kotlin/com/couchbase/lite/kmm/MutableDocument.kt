@@ -5,6 +5,7 @@ import kotlinx.datetime.Instant
 /**
  * A Couchbase Lite Document. A document has key/value properties like a Map.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class MutableDocument : Document {
 
     /**

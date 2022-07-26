@@ -6,6 +6,7 @@ import com.udobny.kmm.AutoCloseable
  * A result set representing the query result. The result set is an iterator of
  * the [Result] objects.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class ResultSet : Iterable<Result>, AutoCloseable {
 
     /**

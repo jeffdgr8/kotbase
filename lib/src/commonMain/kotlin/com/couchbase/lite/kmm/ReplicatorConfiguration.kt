@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * Replicator configuration.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class ReplicatorConfiguration {
 
     public constructor(database: Database, target: Endpoint)

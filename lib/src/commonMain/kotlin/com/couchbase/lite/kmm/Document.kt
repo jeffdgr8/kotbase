@@ -5,6 +5,7 @@ import kotlinx.datetime.Instant
 /**
  * Readonly version of the Document.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect open class Document : Iterable<String> {
 
     /**

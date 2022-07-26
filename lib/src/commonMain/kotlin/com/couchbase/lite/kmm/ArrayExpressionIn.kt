@@ -6,6 +6,7 @@ package com.couchbase.lite.kmm
  * object or an expression evaluated as an array object, each item of which will be evaluated
  * against the satisfies expression.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class ArrayExpressionIn {
 
     /**

@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * The flags enum describing the replicated document.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect enum class DocumentFlag {
 
     /**

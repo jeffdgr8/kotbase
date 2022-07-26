@@ -18,7 +18,6 @@ class PreInitTest : BaseTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateDatabaseBeforeInit() {
         assertFailsWith<IllegalStateException> {
             Database("fail", DatabaseConfiguration())

@@ -10,6 +10,7 @@ import okio.Source
  * The containing document's JSON contains only the Blob's metadata (type, length and digest).  The data itself
  * is stored in a file whose name is the content digest (like git).
  **/
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Blob
 
 /**

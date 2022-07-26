@@ -4,6 +4,7 @@ package com.couchbase.lite.kmm
  * Having represents a HAVING clause of the query statement used for filtering the aggregated values
  * from the the GROUP BY clause.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Having : Query {
 
     /**

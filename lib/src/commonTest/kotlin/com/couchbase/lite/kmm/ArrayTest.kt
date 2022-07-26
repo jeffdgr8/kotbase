@@ -11,7 +11,6 @@ import kotlin.test.*
 class ArrayTest : BaseDbTest() {
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreate() {
         val array = MutableArray()
         assertEquals(0, array.count)
@@ -24,7 +23,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateWithList() {
         val data = mutableListOf<Any?>()
         data.add("1")
@@ -49,7 +47,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetList() {
         var data = mutableListOf<Any?>()
         data.add("1")
@@ -79,7 +76,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddNull() {
         val array = MutableArray()
         array.addValue(null)
@@ -91,7 +87,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddObjects() {
         for (i in 0..1) {
             val array = MutableArray()
@@ -138,7 +133,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddObjectsToExistingArray() {
         for (i in 0..1) {
             var array: MutableArray? = MutableArray()
@@ -201,7 +195,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetObject() {
         val data = arrayOfAllTypes()
 
@@ -250,7 +243,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetObjectToExistingArray() {
         for (i in 0..1) {
             val array = MutableArray()
@@ -346,7 +338,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testInsertObjectToExistingArray() {
         var mDoc = MutableDocument("doc1")
         mDoc.setValue("array", MutableArray())
@@ -412,7 +403,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRemove() {
         for (i in 0..1) {
             val array = MutableArray()
@@ -434,7 +424,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRemoveExistingArray() {
         for (i in 0..1) {
             var array = MutableArray()
@@ -467,7 +456,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCount() {
         for (i in 0..1) {
             val array = MutableArray()
@@ -485,7 +473,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetString() {
         for (i in 0..1) {
             val array = MutableArray()

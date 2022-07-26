@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * URL based replication target endpoint
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class URLEndpoint
 
 /**

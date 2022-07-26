@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * Property expression
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class PropertyExpression : Expression {
 
     /**

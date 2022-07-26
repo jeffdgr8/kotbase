@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * A Joins component represents a collection of the joins clauses of the query statement.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Joins : Query {
 
     /**

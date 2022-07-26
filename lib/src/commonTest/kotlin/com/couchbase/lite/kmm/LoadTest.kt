@@ -217,13 +217,11 @@ class LoadTest : BaseDbTest() {
         return doc
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun createAndSaveDocument(id: String, tag: String) {
         val doc = createDocumentWithTag(id, tag)
         baseTestDb.save(doc)
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun createAndSaveDocument(tag: String, nDocs: Int) {
         for (i in 0 until nDocs) {
             val docID = "doc-${i.paddedString(10)}"
@@ -231,7 +229,6 @@ class LoadTest : BaseDbTest() {
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun updateDoc(document: Document?, rounds: Int, tag: String) {
         var doc = document
         for (i in 1..rounds) {
@@ -254,7 +251,6 @@ class LoadTest : BaseDbTest() {
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun verifyByTag(tag: String, verifier: Verifier) {
         var n = 0
         QueryBuilder.select(SelectResult.expression(Meta.id))
@@ -267,7 +263,6 @@ class LoadTest : BaseDbTest() {
             }
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun verifyByTag(tag: String, nRows: Int) {
         val count = atomic(0)
         verifyByTag(tag) { _, _ -> count.incrementAndGet() }

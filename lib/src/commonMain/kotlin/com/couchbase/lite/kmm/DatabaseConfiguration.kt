@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * Configuration for opening a database.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class DatabaseConfiguration(
     config: DatabaseConfiguration? = null
 ) {

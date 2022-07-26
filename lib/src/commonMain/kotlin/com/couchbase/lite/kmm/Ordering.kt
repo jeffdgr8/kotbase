@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * An Ordering represents a single ordering component in the query ORDER BY clause.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect open class Ordering {
 
     /**

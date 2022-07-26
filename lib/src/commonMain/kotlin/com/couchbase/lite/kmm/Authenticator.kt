@@ -7,4 +7,5 @@ package com.couchbase.lite.kmm
  * NOTE: Authenticator is an abstract class (instead of an interface) so that
  * the `authenticate` method is visible only in this package.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect abstract class Authenticator

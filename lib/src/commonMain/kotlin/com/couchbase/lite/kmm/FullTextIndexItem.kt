@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * Full-text Index Item.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class FullTextIndexItem {
 
     public companion object {

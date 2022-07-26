@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * Query functions.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect object Function {
 
     /**

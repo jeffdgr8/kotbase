@@ -4,6 +4,7 @@ package com.couchbase.lite.kmm
  * An OrderBy represents an ORDER BY clause of the query for specifying properties or expressions
  * that the result rows should be sorted by.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class OrderBy : Query {
 
     /**

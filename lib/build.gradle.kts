@@ -63,7 +63,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
                 implementation("org.jetbrains.kotlinx:atomicfu:0.18.2")
             }
         }
@@ -79,9 +78,6 @@ kotlin {
         }
         val androidTest by getting {
             (dependsOn as MutableSet).remove(commonTest)
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
         }
         val androidAndroidTest by getting {
             // doesn't work, so using a symlink
@@ -89,8 +85,6 @@ kotlin {
             dependencies {
                 implementation("androidx.test:core-ktx:1.4.0")
                 implementation("androidx.test:runner:1.4.0")
-                implementation("androidx.test:rules:1.4.0")
-                implementation("androidx.test.ext:junit-ktx:1.1.3")
             }
         }
         val iosMain by getting
@@ -123,7 +117,8 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
         //  workaround function:
         //  static inline CBLDocument* getCBLDocument(CBLDatabase* database, NSString* documentID)
 
-        // TODO: remove above --- pending https://github.com/JetBrains/kotlin/pull/4894 in Kotlin 1.8
+        // TODO: remove above --- and append, pending
+        //  https://github.com/JetBrains/kotlin/pull/4894 in Kotlin 1.8
         //outputFile.appendText("""
         outputFile.writeText("""
             language = Objective-C

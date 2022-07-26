@@ -276,7 +276,6 @@
 //    }
 //
 //    @Test
-//    @Throws(CouchbaseLiteException::class)
 //    fun testReplicatedDocument() {
 //        val collection: Collection<*> = baseTestDb.getDefaultCollection()
 //        val docID = "someDocumentID"

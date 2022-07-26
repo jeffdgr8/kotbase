@@ -81,7 +81,6 @@ class MigrationTest : BaseTest() {
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun openDatabase(): Database {
         val config = DatabaseConfiguration()
         config.setDirectory(FileUtils.getCanonicalPath(dbDir))

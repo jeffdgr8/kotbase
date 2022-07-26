@@ -3,6 +3,7 @@ package com.couchbase.lite.kmm
 /**
  * Document replicated update of a replicator.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class DocumentReplication {
 
     /**

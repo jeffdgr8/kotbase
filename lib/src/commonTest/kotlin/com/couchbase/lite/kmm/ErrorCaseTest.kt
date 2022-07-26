@@ -11,7 +11,6 @@ class ErrorCaseTest : BaseDbTest() {
 
     // -- DatabaseTest
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteSameDocTwice() {
         // Store doc:
         val docID = "doc1"
@@ -45,7 +44,6 @@ class ErrorCaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveSavedMutableDocument() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
@@ -59,7 +57,6 @@ class ErrorCaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteSavedMutableDocument() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
@@ -69,7 +66,6 @@ class ErrorCaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocAfterPurgeDoc() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
@@ -88,7 +84,6 @@ class ErrorCaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocAfterDeleteDoc() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
@@ -102,7 +97,6 @@ class ErrorCaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDocAfterDeleteDoc() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
@@ -116,7 +110,6 @@ class ErrorCaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDocAfterPurgeDoc() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")

@@ -7,6 +7,7 @@ package com.couchbase.lite.kmm
  * two types of the Collation, ASCII and Unicode. Without specifying the COLLATE expression
  * Couchbase Lite will use the ASCII with case sensitive collation by default.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect open class Collation {
 
     /**

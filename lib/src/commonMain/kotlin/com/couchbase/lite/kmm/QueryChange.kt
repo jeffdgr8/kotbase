@@ -4,6 +4,7 @@ package com.couchbase.lite.kmm
  * QueryChange contains the information about the query result changes reported
  * by a query object.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class QueryChange {
 
     /**

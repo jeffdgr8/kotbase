@@ -5,6 +5,7 @@ import kotlinx.datetime.Instant
 /**
  * A Parameters object used for setting values to the query parameters defined in the query.
  */
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Parameters(parameters: Parameters? = null) {
 
     /**
