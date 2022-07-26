@@ -2,8 +2,6 @@ package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLReplicator
 import com.couchbase.lite.kmm.ext.throwError
-import com.couchbase.lite.kmm.internal.testQueue
-import com.couchbase.lite.kmm.internal.useTestQueue
 import com.udobny.kmm.DelegatedClass
 import platform.Security.SecCertificateRef
 
@@ -55,11 +53,7 @@ internal constructor(actual: CBLReplicator) :
 
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken {
         return DelegatedListenerToken(
-            if (useTestQueue) {
-                actual.addChangeListenerWithQueue(testQueue, listener.convert())
-            } else {
-                actual.addChangeListener(listener.convert())
-            }
+            actual.addChangeListener(listener.convert())
         )
     }
 
@@ -68,11 +62,7 @@ internal constructor(actual: CBLReplicator) :
 
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken {
         return DelegatedListenerToken(
-            if (useTestQueue) {
-                actual.addDocumentReplicationListenerWithQueue(testQueue, listener.convert())
-            } else {
-                actual.addDocumentReplicationListener(listener.convert())
-            }
+            actual.addDocumentReplicationListener(listener.convert())
         )
     }
 

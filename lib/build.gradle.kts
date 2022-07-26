@@ -42,11 +42,9 @@ kotlin {
     }
 
     targets.withType<KotlinNativeTarget> {
-        // Run tests on background thread
-        // TODO: main thread loop is still not available to dispatch to though
-        //  https://youtrack.jetbrains.com/issue/KT-53129
+        // Run tests on background thread with main run loop
         compilations["test"].kotlinOptions {
-            freeCompilerArgs += listOf("-trw")
+            freeCompilerArgs += listOf("-e", "com.udobny.kmm.test.mainBackground")
         }
     }
 

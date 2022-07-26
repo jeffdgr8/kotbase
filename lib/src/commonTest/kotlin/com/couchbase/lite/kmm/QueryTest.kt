@@ -1452,8 +1452,6 @@ class QueryTest : BaseQueryTest() {
         }
     }
 
-    // TODO: fails on iOS (likely an issue with not having a test main run loop)
-    @IgnoreIos
     @Test
     @Throws(CouchbaseLiteException::class)
     fun testLiveQuery() = runBlocking {
@@ -1842,8 +1840,8 @@ class QueryTest : BaseQueryTest() {
         assertEquals(1, numRows)
     }
 
-    // iOS sets locale to NSLocale.currentLocale for unicode collations
-    // https://github.com/couchbase/couchbase-lite-ios/blob/6b09f2d2f51b1dbcb406fbdddd46bd46b0841f41/Objective-C/CBLQueryCollation.m#L59
+    // TODO: iOS sets locale to NSLocale.currentLocale for unicode collations
+    //  https://forums.couchbase.com/t/unicode-collation-locale-null-or-device-locale/34103
     @IgnoreIos
     @Test
     fun testGenerateJSONCollation() {
@@ -2597,8 +2595,6 @@ class QueryTest : BaseQueryTest() {
         assertEquals(expectedIDs6.size, numRows)
     }
 
-    // TODO: fails on iOS (likely an issue with not having a test main run loop)
-    @IgnoreIos
     // https://github.com/couchbase/couchbase-lite-android/issues/1628
     @Test
     @Throws(CouchbaseLiteException::class)
@@ -2646,8 +2642,6 @@ class QueryTest : BaseQueryTest() {
         }
     }
 
-    // TODO: fails on iOS (likely an issue with not having a test main run loop)
-    @IgnoreIos
     // https://forums.couchbase.com/t/how-to-be-notifed-that-document-is-changed-but-livequerys-query-isnt-catching-it-anymore/16199/9
     @Test
     @Throws(CouchbaseLiteException::class)

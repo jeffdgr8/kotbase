@@ -4,8 +4,6 @@ import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.isClosed
 import com.couchbase.lite.kmm.ext.throwError
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
-import com.couchbase.lite.kmm.internal.testQueue
-import com.couchbase.lite.kmm.internal.useTestQueue
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.wrapError
 import kotlinx.datetime.Instant
@@ -213,11 +211,7 @@ internal constructor(actual: CBLDatabase) :
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {
         return DelegatedListenerToken(
             mustBeOpen {
-                if (useTestQueue) {
-                    actual.addChangeListenerWithQueue(testQueue, listener.convert())
-                } else {
-                    actual.addChangeListener(listener.convert())
-                }
+                actual.addChangeListener(listener.convert())
             }
         )
     }
@@ -232,11 +226,7 @@ internal constructor(actual: CBLDatabase) :
     ): ListenerToken {
         return DelegatedListenerToken(
             mustBeOpen {
-                if (useTestQueue) {
-                    actual.addDocumentChangeListenerWithID(id, testQueue, listener.convert())
-                } else {
-                    actual.addDocumentChangeListenerWithID(id, listener.convert())
-                }
+                actual.addDocumentChangeListenerWithID(id, listener.convert())
             }
         )
     }

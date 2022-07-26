@@ -1,6 +1,5 @@
 package com.couchbase.lite.kmm
 
-import com.couchbase.lite.kmm.internal.useTestQueue
 import kotlinx.cinterop.convert
 import platform.Foundation.NSFileManager
 import platform.Foundation.temporaryDirectory
@@ -13,7 +12,6 @@ import platform.posix.QOS_CLASS_DEFAULT
 actual abstract class PlatformTest {
 
     actual fun setupPlatform() {
-        useTestQueue = true
         val console = Database.log.console
         // iOS tests don't handle a lot of logging (may terminate prematurely on verbose log-level)
         console.level = LogLevel.WARNING

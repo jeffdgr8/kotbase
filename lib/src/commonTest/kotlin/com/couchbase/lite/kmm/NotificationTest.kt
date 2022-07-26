@@ -1,7 +1,6 @@
 package com.couchbase.lite.kmm
 
 import com.couchbase.lite.copy
-import com.udobny.kmm.test.IgnoreIos
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.assertFailsWith
@@ -17,8 +16,6 @@ import kotlin.time.Duration.Companion.seconds
 
 class NotificationTest : BaseDbTest() {
 
-    // TODO: flaky on iOS (likely an issue with not having a test main run loop)
-    @IgnoreIos
     @Test
     fun testDatabaseChange() = runBlocking {
         val mutex = Mutex(true)
