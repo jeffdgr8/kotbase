@@ -3,13 +3,13 @@ Pod::Spec.new do |spec|
     spec.version                  = '3.0.0'
     spec.homepage                 = 'https://udobny.com/couchbase-lite-kmm'
     spec.source                   = { :http=> ''}
-    spec.authors                  = ''
-    spec.license                  = ''
-    spec.summary                  = 'Couchbase Lite Kotlin Multiplatform'
+    spec.authors                  = 'Couchbase, Udobny'
+    spec.license                  = 'Apache License, Version 2.0'
+    spec.summary                  = 'Couchbase Lite for Kotlin Multiplatform'
     spec.vendored_frameworks      = 'build/cocoapods/framework/CouchbaseLite_KMM.framework'
     spec.libraries                = 'c++'
-    spec.ios.deployment_target = '10.0'
-    spec.dependency 'CouchbaseLite', '~> 3.0.0'
+    spec.ios.deployment_target = '9.0'
+    spec.dependency 'CouchbaseLite'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':lib',

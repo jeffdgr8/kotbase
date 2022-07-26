@@ -43,13 +43,11 @@ public expect class LogFileConfiguration {
     public fun setUsePlaintext(usePlaintext: Boolean): LogFileConfiguration
 
     /**
-     * Gets the number of rotated logs that are saved (i.e.
+     * The number of rotated logs that are saved (i.e.
      * if the value is 1, then 2 logs will be present:  the 'current'
      * and the 'rotated')
-     *
-     * @return The number of rotated logs that are saved
      */
-    public fun getMaxRotateCount(): Int
+    public var maxRotateCount: Int
 
     /**
      * Sets the number of rotated logs that are saved (i.e.
@@ -62,13 +60,11 @@ public expect class LogFileConfiguration {
     public fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration
 
     /**
-     * Gets the max size of the log file in bytes.  If a log file
+     * The max size of the log file in bytes.  If a log file
      * passes this size then a new log file will be started.  This
      * number is a best effort and the actual size may go over slightly.
-     *
-     * @return The max size of the log file in bytes
      */
-    public fun getMaxSize(): Long
+    public var maxSize: Long
 
     /**
      * Sets the max size of the log file in bytes.  If a log file
@@ -81,18 +77,14 @@ public expect class LogFileConfiguration {
     public fun setMaxSize(maxSize: Long): LogFileConfiguration
 
     /**
-     * Gets whether or not CBL is logging in plaintext.  The default is
+     * Whether or not CBL is logging in plaintext.  The default is
      * to log in a binary encoded format that is more CPU and I/O friendly
      * and enabling plaintext is not recommended in production.
-     *
-     * @return Whether or not CBL is logging in plaintext
      */
-    public fun usesPlaintext(): Boolean
+    public var usesPlaintext: Boolean
 
     /**
-     * Gets the directory that the logs files are stored in.
-     *
-     * @return The directory that the logs files are stored in.
+     * The directory that the logs files are stored in.
      */
-    public fun getDirectory(): String
+    public val directory: String
 }

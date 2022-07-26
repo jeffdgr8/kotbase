@@ -23,7 +23,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetExistingDocWithID() {
         val docID = "doc1"
         createSingleDocInBaseTestDb(docID)
@@ -31,7 +30,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetExistingDocWithIDFromDifferentDBInstance() {
         // store doc
         val docID = "doc1"
@@ -53,7 +51,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetExistingDocWithIDInBatch() {
         val n = 10
 
@@ -64,7 +61,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDocFromClosedDB() {
         assertFailsWith<IllegalStateException> {
             // Store doc:
@@ -79,7 +75,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDocFromDeletedDB() {
         assertFailsWith<IllegalStateException> {
             // Store doc:
@@ -98,7 +93,6 @@ class DatabaseTest : BaseDbTest() {
     //---------------------------------------------
 
     // base test method
-    @Throws(CouchbaseLiteException::class)
     private fun testSaveNewDocWithID(docID: String) {
         // store doc
         createSingleDocInBaseTestDb(docID)
@@ -110,19 +104,16 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveNewDocWithID() {
         testSaveNewDocWithID("doc1")
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveNewDocWithSpecialCharactersDocID() {
         testSaveNewDocWithID("`~@#$%^&*()_+{}|\\\\][=-/.,<>?\\\":;'")
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveAndGetMultipleDocs() {
         val nDocs = 10 //1000
         for (i in 0 until nDocs) {
@@ -135,7 +126,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveDoc() {
         // store doc
         val docID = "doc1"
@@ -152,7 +142,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveDocInDifferentDBInstance() {
         // Store doc
         val docID = "doc1"
@@ -175,7 +164,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveDocInDifferentDB() {
         // Store doc
         val docID = "doc1"
@@ -200,7 +188,6 @@ class DatabaseTest : BaseDbTest() {
 
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveSameDocTwice() {
         val docID = "doc1"
         val doc = createSingleDocInBaseTestDb(docID).toMutable()
@@ -209,7 +196,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveInBatch() {
         val nDocs = 10
 
@@ -219,7 +205,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveDocToClosedDB() {
         assertFailsWith<IllegalStateException> {
             baseTestDb.close()
@@ -232,7 +217,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveDocToDeletedDB() {
         assertFailsWith<IllegalStateException> {
             // Delete db:
@@ -259,7 +243,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDoc() {
         val docID = "doc1"
         val doc = createSingleDocInBaseTestDb(docID)
@@ -270,7 +253,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocInDifferentDBInstance() {
         // Store doc:
         val docID = "doc1"
@@ -293,7 +275,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocInDifferentDB() {
         // Store doc
         val docID = "doc1"
@@ -314,7 +295,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocInBatch() {
         val nDocs = 10
 
@@ -333,7 +313,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocOnClosedDB() {
         assertFailsWith<IllegalStateException> {
             // Store doc:
@@ -348,7 +327,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocOnDeletedDB() {
         assertFailsWith<IllegalStateException> {
             // Store doc:
@@ -375,7 +353,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDoc() {
         val docID = "doc1"
         val doc = createSingleDocInBaseTestDb(docID)
@@ -386,7 +363,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDocInDifferentDBInstance() {
         // Store doc:
         val docID = "doc1"
@@ -408,7 +384,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDocInDifferentDB() {
         // Store doc:
         val docID = "doc1"
@@ -430,7 +405,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeSameDocTwice() {
         // Store doc:
         val docID = "doc1"
@@ -449,7 +423,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDocInBatch() {
         val nDocs = 10
         // Save 10 docs:
@@ -468,7 +441,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDocOnClosedDB() {
         assertFailsWith<IllegalStateException> {
             // Store doc:
@@ -483,7 +455,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDocOnDeletedDB() {
         assertFailsWith<IllegalStateException> {
             // Store doc:
@@ -502,20 +473,17 @@ class DatabaseTest : BaseDbTest() {
     //---------------------------------------------
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testClose() {
         baseTestDb.close()
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseTwice() {
         baseTestDb.close()
         baseTestDb.close()
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseThenAccessDoc() {
         // Store doc:
         val docID = "doc1"
@@ -546,7 +514,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseThenAccessBlob() {
         assertFailsWith<IllegalStateException> {
             // Store doc with blob:
@@ -568,7 +535,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseThenGetDatabaseName() {
         val dbName = baseTestDb.name
         baseTestDb.close()
@@ -576,14 +542,12 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseThenGetDatabasePath() {
         baseTestDb.close()
         assertNull(baseTestDb.path)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseThenCallInBatch() {
         assertFailsWith<IllegalStateException> {
             baseTestDb.close()
@@ -592,7 +556,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseInInBatch() {
         baseTestDb.inBatch {
             // delete db
@@ -604,7 +567,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseThenDeleteDatabase() {
         assertFailsWith<IllegalStateException> {
             baseTestDb.close()
@@ -617,13 +579,11 @@ class DatabaseTest : BaseDbTest() {
     //---------------------------------------------
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDelete() {
         baseTestDb.delete()
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteTwice() {
         assertFailsWith<IllegalStateException> {
             // delete db twice
@@ -639,7 +599,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteThenAccessDoc() {
         // Store doc:
         val docID = "doc1"
@@ -656,7 +615,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteThenAccessBlob() {
         // Store doc with blob:
         val docID = "doc1"
@@ -680,7 +638,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteThenGetDatabaseName() {
         val dbName = baseTestDb.name
 
@@ -691,7 +648,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteThenGetDatabasePath() {
         // delete db
         baseTestDb.delete()
@@ -699,7 +655,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteThenCallInBatch() {
         assertFailsWith<IllegalStateException> {
             baseTestDb.delete()
@@ -708,7 +663,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteInInBatch() {
         baseTestDb.inBatch {
             // delete db
@@ -720,7 +674,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDBOpenedByOtherInstance() {
         val otherDb: Database = duplicateBaseTestDb(0)
         try {
@@ -739,7 +692,6 @@ class DatabaseTest : BaseDbTest() {
     //---------------------------------------------
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteWithDefaultDirDB() {
         val dbName = baseTestDb.name
 
@@ -768,7 +720,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testStaticDeleteDb() {
         val dbDirPath = getScratchDirectoryPath(getUniqueName("static-delete-dir"))
 
@@ -792,7 +743,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteOpeningDBByStaticMethod() {
         val db = duplicateBaseTestDb()
 
@@ -808,7 +758,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteNonExistingDBWithDefaultDir() {
         assertFailsWith<CouchbaseLiteException> {
             Database.delete("notexistdb", baseTestDb.path)
@@ -827,7 +776,6 @@ class DatabaseTest : BaseDbTest() {
     //---------------------------------------------
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDatabaseExistsWithDir() {
         val dirName = getUniqueName("test-exists-dir")
 
@@ -865,7 +813,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCompact() {
         val nDocs = 20
         val nUpdates = 25
@@ -915,7 +862,6 @@ class DatabaseTest : BaseDbTest() {
 
     // REF: https://github.com/couchbase/couchbase-lite-android/issues/1231
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testOverwriteDocWithNewDocInstance() {
         val mDoc1 = MutableDocument("abc")
         mDoc1.setValue("someKey", "someVar")
@@ -941,7 +887,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCopy() {
         val nDocs = 10
         for (i in 0 until nDocs) {
@@ -990,7 +935,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateIndex() {
         assertEquals(0, baseTestDb.getIndexes().size)
 
@@ -1031,26 +975,23 @@ class DatabaseTest : BaseDbTest() {
         assertContents(baseTestDb.getIndexes(), "index1", "index2", "index3", "index4")
     }
 
-    // TODO:
-//    @Test
-//    @Throws(CouchbaseLiteException::class)
-//    fun testCreateIndexWithConfig() {
-//        assertEquals(0, baseTestDb.getIndexes().size)
-//
-//        baseTestDb.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-//        assertEquals(1, baseTestDb.getIndexes().size)
-//
-//        baseTestDb.createIndex(
-//            "index2",
-//            FullTextIndexConfiguration("detail").ignoreAccents(true).setLanguage("es")
-//        )
-//        assertEquals(2, baseTestDb.getIndexes().size)
-//
-//        assertContents(baseTestDb.getIndexes(), "index1", "index2")
-//    }
+    @Test
+    fun testCreateIndexWithConfig() {
+        assertEquals(0, baseTestDb.getIndexes().size)
+
+        baseTestDb.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
+        assertEquals(1, baseTestDb.getIndexes().size)
+
+        baseTestDb.createIndex(
+            "index2",
+            FullTextIndexConfiguration("detail").ignoreAccents(true).setLanguage("es")
+        )
+        assertEquals(2, baseTestDb.getIndexes().size)
+
+        assertContents(baseTestDb.getIndexes(), "index1", "index2")
+    }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateSameIndexTwice() {
         // Create index with first name:
         val indexItem = ValueIndexItem.property("firstName")
@@ -1065,7 +1006,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateSameNameIndexes() {
         val fNameItem = ValueIndexItem.property("firstName")
         val lNameItem = ValueIndexItem.property("lastName")
@@ -1093,7 +1033,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteIndex() {
         testCreateIndex()
 
@@ -1125,7 +1064,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRebuildIndex() {
         testCreateIndex()
         assertTrue(baseTestDb.performMaintenance(MaintenanceType.REINDEX))
@@ -1133,7 +1071,6 @@ class DatabaseTest : BaseDbTest() {
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1416
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteAndOpenDB() {
         val config = DatabaseConfiguration()
 
@@ -1176,7 +1113,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveAndUpdateMutableDoc() {
         val doc = MutableDocument("doc1")
         doc.setString("firstName", "Daniel")
@@ -1204,35 +1140,30 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveDocWithConflict() {
         testSaveDocWithConflictUsingConcurrencyControl(ConcurrencyControl.LAST_WRITE_WINS)
         testSaveDocWithConflictUsingConcurrencyControl(ConcurrencyControl.FAIL_ON_CONFLICT)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocWithConflict() {
         testDeleteDocWithConflictUsingConcurrencyControl(ConcurrencyControl.LAST_WRITE_WINS)
         testDeleteDocWithConflictUsingConcurrencyControl(ConcurrencyControl.FAIL_ON_CONFLICT)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveDocWithNoParentConflict() {
         testSaveDocWithNoParentConflictUsingConcurrencyControl(ConcurrencyControl.LAST_WRITE_WINS)
         testSaveDocWithNoParentConflictUsingConcurrencyControl(ConcurrencyControl.FAIL_ON_CONFLICT)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveDocWithDeletedConflict() {
         testSaveDocWithDeletedConflictUsingConcurrencyControl(ConcurrencyControl.LAST_WRITE_WINS)
         testSaveDocWithDeletedConflictUsingConcurrencyControl(ConcurrencyControl.FAIL_ON_CONFLICT)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteAndUpdateDoc() {
         val doc = MutableDocument("doc1")
         doc.setString("firstName", "Daniel")
@@ -1259,7 +1190,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteAlreadyDeletedDoc() {
         val doc = MutableDocument("doc1")
         doc.setString("firstName", "Daniel")
@@ -1282,7 +1212,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteNonExistingDoc() {
         val doc1a = createSingleDocInBaseTestDb("doc1")
         val doc1b = baseTestDb.getDocument("doc1")!!
@@ -1305,7 +1234,6 @@ class DatabaseTest : BaseDbTest() {
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1652
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteWithOldDocInstance() {
         // 1. save
         var mdoc = MutableDocument("doc")
@@ -1328,7 +1256,6 @@ class DatabaseTest : BaseDbTest() {
     // mitigates the 2.8.0 bug (CBL-1408)
     // There is one more test for this in DatabaseEncryptionTest
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testReOpenExistingDb() {
         val dbName = getUniqueName("test_db")
 
@@ -1356,7 +1283,6 @@ class DatabaseTest : BaseDbTest() {
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun duplicateBaseTestDb(count: Int): Database {
         val db = duplicateBaseTestDb()
 
@@ -1370,7 +1296,6 @@ class DatabaseTest : BaseDbTest() {
     }
 
     // helper method to save n number of docs
-    @Throws(CouchbaseLiteException::class)
     private fun createDocsInBaseTestDb(n: Int): List<String> {
         val docs: MutableList<String> = ArrayList()
         for (i in 0 until n) {
@@ -1413,14 +1338,12 @@ class DatabaseTest : BaseDbTest() {
     }
 
     // helper method to purge doc and verify doc.
-    @Throws(CouchbaseLiteException::class)
     private fun purgeDocAndVerify(doc: Document) {
         val docID = doc.id
         baseTestDb.purge(doc)
         assertNull(baseTestDb.getDocument(docID))
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun testSaveDocWithConflictUsingConcurrencyControl(cc: ConcurrencyControl) {
         val doc = MutableDocument("doc1")
         doc.setString("firstName", "Daniel")
@@ -1462,7 +1385,6 @@ class DatabaseTest : BaseDbTest() {
         recreateBastTestDb()
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun testDeleteDocWithConflictUsingConcurrencyControl(cc: ConcurrencyControl) {
         val doc = MutableDocument("doc1")
         doc.setString("firstName", "Daniel")
@@ -1500,7 +1422,6 @@ class DatabaseTest : BaseDbTest() {
         recreateBastTestDb()
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun testSaveDocWithNoParentConflictUsingConcurrencyControl(cc: ConcurrencyControl) {
         val doc1a = MutableDocument("doc1")
         doc1a.setString("firstName", "Daniel")
@@ -1529,7 +1450,6 @@ class DatabaseTest : BaseDbTest() {
         recreateBastTestDb()
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun testSaveDocWithDeletedConflictUsingConcurrencyControl(cc: ConcurrencyControl) {
         val doc = MutableDocument("doc1")
         doc.setString("firstName", "Daniel")

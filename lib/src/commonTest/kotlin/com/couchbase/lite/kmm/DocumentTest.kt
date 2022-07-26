@@ -12,10 +12,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.Clock
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import okio.IOException
+import okio.Buffer
+import okio.buffer
+import okio.use
 import kotlin.math.absoluteValue
 import kotlin.test.*
 import kotlin.time.Duration.Companion.days
@@ -26,7 +27,6 @@ import kotlin.time.DurationUnit
 class DocumentTest : BaseDbTest() {
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateDoc() {
         val doc1a = MutableDocument()
         assertNotNull(doc1a)
@@ -41,7 +41,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateDocWithID() {
         val doc1a = MutableDocument("doc1")
         assertNotNull(doc1a)
@@ -65,7 +64,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateDocWithNilID() {
         val doc1a = MutableDocument(null as String?)
         assertNotNull(doc1a)
@@ -80,7 +78,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateDocWithDict() {
         val dict = mutableMapOf<String, Any?>()
         dict["name"] = "Scott Tiger"
@@ -109,7 +106,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateDocWithIDAndDict() {
         val dict = mutableMapOf<String, Any?>()
         dict["name"] = "Scott Tiger"
@@ -138,7 +134,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetDictionaryContent() {
         val dict = mutableMapOf<String, Any?>()
         dict["name"] = "Scott Tiger"
@@ -183,7 +178,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testMutateEmptyDocument() {
         var doc = MutableDocument("doc")
         baseTestDb.save(doc)
@@ -194,7 +188,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetValueFromDocument() {
         val doc = MutableDocument("doc1")
         saveDocInBaseTestDb(doc) { d ->
@@ -214,7 +207,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSaveThenGetFromAnotherDB() {
         val doc1a = MutableDocument("doc1")
         doc1a.setValue("name", "Scott Tiger")
@@ -229,7 +221,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testNoCacheNoLive() {
         val doc1a = MutableDocument("doc1")
         doc1a.setValue("name", "Scott Tiger")
@@ -265,7 +256,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetString() {
         val validator4Save = DocValidator { d ->
             assertEquals("", d.getValue("string1"))
@@ -305,7 +295,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetString() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -334,7 +323,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetNumber() {
         val validator4Save = DocValidator { d ->
             assertEquals(1, (d.getValue("number1") as Number).toInt())
@@ -453,7 +441,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetNumber() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -482,7 +469,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetInteger() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -511,7 +497,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetLong() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -540,7 +525,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetFloat() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -569,7 +553,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDouble() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -598,7 +581,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetGetMinMaxNumbers() {
         val validator = DocValidator { doc ->
             assertEquals(Int.MIN_VALUE, doc.getNumber("min_int")!!.toInt())
@@ -656,7 +638,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetGetFloatNumbers() {
         val validator = DocValidator { doc ->
             assertEquals(1.00, (doc.getValue("number1") as Number).toDouble(), 0.00001)
@@ -724,7 +705,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetBoolean() {
         val validator4Save = DocValidator { d ->
             assertEquals(true, d.getValue("boolean1"))
@@ -765,7 +745,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetBoolean() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -794,7 +773,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetDate() {
         var mDoc = MutableDocument("doc1")
 
@@ -823,7 +801,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDate() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -852,7 +829,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetBlob() {
         val newBlobContent = StringUtils.randomString(100)
         val newBlob = Blob("text/plain", newBlobContent.encodeToByteArray())
@@ -937,7 +913,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetBlob() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -970,7 +945,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetDictionary() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -1015,7 +989,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDictionary() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -1050,7 +1023,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetArray() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -1092,7 +1064,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetArray() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -1123,7 +1094,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetNull() {
         val mDoc = MutableDocument("doc1")
         mDoc.setValue("obj-null", null)
@@ -1151,7 +1121,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetMap() {
         val dict = mapOf(
             "street" to "1 Main street",
@@ -1204,7 +1173,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetList() {
         val array = listOf("a", "b", "c")
 
@@ -1252,7 +1220,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testUpdateNestedDictionary() {
         var doc = MutableDocument("doc1")
         val addresses = MutableDictionary()
@@ -1288,7 +1255,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testUpdateDictionaryInArray() {
         var doc = MutableDocument("doc1")
         val addresses = MutableArray()
@@ -1339,7 +1305,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testUpdateNestedArray() {
         var doc = MutableDocument("doc1")
         val groups = MutableArray()
@@ -1381,7 +1346,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testUpdateArrayInDictionary() {
         var doc = MutableDocument("doc1")
 
@@ -1428,7 +1392,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetDictionaryToMultipleKeys() {
         var doc = MutableDocument("doc1")
 
@@ -1470,7 +1433,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetArrayToMultipleKeys() {
         var doc = MutableDocument("doc1")
 
@@ -1559,7 +1521,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCount() {
         for (i in 1..2) {
             val docID = "doc$i"
@@ -1581,7 +1542,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRemoveKeys() {
         val doc = MutableDocument("doc1")
         val mapAddress = mapOf(
@@ -1639,7 +1599,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRemoveKeysBySettingDictionary() {
         val props = mapOf(
             "PropName1" to "Val1",
@@ -1695,7 +1654,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocument() {
         val docID = "doc1"
         val mDoc = MutableDocument(docID)
@@ -1719,7 +1677,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDictionaryAfterDeleteDocument() {
         val addr = mapOf(
             "street" to "1 Main street",
@@ -1747,7 +1704,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testArrayAfterDeleteDocument() {
         val dict = mapOf(
             "members" to listOf("a", "b", "c")
@@ -1772,7 +1728,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDocumentChangeOnDocumentPurged() = runBlocking {
         baseTestDb.save(MutableDocument("doc1").setValue("theanswer", 18))
 
@@ -1798,7 +1753,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDocument() {
         val docID = "doc1"
         val doc = MutableDocument(docID)
@@ -1822,7 +1776,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testPurgeDocumentById() {
         val docID = "doc1"
         val doc = MutableDocument(docID)
@@ -1846,7 +1799,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetAndGetExpirationFromDoc() {
         val dto30 = Clock.System.now() + 30.seconds
 
@@ -1876,7 +1828,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetExpirationOnDoc() {
         val now = Clock.System.now()
 
@@ -1898,7 +1849,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetExpirationOnDeletedDoc() {
         val dto30 = Clock.System.now() + 30.seconds
         val doc1a = MutableDocument("deleted_doc")
@@ -1914,7 +1864,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetExpirationFromDeletedDoc() {
         val doc1a = MutableDocument("deleted_doc")
         doc1a.setInt("answer", 12)
@@ -1948,7 +1897,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(Exception::class)
     fun testLongExpiration() {
         val now = Clock.System.now()
         val d60Days = now + 60.days
@@ -1968,7 +1916,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testReopenDB() {
         val mDoc = MutableDocument("doc1")
         mDoc.setValue("string", "str")
@@ -1984,121 +1931,115 @@ class DocumentTest : BaseDbTest() {
         assertEquals(expected, doc.toMap())
     }
 
-    // TODO:
-//    @Test
-//    @Throws(IOException::class, CouchbaseLiteException::class)
-//    fun testBlob() {
-//        val content: ByteArray = BLOB_CONTENT.encodeToByteArray()
-//
-//        // store blob
-//        var data = Blob("text/plain", content)
-//        assertNotNull(data)
-//
-//        var doc = MutableDocument("doc1")
-//        doc.setValue("name", "Jim")
-//        doc.setValue("data", data)
-//
-//        doc = saveDocInBaseTestDb(doc).toMutable()
-//
-//        assertEquals("Jim", doc.getValue("name"))
-//        assertTrue(doc.getValue("data") is Blob)
-//        data = doc.getValue("data") as Blob
-//        assertEquals(BLOB_CONTENT.length.toLong(), data.length)
-//        assertContentEquals(content, data.content)
-//        data.contentStream.use { input ->
-//            assertNotNull(input)
-//            val buffer = ByteArray(content.size + 37)
-//            val bytesRead = input.read(buffer)
-//            assertEquals(content.size, bytesRead)
-//        }
-//    }
-//
-//    @Test
-//    @Throws(IOException::class, CouchbaseLiteException::class)
-//    fun testEmptyBlob() {
-//        val content = "".encodeToByteArray()
-//        var data = Blob("text/plain", content)
-//        assertNotNull(data)
-//
-//        var doc = MutableDocument("doc1")
-//        doc.setValue("data", data)
-//
-//        doc = saveDocInBaseTestDb(doc).toMutable()
-//
-//        assertTrue(doc.getValue("data") is Blob)
-//        data = doc.getValue("data") as Blob
-//        assertEquals(0, data.length)
-//        assertContentEquals(content, data.content)
-//        data.contentStream.use { input ->
-//            assertNotNull(input)
-//            val buffer = ByteArray(37)
-//            val bytesRead = input.read(buffer)
-//            assertEquals(-1, bytesRead)
-//        }
-//    }
-//
-//    @Test
-//    @Throws(IOException::class, CouchbaseLiteException::class)
-//    fun testBlobWithEmptyStream() {
-//        var doc = MutableDocument("doc1")
-//        val content = "".encodeToByteArray()
-//        Buffer().write(content).use { stream ->
-//            val data = Blob("text/plain", stream)
-//            assertNotNull(data)
-//            doc.setValue("data", data)
-//            doc = saveDocInBaseTestDb(doc).toMutable()
-//        }
-//
-//        assertTrue(doc.getValue("data") is Blob)
-//        val data = doc.getValue("data") as Blob
-//        assertEquals(0, data.length)
-//        assertContentEquals(content, data.content)
-//        data.contentStream.use { input ->
-//            assertNotNull(input)
-//            val buffer = ByteArray(37)
-//            val bytesRead = input.read(buffer)
-//            assertEquals(-1, bytesRead)
-//        }
-//    }
-//
-//    @Test
-//    @Throws(IOException::class, CouchbaseLiteException::class)
-//    fun testMultipleBlobRead() {
-//        val content: ByteArray = BLOB_CONTENT.encodeToByteArray()
-//        var data = Blob("text/plain", content)
-//        assertNotNull(data)
-//
-//        var doc = MutableDocument("doc1")
-//        doc.setValue("data", data)
-//
-//        data = doc.getValue("data") as Blob
-//        for (i in 0 until 5) {
-//            assertContentEquals(content, data.content)
-//            data.contentStream.use { input ->
-//                assertNotNull(input)
-//                val buffer = ByteArray(content.size + 37)
-//                val bytesRead = input.read(buffer)
-//                assertEquals(content.size, bytesRead)
-//            }
-//        }
-//
-//        doc = saveDocInBaseTestDb(doc).toMutable()
-//
-//        assertTrue(doc.getValue("data") is Blob)
-//        data = doc.getValue("data") as Blob
-//        for (i in 0 until 5) {
-//            assertContentEquals(content, data.content)
-//            data.contentStream.use { input ->
-//                assertNotNull(input)
-//                val buffer = ByteArray(content.size + 37)
-//                val bytesRead = input.read(buffer)
-//                assertEquals(content.size, bytesRead)
-//            }
-//        }
-//    }
+    @Test
+    fun testBlob() {
+        val content: ByteArray = BLOB_CONTENT.encodeToByteArray()
+
+        // store blob
+        var data = Blob("text/plain", content)
+        assertNotNull(data)
+
+        var doc = MutableDocument("doc1")
+        doc.setValue("name", "Jim")
+        doc.setValue("data", data)
+
+        doc = saveDocInBaseTestDb(doc).toMutable()
+
+        assertEquals("Jim", doc.getValue("name"))
+        assertTrue(doc.getValue("data") is Blob)
+        data = doc.getValue("data") as Blob
+        assertEquals(BLOB_CONTENT.length.toLong(), data.length)
+        assertContentEquals(content, data.content)
+        data.contentStream.use { input ->
+            assertNotNull(input)
+            val buffer = ByteArray(content.size + 37)
+            val bytesRead = input.buffer().read(buffer)
+            assertEquals(content.size, bytesRead)
+        }
+    }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
+    fun testEmptyBlob() {
+        val content = "".encodeToByteArray()
+        var data = Blob("text/plain", content)
+        assertNotNull(data)
+
+        var doc = MutableDocument("doc1")
+        doc.setValue("data", data)
+
+        doc = saveDocInBaseTestDb(doc).toMutable()
+
+        assertTrue(doc.getValue("data") is Blob)
+        data = doc.getValue("data") as Blob
+        assertEquals(0, data.length)
+        assertContentEquals(content, data.content)
+        data.contentStream.use { input ->
+            assertNotNull(input)
+            val buffer = ByteArray(37)
+            val bytesRead = input.buffer().read(buffer)
+            assertEquals(-1, bytesRead)
+        }
+    }
+
+    @Test
+    fun testBlobWithEmptyStream() {
+        var doc = MutableDocument("doc1")
+        val content = "".encodeToByteArray()
+        Buffer().write(content).use { stream ->
+            val data = Blob("text/plain", stream)
+            assertNotNull(data)
+            doc.setValue("data", data)
+            doc = saveDocInBaseTestDb(doc).toMutable()
+        }
+
+        assertTrue(doc.getValue("data") is Blob)
+        val data = doc.getValue("data") as Blob
+        assertEquals(0, data.length)
+        assertContentEquals(content, data.content)
+        data.contentStream.use { input ->
+            assertNotNull(input)
+            val buffer = ByteArray(37)
+            val bytesRead = input.buffer().read(buffer)
+            assertEquals(-1, bytesRead)
+        }
+    }
+
+    @Test
+    fun testMultipleBlobRead() {
+        val content: ByteArray = BLOB_CONTENT.encodeToByteArray()
+        var data = Blob("text/plain", content)
+        assertNotNull(data)
+
+        var doc = MutableDocument("doc1")
+        doc.setValue("data", data)
+
+        data = doc.getValue("data") as Blob
+        for (i in 0 until 5) {
+            assertContentEquals(content, data.content)
+            data.contentStream.use { input ->
+                assertNotNull(input)
+                val buffer = ByteArray(content.size + 37)
+                val bytesRead = input.buffer().read(buffer)
+                assertEquals(content.size, bytesRead)
+            }
+        }
+
+        doc = saveDocInBaseTestDb(doc).toMutable()
+
+        assertTrue(doc.getValue("data") is Blob)
+        data = doc.getValue("data") as Blob
+        for (i in 0 until 5) {
+            assertContentEquals(content, data.content)
+            data.contentStream.use { input ->
+                assertNotNull(input)
+                val buffer = ByteArray(content.size + 37)
+                val bytesRead = input.buffer().read(buffer)
+                assertEquals(content.size, bytesRead)
+            }
+        }
+    }
+
+    @Test
     fun testReadExistingBlob() {
         val content: ByteArray = BLOB_CONTENT.encodeToByteArray()
         var data = Blob("text/plain", content)
@@ -2126,7 +2067,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEnumeratingKeys() {
         val doc = MutableDocument("doc1")
         for (i in 0 until 20) {
@@ -2161,7 +2101,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testToMutable() {
         val content: ByteArray = BLOB_CONTENT.encodeToByteArray()
         val data = Blob("text/plain", content)
@@ -2196,7 +2135,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEquality() {
         val data1: ByteArray = "data1".encodeToByteArray()
         val data2: ByteArray = "data2".encodeToByteArray()
@@ -2240,7 +2178,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEqualityDifferentDocID() {
         val doc1 = MutableDocument("doc1")
         val doc2 = MutableDocument("doc2")
@@ -2266,7 +2203,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEqualityDifferentDB() {
         var sameDB: Database? = null
         val otherDB = createDb("equ-diff-db")
@@ -2305,7 +2241,6 @@ class DocumentTest : BaseDbTest() {
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1449
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDocAndGetDoc() {
         val docID = "doc-1"
 
@@ -2329,7 +2264,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEquals() {
 
         // mDoc1 and mDoc2 have exactly same data
@@ -2500,7 +2434,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testHashCode() {
         // mDoc1 and mDoc2 have exactly same data
         // mDoc3 is different
@@ -2624,7 +2557,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRevisionIDNewDoc() {
         val doc = MutableDocument()
         assertNull(doc.revisionID)
@@ -2633,7 +2565,6 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRevisionIDExistingDoc() {
         var mdoc = MutableDocument("doc1")
         baseTestDb.save(mdoc)
@@ -2659,7 +2590,6 @@ class DocumentTest : BaseDbTest() {
     ///////////////  JSON tests
     // JSON 3.2
     @Test
-    @Throws(CouchbaseLiteException::class, SerializationException::class)
     fun testDocToJSON() {
         val mDoc = makeDocument()
         saveDocInBaseTestDb(mDoc)
@@ -2680,7 +2610,6 @@ class DocumentTest : BaseDbTest() {
     // Java does not have MutableDocument(String json) because it collides with MutableDocument(String id)
     // JSON 3.5.b-c
     @Test
-    @Throws(SerializationException::class, IOException::class, CouchbaseLiteException::class)
     fun testDocFromJSON() {
         val dbDoc = saveDocInBaseTestDb(
             MutableDocument("fromJSON", readJSONResource("document.json"))
@@ -2716,7 +2645,6 @@ class DocumentTest : BaseDbTest() {
 
     // JSON 3.5.e
     @Test
-    @Throws(IOException::class)
     fun testMutableFromArray() {
         assertFailsWith<IllegalArgumentException> {
             MutableDocument("fromJSON", readJSONResource("array.json"))

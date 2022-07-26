@@ -32,7 +32,7 @@
 //            this.message = message
 //        }
 //
-//        override fun toString() = level.toString() + "/" + domain + ": " + message
+//        override fun toString() = "$level/$domain: $message"
 //    }
 //
 //    private class LogTestLogger constructor(private val prefix: String?) : Logger {
@@ -120,7 +120,7 @@
 //        val customLogger = LogTestLogger("$$\$TEST ")
 //        Database.log.custom = customLogger
 //        for (level in LogLevel.values()) {
-//            customLogger.setLevel(level)
+//            customLogger.level = level
 //            Log.d(LogDomain.DATABASE, "$$\$TEST DEBUG")
 //            Log.v(LogDomain.DATABASE, "$$\$TEST VERBOSE")
 //            Log.i(LogDomain.DATABASE, "$$\$TEST INFO")
@@ -139,7 +139,7 @@
 //        val customLogger = LogTestLogger("$$\$TEST ")
 //        Database.log.custom = customLogger
 //
-//        customLogger.setLevel(LogLevel.NONE)
+//        customLogger.level = LogLevel.NONE
 //        Log.d(LogDomain.DATABASE, "$$\$TEST DEBUG")
 //        Log.v(LogDomain.DATABASE, "$$\$TEST VERBOSE")
 //        Log.i(LogDomain.DATABASE, "$$\$TEST INFO")
@@ -147,7 +147,7 @@
 //        Log.e(LogDomain.DATABASE, "$$\$TEST ERROR")
 //        assertEquals(0, customLogger.lineCount.toLong())
 //
-//        customLogger.setLevel(LogLevel.VERBOSE)
+//        customLogger.level = LogLevel.VERBOSE
 //        Log.d(LogDomain.DATABASE, "$$\$TEST DEBUG")
 //        Log.v(LogDomain.DATABASE, "$$\$TEST VERBOSE")
 //        Log.i(LogDomain.DATABASE, "$$\$TEST INFO")
@@ -446,7 +446,7 @@
 //        val hebrew = "מזג האוויר נחמד היום" // The weather is nice today.
 //
 //        val customLogger = LogTestLogger(null)
-//        customLogger.setLevel(LogLevel.VERBOSE)
+//        customLogger.level = LogLevel.VERBOSE
 //
 //        Database.log.custom = customLogger
 //
@@ -480,7 +480,7 @@
 //        val msg = logger.message
 //        assertNotNull(msg)
 //        assertTrue(
-//            msg!!.startsWith(Log.LOG_HEADER + "$$\$TEST DEBUG arg 1 3.00" + nl + "java.lang.Exception: whoops" + nl)
+//            msg.startsWith(Log.LOG_HEADER + "$$\$TEST DEBUG arg 1 3.00" + nl + "java.lang.Exception: whoops" + nl)
 //        )
 //    }
 //

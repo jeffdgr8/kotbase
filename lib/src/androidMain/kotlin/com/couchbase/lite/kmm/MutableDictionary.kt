@@ -59,7 +59,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
         setBoolean(key, value)
     }
 
-    // TODO: Remove !! when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
+    // TODO: Remove setValue() when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setBlob(key: String, value: Blob?): MutableDictionary = chain {
         if (value == null) {
             setValue(key, null)
@@ -69,7 +69,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
         //setBlob(key, value?.actual)
     }
 
-    // TODO: Remove !! when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
+    // TODO: Remove setValue() when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setDate(key: String, value: Instant?): MutableDictionary = chain {
         if (value == null) {
             setValue(key, null)
@@ -79,7 +79,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
         //setDate(key, value?.toDate())
     }
 
-    // TODO: Remove !! when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
+    // TODO: Remove setValue() when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setArray(key: String, value: Array?): MutableDictionary = chain {
         if (value == null) {
             setValue(key, null)
@@ -89,7 +89,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
         //setArray(key, value?.actual)
     }
 
-    // TODO: Remove !! when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
+    // TODO: Remove setValue() when nullable https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary = chain {
         if (value == null) {
             setValue(key, null)

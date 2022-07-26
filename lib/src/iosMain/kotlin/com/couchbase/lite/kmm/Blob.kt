@@ -17,7 +17,6 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
         CBLBlob(contentType, content.toNSData())
     )
 
-    // TODO: https://github.com/square/okio/pull/1123
     public actual constructor(contentType: String, stream: Source) : this(
         CBLBlob(contentType, stream.buffer().inputStream())
     )
@@ -39,17 +38,13 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
             if (content == null) {
                 val cblDb = actual.valueForKey("_db") as CBLDatabase?
                 if (cblDb != null) {
-                    val db = Database(cblDb)
-                    if (!db.isOpen) {
-                        // Java SDK throws exception rather than just returning null when database is closed
-                        throw IllegalStateException("Failed to read content from database for digest: $digest")
-                    }
+                    // Java SDK throws exception rather than just returning null when database is closed
+                    Database(cblDb).mustBeOpen()
                 }
             }
             return content
         }
 
-    // TODO: https://github.com/square/okio/pull/1123
     public actual val contentStream: Source?
         get() = actual.contentStream?.source()
 

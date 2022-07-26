@@ -2,34 +2,26 @@ package com.couchbase.lite.kmm.internal.utils
 
 import com.udobny.kmm.ext.toByteArray
 import com.udobny.kmm.ext.toNSData
-import okio.Buffer
 import okio.Source
+import okio.source
 import platform.Foundation.*
+import kotlin.native.internal.GC
 
 actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
 
     override fun gc() {
-        // TODO: Is this possible to request with Kotlin/Native?
+        GC.collect()
     }
 
     override fun getAsset(asset: String?): Source? {
-        if (asset == null) {
-            return null
-        }
+        asset ?: return null
         val dotIndex = asset.lastIndexOf('.')
         val filePath = asset.substring(0, dotIndex)
         val ext = asset.substring(dotIndex + 1)
         val path = NSBundle.mainBundle
             .pathForResource("resources/$filePath", ext)
             ?: return null
-        // TODO: stream when https://github.com/square/okio/pull/1123 is available
-        //return NSInputStream(NSURL(path))?.source()
-        val data = NSData.dataWithContentsOfFile(path)
-            ?.toByteArray()
-            ?: return null
-        return Buffer().apply {
-            write(data)
-        }
+        return NSInputStream(NSURL(fileURLWithPath = path)).source()
     }
 
     override val encoder: PlatformUtils.Base64Encoder

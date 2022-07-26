@@ -13,7 +13,6 @@ import kotlin.test.*
 abstract class BaseDbTest : BaseTest() {
 
     fun interface DocValidator {
-        @Throws(CouchbaseLiteException::class)
         fun accept(document: Document)
     }
 
@@ -25,7 +24,6 @@ abstract class BaseDbTest : BaseTest() {
     protected lateinit var baseTestDb: Database
 
     @BeforeTest
-    @Throws(CouchbaseLiteException::class)
     fun setUpBaseDbTest() {
         baseTestDb = createDb("base_db")
         Report.log("Created base test DB: $baseTestDb")
@@ -43,7 +41,6 @@ abstract class BaseDbTest : BaseTest() {
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun createSingleDocInBaseTestDb(docID: String?): Document {
         val n = baseTestDb.count
         val doc = MutableDocument(docID)
@@ -54,7 +51,6 @@ abstract class BaseDbTest : BaseTest() {
         return savedDoc
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun createDocsInDb(first: Int, count: Int, db: Database) {
         db.inBatch {
             for (i in first until first + count) {
@@ -66,7 +62,6 @@ abstract class BaseDbTest : BaseTest() {
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun saveDocInBaseTestDb(doc: MutableDocument): Document {
         baseTestDb.save(doc)
         val savedDoc = baseTestDb.getDocument(doc.id)
@@ -75,7 +70,6 @@ abstract class BaseDbTest : BaseTest() {
         return savedDoc
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun saveDocInBaseTestDb(doc: MutableDocument, validator: DocValidator): Document {
         validator.accept(doc)
         val savedDoc = saveDocInBaseTestDb(doc)
@@ -143,10 +137,6 @@ abstract class BaseDbTest : BaseTest() {
     }
 
     // file is one JSON object per line
-    @Throws(
-        IOException::class,
-        CouchbaseLiteException::class
-    )
     protected fun loadJSONResource(name: String?) {
         PlatformUtils.getAsset(name)?.use { fileSource ->
             fileSource.buffer().use { bufferedFileSource ->
@@ -164,7 +154,6 @@ abstract class BaseDbTest : BaseTest() {
         }
     }
 
-    @Throws(IOException::class)
     protected fun readJSONResource(name: String?): String {
         val buf = StringBuilder()
         PlatformUtils.getAsset(name)?.use { fileSource ->
@@ -233,11 +222,6 @@ abstract class BaseDbTest : BaseTest() {
         return array
     }
 
-    @Throws(
-        IllegalArgumentException::class,
-        IllegalStateException::class,
-        NumberFormatException::class
-    )
     protected fun verifyArray(jArray: JsonArray) {
         assertEquals(27, jArray.size)
 
@@ -725,11 +709,6 @@ abstract class BaseDbTest : BaseTest() {
         return dict
     }
 
-    @Throws(
-        IllegalArgumentException::class,
-        IllegalStateException::class,
-        NumberFormatException::class
-    )
     protected fun verifyDict(jObj: JsonObject) {
         assertEquals(27, jObj.size)
 
@@ -1164,7 +1143,6 @@ abstract class BaseDbTest : BaseTest() {
         return Blob("text/plain", BLOB_CONTENT.encodeToByteArray())
     }
 
-    @Throws(IllegalArgumentException::class, NumberFormatException::class)
     protected fun verifyBlob(jBlob: JsonObject) {
         assertEquals(4, jBlob.size)
         // Blob.TYPE_BLOB Blob.META_PROP_TYPE
@@ -1232,11 +1210,6 @@ abstract class BaseDbTest : BaseTest() {
         return mDoc
     }
 
-    @Throws(
-        IllegalArgumentException::class,
-        IllegalStateException::class,
-        NumberFormatException::class
-    )
     protected fun verifyDocument(jObj: JsonObject) {
         assertEquals(29, jObj.size)
 
@@ -1275,7 +1248,7 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(JsonNull, jObj["doc-24"])
         verifyArray(jObj["doc-25"] as JsonArray)
 
-        assertEquals(JsonNull, jObj.get("doc-26"))
+        assertEquals(JsonNull, jObj["doc-26"])
         verifyDict(jObj["doc-27"] as JsonObject)
 
         assertEquals(JsonNull, jObj["doc-28"])
@@ -2031,22 +2004,18 @@ abstract class BaseDbTest : BaseTest() {
         verifyBlob(doc.getBlob("doc-29"))
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected open fun openDatabase(): Database {
         return verifyOrDeleteDb(createDb(getUniqueName("test_db")))
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun reopenBaseTestDb() {
         baseTestDb = reopenDb(baseTestDb)
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun recreateBastTestDb() {
         baseTestDb = recreateDb(baseTestDb)
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected open fun duplicateBaseTestDb(): Database {
         return verifyOrDeleteDb(duplicateDb(baseTestDb))
     }

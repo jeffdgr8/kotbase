@@ -20,7 +20,6 @@ class SimpleDatabaseTest : BaseTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetSetConfiguration() {
         val config = DatabaseConfiguration()
             .setDirectory(getScratchDirectoryPath(getUniqueName("get-set-config-dir")))
@@ -36,7 +35,6 @@ class SimpleDatabaseTest : BaseTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testConfigurationIsCopiedWhenGetSet() {
         val config = DatabaseConfiguration()
             .setDirectory(getScratchDirectoryPath(getUniqueName("copy-config-dir")))
@@ -51,7 +49,6 @@ class SimpleDatabaseTest : BaseTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDatabaseConfigurationDefaultDirectory() {
         val expectedPath = DatabaseConfiguration().getDirectory()
 
@@ -67,7 +64,6 @@ class SimpleDatabaseTest : BaseTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateWithDefaultConfiguration() {
         val db = createDb("default_config_db")
         try {
@@ -79,7 +75,6 @@ class SimpleDatabaseTest : BaseTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateWithEmptyDBNames() {
         assertFailsWith<IllegalArgumentException> {
             Database("")
@@ -87,7 +82,6 @@ class SimpleDatabaseTest : BaseTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateWithSpecialCharacterDBNames() {
         val LEGAL_FILE_NAME_CHARS = "`~@#$%^&()_+{}][=-.,;'12345ABCDEabcde"
         val db = Database(LEGAL_FILE_NAME_CHARS)
@@ -99,7 +93,6 @@ class SimpleDatabaseTest : BaseTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateWithCustomDirectory() {
         val dir = getScratchDirectoryPath(getUniqueName("create-custom-dir"))
 

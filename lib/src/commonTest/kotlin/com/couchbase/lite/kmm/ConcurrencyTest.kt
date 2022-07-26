@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 class ConcurrencyTest : BaseDbTest() {
 
     internal fun interface Callback {
-        fun callback(threadIndex: Int)
+        fun callback(coroutineIndex: Int)
     }
 
     internal fun interface VerifyBlock<T> {
@@ -31,12 +31,12 @@ class ConcurrencyTest : BaseDbTest() {
     fun testConcurrentCreate() = runBlocking {
         Database.log.console.level = LogLevel.DEBUG
         val kNDocs = 50
-        val kNThreads = 4
+        val kNCoroutines = 4
         val kWaitInSec = 180
 
         // concurrently creates documents
-        concurrentValidator(kNThreads, kWaitInSec) { threadIndex ->
-            val tag = "tag-$threadIndex"
+        concurrentValidator(kNCoroutines, kWaitInSec) { coroutineIndex ->
+            val tag = "tag-$coroutineIndex"
             try {
                 createDocs(kNDocs, tag)
             } catch (e: CouchbaseLiteException) {
@@ -45,7 +45,7 @@ class ConcurrencyTest : BaseDbTest() {
         }
 
         // validate stored documents
-        for (i in 0 until kNThreads) {
+        for (i in 0 until kNCoroutines) {
             verifyByTagName("tag-$i", kNDocs)
         }
     }
@@ -53,12 +53,12 @@ class ConcurrencyTest : BaseDbTest() {
     @Test
     fun testConcurrentCreateInBatch() = runBlocking {
         val kNDocs = 50
-        val kNThreads = 4
+        val kNCoroutines = 4
         val kWaitInSec = 180
 
         // concurrently creates documents
-        concurrentValidator(kNThreads, kWaitInSec) { threadIndex ->
-            val tag = "tag-$threadIndex"
+        concurrentValidator(kNCoroutines, kWaitInSec) { coroutineIndex ->
+            val tag = "tag-$coroutineIndex"
             try {
                 baseTestDb.inBatch { createDocs(kNDocs, tag) }
             } catch (e: CouchbaseLiteException) {
@@ -69,7 +69,7 @@ class ConcurrencyTest : BaseDbTest() {
         checkForFailure()
 
         // validate stored documents
-        for (i in 0 until kNThreads) {
+        for (i in 0 until kNCoroutines) {
             verifyByTagName("tag-$i", kNDocs)
         }
     }
@@ -77,21 +77,22 @@ class ConcurrencyTest : BaseDbTest() {
     @Test
     fun testConcurrentUpdate() = runBlocking {
         // ??? Increasing number of threads causes crashes
+        // (from Java SDK, increasing number of coroutines doesn't cause crash)
         val nDocs = 5
-        val nThreads = 4
+        val nCoroutines = 4
 
         // createDocs2 returns synchronized List.
         val docIDs = createDocs(nDocs, "Create")
         assertEquals(nDocs, docIDs.size)
 
-        // concurrently creates documents
-        concurrentValidator(nThreads, 600) { threadIndex ->
-            val tag = "tag-$threadIndex"
+        // concurrently updates documents
+        concurrentValidator(nCoroutines, 600) { coroutineIndex ->
+            val tag = "tag-$coroutineIndex"
             assertTrue(updateDocs(docIDs, 50, tag))
         }
 
         val count = atomic(0)
-        for (i in 0 until nThreads) {
+        for (i in 0 until nCoroutines) {
             verifyByTagName("tag-$i") { _, _ -> count.incrementAndGet() }
         }
 
@@ -102,7 +103,7 @@ class ConcurrencyTest : BaseDbTest() {
     fun testConcurrentRead() = runBlocking {
         val kNDocs = 5
         val kNRounds = 50
-        val kNThreads = 4
+        val kNCoroutines = 4
         val kWaitInSec = 180
 
         // createDocs2 returns synchronized List.
@@ -110,7 +111,7 @@ class ConcurrencyTest : BaseDbTest() {
         assertEquals(kNDocs, docIDs.size)
 
         // concurrently creates documents
-        concurrentValidator(kNThreads, kWaitInSec) {
+        concurrentValidator(kNCoroutines, kWaitInSec) {
             readDocs(docIDs, kNRounds)
         }
     }
@@ -119,7 +120,7 @@ class ConcurrencyTest : BaseDbTest() {
     fun testConcurrentReadInBatch() = runBlocking {
         val kNDocs = 5
         val kNRounds = 50
-        val kNThreads = 4
+        val kNCoroutines = 4
         val kWaitInSec = 180
 
         // createDocs2 returns synchronized List.
@@ -127,7 +128,7 @@ class ConcurrencyTest : BaseDbTest() {
         assertEquals(kNDocs, docIDs.size)
 
         // concurrently creates documents
-        concurrentValidator(kNThreads, kWaitInSec) {
+        concurrentValidator(kNCoroutines, kWaitInSec) {
             try {
                 baseTestDb.inBatch { readDocs(docIDs, kNRounds) }
             } catch (e: CouchbaseLiteException) {
@@ -410,7 +411,8 @@ class ConcurrencyTest : BaseDbTest() {
         val mutex1 = Mutex(true)
         val mutex2 = Mutex(true)
 
-        val token = baseTestDb.addChangeListener { change -> mutex2.unlock() }
+        @Suppress("UNUSED_VARIABLE")
+        val token = baseTestDb.addChangeListener { mutex2.unlock() }
 
         testOnNewCoroutine("testBlockDatabaseChange", mutex1) {
             try {

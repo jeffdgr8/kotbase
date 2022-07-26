@@ -7,9 +7,9 @@ internal constructor(override val actual: com.couchbase.lite.FileLogger) :
     DelegatedClass<com.couchbase.lite.FileLogger>(actual), Logger {
 
     public actual var config: LogFileConfiguration?
-        get() = actual.config
+        get() = actual.config?.asLogFileConfiguration()
         set(value) {
-            actual.config = value
+            actual.config = value?.actual
         }
 
     actual override var level: LogLevel

@@ -13,8 +13,10 @@ public fun ByteArray.toNSData(): NSData = memScoped {
 }
 
 public fun NSData.toByteArray(): ByteArray = ByteArray(length.toInt()).apply {
-    usePinned {
-        memcpy(it.addressOf(0), bytes, length)
+    if (isNotEmpty()) {
+        usePinned {
+            memcpy(it.addressOf(0), bytes, length)
+        }
     }
 }
 

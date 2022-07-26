@@ -82,7 +82,6 @@ abstract class BaseTest : PlatformTest() {
     }
 
     // Prefer this method to any other way of creating a new database
-    @Throws(CouchbaseLiteException::class)
     protected fun createDb(
         name: String,
         config: DatabaseConfiguration = DatabaseConfiguration()
@@ -95,19 +94,16 @@ abstract class BaseTest : PlatformTest() {
         return db
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun duplicateDb(db: Database, config: DatabaseConfiguration? = null): Database {
         return Database(db.name, config ?: DatabaseConfiguration())
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun reopenDb(db: Database, config: DatabaseConfiguration? = null): Database {
         val dbName = db.name
         assertTrue(closeDb(db))
         return Database(dbName, config ?: DatabaseConfiguration())
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun recreateDb(db: Database, config: DatabaseConfiguration? = null): Database {
         val dbName = db.name
         assertTrue(deleteDb(db))
@@ -118,13 +114,10 @@ abstract class BaseTest : PlatformTest() {
         if (db == null) {
             return true
         }
-        return db.withLock {
-            if (!db.isOpen) {
-                true
-            } else {
-                doSafely("Close db " + db.name, db::close)
-            }
+        if (db.withLock { !db.isOpen }) {
+            return true
         }
+        return doSafely("Close db " + db.name, db::close)
     }
 
     protected fun deleteDb(db: Database?): Boolean {

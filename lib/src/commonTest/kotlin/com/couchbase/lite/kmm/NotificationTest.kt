@@ -20,7 +20,6 @@ class NotificationTest : BaseDbTest() {
     // TODO: flaky on iOS (likely an issue with not having a test main run loop)
     @IgnoreIos
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDatabaseChange() = runBlocking {
         val mutex = Mutex(true)
 
@@ -48,7 +47,6 @@ class NotificationTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDocumentChangeOnSave() = runBlocking {
         val mDocA = MutableDocument("A")
         mDocA.setValue("theanswer", 18)
@@ -77,7 +75,6 @@ class NotificationTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDocumentChangeOnUpdate() = runBlocking {
         var mDocA = MutableDocument("A")
         mDocA.setValue("theanswer", 18)
@@ -113,7 +110,6 @@ class NotificationTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDocumentChangeOnDelete() = runBlocking {
         val mDocA = MutableDocument("A")
         mDocA.setValue("theanswer", 18)
@@ -144,7 +140,6 @@ class NotificationTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testExternalChanges() = runBlocking {
         val db2 = baseTestDb.copy()
         assertNotNull(db2)
@@ -197,7 +192,6 @@ class NotificationTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddSameChangeListeners() = runBlocking {
         var doc1 = MutableDocument("doc1")
         doc1.setValue("name", "Scott")
@@ -242,7 +236,6 @@ class NotificationTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRemoveDocumentChangeListener() = runBlocking {
         var doc1 = MutableDocument("doc1")
         doc1.setValue("name", "Scott")
@@ -295,7 +288,6 @@ class NotificationTest : BaseDbTest() {
 
     // TODO: 3.1 API
 //    @Test
-//    @Throws(CouchbaseLiteException::class)
 //    fun testDatabaseChangeNotifier() {
 //        val db = createDb("default_config_db")
 //        val changeNotifier = CollectionChangeNotifier(db.getDefaultCollection())
@@ -322,7 +314,6 @@ class NotificationTest : BaseDbTest() {
 
     // TODO: 3.1 API
 //    @Test
-//    @Throws(CouchbaseLiteException::class)
 //    fun testDatabaseChangeAPI() = runBlocking {
 //        val mutex1 = Mutex(true)
 //        val dbListener = { change: DatabaseChange ->

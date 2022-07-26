@@ -9,7 +9,6 @@ abstract class BaseQueryTest : BaseDbTest() {
         fun check(n: Int, result: Result)
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun createNumberedDocInBaseTestDb(i: Int, num: Int): String {
         val doc = MutableDocument("doc$i")
         doc.setValue("number1", i)
@@ -17,12 +16,10 @@ abstract class BaseQueryTest : BaseDbTest() {
         return saveDocInBaseTestDb(doc).id
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun loadNumberedDocs(num: Int): List<Map<String, Any?>> {
         return loadNumberedDocs(1, num)
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun loadNumberedDocs(from: Int, to: Int): List<Map<String, Any?>> {
         val numbers = mutableListOf<Map<String, Any?>>()
         baseTestDb.inBatch {
@@ -35,12 +32,10 @@ abstract class BaseQueryTest : BaseDbTest() {
         return numbers
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun verifyQuery(query: Query, result: QueryResult): Int {
         return verifyQuery(query, true, result)
     }
 
-    @Throws(CouchbaseLiteException::class)
     protected fun verifyQuery(query: Query, runBoth: Boolean, result: QueryResult): Int {
         val counter1 = verifyQueryWithEnumerator(query, result)
         if (runBoth) {
@@ -50,7 +45,6 @@ abstract class BaseQueryTest : BaseDbTest() {
         return counter1
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun verifyQueryWithEnumerator(query: Query, queryResult: QueryResult): Int {
         var n = 0
         query.execute().use { rs ->
@@ -62,7 +56,6 @@ abstract class BaseQueryTest : BaseDbTest() {
         return n
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun verifyQueryWithIterable(query: Query, queryResult: QueryResult): Int {
         var n = 0
         query.execute().use { rs ->

@@ -31,7 +31,6 @@ constructor(contentType: String, content: ByteArray) {
      * @param contentType The type of content this Blob will represent
      * @param stream      The stream of data that this Blob will consume
      */
-    // TODO: https://github.com/square/okio/pull/1123
     public constructor(contentType: String, stream: Source)
 
     /**
@@ -59,7 +58,6 @@ constructor(contentType: String, content: ByteArray) {
      * Closing or deleting the database before this call completes may cause it to fail.
      * **When called on a blob created from a stream (or a file path), this method will return null!**
      */
-    // TODO: https://github.com/square/okio/pull/1123
     public val contentStream: Source?
 
     /**

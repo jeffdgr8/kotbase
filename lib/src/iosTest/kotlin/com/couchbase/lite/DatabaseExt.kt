@@ -8,20 +8,13 @@ import com.couchbase.lite.kmm.asBlob
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.udobny.kmm.DelegatedClass
 import com.udobny.kmm.ext.wrapError
-import kotlinx.cinterop.*
 import platform.Foundation.NSError
-import platform.objc.objc_sync_enter
-import platform.objc.objc_sync_exit
 
 internal actual val Database.isOpen: Boolean
-    get() = isOpen
+    get() = !actual.isClosed()
 
-internal actual fun <R> Database.withLock(action: () -> R): R {
-    objc_sync_enter(actual)
-    val result = action()
-    objc_sync_exit(actual)
-    return result
-}
+internal actual fun <R> Database.withLock(action: () -> R): R =
+    withLock(action)
 
 internal actual val Database.dbPath: String?
     get() {

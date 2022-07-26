@@ -24,7 +24,6 @@ class BlobTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEquals() {
         val content1a = BLOB_CONTENT.encodeToByteArray()
         val content1b = BLOB_CONTENT.encodeToByteArray()
@@ -65,7 +64,6 @@ class BlobTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testHashCode() {
         val content1a = BLOB_CONTENT.encodeToByteArray()
         val content1b = BLOB_CONTENT.encodeToByteArray()
@@ -106,7 +104,6 @@ class BlobTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(IOException::class, CouchbaseLiteException::class)
     fun testBlobContentBytes() {
         val blobContent = PlatformUtils.getAsset("attachment.png")!!.use { input ->
             input.buffer().readByteArray()
@@ -129,9 +126,7 @@ class BlobTest : BaseDbTest() {
         assertEquals("image/png", savedBlob.contentType)
     }
 
-    // TODO: https://github.com/square/okio/pull/1123
     @Test
-    @Throws(CouchbaseLiteException::class, IOException::class)
     fun testBlobContentStream() {
         PlatformUtils.getAsset("attachment.png")!!.use { input ->
             val blob = Blob("image/png", input)
@@ -162,7 +157,6 @@ class BlobTest : BaseDbTest() {
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1438
     @Test
-    @Throws(IOException::class, CouchbaseLiteException::class)
     fun testGetContent6MBFile() {
         val bytes = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
             input.buffer().readByteArray()
@@ -181,7 +175,6 @@ class BlobTest : BaseDbTest() {
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1611
     @Test
-    @Throws(IOException::class, CouchbaseLiteException::class)
     fun testGetNonCachedContent6MBFile() {
         val bytes = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
             input.buffer().readByteArray()
@@ -201,7 +194,6 @@ class BlobTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(IOException::class)
     fun testBlobFromFileURL() {
         try {
             val contentType = "image/png"
@@ -225,9 +217,7 @@ class BlobTest : BaseDbTest() {
         }
     }
 
-    // TODO: https://github.com/square/okio/pull/1123
     @Test
-    @Throws(IOException::class)
     fun testBlobReadByte() {
         val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
             input.buffer().readByteArray()
@@ -238,9 +228,7 @@ class BlobTest : BaseDbTest() {
         assertEquals(data[0], buffer[0])
     }
 
-    // TODO: https://github.com/square/okio/pull/1123
     @Test
-    @Throws(IOException::class)
     fun testBlobReadByteArray() {
         val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
             input.buffer().readByteArray()
@@ -250,9 +238,7 @@ class BlobTest : BaseDbTest() {
         assertContentEquals(data, blobContent)
     }
 
-    // TODO: https://github.com/square/okio/pull/1123
     @Test
-    @Throws(IOException::class)
     fun testBlobReadSkip() {
         val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
             input.buffer().readByteArray()
@@ -263,9 +249,7 @@ class BlobTest : BaseDbTest() {
         assertEquals(blobStream.readByte(), data[17])
     }
 
-    // TODO: https://github.com/square/okio/pull/1123
     @Test
-    @Throws(IOException::class, CouchbaseLiteException::class)
     fun testReadBlobStream() {
         val bytes = PlatformUtils.getAsset("attachment.png")!!.use { input ->
             input.buffer().readByteArray()
@@ -406,7 +390,6 @@ class BlobTest : BaseDbTest() {
 
     // 3.1.h
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testBlobGoneAfterCompact() {
         val blob = makeBlob()
         baseTestDb.saveBlob(blob)
@@ -421,7 +404,6 @@ class BlobTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(IOException::class, CouchbaseLiteException::class)
     fun testIsBlob() {
         PlatformUtils.getAsset("attachment.png")!!.use { input ->
             val blob = Blob("image/png", input)
@@ -441,7 +423,6 @@ class BlobTest : BaseDbTest() {
 
     // https://issues.couchbase.com/browse/CBL-2320
     @Test
-    @Throws(CouchbaseLiteException::class, IOException::class)
     fun testBlobStreamReadNotNegative() {
         val mDoc = MutableDocument("blobDoc")
         mDoc.setBlob(

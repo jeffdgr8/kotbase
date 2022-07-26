@@ -463,33 +463,32 @@ class QueryTest : BaseQueryTest() {
         assertEquals(2, numRows)
     }
 
-    // TODO: https://forums.couchbase.com/t/cblvalueindexconfiguration-and-cblfulltextindexconfiguration-missing-from-objc-framework-for-x86-64/33815
-//    @Test
-//    @Throws(CouchbaseLiteException::class)
-//    fun testFullTextIndexConfig() {
-//        loadJSONResource("sentences.json")
-//
-//        val idxConfig = FullTextIndexConfiguration("sentence", "nonesense")
-//        assertFalse(idxConfig.isIgnoringAccents())
-//        assertEquals("en", idxConfig.getLanguage())
-//
-//        idxConfig.setLanguage("en-ca").ignoreAccents(true)
-//        assertEquals("en-ca", idxConfig.getLanguage())
-//        assertTrue(idxConfig.isIgnoringAccents())
-//
-//        baseTestDb.createIndex("sentence", idxConfig)
-//
-//        val query = QueryBuilder.select(SR_DOCID, SelectResult.property("sentence"))
-//            .from(DataSource.database(baseTestDb))
-//            .where(FullTextFunction.match("sentence", "'Dummie woman'"))
-//            .orderBy(Ordering.expression(FullTextFunction.rank("sentence")).descending())
-//
-//        val numRows = verifyQuery(query) { n, result ->
-//            assertNotNull(result.getString(0))
-//            assertNotNull(result.getString(1))
-//        }
-//        assertEquals(2, numRows)
-//    }
+    @Test
+    @Throws(CouchbaseLiteException::class)
+    fun testFullTextIndexConfig() {
+        loadJSONResource("sentences.json")
+
+        val idxConfig = FullTextIndexConfiguration("sentence", "nonesense")
+        assertFalse(idxConfig.isIgnoringAccents)
+        assertEquals("en", idxConfig.language)
+
+        idxConfig.setLanguage("en-ca").ignoreAccents(true)
+        assertEquals("en-ca", idxConfig.language)
+        assertTrue(idxConfig.isIgnoringAccents)
+
+        baseTestDb.createIndex("sentence", idxConfig)
+
+        val query = QueryBuilder.select(SR_DOCID, SelectResult.property("sentence"))
+            .from(DataSource.database(baseTestDb))
+            .where(FullTextFunction.match("sentence", "'Dummie woman'"))
+            .orderBy(Ordering.expression(FullTextFunction.rank("sentence")).descending())
+
+        val numRows = verifyQuery(query) { n, result ->
+            assertNotNull(result.getString(0))
+            assertNotNull(result.getString(1))
+        }
+        assertEquals(2, numRows)
+    }
 
     // Test courtesy of Jayahari Vavachan
     @Test

@@ -14,7 +14,6 @@ abstract class BaseReplicatorTest : BaseDbTest() {
     protected var otherDB: Database? = null
 
     @BeforeTest
-    @Throws(CouchbaseLiteException::class)
     fun setUpBaseReplicatorTest() {
         otherDB = createDb("replicator_db")
         Report.log("Create other DB: $otherDB")

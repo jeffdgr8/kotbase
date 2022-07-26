@@ -10,7 +10,6 @@ import kotlin.test.*
 class DictionaryTest : BaseDbTest() {
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateDictionary() {
         val address = MutableDictionary()
         assertEquals(0, address.count)
@@ -33,7 +32,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCreateDictionaryWithMap() {
         val dict = mutableMapOf<String, Any?>(
             "street" to "1 Main street",
@@ -56,7 +54,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetValueFromNewEmptyDictionary() {
         val mDict = MutableDictionary()
 
@@ -95,7 +92,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetNestedDictionaries() {
         val doc = MutableDocument("doc1")
 
@@ -131,7 +127,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDictionaryArray() {
         val mDoc = MutableDocument("doc1")
 
@@ -180,7 +175,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testReplaceDictionary() {
         val doc = MutableDocument("doc1")
 
@@ -212,7 +206,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testReplaceDictionaryDifferentType() {
         val doc = MutableDocument("doc1")
 
@@ -239,7 +232,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRemoveDictionary() {
         var doc = MutableDocument("doc1")
         val profile1 = MutableDictionary()
@@ -269,7 +261,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEnumeratingKeys() {
         val dict = MutableDictionary()
         for (i in 0 until 20) {
@@ -342,7 +333,6 @@ class DictionaryTest : BaseDbTest() {
 
     // ??? Surprisingly, no concurrent modification exception.
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDictionaryEnumerationWithDataModification2() {
         var dict = MutableDictionary()
         for (i in 0..2) {
@@ -368,7 +358,6 @@ class DictionaryTest : BaseDbTest() {
 
     // https://github.com/couchbase/couchbase-lite-core/issues/230
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLargeLongValue() {
         var doc = MutableDocument("test")
         val num1 = 1234567L
@@ -385,7 +374,6 @@ class DictionaryTest : BaseDbTest() {
 
     //https://forums.couchbase.com/t/long-value-on-document-changed-after-saved-to-db/14259/
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLargeLongValue2() {
         var doc = MutableDocument("test")
         val num1 = 11989091L
@@ -398,7 +386,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetNull() {
         val mDoc = MutableDocument("test")
         val mDict = MutableDictionary()
@@ -431,7 +418,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEquals() {
 
         // mDict1 and mDict2 have exactly same data
@@ -559,7 +545,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testHashCode() {
 
         // mDict1 and mDict2 have exactly same data
@@ -637,7 +622,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDictionary() {
         val mNestedDict = MutableDictionary()
         mNestedDict.setValue("key1", 1L)
@@ -665,7 +649,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetArray() {
         val mNestedArray = MutableArray()
         mNestedArray.addValue(1L)
@@ -700,7 +683,6 @@ class DictionaryTest : BaseDbTest() {
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1518
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetValueWithDictionary() {
         val mDict = MutableDictionary()
         mDict.setString("hello", "world")
@@ -720,7 +702,6 @@ class DictionaryTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetValueWithArray() {
         val mArray = MutableArray()
         mArray.addString("hello")
@@ -744,7 +725,6 @@ class DictionaryTest : BaseDbTest() {
     ///////////////  JSON tests
     // JSON 3.3
     @Test
-    @Throws(CouchbaseLiteException::class, SerializationException::class)
     fun testDictToJSON() {
         val mDoc = MutableDocument().setDictionary("dict", makeDict())
         verifyDict(
@@ -764,7 +744,6 @@ class DictionaryTest : BaseDbTest() {
 
     // JSON 3.5.a-b
     @Test
-    @Throws(SerializationException::class, IOException::class, CouchbaseLiteException::class)
     fun testDictFromJSON() {
         val mDict = MutableDictionary(readJSONResource("dictionary.json"))
         val mDoc = MutableDocument().setDictionary("dict", mDict)
@@ -799,7 +778,6 @@ class DictionaryTest : BaseDbTest() {
 
     // JSON 3.6.d
     @Test
-    @Throws(IOException::class)
     fun testDictFromArray() {
         assertFailsWith<IllegalArgumentException> {
             MutableDocument("fromJSON", readJSONResource("array.json"))

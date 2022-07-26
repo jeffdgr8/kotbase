@@ -1,4 +1,4 @@
-// adapted from java.lang.AutoCloseable with Kotlin use() extension https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/use.html
+// from java.lang.AutoCloseable for use in Kotlin/Common
 package com.udobny.kmm
 
 /*
@@ -25,10 +25,6 @@ package com.udobny.kmm
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 /**
  * An object that may hold resources (such as file or socket handles)
@@ -98,50 +94,4 @@ public expect interface AutoCloseable {
      * @throws Exception if this resource cannot be closed
      */
     public fun close()
-}
-
-/**
- * Executes the given [block] function on this resource and then closes it down correctly whether an exception
- * is thrown or not.
- *
- * In case if the resource is being closed due to an exception occurred in [block], and the closing also fails with an exception,
- * the latter is added to the [suppressed][Throwable.addSuppressed] exceptions of the former.
- *
- * @param block a function to process this [AutoCloseable] resource.
- * @return the result of [block] function invoked on this resource.
- */
-@OptIn(ExperimentalContracts::class)
-public inline fun <T : AutoCloseable?, R> T.use(block: (T) -> R): R {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
-    var exception: Throwable? = null
-    try {
-        return block(this)
-    } catch (e: Throwable) {
-        exception = e
-        throw e
-    } finally {
-        this.closeFinally(exception)
-    }
-}
-
-/**
- * Closes this [AutoCloseable], suppressing possible exception or error thrown by [AutoCloseable.close] function when
- * it's being closed due to some other [cause] exception occurred.
- *
- * The suppressed exception is added to the list of suppressed exceptions of [cause] exception.
- */
-@PublishedApi
-internal fun AutoCloseable?.closeFinally(cause: Throwable?) {
-    when {
-        this == null -> {}
-        cause == null -> close()
-        else ->
-            try {
-                close()
-            } catch (closeException: Throwable) {
-                cause.addSuppressed(closeException)
-            }
-    }
 }

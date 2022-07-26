@@ -21,19 +21,27 @@ kotlin {
 
     cocoapods {
         name = project.parent!!.name
-        summary = "Couchbase Lite Kotlin Multiplatform"
         homepage = "https://udobny.com/couchbase-lite-kmm"
-        ios.deploymentTarget = "10.0"
+        authors = "Couchbase, Udobny"
+        license = "Apache License, Version 2.0"
+        summary = "Couchbase Lite for Kotlin Multiplatform"
+        ios.deploymentTarget = "9.0"
         framework {
             baseName = this@cocoapods.name.replace('-', '_')
         }
-        pod("CouchbaseLite", version = "~> 3.0.0", moduleName = "CouchbaseLite")
+        pod("CouchbaseLite") {
+            //version = "~> 3.0.0"
+            // TODO: 3.0.2 required to fix missing classes
+            //  https://forums.couchbase.com/t/cblvalueindexconfiguration-and-cblfulltextindexconfiguration-missing-from-objc-framework-for-x86-64/33815
+            // 3.0.2-SNAPSHOT
+            source = path("$rootDir/../couchbase-lite-ios")
+            moduleName = "CouchbaseLite"
+            // Workaround for 'CBLQueryMeta' is going to be declared twice https://youtrack.jetbrains.com/issue/KT-41709
+            extraOpts = listOf("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")
+        }
     }
 
     targets.withType<KotlinNativeTarget> {
-        // Workaround for 'CBLQueryMeta' is going to be declared twice https://youtrack.jetbrains.com/issue/KT-41709
-        compilations["main"].cinterops["CouchbaseLite"].extraOpts("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")
-
         // Run tests on background thread
         // TODO: main thread loop is still not available to dispatch to though
         //  https://youtrack.jetbrains.com/issue/KT-53129
@@ -64,6 +72,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("com.couchbase.lite:couchbase-lite-android-ktx:3.0.0")
+                //implementation("com.couchbase.lite:couchbase-lite-android-ktx:3.1.0-SNAPSHOT")
                 //implementation(fileTree("libs/couchbase-lite"))
             }
         }
@@ -108,7 +117,7 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
         // TODO: init constructor can't be added to .def with an ObjC category
         //  https://youtrack.jetbrains.com/issue/KT-53285
-        //  workaround functions:
+        //  workaround function:
         //  static inline CBLDocument* getCBLDocument(CBLDatabase* database, NSString* documentID)
 
         // TODO: remove above --- pending https://github.com/JetBrains/kotlin/pull/4894 in Kotlin 1.8
@@ -187,7 +196,7 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
             }
 
             @interface CBLDatabase ()
-            - (BOOL) isClosedLocked;
+            - (BOOL) isClosed;
             @end
 
             @interface CBLQueryExpression ()

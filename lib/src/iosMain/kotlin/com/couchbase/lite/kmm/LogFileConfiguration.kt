@@ -10,21 +10,13 @@ internal constructor(actual: CBLLogFileConfiguration) :
 
     public actual constructor(directory: String) : this(CBLLogFileConfiguration(directory))
 
-    public actual constructor(config: LogFileConfiguration) : this(
-        CBLLogFileConfiguration(config.getDirectory())
-    ) {
-        config.let {
-            setMaxRotateCount(it.getMaxRotateCount())
-            setMaxSize(it.getMaxSize())
-            setUsePlaintext(it.usesPlaintext())
-        }
-    }
+    public actual constructor(config: LogFileConfiguration) : this(config.directory, config)
 
     public actual constructor(directory: String, config: LogFileConfiguration?) : this(directory) {
         config?.let {
-            setMaxRotateCount(it.getMaxRotateCount())
-            setMaxSize(it.getMaxSize())
-            setUsePlaintext(it.usesPlaintext())
+            setMaxRotateCount(it.maxRotateCount)
+            setMaxSize(it.maxSize)
+            setUsePlaintext(it.usesPlaintext)
         }
     }
 
@@ -32,25 +24,34 @@ internal constructor(actual: CBLLogFileConfiguration) :
         setUsePlainText(usePlaintext)
     }
 
-    public actual fun getMaxRotateCount(): Int =
-        actual.maxRotateCount.toInt()
+    public actual var maxRotateCount: Int
+        get() = actual.maxRotateCount.toInt()
+        set(value) {
+            actual.maxRotateCount = value.convert()
+        }
 
     public actual fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration = chain {
         setMaxRotateCount(maxRotateCount.convert())
     }
 
-    public actual fun getMaxSize(): Long =
-        actual.maxSize.toLong()
+    public actual var maxSize: Long
+        get() = actual.maxSize.toLong()
+        set(value) {
+            actual.maxSize = value.convert()
+        }
 
     public actual fun setMaxSize(maxSize: Long): LogFileConfiguration = chain {
         setMaxSize(maxSize.convert())
     }
 
-    public actual fun usesPlaintext(): Boolean =
-        actual.usePlainText
+    public actual var usesPlaintext: Boolean
+        get() = actual.usePlainText
+        set(value) {
+            actual.usePlainText = value
+        }
 
-    public actual fun getDirectory(): String =
-        actual.directory
+    public actual val directory: String
+        get() = actual.directory
 }
 
 internal fun CBLLogFileConfiguration.asLogFileConfiguration() = LogFileConfiguration(this)

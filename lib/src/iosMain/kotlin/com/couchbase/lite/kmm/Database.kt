@@ -1,7 +1,7 @@
 package com.couchbase.lite.kmm
 
 import cocoapods.CouchbaseLite.CBLDatabase
-import cocoapods.CouchbaseLite.isClosedLocked
+import cocoapods.CouchbaseLite.isClosed
 import com.couchbase.lite.kmm.ext.throwError
 import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
 import com.couchbase.lite.kmm.internal.testQueue
@@ -12,6 +12,8 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSError
+import platform.objc.objc_sync_enter
+import platform.objc.objc_sync_exit
 
 public actual class Database
 internal constructor(actual: CBLDatabase) :
@@ -77,15 +79,17 @@ internal constructor(actual: CBLDatabase) :
         get() = DatabaseConfiguration(actual.config)
 
     public actual fun getDocument(id: String): Document? {
-        mustBeOpen()
-        return actual.documentWithID(id)?.asDocument()
+        return mustBeOpen {
+            actual.documentWithID(id)?.asDocument()
+        }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
-        mustBeOpen()
         throwError { error ->
-            saveDocument(document.actual, error)
+            mustBeOpen {
+                saveDocument(document.actual, error)
+            }
         }
     }
 
@@ -94,10 +98,11 @@ internal constructor(actual: CBLDatabase) :
         document: MutableDocument,
         concurrencyControl: ConcurrencyControl
     ): Boolean {
-        mustBeOpen()
         return try {
             throwError { error ->
-                saveDocument(document.actual, concurrencyControl.actual, error)
+                mustBeOpen {
+                    saveDocument(document.actual, concurrencyControl.actual, error)
+                }
             }
         } catch (e: CouchbaseLiteException) {
             if (e.getCode() == CBLError.Code.CONFLICT && e.getDomain() == CBLError.Domain.CBLITE) {
@@ -111,10 +116,11 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
-        mustBeOpen()
         return throwError { error ->
             try {
-                saveDocument(document.actual, conflictHandler.convert(), error)
+                mustBeOpen {
+                    saveDocument(document.actual, conflictHandler.convert(), error)
+                }
             } catch (e: Exception) {
                 throw CouchbaseLiteException(
                     "Conflict handler threw an exception",
@@ -128,18 +134,20 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
-        mustBeOpen()
         throwError { error ->
-            deleteDocument(document.actual, error)
+            mustBeOpen {
+                deleteDocument(document.actual, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
-        mustBeOpen()
         return try {
             throwError { error ->
-                deleteDocument(document.actual, concurrencyControl.actual, error)
+                mustBeOpen {
+                    deleteDocument(document.actual, concurrencyControl.actual, error)
+                }
             }
         } catch (e: CouchbaseLiteException) {
             if (e.getCode() == CBLError.Code.CONFLICT && e.getDomain() == CBLError.Domain.CBLITE) {
@@ -153,10 +161,11 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
-        mustBeOpen()
         try {
             throwError { error ->
-                purgeDocument(document.actual, error)
+                mustBeOpen {
+                    purgeDocument(document.actual, error)
+                }
             }
         } catch (e: CouchbaseLiteException) {
             // Java SDK ignores not found error, except for new document
@@ -169,41 +178,46 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
-        mustBeOpen()
         throwError { error ->
-            purgeDocumentWithID(id, error)
+            mustBeOpen {
+                purgeDocumentWithID(id, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
-        mustBeOpen()
         throwError { error ->
-            setDocumentExpirationWithID(id, expiration?.toNSDate(), error)
+            mustBeOpen {
+                setDocumentExpirationWithID(id, expiration?.toNSDate(), error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocumentExpiration(id: String): Instant? {
-        mustBeOpen()
-        return actual.getDocumentExpirationWithID(id)?.toKotlinInstant()
+        return mustBeOpen {
+            actual.getDocumentExpirationWithID(id)?.toKotlinInstant()
+        }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun inBatch(work: () -> Unit) {
-        mustBeOpen()
         throwError { error ->
-            inBatch(error, work)
+            mustBeOpen {
+                inBatch(error, work)
+            }
         }
     }
 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {
-        mustBeOpen()
         return DelegatedListenerToken(
-            if (useTestQueue) {
-                actual.addChangeListenerWithQueue(testQueue, listener.convert())
-            } else {
-                actual.addChangeListener(listener.convert())
+            mustBeOpen {
+                if (useTestQueue) {
+                    actual.addChangeListenerWithQueue(testQueue, listener.convert())
+                } else {
+                    actual.addChangeListener(listener.convert())
+                }
             }
         )
     }
@@ -216,12 +230,13 @@ internal constructor(actual: CBLDatabase) :
         id: String,
         listener: DocumentChangeListener
     ): ListenerToken {
-        mustBeOpen()
         return DelegatedListenerToken(
-            if (useTestQueue) {
-                actual.addDocumentChangeListenerWithID(id, testQueue, listener.convert())
-            } else {
-                actual.addDocumentChangeListenerWithID(id, listener.convert())
+            mustBeOpen {
+                if (useTestQueue) {
+                    actual.addDocumentChangeListenerWithID(id, testQueue, listener.convert())
+                } else {
+                    actual.addDocumentChangeListenerWithID(id, listener.convert())
+                }
             }
         )
     }
@@ -235,17 +250,19 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete() {
-        mustBeOpen()
         throwError { error ->
-            delete(error)
+            mustBeOpen {
+                delete(error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createQuery(query: String): Query {
-        mustBeOpen()
         val actualQuery = throwError { error ->
-            createQuery(query, error)
+            mustBeOpen {
+                createQuery(query, error)
+            }
         }
         return DelegatedQuery(actualQuery!!)
     }
@@ -253,48 +270,67 @@ internal constructor(actual: CBLDatabase) :
     @Suppress("UNCHECKED_CAST")
     @Throws(CouchbaseLiteException::class)
     public actual fun getIndexes(): List<String> {
-        mustBeOpen()
-        return actual.indexes as List<String>
+        return mustBeOpen {
+            actual.indexes as List<String>
+        }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
-        mustBeOpen()
         throwError { error ->
-            createIndex(index.actual, name, error)
+            mustBeOpen {
+                createIndex(index.actual, name, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
-        mustBeOpen()
         throwError { error ->
-            createIndexWithConfig(config.actual, name, error)
+            mustBeOpen {
+                createIndexWithConfig(config.actual, name, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {
-        mustBeOpen()
         throwError { error ->
-            deleteIndexForName(name, error)
+            mustBeOpen {
+                deleteIndexForName(name, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun performMaintenance(type: MaintenanceType): Boolean {
-        mustBeOpen()
         return throwError { error ->
-            performMaintenance(type.actual, error)
+            mustBeOpen {
+                performMaintenance(type.actual, error)
+            }
         }
     }
 
-    private fun mustBeOpen() {
-        if (actual.isClosedLocked()) {
-            throw IllegalStateException("Attempt to perform an operation on a closed database.")
+    internal fun mustBeOpen() {
+        mustBeOpen { }
+    }
+
+    internal inline fun <R> withLock(action: () -> R): R {
+        // TODO: uses _mutex instead of self as lock in 3.1, use - (id) mutex
+        objc_sync_enter(actual)
+        return try {
+            action()
+        } finally {
+            objc_sync_exit(actual)
         }
     }
 
-    internal val isOpen: Boolean
-        get() = !actual.isClosedLocked()
+    private fun <R> mustBeOpen(action: () -> R): R {
+        return withLock {
+            if (actual.isClosed()) {
+                throw IllegalStateException("Attempt to perform an operation on a closed database.")
+            }
+            action()
+        }
+    }
 }

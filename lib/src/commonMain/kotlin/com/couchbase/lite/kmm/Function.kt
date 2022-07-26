@@ -22,9 +22,7 @@ public expect object Function {
      * @param operand The expression.
      * @return The COUNT(expr) function.
      */
-    // TODO: should be nullable (pending iOS as well)
-    //  https://forums.couchbase.com/t/function-count-docs-api-clarification/33876
-    public fun count(operand: Expression): Expression
+    public fun count(operand: Expression?): Expression
 
     /**
      * Creates a MIN(expr) function expression that returns the minimum value
