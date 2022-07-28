@@ -39,8 +39,10 @@ internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? {
 }
 
 internal actual fun Database.getC4Document(id: String): C4Document {
-    val doc = getCBLDocument(actual, id)!!
-    return C4Document(doc.c4Doc!!)
+    val doc = wrapError(NSError::toCouchbaseLiteException) { error ->
+        CBLDocument.create(actual, id, true, error)
+    }
+    return C4Document(doc?.c4Doc!!)
 }
 
 internal actual class C4Document(actual: CBLC4Document) : DelegatedClass<CBLC4Document>(actual) {

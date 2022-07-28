@@ -10,12 +10,12 @@ object PlatformUtils {
         DELEGATE.gc()
     }
 
-    fun getAsset(asset: String?): Source? {
+    fun getAsset(asset: String): Source? {
         return DELEGATE.getAsset(asset)
     }
 
     internal interface Delegate {
         fun gc()
-        fun getAsset(asset: String?): Source?
+        fun getAsset(asset: String): Source?
     }
 }

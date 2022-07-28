@@ -58,7 +58,7 @@
 //    @Test
 //    fun testDocumentReplication() {
 //        val isPush = true
-//        val docs: List<ReplicatedDocument> = java.util.ArrayList<ReplicatedDocument>()
+//        val docs = mutableListOf<ReplicatedDocument>()
 //        val doc: DocumentReplication = DocumentReplication(baseTestReplicator, isPush, docs)
 //        assertEquals(doc.isPush, isPush)
 //        assertEquals(doc.replicator, baseTestReplicator)

@@ -12,10 +12,7 @@ actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
         System.gc()
     }
 
-    override fun getAsset(asset: String?): Source? {
-        if (asset == null) {
-            return null
-        }
+    override fun getAsset(asset: String): Source? {
         return try {
             getApplicationContext<Context>().assets.open(asset).source()
         } catch (e: IOException) {

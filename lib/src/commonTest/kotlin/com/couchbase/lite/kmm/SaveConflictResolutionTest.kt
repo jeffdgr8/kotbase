@@ -9,7 +9,7 @@ import kotlin.test.*
 private const val docID = "doc1"
 
 // These tests are largely translations of Jay Vavachan's Obj-C tests
-class SaveConflictResolutionTests : BaseDbTest() {
+class SaveConflictResolutionTest : BaseDbTest() {
 
     /**
      * 1. Test conflict handler that just returns true without modifying the document.

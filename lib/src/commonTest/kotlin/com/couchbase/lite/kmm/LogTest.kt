@@ -467,8 +467,9 @@
 //    fun testLogStandardErrorWithFormatting() {
 //        val nl = System.lineSeparator()
 //
-//        val stdErr: MutableMap<String, String> = HashMap()
-//        stdErr["FOO"] = "$$\$TEST DEBUG %2\$s %1\$d %3$.2f"
+//        val stdErr = mapOf(
+//            "FOO" to "$$\$TEST DEBUG %2\$s %1\$d %3$.2f"
+//        )
 //
 //        Log.initLogging(stdErr)
 //        val logger = SingleLineLogger("$$\$TEST DEBUG")
@@ -486,16 +487,18 @@
 //
 //    @Test
 //    fun testLookupStandardMessage() {
-//        val stdErr: MutableMap<String, String> = HashMap()
-//        stdErr["FOO"] = "$$\$TEST DEBUG"
+//        val stdErr = mapOf(
+//            "FOO" to "$$\$TEST DEBUG"
+//        )
 //        Log.initLogging(stdErr)
 //        assertEquals("$$\$TEST DEBUG", Log.lookupStandardMessage("FOO"))
 //    }
 //
 //    @Test
 //    fun testFormatStandardMessage() {
-//        val stdErr: MutableMap<String, String> = HashMap()
-//        stdErr["FOO"] = "$$\$TEST DEBUG %2\$s %1\$d %3$.2f"
+//        val stdErr = mapOf(
+//            "FOO" to "$$\$TEST DEBUG %2\$s %1\$d %3$.2f"
+//        )
 //        Log.initLogging(stdErr)
 //        assertEquals("$$\$TEST DEBUG arg 1 3.00", Log.formatStandardMessage("FOO", 1, "arg", 3.0f))
 //    }

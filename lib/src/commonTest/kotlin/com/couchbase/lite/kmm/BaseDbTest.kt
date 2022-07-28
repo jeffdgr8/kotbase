@@ -139,7 +139,7 @@ abstract class BaseDbTest : BaseTest() {
     }
 
     // file is one JSON object per line
-    protected fun loadJSONResource(name: String?) {
+    protected fun loadJSONResource(name: String) {
         PlatformUtils.getAsset(name)?.use { fileSource ->
             fileSource.buffer().use { bufferedFileSource ->
                 var n = 1
@@ -156,7 +156,7 @@ abstract class BaseDbTest : BaseTest() {
         }
     }
 
-    protected fun readJSONResource(name: String?): String {
+    protected fun readJSONResource(name: String): String {
         val buf = StringBuilder()
         PlatformUtils.getAsset(name)?.use { fileSource ->
             fileSource.buffer().use { bufferedFileSource ->

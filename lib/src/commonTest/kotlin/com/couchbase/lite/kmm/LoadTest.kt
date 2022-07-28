@@ -132,7 +132,7 @@ class LoadTest : BaseDbTest() {
     fun testUpdate2() {
         timeTest("testUpdate2", 25 * 1000L) {
             val mDoc = MutableDocument("doc1")
-            val map: MutableMap<String, Any> = HashMap()
+            val map = mutableMapOf<String, Any?>()
             map["ID"] = "doc1"
             mDoc.setValue("map", map)
             saveDocInBaseTestDb(mDoc)

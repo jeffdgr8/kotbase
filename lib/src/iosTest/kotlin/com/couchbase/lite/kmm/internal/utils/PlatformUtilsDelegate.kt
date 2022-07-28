@@ -11,8 +11,7 @@ actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
         GC.collect()
     }
 
-    override fun getAsset(asset: String?): Source? {
-        asset ?: return null
+    override fun getAsset(asset: String): Source? {
         val dotIndex = asset.lastIndexOf('.')
         val filePath = asset.substring(0, dotIndex)
         val ext = asset.substring(dotIndex + 1)

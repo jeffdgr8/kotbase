@@ -1297,7 +1297,7 @@ class DatabaseTest : BaseDbTest() {
 
     // helper method to save n number of docs
     private fun createDocsInBaseTestDb(n: Int): List<String> {
-        val docs: MutableList<String> = ArrayList()
+        val docs = mutableListOf<String>()
         for (i in 0 until n) {
             val doc = MutableDocument("doc_${i.paddedString(3)}")
             doc.setValue("key", i)

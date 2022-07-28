@@ -11,6 +11,7 @@ plugins {
     id("com.android.library")
 }
 
+group = "com.udobny"
 version = "3.0.0"
 
 kotlin {
@@ -22,6 +23,10 @@ kotlin {
     cocoapods {
         name = project.parent!!.name
         homepage = "https://udobny.com/couchbase-lite-kmm"
+        // TODO: this isn't working
+        //  https://youtrack.jetbrains.com/issue/KT-53362
+        //  https://github.com/JetBrains/kotlin/pull/4909
+        //source = "{ :git => 'https://github.com/udobny/couchbase-lite-kmm.git', :tag => spec.version }"
         authors = "Couchbase, Jeff Lockhart"
         license = "Apache License, Version 2.0"
         summary = "Couchbase Lite for Kotlin Multiplatform"
@@ -80,7 +85,8 @@ kotlin {
             (dependsOn as MutableSet).remove(commonTest)
         }
         val androidAndroidTest by getting {
-            // doesn't work, so using a symlink
+            // TODO: doesn't work, so using a symlink
+            //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
             dependencies {
                 implementation("androidx.test:core-ktx:1.4.0")
@@ -89,6 +95,9 @@ kotlin {
         }
         val iosMain by getting
         val iosTest by getting {
+            // TODO: doesn't work, so using a copy task
+            //  https://youtrack.jetbrains.com/issue/KT-53383
+            //resources.srcDir("src/commonTest/resources")
             dependencies {
                 implementation("com.soywiz.korlibs.korio:korio:3.0.0-Beta7")
             }
@@ -110,11 +119,6 @@ android {
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
-        // TODO: init constructor can't be added to .def with an ObjC category
-        //  https://youtrack.jetbrains.com/issue/KT-53285
-        //  workaround function:
-        //  static inline CBLDocument* getCBLDocument(CBLDatabase* database, NSString* documentID)
-
         // TODO: remove above --- and append, pending
         //  https://github.com/JetBrains/kotlin/pull/4894 in Kotlin 1.8
         //outputFile.appendText("""
@@ -186,10 +190,6 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
                                         includeDeleted: (BOOL)includeDeleted
                                                  error: (NSError**)outError;
             @end
-
-            static inline CBLDocument* getCBLDocument(CBLDatabase* database, NSString* documentID) {
-                return [[CBLDocument alloc] initWithDatabase:database documentID:documentID includeDeleted:YES error:nil];
-            }
 
             @interface CBLDatabase ()
             - (BOOL) isClosed;
