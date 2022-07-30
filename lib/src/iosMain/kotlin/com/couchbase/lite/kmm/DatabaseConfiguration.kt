@@ -17,6 +17,9 @@ internal constructor(actual: CBLDatabaseConfiguration) :
         setDirectory(directory)
     }
 
-    public actual fun getDirectory(): String =
-        actual.directory
+    public actual var directory: String
+        get() = actual.directory
+        set(value) {
+            actual.directory = value
+        }
 }

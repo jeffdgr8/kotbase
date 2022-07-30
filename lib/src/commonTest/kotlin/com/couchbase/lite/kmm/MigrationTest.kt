@@ -12,7 +12,7 @@ class MigrationTest : BaseTest() {
 
     @BeforeTest
     fun setUpMigrationTest() {
-        dbDir = DatabaseConfiguration().getDirectory() + "/" + getUniqueName("migration-test-dir")
+        dbDir = DatabaseConfiguration().directory + "/" + getUniqueName("migration-test-dir")
     }
 
     @AfterTest

@@ -89,7 +89,7 @@ abstract class BaseTest : PlatformTest() {
         config: DatabaseConfiguration = DatabaseConfiguration()
     ): Database {
         val dbName = getUniqueName(name)
-        val dbDir = "${config.getDirectory()}/$dbName$DB_EXTENSION"
+        val dbDir = "${config.directory}/$dbName$DB_EXTENSION"
         assertFalse(FileUtils.dirExists(dbDir))
         val db = Database(dbName, config)
         assertTrue(FileUtils.dirExists(dbDir))

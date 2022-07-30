@@ -20,11 +20,9 @@ public expect class DatabaseConfiguration(
     public fun setDirectory(directory: String): DatabaseConfiguration
 
     /**
-     * Returns the path to the directory that contains the database.
+     * The path to the directory that contains the database.
      * If this path has not been set explicitly (see: `setDirectory` below),
      * then it is the system default.
-     *
-     * @return the database directory
      */
-    public fun getDirectory(): String
+    public var directory: String
 }

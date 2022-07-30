@@ -9,14 +9,14 @@ class SimpleDatabaseTest : BaseTest() {
     fun testCreateConfiguration() {
         // Default:
         val config1 = DatabaseConfiguration()
-        assertNotNull(config1.getDirectory())
-        assertFalse(config1.getDirectory().isEmpty())
+        assertNotNull(config1.directory)
+        assertFalse(config1.directory.isEmpty())
 
         // Custom
         val config2 = DatabaseConfiguration()
         val dbDir = getScratchDirectoryPath(getUniqueName("tmp"))
         config2.setDirectory(dbDir)
-        assertEquals(dbDir, config2.getDirectory())
+        assertEquals(dbDir, config2.directory)
     }
 
     @Test
@@ -28,7 +28,7 @@ class SimpleDatabaseTest : BaseTest() {
         try {
             val newConfig = db.config
             assertNotNull(newConfig)
-            assertEquals(config.getDirectory(), newConfig.getDirectory())
+            assertEquals(config.directory, newConfig.directory)
         } finally {
             deleteDb(db)
         }
@@ -50,10 +50,10 @@ class SimpleDatabaseTest : BaseTest() {
 
     @Test
     fun testDatabaseConfigurationDefaultDirectory() {
-        val expectedPath = DatabaseConfiguration().getDirectory()
+        val expectedPath = DatabaseConfiguration().directory
 
         val config = DatabaseConfiguration()
-        assertEquals(config.getDirectory(), expectedPath)
+        assertEquals(config.directory, expectedPath)
 
         val db = createDb("default_dir_db", config)
         try {

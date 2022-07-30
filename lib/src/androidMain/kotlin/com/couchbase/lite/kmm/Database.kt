@@ -17,7 +17,7 @@ internal constructor(actual: com.couchbase.lite.Database) :
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String, config: DatabaseConfiguration) :
-            this(com.couchbase.lite.Database(name, config))
+            this(com.couchbase.lite.Database(name, config.actual))
 
     public actual companion object {
 
@@ -33,7 +33,7 @@ internal constructor(actual: com.couchbase.lite.Database) :
 
         @Throws(CouchbaseLiteException::class)
         public actual fun copy(path: String, name: String, config: DatabaseConfiguration) {
-            com.couchbase.lite.Database.copy(File(path), name, config)
+            com.couchbase.lite.Database.copy(File(path), name, config.actual)
         }
     }
 
@@ -47,7 +47,7 @@ internal constructor(actual: com.couchbase.lite.Database) :
         get() = actual.count
 
     public actual val config: DatabaseConfiguration
-        get() = actual.config
+        get() = DatabaseConfiguration(actual.config)
 
     public actual fun getDocument(id: String): Document? =
         actual.getDocument(id)?.asDocument()

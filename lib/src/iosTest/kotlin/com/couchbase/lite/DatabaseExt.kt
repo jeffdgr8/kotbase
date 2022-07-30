@@ -20,7 +20,7 @@ internal actual val Database.dbPath: String?
     get() {
         // CBLDatabase.databasePath(name, dir)
         val name = name.replace('/', ':') + DB_EXTENSION
-        val dir = config.getDirectory().dropLastWhile { it == '/' }
+        val dir = config.directory.dropLastWhile { it == '/' }
         return "$dir/$name"
     }
 

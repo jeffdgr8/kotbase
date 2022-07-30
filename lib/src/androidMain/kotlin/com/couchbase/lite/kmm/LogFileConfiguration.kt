@@ -2,7 +2,8 @@ package com.couchbase.lite.kmm
 
 import com.udobny.kmm.DelegatedClass
 
-public actual class LogFileConfiguration(actual: com.couchbase.lite.LogFileConfiguration) :
+public actual class LogFileConfiguration
+internal constructor(actual: com.couchbase.lite.LogFileConfiguration) :
     DelegatedClass<com.couchbase.lite.LogFileConfiguration>(actual) {
 
     public actual constructor(directory: String) : this(

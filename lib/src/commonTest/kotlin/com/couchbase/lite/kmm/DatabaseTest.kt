@@ -905,7 +905,7 @@ class DatabaseTest : BaseDbTest() {
         Database.copy(baseTestDb.path!!, dbName, config)
 
         // Verify:
-        assertTrue(Database.exists(dbName, config.getDirectory()))
+        assertTrue(Database.exists(dbName, config.directory))
 
         val newDb = Database(dbName, config)
         try {
@@ -1260,7 +1260,7 @@ class DatabaseTest : BaseDbTest() {
         val dbName = getUniqueName("test_db")
 
         // verify that the db directory is no longer in the misguided 2.8.0 subdirectory
-        val dbDirectory = DatabaseConfiguration().getDirectory()
+        val dbDirectory = DatabaseConfiguration().directory
         assertFalse(dbDirectory.endsWith(".couchbase"))
 
         var db: Database? = null
