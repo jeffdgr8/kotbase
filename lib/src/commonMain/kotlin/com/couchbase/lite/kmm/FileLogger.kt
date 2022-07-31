@@ -10,7 +10,6 @@ package com.couchbase.lite.kmm
  * are unlikely and the penalties very small.  "Volatile" ensures
  * the thread safety and the several races are tolerable.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class FileLogger : Logger {
 
     /**

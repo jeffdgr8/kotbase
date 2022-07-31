@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 /**
  * A From represents a FROM clause for specifying the data source of the query.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class From : Query {
 
     /**

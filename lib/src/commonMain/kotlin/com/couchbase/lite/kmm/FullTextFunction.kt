@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 /**
  * Full-text function.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect object FullTextFunction {
 
     /**

@@ -5,7 +5,6 @@ import kotlinx.datetime.Instant
 /**
  * Result represents a row of result set returned by a Query.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Result : Iterable<String> {
 
     /**

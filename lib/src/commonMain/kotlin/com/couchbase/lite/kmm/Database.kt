@@ -5,7 +5,6 @@ import kotlinx.datetime.Instant
 /**
  * A Couchbase Lite database.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Database {
 
     /**

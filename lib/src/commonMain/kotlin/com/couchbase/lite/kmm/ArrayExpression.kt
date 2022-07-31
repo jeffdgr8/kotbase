@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 /**
  * Array expression
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect object ArrayExpression {
 
     /**

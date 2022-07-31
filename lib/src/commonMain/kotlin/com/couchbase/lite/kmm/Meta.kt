@@ -4,7 +4,6 @@ package com.couchbase.lite.kmm
  * Meta is a factory class for creating the expressions that refer to
  * the metadata properties of the document.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect object Meta {
 
     /**

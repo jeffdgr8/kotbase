@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 /**
  * ReplicatorChange contains the replicator status information.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class ReplicatorChange {
 
     /**

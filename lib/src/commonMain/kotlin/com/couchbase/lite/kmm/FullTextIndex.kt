@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 /**
  * Index for Full-Text search
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class FullTextIndex : Index {
 
     /**

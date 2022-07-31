@@ -6,7 +6,6 @@ import kotlinx.datetime.Instant
  * MutableArray provides access to array data.
  * This class and its constructor are referenced by name, from native code.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class MutableArray : Array {
 
     /**

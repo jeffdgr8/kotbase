@@ -5,7 +5,6 @@ import kotlinx.datetime.Instant
 /**
  * Dictionary provides readonly access to dictionary data.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect open class Dictionary : Iterable<String> {
 
     /**

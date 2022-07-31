@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 /**
  * A Where represents the WHERE clause of the query for filtering the query result.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Where : Query {
 
     /**

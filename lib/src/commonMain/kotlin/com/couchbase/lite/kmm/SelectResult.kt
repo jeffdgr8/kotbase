@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 /**
  * SelectResult represents a single return value of the query statement.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect open class SelectResult {
 
     /**

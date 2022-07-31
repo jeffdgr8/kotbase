@@ -6,7 +6,6 @@ package com.couchbase.lite.kmm
  * The SATISFIES clause is used for specifying an expression that will be used to evaluate
  * each item in the array.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class ArrayExpressionSatisfies {
 
     /**

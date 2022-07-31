@@ -5,7 +5,6 @@ package com.couchbase.lite.kmm
  * three available logging methods:  console (logcat), file, and
  * custom.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Log {
 
     /**

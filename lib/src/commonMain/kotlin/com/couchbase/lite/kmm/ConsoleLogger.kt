@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 /**
  * A class that sends log messages to the system log, available via 'logcat' on Android.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class ConsoleLogger : Logger {
 
     /**

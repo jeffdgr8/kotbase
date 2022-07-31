@@ -6,7 +6,6 @@ package com.couchbase.lite.kmm
  * or continuous. The replicator runs asynchronously, so observe the status to
  * be notified of progress.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Replicator
 
 /**

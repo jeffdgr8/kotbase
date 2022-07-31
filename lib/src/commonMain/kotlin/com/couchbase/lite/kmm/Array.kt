@@ -5,7 +5,6 @@ import kotlinx.datetime.Instant
 /**
  * Array provides readonly access to array data.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect open class Array : Iterable<Any?> {
 
     /**

@@ -3,7 +3,6 @@ package com.couchbase.lite.kmm
 /**
  * Value Index Item
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class ValueIndexItem {
 
     public companion object {

@@ -5,7 +5,6 @@ import kotlinx.datetime.Instant
 /**
  * Dictionary provides access to dictionary data.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class MutableDictionary : Dictionary {
 
     /**

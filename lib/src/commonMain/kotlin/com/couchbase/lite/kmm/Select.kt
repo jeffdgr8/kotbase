@@ -4,7 +4,6 @@ package com.couchbase.lite.kmm
  * Select represents the SELECT clause of the query for specifying the returning properties in each
  * query result row.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class Select : Query {
 
     /**

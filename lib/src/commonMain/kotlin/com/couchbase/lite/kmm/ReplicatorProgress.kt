@@ -4,7 +4,6 @@ package com.couchbase.lite.kmm
  * Progress of a replicator. If `total` is zero, the progress is indeterminate; otherwise,
  * dividing the two will produce a fraction that can be used to draw a progress bar.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class ReplicatorProgress {
 
     /**

@@ -5,7 +5,6 @@ import kotlinx.datetime.Instant
 /**
  * The expression used in constructing a query.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect open class Expression {
 
     public companion object {

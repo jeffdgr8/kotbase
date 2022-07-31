@@ -4,7 +4,6 @@ package com.couchbase.lite.kmm
  * SessionAuthenticator class is an authenticator that will authenticate by using the session ID of
  * the session created by a Sync Gateway
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class SessionAuthenticator
 
 /**

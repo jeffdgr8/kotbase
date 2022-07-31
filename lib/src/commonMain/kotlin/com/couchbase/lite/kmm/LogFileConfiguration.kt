@@ -6,7 +6,6 @@ package com.couchbase.lite.kmm
  * configuration object is set on the logger.  Attempting to modify an in-use
  * configuration object will result in an exception being thrown.
  */
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 public expect class LogFileConfiguration {
 
     /**
