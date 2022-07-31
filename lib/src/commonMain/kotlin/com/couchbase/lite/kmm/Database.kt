@@ -208,7 +208,7 @@ public expect class Database {
      * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
      */
     @Throws(CouchbaseLiteException::class)
-    public fun inBatch(work: () -> Unit)
+    public fun <R> inBatch(work: Database.() -> R): R
 
     /**
      * Adds a change listener for the changes that occur in the database. The changes will be delivered on the UI

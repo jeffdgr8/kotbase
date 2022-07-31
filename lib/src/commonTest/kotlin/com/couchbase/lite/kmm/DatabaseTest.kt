@@ -551,7 +551,7 @@ class DatabaseTest : BaseDbTest() {
     fun testCloseThenCallInBatch() {
         assertFailsWith<IllegalStateException> {
             baseTestDb.close()
-            baseTestDb.inBatch(::fail)
+            baseTestDb.inBatch { fail() }
         }
     }
 
@@ -658,7 +658,7 @@ class DatabaseTest : BaseDbTest() {
     fun testDeleteThenCallInBatch() {
         assertFailsWith<IllegalStateException> {
             baseTestDb.delete()
-            baseTestDb.inBatch(::fail)
+            baseTestDb.inBatch { fail() }
         }
     }
 

@@ -200,12 +200,16 @@ internal constructor(actual: CBLDatabase) :
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun inBatch(work: () -> Unit) {
-        throwError { error ->
+    public actual fun <R> inBatch(work: Database.() -> R): R {
+        return throwError { error ->
             mustBeOpen {
-                inBatch(error, work)
+                var result: R? = null
+                inBatch(error) {
+                    result = this@Database.work()
+                }
+                result
             }
-        }
+        }!!
     }
 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {

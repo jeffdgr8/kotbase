@@ -97,8 +97,12 @@ internal constructor(actual: com.couchbase.lite.Database) :
         actual.getDocumentExpiration(id)?.toKotlinInstant()
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun inBatch(work: () -> Unit) {
-        actual.inBatch(UnitOfWork { work() })
+    public actual fun <R> inBatch(work: Database.() -> R): R {
+        var result: R? = null
+        actual.inBatch(UnitOfWork {
+            result = this.work()
+        })
+        return result!!
     }
 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken =
