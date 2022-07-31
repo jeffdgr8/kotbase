@@ -6,5 +6,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "CouchbaseLite-KMM"
+rootProject.name = "couchbase-lite-kmm-parent"
 include(":lib")
+project(":lib").name = "couchbase-lite-kmm"

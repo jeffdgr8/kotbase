@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'CouchbaseLite-KMM'
-    spec.version                  = '3.0.0'
-    spec.homepage                 = 'https://udobny.com/couchbase-lite-kmm'
+    spec.version                  = '3.0.2-SNAPSHOT'
+    spec.homepage                 = 'https://github.com/udobny/couchbase-lite-kmm'
     spec.source                   = { :http=> ''}
     spec.authors                  = 'Couchbase, Jeff Lockhart'
     spec.license                  = 'Apache License, Version 2.0'
@@ -12,7 +12,7 @@ Pod::Spec.new do |spec|
     spec.dependency 'CouchbaseLite'
                 
     spec.pod_target_xcconfig = {
-        'KOTLIN_PROJECT_PATH' => ':lib',
+        'KOTLIN_PROJECT_PATH' => ':couchbase-lite-kmm',
         'PRODUCT_MODULE_NAME' => 'CouchbaseLite_KMM',
     }
                 

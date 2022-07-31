@@ -9,20 +9,25 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
+    id("maven-publish")
 }
 
+val cblVersion = "3.0.2-SNAPSHOT"
+
 group = "com.udobny"
-version = "3.0.0"
+version = cblVersion
 
 kotlin {
     explicitApiWarning()
 
-    android()
+    android {
+        publishLibraryVariants("release")
+    }
     ios()
 
     cocoapods {
-        name = project.parent!!.name
-        homepage = "https://udobny.com/couchbase-lite-kmm"
+        name = "CouchbaseLite-KMM"
+        homepage = "https://github.com/udobny/couchbase-lite-kmm"
         // TODO: this isn't working
         //  https://youtrack.jetbrains.com/issue/KT-53362
         //  https://github.com/JetBrains/kotlin/pull/4909
@@ -35,7 +40,7 @@ kotlin {
             baseName = this@cocoapods.name.replace('-', '_')
         }
         pod("CouchbaseLite") {
-            //version = "~> 3.0.0"
+            //version = cblVersion
             // TODO: 3.0.2 required to fix missing classes
             //  https://forums.couchbase.com/t/cblvalueindexconfiguration-and-cblfulltextindexconfiguration-missing-from-objc-framework-for-x86-64/33815
             // 3.0.2-SNAPSHOT
@@ -75,10 +80,10 @@ kotlin {
             dependencies {
                 // TODO: 3.0.2 required for public IndexConfiguration
                 //  https://forums.couchbase.com/t/can-indexconfiguration-be-made-public/33772
-                //implementation("com.couchbase.lite:couchbase-lite-android:3.0.0")
-                implementation("com.couchbase.lite:couchbase-lite-android:3.0.2-SNAPSHOT")
-                //implementation("com.couchbase.lite:couchbase-lite-android:3.1.0-SNAPSHOT")
-                //implementation(fileTree("libs/couchbase-lite"))
+                //api("com.couchbase.lite:couchbase-lite-android:$cblVersion")
+                api("com.couchbase.lite:couchbase-lite-android:3.0.2-SNAPSHOT")
+                //api("com.couchbase.lite:couchbase-lite-android:3.1.0-SNAPSHOT")
+                //api(fileTree("libs/couchbase-lite"))
             }
         }
         val androidTest by getting {
