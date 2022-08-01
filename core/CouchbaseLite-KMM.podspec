@@ -12,7 +12,7 @@ Pod::Spec.new do |spec|
     spec.dependency 'CouchbaseLite'
                 
     spec.pod_target_xcconfig = {
-        'KOTLIN_PROJECT_PATH' => ':couchbase-lite-kmm',
+        'KOTLIN_PROJECT_PATH' => ':core',
         'PRODUCT_MODULE_NAME' => 'CouchbaseLite_KMM',
     }
                 

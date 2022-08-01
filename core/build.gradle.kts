@@ -12,9 +12,9 @@ plugins {
     id("maven-publish")
 }
 
-val cblVersion = "3.0.2-SNAPSHOT"
+val cblVersion = project.property("CBL_VERSION") as String
 
-group = "com.udobny"
+group = project.property("GROUP") as String
 version = cblVersion
 
 kotlin {
@@ -46,13 +46,14 @@ kotlin {
             // 3.0.2-SNAPSHOT
             source = path("$rootDir/../couchbase-lite-ios")
             moduleName = "CouchbaseLite"
-            // Workaround for 'CBLQueryMeta' is going to be declared twice https://youtrack.jetbrains.com/issue/KT-41709
+            // Workaround for 'CBLQueryMeta' is going to be declared twice
+            // https://youtrack.jetbrains.com/issue/KT-41709
             extraOpts = listOf("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")
         }
     }
 
     targets.withType<KotlinNativeTarget> {
-        // Run tests on background thread with main run loop
+        // Run iOS tests on background thread with main run loop
         compilations["test"].kotlinOptions {
             freeCompilerArgs += listOf("-e", "com.udobny.kmm.test.mainBackground")
         }
