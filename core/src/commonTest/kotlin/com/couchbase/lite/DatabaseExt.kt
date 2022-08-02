@@ -1,7 +1,7 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmm.Blob
-import com.couchbase.lite.kmm.Database
+import com.couchbase.lite.kmp.Blob
+import com.couchbase.lite.kmp.Database
 
 internal expect val Database.isOpen: Boolean
 

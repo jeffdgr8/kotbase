@@ -1,0 +1,22 @@
+package com.couchbase.lite.kmp.internal.utils
+
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import okio.IOException
+import okio.Source
+import okio.source
+
+actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
+
+    override fun gc() {
+        System.gc()
+    }
+
+    override fun getAsset(asset: String): Source? {
+        return try {
+            getApplicationContext<Context>().assets.open(asset).source()
+        } catch (e: IOException) {
+            null
+        }
+    }
+}

@@ -19,8 +19,8 @@ kotlin {
     ios()
 
     cocoapods {
-        name = "CouchbaseLite-KMM-MOLO17-ktx"
-        homepage = "https://github.com/udobny/couchbase-lite-kmm"
+        name = "CouchbaseLite-KMP-MOLO17-ktx"
+        homepage = "https://github.com/udobny/couchbase-lite-kmp"
         authors = "Couchbase, MOLO17, Jeff Lockhart"
         license = "Apache License, Version 2.0"
         summary = "Couchbase Lite for Kotlin Multiplatform with Kotlin Extensions"
@@ -73,7 +73,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.udobny.kmm.couchbase.lite.molo17ktx"
+    namespace = "com.udobny.kmp.couchbase.lite.molo17ktx"
     compileSdk = 33
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {

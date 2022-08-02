@@ -2,10 +2,10 @@
 
 package com.couchbase.lite
 
-import com.couchbase.lite.kmm.Blob
-import com.couchbase.lite.kmm.Database
-import com.couchbase.lite.kmm.asBlob
-import com.udobny.kmm.DelegatedClass
+import com.couchbase.lite.kmp.Blob
+import com.couchbase.lite.kmp.Database
+import com.couchbase.lite.kmp.asBlob
+import com.udobny.kmp.DelegatedClass
 
 internal actual val Database.isOpen: Boolean
     get() = actual.isOpen

@@ -1,13 +1,13 @@
 package com.couchbase.lite
 
 import cocoapods.CouchbaseLite.*
-import com.couchbase.lite.kmm.BaseTest.Companion.DB_EXTENSION
-import com.couchbase.lite.kmm.Blob
-import com.couchbase.lite.kmm.Database
-import com.couchbase.lite.kmm.asBlob
-import com.couchbase.lite.kmm.ext.toCouchbaseLiteException
-import com.udobny.kmm.DelegatedClass
-import com.udobny.kmm.ext.wrapError
+import com.couchbase.lite.kmp.BaseTest.Companion.DB_EXTENSION
+import com.couchbase.lite.kmp.Blob
+import com.couchbase.lite.kmp.Database
+import com.couchbase.lite.kmp.asBlob
+import com.couchbase.lite.kmp.ext.toCouchbaseLiteException
+import com.udobny.kmp.DelegatedClass
+import com.udobny.kmp.ext.wrapError
 import platform.Foundation.NSError
 
 internal actual val Database.isOpen: Boolean

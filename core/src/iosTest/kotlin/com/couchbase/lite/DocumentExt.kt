@@ -3,9 +3,9 @@ package com.couchbase.lite
 import cocoapods.CouchbaseLite.c4Doc
 import cocoapods.CouchbaseLite.generation
 import cocoapods.CouchbaseLite.kDocExists
-import com.couchbase.lite.kmm.Dictionary
-import com.couchbase.lite.kmm.Document
-import com.couchbase.lite.kmm.MutableDictionary
+import com.couchbase.lite.kmp.Dictionary
+import com.couchbase.lite.kmp.Document
+import com.couchbase.lite.kmp.MutableDictionary
 import kotlinx.cinterop.*
 
 @Suppress("UNCHECKED_CAST")

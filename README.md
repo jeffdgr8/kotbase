@@ -1,1 +1,1 @@
-# couchbase-lite-kmm
+# couchbase-lite-kmp

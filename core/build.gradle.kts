@@ -26,12 +26,12 @@ kotlin {
     ios()
 
     cocoapods {
-        name = "CouchbaseLite-KMM"
-        homepage = "https://github.com/udobny/couchbase-lite-kmm"
+        name = "CouchbaseLite-KMP"
+        homepage = "https://github.com/udobny/couchbase-lite-kmp"
         // TODO: this isn't working
         //  https://youtrack.jetbrains.com/issue/KT-53362
         //  https://github.com/JetBrains/kotlin/pull/4909
-        //source = "{ :git => 'https://github.com/udobny/couchbase-lite-kmm.git', :tag => spec.version }"
+        //source = "{ :git => 'https://github.com/udobny/couchbase-lite-kmp.git', :tag => spec.version }"
         authors = "Couchbase, Jeff Lockhart"
         license = "Apache License, Version 2.0"
         summary = "Couchbase Lite for Kotlin Multiplatform"
@@ -55,7 +55,7 @@ kotlin {
     targets.withType<KotlinNativeTarget> {
         // Run iOS tests on background thread with main run loop
         compilations["test"].kotlinOptions {
-            freeCompilerArgs += listOf("-e", "com.udobny.kmm.test.mainBackground")
+            freeCompilerArgs += listOf("-e", "com.udobny.kmp.test.mainBackground")
         }
     }
 
@@ -112,7 +112,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.udobny.kmm.couchbase.lite"
+    namespace = "com.udobny.kmp.couchbase.lite"
     compileSdk = 33
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
