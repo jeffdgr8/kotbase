@@ -1,7 +1,6 @@
 package com.couchbase.lite.kmm.internal.utils
 
 import com.couchbase.lite.kmm.LogLevel
-import dev.simplx.KotlinFormatter
 
 object Report {
 
