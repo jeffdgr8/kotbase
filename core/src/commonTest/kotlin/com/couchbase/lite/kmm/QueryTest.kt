@@ -2848,7 +2848,7 @@ class QueryTest : BaseQueryTest() {
         val offset = TimeZone.currentSystemDefault()
             .offsetAt(Instant.fromEpochMilliseconds(499132800000L))
             .totalSeconds * 1000
-        Report.log("Local offset: %d", offset)
+        Report.log("Local offset: $offset")
         val expectedLocal = mutableListOf<Number>()
         expectedLocal.add(499132800000L - offset)
         var first = true

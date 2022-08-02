@@ -31,7 +31,7 @@ class TestReplicatorChangeListener : ReplicatorChangeListener {
         val status = change.status
         val error = status.error
         val state = status.activityLevel
-        Report.log(error, "Test replicator state change: $state")
+        Report.log("Test replicator state change: $state", error)
 
         this.error = error
 

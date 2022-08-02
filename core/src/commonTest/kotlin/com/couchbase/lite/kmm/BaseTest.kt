@@ -40,10 +40,7 @@ abstract class BaseTest : PlatformTest() {
 
     @AfterTest
     fun tearDownBaseTest() {
-        Report.log(
-            "<<<<<<<< Test completed(%s)",
-            formatInterval(Clock.System.now() - startTime)
-        )
+        Report.log("<<<<<<<< Test completed(${formatInterval(Clock.System.now() - startTime)})")
     }
 
     protected fun getUniqueName(prefix: String): String {

@@ -87,7 +87,7 @@ abstract class BaseReplicatorTest : BaseDbTest() {
         }
 
         val err = listener.error
-        Report.log(err, "Test replicator finished: $success")
+        Report.log("Test replicator finished: $success", err)
 
         if (expectedErrorCode == 0 && expectedErrorDomain == null) {
             if (err != null) {

@@ -112,7 +112,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.udobny.couchbase.lite.kmm"
+    namespace = "com.udobny.kmm.couchbase.lite"
     compileSdk = 33
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
