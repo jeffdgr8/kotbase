@@ -24,13 +24,9 @@
 package com.molo17.couchbase.lite.kmm
 
 import com.couchbase.lite.kmm.Query
-import com.couchbase.lite.kmm.QueryChange
 import com.couchbase.lite.kmm.ResultSet
 import com.couchbase.lite.kmm.queryChangeFlow
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 

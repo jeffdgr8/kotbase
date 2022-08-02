@@ -18,7 +18,7 @@
  * Modified by Jeff Lockhart
  *
  * - Use com.couchbase.lite.kmm package for couchbase-lite-kmm Kotlin Multiplatform bindings
- * - Switch from Mockito to MockK
+ * - Switch from Mockito to MockK for better Kotlin+Android support (can't mock Kotlin/Native yet)
  */
 
 package com.molo17.couchbase.lite.kmm

@@ -26,7 +26,7 @@ import com.couchbase.lite.kmm.DocumentReplication
 import com.couchbase.lite.kmm.Replicator
 import com.couchbase.lite.kmm.ReplicatorChange
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
+import com.udobny.kmm.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 

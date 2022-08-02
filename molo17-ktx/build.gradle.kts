@@ -13,7 +13,9 @@ group = project.property("GROUP") as String
 version = cblVersion
 
 kotlin {
-    android()
+    android {
+        publishLibraryVariants("release")
+    }
     ios()
 
     cocoapods {
@@ -42,7 +44,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                compileOnly(project(":core"))
+                implementation(project(":core"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
         }
         val commonTest by getting {
@@ -53,7 +56,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                compileOnly("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+                implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
             }
         }
         val androidTest by getting {
