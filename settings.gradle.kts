@@ -8,4 +8,4 @@ pluginManagement {
 
 rootProject.name = "couchbase-lite-kmp"
 include(":core")
-include(":molo17-ktx")
+include(":ktx")
