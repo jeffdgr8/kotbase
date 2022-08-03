@@ -1,5 +1,3 @@
-@file:JvmName("ReplicatorExtensionsJvm") // https://youtrack.jetbrains.com/issue/KT-21186
-
 /*
  * Copyright (c) 2020 MOLO17
  *
@@ -21,6 +19,8 @@
  *
  * - Use com.couchbase.lite.kmp package for couchbase-lite-kmp Kotlin Multiplatform bindings
  */
+
+@file:JvmName("ReplicatorExtensionsJvm") // https://youtrack.jetbrains.com/issue/KT-21186
 
 package com.molo17.couchbase.lite.kmp
 
