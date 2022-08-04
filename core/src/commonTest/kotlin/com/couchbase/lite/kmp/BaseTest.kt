@@ -161,7 +161,7 @@ abstract class BaseTest : PlatformTest() {
     companion object {
 
         const val STD_TIMEOUT_SEC = 10L
-        const val LONG_TIMEOUT_SEC = 30L
+        const val LONG_TIMEOUT_SEC = 60L
         private val SCRATCH_DIRS = mutableListOf<String>()
         const val DB_EXTENSION = ".cblite2" // C4Database.DB_EXTENSION
 

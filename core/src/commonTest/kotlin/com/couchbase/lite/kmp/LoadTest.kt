@@ -52,7 +52,7 @@ class LoadTest : BaseDbTest() {
 
     @Test
     fun testDelete() {
-        timeTest("testDelete", 15 * 1000L) {
+        timeTest("testDelete", 20 * 1000L) {
             // create & delete doc ITERATIONS times
             for (i in 0 until ITERATIONS) {
                 val docID = "doc-${i.paddedString(10)}"
@@ -85,7 +85,7 @@ class LoadTest : BaseDbTest() {
     // https://github.com/couchbase/couchbase-lite-android/issues/1447
     @Test
     fun testSaveManyDocs() {
-        timeTest("testSaveManyDocs", 15 * 1000L) {
+        timeTest("testSaveManyDocs", 20 * 1000L) {
             // Without Batch
             for (i in 0 until ITERATIONS) {
                 val doc = MutableDocument("doc-${i.paddedString(5)}")
