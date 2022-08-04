@@ -20,6 +20,68 @@ internal constructor(actual: CBLReplicatorConfiguration) :
         CBLReplicatorConfiguration(config.actual)
     )
 
+    public actual fun setAuthenticator(authenticator: Authenticator): ReplicatorConfiguration =
+        chain {
+            this@ReplicatorConfiguration.authenticator = authenticator
+        }
+
+    public actual fun setChannels(channels: List<String>?): ReplicatorConfiguration = chain {
+        this@ReplicatorConfiguration.channels = channels
+    }
+
+    public actual fun setConflictResolver(conflictResolver: ConflictResolver?): ReplicatorConfiguration =
+        chain {
+            this@ReplicatorConfiguration.conflictResolver = conflictResolver
+        }
+
+    public actual fun setContinuous(continuous: Boolean): ReplicatorConfiguration = chain {
+        this@ReplicatorConfiguration.isContinuous = continuous
+    }
+
+    public actual fun setDocumentIDs(documentIDs: List<String>?): ReplicatorConfiguration = chain {
+        this@ReplicatorConfiguration.documentIDs = documentIDs
+    }
+
+    public actual fun setHeaders(headers: Map<String, String>?): ReplicatorConfiguration = chain {
+        this@ReplicatorConfiguration.headers = headers
+    }
+
+    public actual fun setPinnedServerCertificate(pinnedCert: ByteArray?): ReplicatorConfiguration =
+        chain {
+            this@ReplicatorConfiguration.pinnedServerCertificate = pinnedCert
+        }
+
+    public actual fun setPullFilter(pullFilter: ReplicationFilter?): ReplicatorConfiguration =
+        chain {
+            this@ReplicatorConfiguration.pullFilter = pullFilter
+        }
+
+    public actual fun setPushFilter(pushFilter: ReplicationFilter?): ReplicatorConfiguration =
+        chain {
+            this@ReplicatorConfiguration.pushFilter = pushFilter
+        }
+
+    public actual fun setType(type: ReplicatorType): ReplicatorConfiguration = chain {
+        this@ReplicatorConfiguration.type = type
+    }
+
+    public actual fun setMaxAttempts(maxAttempts: Int): ReplicatorConfiguration = chain {
+        this@ReplicatorConfiguration.maxAttempts = maxAttempts
+    }
+
+    public actual fun setMaxAttemptWaitTime(maxAttemptWaitTime: Int): ReplicatorConfiguration =
+        chain {
+            this@ReplicatorConfiguration.maxAttemptWaitTime = maxAttemptWaitTime
+        }
+
+    public actual fun setHeartbeat(heartbeat: Int): ReplicatorConfiguration = chain {
+        this@ReplicatorConfiguration.heartbeat = heartbeat
+    }
+
+    public actual fun setAutoPurgeEnabled(enabled: Boolean): ReplicatorConfiguration = chain {
+        this@ReplicatorConfiguration.isAutoPurgeEnabled = enabled
+    }
+
     public actual var authenticator: Authenticator?
         get() = actual.authenticator?.toAuthenticator()
         set(value) {
@@ -44,6 +106,10 @@ internal constructor(actual: CBLReplicatorConfiguration) :
         set(value) {
             actual.continuous = value
         }
+
+    public actual val database: Database by lazy {
+        Database(actual.database)
+    }
 
     public actual var documentIDs: List<String>?
         @Suppress("UNCHECKED_CAST")
@@ -86,6 +152,10 @@ internal constructor(actual: CBLReplicatorConfiguration) :
             actual.replicatorType = value.actual
         }
 
+    public actual val target: Endpoint by lazy {
+        actual.target.asEndpoint()
+    }
+
     public actual var maxAttempts: Int
         get() = actual.maxAttempts.toInt()
         set(value) {
@@ -109,12 +179,4 @@ internal constructor(actual: CBLReplicatorConfiguration) :
         set(value) {
             actual.enableAutoPurge = value
         }
-
-    public actual val database: Database by lazy {
-        Database(actual.database)
-    }
-
-    public actual val target: Endpoint by lazy {
-        actual.target.asEndpoint()
-    }
 }
