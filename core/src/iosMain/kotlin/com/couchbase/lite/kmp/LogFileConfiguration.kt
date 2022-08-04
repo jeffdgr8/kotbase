@@ -20,38 +20,71 @@ internal constructor(actual: CBLLogFileConfiguration) :
         }
     }
 
+    internal constructor(actual: CBLLogFileConfiguration, readonly: Boolean) : this(actual) {
+        this.readonly = readonly
+    }
+
+    internal var readonly: Boolean = false
+
     public actual fun setUsePlaintext(usePlaintext: Boolean): LogFileConfiguration = chain {
+        checkReadOnly()
         setUsePlainText(usePlaintext)
     }
 
     public actual var maxRotateCount: Int
         get() = actual.maxRotateCount.toInt()
         set(value) {
+            checkReadOnly()
             actual.maxRotateCount = value.convert()
         }
 
     public actual fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration = chain {
+        checkReadOnly()
         setMaxRotateCount(maxRotateCount.convert())
     }
 
     public actual var maxSize: Long
         get() = actual.maxSize.toLong()
         set(value) {
+            checkReadOnly()
             actual.maxSize = value.convert()
         }
 
     public actual fun setMaxSize(maxSize: Long): LogFileConfiguration = chain {
+        checkReadOnly()
         setMaxSize(maxSize.convert())
     }
 
     public actual var usesPlaintext: Boolean
         get() = actual.usePlainText
         set(value) {
+            checkReadOnly()
             actual.usePlainText = value
         }
 
     public actual val directory: String
         get() = actual.directory
+
+    // Objective-C SDK doesn't override these, but Java does and tests expect
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+        if (other !is LogFileConfiguration) {
+            return false
+        }
+        return maxRotateCount == other.maxRotateCount
+                && directory == other.directory
+                && maxSize == other.maxSize
+                && usesPlaintext == other.usesPlaintext
+    }
+
+    override fun hashCode(): Int = directory.hashCode()
+
+    private fun checkReadOnly() {
+        if (readonly) throw IllegalStateException("LogFileConfiguration is readonly mode.")
+    }
 }
 
-internal fun CBLLogFileConfiguration.asLogFileConfiguration() = LogFileConfiguration(this)
+internal fun CBLLogFileConfiguration.asReadOnlyLogFileConfiguration() =
+    LogFileConfiguration(this, true)

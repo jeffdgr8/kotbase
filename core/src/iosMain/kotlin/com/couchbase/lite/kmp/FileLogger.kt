@@ -7,9 +7,11 @@ public actual class FileLogger
 internal constructor(override val actual: CBLFileLogger) :
     DelegatedClass<CBLFileLogger>(actual), Logger {
 
-    public actual var config: LogFileConfiguration?
-        get() = actual.config?.asLogFileConfiguration()
+    public actual var config: LogFileConfiguration? = null
+        get() = field ?: actual.config?.asReadOnlyLogFileConfiguration()
         set(value) {
+            field = value
+            value?.readonly = true
             actual.config = value?.actual
         }
 

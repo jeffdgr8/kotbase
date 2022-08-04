@@ -1,19 +1,19 @@
-//// TODO: internal API
-//package com.couchbase.lite.kmp
-//
-//import com.couchbase.lite.internal.core.C4Constants
+// TODO: uses some internal APIs
+//  https://forums.couchbase.com/t/objc-sdk-doesnt-set-length-after-database-getblob/34077/12
+package com.couchbase.lite.kmp
+
 //import com.couchbase.lite.internal.core.C4Log
 //import com.couchbase.lite.internal.core.CBLVersion
 //import com.couchbase.lite.internal.core.impl.NativeC4Log
 //import com.couchbase.lite.internal.support.Log
-//import com.couchbase.lite.kmp.internal.utils.TestUtils
-//import com.couchbase.lite.utils.KotlinHelpers
-//import com.udobny.kmp.test.AfterClass
-//import com.udobny.kmp.use
-//import kotlin.test.*
-//
-//class LogTest : BaseDbTest() {
-//
+import com.couchbase.lite.kmp.internal.utils.TestUtils
+import com.couchbase.lite.reset
+import com.udobny.kmp.test.AfterClass
+import com.udobny.kmp.use
+import kotlin.test.*
+
+class LogTest : BaseDbTest() {
+
 //    private class SingleLineLogger(private val prefix: String?) : Logger {
 //
 //        private var domain: LogDomain? = null
@@ -23,7 +23,7 @@
 //
 //        override fun log(level: LogLevel, domain: LogDomain, message: String) {
 //            // ignore extraneous logs
-//            if ((prefix != null) && (!message.startsWith(Log.LOG_HEADER + prefix))) {
+//            if ((prefix != null) && (!message.startsWith(LOG_HEADER + prefix))) {
 //                return
 //            }
 //
@@ -34,37 +34,37 @@
 //
 //        override fun toString() = "$level/$domain: $message"
 //    }
-//
-//    private class LogTestLogger constructor(private val prefix: String?) : Logger {
-//        private val lineCounts = mutableMapOf<LogLevel, Int>()
-//        private val content = StringBuilder()
-//        val lineCount: Int
-//            get() {
-//                var total = 0
-//                for (level in LogLevel.values()) {
-//                    total += getLineCount(level)
-//                }
-//                return total
-//            }
-//
-//        override fun log(level: LogLevel, domain: LogDomain, message: String) {
-//            if ((prefix != null) && (!message.startsWith(Log.LOG_HEADER + prefix))) {
-//                return
-//            }
-//            if (level < this.level) {
-//                return
-//            }
-//            lineCounts[level] = getLineCount(level) + 1
-//            content.append(message)
-//        }
-//
-//        override var level: LogLevel = LogLevel.NONE
-//
-//        fun getLineCount(level: LogLevel) = lineCounts[level] ?: 0
-//
-//        fun getContent() = content.toString()
-//    }
-//
+
+    private class LogTestLogger constructor(private val prefix: String?) : Logger {
+        private val lineCounts = mutableMapOf<LogLevel, Int>()
+        private val content = StringBuilder()
+        val lineCount: Int
+            get() {
+                var total = 0
+                for (level in LogLevel.values()) {
+                    total += getLineCount(level)
+                }
+                return total
+            }
+
+        override fun log(level: LogLevel, domain: LogDomain, message: String) {
+            if ((prefix != null) && (!message.startsWith(LOG_HEADER + prefix))) {
+                return
+            }
+            if (level < this.level) {
+                return
+            }
+            lineCounts[level] = getLineCount(level) + 1
+            content.append(message)
+        }
+
+        override var level: LogLevel = LogLevel.NONE
+
+        fun getLineCount(level: LogLevel) = lineCounts[level] ?: 0
+
+        fun getContent() = content.toString()
+    }
+
 //    private class TestLogger(private val domainFilter: String) : C4Log(NativeC4Log()) {
 //        var minLevel = 0
 //            private set
@@ -79,17 +79,20 @@
 //        }
 //
 //        fun reset() {
-//            minLevel = C4Constants.LogLevel.NONE
+//            minLevel = LogLevel.NONE.ordinal
 //        }
 //    }
-//
-//    companion object {
-//        @AfterClass
-//        fun tearDownLogTestClass() = Database.log.reset()
-//    }
-//
-//    private var scratchDirPath: String? = null
-//
+
+    companion object {
+
+        private const val LOG_HEADER = "[JAVA] "
+
+        @AfterClass
+        fun tearDownLogTestClass() = Database.log.reset()
+    }
+
+    private var scratchDirPath: String? = null
+
 //    private val logFiles: Array<File>
 //        get() {
 //            val files = tempDir?.listFiles()
@@ -102,19 +105,19 @@
 //            val dir = scratchDirPath
 //            return dir?.let { File(it) }
 //        }
-//
-//    @BeforeTest
-//    fun setUpLogTest() {
-//        scratchDirPath = getScratchDirectoryPath(getUniqueName("log-dir"))
-//        Database.log.reset()
-//    }
-//
-//    @AfterTest
-//    fun tearDownLogTest() {
-//        Database.log.custom = null
-//        reloadStandardErrorMessages()
-//    }
-//
+
+    @BeforeTest
+    fun setUpLogTest() {
+        scratchDirPath = getScratchDirectoryPath(getUniqueName("log-dir"))
+        Database.log.reset()
+    }
+
+    @AfterTest
+    fun tearDownLogTest() {
+        Database.log.custom = null
+        //reloadStandardErrorMessages()
+    }
+
 //    @Test
 //    fun testCustomLoggingLevels() {
 //        val customLogger = LogTestLogger("$$\$TEST ")
@@ -128,10 +131,10 @@
 //            Log.e(LogDomain.DATABASE, "$$\$TEST ERROR")
 //        }
 //
-//        assertEquals(2, customLogger.getLineCount(LogLevel.VERBOSE).toLong())
-//        assertEquals(3, customLogger.getLineCount(LogLevel.INFO).toLong())
-//        assertEquals(4, customLogger.getLineCount(LogLevel.WARNING).toLong())
-//        assertEquals(5, customLogger.getLineCount(LogLevel.ERROR).toLong())
+//        assertEquals(2, customLogger.getLineCount(LogLevel.VERBOSE))
+//        assertEquals(3, customLogger.getLineCount(LogLevel.INFO))
+//        assertEquals(4, customLogger.getLineCount(LogLevel.WARNING))
+//        assertEquals(5, customLogger.getLineCount(LogLevel.ERROR))
 //    }
 //
 //    @Test
@@ -145,7 +148,7 @@
 //        Log.i(LogDomain.DATABASE, "$$\$TEST INFO")
 //        Log.w(LogDomain.DATABASE, "$$\$TEST WARNING")
 //        Log.e(LogDomain.DATABASE, "$$\$TEST ERROR")
-//        assertEquals(0, customLogger.lineCount.toLong())
+//        assertEquals(0, customLogger.lineCount)
 //
 //        customLogger.level = LogLevel.VERBOSE
 //        Log.d(LogDomain.DATABASE, "$$\$TEST DEBUG")
@@ -153,7 +156,7 @@
 //        Log.i(LogDomain.DATABASE, "$$\$TEST INFO")
 //        Log.w(LogDomain.DATABASE, "$$\$TEST WARNING")
 //        Log.e(LogDomain.DATABASE, "$$\$TEST ERROR")
-//        assertEquals(4, customLogger.lineCount.toLong())
+//        assertEquals(4, customLogger.lineCount)
 //    }
 //
 //    @Test
@@ -184,13 +187,13 @@
 //
 //                val logPath = log.canonicalPath
 //                if (logPath.contains("verbose")) {
-//                    assertEquals(2, lineCount.toLong())
+//                    assertEquals(2, lineCount)
 //                } else if (logPath.contains("info")) {
-//                    assertEquals(3, lineCount.toLong())
+//                    assertEquals(3, lineCount)
 //                } else if (logPath.contains("warning")) {
-//                    assertEquals(4, lineCount.toLong())
+//                    assertEquals(4, lineCount)
 //                } else if (logPath.contains("error")) {
-//                    assertEquals(5, lineCount.toLong())
+//                    assertEquals(5, lineCount)
 //                }
 //            }
 //        }
@@ -208,7 +211,7 @@
 //
 //            val bytes = ByteArray(4)
 //            val `is`: InputStream = FileInputStream(lastModifiedFile)
-//            assertEquals(4, `is`.read(bytes).toLong())
+//            assertEquals(4, `is`.read(bytes))
 //
 //            assertEquals(bytes[0], 0xCF.toByte())
 //            assertEquals(bytes[1], 0xB2.toByte())
@@ -227,7 +230,7 @@
 //            }
 //
 //            assertNotNull(files)
-//            assertEquals(1, files?.size?.toLong() ?: 0)
+//            assertEquals(1, files?.size ?: 0)
 //
 //            val file = getMostRecent(files)
 //            assertNotNull(file)
@@ -256,7 +259,7 @@
 //        testWithConfiguration(LogLevel.DEBUG, config) {
 //            // this should create two files, as the 1KB logs + extra header
 //            writeOneKiloByteOfLog()
-//            assertEquals(((config.maxRotateCount + 1) * 5).toLong(), logFiles.size.toLong())
+//            assertEquals(((config.maxRotateCount + 1) * 5), logFiles.size)
 //        }
 //    }
 //
@@ -321,26 +324,26 @@
 //        Database.log.custom = logger
 //
 //        Log.d(LogDomain.DATABASE, "$$\$TEST DEBUG")
-//        assertEquals(Log.LOG_HEADER + "$$\$TEST DEBUG", logger.message)
+//        assertEquals(LOG_HEADER + "$$\$TEST DEBUG", logger.message)
 //
 //        Log.d(LogDomain.DATABASE, "$$\$TEST DEBUG", Exception("whoops"))
 //        var msg = logger.message
 //        assertNotNull(msg)
 //        assertTrue(
 //            msg!!.startsWith(
-//                Log.LOG_HEADER + "$$\$TEST DEBUG" + nl + "java.lang.Exception: whoops" + System.lineSeparator()
+//                LOG_HEADER + "$$\$TEST DEBUG" + nl + "java.lang.Exception: whoops" + System.lineSeparator()
 //            )
 //        )
 //
 //        // test formatting, including argument ordering
 //        Log.d(LogDomain.DATABASE, "$$\$TEST DEBUG %2\$s %1\$d %3$.2f", 1, "arg", 3.0f)
-//        assertEquals(Log.LOG_HEADER + "$$\$TEST DEBUG arg 1 3.00", logger.message)
+//        assertEquals(LOG_HEADER + "$$\$TEST DEBUG arg 1 3.00", logger.message)
 //
 //        Log.d(LogDomain.DATABASE, "$$\$TEST DEBUG %2\$s %1\$d %3$.2f", Exception("whoops"), 1, "arg", 3.0f)
 //        msg = logger.message
 //        assertNotNull(msg)
 //        assertTrue(
-//            msg!!.startsWith(Log.LOG_HEADER + "$$\$TEST DEBUG arg 1 3.00" + nl + "java.lang.Exception: whoops" + nl)
+//            msg.startsWith(LOG_HEADER + "$$\$TEST DEBUG arg 1 3.00" + nl + "java.lang.Exception: whoops" + nl)
 //        )
 //    }
 //
@@ -384,85 +387,78 @@
 //            }
 //        }
 //    }
-//
-//    @Test
-//    fun testLogFileConfigurationConstructors() {
-//        val rotateCount = 4
-//        val maxSize: Long = 2048
-//        val usePlainText = true
-//
-//        TestUtils.assertThrows(IllegalArgumentException::class.java) {
-//            KotlinHelpers.createLogFileConfigWithNullConfig()
-//        }
-//        TestUtils.assertThrows(IllegalArgumentException::class.java) {
-//            KotlinHelpers.createLogFileConfigWithNullDir()
-//        }
-//
-//        val config = LogFileConfiguration(scratchDirPath!!)
-//            .setMaxRotateCount(rotateCount)
-//            .setMaxSize(maxSize)
-//            .setUsePlaintext(usePlainText)
-//
-//        assertEquals(config.maxRotateCount.toLong(), rotateCount.toLong())
-//        assertEquals(config.maxSize, maxSize)
-//        assertEquals(config.usesPlaintext(), usePlainText)
-//        assertEquals(config.directory, scratchDirPath)
-//
-//        val tempDir2 = getScratchDirectoryPath(getUniqueName("logtest2"))
-//        val newConfig = LogFileConfiguration(tempDir2, config)
-//        assertEquals(newConfig.maxRotateCount.toLong(), rotateCount.toLong())
-//        assertEquals(newConfig.maxSize, maxSize)
-//        assertEquals(newConfig.usesPlaintext(), usePlainText)
-//        assertEquals(newConfig.directory, tempDir2)
-//    }
-//
-//    @Test
-//    fun testEditReadOnlyLogFileConfiguration() {
-//        testWithConfiguration(LogLevel.DEBUG, LogFileConfiguration(scratchDirPath!!)) {
-//            TestUtils.assertThrows(IllegalStateException::class.java) { Database.log.file.config!!.maxSize = 1024 }
-//            TestUtils.assertThrows(IllegalStateException::class.java) { Database.log.file.config!!.maxRotateCount = 3 }
-//            TestUtils.assertThrows(IllegalStateException::class.java) {
-//                Database.log.file.config!!.setUsePlaintext(true)
-//            }
-//        }
-//    }
-//
-//    @Test
-//    fun testSetNewLogFileConfiguration() {
-//        val config = LogFileConfiguration(scratchDirPath!!)
-//        val fileLogger = Database.log.file
-//        fileLogger.config = config
-//        assertEquals(fileLogger.config, config)
-//        fileLogger.config = null
-//        assertNull(fileLogger.config)
-//        fileLogger.config = config
-//        assertEquals(fileLogger.config, config)
-//        fileLogger.config = LogFileConfiguration("$scratchDirPath/foo")
-//        assertEquals(fileLogger.config, LogFileConfiguration("$scratchDirPath/foo"))
-//    }
-//
-//    @Test
-//    fun testNonASCII() {
-//        val hebrew = "מזג האוויר נחמד היום" // The weather is nice today.
-//
-//        val customLogger = LogTestLogger(null)
-//        customLogger.level = LogLevel.VERBOSE
-//
-//        Database.log.custom = customLogger
-//
-//        // hack: The console logger sets the C4 callback level
-//        Database.log.console.level = LogLevel.VERBOSE
-//
-//        val doc = MutableDocument()
-//        doc.setString("hebrew", hebrew)
-//        saveDocInBaseTestDb(doc)
-//
-//        val query: Query = QueryBuilder.select(SelectResult.all()).from(DataSource.database(baseTestDb))
-//        query.execute().use { rs -> assertEquals(rs.allResults().size.toLong(), 1) }
-//
-//        assertTrue(customLogger.getContent().contains("[{\"hebrew\":\"$hebrew\"}]"))
-//    }
-//
+
+    @Test
+    fun testLogFileConfigurationConstructors() {
+        val rotateCount = 4
+        val maxSize: Long = 2048
+        val usePlainText = true
+
+        val config = LogFileConfiguration(scratchDirPath!!)
+            .setMaxRotateCount(rotateCount)
+            .setMaxSize(maxSize)
+            .setUsePlaintext(usePlainText)
+
+        assertEquals(config.maxRotateCount, rotateCount)
+        assertEquals(config.maxSize, maxSize)
+        assertEquals(config.usesPlaintext, usePlainText)
+        assertEquals(config.directory, scratchDirPath)
+
+        val tempDir2 = getScratchDirectoryPath(getUniqueName("logtest2"))
+        val newConfig = LogFileConfiguration(tempDir2, config)
+        assertEquals(newConfig.maxRotateCount, rotateCount)
+        assertEquals(newConfig.maxSize, maxSize)
+        assertEquals(newConfig.usesPlaintext, usePlainText)
+        assertEquals(newConfig.directory, tempDir2)
+    }
+
+    @Test
+    fun testEditReadOnlyLogFileConfiguration() {
+        testWithConfiguration(LogLevel.DEBUG, LogFileConfiguration(scratchDirPath!!)) {
+            TestUtils.assertThrows(IllegalStateException::class) { Database.log.file.config!!.maxSize = 1024 }
+            TestUtils.assertThrows(IllegalStateException::class) { Database.log.file.config!!.maxRotateCount = 3 }
+            TestUtils.assertThrows(IllegalStateException::class) {
+                Database.log.file.config!!.setUsePlaintext(true)
+            }
+        }
+    }
+
+    @Test
+    fun testSetNewLogFileConfiguration() {
+        val config = LogFileConfiguration(scratchDirPath!!)
+        val fileLogger = Database.log.file
+        fileLogger.config = config
+        assertEquals(fileLogger.config, config)
+        fileLogger.config = null
+        assertNull(fileLogger.config)
+        fileLogger.config = config
+        assertEquals(fileLogger.config, config)
+        fileLogger.config = LogFileConfiguration("$scratchDirPath/foo")
+        assertEquals(fileLogger.config, LogFileConfiguration("$scratchDirPath/foo"))
+    }
+
+    @Test
+    fun testNonASCII() {
+        val hebrew = "מזג האוויר נחמד היום" // The weather is nice today.
+
+        val customLogger = LogTestLogger(null)
+        customLogger.level = LogLevel.VERBOSE
+
+        Database.log.custom = customLogger
+
+        // hack: The console logger sets the C4 callback level
+        Database.log.console.level = LogLevel.VERBOSE
+
+        val doc = MutableDocument()
+        doc.setString("hebrew", hebrew)
+        saveDocInBaseTestDb(doc)
+
+        val query: Query = QueryBuilder.select(SelectResult.all()).from(DataSource.database(baseTestDb))
+        query.execute().use { rs -> assertEquals(1, rs.allResults().size) }
+
+        assertTrue(customLogger.getContent().contains("[{\"hebrew\":\"$hebrew\"}]"))
+    }
+
 //    @Test
 //    fun testLogStandardErrorWithFormatting() {
 //        val nl = System.lineSeparator()
@@ -481,7 +477,7 @@
 //        val msg = logger.message
 //        assertNotNull(msg)
 //        assertTrue(
-//            msg.startsWith(Log.LOG_HEADER + "$$\$TEST DEBUG arg 1 3.00" + nl + "java.lang.Exception: whoops" + nl)
+//            msg.startsWith(LOG_HEADER + "$$\$TEST DEBUG arg 1 3.00" + nl + "java.lang.Exception: whoops" + nl)
 //        )
 //    }
 //
@@ -509,7 +505,7 @@
 //        Log.initLogging(mapOf("FOO" to "$$\$TEST DEBUG"))
 //        val msg = CouchbaseLiteException("FOO", CBLError.Domain.CBLITE, CBLError.Code.UNIMPLEMENTED).message
 //        assertNotNull(msg)
-//        assertTrue(msg!!.startsWith("$$\$TEST DEBUG"))
+//        assertTrue(msg.startsWith("$$\$TEST DEBUG"))
 //    }
 //
 //    @Test
@@ -517,7 +513,7 @@
 //        Log.initLogging(mapOf("FOO" to "$$\$TEST DEBUG"))
 //        val msg = CouchbaseLiteException("bork", CBLError.Domain.CBLITE, CBLError.Code.UNIMPLEMENTED).message
 //        assertNotNull(msg)
-//        assertTrue(msg!!.startsWith("bork"))
+//        assertTrue(msg.startsWith("bork"))
 //    }
 //
 //    // Verify that we can set the level for log domains that the platform doesn't recognize.
@@ -541,39 +537,39 @@
 //                .from(DataSource.database(baseTestDb))
 //                .execute()
 //            // If level > maxLevel, should be no logs
-//            assertEquals(C4Constants.LogLevel.NONE.toLong(), testLogger.minLevel.toLong())
+//            assertEquals(LogLevel.NONE.ordinal, testLogger.minLevel)
 //
 //            testLogger.reset()
 //            testLogger.setLevels(oldLogger.getLogLevel(c4Domain), c4Domain)
 //            QueryBuilder.select(SelectResult.expression(Meta.id))
 //                .from(DataSource.database(baseTestDb))
 //                .execute()
-//            assertEquals(actualMinLevel.toLong(), testLogger.minLevel.toLong())
+//            assertEquals(actualMinLevel, testLogger.minLevel)
 //        } finally {
 //            testLogger.setLevels(oldLogger.getLogLevel(c4Domain), c4Domain)
 //            C4Log.LOGGER.set(oldLogger)
 //        }
 //    }
-//
-//    private fun testWithConfiguration(level: LogLevel, config: LogFileConfiguration, task: Runnable) {
-//        val logger = Database.log
-//        val consoleLogger = logger.console
-//        val consoleLogLevel = consoleLogger.level
-//        consoleLogger.level = level
-//
-//        val fileLogger = logger.file
-//        val fileLogLevel = fileLogger.level
-//        fileLogger.config = config
-//        fileLogger.level = level
-//
-//        try {
-//            task.run()
-//        } finally {
-//            consoleLogger.level = consoleLogLevel
-//            fileLogger.level = fileLogLevel
-//        }
-//    }
-//
+
+    private fun testWithConfiguration(level: LogLevel, config: LogFileConfiguration, task: () -> Unit) {
+        val logger = Database.log
+        val consoleLogger = logger.console
+        val consoleLogLevel = consoleLogger.level
+        consoleLogger.level = level
+
+        val fileLogger = logger.file
+        val fileLogLevel = fileLogger.level
+        fileLogger.config = config
+        fileLogger.level = level
+
+        try {
+            task()
+        } finally {
+            consoleLogger.level = consoleLogLevel
+            fileLogger.level = fileLogLevel
+        }
+    }
+
 //    private fun writeOneKiloByteOfLog() {
 //        val message = "11223344556677889900" // ~43 bytes
 //        // 24 * 43 = 1032
@@ -593,9 +589,9 @@
 //    private fun getLogContents(log: File): String {
 //        val b = ByteArray(log.length().toInt())
 //        val fileInputStream = FileInputStream(log)
-//        assertEquals(b.size.toLong(), fileInputStream.read(b).toLong())
+//        assertEquals(b.size, fileInputStream.read(b))
 //        return String(b, StandardCharsets.US_ASCII)
 //    }
 //
 //    private fun getMostRecent(files: Array<File>?) = files?.maxByOrNull { it.lastModified() }
-//}
+}
