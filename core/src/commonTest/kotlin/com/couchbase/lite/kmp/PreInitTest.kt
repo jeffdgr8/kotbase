@@ -24,8 +24,6 @@ class PreInitTest : BaseTest() {
         }
     }
 
-    // ConsoleLogger is accessed and cached lazily before initialized state is reset, otherwise this would pass
-    @Ignore
     @Test
     fun testGetConsoleBeforeInit() {
         assertFailsWith<IllegalStateException> {
