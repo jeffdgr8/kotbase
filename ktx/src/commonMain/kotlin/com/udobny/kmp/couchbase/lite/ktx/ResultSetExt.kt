@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.udobny.kmp.couchbase.lite.ktx
 
 import com.couchbase.lite.kmp.ResultSet

@@ -18,6 +18,7 @@
  * Modified by Jeff Lockhart
  *
  * - Use com.couchbase.lite.kmp package for couchbase-lite-kmp Kotlin Multiplatform bindings
+ * - Resolve explicitApiWarning() requirements
  */
 
 package com.molo17.couchbase.lite.kmp
@@ -35,7 +36,7 @@ import kotlinx.coroutines.flow.callbackFlow
  *
  * @see Replicator.addChangeListener
  */
-fun Replicator.changesFlow(): Flow<ReplicatorChange> = callbackFlow {
+public fun Replicator.changesFlow(): Flow<ReplicatorChange> = callbackFlow {
     val token = addChangeListener { change -> trySendBlocking(change) }
     awaitClose { removeChangeListener(token) }
 }
@@ -45,7 +46,7 @@ fun Replicator.changesFlow(): Flow<ReplicatorChange> = callbackFlow {
  *
  * @see Replicator.addDocumentReplicationListener
  */
-fun Replicator.documentReplicationFlow(): Flow<DocumentReplication> = callbackFlow {
+public fun Replicator.documentReplicationFlow(): Flow<DocumentReplication> = callbackFlow {
     val token = addDocumentReplicationListener { replication -> trySendBlocking(replication) }
     awaitClose { removeChangeListener(token) }
 }

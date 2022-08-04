@@ -18,6 +18,7 @@
  * Modified by Jeff Lockhart
  *
  * - Use com.couchbase.lite.kmp package for couchbase-lite-kmp Kotlin Multiplatform bindings
+ * - Resolve explicitApiWarning() requirements
  */
 
 package com.molo17.couchbase.lite.kmp
@@ -41,10 +42,10 @@ import com.couchbase.lite.kmp.MutableDocument
  * @return a [MutableDocument] instance
  */
 @Suppress("FunctionName")
-fun MutableDocument(block: DocumentBuilder.() -> Unit): MutableDocument =
+public fun MutableDocument(block: DocumentBuilder.() -> Unit): MutableDocument =
     DocumentBuilder().apply(block).build()
 
-class DocumentBuilder internal constructor(
+public class DocumentBuilder internal constructor(
     private val document: MutableDocument = MutableDocument()
 ) {
 
@@ -53,7 +54,7 @@ class DocumentBuilder internal constructor(
     /**
      * Determines the key-to-value relation between the receiver string and the provided [value].
      */
-    infix fun <T> String.to(value: T) {
+    public infix fun <T> String.to(value: T) {
         document.setValue(this, value)
     }
 }

@@ -19,7 +19,10 @@
  *
  * - Use com.couchbase.lite.kmp package for couchbase-lite-kmp Kotlin Multiplatform bindings
  * - Adapt to use queryChangeFlow()
+ * - Resolve explicitApiWarning() requirements
  */
+
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.molo17.couchbase.lite.kmp
 
@@ -37,9 +40,9 @@ import kotlinx.coroutines.flow.onEach
  *
  * If the query fails, the [Flow] throws an error.
  */
-fun Query.asFlow(): Flow<ResultSet> = queryChangeFlow()
-    .onEach {
-        if (it.error != null) throw it.error!!
+public fun Query.asFlow(): Flow<ResultSet> = queryChangeFlow()
+    .onEach { change ->
+        change.error?.let { throw it }
     }.mapNotNull { it.results }
 
 /**
@@ -63,10 +66,10 @@ fun Query.asFlow(): Flow<ResultSet> = queryChangeFlow()
  *
  * @param factory the lambda used for creating object instances.
  */
-fun <T : Any> Query.asObjectsFlow(
+public fun <T : Any> Query.asObjectsFlow(
     factory: (Map<String, Any?>) -> T?
 ): Flow<List<T>> = asFlow().mapToObjects(factory)
 
-fun <T : Any> Flow<ResultSet>.mapToObjects(
+public fun <T : Any> Flow<ResultSet>.mapToObjects(
     factory: (Map<String, Any?>) -> T?
-) = mapNotNull { it.toObjects(factory) }
+): Flow<List<T>> = mapNotNull { it.toObjects(factory) }

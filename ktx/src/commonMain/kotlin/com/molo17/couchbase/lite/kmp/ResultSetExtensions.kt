@@ -18,6 +18,7 @@
  * Modified by Jeff Lockhart
  *
  * - Use com.couchbase.lite.kmp package for couchbase-lite-kmp Kotlin Multiplatform bindings
+ * - Resolve explicitApiWarning() requirements
  */
 
 package com.molo17.couchbase.lite.kmp
@@ -45,7 +46,7 @@ import com.couchbase.lite.kmp.ResultSet
  * @param factory lambda used for creating an object instance
  * @return a [List] of objects of type [T]
  */
-inline fun <T : Any> ResultSet.toObjects(factory: (Map<String, Any?>) -> T?): List<T> =
+public inline fun <T : Any> ResultSet.toObjects(factory: (Map<String, Any?>) -> T?): List<T> =
     mapNotNull { result ->
         result.run {
 
