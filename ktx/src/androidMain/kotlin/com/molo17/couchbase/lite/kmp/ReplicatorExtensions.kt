@@ -39,7 +39,7 @@ import com.couchbase.lite.kmp.Replicator
  * @see Lifecycle.Event.ON_RESUME
  * @see Lifecycle.Event.ON_PAUSE
  */
-fun Replicator.bindToLifecycle(lifecycle: Lifecycle) {
+public fun Replicator.bindToLifecycle(lifecycle: Lifecycle) {
     lifecycle.addObserver(ReplicatorLifecycleObserver(this))
 }
 
