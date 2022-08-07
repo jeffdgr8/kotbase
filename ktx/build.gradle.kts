@@ -4,6 +4,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
+    id("org.jetbrains.dokka") version "1.7.10"
     id("maven-publish")
 }
 
@@ -83,4 +84,22 @@ android {
         targetSdk = 33
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+}
+
+// Documentation Jar
+
+val dokkaOutputDir = buildDir.resolve("dokka")
+
+tasks.dokkaHtml.configure {
+    outputDirectory.set(dokkaOutputDir)
+}
+
+val javadocJar = tasks.register<Jar>("javadocJar") {
+    dependsOn(tasks.dokkaHtml)
+    archiveClassifier.set("javadoc")
+    from(dokkaOutputDir)
+}
+
+publishing.publications.withType<MavenPublication> {
+    artifact(javadocJar)
 }
