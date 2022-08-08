@@ -2,12 +2,13 @@
 
 package com.couchbase.lite.kmp
 
-import com.couchbase.lite.isOpen
 import com.couchbase.lite.kmp.internal.utils.Report
 import com.couchbase.lite.kmp.mock.TestReplicatorChangeListener
-import com.couchbase.lite.withLock
 import kotlinx.coroutines.runBlocking
-import kotlin.test.*
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.time.Duration.Companion.seconds
 
 abstract class BaseReplicatorTest : BaseDbTest() {
@@ -18,17 +19,11 @@ abstract class BaseReplicatorTest : BaseDbTest() {
     @BeforeTest
     fun setUpBaseReplicatorTest() {
         otherDB = createDb("replicator_db")
-        Report.log("Create other DB: $otherDB")
-        assertNotNull(otherDB)
-        otherDB!!.withLock {
-            assertTrue(otherDB!!.isOpen)
-        }
     }
 
     @AfterTest
     fun tearDownBaseReplicatorTest() {
         deleteDb(otherDB)
-        Report.log("Deleted other DB: $otherDB")
     }
 
     protected val remoteTargetEndpoint: URLEndpoint
@@ -54,6 +49,29 @@ abstract class BaseReplicatorTest : BaseDbTest() {
         }
     }
 
+    // TODO: 3.1. API
+//    protected fun makeConfig(
+//        target: Endpoint?,
+//        source: Set<Collection>,
+//        type: ReplicatorType?,
+//        continuous: Boolean,
+//        pinnedServerCert: ByteArray? = null
+//    ): ReplicatorConfiguration {
+//        return ReplicatorConfiguration(target)
+//            .addCollections(source, null)
+//            .setType(type)
+//            .setContinuous(continuous)
+//            .setHeartbeat(ReplicatorConfiguration.DISABLE_HEARTBEAT).apply {
+//                try {
+//                    if (pinnedServerCert != null) {
+//                        setPinnedServerCertificate(pinnedServerCert)
+//                    }
+//                } catch (e: Exception) {
+//                    throw IllegalArgumentException("Invalid pinned server certificate", e)
+//                }
+//            }
+//    }
+
     protected fun run(
         config: ReplicatorConfiguration,
         expectedErrorCode: Int = 0,
@@ -78,16 +96,18 @@ abstract class BaseReplicatorTest : BaseDbTest() {
 
         val token = repl.addChangeListener(listener)
 
-        Report.log("Test replicator starting: " + repl.config)
-        val success = try {
+        var ok = false
+        try {
+            Report.log("Test replicator starting: " + repl.config)
             repl.start(reset)
             listener.awaitCompletion(STD_TIMEOUT_SEC.seconds)
+            ok = true
         } finally {
             repl.removeChangeListener(token)
         }
 
         val err = listener.error
-        Report.log("Test replicator finished: $success", err)
+        Report.log("Test replicator finished ${if (ok) "" else "un"}successfully", err)
 
         if (expectedErrorCode == 0 && expectedErrorDomain == null) {
             if (err != null) {
