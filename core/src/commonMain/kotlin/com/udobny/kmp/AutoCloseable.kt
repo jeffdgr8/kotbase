@@ -74,15 +74,14 @@ public expect interface AutoCloseable {
      *
      * This exception interacts with a thread's interrupted status,
      * and runtime misbehavior is likely to occur if an
-     * `InterruptedException` is {@linkplain Throwable#addSuppressed
-     * suppressed}.
+     * `InterruptedException` is [suppressed][Throwable.addSuppressed].
      *
      * More generally, if it would cause problems for an
      * exception to be suppressed, the `AutoCloseable.close`
      * method should not throw it.
      *
-     * Note that unlike the {@link java.io.Closeable#close close}
-     * method of {@link java.io.Closeable}, this `close` method
+     * Note that unlike the `close`
+     * method of `java.io.Closeable`, this `close` method
      * is _not_ required to be idempotent.  In other words,
      * calling this `close` method more than once may have some
      * visible side effect, unlike `Closeable.close` which is

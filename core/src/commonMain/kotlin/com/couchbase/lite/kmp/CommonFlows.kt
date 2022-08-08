@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.callbackFlow
 /**
  * A Flow of database changes.
  *
- * @see com.couchbase.lite.kmp.Database.addChangeListener
+ * @see Database.addChangeListener
  */
 public fun Database.databaseChangeFlow(): Flow<DatabaseChange> = callbackFlow {
     val token = addChangeListener { trySend(it) }
@@ -17,7 +17,7 @@ public fun Database.databaseChangeFlow(): Flow<DatabaseChange> = callbackFlow {
 /**
  * A Flow of document changes.
  *
- * @see com.couchbase.lite.kmp.Database.addDocumentChangeListener
+ * @see Database.addDocumentChangeListener
  */
 public fun Database.documentChangeFlow(documentId: String): Flow<DocumentChange> = callbackFlow {
     val token = addDocumentChangeListener(documentId) { trySend(it) }
@@ -28,7 +28,7 @@ public fun Database.documentChangeFlow(documentId: String): Flow<DocumentChange>
 ///**
 // * A Flow of Collection changes. DatabaseChange should be replaced with CollectionChange once the implementation is ready
 // *
-// * @see com.couchbase.lite.kmp.Collection.addChangeListener
+// * @see Collection.addChangeListener
 // */
 //public fun Collection.collectionChangeFlow(): Flow<CollectionChange> = callbackFlow {
 //    val token = addChangeListener(CollectionChangeListener { trySend(it) })
@@ -38,7 +38,7 @@ public fun Database.documentChangeFlow(documentId: String): Flow<DocumentChange>
 ///**
 // * A Flow of document changes
 // *
-// * @see com.couchbase.lite.kmp.Collection.addDocumentChangeListener
+// * @see Collection.addDocumentChangeListener
 // */
 //public fun Collection.documentChangeFlow(documentId: String): Flow<DocumentChange> = callbackFlow {
 //    val token = addDocumentChangeListener(documentId, executor) { trySend(it) }
@@ -48,7 +48,7 @@ public fun Database.documentChangeFlow(documentId: String): Flow<DocumentChange>
 /**
  * A Flow of replicator state changes.
  *
- * @see com.couchbase.lite.kmp.Replicator.addChangeListener
+ * @see Replicator.addChangeListener
  */
 public fun Replicator.replicatorChangesFlow(): Flow<ReplicatorChange> = callbackFlow {
     val token = addChangeListener { trySend(it) }
@@ -58,7 +58,7 @@ public fun Replicator.replicatorChangesFlow(): Flow<ReplicatorChange> = callback
 /**
  * A Flow of document replications.
  *
- * @see com.couchbase.lite.kmp.Replicator.addDocumentReplicationListener
+ * @see Replicator.addDocumentReplicationListener
  */
 public fun Replicator.documentReplicationFlow(): Flow<DocumentReplication> = callbackFlow {
     val token = addDocumentReplicationListener { trySend(it) }
@@ -68,7 +68,7 @@ public fun Replicator.documentReplicationFlow(): Flow<DocumentReplication> = cal
 /**
  * A Flow of query changes.
  *
- * @see com.couchbase.lite.kmp.Query.addChangeListener
+ * @see Query.addChangeListener
  */
 public fun Query.queryChangeFlow(): Flow<QueryChange> = callbackFlow {
     val token = addChangeListener { trySend(it) }

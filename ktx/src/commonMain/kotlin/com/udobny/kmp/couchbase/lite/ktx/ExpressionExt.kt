@@ -25,7 +25,7 @@ public fun Expression.between(lower: Instant, upper: Instant): Expression =
  * @param value The value to search for in the array expression
  * @return The ARRAY_CONTAINS(expr, value) function
  *
- * @see [notContains]
+ * @see notContains
  */
 public inline infix fun Expression.contains(value: String): Expression =
     ArrayFunction.contains(this, Expression.property(value))
@@ -38,7 +38,7 @@ public inline infix fun Expression.contains(value: String): Expression =
  * @param value The value to search for in the array expression
  * @return The NOT ARRAY_CONTAINS(expr, value) expression
  *
- * @see [contains]
+ * @see contains
  */
 public inline infix fun Expression.notContains(value: String): Expression =
     Expression.not(contains(value))

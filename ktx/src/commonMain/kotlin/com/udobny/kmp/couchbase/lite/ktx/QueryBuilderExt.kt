@@ -36,7 +36,7 @@ public inline fun select(expression: Expression, vararg results: SelectResult): 
 /**
  * `SELECT COUNT(*)`
  *
- * @see [countResult]
+ * @see countResult
  */
 public inline fun selectCount(): Select =
     QueryBuilder.select(SelectResult.expression(Function.count(Expression.string("*"))))

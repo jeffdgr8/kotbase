@@ -15,7 +15,7 @@ public val FullTextIndexConfigurationFactory: FullTextIndexConfiguration? = null
  *
  * @param expressions (required) the expressions to be matched.
  *
- * @see com.couchbase.lite.kmp.FullTextIndexConfiguration
+ * @see FullTextIndexConfiguration
  */
 public fun FullTextIndexConfiguration?.create(
     vararg expressions: String = emptyArray(),
@@ -46,12 +46,12 @@ public fun FullTextIndexConfiguration?.create(
 public val ValueIndexConfigurationFactory: ValueIndexConfiguration? = null
 
 /**
- * Create a FullTextIndexConfiguration, overriding the receiver's
+ * Create a ValueIndexConfiguration, overriding the receiver's
  * values with the passed parameters:
  *
  * @param expressions (required) the expressions to be matched.
  *
- * @see com.couchbase.lite.kmp.ValueIndexConfiguration
+ * @see ValueIndexConfiguration
  */
 public fun ValueIndexConfiguration?.create(
     vararg expressions: String = emptyArray()
@@ -77,7 +77,7 @@ public fun ValueIndexConfiguration?.create(
 public val LogFileConfigurationFactory: LogFileConfiguration? = null
 
 /**
- * Create a FullTextIndexConfiguration, overriding the receiver's
+ * Create a LogFileConfiguration, overriding the receiver's
  * values with the passed parameters:
  *
  * @param directory (required) the directory in which the logs files are stored.
@@ -85,7 +85,7 @@ public val LogFileConfigurationFactory: LogFileConfiguration? = null
  * @param maxRotateCount the number of rotated logs that are saved.
  * @param usePlainText whether or not to log in plaintext.
  *
- * @see com.couchbase.lite.kmp.LogFileConfiguration
+ * @see LogFileConfiguration
  */
 public fun LogFileConfiguration?.create(
     directory: String? = null,

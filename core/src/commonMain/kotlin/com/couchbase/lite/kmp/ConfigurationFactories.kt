@@ -1,6 +1,28 @@
 package com.couchbase.lite.kmp
 
 /**
+ * Configuration factory for new DatabaseConfigurations
+ *
+ * Usage:
+ *      val dbConfig = DatabaseConfigurationFactory.create(...)
+ */
+public val DatabaseConfigurationFactory: DatabaseConfiguration? = null
+
+/**
+ * Create a DatabaseConfiguration, overriding the receiver's
+ * values with the passed parameters:
+ *
+ * @param databasePath The directory in which the database is stored.
+ *
+ * @see DatabaseConfiguration
+ */
+public fun DatabaseConfiguration?.create(databasePath: String? = null): DatabaseConfiguration {
+    return DatabaseConfiguration(this).apply {
+        databasePath?.let { setDirectory(it) }
+    }
+}
+
+/**
  * Configuration factory for new ReplicatorConfigurations
  * Usage:
  *     val replConfig = ReplicatorConfigurationFactory.create(...)
@@ -8,7 +30,7 @@ package com.couchbase.lite.kmp
 public val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
 
 /**
- * Create a FullTextIndexConfiguration, overriding the receiver's
+ * Create a ReplicatorConfiguration, overriding the receiver's
  * values with the passed parameters:
  *
  * @param database (required) the local database.
@@ -28,7 +50,7 @@ public val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
  * @param heartbeat heartbeat interval, in seconds.
  * @param enableAutoPurge auto-purge enabled.
  *
- * @see com.couchbase.lite.kmp.ReplicatorConfiguration
+ * @see ReplicatorConfiguration
  */
 public fun ReplicatorConfiguration?.create(
     database: Database? = null,
@@ -71,12 +93,5 @@ public fun ReplicatorConfiguration?.create(
         maxAttemptWaitTime?.let { this.maxAttemptWaitTime = it }
         heartbeat?.let { this.heartbeat = it }
         enableAutoPurge?.let { this.isAutoPurgeEnabled = it }
-    }
-}
-
-public val DatabaseConfigurationFactory: DatabaseConfiguration? = null
-public fun DatabaseConfiguration?.create(databasePath: String? = null): DatabaseConfiguration {
-    return DatabaseConfiguration(this).apply {
-        databasePath?.let { setDirectory(it) }
     }
 }
