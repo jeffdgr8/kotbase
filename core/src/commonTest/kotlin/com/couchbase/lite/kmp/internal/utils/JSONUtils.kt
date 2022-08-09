@@ -6,23 +6,11 @@ import kotlinx.serialization.json.*
 
 object JSONUtils {
 
-    fun fromJSON(json: JsonObject): Map<String, Any?> {
-        val result = mutableMapOf<String, Any?>()
-        val itr = json.iterator()
-        while (itr.hasNext()) {
-            val entry = itr.next()
-            result[entry.key] = fromJSON(entry.value)
-        }
-        return result
-    }
+    fun fromJSON(json: JsonObject): Map<String, Any?> =
+        json.mapValues { fromJSON(it.value) }
 
-    fun fromJSON(json: JsonArray): List<Any?> {
-        val result = mutableListOf<Any?>()
-        for (i in 0 until json.size) {
-            result.add(fromJSON(json[i]))
-        }
-        return result
-    }
+    fun fromJSON(json: JsonArray): List<Any?> =
+        json.map { fromJSON(it) }
 
     private fun fromJSON(value: JsonElement): Any? {
         return when (value) {
@@ -32,7 +20,7 @@ object JSONUtils {
             is JsonPrimitive -> with(value) {
                 when {
                     isString -> content
-                    else -> booleanOrNull ?: {
+                    else -> booleanOrNull ?: run {
                         if ('.' in content) {
                             content.toDouble()
                         } else {
