@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'CouchbaseLite-KMP'
-    spec.version                  = '3.0.2-SNAPSHOT'
+    spec.version                  = '3.0.2'
     spec.homepage                 = 'https://github.com/udobny/couchbase-lite-kmp'
     spec.source                   = { :http=> ''}
     spec.authors                  = 'Couchbase, Jeff Lockhart'
@@ -9,7 +9,7 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/CouchbaseLite_KMP.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '9.0'
-    spec.dependency 'CouchbaseLite'
+    spec.dependency 'CouchbaseLite', '3.0.2'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':core',

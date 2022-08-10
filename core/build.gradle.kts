@@ -32,7 +32,7 @@ kotlin {
         // TODO: this isn't working
         //  https://youtrack.jetbrains.com/issue/KT-53362
         //  https://github.com/JetBrains/kotlin/pull/4909
-        //source = "{ :git => 'https://github.com/udobny/couchbase-lite-kmp.git', :tag => spec.version }"
+        source = "{ :git => 'https://github.com/udobny/couchbase-lite-kmp.git', :tag => $version }"
         authors = "Couchbase, Jeff Lockhart"
         license = "Apache License, Version 2.0"
         summary = "Couchbase Lite for Kotlin Multiplatform"
@@ -41,11 +41,9 @@ kotlin {
             baseName = this@cocoapods.name.replace('-', '_')
         }
         pod("CouchbaseLite") {
-            //version = cblVersion
-            // TODO: 3.0.2 required to fix missing classes
-            //  https://forums.couchbase.com/t/cblvalueindexconfiguration-and-cblfulltextindexconfiguration-missing-from-objc-framework-for-x86-64/33815
-            // 3.0.2-SNAPSHOT
-            source = path("$rootDir/../couchbase-lite-ios")
+            version = cblVersion
+            // use local build
+            //source = path("$rootDir/../couchbase-lite-ios")
             moduleName = "CouchbaseLite"
             // Workaround for 'CBLQueryMeta' is going to be declared twice
             // https://youtrack.jetbrains.com/issue/KT-41709
@@ -80,10 +78,8 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                // TODO: 3.0.2 required for public IndexConfiguration
-                //  https://forums.couchbase.com/t/can-indexconfiguration-be-made-public/33772
-                //api("com.couchbase.lite:couchbase-lite-android:$cblVersion")
-                api("com.couchbase.lite:couchbase-lite-android:3.0.2-SNAPSHOT")
+                api("com.couchbase.lite:couchbase-lite-android:$cblVersion")
+                // use local build
                 //api("com.couchbase.lite:couchbase-lite-android:3.1.0-SNAPSHOT")
                 //api(fileTree("libs/couchbase-lite"))
             }
