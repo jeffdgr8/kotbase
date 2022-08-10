@@ -8,7 +8,7 @@ plugins {
     id("maven-publish")
 }
 
-val cblVersion = project.property("CBL_VERSION") as String
+val cblVersion = project.property("VERSION") as String
 
 group = project.property("GROUP") as String
 version = cblVersion
@@ -32,11 +32,9 @@ kotlin {
             baseName = this@cocoapods.name.replace('-', '_')
         }
         pod("CouchbaseLite") {
-            //version = cblVersion
-            // TODO: 3.0.2 required to fix missing classes
-            //  https://forums.couchbase.com/t/cblvalueindexconfiguration-and-cblfulltextindexconfiguration-missing-from-objc-framework-for-x86-64/33815
-            // 3.0.2-SNAPSHOT
-            source = path("$rootDir/../couchbase-lite-ios")
+            version = cblVersion
+            // use local build
+            //source = path("$rootDir/../couchbase-lite-ios")
             moduleName = "CouchbaseLite"
             // Workaround for 'CBLQueryMeta' is going to be declared twice
             // https://youtrack.jetbrains.com/issue/KT-41709
