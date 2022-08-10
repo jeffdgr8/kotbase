@@ -9,7 +9,7 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/CouchbaseLite_KMP_KTX.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '9.0'
-    spec.dependency 'CouchbaseLite'
+    spec.dependency 'CouchbaseLite', '3.0.2'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':ktx',
