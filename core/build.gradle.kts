@@ -1,5 +1,6 @@
 @file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.*
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -242,4 +243,4 @@ val copyIosX64TestResources = tasks.register<Copy>("copyIosX64TestResources") {
     into("build/bin/iosX64/debugTest/resources")
 }
 
-tasks.findByName("iosX64Test")!!.dependsOn(copyIosX64TestResources)
+tasks.named("iosX64Test").dependsOn(copyIosX64TestResources)
