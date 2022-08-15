@@ -244,3 +244,10 @@ val copyIosX64TestResources = tasks.register<Copy>("copyIosX64TestResources") {
 }
 
 tasks.named("iosX64Test").dependsOn(copyIosX64TestResources)
+
+val copyIosSimulatorArm64Resources = tasks.register<Copy>("copyIosSimulatorArm64Resources") {
+    from("src/commonTest/resources")
+    into("build/bin/iosSimulatorArm64/debugTest/resources")
+}
+
+tasks.named("iosSimulatorArm64Test").dependsOn(copyIosSimulatorArm64Resources)
