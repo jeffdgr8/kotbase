@@ -1,6 +1,5 @@
 @file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
-import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.*
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -238,16 +237,16 @@ tasks.withType<AbstractTestTask> {
     }
 }
 
-val copyIosX64TestResources = tasks.register<Copy>("copyIosX64TestResources") {
-    from("src/commonTest/resources")
-    into("build/bin/iosX64/debugTest/resources")
-}
+tasks.findByName("iosX64Test")?.dependsOn(
+    tasks.register<Copy>("copyIosX64TestResources") {
+        from("src/commonTest/resources")
+        into("build/bin/iosX64/debugTest/resources")
+    }
+)
 
-tasks.named("iosX64Test").dependsOn(copyIosX64TestResources)
-
-val copyIosSimulatorArm64Resources = tasks.register<Copy>("copyIosSimulatorArm64Resources") {
-    from("src/commonTest/resources")
-    into("build/bin/iosSimulatorArm64/debugTest/resources")
-}
-
-tasks.named("iosSimulatorArm64Test").dependsOn(copyIosSimulatorArm64Resources)
+tasks.findByName("iosSimulatorArm64Test")?.dependsOn(
+    tasks.register<Copy>("copyIosSimulatorArm64Resources") {
+        from("src/commonTest/resources")
+        into("build/bin/iosSimulatorArm64/debugTest/resources")
+    }
+)
