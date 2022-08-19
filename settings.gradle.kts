@@ -7,5 +7,5 @@ pluginManagement {
 }
 
 rootProject.name = "couchbase-lite-kmp"
-include(":core")
-include(":ktx")
+include(":couchbase-lite")
+include(":couchbase-lite-ktx")
