@@ -21,6 +21,8 @@ class NotificationTest : BaseDbTest() {
         val mutex = Mutex(true)
 
         val n = intArrayOf(0)
+
+        @Suppress("UNUSED_VARIABLE")
         val token = baseTestDb.addChangeListener { change ->
             assertNotNull(change)
             assertEquals(baseTestDb, change.database)

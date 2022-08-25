@@ -24,7 +24,6 @@ public val isNative = true
  * The result of a multiplatform asynchronous test.
  * Aliases into Unit on K/JVM and K/N, and into Promise on K/JS.
  */
-@Suppress("ACTUAL_WITHOUT_EXPECT")
 public typealias TestResult = Unit
 
 public open class TestBase {
@@ -44,7 +43,6 @@ public open class TestBase {
      * Throws [IllegalStateException] like `error` in stdlib, but also ensures that the test will not
      * complete successfully even if this exception is consumed somewhere in the test.
      */
-    @Suppress("ACTUAL_FUNCTION_WITH_DEFAULT_ARGUMENTS")
     public fun error(message: Any, cause: Throwable? = null): Nothing {
         val exception = IllegalStateException(message.toString(), cause)
         if (error == null) error = exception
@@ -93,7 +91,6 @@ public open class TestBase {
         finished.value = false
     }
 
-    @Suppress("ACTUAL_FUNCTION_WITH_DEFAULT_ARGUMENTS")
     public fun runTest(
         expected: ((Throwable) -> Boolean)? = null,
         unhandled: List<(Throwable) -> Boolean> = emptyList(),

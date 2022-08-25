@@ -4,6 +4,8 @@ import com.couchbase.lite.LogDomain
 import com.couchbase.lite.internal.support.Log
 import java.io.File
 import java.io.IOException
+import java.nio.file.Files
+import kotlin.io.path.Path
 
 actual object FileUtils {
 
@@ -21,13 +23,16 @@ actual object FileUtils {
     actual fun verifyDir(dirPath: String): String =
         verifyDir(File(dirPath))
 
-    private fun verifyDir(dir: File): String {
+    fun verifyDir(dir: File): String {
         @Suppress("NAME_SHADOWING")
         var dir = dir
         var err: IOException? = null
         try {
             dir = dir.canonicalFile
             if (dir.exists() && dir.isDirectory || dir.mkdirs()) {
+                if (!Files.isWritable(Path(dir.path))) {
+                    throw IllegalStateException("$dir is not writable")
+                }
                 return dir.absolutePath
             }
         } catch (e: IOException) {

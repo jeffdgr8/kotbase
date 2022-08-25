@@ -96,6 +96,7 @@ abstract class BaseReplicatorTest : BaseDbTest() {
 
         val token = repl.addChangeListener(listener)
 
+        @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
         var ok = false
         try {
             Report.log("Test replicator starting: " + repl.config)

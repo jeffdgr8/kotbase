@@ -21,6 +21,7 @@ version = cblVersion
 kotlin {
     explicitApiWarning()
 
+    jvm()
     android {
         publishLibraryVariants("release")
     }
@@ -76,7 +77,28 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:atomicfu:0.18.2")
             }
         }
+        // TODO: shared jvm/android source set not supported
+        //  https://youtrack.jetbrains.com/issue/KT-42466
+        //val jvmCommonMain by creating {
+        //    dependsOn(commonMain)
+        //}
+        //val jvmCommonTest by creating {
+        //    dependsOn(commonTest)
+        //}
+        val jvmMain by getting {
+            kotlin.srcDir("src/jvmCommonMain/kotlin")
+            //dependsOn(jvmCommonMain)
+            dependencies {
+                api("com.couchbase.lite:couchbase-lite-java:$cblVersion")
+            }
+        }
+        val jvmTest by getting {
+            kotlin.srcDir("src/jvmCommonTest/kotlin")
+            //dependsOn(jvmCommonTest)
+        }
         val androidMain by getting {
+            kotlin.srcDir("src/jvmCommonMain/kotlin")
+            //dependsOn(jvmCommonMain)
             dependencies {
                 api("com.couchbase.lite:couchbase-lite-android:$cblVersion")
                 // use local build
@@ -88,6 +110,8 @@ kotlin {
             (dependsOn as MutableSet).remove(commonTest)
         }
         val androidAndroidTest by getting {
+            kotlin.srcDir("src/jvmCommonTest/kotlin")
+            //dependsOn(jvmCommonTest)
             // TODO: doesn't work, so using a symlink
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")

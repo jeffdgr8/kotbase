@@ -16,6 +16,7 @@ version = cblVersion
 kotlin {
     explicitApiWarning()
 
+    jvm()
     android {
         publishLibraryVariants("release")
     }
@@ -55,6 +56,18 @@ kotlin {
                 implementation(project(":couchbase-lite"))
             }
         }
+        // TODO: shared jvm/android source set not supported
+        //  https://youtrack.jetbrains.com/issue/KT-42466
+        //val jvmCommonTest by creating {
+        //    dependsOn(commonTest)
+        //}
+        val jvmTest by getting {
+            kotlin.srcDir("src/jvmCommonTest/kotlin")
+            //dependsOn(jvmCommonTest)
+            dependencies {
+                implementation("io.mockk:mockk:1.12.5")
+            }
+        }
         val androidMain by getting {
             dependencies {
                 compileOnly("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
@@ -64,6 +77,8 @@ kotlin {
             (dependsOn as MutableSet).remove(commonTest)
         }
         val androidAndroidTest by getting {
+            kotlin.srcDir("src/jvmCommonTest/kotlin")
+            //dependsOn(jvmCommonTest)
             dependencies {
                 implementation("androidx.test:core-ktx:1.4.0")
                 implementation("androidx.test:runner:1.4.0")

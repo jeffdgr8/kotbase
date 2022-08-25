@@ -1,7 +1,5 @@
 package com.couchbase.lite
 
-import android.annotation.SuppressLint
-
-@SuppressLint("VisibleForTests")
+@Suppress("VisibleForTests")
 internal fun testReplicator(config: ReplicatorConfiguration): Replicator =
     Replicator(null, config)
