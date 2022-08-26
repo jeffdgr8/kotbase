@@ -6,4 +6,4 @@ actual typealias BeforeClass = kotlin.test.BeforeClass
 
 actual typealias AfterClass = kotlin.test.AfterClass
 
-actual typealias IgnoreIos = kotlin.test.Ignore
+actual typealias IgnoreApple = kotlin.test.Ignore

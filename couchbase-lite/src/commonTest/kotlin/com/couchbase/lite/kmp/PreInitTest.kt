@@ -1,10 +1,12 @@
+@file:Suppress("NO_ACTUAL_FOR_EXPECT") // https://youtrack.jetbrains.com/issue/KT-42466
+
 package com.couchbase.lite.kmp
 
-import com.udobny.kmp.test.IgnoreIos
+import com.udobny.kmp.test.IgnoreApple
 import kotlin.test.*
 
 // iOS doesn't need initializing
-@IgnoreIos
+@IgnoreApple
 class PreInitTest : BaseTest() {
 
     @BeforeTest

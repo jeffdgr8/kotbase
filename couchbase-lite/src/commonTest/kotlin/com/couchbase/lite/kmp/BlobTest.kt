@@ -6,7 +6,7 @@ import com.couchbase.lite.kmp.internal.utils.PlatformUtils
 import com.couchbase.lite.kmp.internal.utils.StringUtils
 import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrows
 import com.couchbase.lite.saveBlob
-import com.udobny.kmp.test.IgnoreIos
+import com.udobny.kmp.test.IgnoreApple
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import okio.*
@@ -282,7 +282,7 @@ class BlobTest : BaseDbTest() {
 
     // TODO: iOS doesn't update its size after DB get
     //  https://forums.couchbase.com/t/objc-sdk-doesnt-set-length-after-database-getblob/34077
-    @IgnoreIos
+    @IgnoreApple
     // 3.1.b
     @Test
     fun testDbGetBlob() {

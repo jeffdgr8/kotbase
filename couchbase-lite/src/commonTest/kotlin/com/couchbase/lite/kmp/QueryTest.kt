@@ -5,7 +5,7 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.asJSON
 import com.couchbase.lite.kmp.internal.utils.Report
 import com.couchbase.lite.kmp.internal.utils.paddedString
-import com.udobny.kmp.test.IgnoreIos
+import com.udobny.kmp.test.IgnoreApple
 import com.udobny.kmp.use
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.TimeoutCancellationException
@@ -1837,7 +1837,7 @@ class QueryTest : BaseQueryTest() {
 
     // TODO: iOS sets locale to NSLocale.currentLocale for unicode collations
     //  https://forums.couchbase.com/t/unicode-collation-locale-null-or-device-locale/34103
-    @IgnoreIos
+    @IgnoreApple
     @Test
     fun testGenerateJSONCollation() {
         val collations = arrayOf(
