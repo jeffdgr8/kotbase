@@ -3,6 +3,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.*
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
 
 plugins {
@@ -21,11 +22,13 @@ version = cblVersion
 kotlin {
     explicitApiWarning()
 
-    jvm()
     android {
         publishLibraryVariants("release")
     }
+    jvm()
     ios()
+    macosX64()
+    macosArm64()
 
     cocoapods {
         name = "CouchbaseLite-KMP"
@@ -77,6 +80,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:atomicfu:0.18.2")
             }
         }
+
         // TODO: shared jvm/android source set not supported
         //  https://youtrack.jetbrains.com/issue/KT-42466
         //val jvmCommonMain by creating {
@@ -85,17 +89,6 @@ kotlin {
         //val jvmCommonTest by creating {
         //    dependsOn(commonTest)
         //}
-        val jvmMain by getting {
-            kotlin.srcDir("src/jvmCommonMain/kotlin")
-            //dependsOn(jvmCommonMain)
-            dependencies {
-                api("com.couchbase.lite:couchbase-lite-java:$cblVersion")
-            }
-        }
-        val jvmTest by getting {
-            kotlin.srcDir("src/jvmCommonTest/kotlin")
-            //dependsOn(jvmCommonTest)
-        }
         val androidMain by getting {
             kotlin.srcDir("src/jvmCommonMain/kotlin")
             //dependsOn(jvmCommonMain)
@@ -120,14 +113,47 @@ kotlin {
                 implementation("androidx.test:runner:1.4.0")
             }
         }
-        val iosMain by getting
-        val iosTest by getting {
+        val jvmMain by getting {
+            kotlin.srcDir("src/jvmCommonMain/kotlin")
+            //dependsOn(jvmCommonMain)
+            dependencies {
+                api("com.couchbase.lite:couchbase-lite-java:$cblVersion")
+            }
+        }
+        val jvmTest by getting {
+            kotlin.srcDir("src/jvmCommonTest/kotlin")
+            //dependsOn(jvmCommonTest)
+        }
+
+        val appleMain by creating {
+            dependsOn(commonMain)
+        }
+        val appleTest by creating {
+            dependsOn(commonTest)
             // TODO: doesn't work, so using a copy task
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
             dependencies {
                 implementation("com.soywiz.korlibs.korio:korio:3.0.0-Beta7")
             }
+        }
+        val iosMain by getting {
+            dependsOn(appleMain)
+        }
+        val iosTest by getting {
+            dependsOn(appleTest)
+        }
+        val macosX64Main by getting {
+            dependsOn(appleMain)
+        }
+        val macosX64Test by getting {
+            dependsOn(appleTest)
+        }
+        val macosArm64Main by getting {
+            dependsOn(appleMain)
+        }
+        val macosArm64Test by getting {
+            dependsOn(appleTest)
         }
     }
 }
@@ -261,16 +287,12 @@ tasks.withType<AbstractTestTask> {
     }
 }
 
-tasks.findByName("iosX64Test")?.dependsOn(
-    tasks.register<Copy>("copyIosX64TestResources") {
-        from("src/commonTest/resources")
-        into("build/bin/iosX64/debugTest/resources")
-    }
-)
-
-tasks.findByName("iosSimulatorArm64Test")?.dependsOn(
-    tasks.register<Copy>("copyIosSimulatorArm64Resources") {
-        from("src/commonTest/resources")
-        into("build/bin/iosSimulatorArm64/debugTest/resources")
-    }
-)
+tasks.withType<KotlinNativeTest> {
+    val dir = name.substring(0, name.lastIndex - 3)
+    dependsOn(
+        tasks.register<Copy>("copy${name.capitalize()}Resources") {
+            from("src/commonTest/resources")
+            into("build/bin/$dir/debugTest")
+        }
+    )
+}

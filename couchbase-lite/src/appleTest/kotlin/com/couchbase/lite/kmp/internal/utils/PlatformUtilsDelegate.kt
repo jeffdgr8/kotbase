@@ -16,7 +16,7 @@ actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
         val filePath = asset.substring(0, dotIndex)
         val ext = asset.substring(dotIndex + 1)
         val path = NSBundle.mainBundle
-            .pathForResource("resources/$filePath", ext)
+            .pathForResource(filePath, ext)
             ?: return null
         return NSInputStream(NSURL(fileURLWithPath = path)).source()
     }
