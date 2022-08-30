@@ -1,6 +1,8 @@
 package com.couchbase.lite.kmp
 
 import android.content.Context
+import com.couchbase.lite.BuildConfig
+import com.couchbase.lite.internal.CouchbaseLiteInternal
 import java.io.File
 
 public object CouchbaseLite {
@@ -9,14 +11,22 @@ public object CouchbaseLite {
      * Initialize CouchbaseLite library. This method MUST be called before using CouchbaseLite.
      */
     public fun init(ctxt: Context) {
-        com.couchbase.lite.CouchbaseLite.init(ctxt)
+        init(ctxt, BuildConfig.CBL_DEBUG)
     }
 
     /**
      * Initialize CouchbaseLite library. This method MUST be called before using CouchbaseLite.
      */
     public fun init(ctxt: Context, debug: Boolean) {
-        com.couchbase.lite.CouchbaseLite.init(ctxt, debug)
+        init(
+            ctxt,
+            debug,
+            ctxt.filesDir,
+            // Handle nullable platform API
+            // https://forums.couchbase.com/t/couchbaselite-init-illegalstateexception-tmp-dir-root-is-null/31651
+            ctxt.getExternalFilesDir(CouchbaseLiteInternal.SCRATCH_DIR_NAME)
+                ?: File(ctxt.cacheDir, CouchbaseLiteInternal.SCRATCH_DIR_NAME)
+        )
     }
 
     /**
