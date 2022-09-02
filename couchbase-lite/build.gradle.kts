@@ -76,8 +76,8 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
-                implementation("org.jetbrains.kotlinx:atomicfu:0.18.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+                implementation("org.jetbrains.kotlinx:atomicfu:0.18.3")
             }
         }
 
@@ -134,7 +134,7 @@ kotlin {
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
             dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:3.0.0-Beta7")
+                implementation("com.soywiz.korlibs.korio:korio:3.0.1")
             }
         }
         val iosMain by getting {
