@@ -63,6 +63,17 @@ kotlin {
         }
     }
 
+    /*
+     * Source set dependency graph:
+     *                        ______common______
+     *                       |                  |
+     *              _______apple______      jvmCommon
+     *             |         |        |      |     |
+     *         ___ios__  macosX64 macosArm64 |     |
+     *        |    |   |                     |     |
+     * iosArm64 iosX64 iosSimulatorArm64  android jvm
+     */
+
     sourceSets {
         val commonMain by getting {
             dependencies {
