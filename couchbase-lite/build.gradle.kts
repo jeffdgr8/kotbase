@@ -93,17 +93,17 @@ kotlin {
             }
         }
 
-        // TODO: shared jvm/android source set not supported
-        //  https://youtrack.jetbrains.com/issue/KT-42466
-        //val jvmCommonMain by creating {
-        //    dependsOn(commonMain)
-        //}
-        //val jvmCommonTest by creating {
-        //    dependsOn(commonTest)
-        //}
+        val jvmCommonMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                compileOnly("com.couchbase.lite:couchbase-lite-java:$cblVersion")
+            }
+        }
+        val jvmCommonTest by creating {
+            dependsOn(commonTest)
+        }
         val androidMain by getting {
-            kotlin.srcDir("src/jvmCommonMain/kotlin")
-            //dependsOn(jvmCommonMain)
+            dependsOn(jvmCommonMain)
             dependencies {
                 api("com.couchbase.lite:couchbase-lite-android:$cblVersion")
                 // use local build
@@ -115,8 +115,7 @@ kotlin {
             (dependsOn as MutableSet).remove(commonTest)
         }
         val androidAndroidTest by getting {
-            kotlin.srcDir("src/jvmCommonTest/kotlin")
-            //dependsOn(jvmCommonTest)
+            dependsOn(jvmCommonTest)
             // TODO: doesn't work, so using a symlink
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
@@ -126,15 +125,13 @@ kotlin {
             }
         }
         val jvmMain by getting {
-            kotlin.srcDir("src/jvmCommonMain/kotlin")
-            //dependsOn(jvmCommonMain)
+            dependsOn(jvmCommonMain)
             dependencies {
                 api("com.couchbase.lite:couchbase-lite-java:$cblVersion")
             }
         }
         val jvmTest by getting {
-            kotlin.srcDir("src/jvmCommonTest/kotlin")
-            //dependsOn(jvmCommonTest)
+            dependsOn(jvmCommonTest)
         }
 
         val appleMain by creating {
@@ -146,7 +143,7 @@ kotlin {
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
             dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:3.0.1")
+                implementation("com.soywiz.korlibs.korio:korio:3.1.0")
             }
         }
         val iosMain by getting {
@@ -182,7 +179,6 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 22
-        targetSdk = 33
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
@@ -211,7 +207,8 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
         // TODO: remove above --- and append, pending
         //  https://github.com/JetBrains/kotlin/pull/4894 in Kotlin 1.8
         //outputFile.appendText("""
-        outputFile.writeText("""
+        outputFile.writeText(
+            """
             language = Objective-C
             headers = CouchbaseLite/CouchbaseLite.h
             headerFilter = CouchbaseLite/**
@@ -291,7 +288,8 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
             @interface CBLQueryCollation ()
             - (id) asJSON;
             @end
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 }
 

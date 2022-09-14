@@ -1,5 +1,3 @@
-@file:Suppress("NO_ACTUAL_FOR_EXPECT") // https://youtrack.jetbrains.com/issue/KT-42466
-
 // from java.lang.AutoCloseable for use in Kotlin/Common
 package com.udobny.kmp
 

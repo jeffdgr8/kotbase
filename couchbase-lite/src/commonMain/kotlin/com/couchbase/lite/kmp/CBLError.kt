@@ -1,6 +1,7 @@
 @file:Suppress(
     "NO_EXPLICIT_VISIBILITY_IN_API_MODE_WARNING",
-    "NO_EXPLICIT_RETURN_TYPE_IN_API_MODE_WARNING", "MemberVisibilityCanBePrivate"
+    "NO_EXPLICIT_RETURN_TYPE_IN_API_MODE_WARNING",
+    "MemberVisibilityCanBePrivate"
 )
 
 package com.couchbase.lite.kmp
@@ -8,7 +9,7 @@ package com.couchbase.lite.kmp
 object CBLError {
 
     // Error Domain
-    public object Domain {
+    object Domain {
 
         const val CBLITE = "CouchbaseLite"
         const val POSIX = "POSIXErrorDomain"

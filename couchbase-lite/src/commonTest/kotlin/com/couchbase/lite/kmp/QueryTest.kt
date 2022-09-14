@@ -1,7 +1,4 @@
-@file:Suppress(
-    "LocalVariableName",
-    "NO_ACTUAL_FOR_EXPECT" // https://youtrack.jetbrains.com/issue/KT-42466
-)
+@file:Suppress("LocalVariableName")
 
 package com.couchbase.lite.kmp
 

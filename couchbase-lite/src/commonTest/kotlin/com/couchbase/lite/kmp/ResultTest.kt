@@ -9,7 +9,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
 
 class ResultTest : BaseQueryTest() {
-    
+
     @Test
     fun testGetValueByKey() {
         for (i in 1..2) {
