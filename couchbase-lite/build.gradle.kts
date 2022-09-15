@@ -42,6 +42,7 @@ kotlin {
         license = "Apache License, Version 2.0"
         summary = "Couchbase Lite for Kotlin Multiplatform"
         ios.deploymentTarget = "9.0"
+        osx.deploymentTarget = "10.11"
         framework {
             baseName = this@cocoapods.name.replace('-', '_')
         }

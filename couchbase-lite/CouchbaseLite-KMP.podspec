@@ -9,6 +9,7 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/CouchbaseLite_KMP.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '9.0'
+    spec.osx.deployment_target = '10.11'
     spec.dependency 'CouchbaseLite', '3.0.2'
                 
     spec.pod_target_xcconfig = {
