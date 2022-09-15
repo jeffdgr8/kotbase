@@ -3,6 +3,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.*
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
 
@@ -200,6 +201,10 @@ val javadocJar = tasks.register<Jar>("javadocJar") {
 
 publishing.publications.withType<MavenPublication> {
     artifact(javadocJar)
+}
+
+tasks.withType<KotlinNativeSimulatorTest> {
+    deviceId = "iPhone 14"
 }
 
 // Internal headers required for tests
