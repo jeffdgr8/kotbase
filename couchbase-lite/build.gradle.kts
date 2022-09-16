@@ -6,6 +6,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
+import org.jetbrains.kotlin.konan.target.Architecture
+import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
     kotlin("multiplatform")
@@ -31,6 +33,15 @@ kotlin {
     iosSimulatorArm64()
     macosX64()
     macosArm64()
+    linuxX64()
+    // TODO: kotlinx atomicfu, datetime, and coroutines don't support arm64 or armhf
+    //  https://github.com/Kotlin/kotlinx.atomicfu/pull/193
+    //  https://github.com/Kotlin/kotlinx-datetime/issues/75
+    //  https://github.com/Kotlin/kotlinx.coroutines/issues/855
+    //  https://github.com/square/okio/issues/1006
+    //linuxArm64()
+    //linuxArm32Hfp()
+    mingwX64()
 
     cocoapods {
         name = "CouchbaseLite-KMP"
@@ -46,6 +57,7 @@ kotlin {
         osx.deploymentTarget = "10.11"
         framework {
             baseName = this@cocoapods.name.replace('-', '_')
+            isStatic = false
         }
         pod("CouchbaseLite") {
             version = cblVersion
@@ -59,21 +71,43 @@ kotlin {
     }
 
     targets.withType<KotlinNativeTarget> {
-        // Run iOS tests on background thread with main run loop
-        compilations["test"].kotlinOptions {
-            freeCompilerArgs += listOf("-e", "com.udobny.kmp.test.mainBackground")
+        if (konanTarget.family.isAppleFamily) {
+            // Run iOS tests on background thread with main run loop
+            compilations["test"].kotlinOptions {
+                freeCompilerArgs += listOf("-e", "com.udobny.kmp.test.mainBackground")
+            }
+        } else {
+            val os = when (konanTarget.family) {
+                Family.LINUX -> "linux"
+                Family.MINGW -> "windows"
+                else -> error("Unhandled native OS: $konanTarget")
+            }
+
+            val arch = when (konanTarget.architecture) {
+                Architecture.X64 -> "x86_64"
+                Architecture.ARM64 -> "arm64"
+                Architecture.ARM32 -> "armhf"
+                else -> error("Unhandled native architecture: $konanTarget")
+            }
+
+            val main by compilations.getting
+            val libcblite by main.cinterops.creating {
+                includeDirs.allHeaders("libs/libcblite/$os/$arch/libcblite-$cblVersion/include")
+            }
         }
     }
 
     /*
      * Source set dependency graph:
-     *                        ______common______
-     *                       |                  |
-     *              _______apple______      jvmCommon
-     *             |         |        |      |     |
-     *         ___ios__  macosX64 macosArm64 |     |
-     *        |    |   |                     |     |
-     * iosArm64 iosX64 iosSimulatorArm64  android jvm
+     *                                    ___________common____________
+     *                                   |                             |
+     *                        ______nativeCommon_____                  |
+     *                       |                       |                 |
+     *              _______apple______        _____native_____     jvmCommon
+     *             |         |        |      |     |    |     |     |     |
+     *         ___ios__  macosX64 macosArm64 |     |    |     |     |     |
+     *        |    |   |                  linuxX64 | mingwX64 |  android jvm
+     * iosArm64 iosX64 iosSimulatorArm64  linuxArm32Hfp linuxArm64
      */
 
     sourceSets {
@@ -136,11 +170,18 @@ kotlin {
             dependsOn(jvmCommonTest)
         }
 
-        val appleMain by creating {
+        val nativeCommonMain by creating {
             dependsOn(commonMain)
         }
-        val appleTest by creating {
+        val nativeCommonTest by creating {
             dependsOn(commonTest)
+        }
+
+        val appleMain by creating {
+            dependsOn(nativeCommonMain)
+        }
+        val appleTest by creating {
+            dependsOn(nativeCommonTest)
             // TODO: doesn't work, so using a copy task
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
@@ -171,6 +212,52 @@ kotlin {
         }
         val macosArm64Test by getting {
             dependsOn(appleTest)
+        }
+
+        val nativeMain by creating {
+            dependsOn(nativeCommonMain)
+        }
+        val nativeTest by creating {
+            dependsOn(nativeCommonTest)
+        }
+        val linuxX64Main by getting {
+            dependsOn(nativeMain)
+        }
+        val linuxX64Test by getting {
+            dependsOn(nativeTest)
+        }
+        // TODO: use linux arm builds from https://github.com/danbrough/kotlinxtras/
+        //val linuxArm64Main by getting {
+        //    dependsOn(nativeMain)
+        //    dependencies {
+        //        api("org.danbrough.kotlinx:kotlinx-datetime:0.4.0")
+        //        api("org.danbrough.kotlinx:kotlinx-coroutines-core:1.6.4")
+        //    }
+        //}
+        //val linuxArm64Test by getting {
+        //    dependsOn(nativeTest)
+        //    dependencies {
+        //        implementation("org.danbrough.kotlinx:atomicfu:0.18.3")
+        //    }
+        //}
+        //val linuxArm32HfpMain by getting {
+        //    dependsOn(nativeMain)
+        //    dependencies {
+        //        api("org.danbrough.kotlinx:kotlinx-datetime:0.4.0")
+        //        api("org.danbrough.kotlinx:kotlinx-coroutines-core:1.6.4")
+        //    }
+        //}
+        //val linuxArm32HfpTest by getting {
+        //    dependsOn(nativeTest)
+        //    dependencies {
+        //        implementation("org.danbrough.kotlinx:atomicfu:0.18.3")
+        //    }
+        //}
+        val mingwX64Main by getting {
+            dependsOn(nativeMain)
+        }
+        val mingwX64Test by getting {
+            dependsOn(nativeTest)
         }
     }
 }
