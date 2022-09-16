@@ -90,13 +90,9 @@ internal constructor(actual: CBLArray) :
 
         private var index = 0
 
-        override fun hasNext(): Boolean {
-            return index < count
-        }
+        override fun hasNext(): Boolean = index < count
 
-        override fun next(): Any? {
-            return getValue(index++)
-        }
+        override fun next(): Any? = getValue(index++)
     }
 
     // Throw IndexOutOfBoundException, avoid Objective-C NSRangeException
