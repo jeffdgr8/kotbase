@@ -35,8 +35,10 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
         )
     }
 
-    override fun removeChangeListener(token: ListenerToken) =
+    override fun removeChangeListener(token: ListenerToken) {
+        token as DelegatedListenerToken
         actual.removeChangeListenerWithToken(token.actual)
+    }
 }
 
 @Suppress("MemberVisibilityCanBePrivate")

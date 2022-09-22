@@ -44,7 +44,7 @@ public expect class Database {
          * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
          */
         @Throws(CouchbaseLiteException::class)
-        public fun delete(name: String, directory: String?)
+        public fun delete(name: String, directory: String? = null)
 
         /**
          * Checks whether a database of the given name exists in the given directory or not.
@@ -53,7 +53,7 @@ public expect class Database {
          * @param directory the path where the database is located.
          * @return true if exists, false otherwise.
          */
-        public fun exists(name: String, directory: String): Boolean
+        public fun exists(name: String, directory: String? = null): Boolean
 
         /**
          * Make a copy of a database in a new location.
@@ -64,7 +64,7 @@ public expect class Database {
          * @throws CouchbaseLiteException on copy failure
          */
         @Throws(CouchbaseLiteException::class)
-        public fun copy(path: String, name: String, config: DatabaseConfiguration)
+        public fun copy(path: String, name: String, config: DatabaseConfiguration? = null)
     }
 
     /**

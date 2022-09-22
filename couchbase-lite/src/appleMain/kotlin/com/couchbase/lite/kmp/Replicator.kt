@@ -70,6 +70,7 @@ internal constructor(actual: CBLReplicator) :
     //public actual fun addDocumentReplicationListener(executor: Executor?, listener: DocumentReplicationListener): ListenerToken
 
     public actual fun removeChangeListener(token: ListenerToken) {
+        token as DelegatedListenerToken
         actual.removeChangeListenerWithToken(token.actual)
     }
 }

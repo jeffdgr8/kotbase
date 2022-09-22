@@ -7,10 +7,8 @@ import java.util.EnumSet
 
 internal fun ReplicationFilter.convert() = DelegatedReplicationFilter(this)
 
-internal class DelegatedReplicationFilter
-internal constructor(actual: ReplicationFilter) :
-    DelegatedClass<ReplicationFilter>(actual),
-    com.couchbase.lite.ReplicationFilter {
+internal class DelegatedReplicationFilter(actual: ReplicationFilter) :
+    DelegatedClass<ReplicationFilter>(actual), com.couchbase.lite.ReplicationFilter {
 
     override fun filtered(
         document: com.couchbase.lite.Document,

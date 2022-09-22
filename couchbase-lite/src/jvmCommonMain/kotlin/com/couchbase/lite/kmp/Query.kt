@@ -2,8 +2,7 @@ package com.couchbase.lite.kmp
 
 import com.udobny.kmp.DelegatedClass
 
-internal class DelegatedQuery
-internal constructor(actual: com.couchbase.lite.Query) :
+internal class DelegatedQuery(actual: com.couchbase.lite.Query) :
     DelegatedClass<com.couchbase.lite.Query>(actual), Query {
 
     override var parameters: Parameters?

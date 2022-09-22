@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.UnitOfWork
+import com.couchbase.lite.internal.CouchbaseLiteInternal
 import com.udobny.kmp.DelegatedClass
 import com.udobny.kmp.ext.toDate
 import com.udobny.kmp.ext.toFile
@@ -28,12 +29,22 @@ internal constructor(actual: com.couchbase.lite.Database) :
             com.couchbase.lite.Database.delete(name, directory?.toFile())
         }
 
-        public actual fun exists(name: String, directory: String): Boolean =
-            com.couchbase.lite.Database.exists(name, File(directory))
+        public actual fun exists(name: String, directory: String?): Boolean =
+            com.couchbase.lite.Database.exists(
+                name,
+                // TODO: remove CouchbaseLiteInternal.getRootDir() when nullable in Java SDK
+                //  should be in 3.1
+                //  https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/6
+                directory?.let { File(it) } ?: CouchbaseLiteInternal.getRootDir()
+            )
 
         @Throws(CouchbaseLiteException::class)
-        public actual fun copy(path: String, name: String, config: DatabaseConfiguration) {
-            com.couchbase.lite.Database.copy(File(path), name, config.actual)
+        public actual fun copy(path: String, name: String, config: DatabaseConfiguration?) {
+            com.couchbase.lite.Database.copy(
+                File(path),
+                name,
+                config?.actual ?: com.couchbase.lite.DatabaseConfiguration()
+            )
         }
     }
 

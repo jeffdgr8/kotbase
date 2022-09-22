@@ -8,8 +8,7 @@ import platform.darwin.NSObject
 internal fun ConflictResolver.convert(): CBLConflictResolverProtocol =
     DelegatedConflictResolver(this)
 
-internal class DelegatedConflictResolver
-internal constructor(internal val actual: ConflictResolver) :
+internal class DelegatedConflictResolver(val actual: ConflictResolver) :
     NSObject(), CBLConflictResolverProtocol {
 
     override fun resolve(conflict: CBLConflict): CBLDocument =

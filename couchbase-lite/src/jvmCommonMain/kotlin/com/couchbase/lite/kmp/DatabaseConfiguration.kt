@@ -10,8 +10,6 @@ internal constructor(actual: com.couchbase.lite.DatabaseConfiguration) :
         com.couchbase.lite.DatabaseConfiguration(config?.actual)
     )
 
-    public constructor() : this(null)
-
     public actual fun setDirectory(directory: String): DatabaseConfiguration = chain {
         setDirectory(directory)
     }

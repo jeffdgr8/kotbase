@@ -30,7 +30,7 @@ public expect class MutableArray : Array {
     public constructor(json: String)
 
     /**
-     * Populate an array with content from a Map.
+     * Populate an array with content from a List.
      * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
      * If present, Lists, Maps and Dictionaries may contain only the above types.
      * Setting the array content will replace the current data including

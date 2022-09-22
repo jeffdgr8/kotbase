@@ -62,12 +62,12 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
         setBlob(index, value?.actual)
     }
 
-    public actual fun setArray(index: Int, value: Array?): MutableArray = chain {
-        setArray(index, value?.actual)
-    }
-
     public actual fun setDate(index: Int, value: Instant?): MutableArray = chain {
         setDate(index, value?.toDate())
+    }
+
+    public actual fun setArray(index: Int, value: Array?): MutableArray = chain {
+        setArray(index, value?.actual)
     }
 
     public actual fun setDictionary(index: Int, value: Dictionary?): MutableArray = chain {

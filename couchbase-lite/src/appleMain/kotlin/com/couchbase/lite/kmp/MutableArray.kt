@@ -101,15 +101,15 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         setBlob(value?.actual, index.convert())
     }
 
+    public actual fun setDate(index: Int, value: Instant?): MutableArray = chain {
+        checkIndex(index)
+        setDate(value?.toNSDate(), index.convert())
+    }
+
     public actual fun setArray(index: Int, value: Array?): MutableArray = chain {
         checkSelf(value)
         checkIndex(index)
         setArray(value?.actual, index.convert())
-    }
-
-    public actual fun setDate(index: Int, value: Instant?): MutableArray = chain {
-        checkIndex(index)
-        setDate(value?.toNSDate(), index.convert())
     }
 
     public actual fun setDictionary(index: Int, value: Dictionary?): MutableArray = chain {

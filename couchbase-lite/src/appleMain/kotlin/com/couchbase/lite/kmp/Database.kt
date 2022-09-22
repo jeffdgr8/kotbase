@@ -53,13 +53,13 @@ internal constructor(actual: CBLDatabase) :
             }
         }
 
-        public actual fun exists(name: String, directory: String): Boolean =
+        public actual fun exists(name: String, directory: String?): Boolean =
             CBLDatabase.databaseExists(name, directory)
 
         @Throws(CouchbaseLiteException::class)
-        public actual fun copy(path: String, name: String, config: DatabaseConfiguration) {
+        public actual fun copy(path: String, name: String, config: DatabaseConfiguration?) {
             wrapError(NSError::toCouchbaseLiteException) { error ->
-                CBLDatabase.copyFromPath(path, name, config.actual, error)
+                CBLDatabase.copyFromPath(path, name, config?.actual, error)
             }
         }
     }
@@ -221,6 +221,7 @@ internal constructor(actual: CBLDatabase) :
     }
 
     public actual fun removeChangeListener(token: ListenerToken) {
+        token as DelegatedListenerToken
         actual.removeChangeListenerWithToken(token.actual)
     }
 
