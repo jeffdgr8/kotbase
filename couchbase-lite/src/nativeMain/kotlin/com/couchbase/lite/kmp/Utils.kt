@@ -35,7 +35,8 @@ internal fun <R, E : Exception> wrapError(
     }
 }
 
-internal fun CBLError.toExceptionNotNull(): CouchbaseLiteException = toException()!!
+internal fun CBLError.toExceptionNotNull(info: Map<String, Any?>? = null): CouchbaseLiteException =
+    toException()!!
 
 internal fun CBLError.toException(info: Map<String, Any?>? = null): CouchbaseLiteException? {
     if (domain == 0.convert() && code == 0) return null

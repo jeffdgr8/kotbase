@@ -75,6 +75,6 @@ internal fun Set<LogDomain>.toCBLLogDomain(): CBLLogDomain {
     return domains
 }
 
-// For some reason this enterprise constant value isn't showing up in Kotlin
+// This constant is enterprise only in the Objective-C SDK, but not Java
 // https://github.com/couchbase/couchbase-lite-ios/blob/master/Objective-C/CBLLogger.h#L32
 private val kCBLLogDomainListener = 1UL shl 4

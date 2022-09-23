@@ -37,7 +37,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     public actual companion object {
 
         public actual val log: Log by lazy {
-            Log(CBLDatabase.log())
+            Log()
         }
 
         @Throws(CouchbaseLiteException::class)
@@ -343,7 +343,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
         val actualQuery = memScoped {
             val errorPos = alloc<IntVar>()
             wrapError({
-                toException(mapOf("position" to errorPos.value))
+                toExceptionNotNull(mapOf("position" to errorPos.value))
             }) { error ->
                 mustBeOpen {
                     CBLDatabase_CreateQuery(
