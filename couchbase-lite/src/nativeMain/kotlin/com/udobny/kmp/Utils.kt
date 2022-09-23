@@ -13,9 +13,9 @@ public inline fun <reified T : CStructVar, R> CPointer<T>.toList(
     transform: (CPointer<T>) -> R
 ): List<R> {
     val array = this
-    return buildList {
-        repeat(size) { index ->
-            add(transform(array[index].ptr))
+    return buildList(size) {
+        repeat(size) { i ->
+            add(transform(array[i].ptr))
         }
     }
 }

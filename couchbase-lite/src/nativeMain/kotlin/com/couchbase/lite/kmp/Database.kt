@@ -266,8 +266,9 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
                 CBLDatabase_AddChangeListener(
                     actual,
                     staticCFunction { idx, _, numDocs, docIds ->
-                        val documentIds = buildList {
-                            for (i in 0 until numDocs.toInt()) {
+                        val size = numDocs.toInt()
+                        val documentIds = buildList(size) {
+                            repeat(size) { i ->
                                 add(docIds!![i].toKString()!!)
                             }
                         }
