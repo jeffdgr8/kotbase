@@ -3,9 +3,7 @@ package com.couchbase.lite.kmp.internal.fleece
 import com.couchbase.lite.kmp.Blob
 import kotlinx.cinterop.memScoped
 import kotlinx.datetime.Instant
-import libcblite.FLDict
-import libcblite.FLDict_Get
-import libcblite.FLValue_AsBool
+import libcblite.*
 
 internal fun FLDict.toMap(): Map<String, Any?> {
     return buildMap {
@@ -65,5 +63,13 @@ internal fun FLDict.getDate(key: String): Instant? {
         Instant.parse(string)
     } catch (e: Throwable) {
         null
+    }
+}
+
+internal fun Map<String, String>.toFLDict(): FLDict {
+    return FLMutableDict_New()!!.apply {
+        forEach { (key, value) ->
+            FLMutableDict_SetString(this, key.toFLString(), value.toFLString())
+        }
     }
 }

@@ -47,6 +47,7 @@ constructor(config: ReplicatorConfiguration) {
      */
     public val status: ReplicatorStatus
 
+    // Implemented in each target
     /**
      * The server certificates received from the server during the TLS handshake.
      *

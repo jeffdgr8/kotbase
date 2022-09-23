@@ -13,7 +13,7 @@ internal fun invalidTypeError(value: Any) {
 
 internal fun <R> wrapError(
     action: (error: CPointer<CBLError>) -> R
-): R = wrapError(CBLError::toException, action)
+): R = wrapError(CBLError::toExceptionNotNull, action)
 
 internal fun <R, E : Exception> wrapError(
     exceptionFactory: CBLError.() -> E,
@@ -35,7 +35,10 @@ internal fun <R, E : Exception> wrapError(
     }
 }
 
-internal fun CBLError.toException(info: Map<String, Any?>? = null): CouchbaseLiteException {
+internal fun CBLError.toExceptionNotNull(): CouchbaseLiteException = toException()!!
+
+internal fun CBLError.toException(info: Map<String, Any?>? = null): CouchbaseLiteException? {
+    if (domain == 0.convert() && code == 0) return null
     val domain = when (domain.toUInt()) {
         kCBLDomain -> com.couchbase.lite.kmp.CBLError.Domain.CBLITE
         kCBLPOSIXDomain -> com.couchbase.lite.kmp.CBLError.Domain.POSIX

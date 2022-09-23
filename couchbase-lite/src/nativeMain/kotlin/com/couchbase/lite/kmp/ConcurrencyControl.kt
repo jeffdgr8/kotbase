@@ -11,9 +11,9 @@ public actual enum class ConcurrencyControl {
 
     internal val actual: CBLConcurrencyControl
         get() = when (this) {
-            LAST_WRITE_WINS -> kCBLConcurrencyControlLastWriteWins.convert()
-            FAIL_ON_CONFLICT -> kCBLConcurrencyControlFailOnConflict.convert()
-        }
+            LAST_WRITE_WINS -> kCBLConcurrencyControlLastWriteWins
+            FAIL_ON_CONFLICT -> kCBLConcurrencyControlFailOnConflict
+        }.convert()
 
     internal companion object {
 

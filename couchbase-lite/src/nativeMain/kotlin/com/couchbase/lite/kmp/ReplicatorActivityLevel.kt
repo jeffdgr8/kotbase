@@ -1,7 +1,7 @@
 package com.couchbase.lite.kmp
 
-import cocoapods.CouchbaseLite.CBLReplicatorActivityLevel
-import cocoapods.CouchbaseLite.CBLReplicatorActivityLevel.*
+import kotlinx.cinterop.convert
+import libcblite.*
 
 public actual enum class ReplicatorActivityLevel {
     STOPPED,
@@ -17,12 +17,12 @@ public actual enum class ReplicatorActivityLevel {
             CONNECTING -> kCBLReplicatorConnecting
             IDLE -> kCBLReplicatorIdle
             BUSY -> kCBLReplicatorBusy
-        }
+        }.convert()
 
     internal companion object {
 
         internal fun from(activityLevel: CBLReplicatorActivityLevel): ReplicatorActivityLevel {
-            return when (activityLevel) {
+            return when (activityLevel.toUInt()) {
                 kCBLReplicatorStopped -> STOPPED
                 kCBLReplicatorOffline -> OFFLINE
                 kCBLReplicatorConnecting -> CONNECTING

@@ -4,7 +4,7 @@ import com.couchbase.lite.kmp.internal.fleece.parseJson
 import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.fleece.toObject
 import com.udobny.kmp.ext.toStringMillis
-import kotlinx.cinterop.*
+import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import libcblite.*
 

@@ -1,9 +1,7 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.fleece.*
-import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.fleece.toKString
-import com.couchbase.lite.kmp.internal.fleece.toNative
 import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
 import libcblite.*

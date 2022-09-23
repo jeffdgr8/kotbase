@@ -265,14 +265,14 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
             DelegatedListenerToken(
                 CBLDatabase_AddChangeListener(
                     actual,
-                    staticCFunction { idx, db, numDocs, docIds ->
+                    staticCFunction { idx, _, numDocs, docIds ->
                         val documentIds = buildList {
                             for (i in 0 until numDocs.toInt()) {
                                 add(docIds!![i].toKString()!!)
                             }
                         }
                         changeListeners[idx.toLong().toInt()]!!(
-                            DatabaseChange(Database(db!!), documentIds)
+                            DatabaseChange(this, documentIds)
                         )
                     },
                     index.toLong().toCPointer<CPointed>()
