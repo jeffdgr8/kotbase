@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.internal.toException
 import kotlinx.cinterop.*
 import libcblite.CBLReplicatorStatus
 import kotlin.native.internal.createCleaner

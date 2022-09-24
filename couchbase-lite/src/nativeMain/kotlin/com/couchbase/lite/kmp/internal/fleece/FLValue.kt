@@ -53,27 +53,13 @@ internal fun FLValue.toObject(): Any? {
     }
 }
 
-internal fun parseJson(json: String): FLValue? {
-    val enc = FLEncoder_New()
-    memScoped {
-        if (!FLEncoder_ConvertJSON(enc, json.toFLString(this))) {
-            val code = FLEncoder_GetError(enc)
-            val message = FLEncoder_GetErrorMessage(enc)?.toKString()
-                ?: "Error converting JSON (code = $code)"
-            throw CouchbaseLiteException(message, CBLError.Domain.FLEECE, code.toInt())
+internal fun parseJson(json: String): Any? {
+    val doc = wrapFLError { error ->
+        memScoped {
+            FLDoc_FromJSON(json.toFLString(this), error)
         }
-
-        val error = alloc<FLErrorVar>()
-        val result = FLEncoder_Finish(enc, error.ptr)
-        if (error.value != 0U || result.useContents { buf == null }) {
-            val message = "Error decoding JSON (code = ${error.value}) or empty result"
-            throw CouchbaseLiteException(message, CBLError.Domain.FLEECE, error.value.toInt())
-        }
-
-        val doc = FLDoc_FromResultData(result, FLTrust.kFLTrusted, null, cValue())
-        FLSliceResult_Release(result)
-        val value = FLDoc_GetRoot(doc)
+    }
+    return FLDoc_GetRoot(doc)?.toObject().also {
         FLDoc_Release(doc)
-        return value
     }
 }

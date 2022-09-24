@@ -2,7 +2,7 @@ package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.fleece.parseJson
 import com.couchbase.lite.kmp.internal.fleece.toFLString
-import com.couchbase.lite.kmp.internal.fleece.toObject
+import com.couchbase.lite.kmp.internal.fleece.wrapFLError
 import com.udobny.kmp.ext.toStringMillis
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
@@ -20,9 +20,12 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
         setData(data)
     }
 
-    public actual constructor(json: String) : this() {
-        setJSON(json)
-    }
+    public actual constructor(json: String) : this(
+        // TODO: fix double retain
+        wrapFLError { error ->
+            FLMutableArray_NewFromJSON(json.toFLString(), error)!!
+        }
+    )
 
     override val isMutable: Boolean = true
 
@@ -35,7 +38,7 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
     }
 
     public actual fun setJSON(json: String): MutableArray {
-        val data = parseJson(json)?.toObject() as? List<Any?>
+        val data = parseJson(json) as? List<Any?>
             ?: error("Parsed result is not an Array")
         setData(data)
         return this

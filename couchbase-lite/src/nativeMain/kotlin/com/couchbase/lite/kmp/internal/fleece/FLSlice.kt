@@ -32,6 +32,7 @@ internal fun CValue<FLSliceResult>.toByteArray(): ByteArray {
     return result
 }
 
+// TODO: should this use nativeHeap like this?
 internal fun ByteArray.toFLSlice(): CValue<FLSlice> =
     cValue {
         buf = nativeHeap.allocArrayOf(this@toFLSlice)

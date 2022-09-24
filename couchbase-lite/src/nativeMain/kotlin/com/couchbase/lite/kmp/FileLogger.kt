@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.fleece.toFLString
+import com.couchbase.lite.kmp.internal.wrapCBLError
 import kotlinx.cinterop.memScoped
 import libcblite.CBLLog_SetFileConfig
 import libcblite.CBL_LogMessage
@@ -11,7 +12,7 @@ public actual class FileLogger : Logger {
         set(value) {
             value ?: error("Can't set FileLogger.config to null in C SDK")
             field = value
-            wrapError { error ->
+            wrapCBLError { error ->
                 CBLLog_SetFileConfig(value.getActual(level), error)
             }
         }

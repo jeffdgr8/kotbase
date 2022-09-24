@@ -19,9 +19,12 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
         setData(data)
     }
 
-    public actual constructor(json: String) : this() {
-        setJSON(json)
-    }
+    public actual constructor(json: String) : this(
+        // TODO: fix double retain
+        wrapFLError { error ->
+            FLMutableDict_NewFromJSON(json.toFLString(), error)!!
+        }
+    )
 
     override val isMutable: Boolean = true
 
@@ -35,9 +38,9 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
 
     public actual fun setJSON(json: String): MutableDictionary {
         @Suppress("UNCHECKED_CAST")
-        (parseJson(json) as? Map<String, Any?>)?.let { data ->
-            setData(data)
-        }
+        val data = parseJson(json) as? Map<String, Any?>
+            ?: error("Parsed result is not a Dictionary")
+        setData(data)
         return this
     }
 

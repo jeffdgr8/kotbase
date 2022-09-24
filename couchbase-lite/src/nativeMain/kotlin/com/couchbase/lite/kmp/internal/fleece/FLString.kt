@@ -22,6 +22,7 @@ internal fun CValue<FLStringResult>.toKString(): String? {
     return result
 }
 
+// TODO: ensure all usages of this actually take ownership of heap allocated C string
 internal fun String?.toFLString(): CValue<FLString> {
     val string = this@toFLString
     return cValue {

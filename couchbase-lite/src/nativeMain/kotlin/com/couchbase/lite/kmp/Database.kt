@@ -4,7 +4,9 @@ import cnames.structs.CBLDatabase
 import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.fleece.toKString
 import com.couchbase.lite.kmp.internal.fleece.toList
+import com.couchbase.lite.kmp.internal.toExceptionNotNull
 import com.couchbase.lite.kmp.internal.toKotlinInstant
+import com.couchbase.lite.kmp.internal.wrapCBLError
 import kotlinx.cinterop.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -29,7 +31,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String, config: DatabaseConfiguration) : this(
-        wrapError { error ->
+        wrapCBLError { error ->
             CBLDatabase_Open(name.toFLString(), config.actual, error)!!
         }
     )
@@ -50,7 +52,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
                     CBLError.Code.NOT_FOUND
                 )
             }
-            wrapError { error ->
+            wrapCBLError { error ->
                 CBL_DeleteDatabase(name.toFLString(), directory.toFLString(), error)
             }
         }
@@ -60,7 +62,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
         @Throws(CouchbaseLiteException::class)
         public actual fun copy(path: String, name: String, config: DatabaseConfiguration?) {
-            wrapError { error ->
+            wrapCBLError { error ->
                 CBL_CopyDatabase(path.toFLString(), name.toFLString(), config?.actual, error)
             }
         }
@@ -80,7 +82,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     public actual fun getDocument(id: String): Document? {
         return mustBeOpen {
-            wrapError { error ->
+            wrapCBLError { error ->
                 CBLDatabase_GetDocument(actual, id.toFLString(), error)?.asDocument()
             }
         }
@@ -88,7 +90,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
-        wrapError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 CBLDatabase_SaveDocument(actual, document.actual, error)
             }
@@ -101,7 +103,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
         concurrencyControl: ConcurrencyControl
     ): Boolean {
         return try {
-            wrapError { error ->
+            wrapCBLError { error ->
                 mustBeOpen {
                     CBLDatabase_SaveDocumentWithConcurrencyControl(
                         actual,
@@ -125,7 +127,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
-        return wrapError { error ->
+        return wrapCBLError { error ->
             try {
                 mustBeOpen {
                     this.conflictHandler = conflictHandler
@@ -157,7 +159,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
-        wrapError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 CBLDatabase_DeleteDocument(actual, document.actual, error)
             }
@@ -167,7 +169,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
         return try {
-            wrapError { error ->
+            wrapCBLError { error ->
                 mustBeOpen {
                     CBLDatabase_DeleteDocumentWithConcurrencyControl(
                         actual,
@@ -190,7 +192,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
         try {
-            wrapError { error ->
+            wrapCBLError { error ->
                 mustBeOpen {
                     CBLDatabase_PurgeDocument(actual, document.actual, error)
                 }
@@ -206,7 +208,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
-        wrapError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 CBLDatabase_PurgeDocumentByID(actual, id.toFLString(), error)
             }
@@ -215,7 +217,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
-        wrapError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 CBLDatabase_SetDocumentExpiration(
                     actual,
@@ -229,7 +231,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocumentExpiration(id: String): Instant? {
-        return wrapError { error ->
+        return wrapCBLError { error ->
             mustBeOpen {
                 CBLDatabase_GetDocumentExpiration(actual, id.toFLString(), error).toKotlinInstant()
             }
@@ -239,7 +241,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     @Throws(CouchbaseLiteException::class)
     public actual fun <R> inBatch(work: Database.() -> R): R {
         return mustBeOpen {
-            wrapError { error ->
+            wrapCBLError { error ->
                 CBLDatabase_BeginTransaction(actual, error)
             }
 
@@ -249,7 +251,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
                 result = this@Database.work()
                 commit = true
             } finally {
-                wrapError { error ->
+                wrapCBLError { error ->
                     CBLDatabase_EndTransaction(actual, commit, error)
                 }
             }
@@ -321,7 +323,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun close() {
-        wrapError { error ->
+        wrapCBLError { error ->
             withLock {
                 isClosed = true
                 CBLDatabase_Close(actual, error)
@@ -331,7 +333,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete() {
-        wrapError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 CBLDatabase_Delete(actual, error)
             }
@@ -342,7 +344,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     public actual fun createQuery(query: String): Query {
         val actualQuery = memScoped {
             val errorPos = alloc<IntVar>()
-            wrapError({
+            wrapCBLError({
                 toExceptionNotNull(mapOf("position" to errorPos.value))
             }) { error ->
                 mustBeOpen {
@@ -370,7 +372,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
-        wrapError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 memScoped {
                     when (index) {
@@ -395,7 +397,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
-        wrapError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 memScoped {
                     when (config) {
@@ -420,7 +422,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {
-        wrapError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 CBLDatabase_DeleteIndex(actual, name.toFLString(), error)
             }
@@ -429,7 +431,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun performMaintenance(type: MaintenanceType): Boolean {
-        return wrapError { error ->
+        return wrapCBLError { error ->
             mustBeOpen {
                 CBLDatabase_PerformMaintenance(actual, type.actual, error)
             }

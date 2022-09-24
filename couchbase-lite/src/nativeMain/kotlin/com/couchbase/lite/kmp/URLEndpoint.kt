@@ -2,6 +2,7 @@ package com.couchbase.lite.kmp
 
 import cnames.structs.CBLEndpoint
 import com.couchbase.lite.kmp.internal.fleece.toFLString
+import com.couchbase.lite.kmp.internal.wrapCBLError
 import kotlinx.cinterop.CPointer
 import libcblite.CBLEndpoint_CreateWithURL
 import libcblite.CBLEndpoint_Free
@@ -20,7 +21,7 @@ internal constructor(
     }
 
     public actual constructor(url: String) : this(
-        wrapError { error ->
+        wrapCBLError { error ->
             CBLEndpoint_CreateWithURL(url.toFLString(), error)!!
         },
         url

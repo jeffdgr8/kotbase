@@ -50,7 +50,7 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
 
     public actual fun setJSON(json: String): MutableDocument {
         @Suppress("UNCHECKED_CAST")
-        val data = parseJson(json)?.toObject() as? Map<String, Any?>
+        val data = parseJson(json) as? Map<String, Any?>
             ?: error("Parsed result is not a Dictionary")
         setData(data)
         return this

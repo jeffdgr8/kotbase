@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.fleece.toKString
+import com.couchbase.lite.kmp.internal.toException
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.pointed
 import libcblite.CBLReplicatedDocument

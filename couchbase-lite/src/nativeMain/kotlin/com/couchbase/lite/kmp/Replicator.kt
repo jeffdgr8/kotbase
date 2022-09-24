@@ -3,6 +3,7 @@ package com.couchbase.lite.kmp
 import cnames.structs.CBLReplicator
 import com.couchbase.lite.kmp.internal.fleece.keys
 import com.couchbase.lite.kmp.internal.fleece.toFLString
+import com.couchbase.lite.kmp.internal.wrapCBLError
 import com.udobny.kmp.toList
 import kotlinx.cinterop.*
 import libcblite.*
@@ -21,7 +22,7 @@ internal constructor(
     }
 
     public actual constructor(config: ReplicatorConfiguration) : this(
-        wrapError { error ->
+        wrapCBLError { error ->
             CBLReplicator_Create(config.getActual(), error)!!
         },
         config
@@ -51,7 +52,7 @@ internal constructor(
     //    get() = actual.serverCertificate
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun getPendingDocumentIds(): Set<String> = wrapError { error ->
+    public actual fun getPendingDocumentIds(): Set<String> = wrapCBLError { error ->
         val dict = CBLReplicator_PendingDocumentIDs(actual, error)!!
         dict.keys().toSet().also {
             FLDict_Release(dict)
@@ -59,7 +60,7 @@ internal constructor(
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun isDocumentPending(docId: String): Boolean = wrapError { error ->
+    public actual fun isDocumentPending(docId: String): Boolean = wrapCBLError { error ->
         CBLReplicator_IsDocumentPending(actual, docId.toFLString(), error)
     }
 

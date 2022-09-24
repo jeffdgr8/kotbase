@@ -6,6 +6,7 @@ import com.couchbase.lite.kmp.internal.fleece.toByteArray
 import com.couchbase.lite.kmp.internal.fleece.toFLSlice
 import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.fleece.toKString
+import com.couchbase.lite.kmp.internal.wrapCBLError
 import com.soywiz.korio.file.std.cwdVfs
 import kotlinx.cinterop.*
 import kotlinx.coroutines.runBlocking
@@ -59,14 +60,14 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
 
     public actual val content: ByteArray?
         get() {
-            return wrapError { error ->
+            return wrapCBLError { error ->
                 CBLBlob_Content(actual, error).toByteArray()
             }
             // TODO: throw exception when database is closed
         }
 
     public actual val contentStream: Source?
-        get() = wrapError { error ->
+        get() = wrapCBLError { error ->
             // TODO: stream data
             //CBLBlob_OpenContentStream(actual, error)?.source()
             null
