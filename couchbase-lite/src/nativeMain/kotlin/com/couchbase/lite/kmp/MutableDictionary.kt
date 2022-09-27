@@ -114,9 +114,6 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
 
     actual override fun getDictionary(key: String): MutableDictionary? =
         FLMutableDict_GetMutableDict(actual, key.toFLString())?.asMutableDictionary()
-
-    override fun toJSON(): String =
-        throw IllegalStateException("Mutable objects may not be encoded as JSON")
 }
 
 internal fun FLMutableDict.asMutableDictionary() = MutableDictionary(this)

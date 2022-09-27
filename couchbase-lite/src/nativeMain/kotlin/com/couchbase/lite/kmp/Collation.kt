@@ -1,10 +1,21 @@
 package com.couchbase.lite.kmp
 
-public actual open class Collation {
+public actual open class Collation(private val isUnicode: Boolean) {
 
+    protected var locale: String? = null
+    protected var ignAccents: Boolean = false
     protected var ignCase: Boolean = false
 
-    public actual class ASCII : Collation() {
+    internal fun asJSON(): Dictionary {
+        return MutableDictionary().apply {
+            setBoolean("UNICODE", isUnicode)
+            setString("LOCALE", locale)
+            setBoolean("CASE", ignCase)
+            setBoolean("DIAC", ignAccents)
+        }
+    }
+
+    public actual class ASCII : Collation(false) {
 
         public actual fun setIgnoreCase(ignCase: Boolean): ASCII {
             this.ignCase = ignCase
@@ -12,10 +23,7 @@ public actual open class Collation {
         }
     }
 
-    public actual class Unicode : Collation() {
-
-        private var locale: String? = null
-        private var ignAccents: Boolean = false
+    public actual class Unicode : Collation(true) {
 
         public actual fun setLocale(locale: String?): Unicode {
             this.locale = locale

@@ -360,9 +360,6 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
         return FLMutableArray_GetMutableDict(actual, index.convert())?.asMutableDictionary()
     }
 
-    override fun toJSON(): String =
-        throw IllegalStateException("Mutable objects may not be encoded as JSON")
-
     private fun checkSelf(value: FLMutableArray) {
         if (value === actual) {
             throw IllegalArgumentException("Arrays cannot ba added to themselves")
