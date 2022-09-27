@@ -1,11 +1,13 @@
 package com.couchbase.lite.kmp
 
-import com.udobny.kmp.DelegatedClass
+import com.udobny.kmp.chain
 import java.util.*
 
 public actual class FullTextIndex
-internal constructor(override val actual: com.couchbase.lite.FullTextIndex) :
-    DelegatedClass<com.couchbase.lite.FullTextIndex>(actual), Index {
+internal constructor(override val actual: com.couchbase.lite.FullTextIndex) : Index(actual) {
+
+    private inline fun chain(action: com.couchbase.lite.FullTextIndex.() -> Unit) =
+        chain(actual, action)
 
     public actual fun setLanguage(language: String?): FullTextIndex = chain {
         setLanguage(language)

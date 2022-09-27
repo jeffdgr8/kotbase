@@ -5,7 +5,7 @@ import libcblite.CBLFullTextIndexConfiguration
 import libcblite.kCBLN1QLLanguage
 
 public actual class FullTextIndex
-internal constructor(private val items: List<FullTextIndexItem>) : Index {
+internal constructor(private val items: List<FullTextIndexItem>) : Index() {
 
     public actual fun setLanguage(language: String?): FullTextIndex {
         this.language = language
@@ -22,9 +22,11 @@ internal constructor(private val items: List<FullTextIndexItem>) : Index {
     public actual var isIgnoringAccents: Boolean = false
 
     private fun getJson(): String {
-        return items.joinToString(separator = ",", prefix = "[", postfix = "]") {
-            it.expression.asJson()
-        }
+        return MutableArray().apply {
+            items.forEach {
+                addValue(it.expression.asJSON())
+            }
+        }.toJSON()
     }
 
     internal fun getActual(memScope: MemScope): CValue<CBLFullTextIndexConfiguration> {

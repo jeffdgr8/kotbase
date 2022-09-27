@@ -3,7 +3,7 @@ package com.couchbase.lite.kmp
 import com.udobny.kmp.DelegatedClass
 import com.udobny.kmp.chain
 
-public actual open class Ordering
+public actual abstract class Ordering
 private constructor(actual: com.couchbase.lite.Ordering) :
     DelegatedClass<com.couchbase.lite.Ordering>(actual) {
 

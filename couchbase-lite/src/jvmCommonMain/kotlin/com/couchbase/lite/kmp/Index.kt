@@ -1,6 +1,6 @@
 package com.couchbase.lite.kmp
 
-public actual interface Index {
+import com.udobny.kmp.DelegatedClass
 
-    public val actual: com.couchbase.lite.Index
-}
+public actual abstract class Index(actual: com.couchbase.lite.Index) :
+    DelegatedClass<com.couchbase.lite.Index>(actual)

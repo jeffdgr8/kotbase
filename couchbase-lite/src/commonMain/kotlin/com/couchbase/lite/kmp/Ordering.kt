@@ -3,7 +3,7 @@ package com.couchbase.lite.kmp
 /**
  * An Ordering represents a single ordering component in the query ORDER BY clause.
  */
-public expect open class Ordering {
+public expect abstract class Ordering {
 
     /**
      * SortOrder represents a single ORDER BY entity. You can specify either ascending or

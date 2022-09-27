@@ -1,8 +1,6 @@
 package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.CBLIndex
+import com.udobny.kmp.DelegatedClass
 
-public actual interface Index {
-
-    public val actual: CBLIndex
-}
+public actual abstract class Index(actual: CBLIndex) : DelegatedClass<CBLIndex>(actual)

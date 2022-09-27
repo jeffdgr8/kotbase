@@ -3,8 +3,7 @@ package com.couchbase.lite.kmp
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 
-public actual open class Expression
-internal constructor(actual: CBLQueryExpression) {
+public actual open class Expression {
 
     public actual companion object {
 
@@ -123,8 +122,8 @@ internal constructor(actual: CBLQueryExpression) {
     public actual fun `in`(vararg expressions: Expression): Expression =
         Expression(actual.`in`(expressions.actuals()))
 
-    internal fun asJson(): String {
-        // TODO: implement Expression.asJson() for all expression types
+    internal fun asJSON(): Any {
+        // TODO: implement Expression.asJSON() for all expression types
         return "todo"
     }
 }

@@ -1,9 +1,7 @@
 package com.couchbase.lite.kmp
 
 import cnames.structs.CBLQuery
-import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.fleece.toKString
-import com.couchbase.lite.kmp.internal.toExceptionNotNull
 import com.couchbase.lite.kmp.internal.wrapCBLError
 import kotlinx.cinterop.*
 import libcblite.*
@@ -68,29 +66,81 @@ internal abstract class AbstractQuery : Query {
 
 @Suppress("MemberVisibilityCanBePrivate")
 internal class QueryState(
-    var select: List<CBLQuerySelectResult>,
+    var select: List<SelectResult>,
     var distinct: Boolean = false
 ) : AbstractQuery() {
 
-    var from: CBLQueryDataSource? = null
-    var join: List<CBLQueryJoin>? = null
-    var where: CBLQueryExpression? = null
-    var groupBy: List<CBLQueryExpression>? = null
-    var having: CBLQueryExpression? = null
-    var orderBy: List<CBLQueryOrdering>? = null
-    var limit: CBLQueryLimit? = null
+    var from: DataSource? = null
+    var join: List<Join>? = null
+    var where: Expression? = null
+    var groupBy: List<Expression>? = null
+    var having: Expression? = null
+    var orderBy: List<Ordering>? = null
+    var limit: Limit? = null
 
     override val actual: CPointer<CBLQuery> by lazy {
-        // TODO: get database (from FROM?)
-        database.createQuery(this)
-
         val from = requireNotNull(from) { "From statement is required." }
-        if (distinct) {
-            CBLQueryBuilder
-                .selectDistinct(select, from, join, where, groupBy, having, orderBy, limit)
-        } else {
-            CBLQueryBuilder.select(select, from, join, where, groupBy, having, orderBy, limit)
-        }
+        from.source.createQuery(kCBLJSONLanguage, toJSON())
+    }
+
+    private fun toJSON(): String {
+        return MutableDictionary().apply {
+            // DISTINCT:
+            if (distinct) {
+                setBoolean("DISTINCT", true)
+            }
+
+            // JOIN / FROM:
+            setArray("FROM", MutableArray().apply {
+                addDictionary(from?.asJSON())
+                join?.forEach {
+                    addDictionary(it.asJSON())
+                }
+            })
+
+            // SELECT:
+            setArray("WHAT", MutableArray().apply {
+                select.forEach {
+                    addValue(it.asJSON())
+                }
+            })
+
+            // WHERE:
+            if (where != null) {
+                setValue("WHERE", where)
+            }
+
+            // GROUPBY:
+            if (groupBy != null) {
+                setArray("GROUP_BY", MutableArray().apply {
+                    groupBy?.forEach {
+                        addValue(it.asJSON())
+                    }
+                })
+            }
+
+            // HAVING:
+            if (having != null) {
+                setValue("HAVING", having?.asJSON())
+            }
+
+            // ORDERBY:
+            if (orderBy != null) {
+                setArray("ORDER_BY", MutableArray().apply {
+                    orderBy?.forEach {
+                        addValue(it.asJSON())
+                    }
+                })
+            }
+
+            // LIMIT/OFFSET:
+            if (limit != null) {
+                setValue("LIMIT", limit?.limit?.asJSON())
+                if (limit?.offset != null) {
+                    setValue("OFFSET", limit?.offset?.asJSON())
+                }
+            }
+        }.toJSON()
     }
 }
 

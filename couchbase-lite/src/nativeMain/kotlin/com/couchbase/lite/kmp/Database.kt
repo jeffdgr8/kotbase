@@ -344,10 +344,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     public actual fun createQuery(query: String): Query =
         DelegatedQuery(createQuery(kCBLN1QLLanguage, query))
 
-    internal fun createQuery(state: QueryState): CPointer<CBLQuery> =
-        createQuery(kCBLJSONLanguage, state.toJson())
-
-    private fun createQuery(language: CBLQueryLanguage, queryString: String): CPointer<CBLQuery> {
+    internal fun createQuery(language: CBLQueryLanguage, queryString: String): CPointer<CBLQuery> {
         return memScoped {
             val errorPos = alloc<IntVar>()
             wrapCBLError({
@@ -383,13 +380,13 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
                     when (index) {
                         is ValueIndex -> CBLDatabase_CreateValueIndex(
                             actual,
-                            name.toFLString(),
+                            name.toFLString(this),
                             index.getActual(this),
                             error
                         )
                         is FullTextIndex -> CBLDatabase_CreateFullTextIndex(
                             actual,
-                            name.toFLString(),
+                            name.toFLString(this),
                             index.getActual(this),
                             error
                         )
@@ -408,13 +405,13 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
                     when (config) {
                         is ValueIndexConfiguration -> CBLDatabase_CreateValueIndex(
                             actual,
-                            name.toFLString(),
+                            name.toFLString(this),
                             config.getActual(this),
                             error
                         )
                         is FullTextIndexConfiguration -> CBLDatabase_CreateFullTextIndex(
                             actual,
-                            name.toFLString(),
+                            name.toFLString(this),
                             config.getActual(this),
                             error
                         )
@@ -429,7 +426,9 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     public actual fun deleteIndex(name: String) {
         wrapCBLError { error ->
             mustBeOpen {
-                CBLDatabase_DeleteIndex(actual, name.toFLString(), error)
+                memScoped {
+                    CBLDatabase_DeleteIndex(actual, name.toFLString(this), error)
+                }
             }
         }
     }

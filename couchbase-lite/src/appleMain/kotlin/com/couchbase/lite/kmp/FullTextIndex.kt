@@ -1,11 +1,13 @@
 package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.CBLFullTextIndex
-import com.udobny.kmp.DelegatedClass
+import com.udobny.kmp.chain
 
 public actual class FullTextIndex
-internal constructor(override val actual: CBLFullTextIndex) :
-    DelegatedClass<CBLFullTextIndex>(actual), Index {
+internal constructor(override val actual: CBLFullTextIndex) : Index(actual) {
+
+    private inline fun chain(action: CBLFullTextIndex.() -> Unit) =
+        chain(actual, action)
 
     public actual fun setLanguage(language: String?): FullTextIndex = chain {
         setLanguage(language)
