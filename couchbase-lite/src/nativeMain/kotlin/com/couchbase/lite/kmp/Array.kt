@@ -1,5 +1,7 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.internal.fleece.*
+import com.couchbase.lite.kmp.internal.fleece.getValue
 import com.couchbase.lite.kmp.internal.fleece.toKString
 import com.couchbase.lite.kmp.internal.fleece.toList
 import com.couchbase.lite.kmp.internal.fleece.toNative
@@ -30,56 +32,46 @@ internal constructor(internal open val actual: FLArray) : Iterable<Any?> {
     public actual val count: Int
         get() = FLArray_Count(actual).toInt()
 
-    public actual fun getValue(index: Int): Any? {
+    private fun getFLValue(index: Int): FLValue? {
         checkIndex(index)
-        return FLArray_Get(actual, index.convert())?.toNative(isMutable)
+        return actual.getValue(index)
     }
+
+    public actual fun getValue(index: Int): Any? =
+        getFLValue(index)?.toNative(isMutable)
 
     public actual fun getString(index: Int): String? =
-        getValue(index) as? String
+        getFLValue(index)?.toKString()
 
-    public actual fun getNumber(index: Int): Number? {
-        return when (val value = getValue(index)) {
-            is Number -> value
-            is Boolean -> if (value) 1 else 0
-            else -> null
-        }
-    }
+    public actual fun getNumber(index: Int): Number? =
+        getFLValue(index)?.toNumber()
 
     public actual fun getInt(index: Int): Int =
-        getNumber(index)?.toInt() ?: 0
+        getFLValue(index).toInt()
 
     public actual fun getLong(index: Int): Long =
-        getNumber(index)?.toLong() ?: 0L
+        getFLValue(index).toLong()
 
     public actual fun getFloat(index: Int): Float =
-        getNumber(index)?.toFloat() ?: 0F
+        getFLValue(index).toFloat()
 
     public actual fun getDouble(index: Int): Double =
-        getNumber(index)?.toDouble() ?: 0.0
+        getFLValue(index).toDouble()
 
-    public actual fun getBoolean(index: Int): Boolean {
-        checkIndex(index)
-        return FLValue_AsBool(FLArray_Get(actual, index.convert()))
-    }
+    public actual fun getBoolean(index: Int): Boolean =
+        getFLValue(index).toBoolean()
 
     public actual fun getBlob(index: Int): Blob? =
-        getValue(index) as? Blob
+        getFLValue(index)?.toBlob()
 
-    public actual fun getDate(index: Int): Instant? {
-        val string = getValue(index) as? String ?: return null
-        return try {
-            Instant.parse(string)
-        } catch (e: Throwable) {
-            null
-        }
-    }
+    public actual fun getDate(index: Int): Instant? =
+        getFLValue(index)?.toDate()
 
     public actual open fun getArray(index: Int): Array? =
-        getValue(index) as? Array
+        getFLValue(index)?.toArray(isMutable)
 
     public actual open fun getDictionary(index: Int): Dictionary? =
-        getValue(index) as? Dictionary
+        getFLValue(index)?.toDictionary(isMutable)
 
     public actual fun toList(): List<Any?> =
         actual.toList()

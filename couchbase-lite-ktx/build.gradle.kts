@@ -31,6 +31,7 @@ kotlin {
         ios.deploymentTarget = "9.0"
         framework {
             baseName = this@cocoapods.name.replace('-', '_')
+            isStatic = false
         }
         pod("CouchbaseLite") {
             version = cblVersion

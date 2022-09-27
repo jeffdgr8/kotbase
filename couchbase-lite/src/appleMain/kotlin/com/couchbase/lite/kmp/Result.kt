@@ -132,7 +132,7 @@ internal constructor(actual: CBLQueryResult) :
         (actual.keys as List<String>).iterator()
 
     private fun isInBounds(index: Int): Boolean {
-        return index >= 0 && index < count()
+        return index in 0 until count
     }
 
     private fun assertInBounds(index: Int) {

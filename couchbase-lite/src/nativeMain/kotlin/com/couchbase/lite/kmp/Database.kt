@@ -341,8 +341,14 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun createQuery(query: String): Query {
-        val actualQuery = memScoped {
+    public actual fun createQuery(query: String): Query =
+        DelegatedQuery(createQuery(kCBLN1QLLanguage, query))
+
+    internal fun createQuery(state: QueryState): CPointer<CBLQuery> =
+        createQuery(kCBLJSONLanguage, state.toJson())
+
+    private fun createQuery(language: CBLQueryLanguage, queryString: String): CPointer<CBLQuery> {
+        return memScoped {
             val errorPos = alloc<IntVar>()
             wrapCBLError({
                 toExceptionNotNull(mapOf("position" to errorPos.value))
@@ -350,15 +356,14 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
                 mustBeOpen {
                     CBLDatabase_CreateQuery(
                         actual,
-                        kCBLN1QLLanguage,
-                        query.toFLString(),
+                        language,
+                        queryString.toFLString(),
                         errorPos.ptr,
                         error
-                    )
+                    )!!
                 }
             }
         }
-        return DelegatedQuery(actualQuery!!)
     }
 
     @Suppress("UNCHECKED_CAST")

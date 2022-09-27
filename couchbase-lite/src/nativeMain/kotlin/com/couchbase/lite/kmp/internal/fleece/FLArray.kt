@@ -1,9 +1,8 @@
 package com.couchbase.lite.kmp.internal.fleece
 
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
-import libcblite.FLArray
-import libcblite.FLMutableArray_AppendString
-import libcblite.FLMutableArray_New
+import libcblite.*
 
 internal fun FLArray.toList(): List<Any?> {
     return buildList {
@@ -22,3 +21,6 @@ internal fun List<String>.toFLArray(): FLArray {
         }
     }
 }
+
+internal fun FLArray.getValue(index: Int): FLValue? =
+    FLArray_Get(this, index.convert())

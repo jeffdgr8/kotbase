@@ -31,41 +31,44 @@ internal constructor(internal open val actual: FLDict) : Iterable<String> {
     public actual val keys: List<String>
         get() = actual.keys()
 
+    private fun getFLValue(key: String): FLValue? =
+        actual.getValue(key)
+
     public actual fun getValue(key: String): Any? =
-        actual.getValue(key, isMutable)
+        getFLValue(key)?.toNative(isMutable)
 
     public actual fun getString(key: String): String? =
-        actual.getString(key)
+        getFLValue(key)?.toKString()
 
     public actual fun getNumber(key: String): Number? =
-        actual.getNumber(key)
+        getFLValue(key)?.toNumber()
 
     public actual fun getInt(key: String): Int =
-        actual.getInt(key)
+        getFLValue(key).toInt()
 
     public actual fun getLong(key: String): Long =
-        actual.getLong(key)
+        getFLValue(key).toLong()
 
     public actual fun getFloat(key: String): Float =
-        actual.getFloat(key)
+        getFLValue(key).toFloat()
 
     public actual fun getDouble(key: String): Double =
-        actual.getDouble(key)
+        getFLValue(key).toDouble()
 
     public actual fun getBoolean(key: String): Boolean =
-        actual.getBoolean(key)
+        getFLValue(key).toBoolean()
 
     public actual fun getBlob(key: String): Blob? =
-        actual.getBlob(key)
+        getFLValue(key)?.toBlob()
 
     public actual fun getDate(key: String): Instant? =
-        actual.getDate(key)
+        getFLValue(key)?.toDate()
 
     public actual open fun getArray(key: String): Array? =
-        getValue(key) as? Array
+        getFLValue(key)?.toArray(isMutable)
 
     public actual open fun getDictionary(key: String): Dictionary? =
-        getValue(key) as? Dictionary
+        getFLValue(key)?.toDictionary(isMutable)
 
     public actual fun toMap(): Map<String, Any?> =
         actual.toMap()
