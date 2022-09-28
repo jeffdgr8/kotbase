@@ -73,4 +73,7 @@ actual object FileUtils {
 
     private fun deleteRecursive(fileOrDirectory: File): Boolean =
         !fileOrDirectory.exists() || deleteContents(fileOrDirectory) && fileOrDirectory.delete()
+
+    actual val separatorChar: Char
+        get() = File.separatorChar
 }

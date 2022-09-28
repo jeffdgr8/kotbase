@@ -4,6 +4,7 @@ import com.udobny.kmp.DelegatedClass
 import okio.Source
 import okio.buffer
 import okio.source
+import java.io.File
 import java.net.MalformedURLException
 import java.net.URL
 
@@ -58,6 +59,6 @@ private fun String.toFileUrl(): URL {
     return try {
         URL(this)
     } catch (e: MalformedURLException) {
-        URL("file://$this")
+        File(this).toURI().toURL()
     }
 }

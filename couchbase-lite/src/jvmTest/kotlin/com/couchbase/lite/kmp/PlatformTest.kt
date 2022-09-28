@@ -26,7 +26,7 @@ actual abstract class PlatformTest {
     }
 
     actual val tmpDir: String
-        get() = FileUtils.verifyDir(File("build/cb-tmp/$SCRATCH_DIR_NAME"))
+        get() = FileUtils.verifyDir(File("build${FileUtils.separatorChar}cb-tmp${FileUtils.separatorChar}$SCRATCH_DIR_NAME"))
 
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         val executionService = CouchbaseLiteInternal.getExecutionService()

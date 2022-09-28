@@ -17,10 +17,11 @@ expect object FileUtils {
     fun write(bytes: ByteArray, path: String)
 
     fun read(path: String): ByteArray
+
+    val separatorChar: Char
 }
 
-@Suppress("unused")
 fun FileUtils.getParentDir(path: String): String {
-    val file = path.dropLastWhile { it == '/' }
-    return file.substring(0, file.lastIndexOf('/'))
+    val file = path.dropLastWhile { it == separatorChar }
+    return file.substring(0, file.lastIndexOf(separatorChar))
 }

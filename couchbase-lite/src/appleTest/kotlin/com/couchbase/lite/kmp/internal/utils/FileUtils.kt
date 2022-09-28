@@ -101,6 +101,9 @@ actual object FileUtils {
     actual fun read(path: String): ByteArray =
         NSData.dataWithContentsOfFile(path)!!.toByteArray()
 
+    actual val separatorChar: Char
+        get() = '/'
+
     private fun deleteRecursive(fileOrDirectory: String): Boolean {
         return !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)
     }

@@ -197,7 +197,7 @@ class BlobTest : BaseDbTest() {
     fun testBlobFromFileURL() {
         try {
             val contentType = "image/png"
-            val path = "$tmpDir/attachment.png"
+            val path = "$tmpDir${FileUtils.separatorChar}attachment.png"
 
             val blob = PlatformUtils.getAsset("attachment.png")!!.use { input ->
                 val bytes = input.buffer().readByteArray()
