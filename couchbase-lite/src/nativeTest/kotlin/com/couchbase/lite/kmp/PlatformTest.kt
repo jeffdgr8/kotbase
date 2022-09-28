@@ -1,0 +1,33 @@
+package com.couchbase.lite.kmp
+
+import com.couchbase.lite.kmp.internal.utils.FileUtils
+import kotlinx.coroutines.*
+import okio.FileSystem
+
+actual abstract class PlatformTest {
+
+    companion object {
+        const val SCRATCH_DIR_NAME = "cbl_test_scratch"
+    }
+
+    actual fun setupPlatform() {
+        val console = Database.log.console
+        console.level = LogLevel.WARNING
+        console.domains = LogDomain.ALL_DOMAINS
+    }
+
+    actual val tmpDir: String
+        get() {
+            return FileUtils.verifyDir(
+                (FileSystem.SYSTEM_TEMPORARY_DIRECTORY / SCRATCH_DIR_NAME).name
+            )
+        }
+
+    actual fun executeAsync(delayMs: Long, task: () -> Unit) {
+        @OptIn(DelicateCoroutinesApi::class)
+        GlobalScope.launch(Dispatchers.Default) {
+            delay(delayMs)
+            task()
+        }
+    }
+}

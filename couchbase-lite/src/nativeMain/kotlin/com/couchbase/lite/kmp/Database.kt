@@ -25,7 +25,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
         CBLDatabase_Release(it)
     }
 
-    private var isClosed = false
+    internal var isClosed = false
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String) : this(name, DatabaseConfiguration())

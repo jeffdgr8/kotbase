@@ -365,7 +365,6 @@ public actual open class Expression {
     }
 
     internal open fun asJSON(): Any? {
-        // TODO: implement Expression.asJSON() for all expression types
         return null
     }
 }

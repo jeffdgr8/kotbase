@@ -175,6 +175,9 @@ kotlin {
         }
         val nativeCommonTest by creating {
             dependsOn(commonTest)
+            dependencies {
+                implementation("com.soywiz.korlibs.korio:korio:3.1.0")
+            }
         }
 
         val appleMain by creating {
@@ -185,9 +188,6 @@ kotlin {
             // TODO: doesn't work, so using a copy task
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
-            dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:3.1.0")
-            }
         }
         val iosMain by getting {
             dependsOn(appleMain)

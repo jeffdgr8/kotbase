@@ -25,7 +25,7 @@ internal constructor(internal open val actual: CPointer<CBLDocument>) : Iterable
 
     protected open val isMutable: Boolean = false
 
-    protected open val properties: FLDict
+    internal open val properties: FLDict
         get() = CBLDocument_Properties(actual)!!
 
     public actual val id: String

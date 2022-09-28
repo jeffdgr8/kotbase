@@ -19,10 +19,6 @@ private const val MIME_UNKNOWN = "application/octet-stream"
 public actual class Blob
 internal constructor(internal val actual: CPointer<CBLBlob>) {
 
-    init {
-        CBLBlob_Retain(actual)
-    }
-
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
@@ -37,10 +33,7 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
     internal constructor(
         contentType: CValue<FLString> = MIME_UNKNOWN.toFLString(),
         content: CValue<FLSlice>
-    ) : this(CBLBlob_CreateWithData(contentType, content)!!) {
-        // TODO: make sure this is called after it's retained for the second time
-        CBLBlob_Release(actual)
-    }
+    ) : this(CBLBlob_CreateWithData(contentType, content)!!)
 
     // TODO: stream data
     public actual constructor(contentType: String, stream: Source) :
