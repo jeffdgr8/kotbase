@@ -72,7 +72,7 @@ abstract class BaseTest : PlatformTest() {
 
     protected fun getScratchDirectoryPath(name: String): String {
         return try {
-            val path = FileUtils.getCanonicalPath(FileUtils.verifyDir("$tmpDir${FileUtils.separatorChar}$name"))
+            val path = FileUtils.getCanonicalPath(FileUtils.verifyDir("$tmpDir/$name"))
             SCRATCH_DIRS.add(path)
             path
         } catch (e: IOException) {
