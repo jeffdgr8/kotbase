@@ -6,7 +6,7 @@ private constructor(
     private val alias: String? = null
 ) {
 
-    internal fun asJSON(): Any {
+    internal fun asJSON(): Any? {
         if (alias == null) {
             return expression.asJSON()
         }

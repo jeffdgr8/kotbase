@@ -122,7 +122,12 @@ public expect class Database {
     public fun save(document: MutableDocument, concurrencyControl: ConcurrencyControl): Boolean
 
     /**
-     * Saves a document to the database. Conflicts will be resolved by the passed ConflictHandler
+     * Saves a document to the database. Conflicts will be resolved by the passed ConflictHandler.
+     * When write operations are executed concurrently and if conflicts occur, the conflict handler
+     * will be called. Use the conflict handler to directly edit the document to resolve the
+     * conflict. When the conflict handler returns 'true', the save method will save the edited
+     * document as the resolved document. If the conflict handler returns 'false', the save
+     * operation will be canceled with 'false' value returned as the conflict wasn't resolved.
      *
      * @param document        The document.
      * @param conflictHandler A conflict handler.

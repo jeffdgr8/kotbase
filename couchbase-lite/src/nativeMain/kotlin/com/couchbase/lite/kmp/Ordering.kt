@@ -3,7 +3,7 @@ package com.couchbase.lite.kmp
 public actual abstract class Ordering
 private constructor(internal val expression: Expression) {
 
-    internal abstract fun asJSON(): Any
+    internal abstract fun asJSON(): Any?
 
     public actual class SortOrder
     internal constructor(
@@ -21,7 +21,7 @@ private constructor(internal val expression: Expression) {
             return this
         }
 
-        override fun asJSON(): Any {
+        override fun asJSON(): Any? {
             if (isAscending) {
                 return expression.asJSON()
             }
