@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
 import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
+import org.jetbrains.kotlin.konan.target.KonanTarget
 
 plugins {
     kotlin("multiplatform")
@@ -77,22 +78,9 @@ kotlin {
                 freeCompilerArgs += listOf("-e", "com.udobny.kmp.test.mainBackground")
             }
         } else {
-            val os = when (konanTarget.family) {
-                Family.LINUX -> "linux"
-                Family.MINGW -> "windows"
-                else -> error("Unhandled native OS: $konanTarget")
-            }
-
-            val arch = when (konanTarget.architecture) {
-                Architecture.X64 -> "x86_64"
-                Architecture.ARM64 -> "arm64"
-                Architecture.ARM32 -> "armhf"
-                else -> error("Unhandled native architecture: $konanTarget")
-            }
-
             val main by compilations.getting
             val libcblite by main.cinterops.creating {
-                includeDirs.allHeaders("libs/libcblite/$os/$arch/libcblite-$cblVersion/include")
+                includeDirs("${konanTarget.libcblite}/include")
             }
         }
     }
@@ -404,7 +392,67 @@ tasks.withType<KotlinNativeTest> {
     dependsOn(
         tasks.register<Copy>("copy${name.capitalize()}Resources") {
             from("src/commonTest/resources")
+            if (dir.isNativeC) from("${libcblitePath(dir.os, dir.arch)}/${libcbliteBin(dir.os, dir.arch)}")
             into("build/bin/$dir/debugTest")
         }
     )
 }
+
+val KonanTarget.os: String
+    get() {
+        return when (family) {
+            Family.LINUX -> "linux"
+            Family.MINGW -> "windows"
+            else -> error("Unhandled native OS: $this")
+        }
+    }
+
+val KonanTarget.arch: String
+    get() {
+        return when (architecture) {
+            Architecture.X64 -> "x86_64"
+            Architecture.ARM64 -> "arm64"
+            Architecture.ARM32 -> "armhf"
+            else -> error("Unhandled native architecture: $this")
+        }
+    }
+
+val KonanTarget.libcblite: String
+    get() = libcblitePath(os, arch)
+
+val String.isNativeC: Boolean
+    get() = startsWith("linux") || startsWith("mingw")
+
+val String.os: String
+    get() {
+        return when {
+            startsWith("linux") -> "linux"
+            startsWith("mingw") -> "windows"
+            else -> error("Unhandled native OS: $this")
+        }
+    }
+
+val String.arch: String
+    get() {
+        return when {
+            endsWith("X64") -> "x86_64"
+            endsWith("Arm64") -> "arm64"
+            endsWith("Arm32") -> "armhf"
+            else -> error("Unhandled native architecture: $this")
+        }
+    }
+
+fun libcblitePath(os: String, arch: String): String =
+    "libs/libcblite/$os/$arch/libcblite-$cblVersion"
+
+fun libcbliteBin(os: String, arch: String): String =
+    when (os) {
+        "linux" -> when (arch) {
+            "x86_64" -> "lib/x86_64-linux-gnu/libcblite.so"
+            "arm64" -> "lib/aarch64-linux-gnu/libcblite.so"
+            "armhf" -> "lib/arm-linux-gnueabihf/libcblite.so"
+            else -> error("Unhandled native architecture: $arch")
+        }
+        "windows" -> "bin/cblite.dll"
+        else -> error("Unhandled native OS: $os")
+    }

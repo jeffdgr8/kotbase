@@ -1,2 +1,8 @@
 headers = cbl/CouchbaseLite.h
 headerFilter = cbl/* fleece/*
+
+#linkerOpts.linux_x64 = -Llibs/libcblite/linux/x86_64/libcblite-3.0.2/lib/x86_64-linux-gnu -lcblite
+#linkerOpts.linux_arm64 = -Llibs/libcblite/linux/arm64/libcblite-3.0.2/lib/aarch64-linux-gnu -lcblite
+#linkerOpts.linux_arm32 = -Llibs/libcblite/linux/armhf/libcblite-3.0.2/lib/arm-linux-gnueabihf -lcblite
+
+linkerOpts.mingw_x64 = -L/Users/jeffd/Documents/GitHub/couchbase-lite-kmp/couchbase-lite/libs/libcblite/windows/x86_64/libcblite-3.0.2/lib -lcblite
