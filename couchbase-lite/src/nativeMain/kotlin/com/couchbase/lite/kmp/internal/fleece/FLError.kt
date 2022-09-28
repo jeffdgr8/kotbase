@@ -15,13 +15,13 @@ internal fun <R, E : Exception> wrapFLError(
     val error = alloc<FLErrorVar>()
     try {
         action(error.ptr).also {
-            if (error != 0.convert()) {
+            if (error.value != 0U) {
                 throw exceptionFactory(error.value)
             }
         }
     } catch (e: NullPointerException) {
         // if NPE thrown on error, throw error instead
-        if (error != 0.convert()) {
+        if (error.value != 0U) {
             throw exceptionFactory(error.value)
         }
         throw e
@@ -32,7 +32,7 @@ internal fun FLError.toExceptionNotNull(): CouchbaseLiteException =
     toException()!!
 
 internal fun FLError.toException(): CouchbaseLiteException? {
-    if (this == 0.convert()) return null
+    if (this == 0U) return null
     val domain = when (this) {
         kFLPOSIXError -> com.couchbase.lite.kmp.CBLError.Domain.POSIX
         else -> com.couchbase.lite.kmp.CBLError.Domain.FLEECE

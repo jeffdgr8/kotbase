@@ -21,7 +21,7 @@ public actual class Log {
                 CBLLog_SetCallbackLevel(value.level.actual)
                 CBLLog_SetCallback(
                     staticCFunction { domain, level, message ->
-                        custom?.log(
+                        topLevelCustom?.log(
                             LogLevel.from(level), LogDomain.from(domain), message.toKString()!!
                         )
                     }
@@ -32,3 +32,5 @@ public actual class Log {
             }
         }
 }
+
+private var topLevelCustom: Logger? = null

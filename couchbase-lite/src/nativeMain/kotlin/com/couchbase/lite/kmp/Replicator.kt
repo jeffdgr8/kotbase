@@ -4,6 +4,7 @@ import cnames.structs.CBLReplicator
 import com.couchbase.lite.kmp.internal.fleece.keys
 import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.wrapCBLError
+import com.udobny.kmp.to
 import com.udobny.kmp.toList
 import kotlinx.cinterop.*
 import libcblite.*
@@ -64,19 +65,20 @@ internal constructor(
         CBLReplicator_IsDocumentPending(actual, docId.toFLString(), error)
     }
 
-    private val changeListeners = mutableListOf<ReplicatorChangeListener?>()
+    private val changeListeners = mutableListOf<StableRef<ReplicatorChangeListenerHolder>?>()
 
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken {
-        val index = addChangeListener(changeListeners, listener)
+        val holder = ReplicatorChangeListenerHolder(listener, this)
+        val (index, stableRef) = addListener(changeListeners, holder)
         return DelegatedListenerToken(
             CBLReplicator_AddChangeListener(
                 actual,
-                staticCFunction { idx, _, status ->
-                    changeListeners[idx.toLong().toInt()]!!(
-                        ReplicatorChange(this, ReplicatorStatus(status!!))
-                    )
+                staticCFunction { ref, _, status ->
+                    with(ref.to<ReplicatorChangeListenerHolder>()) {
+                        this.listener(ReplicatorChange(replicator, ReplicatorStatus(status!!)))
+                    }
                 },
-                index.toLong().toCPointer<CPointed>()
+                stableRef
             )!!,
             ListenerTokenType.REPLICATOR,
             index
@@ -86,23 +88,27 @@ internal constructor(
     // TODO:
     //public actual fun addChangeListener(executor: Executor?, listener: ReplicatorChangeListener): ListenerToken
 
-    private val documentChangeListeners = mutableListOf<DocumentReplicationListener?>()
+    private val documentChangeListeners =
+        mutableListOf<StableRef<DocumentReplicationListenerHolder>?>()
 
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken {
-        val index = addChangeListener(documentChangeListeners, listener)
+        val holder = DocumentReplicationListenerHolder(listener, this)
+        val (index, stableRef) = addListener(documentChangeListeners, holder)
         return DelegatedListenerToken(
             CBLReplicator_AddDocumentReplicationListener(
                 actual,
-                staticCFunction { idx, _, isPush, numDocuments, documents ->
-                    documentChangeListeners[idx.toLong().toInt()]!!(
-                        DocumentReplication(
-                            this,
-                            isPush,
-                            documents!!.toList(numDocuments.toInt()) { ReplicatedDocument(it) }
+                staticCFunction { ref, _, isPush, numDocuments, documents ->
+                    with(ref.to<DocumentReplicationListenerHolder>()) {
+                        this.listener(
+                            DocumentReplication(
+                                replicator,
+                                isPush,
+                                documents!!.toList(numDocuments.toInt()) { ReplicatedDocument(it) }
+                            )
                         )
-                    )
+                    }
                 },
-                index.toLong().toCPointer<CPointed>()
+                stableRef
             )!!,
             ListenerTokenType.DOCUMENT_REPLICATION,
             index
@@ -116,9 +122,9 @@ internal constructor(
         token as DelegatedListenerToken
         CBLListener_Remove(token.actual)
         when (token.type) {
-            ListenerTokenType.REPLICATOR -> removeChangeListener(changeListeners, token.index)
+            ListenerTokenType.REPLICATOR -> removeListener(changeListeners, token.index)
             ListenerTokenType.DOCUMENT_REPLICATION ->
-                removeChangeListener(documentChangeListeners, token.index)
+                removeListener(documentChangeListeners, token.index)
             else -> error("${token.type} change listener can't be removed from Replicator instance")
         }
     }

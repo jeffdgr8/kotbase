@@ -7,6 +7,7 @@ import com.couchbase.lite.kmp.internal.fleece.toList
 import com.couchbase.lite.kmp.internal.toExceptionNotNull
 import com.couchbase.lite.kmp.internal.toKotlinInstant
 import com.couchbase.lite.kmp.internal.wrapCBLError
+import com.udobny.kmp.to
 import kotlinx.cinterop.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -123,26 +124,27 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
         }
     }
 
-    private var conflictHandler: ConflictHandler? = null
+    private var conflictHandler: StableRef<ConflictHandler>? = null
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
         return wrapCBLError { error ->
             try {
                 mustBeOpen {
-                    this.conflictHandler = conflictHandler
+                    this.conflictHandler = StableRef.create(conflictHandler)
                     CBLDatabase_SaveDocumentWithConflictHandler(
                         actual,
                         document.actual,
-                        staticCFunction { _, document, oldDocument ->
-                            this.conflictHandler!!(
+                        staticCFunction { ref, document, oldDocument ->
+                            ref.to<ConflictHandler>()(
                                 MutableDocument(document!!),
                                 oldDocument?.asDocument()
                             )
                         },
-                        null,
+                        this.conflictHandler!!.asCPointer(),
                         error
                     ).also {
+                        this.conflictHandler?.dispose()
                         this.conflictHandler = null
                     }
                 }
@@ -259,26 +261,27 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
         }
     }
 
-    private val changeListeners = mutableListOf<DatabaseChangeListener?>()
+    private val changeListeners = mutableListOf<StableRef<DatabaseChangeListenerHolder>?>()
 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {
         return mustBeOpen {
-            val index = addChangeListener(changeListeners, listener)
+            val holder = DatabaseChangeListenerHolder(listener, this)
+            val (index, stableRef) = addListener(changeListeners, holder)
             DelegatedListenerToken(
                 CBLDatabase_AddChangeListener(
                     actual,
-                    staticCFunction { idx, _, numDocs, docIds ->
+                    staticCFunction { ref, _, numDocs, docIds ->
                         val size = numDocs.toInt()
                         val documentIds = buildList(size) {
                             repeat(size) { i ->
                                 add(docIds!![i].toKString()!!)
                             }
                         }
-                        changeListeners[idx.toLong().toInt()]!!(
-                            DatabaseChange(this, documentIds)
-                        )
+                        with(ref.to<DatabaseChangeListenerHolder>()) {
+                            this.listener(DatabaseChange(database, documentIds))
+                        }
                     },
-                    index.toLong().toCPointer<CPointed>()
+                    stableRef
                 )!!,
                 ListenerTokenType.DATABASE,
                 index
@@ -290,30 +293,31 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
         token as DelegatedListenerToken
         CBLListener_Remove(token.actual)
         when (token.type) {
-            ListenerTokenType.DATABASE -> removeChangeListener(changeListeners, token.index)
-            ListenerTokenType.DOCUMENT -> removeChangeListener(documentChangeListeners, token.index)
+            ListenerTokenType.DATABASE -> removeListener(changeListeners, token.index)
+            ListenerTokenType.DOCUMENT -> removeListener(documentChangeListeners, token.index)
             else -> error("${token.type} change listener can't be removed from Database instance")
         }
     }
 
-    private val documentChangeListeners = mutableListOf<DocumentChangeListener?>()
+    private val documentChangeListeners = mutableListOf<StableRef<DocumentChangeListenerHolder>?>()
 
     public actual fun addDocumentChangeListener(
         id: String,
         listener: DocumentChangeListener
     ): ListenerToken {
         return mustBeOpen {
-            val index = addChangeListener(documentChangeListeners, listener)
+            val holder = DocumentChangeListenerHolder(listener, this)
+            val (index, stableRef) = addListener(documentChangeListeners, holder)
             DelegatedListenerToken(
                 CBLDatabase_AddDocumentChangeListener(
                     actual,
                     id.toFLString(),
-                    staticCFunction { idx, db, docId ->
-                        documentChangeListeners[idx.toLong().toInt()]!!(
-                            DocumentChange(Database(db!!), docId.toKString()!!)
-                        )
+                    staticCFunction { ref, _, docId ->
+                        with(ref.to<DocumentChangeListenerHolder>()) {
+                            this.listener(DocumentChange(database, docId.toKString()!!))
+                        }
                     },
-                    index.toLong().toCPointer<CPointed>()
+                    stableRef
                 )!!,
                 ListenerTokenType.DOCUMENT,
                 index

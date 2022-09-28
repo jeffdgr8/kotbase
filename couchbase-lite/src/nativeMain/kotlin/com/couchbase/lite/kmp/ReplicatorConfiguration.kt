@@ -3,6 +3,7 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.kmp.internal.fleece.toFLArray
 import com.couchbase.lite.kmp.internal.fleece.toFLDict
 import com.couchbase.lite.kmp.internal.fleece.toKString
+import com.udobny.kmp.to
 import kotlinx.cinterop.*
 import libcblite.*
 import kotlin.native.internal.createCleaner
@@ -16,6 +17,7 @@ public actual class ReplicatorConfiguration actual constructor(
         val arena = Arena()
         val arrays = mutableListOf<FLArray>()
         val dicts = mutableListOf<FLDict>()
+        val ref = StableRef.create(this@ReplicatorConfiguration)
     }
 
     private fun FLArray.retain(): FLArray {
@@ -39,6 +41,7 @@ public actual class ReplicatorConfiguration actual constructor(
             dicts.forEach { dict ->
                 FLDict_Release(dict)
             }
+            ref.dispose()
         }
     }
 
@@ -67,7 +70,7 @@ public actual class ReplicatorConfiguration actual constructor(
             it.authenticator = authenticator?.actual
             it.channels = channels?.toFLArray()?.retain()
             it.conflictResolver = nativeConflictResolver()
-            it.context = null
+            it.context = memory.ref.asCPointer()
             it.continuous = isContinuous
             it.database = database.actual
             it.disableAutoPurge = !isAutoPurgeEnabled
@@ -91,8 +94,9 @@ public actual class ReplicatorConfiguration actual constructor(
     }
 
     private fun nativeConflictResolver(): CBLConflictResolver {
-        return staticCFunction { _, documentId, localDocument, remoteDocument ->
-            conflictResolver?.invoke(
+        return staticCFunction { ref, documentId, localDocument, remoteDocument ->
+            val config = ref.to<ReplicatorConfiguration>()
+            config.conflictResolver?.invoke(
                 Conflict(
                     documentId.toKString()!!,
                     localDocument?.asDocument(),
@@ -103,8 +107,9 @@ public actual class ReplicatorConfiguration actual constructor(
     }
 
     private fun nativePullFilter(): CBLReplicationFilter {
-        return staticCFunction { _, document, flags ->
-            pullFilter?.invoke(
+        return staticCFunction { ref, document, flags ->
+            val config = ref.to<ReplicatorConfiguration>()
+            config.pullFilter?.invoke(
                 Document(document!!),
                 flags.toDocumentFlags()
             ) ?: true
@@ -112,8 +117,9 @@ public actual class ReplicatorConfiguration actual constructor(
     }
 
     private fun nativePushFilter(): CBLReplicationFilter {
-        return staticCFunction { _, document, flags ->
-            pushFilter?.invoke(
+        return staticCFunction { ref, document, flags ->
+            val config = ref.to<ReplicatorConfiguration>()
+            config.pushFilter?.invoke(
                 Document(document!!),
                 flags.toDocumentFlags()
             ) ?: true

@@ -1,7 +1,9 @@
 package com.couchbase.lite.kmp
 
 import cnames.structs.CBLListenerToken
+import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.StableRef
 
 public actual interface ListenerToken
 
@@ -19,23 +21,29 @@ internal enum class ListenerTokenType {
     DOCUMENT_REPLICATION
 }
 
-internal fun <T> addChangeListener(
-    changeListeners: MutableList<ChangeListener<T>?>,
-    listener: ChangeListener<T>
-): Int {
-    var index = changeListeners.indexOf(null)
+internal fun <T : Any> addListener(
+    listeners: MutableList<StableRef<T>?>,
+    listener: T
+): Pair<Int, COpaquePointer> {
+    val stableRef = StableRef.create(listener)
+    var index = listeners.indexOf(null)
     if (index < 0) {
-        changeListeners.add(listener)
-        index = changeListeners.lastIndex
+        listeners.add(stableRef)
+        index = listeners.lastIndex
     } else {
-        changeListeners[index] = listener
+        listeners[index] = stableRef
     }
-    return index
+    return Pair(index, stableRef.asCPointer())
 }
 
-internal fun removeChangeListener(changeListeners: MutableList<in Nothing?>, index: Int) {
-    changeListeners[index] = null
-    while (changeListeners.isNotEmpty() && changeListeners.last() == null) {
-        changeListeners.removeLast()
+internal fun <T : Any> removeListener(
+    listeners: MutableList<StableRef<T>?>,
+    index: Int
+) {
+    val stableRef = listeners[index]
+    stableRef?.dispose()
+    listeners[index] = null
+    while (listeners.isNotEmpty() && listeners.last() == null) {
+        listeners.removeLast()
     }
 }

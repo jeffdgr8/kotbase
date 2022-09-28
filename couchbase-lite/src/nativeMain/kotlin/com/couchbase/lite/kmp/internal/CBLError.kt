@@ -30,10 +30,10 @@ internal fun <R, E : Exception> wrapCBLError(
 }
 
 internal fun CBLError.toExceptionNotNull(info: Map<String, Any?>? = null): CouchbaseLiteException =
-    toException()!!
+    toException(info)!!
 
 internal fun CBLError.toException(info: Map<String, Any?>? = null): CouchbaseLiteException? {
-    if (domain == 0.convert() && code == 0) return null
+    if (domain == 0.toUByte() && code == 0) return null
     val domain = when (domain.toUInt()) {
         kCBLDomain -> com.couchbase.lite.kmp.CBLError.Domain.CBLITE
         kCBLPOSIXDomain -> com.couchbase.lite.kmp.CBLError.Domain.POSIX

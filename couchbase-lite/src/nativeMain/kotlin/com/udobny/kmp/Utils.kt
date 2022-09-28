@@ -19,3 +19,5 @@ public inline fun <reified T : CStructVar, R> CPointer<T>.toList(
         }
     }
 }
+
+public inline fun <reified T : Any> CPointer<*>?.to(): T = this!!.asStableRef<T>().get()

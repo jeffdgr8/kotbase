@@ -3,6 +3,7 @@ package com.couchbase.lite.kmp
 import cnames.structs.CBLQuery
 import com.couchbase.lite.kmp.internal.fleece.toKString
 import com.couchbase.lite.kmp.internal.wrapCBLError
+import com.udobny.kmp.to
 import kotlinx.cinterop.*
 import libcblite.*
 
@@ -28,25 +29,27 @@ internal abstract class AbstractQuery : Query {
     override fun explain(): String =
         CBLQuery_Explain(actual).toKString()!!
 
-    private val changeListeners = mutableListOf<QueryChangeListener?>()
+    private val changeListeners = mutableListOf<StableRef<QueryChangeListenerHolder>?>()
 
     override fun addChangeListener(listener: QueryChangeListener): ListenerToken {
-        val index = addChangeListener(changeListeners, listener)
+        val holder = QueryChangeListenerHolder(listener, this)
+        val (index, stableRef) = addListener(changeListeners, holder)
         return DelegatedListenerToken(
             CBLQuery_AddChangeListener(
                 actual,
-                staticCFunction { idx, _, token ->
-                    val lis = changeListeners[idx.toLong().toInt()]!!
-                    try {
-                        val resultSet = wrapCBLError { error ->
-                            CBLQuery_CopyCurrentResults(actual, token, error)!!.asResultSet()
+                staticCFunction { ref, query, token ->
+                    with(ref.to<QueryChangeListenerHolder>()) {
+                        try {
+                            val resultSet = wrapCBLError { error ->
+                                CBLQuery_CopyCurrentResults(query, token, error)!!.asResultSet()
+                            }
+                            this.listener(QueryChange(this.query, resultSet, null))
+                        } catch (e: CouchbaseLiteException) {
+                            this.listener(QueryChange(this.query, null, e))
                         }
-                        lis(QueryChange(this, resultSet, null))
-                    } catch (e: CouchbaseLiteException) {
-                        lis(QueryChange(this, null, e))
                     }
                 },
-                index.toLong().toCPointer<CPointed>()
+                stableRef
             )!!,
             ListenerTokenType.QUERY,
             index
@@ -57,7 +60,7 @@ internal abstract class AbstractQuery : Query {
         token as DelegatedListenerToken
         CBLListener_Remove(token.actual)
         if (token.type == ListenerTokenType.QUERY) {
-            removeChangeListener(changeListeners, token.index)
+            removeListener(changeListeners, token.index)
         } else {
             error("${token.type} change listener can't be removed from Query instance")
         }
