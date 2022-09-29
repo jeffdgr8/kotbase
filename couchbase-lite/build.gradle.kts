@@ -80,7 +80,9 @@ kotlin {
         } else {
             val main by compilations.getting
             val libcblite by main.cinterops.creating {
-                includeDirs("${konanTarget.libcblite}/include")
+                includeDirs("${konanTarget.libcblitePath}/include")
+                val libraryPath = "$projectDir/${konanTarget.libcblitePath}/${konanTarget.libcbliteLib}"
+                extraOpts("-libraryPath", libraryPath)
             }
         }
     }
@@ -417,8 +419,22 @@ val KonanTarget.arch: String
         }
     }
 
-val KonanTarget.libcblite: String
+val KonanTarget.libcblitePath: String
     get() = libcblitePath(os, arch)
+
+val KonanTarget.libcbliteLib: String
+    get() {
+        return when (os) {
+            "linux" -> when (arch) {
+                "x86_64" -> "lib/x86_64-linux-gnu"
+                "arm64" -> "lib/aarch64-linux-gnu"
+                "armhf" -> "lib/arm-linux-gnueabihf"
+                else -> error("Unhandled native architecture: $arch")
+            }
+            "windows" -> "lib"
+            else -> error("Unhandled native OS: $os")
+        }
+    }
 
 val String.isNativeC: Boolean
     get() = startsWith("linux") || startsWith("mingw")
