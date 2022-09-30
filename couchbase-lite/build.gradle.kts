@@ -79,13 +79,26 @@ kotlin {
             }
         } else {
             val main by compilations.getting
+            val libraryPath = "$projectDir/${konanTarget.libcblitePath}/${konanTarget.libcbliteLib}"
             val libcblite by main.cinterops.creating {
                 includeDirs("${konanTarget.libcblitePath}/include")
-                val libraryPath = "$projectDir/${konanTarget.libcblitePath}/${konanTarget.libcbliteLib}"
-                extraOpts("-libraryPath", libraryPath)
+                if (konanTarget.family == Family.MINGW) {
+                    extraOpts("-libraryPath", libraryPath)
+                }
+            }
+            if (konanTarget.family == Family.LINUX) {
+                binaries.getTest(DEBUG).linkerOpts += listOf("-rpath", libraryPath)
             }
         }
     }
+
+    /*
+     * Manually install libicu-dev v66 from
+     * libs/libicu-dev/linux/x86_64/libicu-dev-66.1/lib/x86_64-linux-gnu
+     * as -rpath doesn't work to resolve:
+     *
+     * sudo cp -P libicuuc.so.66* libicui18n.so.66* libicudata.so.66* /usr/lib/x86_64-linux-gnu/
+     */
 
     /*
      * Source set dependency graph:
@@ -166,7 +179,7 @@ kotlin {
         val nativeCommonTest by creating {
             dependsOn(commonTest)
             dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:3.1.0")
+                implementation("com.soywiz.korlibs.korio:korio:3.2.0")
             }
         }
 
@@ -207,7 +220,7 @@ kotlin {
         val nativeMain by creating {
             dependsOn(nativeCommonMain)
             dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:3.1.0")
+                implementation("com.soywiz.korlibs.korio:korio:3.2.0")
             }
         }
         val nativeTest by creating {
@@ -394,10 +407,17 @@ tasks.withType<KotlinNativeTest> {
     dependsOn(
         tasks.register<Copy>("copy${name.capitalize()}Resources") {
             from("src/commonTest/resources")
-            if (dir.isNativeC) from("${libcblitePath(dir.os, dir.arch)}/${libcbliteBin(dir.os, dir.arch)}")
             into("build/bin/$dir/debugTest")
         }
     )
+    if (dir.isWindows) {
+        dependsOn(
+            tasks.register<Copy>("copyLibcbliteDll") {
+                from("${libcblitePath(dir.os, dir.arch)}/bin/cblite.dll")
+                into("build/bin/$dir/debugTest")
+            }
+        )
+    }
 }
 
 val KonanTarget.os: String
@@ -424,20 +444,20 @@ val KonanTarget.libcblitePath: String
 
 val KonanTarget.libcbliteLib: String
     get() {
-        return when (os) {
-            "linux" -> when (arch) {
-                "x86_64" -> "lib/x86_64-linux-gnu"
-                "arm64" -> "lib/aarch64-linux-gnu"
-                "armhf" -> "lib/arm-linux-gnueabihf"
+        return when (family) {
+            Family.LINUX -> when (architecture) {
+                Architecture.X64 -> "lib/x86_64-linux-gnu"
+                Architecture.ARM64 -> "lib/aarch64-linux-gnu"
+                Architecture.ARM32 -> "lib/arm-linux-gnueabihf"
                 else -> error("Unhandled native architecture: $arch")
             }
-            "windows" -> "lib"
+            Family.MINGW -> "lib"
             else -> error("Unhandled native OS: $os")
         }
     }
 
-val String.isNativeC: Boolean
-    get() = startsWith("linux") || startsWith("mingw")
+val String.isWindows: Boolean
+    get() = startsWith("mingw")
 
 val String.os: String
     get() {
@@ -460,15 +480,3 @@ val String.arch: String
 
 fun libcblitePath(os: String, arch: String): String =
     "libs/libcblite/$os/$arch/libcblite-$cblVersion"
-
-fun libcbliteBin(os: String, arch: String): String =
-    when (os) {
-        "linux" -> when (arch) {
-            "x86_64" -> "lib/x86_64-linux-gnu/libcblite.so"
-            "arm64" -> "lib/aarch64-linux-gnu/libcblite.so"
-            "armhf" -> "lib/arm-linux-gnueabihf/libcblite.so"
-            else -> error("Unhandled native architecture: $arch")
-        }
-        "windows" -> "bin/cblite.dll"
-        else -> error("Unhandled native OS: $os")
-    }

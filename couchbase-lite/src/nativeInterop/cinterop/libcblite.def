@@ -5,4 +5,6 @@ headerFilter = cbl/* fleece/*
 #linkerOpts.linux_arm64 = -Llibs/libcblite/linux/arm64/libcblite-3.0.2/lib/aarch64-linux-gnu -lcblite
 #linkerOpts.linux_arm32 = -Llibs/libcblite/linux/armhf/libcblite-3.0.2/lib/arm-linux-gnueabihf -lcblite
 
+linkerOpts.linux_x64 = -L/home/jeff/Documents/GitHub/couchbase-lite-kmp/couchbase-lite/libs/libcblite/linux/x86_64/libcblite-3.0.2/lib/x86_64-linux-gnu -lcblite
+
 staticLibraries.mingw_x64 = cblite.lib
