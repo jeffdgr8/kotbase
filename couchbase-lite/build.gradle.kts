@@ -87,7 +87,7 @@ kotlin {
                 }
             }
             if (konanTarget.family == Family.LINUX) {
-                binaries.getTest(DEBUG).linkerOpts += listOf("-rpath", libraryPath)
+                binaries.getTest(DEBUG).linkerOpts += listOf("-L$libraryPath", "-lcblite", "-rpath", libraryPath)
             }
         }
     }
