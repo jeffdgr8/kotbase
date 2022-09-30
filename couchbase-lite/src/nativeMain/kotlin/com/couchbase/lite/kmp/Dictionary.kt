@@ -1,7 +1,6 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.fleece.*
-import com.couchbase.lite.kmp.internal.fleece.toKString
 import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
 import libcblite.*
@@ -83,6 +82,30 @@ internal constructor(actual: FLDict) : Iterable<String> {
 
     override fun iterator(): Iterator<String> =
         keys.iterator()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Dictionary) return false
+        if (other.count != count) return false
+        for (key in this) {
+            val value = getValue(key)
+            if (value != null) {
+                if (value != other.getValue(key)) return false
+            } else {
+                if (!(other.getValue(key) == null && other.contains(key))) return false
+            }
+        }
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = 0
+        for (key in this) {
+            val value = getValue(key)
+            result += key.hashCode() xor (value?.hashCode() ?: 0)
+        }
+        return result
+    }
 }
 
 internal fun FLDict.asDictionary() = Dictionary(this)

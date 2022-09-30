@@ -1,14 +1,9 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.fleece.*
-import com.couchbase.lite.kmp.internal.fleece.getValue
-import com.couchbase.lite.kmp.internal.fleece.toKString
-import com.couchbase.lite.kmp.internal.fleece.toList
-import com.couchbase.lite.kmp.internal.fleece.toNative
-import libcblite.*
-import kotlinx.cinterop.convert
 import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
+import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual open class Array
@@ -97,6 +92,28 @@ internal constructor(actual: FLArray) : Iterable<Any?> {
         if (index < 0 || index >= count) {
             throw IndexOutOfBoundsException("Array index $index is out of range")
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Array) return false
+        if (other.count != count) return false
+        val itr1 = iterator()
+        val itr2 = other.iterator()
+        while (itr1.hasNext() && itr2.hasNext()) {
+            val o1 = itr1.next()
+            val o2 = itr2.next()
+            if (o1 != o2) return false
+        }
+        return !(itr1.hasNext() || itr2.hasNext())
+    }
+
+    override fun hashCode(): Int {
+        var result = 1
+        for (o in this) {
+            result = 31 * result + (o?.hashCode() ?: 0)
+        }
+        return result
     }
 }
 
