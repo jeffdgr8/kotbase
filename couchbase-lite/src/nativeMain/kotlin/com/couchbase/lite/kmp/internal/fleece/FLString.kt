@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmp.internal.fleece
 
+import com.udobny.kmp.ext.toByteArray
 import kotlinx.cinterop.*
 import libcblite.FLSliceResult_Release
 import libcblite.FLString
@@ -8,7 +9,7 @@ import platform.posix.strdup
 import platform.posix.strlen
 
 internal fun FLString.toKString(): String? =
-    buf?.reinterpret<ByteVar>()?.toKString()
+    buf?.toByteArray(size.toInt())?.decodeToString()
 
 internal fun CValue<FLString>.toKString(): String? =
     useContents { toKString() }

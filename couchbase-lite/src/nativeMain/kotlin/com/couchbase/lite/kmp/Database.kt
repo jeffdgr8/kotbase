@@ -84,7 +84,9 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     public actual fun getDocument(id: String): Document? {
         return mustBeOpen {
             wrapCBLError { error ->
-                CBLDatabase_GetDocument(actual, id.toFLString(), error)?.asDocument()
+                memScoped {
+                    CBLDatabase_GetDocument(actual, id.toFLString(this), error)?.asDocument()
+                }
             }
         }
     }
