@@ -12,11 +12,13 @@ import kotlinx.datetime.Instant
 import kotlin.native.internal.createCleaner
 
 public actual open class Array
-internal constructor(internal open val actual: FLArray) : Iterable<Any?> {
+internal constructor(actual: FLArray) : Iterable<Any?> {
 
     init {
         FLArray_Retain(actual)
     }
+
+    internal open val actual: FLArray = actual
 
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")

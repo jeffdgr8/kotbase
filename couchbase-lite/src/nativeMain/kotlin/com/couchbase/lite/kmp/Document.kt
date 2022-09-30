@@ -11,11 +11,13 @@ import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual open class Document
-internal constructor(internal open val actual: CPointer<CBLDocument>) : Iterable<String> {
+internal constructor(actual: CPointer<CBLDocument>) : Iterable<String> {
 
     init {
         CBLDocument_Retain(actual)
     }
+
+    internal open val actual: CPointer<CBLDocument> = actual
 
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")

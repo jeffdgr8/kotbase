@@ -8,11 +8,13 @@ import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual open class Dictionary
-internal constructor(internal open val actual: FLDict) : Iterable<String> {
+internal constructor(actual: FLDict) : Iterable<String> {
 
     init {
         FLDict_Retain(actual)
     }
+
+    internal open val actual: FLDict = actual
 
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")

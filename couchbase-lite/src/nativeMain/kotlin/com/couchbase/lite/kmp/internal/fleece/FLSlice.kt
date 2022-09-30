@@ -4,7 +4,6 @@ import kotlinx.cinterop.*
 import libcblite.FLSlice
 import libcblite.FLSliceResult
 import libcblite.FLSliceResult_Release
-import platform.posix.free
 import platform.posix.memcpy
 
 private fun FLSlice.toByteArray(): ByteArray = ByteArray(size.toInt()).apply {
