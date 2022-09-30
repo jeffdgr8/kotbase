@@ -12,6 +12,6 @@ internal constructor(override val actual: CBLSessionAuthenticator) : Authenticat
     public actual val sessionID: String
         get() = actual.sessionID
 
-    public actual val cookieName: String?
+    public actual val cookieName: String
         get() = actual.cookieName
 }

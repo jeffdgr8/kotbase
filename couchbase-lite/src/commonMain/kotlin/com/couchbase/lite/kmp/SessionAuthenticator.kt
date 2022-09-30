@@ -24,5 +24,5 @@ constructor(sessionID: String, cookieName: String? = null) : Authenticator {
      * Return session cookie name that the session ID value will be set to when communicating
      * the Sync Gateway.
      */
-    public val cookieName: String?
+    public val cookieName: String
 }

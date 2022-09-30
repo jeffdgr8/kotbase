@@ -7,5 +7,17 @@ public actual class SessionAuthenticator
 @Suppress("CanBeParameter")
 actual constructor(
     public actual val sessionID: String,
-    public actual val cookieName: String?
-) : Authenticator(CBLAuth_CreateSession(sessionID.toFLString(), cookieName.toFLString())!!)
+    cookieName: String?
+) : Authenticator(
+    CBLAuth_CreateSession(
+        sessionID.toFLString(),
+        (cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME).toFLString()
+    )!!
+) {
+
+    public actual val cookieName: String = cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME
+
+    private companion object {
+        private const val DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME = "SyncGatewaySession"
+    }
+}

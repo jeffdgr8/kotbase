@@ -11,6 +11,6 @@ internal constructor(override val actual: com.couchbase.lite.SessionAuthenticato
     public actual val sessionID: String
         get() = actual.sessionID
 
-    public actual val cookieName: String?
-        get() = actual.cookieName
+    public actual val cookieName: String
+        get() = actual.cookieName!!
 }
