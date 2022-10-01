@@ -4,6 +4,7 @@ import kotlinx.cinterop.*
 import libcblite.FLSlice
 import libcblite.FLSliceResult
 import libcblite.FLSliceResult_Release
+import platform.posix.malloc
 import platform.posix.memcpy
 
 private fun FLSlice.toByteArray(): ByteArray = ByteArray(size.toInt()).apply {
@@ -31,9 +32,9 @@ internal fun CValue<FLSliceResult>.toByteArray(): ByteArray {
     return result
 }
 
-// TODO: should this use nativeHeap like this?
 internal fun ByteArray.toFLSlice(): CValue<FLSlice> =
     cValue {
-        buf = nativeHeap.allocArrayOf(this@toFLSlice)
         size = this@toFLSlice.size.convert()
+        buf = malloc(size)
+        memcpy(buf, this@toFLSlice.refTo(0), size)
     }
