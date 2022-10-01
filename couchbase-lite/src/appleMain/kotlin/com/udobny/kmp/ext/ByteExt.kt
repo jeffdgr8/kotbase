@@ -8,14 +8,16 @@ import platform.Foundation.NSData
 import platform.Foundation.create
 import platform.posix.memcpy
 
-public fun ByteArray.toNSData(): NSData = memScoped {
-    NSData.create(bytes = allocArrayOf(this@toNSData), length = size.convert())
+public fun ByteArray.toNSData(): NSData {
+    return memScoped {
+        NSData.create(bytes = allocArrayOf(this@toNSData), length = size.convert())
+    }
 }
 
-public fun NSData.toByteArray(): ByteArray = ByteArray(length.toInt()).apply {
-    if (isNotEmpty()) {
-        usePinned {
-            memcpy(it.addressOf(0), bytes, length)
+public fun NSData.toByteArray(): ByteArray {
+    return ByteArray(length.toInt()).apply {
+        if (isNotEmpty()) {
+            memcpy(refTo(0), bytes, length)
         }
     }
 }

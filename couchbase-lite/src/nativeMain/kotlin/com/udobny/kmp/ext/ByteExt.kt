@@ -5,7 +5,9 @@ import platform.posix.memcpy
 
 public fun CPointer<ByteVar>.toByteArray(size: Int): ByteArray {
     return ByteArray(size).apply {
-        memcpy(refTo(0), this@toByteArray, size.convert())
+        if (isNotEmpty()) {
+            memcpy(refTo(0), this@toByteArray, size.convert())
+        }
     }
 }
 
