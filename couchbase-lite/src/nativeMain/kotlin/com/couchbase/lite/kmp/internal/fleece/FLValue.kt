@@ -12,8 +12,14 @@ private inline val FLValue.type: FLValueType
 internal fun FLValue.toNative(isMutable: Boolean): Any? {
     return when (type) {
         kFLArray -> asArray(isMutable)
-        kFLDict -> asDictionary(isMutable)
-        kFLData -> asBlob()
+        kFLDict -> {
+            if (FLValue_IsBlob(this)) {
+                asBlob()
+            } else {
+                asDictionary(isMutable)
+            }
+        }
+        kFLData -> asDataBlob()
         else -> toObject()
     }
 }
@@ -36,7 +42,10 @@ private fun FLValue.asDictionary(isMutable: Boolean): Dictionary {
     }
 }
 
-private fun FLValue.asBlob(): Blob =
+private fun FLValue.asBlob(): Blob? =
+    FLValue_GetBlob(this)?.asBlob()
+
+private fun FLValue.asDataBlob(): Blob =
     Blob(content = FLValue_AsData(this))
 
 internal fun FLValue.toArray(isMutable: Boolean): Array? =
@@ -45,8 +54,13 @@ internal fun FLValue.toArray(isMutable: Boolean): Array? =
 internal fun FLValue.toDictionary(isMutable: Boolean): Dictionary? =
     if (type == kFLDict) asDictionary(isMutable) else null
 
-internal fun FLValue.toBlob(): Blob? =
-    if (type == kFLData) asBlob() else null
+internal fun FLValue.toBlob(): Blob? {
+    return when (type) {
+        kFLDict -> asBlob()
+        kFLData -> asDataBlob()
+        else -> null
+    }
+}
 
 internal fun FLValue.toObject(): Any? {
     return when (type) {
