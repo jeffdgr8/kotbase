@@ -12,6 +12,12 @@ actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
     }
 
     override fun getAsset(asset: String): Source {
-        return FileSystem.SYSTEM.source(asset.toPath())
+        val target = when (Platform.osFamily) {
+            OsFamily.LINUX -> "linux"
+            OsFamily.WINDOWS -> "mingw"
+            else -> error("Unsupported platform: ${Platform.osFamily}")
+        } + Platform.cpuArchitecture.name.lowercase().replaceFirstChar(Char::titlecase)
+        val path = "build/bin/$target/debugTest/$asset".toPath()
+        return FileSystem.SYSTEM.source(path)
     }
 }
