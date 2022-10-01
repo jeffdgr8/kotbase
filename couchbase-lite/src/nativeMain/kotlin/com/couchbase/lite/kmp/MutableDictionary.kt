@@ -11,7 +11,6 @@ public actual class MutableDictionary
 internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
 
     public actual constructor() : this(FLMutableDict_New()!!) {
-        // TODO: make sure this is called after it's retained for the second time
         FLMutableDict_Release(actual)
     }
 
@@ -20,11 +19,16 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
     }
 
     public actual constructor(json: String) : this(
-        // TODO: fix double retain
-        wrapFLError { error ->
-            FLMutableDict_NewFromJSON(json.toFLString(), error)!!
+        try {
+            wrapFLError { error ->
+                FLMutableDict_NewFromJSON(json.toFLString(), error)!!
+            }
+        } catch (e: CouchbaseLiteException) {
+            throw IllegalArgumentException("Failed parsing JSON", e)
         }
-    )
+    ) {
+        FLMutableDict_Release(actual)
+    }
 
     public actual fun setData(data: Map<String, Any?>): MutableDictionary {
         FLMutableDict_RemoveAll(actual)

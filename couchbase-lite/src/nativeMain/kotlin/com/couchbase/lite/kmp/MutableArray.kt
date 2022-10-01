@@ -13,7 +13,6 @@ public actual class MutableArray
 internal constructor(override val actual: FLMutableArray) : Array(actual) {
 
     public actual constructor() : this(FLMutableArray_New()!!) {
-        // TODO: make sure this is called after it's retained for the second time
         FLMutableArray_Release(actual)
     }
 
@@ -22,11 +21,16 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
     }
 
     public actual constructor(json: String) : this(
-        // TODO: fix double retain
-        wrapFLError { error ->
-            FLMutableArray_NewFromJSON(json.toFLString(), error)!!
+        try {
+            wrapFLError { error ->
+                FLMutableArray_NewFromJSON(json.toFLString(), error)!!
+            }
+        } catch (e: CouchbaseLiteException) {
+            throw IllegalArgumentException("Failed parsing JSON", e)
         }
-    )
+    ) {
+        FLMutableArray_Release(actual)
+    }
 
     public actual fun setData(data: List<Any?>): MutableArray {
         FLMutableArray_Resize(actual, data.size.convert())
