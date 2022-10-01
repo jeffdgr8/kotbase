@@ -26,8 +26,6 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
         }
     )
 
-    override val isMutable: Boolean = true
-
     public actual fun setData(data: Map<String, Any?>): MutableDictionary {
         FLMutableDict_RemoveAll(actual)
         data.forEach { (key, value) ->
@@ -109,11 +107,14 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
         return this
     }
 
+    override fun getValue(key: String): Any? =
+        getFLValue(key)?.toMutableNative { setValue(key, it) }
+
     actual override fun getArray(key: String): MutableArray? =
-        super.getArray(key) as MutableArray?
+        getFLValue(key)?.toMutableArray { setArray(key, it) }
 
     actual override fun getDictionary(key: String): MutableDictionary? =
-        super.getDictionary(key) as MutableDictionary?
+        getFLValue(key)?.toMutableDictionary { setDictionary(key, it) }
 }
 
 internal fun FLMutableDict.asMutableDictionary() = MutableDictionary(this)

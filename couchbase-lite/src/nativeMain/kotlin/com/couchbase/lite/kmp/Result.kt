@@ -55,7 +55,7 @@ private constructor(
     }
 
     public actual fun getValue(index: Int): Any? =
-        getFLValue(index)?.toNative(false)
+        getFLValue(index)?.toNative()
 
     public actual fun getString(index: Int): String? =
         getFLValue(index)?.toKString()
@@ -85,10 +85,10 @@ private constructor(
         getFLValue(index)?.toDate()
 
     public actual fun getArray(index: Int): Array? =
-        getFLValue(index)?.toArray(false)
+        getFLValue(index)?.toArray()
 
     public actual fun getDictionary(index: Int): Dictionary? =
-        getFLValue(index)?.toDictionary(false)
+        getFLValue(index)?.toDictionary()
 
     public actual fun toList(): List<Any?> =
         array?.toList() ?: emptyList()
@@ -107,7 +107,7 @@ private constructor(
     }
 
     public actual fun getValue(key: String): Any? =
-        getFLValue(key)?.toNative(false)
+        getFLValue(key)?.toNative()
 
     public actual fun getString(key: String): String? =
         getFLValue(key)?.toKString()
@@ -137,10 +137,10 @@ private constructor(
         getFLValue(key)?.toDate()
 
     public actual fun getArray(key: String): Array? =
-        getFLValue(key)?.toArray(false)
+        getFLValue(key)?.toArray()
 
     public actual fun getDictionary(key: String): Dictionary? =
-        getFLValue(key)?.toDictionary(false)
+        getFLValue(key)?.toDictionary()
 
     public actual fun toMap(): Map<String, Any?> =
         dict?.toMap() ?: emptyMap()

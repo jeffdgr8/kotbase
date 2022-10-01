@@ -21,21 +21,19 @@ internal constructor(actual: FLArray) : Iterable<Any?> {
         FLArray_Release(it)
     }
 
-    protected open val isMutable: Boolean = false
-
     public actual fun toMutable(): MutableArray =
-        MutableArray(FLArray_AsMutable(actual) ?: FLArray_MutableCopy(actual, kFLDeepCopy)!!)
+        MutableArray(FLArray_AsMutable(actual) ?: FLArray_MutableCopy(actual, kFLDefaultCopy)!!)
 
     public actual val count: Int
         get() = FLArray_Count(actual).toInt()
 
-    private fun getFLValue(index: Int): FLValue? {
+    protected fun getFLValue(index: Int): FLValue? {
         checkIndex(index)
         return actual.getValue(index)
     }
 
-    public actual fun getValue(index: Int): Any? =
-        getFLValue(index)?.toNative(isMutable)
+    public actual open fun getValue(index: Int): Any? =
+        getFLValue(index)?.toNative()
 
     public actual fun getString(index: Int): String? =
         getFLValue(index)?.toKString()
@@ -65,10 +63,10 @@ internal constructor(actual: FLArray) : Iterable<Any?> {
         getFLValue(index)?.toDate()
 
     public actual open fun getArray(index: Int): Array? =
-        getFLValue(index)?.toArray(isMutable)
+        getFLValue(index)?.toArray()
 
     public actual open fun getDictionary(index: Int): Dictionary? =
-        getFLValue(index)?.toDictionary(isMutable)
+        getFLValue(index)?.toDictionary()
 
     public actual fun toList(): List<Any?> =
         actual.toList()

@@ -21,10 +21,8 @@ internal constructor(actual: FLDict) : Iterable<String> {
         FLDict_Release(it)
     }
 
-    protected open val isMutable: Boolean = false
-
     public actual fun toMutable(): MutableDictionary =
-        MutableDictionary(FLDict_AsMutable(actual) ?: FLDict_MutableCopy(actual, kFLDeepCopy)!!)
+        MutableDictionary(FLDict_AsMutable(actual) ?: FLDict_MutableCopy(actual, kFLDefaultCopy)!!)
 
     public actual val count: Int
         get() = FLDict_Count(actual).toInt()
@@ -32,11 +30,11 @@ internal constructor(actual: FLDict) : Iterable<String> {
     public actual val keys: List<String>
         get() = actual.keys()
 
-    private fun getFLValue(key: String): FLValue? =
+    protected fun getFLValue(key: String): FLValue? =
         actual.getValue(key)
 
-    public actual fun getValue(key: String): Any? =
-        getFLValue(key)?.toNative(isMutable)
+    public actual open fun getValue(key: String): Any? =
+        getFLValue(key)?.toNative()
 
     public actual fun getString(key: String): String? =
         getFLValue(key)?.toKString()
@@ -66,10 +64,10 @@ internal constructor(actual: FLDict) : Iterable<String> {
         getFLValue(key)?.toDate()
 
     public actual open fun getArray(key: String): Array? =
-        getFLValue(key)?.toArray(isMutable)
+        getFLValue(key)?.toArray()
 
     public actual open fun getDictionary(key: String): Dictionary? =
-        getFLValue(key)?.toDictionary(isMutable)
+        getFLValue(key)?.toDictionary()
 
     public actual fun toMap(): Map<String, Any?> =
         actual.toMap()

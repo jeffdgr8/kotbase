@@ -35,8 +35,6 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
         setJSON(json)
     }
 
-    override val isMutable: Boolean = true
-
     override val properties: FLMutableDict
         get() = CBLDocument_MutableProperties(actual)!!
 
@@ -121,11 +119,14 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
         return this
     }
 
+    override fun getValue(key: String): Any? =
+        getFLValue(key)?.toMutableNative { setValue(key, it) }
+
     actual override fun getArray(key: String): MutableArray? =
-        super.getArray(key) as MutableArray?
+        getFLValue(key)?.toMutableArray { setArray(key, it) }
 
     actual override fun getDictionary(key: String): MutableDictionary? =
-        super.getDictionary(key) as MutableDictionary?
+        getFLValue(key)?.toMutableDictionary { setDictionary(key, it) }
 
     override fun toJSON(): String? {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")

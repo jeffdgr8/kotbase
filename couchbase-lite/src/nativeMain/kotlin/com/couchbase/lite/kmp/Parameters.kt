@@ -37,7 +37,7 @@ internal constructor(
     }
 
     public actual fun getValue(name: String): Any? =
-        actual.getValue(name)?.toNative(false)
+        actual.getValue(name)?.toNative()
 
     public actual fun setString(name: String, value: String?): Parameters {
         checkReadOnly()

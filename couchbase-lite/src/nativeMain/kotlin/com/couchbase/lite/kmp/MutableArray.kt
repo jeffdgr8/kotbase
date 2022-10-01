@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.internal.fleece.*
 import com.couchbase.lite.kmp.internal.fleece.parseJson
 import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.fleece.wrapFLError
@@ -26,8 +27,6 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
             FLMutableArray_NewFromJSON(json.toFLString(), error)!!
         }
     )
-
-    override val isMutable: Boolean = true
 
     public actual fun setData(data: List<Any?>): MutableArray {
         FLMutableArray_Resize(actual, data.size.convert())
@@ -350,11 +349,14 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
         return this
     }
 
+    override fun getValue(index: Int): Any? =
+        getFLValue(index)?.toMutableNative { setValue(index, it) }
+
     actual override fun getArray(index: Int): MutableArray? =
-        super.getArray(index) as MutableArray?
+        getFLValue(index)?.toMutableArray { setArray(index, it) }
 
     actual override fun getDictionary(index: Int): MutableDictionary? =
-        super.getDictionary(index) as MutableDictionary?
+        getFLValue(index)?.toMutableDictionary { setDictionary(index, it) }
 
     private fun checkSelf(value: FLMutableArray) {
         if (value === actual) {

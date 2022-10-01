@@ -1,7 +1,6 @@
 package com.couchbase.lite.kmp.internal.fleece
 
 import com.couchbase.lite.kmp.*
-import com.couchbase.lite.kmp.CBLError
 import kotlinx.cinterop.*
 import kotlinx.datetime.Instant
 import libcblite.*
@@ -9,14 +8,14 @@ import libcblite.*
 private inline val FLValue.type: FLValueType
     get() = FLValue_GetType(this)
 
-internal fun FLValue.toNative(isMutable: Boolean): Any? {
+internal fun FLValue.toNative(): Any? {
     return when (type) {
-        kFLArray -> asArray(isMutable)
+        kFLArray -> asArray()
         kFLDict -> {
             if (FLValue_IsBlob(this)) {
                 asBlob()
             } else {
-                asDictionary(isMutable)
+                asDictionary()
             }
         }
         kFLData -> asDataBlob()
@@ -24,21 +23,44 @@ internal fun FLValue.toNative(isMutable: Boolean): Any? {
     }
 }
 
-private fun FLValue.asArray(isMutable: Boolean): Array {
-    val array = FLValue_AsArray(this)!!
-    return if (isMutable) {
-        MutableArray(array)
-    } else {
-        Array(array)
+internal fun FLValue.toMutableNative(saveMutableCopy: (Any) -> Unit): Any? {
+    return when (type) {
+        kFLArray -> asMutableArray(saveMutableCopy)
+        kFLDict -> {
+            if (FLValue_IsBlob(this)) {
+                asBlob()
+            } else {
+                asMutableDictionary(saveMutableCopy)
+            }
+        }
+        kFLData -> asDataBlob()
+        else -> toObject()
     }
 }
 
-private fun FLValue.asDictionary(isMutable: Boolean): Dictionary {
-    val dict = FLValue_AsDict(this)!!
-    return if (isMutable) {
-        MutableDictionary(dict)
+private fun FLValue.asArray(): Array =
+    Array(FLValue_AsArray(this)!!)
+
+private fun FLValue.asDictionary(): Dictionary =
+    Dictionary(FLValue_AsDict(this)!!)
+
+private fun FLValue.asMutableArray(saveMutableCopy: (MutableArray) -> Unit): MutableArray {
+    val array = FLValue_AsArray(this)!!
+    val mutableArray = FLArray_AsMutable(array)
+    return if (mutableArray != null) {
+        MutableArray(mutableArray)
     } else {
-        Dictionary(dict)
+        MutableArray(FLArray_MutableCopy(array, kFLDefaultCopy)!!).also(saveMutableCopy)
+    }
+}
+
+private fun FLValue.asMutableDictionary(saveMutableCopy: (MutableDictionary) -> Unit): MutableDictionary {
+    val dict = FLValue_AsDict(this)!!
+    val mutableDict = FLDict_AsMutable(dict)
+    return if (mutableDict != null) {
+        MutableDictionary(mutableDict)
+    } else {
+        MutableDictionary(FLDict_MutableCopy(dict, kFLDefaultCopy)!!).also(saveMutableCopy)
     }
 }
 
@@ -48,11 +70,17 @@ private fun FLValue.asBlob(): Blob? =
 private fun FLValue.asDataBlob(): Blob =
     Blob(content = FLValue_AsData(this))
 
-internal fun FLValue.toArray(isMutable: Boolean): Array? =
-    if (type == kFLArray) asArray(isMutable) else null
+internal fun FLValue.toArray(): Array? =
+    if (type == kFLArray) asArray() else null
 
-internal fun FLValue.toDictionary(isMutable: Boolean): Dictionary? =
-    if (type == kFLDict && !FLValue_IsBlob(this)) asDictionary(isMutable) else null
+internal fun FLValue.toDictionary(): Dictionary? =
+    if (type == kFLDict && !FLValue_IsBlob(this)) asDictionary() else null
+
+internal fun FLValue.toMutableArray(saveMutableCopy: (MutableArray) -> Unit): MutableArray? =
+    if (type == kFLArray) asMutableArray(saveMutableCopy) else null
+
+internal fun FLValue.toMutableDictionary(saveMutableCopy: (MutableDictionary) -> Unit): MutableDictionary? =
+    if (type == kFLDict && !FLValue_IsBlob(this)) asMutableDictionary(saveMutableCopy) else null
 
 internal fun FLValue.toBlob(): Blob? {
     return when (type) {
