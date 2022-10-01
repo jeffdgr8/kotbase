@@ -254,8 +254,9 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         return actual.dictionaryAtIndex(index.convert())?.asMutableDictionary()
     }
 
-    override fun toJSON(): String =
+    override fun toJSON(): String {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
+    }
 
     // Java performs this check, but Objective-C does not
     private fun checkSelf(value: Any?) {

@@ -115,8 +115,9 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
     actual override fun getDictionary(key: String): MutableDictionary? =
         actual.dictionaryForKey(key)?.asMutableDictionary()
 
-    override fun toJSON(): String =
+    override fun toJSON(): String {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
+    }
 
     // Java performs this check, but Objective-C does not
     private fun checkSelf(value: Any?) {

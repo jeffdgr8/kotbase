@@ -358,6 +358,10 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
     actual override fun getDictionary(index: Int): MutableDictionary? =
         getFLValue(index)?.toMutableDictionary { setDictionary(index, it) }
 
+    override fun toJSON(): String {
+        throw IllegalStateException("Mutable objects may not be encoded as JSON")
+    }
+
     private fun checkSelf(value: FLMutableArray) {
         if (value === actual) {
             throw IllegalArgumentException("Arrays cannot ba added to themselves")
