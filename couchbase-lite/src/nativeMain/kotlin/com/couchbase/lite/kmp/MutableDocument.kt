@@ -122,10 +122,10 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
     }
 
     actual override fun getArray(key: String): MutableArray? =
-        FLMutableDict_GetMutableArray(properties, key.toFLString())?.asMutableArray()
+        super.getArray(key) as MutableArray?
 
     actual override fun getDictionary(key: String): MutableDictionary? =
-        FLMutableDict_GetMutableDict(properties, key.toFLString())?.asMutableDictionary()
+        super.getDictionary(key) as MutableDictionary?
 
     override fun toJSON(): String? {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")

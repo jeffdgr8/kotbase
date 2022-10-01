@@ -350,15 +350,11 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
         return this
     }
 
-    actual override fun getArray(index: Int): MutableArray? {
-        checkIndex(index)
-        return FLMutableArray_GetMutableArray(actual, index.convert())?.asMutableArray()
-    }
+    actual override fun getArray(index: Int): MutableArray? =
+        super.getArray(index) as MutableArray?
 
-    actual override fun getDictionary(index: Int): MutableDictionary? {
-        checkIndex(index)
-        return FLMutableArray_GetMutableDict(actual, index.convert())?.asMutableDictionary()
-    }
+    actual override fun getDictionary(index: Int): MutableDictionary? =
+        super.getDictionary(index) as MutableDictionary?
 
     private fun checkSelf(value: FLMutableArray) {
         if (value === actual) {

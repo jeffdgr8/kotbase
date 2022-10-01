@@ -110,10 +110,10 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
     }
 
     actual override fun getArray(key: String): MutableArray? =
-        FLMutableDict_GetMutableArray(actual, key.toFLString())?.asMutableArray()
+        super.getArray(key) as MutableArray?
 
     actual override fun getDictionary(key: String): MutableDictionary? =
-        FLMutableDict_GetMutableDict(actual, key.toFLString())?.asMutableDictionary()
+        super.getDictionary(key) as MutableDictionary?
 }
 
 internal fun FLMutableDict.asMutableDictionary() = MutableDictionary(this)

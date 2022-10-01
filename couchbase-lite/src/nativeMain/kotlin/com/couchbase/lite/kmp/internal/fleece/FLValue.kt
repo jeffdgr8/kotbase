@@ -52,7 +52,7 @@ internal fun FLValue.toArray(isMutable: Boolean): Array? =
     if (type == kFLArray) asArray(isMutable) else null
 
 internal fun FLValue.toDictionary(isMutable: Boolean): Dictionary? =
-    if (type == kFLDict) asDictionary(isMutable) else null
+    if (type == kFLDict && !FLValue_IsBlob(this)) asDictionary(isMutable) else null
 
 internal fun FLValue.toBlob(): Blob? {
     return when (type) {
