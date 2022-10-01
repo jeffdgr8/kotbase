@@ -15,7 +15,7 @@ internal fun CValue<FLString>.toKString(): String? =
     useContents { toKString() }
 
 private fun FLStringResult.toKString(): String? =
-    buf?.reinterpret<ByteVar>()?.toKString()
+    buf?.toByteArray(size.toInt())?.decodeToString()
 
 internal fun CValue<FLStringResult>.toKString(): String? {
     val result = useContents { toKString() }
