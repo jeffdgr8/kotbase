@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
 import com.udobny.kmp.ext.toStringMillis
+import com.udobny.kmp.test.assertIntContentEquals
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -1021,7 +1022,7 @@ class ArrayTest : BaseDbTest() {
             array.addValue(i)
         }
         assertEquals(3, array.count)
-        assertContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
+        assertIntContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
         var n = 0
         val itr = array.iterator()
         while (itr.hasNext()) {
@@ -1031,7 +1032,7 @@ class ArrayTest : BaseDbTest() {
             itr.next()
         }
         assertEquals(4, array.count)
-        assertContentEquals(arrayOf(0, 1, 2, 3), array.toList().toTypedArray())
+        assertIntContentEquals(arrayOf(0, 1, 2, 3), array.toList().toTypedArray())
     }
 
     // ??? Surprisingly, no conncurrent modification exception.
@@ -1043,7 +1044,7 @@ class ArrayTest : BaseDbTest() {
             array!!.addValue(i)
         }
         assertEquals(3, array!!.count)
-        assertContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
+        assertIntContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
         val doc = MutableDocument("doc1").setValue("array", array)
         array = saveDocInBaseTestDb(doc).toMutable().getArray("array")
         assertNotNull(array)
@@ -1056,9 +1057,7 @@ class ArrayTest : BaseDbTest() {
             itr.next()
         }
         assertEquals(4, array.count)
-        // this is friggin' bizarre:
-        // after a roundtrip through the db those integers turn into longs
-        assertContentEquals(arrayOf(0L, 1L, 2L, 3), array.toList().toTypedArray())
+        assertIntContentEquals(arrayOf(0, 1, 2, 3), array.toList().toTypedArray())
     }
 
     @Test
