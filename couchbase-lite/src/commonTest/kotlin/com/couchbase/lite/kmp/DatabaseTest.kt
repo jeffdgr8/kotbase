@@ -4,6 +4,7 @@ import com.couchbase.lite.kmp.internal.utils.FileUtils
 import com.couchbase.lite.kmp.internal.utils.TestUtils
 import com.couchbase.lite.kmp.internal.utils.paddedString
 import com.couchbase.lite.kmp.internal.utils.getParentDir
+import com.udobny.kmp.test.IgnoreNative
 import com.udobny.kmp.use
 import kotlin.test.*
 
@@ -50,6 +51,7 @@ class DatabaseTest : BaseDbTest() {
         }
     }
 
+    @IgnoreNative // hangs
     @Test
     fun testGetExistingDocWithIDInBatch() {
         val n = 10

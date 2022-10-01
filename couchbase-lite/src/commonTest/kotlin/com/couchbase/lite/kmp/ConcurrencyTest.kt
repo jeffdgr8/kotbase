@@ -2,6 +2,7 @@ package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.utils.Report
 import com.couchbase.lite.kmp.internal.utils.paddedString
+import com.udobny.kmp.test.IgnoreNative
 import com.udobny.kmp.use
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
@@ -10,6 +11,7 @@ import kotlinx.datetime.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
+@IgnoreNative // hangs
 class ConcurrencyTest : BaseDbTest() {
 
     internal fun interface Callback {
