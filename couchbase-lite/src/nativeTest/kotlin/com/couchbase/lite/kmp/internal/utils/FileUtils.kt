@@ -1,31 +1,25 @@
 package com.couchbase.lite.kmp.internal.utils
 
 import com.couchbase.lite.kmp.LogDomain
-import com.soywiz.korio.file.File_separatorChar
-import com.soywiz.korio.file.std.cwdVfs
-import kotlinx.coroutines.runBlocking
 import okio.FileSystem
 import okio.IOException
 import okio.Path
+import okio.Path.Companion.DIRECTORY_SEPARATOR
 import okio.Path.Companion.toPath
 
 actual object FileUtils {
 
     actual fun dirExists(dir: String): Boolean {
-        return runBlocking {
-            cwdVfs[dir].run {
-                exists() && isDirectory()
-            }
-        }
+        val path = dir.toPath()
+        val fs = FileSystem.SYSTEM
+        return fs.exists(path) && fs.metadata(path).isDirectory
     }
 
     actual fun listFiles(dir: String): List<String> {
         try {
-            val files = runBlocking {
-                cwdVfs[dir].listNames()
-            }
+            val files = FileSystem.SYSTEM.list(dir.toPath())
             val prefix = if (dir.endsWith('/')) dir else "$dir/"
-            return files.map { prefix + it }
+            return files.map { prefix + it.name }
         } catch (e: Exception) {
             throw IOException(e.message, e)
         }
@@ -79,33 +73,32 @@ actual object FileUtils {
     }
 
     actual fun write(bytes: ByteArray, path: String) {
-        runBlocking {
-            cwdVfs[path].write(bytes)
+        FileSystem.SYSTEM.write(path.toPath(), false) {
+            write(bytes)
         }
     }
 
     actual fun read(path: String): ByteArray {
-        return runBlocking {
-            cwdVfs[path].read()
+        return FileSystem.SYSTEM.read(path.toPath()) {
+            readByteArray()
         }
     }
 
     actual val separatorChar: Char
-        get() = File_separatorChar
+        get() = DIRECTORY_SEPARATOR.first()
 
-    private fun deleteRecursive(fileOrDirectory: String): Boolean {
-        return !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)
-    }
+    private fun deleteRecursive(fileOrDirectory: String): Boolean =
+        !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)
 
-    private fun exists(file: String): Boolean {
-        return runBlocking {
-            cwdVfs[file].exists()
-        }
-    }
+    private fun exists(file: String): Boolean =
+        FileSystem.SYSTEM.exists(file.toPath())
 
     private fun delete(file: String): Boolean {
-        return runBlocking {
-            cwdVfs[file].delete()
+        return try {
+            FileSystem.SYSTEM.delete(file.toPath(), true)
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 }

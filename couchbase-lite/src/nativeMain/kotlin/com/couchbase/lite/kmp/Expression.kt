@@ -1,12 +1,11 @@
 package com.couchbase.lite.kmp
 
-import com.soywiz.krypto.encoding.hex
 import com.udobny.kmp.ext.toStringMillis
 import kotlinx.datetime.Instant
 
 public actual open class Expression {
 
-    internal class ValueExpression(val value: Any?) : Expression() {
+    internal class ValueExpression(private val value: Any?) : Expression() {
 
         init {
             verifySupportedType(value)
@@ -71,9 +70,9 @@ public actual open class Expression {
     }
 
     internal class BinaryExpression(
-        val lhs: Expression,
-        val rhs: Expression,
-        val type: OpType
+        private val lhs: Expression,
+        private val rhs: Expression,
+        private val type: OpType
     ) : Expression() {
 
         internal enum class OpType {
@@ -132,8 +131,8 @@ public actual open class Expression {
     }
 
     internal class CompoundExpression(
-        val subexpressions: List<Expression>,
-        val type: OpType
+        private val subexpressions: List<Expression>,
+        private val type: OpType
     ) : Expression() {
 
         internal enum class OpType {
@@ -155,8 +154,8 @@ public actual open class Expression {
     }
 
     internal class UnaryExpression(
-        val operand: Expression,
-        val type: OpType
+        private val operand: Expression,
+        private val type: OpType
     ) : Expression() {
 
         internal enum class OpType {
@@ -210,8 +209,8 @@ public actual open class Expression {
     }
 
     internal class CollationExpression(
-        val operand: Expression,
-        val collation: Collation
+        private val operand: Expression,
+        private val collation: Collation
     ) : Expression() {
 
         public override fun asJSON(): Any {
@@ -224,8 +223,8 @@ public actual open class Expression {
     }
 
     internal class FunctionExpression(
-        val func: String,
-        val params: List<Expression>
+        private val func: String,
+        private val params: List<Expression>
     ) : Expression() {
 
         public override fun asJSON(): Any {
@@ -360,11 +359,8 @@ public actual open class Expression {
         return BinaryExpression(this, aggr, BinaryExpression.OpType.In)
     }
 
-    override fun toString(): String {
-        return "${this::class.simpleName} {@${hashCode().hex},json=" + asJSON() + "}"
-    }
+    override fun toString(): String =
+        "${this::class.simpleName} {@${hashCode().toString(16)},json=" + asJSON() + "}"
 
-    internal open fun asJSON(): Any? {
-        return null
-    }
+    internal open fun asJSON(): Any? = null // overridden in subclasses
 }

@@ -56,6 +56,9 @@ actual object FileUtils {
     actual fun read(path: String): ByteArray =
         File(path).readBytes()
 
+    actual val separatorChar: Char
+        get() = File.separatorChar
+
     private fun deleteContents(fileOrDirectory: File?): Boolean {
         if (fileOrDirectory == null || !fileOrDirectory.isDirectory) {
             return true
@@ -73,7 +76,4 @@ actual object FileUtils {
 
     private fun deleteRecursive(fileOrDirectory: File): Boolean =
         !fileOrDirectory.exists() || deleteContents(fileOrDirectory) && fileOrDirectory.delete()
-
-    actual val separatorChar: Char
-        get() = File.separatorChar
 }

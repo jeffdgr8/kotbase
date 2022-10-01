@@ -219,9 +219,6 @@ kotlin {
 
         val nativeMain by creating {
             dependsOn(nativeCommonMain)
-            dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:3.2.0")
-            }
         }
         val nativeTest by creating {
             dependsOn(nativeCommonTest)

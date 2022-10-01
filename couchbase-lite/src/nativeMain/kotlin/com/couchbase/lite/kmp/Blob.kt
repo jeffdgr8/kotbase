@@ -7,11 +7,10 @@ import com.couchbase.lite.kmp.internal.fleece.toFLSlice
 import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.fleece.toKString
 import com.couchbase.lite.kmp.internal.wrapCBLError
-import com.soywiz.korio.file.std.cwdVfs
 import kotlinx.cinterop.*
-import kotlinx.coroutines.runBlocking
 import libcblite.*
 import okio.*
+import okio.Path.Companion.toPath
 import kotlin.native.internal.createCleaner
 
 private const val MIME_UNKNOWN = "application/octet-stream"
@@ -45,16 +44,17 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
     public actual constructor(contentType: String, stream: Source) :
             this(contentType, stream.buffer().readByteArray())
 
-    // TODO: stream data
     @Throws(IOException::class)
     public actual constructor(contentType: String, fileURL: String) : this(
-        runBlocking {
-            val file = cwdVfs[fileURL]
-            if (!file.exists()) {
+        contentType,
+        @Suppress("RedundantLambdaOrAnonymousFunction") {
+            val path = fileURL.toPath()
+            val fs = FileSystem.SYSTEM
+            if (!fs.exists(path)) {
                 throw FileNotFoundException("$fileURL: open failed: ENOENT (No such file or directory)")
             }
-            file.read()
-        }
+            fs.source(path)
+        }()
     )
 
     public actual val content: ByteArray?

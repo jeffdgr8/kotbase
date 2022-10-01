@@ -104,9 +104,8 @@ actual object FileUtils {
     actual val separatorChar: Char
         get() = '/'
 
-    private fun deleteRecursive(fileOrDirectory: String): Boolean {
-        return !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)
-    }
+    private fun deleteRecursive(fileOrDirectory: String): Boolean =
+        !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)
 
     private fun exists(file: String): Boolean =
         fm.fileExistsAtPath(file)
