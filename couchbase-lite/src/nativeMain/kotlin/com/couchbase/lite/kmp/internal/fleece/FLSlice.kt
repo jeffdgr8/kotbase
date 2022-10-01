@@ -9,9 +9,7 @@ import platform.posix.memcpy
 
 private fun FLSlice.toByteArray(): ByteArray = ByteArray(size.toInt()).apply {
     if (isNotEmpty()) {
-        usePinned {
-            memcpy(it.addressOf(0), buf, this@toByteArray.size)
-        }
+        memcpy(refTo(0), buf, this@toByteArray.size)
     }
 }
 
@@ -20,9 +18,7 @@ internal fun CValue<FLSlice>.toByteArray(): ByteArray =
 
 private fun FLSliceResult.toByteArray(): ByteArray = ByteArray(size.toInt()).apply {
     if (isNotEmpty()) {
-        usePinned {
-            memcpy(it.addressOf(0), buf, this@toByteArray.size)
-        }
+        memcpy(refTo(0), buf, this@toByteArray.size)
     }
 }
 
