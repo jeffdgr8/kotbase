@@ -342,6 +342,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
         wrapCBLError { error ->
             mustBeOpen {
                 CBLDatabase_Delete(actual, error)
+                isClosed = true
             }
         }
     }
