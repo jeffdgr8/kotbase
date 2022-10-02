@@ -14,12 +14,10 @@ public actual class MutableDocument
 internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
 
     public actual constructor() : this(CBLDocument_Create()!!) {
-        // TODO: make sure this is called after it's retained for the second time
         CBLDocument_Release(actual)
     }
 
     public actual constructor(id: String?) : this(CBLDocument_CreateWithID(id.toFLString())!!) {
-        // TODO: make sure this is called after it's retained for the second time
         CBLDocument_Release(actual)
     }
 

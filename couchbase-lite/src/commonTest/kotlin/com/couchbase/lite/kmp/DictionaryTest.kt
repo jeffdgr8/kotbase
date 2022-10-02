@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrows
+import com.udobny.kmp.test.assertIntEquals
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
@@ -189,7 +190,7 @@ class DictionaryTest : BaseDbTest() {
         // Profile1 should be now detached:
         profile1.setValue("age", 20)
         assertEquals("Scott Tiger", profile1.getValue("name"))
-        assertEquals(20, profile1.getValue("age"))
+        assertIntEquals(20, profile1.getValue("age"))
 
         // Check profile2:
         assertEquals("Daniel Tiger", profile2.getValue("name"))
@@ -219,7 +220,7 @@ class DictionaryTest : BaseDbTest() {
         // Profile1 should be now detached:
         profile1.setValue("age", 20)
         assertEquals("Scott Tiger", profile1.getValue("name"))
-        assertEquals(20, profile1.getValue("age"))
+        assertIntEquals(20, profile1.getValue("age"))
 
         // Check whether the profile value has no change:
         assertEquals("Daniel Tiger", doc.getValue("profile"))
@@ -246,7 +247,7 @@ class DictionaryTest : BaseDbTest() {
         // Profile1 should be now detached:
         profile1.setValue("age", 20)
         assertEquals("Scott Tiger", profile1.getValue("name"))
-        assertEquals(20, profile1.getValue("age"))
+        assertIntEquals(20, profile1.getValue("age"))
 
         // Check whether the profile value has no change:
         assertNull(doc.getValue("profile"))
@@ -778,7 +779,7 @@ class DictionaryTest : BaseDbTest() {
     @Test
     fun testDictFromArray() {
         assertFailsWith<IllegalArgumentException> {
-            MutableDocument("fromJSON", readJSONResource("array.json"))
+            MutableDictionary(readJSONResource("array.json"))
         }
     }
 }
