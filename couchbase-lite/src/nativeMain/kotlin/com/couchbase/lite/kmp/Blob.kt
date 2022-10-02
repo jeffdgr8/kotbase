@@ -2,10 +2,6 @@ package com.couchbase.lite.kmp
 
 import cnames.structs.CBLBlob
 import com.couchbase.lite.kmp.internal.fleece.*
-import com.couchbase.lite.kmp.internal.fleece.toByteArray
-import com.couchbase.lite.kmp.internal.fleece.toFLSlice
-import com.couchbase.lite.kmp.internal.fleece.toFLString
-import com.couchbase.lite.kmp.internal.fleece.toKString
 import com.couchbase.lite.kmp.internal.wrapCBLError
 import kotlinx.cinterop.*
 import libcblite.*
@@ -90,6 +86,22 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
 
     public actual val properties: Map<String, Any?>
         get() = CBLBlob_Properties(actual)!!.toMap()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Blob) return false
+        return if (digest != null && other.digest != null) {
+            digest == other.digest
+        } else {
+            content.contentEquals(other.content)
+        }
+    }
+
+    override fun hashCode(): Int =
+        content.contentHashCode()
+
+    override fun toString(): String =
+        "Blob{${super.toString()}: $digest($contentType, $length)}"
 
     public actual companion object {
 

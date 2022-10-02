@@ -97,7 +97,13 @@ internal fun FLValue.toObject(): Any? {
         kFLString -> asKString()
         kFLData -> FLValue_AsData(this).toByteArray()
         kFLArray -> FLValue_AsArray(this)?.toList()
-        kFLDict -> FLValue_AsDict(this)?.toMap()
+        kFLDict -> {
+            if (FLValue_IsBlob(this)) {
+                asBlob()
+            } else {
+                FLValue_AsDict(this)?.toMap()
+            }
+        }
         kFLNull -> null
         else -> null
     }
