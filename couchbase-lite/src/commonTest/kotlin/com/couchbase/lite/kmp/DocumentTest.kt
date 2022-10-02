@@ -9,6 +9,7 @@ import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrowsCBL
 import com.couchbase.lite.saveBlob
 import com.udobny.kmp.ext.nowMillis
 import com.udobny.kmp.ext.toStringMillis
+import com.udobny.kmp.test.assertIntMapEquals
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
@@ -1517,7 +1518,7 @@ class DocumentTest : BaseDbTest() {
         // Blob:
         expected["blob"] = makeBlob()
 
-        assertEquals(expected, doc1.toMap())
+        assertIntMapEquals(expected, doc1.toMap())
     }
 
     @Test

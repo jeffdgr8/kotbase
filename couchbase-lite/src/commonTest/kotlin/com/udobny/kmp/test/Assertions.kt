@@ -14,3 +14,13 @@ fun assertIntEquals(expected: Int, actual: Any?, message: String? = null) {
 
 private fun Any.intIfLong(): Any =
     (this as? Int) ?: (this as? Long)?.toInt() ?: this
+
+fun assertIntMapEquals(expected: Map<String, Any?>?, actual: Map<String, Any?>?, message: String? = null) {
+    val intActual = actual?.mapValues { (_, value) ->
+        when (value) {
+            is Long -> value.toInt()
+            else -> value
+        }
+    }
+    assertEquals(expected, intActual, message)
+}
