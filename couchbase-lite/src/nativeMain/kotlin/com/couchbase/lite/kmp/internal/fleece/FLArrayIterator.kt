@@ -8,9 +8,9 @@ import libcblite.*
 internal fun FLArray.iterator(memScope: MemScope): Iterator<FLValue> =
     FLArrayKIterator(this, memScope)
 
-internal class FLArrayKIterator(array: FLArray, memScope: MemScope) : Iterator<FLValue> {
+private class FLArrayKIterator(array: FLArray, memScope: MemScope) : Iterator<FLValue> {
 
-    val itr = memScope.alloc<FLArrayIterator>()
+    private val itr = memScope.alloc<FLArrayIterator>()
 
     init {
         FLArrayIterator_Begin(array, itr.ptr)

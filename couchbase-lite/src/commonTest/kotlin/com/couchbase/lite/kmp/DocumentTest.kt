@@ -13,7 +13,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import okio.Buffer
@@ -155,7 +154,6 @@ class DocumentTest : BaseDbTest() {
         assertEquals(dict, doc.toMap())
 
         var savedDoc = saveDocInBaseTestDb(doc)
-        //doc = db.getDocument("doc1")
         assertEquals(dict, savedDoc.toMap())
 
         val nuDict = mutableMapOf<String, Any?>()

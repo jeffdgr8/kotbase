@@ -8,12 +8,12 @@ import libcblite.*
 internal fun FLDict.iterator(memScope: MemScope): Iterator<Pair<String, FLValue>> =
     FLDictKIterator(this, memScope)
 
-internal class FLDictKIterator(
+private class FLDictKIterator(
     dict: FLDict,
     memScope: MemScope
 ) : Iterator<Pair<String, FLValue>> {
 
-    val itr = memScope.alloc<FLDictIterator>()
+    private val itr = memScope.alloc<FLDictIterator>()
 
     init {
         FLDictIterator_Begin(dict, itr.ptr)

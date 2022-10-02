@@ -37,10 +37,7 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
         get() = CBLDocument_MutableProperties(actual)!!
 
     public actual fun setData(data: Map<String, Any?>): MutableDocument {
-        FLMutableDict_RemoveAll(properties)
-        data.forEach { (key, value) ->
-            setValue(key, value)
-        }
+        CBLDocument_SetProperties(actual, MutableDictionary(data).actual)
         return this
     }
 
