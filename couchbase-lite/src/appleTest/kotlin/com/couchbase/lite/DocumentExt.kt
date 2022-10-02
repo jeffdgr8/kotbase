@@ -18,4 +18,4 @@ internal actual fun Document.exists(): Boolean {
 }
 
 internal actual fun Document.generation(): Long =
-    actual.generation().convert()
+    actual.generation().toLong()
