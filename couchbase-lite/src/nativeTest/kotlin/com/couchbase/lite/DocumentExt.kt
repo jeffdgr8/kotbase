@@ -13,24 +13,15 @@ internal actual val Document.content: Dictionary
 internal actual fun Document.exists(): Boolean {
     // TODO: have Couchbase add private API CBLDocument_Exists, similar to CBLDocument_Generation
     // hack to address _c4doc field of C++ object CBLDocument
-    val memMask = 0xFFFFFFFFFF000000UL.toLong()
-    val memPrefix = actual.rawValue.toLong() and memMask
-    val ptrs = actual.reinterpret<LongVar>()
-    var i = 0
-    var found = 0
-    val c4Doc: CPointer<C4Document>
-    while (true) {
-        val ptr = ptrs[i++]
-        if (ptr and memMask == memPrefix) {
-            found++
-        }
-        // C4Document* is 2nd field (CBLDatabase* is 1st, both pointers)
-        // found to be at index 12 for Windows and 8 for Linux (1st is index 3 for both)
-        if (found == 2) {
-            c4Doc = ptr.toCPointer() ?: return false
-            break
-        }
+    // C4Document* is 2nd field (CBLDatabase* is 1st, both pointers)
+    // found to be at index 12 for Windows and 8 for Linux (1st is index 3 for both)
+    val offset = when (Platform.osFamily) {
+        OsFamily.LINUX -> 8
+        OsFamily.WINDOWS -> 12
+        else -> error("Unhandled OS: ${Platform.osFamily}")
     }
+    val ptrs = actual.reinterpret<LongVar>()
+    val c4Doc = ptrs[offset].toCPointer<C4Document>() ?: return false
     return (c4Doc.pointed.flags and kDocExists) != 0u
 }
 
