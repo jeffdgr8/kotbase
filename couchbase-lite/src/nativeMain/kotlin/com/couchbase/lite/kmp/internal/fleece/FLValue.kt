@@ -90,7 +90,7 @@ internal fun FLValue.toBlob(): Blob? {
     }
 }
 
-internal fun FLValue.toObject(): Any? {
+internal fun FLValue.toObject(blobDictAsBlob: Boolean = true): Any? {
     return when (type) {
         kFLBoolean -> asBoolean()
         kFLNumber -> asNumber()
@@ -98,7 +98,7 @@ internal fun FLValue.toObject(): Any? {
         kFLData -> FLValue_AsData(this).toByteArray()
         kFLArray -> FLValue_AsArray(this)?.toList()
         kFLDict -> {
-            if (FLValue_IsBlob(this)) {
+            if (blobDictAsBlob && FLValue_IsBlob(this)) {
                 asBlob()
             } else {
                 FLValue_AsDict(this)?.toMap()
@@ -170,7 +170,7 @@ internal fun parseJson(json: String): Any? {
             FLDoc_FromJSON(json.toFLString(this), error)
         }
     }
-    return FLDoc_GetRoot(doc)?.toObject().also {
+    return FLDoc_GetRoot(doc)?.toObject(false).also {
         FLDoc_Release(doc)
     }
 }
