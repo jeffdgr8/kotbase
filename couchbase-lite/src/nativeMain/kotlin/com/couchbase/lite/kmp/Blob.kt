@@ -7,6 +7,10 @@ import kotlinx.cinterop.*
 import libcblite.*
 import okio.*
 import okio.Path.Companion.toPath
+import platform.posix.EINVAL
+import platform.posix.R_OK
+import platform.posix.access
+import platform.posix.errno
 import kotlin.native.internal.createCleaner
 
 private const val MIME_UNKNOWN = "application/octet-stream"
@@ -44,6 +48,9 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
     public actual constructor(contentType: String, fileURL: String) : this(
         contentType,
         @Suppress("RedundantLambdaOrAnonymousFunction") {
+            if (access(fileURL, R_OK) == -1 && errno == EINVAL) {
+                throw IllegalArgumentException("$fileURL must be a file-based URL.")
+            }
             val path = fileURL.toPath()
             val fs = FileSystem.SYSTEM
             if (!fs.exists(path)) {

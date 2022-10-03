@@ -43,15 +43,14 @@ actual object FileUtils {
         verifyDir(dirPath.toPath())
 
     private fun verifyDir(dir: Path): String {
-        val path = dir.canonicalPath
-        if (!dirExists(path)) {
+        if (!dirExists(dir.name)) {
             try {
                 FileSystem.SYSTEM.createDirectories(dir, true)
             } catch (e: Exception) {
                 throw IllegalStateException("Cannot create or access directory at $dir", e)
             }
         }
-        return path
+        return dir.canonicalPath
     }
 
     actual fun eraseFileOrDir(fileOrDirectory: String): Boolean =
