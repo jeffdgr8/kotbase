@@ -112,9 +112,35 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
 
     public actual companion object {
 
+        private const val META_PROP_TYPE = "@type"
+        private const val TYPE_BLOB = "blob"
+
+        private const val PROP_DIGEST = "digest"
+        private const val PROP_LENGTH = "length"
+        private const val PROP_CONTENT_TYPE = "content_type"
+
         public actual fun isBlob(props: Map<String, Any?>?): Boolean {
             props ?: return false
-            return FLDict_IsBlob(MutableDictionary(props).actual)
+
+            // Java SDK check is stricter than C SDK, which only checks @type = blob
+            //return FLDict_IsBlob(MutableDictionary(props).actual)
+
+            if (props[PROP_DIGEST] !is String) return false
+            if (TYPE_BLOB != props[META_PROP_TYPE]) return false
+            var nProps = 2
+
+            if (props.containsKey(PROP_CONTENT_TYPE)) {
+                if (props[PROP_CONTENT_TYPE] !is String) return false
+                nProps++
+            }
+
+            val len = props[PROP_LENGTH]
+            if (len != null) {
+                if (len !is Int && len !is Long) return false
+                nProps++
+            }
+
+            return nProps == props.size
         }
     }
 }
