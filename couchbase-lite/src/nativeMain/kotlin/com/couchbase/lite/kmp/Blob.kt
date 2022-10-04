@@ -88,8 +88,20 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
     public actual val length: Long
         get() = CBLBlob_Length(actual).toLong()
 
+    private val db: CPointer<CBLDatabase>?
+        get() {
+            // TODO: have Couchbase add private C API to access
+            //  or change digest behavior to be null until installed in database like Java/ObjC
+            // hack to access private _db, protected database() in CBLBlob C++ class
+            return actual.reinterpret<LongVar>()[7].toCPointer()
+        }
+
     public actual val digest: String?
-        get() = CBLBlob_Digest(actual).toKString()
+        get() {
+            // Java SDK sets digest only after installed in database
+            return if (db == null) null
+            else CBLBlob_Digest(actual).toKString()
+        }
 
     public actual val properties: Map<String, Any?>
         get() = CBLBlob_Properties(actual)!!.toMap()

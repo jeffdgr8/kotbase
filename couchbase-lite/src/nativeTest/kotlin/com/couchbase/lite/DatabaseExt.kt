@@ -30,9 +30,14 @@ internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? {
     if (!Blob.isBlob(props)) {
         throw IllegalArgumentException("getBlob arg does not specify a blob")
     }
-    return wrapCBLError { error ->
-        val dict = MutableDictionary(props)
-        CBLDatabase_GetBlob(actual, dict.actual, error)?.asBlob()
+    return try {
+        wrapCBLError { error ->
+            val dict = MutableDictionary(props)
+            CBLDatabase_GetBlob(actual, dict.actual, error)?.asBlob()
+        }
+    } catch (e: CouchbaseLiteException) {
+        println(e)
+        null
     }
 }
 
