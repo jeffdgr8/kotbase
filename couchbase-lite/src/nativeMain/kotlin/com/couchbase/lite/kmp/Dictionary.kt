@@ -111,4 +111,23 @@ internal constructor(
         }
         return result
     }
+
+    protected open val isMutable: Boolean = false
+
+    override fun toString(): String {
+        val buf = StringBuilder("Dictionary{(")
+            .append(if (isMutable) '+' else '.')
+            //.append(if (isMutated) '!' else '.')
+            .append(')')
+        var first = true
+        for (key in keys) {
+            if (first) {
+                first = false
+            } else {
+                buf.append(',')
+            }
+            buf.append(key).append("=>").append(getValue(key))
+        }
+        return buf.append('}').toString()
+    }
 }

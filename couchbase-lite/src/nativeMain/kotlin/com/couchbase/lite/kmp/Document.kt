@@ -3,8 +3,6 @@ package com.couchbase.lite.kmp
 import cnames.structs.CBLDocument
 import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
-import com.couchbase.lite.kmp.internal.fleece.keys
-import com.couchbase.lite.kmp.internal.fleece.toKString
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
@@ -108,6 +106,57 @@ internal constructor(
 
     actual override operator fun iterator(): Iterator<String> =
         keys.iterator()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Document) return false
+
+        val db = database
+        val otherDb = other.database
+        // Step 1: Check Database
+        if (if (db == null) otherDb != null else db.path != otherDb?.path) {
+            return false
+        }
+
+        // Step 2: Check document ID
+        if (id != other.id) return false
+
+        // Step 3: Check content
+        return Dictionary(properties, dbContext) == Dictionary(other.properties, other.dbContext)
+    }
+
+    override fun hashCode(): Int {
+        val db = database
+        var result = 0
+        if (db != null) {
+            val path = db.path
+            if (path != null) {
+                result = path.hashCode()
+            }
+        }
+        result = 31 * result + id.hashCode()
+        result = 31 * result + Dictionary(properties, dbContext).hashCode()
+        return result
+    }
+
+    protected open val isMutable: Boolean = false
+
+    override fun toString(): String {
+        val buf = StringBuilder("Document{").append(super.toString())
+                .append(id).append('@').append(revisionID)
+                .append('(').append(if (isMutable) '+' else '.')
+                //.append(if (isDeleted) '?' else '.').append("):")
+        var first = true
+        for (key in keys) {
+            if (first) {
+                first = false
+            } else {
+                buf.append(',')
+            }
+            buf.append(key).append("=>").append(getValue(key))
+        }
+        return buf.append('}').toString()
+    }
 }
 
 internal fun CPointer<CBLDocument>.asDocument(database: Database? = null) =

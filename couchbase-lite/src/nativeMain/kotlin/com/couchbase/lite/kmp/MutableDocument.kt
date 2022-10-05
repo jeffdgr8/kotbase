@@ -126,4 +126,6 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
     override fun toJSON(): String? {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
     }
+
+    override val isMutable: Boolean = true
 }
