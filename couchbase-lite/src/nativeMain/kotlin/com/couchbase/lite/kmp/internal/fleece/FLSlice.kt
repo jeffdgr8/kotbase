@@ -28,9 +28,12 @@ internal fun CValue<FLSliceResult>.toByteArray(): ByteArray {
     return result
 }
 
-internal fun ByteArray.toFLSlice(): CValue<FLSlice> =
-    cValue {
+internal fun ByteArray.toFLSlice(): CValue<FLSlice> {
+    return cValue {
         size = this@toFLSlice.size.convert()
         buf = malloc(size)
-        memcpy(buf, this@toFLSlice.refTo(0), size)
+        if (size > 0U)  {
+            memcpy(buf, this@toFLSlice.refTo(0), size)
+        }
     }
+}
