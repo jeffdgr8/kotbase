@@ -55,17 +55,7 @@ internal constructor(
     @Throws(IOException::class)
     public actual constructor(contentType: String, fileURL: String) : this(
         contentType,
-        @Suppress("RedundantLambdaOrAnonymousFunction") {
-            if (access(fileURL, R_OK) == -1 && errno == EINVAL) {
-                throw IllegalArgumentException("$fileURL must be a file-based URL.")
-            }
-            val path = fileURL.toPath()
-            val fs = FileSystem.SYSTEM
-            if (!fs.exists(path)) {
-                throw FileNotFoundException("$fileURL: open failed: ENOENT (No such file or directory)")
-            }
-            fs.source(path)
-        }()
+        fileURL.toFileSource()
     )
 
     private var blobContent: ByteArray? = null
@@ -210,4 +200,27 @@ private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : So
     }
 
     override fun timeout(): Timeout = Timeout.NONE
+}
+
+private fun String.toFileSource(): Source {
+    val path = toFilePath()
+    val fs = FileSystem.SYSTEM
+    if (!fs.exists(path)) {
+        throw FileNotFoundException("$this: open failed: ENOENT (No such file or directory)")
+    }
+    return fs.source(path)
+}
+
+private fun String.toFilePath(): Path {
+    val match = """^(?:([a-zA-Z][a-zA-Z0-9+.-]*):)?.+$""".toRegex()
+        .matchEntire(this)
+    match?.groups?.get(1)?.let { scheme ->
+        if (!scheme.value.equals("file", ignoreCase = true)) {
+            throw IllegalArgumentException("$this must be a file-based URL.")
+        }
+    }
+    if (access(this, R_OK) == -1 && errno == EINVAL) {
+        throw IllegalArgumentException("$this must be a valid file path.")
+    }
+    return toPath()
 }
