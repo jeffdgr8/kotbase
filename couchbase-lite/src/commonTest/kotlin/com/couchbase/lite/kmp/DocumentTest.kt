@@ -9,7 +9,7 @@ import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrowsCBL
 import com.couchbase.lite.saveBlob
 import com.udobny.kmp.ext.nowMillis
 import com.udobny.kmp.ext.toStringMillis
-import com.udobny.kmp.test.assertIntMapEquals
+import com.udobny.kmp.test.assertIntEquals
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
@@ -1518,7 +1518,7 @@ class DocumentTest : BaseDbTest() {
         // Blob:
         expected["blob"] = makeBlob()
 
-        assertIntMapEquals(expected, doc1.toMap())
+        assertIntEquals(expected, doc1.toMap())
     }
 
     @Test
@@ -1585,12 +1585,12 @@ class DocumentTest : BaseDbTest() {
             "street" to "1 milky way.",
             "zip" to 12345
         )
-        assertEquals(addr, address!!.toMap())
+        assertIntEquals(addr, address!!.toMap())
         val expected = mapOf(
             "type" to "profile",
             "address" to addr
         )
-        assertEquals(expected, doc.toMap())
+        assertIntEquals(expected, doc.toMap())
 
         doc.remove("type")
         doc.remove("address")
@@ -1618,7 +1618,7 @@ class DocumentTest : BaseDbTest() {
         existingDoc.setData(newProps)
         saveDocInBaseTestDb(existingDoc)
 
-        assertEquals(newProps, existingDoc.toMap())
+        assertIntEquals(newProps, existingDoc.toMap())
     }
 
     @Test

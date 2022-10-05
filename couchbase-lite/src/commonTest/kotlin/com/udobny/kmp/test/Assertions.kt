@@ -5,22 +5,25 @@ import kotlin.test.assertEquals
 
 fun assertIntContentEquals(expected: Array<Int?>?, actual: Array<Any?>?, message: String? = null) {
     @Suppress("UNCHECKED_CAST")
-    assertContentEquals(expected as Array<Any?>, actual?.map { it?.intIfLong() }?.toTypedArray(), message)
+    assertContentEquals(expected as Array<Any?>, actual?.map { it?.longToInt() }?.toTypedArray(), message)
 }
 
-fun assertIntEquals(expected: Int, actual: Any?, message: String? = null) {
-    assertEquals(expected, actual?.intIfLong(), message)
+fun assertIntEquals(expected: Any?, actual: Any?, message: String? = null) {
+    assertEquals(expected, actual?.longToInt(), message)
 }
 
-private fun Any.intIfLong(): Any =
-    (this as? Int) ?: (this as? Long)?.toInt() ?: this
-
-fun assertIntMapEquals(expected: Map<String, Any?>?, actual: Map<String, Any?>?, message: String? = null) {
-    val intActual = actual?.mapValues { (_, value) ->
-        when (value) {
-            is Long -> value.toInt()
-            else -> value
-        }
+private fun Any.longToInt(): Any {
+    @Suppress("UNCHECKED_CAST")
+    return when (this) {
+        is Long -> toInt()
+        is Map<*, *> -> (this as Map<String, Any?>).longToInt()
+        is List<*> -> longToInt()
+        else -> this
     }
-    assertEquals(expected, intActual, message)
 }
+
+private fun Map<String, Any?>.longToInt(): Map<String, Any?> =
+    mapValues { it.value?.longToInt() }
+
+private fun List<Any?>.longToInt(): List<Any?> =
+    map { it?.longToInt() }
