@@ -75,11 +75,11 @@ private fun FLValue.asMutableDictionary(
 }
 
 private fun FLValue.asBlob(ctxt: DbContext?): Blob? {
-    val dict = FLValue_AsDict(this)
+    if (!FLValue_IsBlob(this)) return null
     val db = ctxt?.database
     if (db != null) {
         val dbBlob = wrapCBLError { error ->
-            CBLDatabase_GetBlob(db.actual, dict, error)
+            CBLDatabase_GetBlob(db.actual, FLValue_AsDict(this), error)
         }
         if (dbBlob != null) {
             return Blob(dbBlob, ctxt)
