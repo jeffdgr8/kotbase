@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
 import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
@@ -7,7 +8,10 @@ import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual open class Dictionary
-internal constructor(actual: FLDict) : Iterable<String> {
+internal constructor(
+    actual: FLDict,
+    internal var dbContext: DbContext?
+) : Iterable<String> {
 
     init {
         FLDict_Retain(actual)
@@ -22,7 +26,10 @@ internal constructor(actual: FLDict) : Iterable<String> {
     }
 
     public actual fun toMutable(): MutableDictionary =
-        MutableDictionary(FLDict_AsMutable(actual) ?: FLDict_MutableCopy(actual, kFLDefaultCopy)!!)
+        MutableDictionary(
+            FLDict_AsMutable(actual) ?: FLDict_MutableCopy(actual, kFLDefaultCopy)!!,
+            dbContext?.let { DbContext(it.database) }
+        )
 
     public actual val count: Int
         get() = FLDict_Count(actual).toInt()
@@ -34,7 +41,7 @@ internal constructor(actual: FLDict) : Iterable<String> {
         actual.getValue(key)
 
     public actual open fun getValue(key: String): Any? =
-        getFLValue(key)?.toNative()
+        getFLValue(key)?.toNative(dbContext)
 
     public actual fun getString(key: String): String? =
         getFLValue(key)?.toKString()
@@ -58,19 +65,19 @@ internal constructor(actual: FLDict) : Iterable<String> {
         getFLValue(key).toBoolean()
 
     public actual fun getBlob(key: String): Blob? =
-        getFLValue(key)?.toBlob()
+        getFLValue(key)?.toBlob(dbContext)
 
     public actual fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
     public actual open fun getArray(key: String): Array? =
-        getFLValue(key)?.toArray()
+        getFLValue(key)?.toArray(dbContext)
 
     public actual open fun getDictionary(key: String): Dictionary? =
-        getFLValue(key)?.toDictionary()
+        getFLValue(key)?.toDictionary(dbContext)
 
     public actual fun toMap(): Map<String, Any?> =
-        actual.toMap()
+        actual.toMap(dbContext)
 
     public actual open fun toJSON(): String =
         FLValue_ToJSON(actual.reinterpret()).toKString()!!
@@ -105,5 +112,3 @@ internal constructor(actual: FLDict) : Iterable<String> {
         return result
     }
 }
-
-internal fun FLDict.asDictionary() = Dictionary(this)

@@ -1,13 +1,14 @@
 package com.couchbase.lite.kmp.internal.fleece
 
+import com.couchbase.lite.kmp.internal.DbContext
 import kotlinx.cinterop.memScoped
 import libcblite.*
 
-internal fun FLDict.toMap(): Map<String, Any?> {
+internal fun FLDict.toMap(ctxt: DbContext?): Map<String, Any?> {
     return buildMap {
         memScoped {
             this@toMap.iterator(this).forEach {
-                put(it.first, it.second.toObject())
+                put(it.first, it.second.toObject(ctxt))
             }
         }
     }

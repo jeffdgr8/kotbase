@@ -17,7 +17,7 @@ import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual class Database
-private constructor(internal val actual: CPointer<CBLDatabase>) {
+internal constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
@@ -85,7 +85,8 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
         return mustBeOpen {
             wrapCBLError { error ->
                 memScoped {
-                    CBLDatabase_GetDocument(actual, id.toFLString(this), error)?.asDocument()
+                    CBLDatabase_GetDocument(actual, id.toFLString(this), error)
+                        ?.asDocument(this@Database)
                 }
             }
         }
@@ -98,6 +99,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
                 CBLDatabase_SaveDocument(actual, document.actual, error)
             }
         }
+        document.database = this
     }
 
     @Throws(CouchbaseLiteException::class)
@@ -106,14 +108,16 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
         concurrencyControl: ConcurrencyControl
     ): Boolean {
         return try {
-            wrapCBLError { error ->
-                mustBeOpen {
+            mustBeOpen {
+                wrapCBLError { error ->
                     CBLDatabase_SaveDocumentWithConcurrencyControl(
                         actual,
                         document.actual,
                         concurrencyControl.actual,
                         error
                     )
+                }.also {
+                    document.database = this
                 }
             }
         } catch (e: CouchbaseLiteException) {
@@ -130,9 +134,9 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
-        return wrapCBLError { error ->
-            try {
-                mustBeOpen {
+        return mustBeOpen {
+            wrapCBLError { error ->
+                try {
                     this.conflictHandler = StableRef.create(conflictHandler)
                     CBLDatabase_SaveDocumentWithConflictHandler(
                         actual,
@@ -148,47 +152,51 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
                     ).also {
                         this.conflictHandler?.dispose()
                         this.conflictHandler = null
+                        document.database = this
                     }
+                } catch (e: Exception) {
+                    throw CouchbaseLiteException(
+                        "Conflict handler threw an exception",
+                        e,
+                        CBLError.Domain.CBLITE,
+                        CBLError.Code.CONFLICT
+                    )
                 }
-            } catch (e: Exception) {
-                throw CouchbaseLiteException(
-                    "Conflict handler threw an exception",
-                    e,
-                    CBLError.Domain.CBLITE,
-                    CBLError.Code.CONFLICT
-                )
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
-        wrapCBLError { error ->
-            mustBeOpen {
+        mustBeOpen {
+            wrapCBLError { error ->
                 CBLDatabase_DeleteDocument(actual, document.actual, error)
             }
+            document.database = null
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
-        return try {
-            wrapCBLError { error ->
-                mustBeOpen {
+        return mustBeOpen {
+            try {
+                wrapCBLError { error ->
                     CBLDatabase_DeleteDocumentWithConcurrencyControl(
                         actual,
                         document.actual,
                         concurrencyControl.actual,
                         error
-                    )
+                    ).also {
+                        document.database = null
+                    }
                 }
-            }
-        } catch (e: CouchbaseLiteException) {
-            if (e.getCode() == CBLError.Code.CONFLICT && e.getDomain() == CBLError.Domain.CBLITE) {
-                // Java SDK doesn't throw exception on conflict, only returns false
-                false
-            } else {
-                throw e
+            } catch (e: CouchbaseLiteException) {
+                if (e.getCode() == CBLError.Code.CONFLICT && e.getDomain() == CBLError.Domain.CBLITE) {
+                    // Java SDK doesn't throw exception on conflict, only returns false
+                    false
+                } else {
+                    throw e
+                }
             }
         }
     }
@@ -196,10 +204,11 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
         try {
-            wrapCBLError { error ->
-                mustBeOpen {
+            mustBeOpen {
+                wrapCBLError { error ->
                     CBLDatabase_PurgeDocument(actual, document.actual, error)
                 }
+                document.database = null
             }
         } catch (e: CouchbaseLiteException) {
             // Java SDK ignores not found error, except for new document
@@ -375,7 +384,7 @@ private constructor(internal val actual: CPointer<CBLDatabase>) {
     public actual fun getIndexes(): List<String> {
         return mustBeOpen {
             CBLDatabase_GetIndexNames(actual)
-                ?.toList() as List<String>? ?: emptyList()
+                ?.toList(null) as List<String>? ?: emptyList()
         }
     }
 

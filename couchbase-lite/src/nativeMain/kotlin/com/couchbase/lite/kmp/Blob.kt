@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
 import cnames.structs.CBLBlob
+import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
 import com.couchbase.lite.kmp.internal.wrapCBLError
 import kotlinx.cinterop.*
@@ -16,7 +17,10 @@ import kotlin.native.internal.createCleaner
 private const val MIME_UNKNOWN = "application/octet-stream"
 
 public actual class Blob
-internal constructor(internal val actual: CPointer<CBLBlob>) {
+internal constructor(
+    internal val actual: CPointer<CBLBlob>,
+    internal var dbContext: DbContext? = null
+) {
 
     init {
         CBLBlob_Retain(actual)
@@ -28,8 +32,12 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
         CBLBlob_Release(it)
     }
 
-    public actual constructor(contentType: String, content: ByteArray) :
-            this(contentType.toFLString(), content.toFLSlice())
+    public actual constructor(contentType: String, content: ByteArray) : this(
+        contentType.toFLString(),
+        content.toFLSlice()
+    ) {
+        blobContent = content
+    }
 
     internal constructor(content: ByteArray) : this(MIME_UNKNOWN, content)
 
@@ -40,7 +48,7 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
         CBLBlob_Release(actual)
     }
 
-    // TODO: stream data
+    // TODO: stream data (requires db reference, so not feasible without triggering blob creation from document save)
     public actual constructor(contentType: String, stream: Source) :
             this(contentType, stream.buffer().readByteArray())
 
@@ -60,19 +68,29 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
         }()
     )
 
+    private var blobContent: ByteArray? = null
+
     public actual val content: ByteArray?
         get() {
-            return wrapCBLError { error ->
-                CBLBlob_Content(actual, error).toByteArray()
+            if (blobContent == null) {
+                blobContent = wrapCBLError { error ->
+                    CBLBlob_Content(actual, error).toByteArray()
+                }
             }
             // TODO: throw exception when database is closed
+            return blobContent?.copyOf()
         }
 
     public actual val contentStream: Source?
-        get() = wrapCBLError { error ->
-            // TODO: stream data
-            //CBLBlob_OpenContentStream(actual, error)?.source()
-            null
+        get() {
+            if (blobContent != null) {
+                return Buffer().apply {
+                    write(blobContent!!)
+                }
+            }
+            return wrapCBLError { error ->
+                CBLBlob_OpenContentStream(actual, error)?.source()
+            }
         }
 
     public actual val contentType: String
@@ -88,32 +106,20 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
     public actual val length: Long
         get() = CBLBlob_Length(actual).toLong()
 
-    private val db: CPointer<CBLDatabase>?
-        get() {
-            // TODO: have Couchbase add private C API to access
-            //  or change digest behavior to be null until installed in database like Java/ObjC
-            // hack to access private _db, protected database() in CBLBlob C++ class
-            return actual.reinterpret<LongVar>()[7].toCPointer()
-        }
-
     public actual val digest: String?
         get() {
             // Java SDK sets digest only after installed in database
-            return if (db == null) null
+            return if (dbContext?.database == null) null
             else CBLBlob_Digest(actual).toKString()
         }
 
     public actual val properties: Map<String, Any?>
-        get() = CBLBlob_Properties(actual)!!.toMap()
+        get() = CBLBlob_Properties(actual)!!.toMap(null)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Blob) return false
-        return if (digest != null && other.digest != null) {
-            digest == other.digest
-        } else {
-            content.contentEquals(other.content)
-        }
+        return CBLBlob_Equals(actual, other.actual)
     }
 
     override fun hashCode(): Int =
@@ -121,6 +127,14 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
 
     override fun toString(): String =
         "Blob{${super.toString()}: $digest($contentType, $length)}"
+
+    internal fun checkSetDb(dbContext: DbContext?) {
+        if (this.dbContext == null) {
+            this.dbContext = dbContext
+        } else if (dbContext?.database == null && this.dbContext?.database != null) {
+            dbContext?.database = this.dbContext?.database
+        }
+    }
 
     public actual companion object {
 
@@ -157,4 +171,43 @@ internal constructor(internal val actual: CPointer<CBLBlob>) {
     }
 }
 
-internal fun CPointer<CBLBlob>.asBlob() = Blob(this)
+internal fun CPointer<CBLBlob>.asBlob(ctxt: DbContext?) = Blob(this, ctxt)
+
+private fun CPointer<CBLBlobReadStream>.source(): Source =
+    BlobReadStreamSource(this)
+
+private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : Source {
+
+    private val memory = object {
+        var closeCalled = false
+        val actual = this@BlobReadStreamSource.actual
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    @Suppress("unused")
+    private val cleaner = createCleaner(memory) {
+        if (!it.closeCalled) {
+            CBLBlobReader_Close(it.actual)
+        }
+    }
+
+    override fun close() {
+        memory.closeCalled = true
+        CBLBlobReader_Close(actual)
+    }
+
+    override fun read(sink: Buffer, byteCount: Long): Long {
+        if (byteCount == 0L) return 0L
+        require(byteCount >= 0L) { "byteCount < 0: $byteCount" }
+        val bytes = ByteArray(byteCount.toInt())
+        val bytesRead = wrapCBLError { error ->
+            CBLBlobReader_Read(actual, bytes.refTo(0), byteCount.convert(), error)
+        }
+        if (bytesRead < 0) throw IOException()
+        if (bytesRead == 0) return -1
+        sink.write(bytes, 0, bytesRead)
+        return bytesRead.toLong()
+    }
+
+    override fun timeout(): Timeout = Timeout.NONE
+}

@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
 import com.couchbase.lite.kmp.internal.fleece.parseJson
 import com.couchbase.lite.kmp.internal.fleece.setString
@@ -8,7 +9,10 @@ import kotlinx.datetime.Instant
 import libcblite.*
 
 public actual class MutableDictionary
-internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
+internal constructor(
+    override val actual: FLMutableDict,
+    dbContext: DbContext? = null
+) : Dictionary(actual, dbContext) {
 
     public actual constructor() : this(FLMutableDict_New()!!) {
         FLMutableDict_Release(actual)
@@ -47,7 +51,7 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDictionary {
-        actual.setValue(key, value)
+        actual.setValue(key, value, dbContext)
         return this
     }
 
@@ -87,7 +91,7 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
     }
 
     public actual fun setBlob(key: String, value: Blob?): MutableDictionary {
-        actual.setBlob(key, value)
+        actual.setBlob(key, value, dbContext)
         return this
     }
 
@@ -97,12 +101,12 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
     }
 
     public actual fun setArray(key: String, value: Array?): MutableDictionary {
-        actual.setArray(key, value)
+        actual.setArray(key, value, dbContext)
         return this
     }
 
     public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary {
-        actual.setDictionary(key, value)
+        actual.setDictionary(key, value, dbContext)
         return this
     }
 
@@ -112,17 +116,15 @@ internal constructor(override val actual: FLMutableDict) : Dictionary(actual) {
     }
 
     override fun getValue(key: String): Any? =
-        getFLValue(key)?.toMutableNative { setValue(key, it) }
+        getFLValue(key)?.toMutableNative(dbContext) { setValue(key, it) }
 
     actual override fun getArray(key: String): MutableArray? =
-        getFLValue(key)?.toMutableArray { setArray(key, it) }
+        getFLValue(key)?.toMutableArray(dbContext) { setArray(key, it) }
 
     actual override fun getDictionary(key: String): MutableDictionary? =
-        getFLValue(key)?.toMutableDictionary { setDictionary(key, it) }
+        getFLValue(key)?.toMutableDictionary(dbContext) { setDictionary(key, it) }
 
     override fun toJSON(): String {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
     }
 }
-
-internal fun FLMutableDict.asMutableDictionary() = MutableDictionary(this)

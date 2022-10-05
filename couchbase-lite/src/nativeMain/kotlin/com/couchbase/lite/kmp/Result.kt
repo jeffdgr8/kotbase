@@ -55,7 +55,7 @@ private constructor(
     }
 
     public actual fun getValue(index: Int): Any? =
-        getFLValue(index)?.toNative()
+        getFLValue(index)?.toNative(null)
 
     public actual fun getString(index: Int): String? =
         getFLValue(index)?.toKString()
@@ -79,19 +79,19 @@ private constructor(
         getFLValue(index).toBoolean()
 
     public actual fun getBlob(index: Int): Blob? =
-        getFLValue(index)?.toBlob()
+        getFLValue(index)?.toBlob(null)
 
     public actual fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
 
     public actual fun getArray(index: Int): Array? =
-        getFLValue(index)?.toArray()
+        getFLValue(index)?.toArray(null)
 
     public actual fun getDictionary(index: Int): Dictionary? =
-        getFLValue(index)?.toDictionary()
+        getFLValue(index)?.toDictionary(null)
 
     public actual fun toList(): List<Any?> =
-        array?.toList() ?: emptyList()
+        array?.toList(null) ?: emptyList()
 
     public actual val keys: List<String>
         get() = buildList {
@@ -107,7 +107,7 @@ private constructor(
     }
 
     public actual fun getValue(key: String): Any? =
-        getFLValue(key)?.toNative()
+        getFLValue(key)?.toNative(null)
 
     public actual fun getString(key: String): String? =
         getFLValue(key)?.toKString()
@@ -131,19 +131,19 @@ private constructor(
         getFLValue(key).toBoolean()
 
     public actual fun getBlob(key: String): Blob? =
-        getFLValue(key)?.toBlob()
+        getFLValue(key)?.toBlob(null)
 
     public actual fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
     public actual fun getArray(key: String): Array? =
-        getFLValue(key)?.toArray()
+        getFLValue(key)?.toArray(null)
 
     public actual fun getDictionary(key: String): Dictionary? =
-        getFLValue(key)?.toDictionary()
+        getFLValue(key)?.toDictionary(null)
 
     public actual fun toMap(): Map<String, Any?> =
-        dict?.toMap() ?: emptyMap()
+        dict?.toMap(null) ?: emptyMap()
 
     public actual fun toJSON(): String =
         FLValue_ToJSON(dict?.reinterpret()).toKString()!!

@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
 import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
@@ -7,7 +8,10 @@ import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual open class Array
-internal constructor(actual: FLArray) : Iterable<Any?> {
+internal constructor(
+    actual: FLArray,
+    internal var dbContext: DbContext?
+) : Iterable<Any?> {
 
     init {
         FLArray_Retain(actual)
@@ -22,7 +26,10 @@ internal constructor(actual: FLArray) : Iterable<Any?> {
     }
 
     public actual fun toMutable(): MutableArray =
-        MutableArray(FLArray_AsMutable(actual) ?: FLArray_MutableCopy(actual, kFLDefaultCopy)!!)
+        MutableArray(
+            FLArray_AsMutable(actual) ?: FLArray_MutableCopy(actual, kFLDefaultCopy)!!,
+            dbContext?.let { DbContext(it.database) }
+        )
 
     public actual val count: Int
         get() = FLArray_Count(actual).toInt()
@@ -33,7 +40,7 @@ internal constructor(actual: FLArray) : Iterable<Any?> {
     }
 
     public actual open fun getValue(index: Int): Any? =
-        getFLValue(index)?.toNative()
+        getFLValue(index)?.toNative(dbContext)
 
     public actual fun getString(index: Int): String? =
         getFLValue(index)?.toKString()
@@ -57,19 +64,19 @@ internal constructor(actual: FLArray) : Iterable<Any?> {
         getFLValue(index).toBoolean()
 
     public actual fun getBlob(index: Int): Blob? =
-        getFLValue(index)?.toBlob()
+        getFLValue(index)?.toBlob(dbContext)
 
     public actual fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
 
     public actual open fun getArray(index: Int): Array? =
-        getFLValue(index)?.toArray()
+        getFLValue(index)?.toArray(dbContext)
 
     public actual open fun getDictionary(index: Int): Dictionary? =
-        getFLValue(index)?.toDictionary()
+        getFLValue(index)?.toDictionary(dbContext)
 
     public actual fun toList(): List<Any?> =
-        actual.toList()
+        actual.toList(dbContext)
 
     public actual open fun toJSON(): String =
         FLValue_ToJSON(actual.reinterpret()).toKString()!!
@@ -114,5 +121,3 @@ internal constructor(actual: FLArray) : Iterable<Any?> {
         return result
     }
 }
-
-internal fun FLArray.asArray() = Array(this)

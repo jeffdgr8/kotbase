@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
 import com.couchbase.lite.kmp.internal.fleece.parseJson
 import com.couchbase.lite.kmp.internal.fleece.toFLString
@@ -10,7 +11,10 @@ import kotlinx.datetime.Instant
 import libcblite.*
 
 public actual class MutableArray
-internal constructor(override val actual: FLMutableArray) : Array(actual) {
+internal constructor(
+    override val actual: FLMutableArray,
+    dbContext: DbContext? = null
+) : Array(actual, dbContext) {
 
     public actual constructor() : this(FLMutableArray_New()!!) {
         FLMutableArray_Release(actual)
@@ -122,6 +126,7 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
         checkIndex(index)
         if (value != null) {
             FLMutableArray_SetBlob(actual, index.convert(), value.actual)
+            value.checkSetDb(dbContext)
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
@@ -229,6 +234,7 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
     public actual fun addBlob(value: Blob?): MutableArray {
         if (value != null) {
             FLMutableArray_AppendBlob(actual, value.actual)
+            value.checkSetDb(dbContext)
         } else {
             FLMutableArray_AppendNull(actual)
         }
@@ -354,13 +360,13 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
     }
 
     override fun getValue(index: Int): Any? =
-        getFLValue(index)?.toMutableNative { setValue(index, it) }
+        getFLValue(index)?.toMutableNative(dbContext) { setValue(index, it) }
 
     actual override fun getArray(index: Int): MutableArray? =
-        getFLValue(index)?.toMutableArray { setArray(index, it) }
+        getFLValue(index)?.toMutableArray(dbContext) { setArray(index, it) }
 
     actual override fun getDictionary(index: Int): MutableDictionary? =
-        getFLValue(index)?.toMutableDictionary { setDictionary(index, it) }
+        getFLValue(index)?.toMutableDictionary(dbContext) { setDictionary(index, it) }
 
     override fun toJSON(): String {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
@@ -378,5 +384,3 @@ internal constructor(override val actual: FLMutableArray) : Array(actual) {
         }
     }
 }
-
-internal fun FLMutableArray.asMutableArray() = MutableArray(this)

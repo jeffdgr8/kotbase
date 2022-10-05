@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
 import cnames.structs.CBLDocument
+import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
 import com.couchbase.lite.kmp.internal.fleece.keys
 import com.couchbase.lite.kmp.internal.fleece.toKString
@@ -11,7 +12,10 @@ import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual open class Document
-internal constructor(actual: CPointer<CBLDocument>) : Iterable<String> {
+internal constructor(
+    actual: CPointer<CBLDocument>,
+    database: Database? = null
+) : Iterable<String> {
 
     init {
         CBLDocument_Retain(actual)
@@ -24,6 +28,14 @@ internal constructor(actual: CPointer<CBLDocument>) : Iterable<String> {
     private val cleaner = createCleaner(actual) {
         CBLDocument_Release(it)
     }
+
+    internal var database: Database?
+        get() = dbContext.database
+        set(value) {
+            dbContext.database = value
+        }
+
+    internal val dbContext: DbContext = DbContext(database)
 
     internal open val properties: FLDict
         get() = CBLDocument_Properties(actual)!!
@@ -50,7 +62,7 @@ internal constructor(actual: CPointer<CBLDocument>) : Iterable<String> {
         properties.getValue(key)
 
     public actual open fun getValue(key: String): Any? =
-        getFLValue(key)?.toNative()
+        getFLValue(key)?.toNative(dbContext)
 
     public actual fun getString(key: String): String? =
         getFLValue(key)?.toKString()
@@ -74,19 +86,19 @@ internal constructor(actual: CPointer<CBLDocument>) : Iterable<String> {
         getFLValue(key).toBoolean()
 
     public actual fun getBlob(key: String): Blob? =
-        getFLValue(key)?.toBlob()
+        getFLValue(key)?.toBlob(dbContext)
 
     public actual fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
     public actual open fun getArray(key: String): Array? =
-        getFLValue(key)?.toArray()
+        getFLValue(key)?.toArray(dbContext)
 
     public actual open fun getDictionary(key: String): Dictionary? =
-        getFLValue(key)?.toDictionary()
+        getFLValue(key)?.toDictionary(dbContext)
 
     public actual fun toMap(): Map<String, Any?> =
-        properties.toMap()
+        properties.toMap(dbContext)
 
     public actual open fun toJSON(): String? =
         FLValue_ToJSON(properties.reinterpret()).toKString()!!
@@ -98,4 +110,5 @@ internal constructor(actual: CPointer<CBLDocument>) : Iterable<String> {
         keys.iterator()
 }
 
-internal fun CPointer<CBLDocument>.asDocument() = Document(this)
+internal fun CPointer<CBLDocument>.asDocument(database: Database? = null) =
+    Document(this, database)

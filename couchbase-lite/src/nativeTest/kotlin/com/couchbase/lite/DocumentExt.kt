@@ -8,7 +8,7 @@ import libcblite.CBLDocument_Generation
 import libcblite.kDocExists
 
 internal actual val Document.content: Dictionary
-    get() = Dictionary(properties)
+    get() = Dictionary(properties, dbContext)
 
 internal actual fun Document.exists(): Boolean {
     // TODO: have Couchbase add private API CBLDocument_Exists, similar to CBLDocument_Generation

@@ -37,7 +37,7 @@ internal constructor(
     }
 
     public actual fun getValue(name: String): Any? =
-        actual.getValue(name)?.toNative()
+        actual.getValue(name)?.toNative(null)
 
     public actual fun setString(name: String, value: String?): Parameters {
         checkReadOnly()
@@ -89,25 +89,25 @@ internal constructor(
 
     public actual fun setBlob(name: String, value: Blob?): Parameters {
         checkReadOnly()
-        actual.setBlob(name, value)
+        actual.setBlob(name, value, null)
         return this
     }
 
     public actual fun setDictionary(name: String, value: Dictionary?): Parameters {
         checkReadOnly()
-        actual.setDictionary(name, value)
+        actual.setDictionary(name, value, null)
         return this
     }
 
     public actual fun setArray(name: String, value: Array?): Parameters {
         checkReadOnly()
-        actual.setArray(name, value)
+        actual.setArray(name, value, null)
         return this
     }
 
     public actual fun setValue(name: String, value: Any?): Parameters {
         checkReadOnly()
-        actual.setValue(name, value)
+        actual.setValue(name, value, null)
         return this
     }
 

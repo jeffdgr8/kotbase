@@ -1,14 +1,15 @@
 package com.couchbase.lite.kmp.internal.fleece
 
+import com.couchbase.lite.kmp.internal.DbContext
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
 import libcblite.*
 
-internal fun FLArray.toList(): List<Any?> {
+internal fun FLArray.toList(ctxt: DbContext?): List<Any?> {
     return buildList {
         memScoped {
             this@toList.iterator(this).forEach {
-                add(it.toObject())
+                add(it.toObject(ctxt))
             }
         }
     }

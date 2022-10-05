@@ -50,7 +50,7 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDocument {
-        properties.setValue(key, value)
+        properties.setValue(key, value, dbContext)
         return this
     }
 
@@ -90,7 +90,7 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
     }
 
     public actual fun setBlob(key: String, value: Blob?): MutableDocument {
-        properties.setBlob(key, value)
+        properties.setBlob(key, value, dbContext)
         return this
     }
 
@@ -100,12 +100,12 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
     }
 
     public actual fun setArray(key: String, value: Array?): MutableDocument {
-        properties.setArray(key, value)
+        properties.setArray(key, value, dbContext)
         return this
     }
 
     public actual fun setDictionary(key: String, value: Dictionary?): MutableDocument {
-        properties.setDictionary(key, value)
+        properties.setDictionary(key, value, dbContext)
         return this
     }
 
@@ -115,13 +115,13 @@ internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
     }
 
     override fun getValue(key: String): Any? =
-        getFLValue(key)?.toMutableNative { setValue(key, it) }
+        getFLValue(key)?.toMutableNative(dbContext) { setValue(key, it) }
 
     actual override fun getArray(key: String): MutableArray? =
-        getFLValue(key)?.toMutableArray { setArray(key, it) }
+        getFLValue(key)?.toMutableArray(dbContext) { setArray(key, it) }
 
     actual override fun getDictionary(key: String): MutableDictionary? =
-        getFLValue(key)?.toMutableDictionary { setDictionary(key, it) }
+        getFLValue(key)?.toMutableDictionary(dbContext) { setDictionary(key, it) }
 
     override fun toJSON(): String? {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")

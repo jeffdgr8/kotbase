@@ -1,25 +1,26 @@
 package com.couchbase.lite.kmp.internal.fleece
 
 import com.couchbase.lite.kmp.*
+import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.invalidTypeError
 import com.udobny.kmp.ext.toStringMillis
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import libcblite.*
 
-internal fun FLMutableDict.setValue(key: String, value: Any?) {
+internal fun FLMutableDict.setValue(key: String, value: Any?, ctxt: DbContext?) {
     @Suppress("UNCHECKED_CAST")
     when (value) {
         is Boolean -> setBoolean(key, value)
-        is ByteArray -> setBlob(key, Blob(value))
-        is Blob -> setBlob(key, value)
+        is ByteArray -> setBlob(key, Blob(value), ctxt)
+        is Blob -> setBlob(key, value, ctxt)
         is String -> setString(key, value)
         is Instant -> setDate(key, value)
         is Number -> setNumber(key, value)
-        is List<*> -> setArray(key, MutableArray(value))
-        is Array -> setArray(key, value)
-        is Map<*, *> -> setDictionary(key, MutableDictionary(value as Map<String, Any?>))
-        is Dictionary -> setDictionary(key, value)
+        is List<*> -> setArray(key, MutableArray(value), ctxt)
+        is Array -> setArray(key, value, ctxt)
+        is Map<*, *> -> setDictionary(key, MutableDictionary(value as Map<String, Any?>), ctxt)
+        is Dictionary -> setDictionary(key, value, ctxt)
         null -> FLMutableDict_SetNull(this, key.toFLString())
         else -> invalidTypeError(value)
     }
@@ -62,9 +63,10 @@ internal fun FLMutableDict.setBoolean(key: String, value: Boolean) {
     FLMutableDict_SetBool(this, key.toFLString(), value)
 }
 
-internal fun FLMutableDict.setBlob(key: String, value: Blob?) {
+internal fun FLMutableDict.setBlob(key: String, value: Blob?, ctxt: DbContext?) {
     if (value != null) {
         FLMutableDict_SetBlob(this, key.toFLString(), value.actual)
+        value.checkSetDb(ctxt)
     } else {
         FLMutableDict_SetNull(this, key.toFLString())
     }
@@ -78,17 +80,19 @@ internal fun FLMutableDict.setDate(key: String, value: Instant?) {
     }
 }
 
-internal fun FLMutableDict.setArray(key: String, value: Array?) {
+internal fun FLMutableDict.setArray(key: String, value: Array?, ctxt: DbContext?) {
     if (value != null) {
+        value.dbContext = ctxt
         FLMutableDict_SetArray(this, key.toFLString(), value.actual)
     } else {
         FLMutableDict_SetNull(this, key.toFLString())
     }
 }
 
-internal fun FLMutableDict.setDictionary(key: String, value: Dictionary?) {
+internal fun FLMutableDict.setDictionary(key: String, value: Dictionary?, ctxt: DbContext?) {
     if (value != null) {
         checkSelf(value.actual)
+        value.dbContext = ctxt
         FLMutableDict_SetDict(this, key.toFLString(), value.actual)
     } else {
         FLMutableDict_SetNull(this, key.toFLString())
