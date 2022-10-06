@@ -37,11 +37,14 @@ internal constructor(
         setJSON(json)
     }
 
-    override val properties: FLMutableDict
-        get() = CBLDocument_MutableProperties(actual)!!
+    override var properties: FLMutableDict = CBLDocument_MutableProperties(actual)!!
+        set(value) {
+            super.properties = value
+            field = value
+        }
 
     public actual fun setData(data: Map<String, Any?>): MutableDocument {
-        CBLDocument_SetProperties(actual, MutableDictionary(data).actual)
+        properties = MutableDictionary(data).actual
         return this
     }
 

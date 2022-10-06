@@ -14,16 +14,23 @@ internal constructor(
     database: Database? = null
 ) : Iterable<String> {
 
+    private val memory = object {
+        val actual: CPointer<CBLDocument> = actual
+        var properties: FLDict = CBLDocument_Properties(actual)!!
+    }
+
     init {
         CBLDocument_Retain(actual)
+        FLDict_Retain(memory.properties)
     }
 
     internal open val actual: CPointer<CBLDocument> = actual
 
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
-    private val cleaner = createCleaner(actual) {
-        CBLDocument_Release(it)
+    private val cleaner = createCleaner(memory) {
+        CBLDocument_Release(it.actual)
+        FLDict_Release(it.properties)
     }
 
     internal var database: Database?
@@ -34,8 +41,14 @@ internal constructor(
 
     internal val dbContext: DbContext = DbContext(database)
 
-    internal open val properties: FLDict
-        get() = CBLDocument_Properties(actual)!!
+    internal open var properties: FLDict = CBLDocument_Properties(actual)!!
+        set(value) {
+            FLDict_Release(field)
+            field = value
+            CBLDocument_SetProperties(actual, value)
+            FLDict_Retain(value)
+            memory.properties = value
+        }
 
     public actual val id: String
         get() = CBLDocument_ID(actual).toKString()!!
