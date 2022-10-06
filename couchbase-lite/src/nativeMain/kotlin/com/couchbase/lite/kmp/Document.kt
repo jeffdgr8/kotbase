@@ -48,7 +48,7 @@ internal constructor(
         get() = CBLDocument_Sequence(actual).toLong()
 
     public actual open fun toMutable(): MutableDocument =
-        MutableDocument(CBLDocument_MutableCopy(actual)!!)
+        MutableDocument(CBLDocument_MutableCopy(actual)!!, database)
 
     public actual val count: Int
         get() = FLDict_Count(properties).toInt()

@@ -27,7 +27,7 @@ internal constructor(
 
     public actual fun toMutable(): MutableArray =
         MutableArray(
-            FLArray_AsMutable(actual) ?: FLArray_MutableCopy(actual, kFLDefaultCopy)!!,
+            FLArray_MutableCopy(actual, kFLDeepCopy)!!,
             dbContext?.let { DbContext(it.database) }
         )
 

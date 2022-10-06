@@ -27,7 +27,7 @@ internal constructor(
 
     public actual fun toMutable(): MutableDictionary =
         MutableDictionary(
-            FLDict_AsMutable(actual) ?: FLDict_MutableCopy(actual, kFLDefaultCopy)!!,
+            FLDict_MutableCopy(actual, kFLDeepCopy)!!,
             dbContext?.let { DbContext(it.database) }
         )
 

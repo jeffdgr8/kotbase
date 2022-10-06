@@ -11,7 +11,10 @@ import kotlinx.datetime.Instant
 import libcblite.*
 
 public actual class MutableDocument
-internal constructor(actual: CPointer<CBLDocument>) : Document(actual) {
+internal constructor(
+    actual: CPointer<CBLDocument>,
+    database: Database? = null
+) : Document(actual, database) {
 
     public actual constructor() : this(CBLDocument_Create()!!) {
         CBLDocument_Release(actual)
