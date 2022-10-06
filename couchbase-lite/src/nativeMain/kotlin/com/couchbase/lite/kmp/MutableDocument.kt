@@ -2,7 +2,6 @@ package com.couchbase.lite.kmp
 
 import cnames.structs.CBLDocument
 import com.couchbase.lite.kmp.internal.fleece.*
-import com.couchbase.lite.kmp.internal.fleece.parseJson
 import com.couchbase.lite.kmp.internal.fleece.setString
 import com.couchbase.lite.kmp.internal.fleece.setValue
 import com.couchbase.lite.kmp.internal.fleece.toFLString
@@ -47,9 +46,18 @@ internal constructor(
     }
 
     public actual fun setJSON(json: String): MutableDocument {
-        wrapCBLError { error ->
-            memScoped {
-                CBLDocument_SetJSON(actual, json.toFLString(this), error)
+        if (!json.startsWith("{")) {
+            throw IllegalArgumentException("JSON is not a Dictionary")
+        }
+        try {
+            wrapCBLError { error ->
+                memScoped {
+                    CBLDocument_SetJSON(actual, json.toFLString(this), error)
+                }
+            }
+        } catch (e: CouchbaseLiteException) {
+            if (e.getCode() == CBLError.Code.INVALID_QUERY) {
+                throw IllegalArgumentException("Failed parsing JSON", e)
             }
         }
         return this
