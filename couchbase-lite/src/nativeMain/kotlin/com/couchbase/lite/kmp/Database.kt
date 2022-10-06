@@ -203,18 +203,15 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
-        try {
-            mustBeOpen {
-                wrapCBLError { error ->
-                    CBLDatabase_PurgeDocument(actual, document.actual, error)
-                }
-                document.database = null
+        mustBeOpen {
+            val purged = wrapCBLError { error ->
+                CBLDatabase_PurgeDocument(actual, document.actual, error)
             }
-        } catch (e: CouchbaseLiteException) {
-            // Java SDK ignores not found error, except for new document
-            val isNew = document.revisionID == null
-            if (isNew || e.getCode() != CBLError.Code.NOT_FOUND || e.getDomain() != CBLError.Domain.CBLITE) {
-                throw e
+            document.database = null
+            if (!purged) {
+                if (document.revisionID == null) {
+                    throw CouchbaseLiteException("The document doesn't exist in the database.", CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND)
+                }
             }
         }
     }

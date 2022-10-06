@@ -52,6 +52,12 @@ internal constructor(
     }
 
     public actual fun setValue(index: Int, value: Any?): MutableArray {
+        // invalid type error expected to supersede index out of bounds
+        when (value) {
+            is Boolean, is ByteArray, is Blob, is String, is Instant, is Number,
+            is List<*>, is Array, is Map<*, *>, is Dictionary, null -> {}
+            else -> invalidTypeError(value)
+        }
         checkIndex(index)
         @Suppress("UNCHECKED_CAST")
         when (value) {
