@@ -4,7 +4,6 @@ import cnames.structs.CBLDocument
 import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
 import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
 import libcblite.*
 import kotlin.native.internal.createCleaner
@@ -99,7 +98,7 @@ internal constructor(
         properties.toMap(dbContext)
 
     public actual open fun toJSON(): String? =
-        FLValue_ToJSON(properties.reinterpret()).toKString()!!
+        CBLDocument_CreateJSON(actual).toKString()
 
     public actual operator fun contains(key: String): Boolean =
         keys.contains(key)

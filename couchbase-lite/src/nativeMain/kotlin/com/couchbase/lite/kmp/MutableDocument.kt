@@ -6,7 +6,9 @@ import com.couchbase.lite.kmp.internal.fleece.parseJson
 import com.couchbase.lite.kmp.internal.fleece.setString
 import com.couchbase.lite.kmp.internal.fleece.setValue
 import com.couchbase.lite.kmp.internal.fleece.toFLString
+import com.couchbase.lite.kmp.internal.wrapCBLError
 import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.memScoped
 import kotlinx.datetime.Instant
 import libcblite.*
 
@@ -45,10 +47,11 @@ internal constructor(
     }
 
     public actual fun setJSON(json: String): MutableDocument {
-        @Suppress("UNCHECKED_CAST")
-        val data = parseJson(json) as? Map<String, Any?>
-            ?: error("Parsed result is not a Dictionary")
-        setData(data)
+        wrapCBLError { error ->
+            memScoped {
+                CBLDocument_SetJSON(actual, json.toFLString(this), error)
+            }
+        }
         return this
     }
 
