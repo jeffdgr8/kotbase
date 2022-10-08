@@ -389,6 +389,12 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     }
 }
 
+if (System.getProperty("os.name") == "Linux") {
+    tasks.withType<Test> {
+        environment("LD_LIBRARY_PATH", "\$LD_LIBRARY_PATH:$projectDir/libs/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu")
+    }
+}
+
 tasks.withType<AbstractTestTask> {
     testLogging {
         events(FAILED, PASSED)
