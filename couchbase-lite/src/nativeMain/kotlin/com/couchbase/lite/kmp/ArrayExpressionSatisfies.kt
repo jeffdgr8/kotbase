@@ -15,15 +15,15 @@ internal constructor(
     ) : Expression() {
 
         public override fun asJSON(): Any {
-            return MutableArray().apply {
+            return buildList {
                 when (type) {
-                    ArrayExpression.QuantifiesType.ANY -> addString("ANY")
-                    ArrayExpression.QuantifiesType.ANY_AND_EVERY -> addString("ANY AND EVERY")
-                    ArrayExpression.QuantifiesType.EVERY -> addString("EVERY")
+                    ArrayExpression.QuantifiesType.ANY -> add("ANY")
+                    ArrayExpression.QuantifiesType.ANY_AND_EVERY -> add("ANY AND EVERY")
+                    ArrayExpression.QuantifiesType.EVERY -> add("EVERY")
                 }
-                addString(variable.name)
-                addValue(inExpression.asJSON())
-                addValue(satisfiesExpression.asJSON())
+                add(variable.name)
+                add(inExpression.asJSON())
+                add(satisfiesExpression.asJSON())
             }
         }
     }

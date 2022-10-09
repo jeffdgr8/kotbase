@@ -1,8 +1,8 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.DbContext
+import com.couchbase.lite.kmp.internal.JsonUtils
 import com.couchbase.lite.kmp.internal.fleece.*
-import com.couchbase.lite.kmp.internal.fleece.parseJson
 import com.couchbase.lite.kmp.internal.fleece.setString
 import com.couchbase.lite.kmp.internal.fleece.setValue
 import kotlinx.datetime.Instant
@@ -44,7 +44,7 @@ internal constructor(
 
     public actual fun setJSON(json: String): MutableDictionary {
         @Suppress("UNCHECKED_CAST")
-        val data = parseJson(json) as? Map<String, Any?>
+        val data = JsonUtils.parseJson(json) as? Map<String, Any?>
             ?: error("Parsed result is not a Dictionary")
         setData(data)
         return this

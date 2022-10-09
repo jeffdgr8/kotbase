@@ -11,9 +11,8 @@ public actual open class Expression {
             verifySupportedType(value)
         }
 
-        public override fun asJSON(): Any? {
-            return asJSON(value)
-        }
+        public override fun asJSON(): Any? =
+            asJSON(value)
 
         private fun asJSON(value: Any?): Any? {
             @Suppress("UNCHECKED_CAST")
@@ -30,13 +29,13 @@ public actual open class Expression {
         }
 
         private fun mapAsJSON(map: Map<String, Any?>): Any =
-            MutableDictionary(map).toJSON()
+            map.mapValues { asJSON(it.value) }
 
         private fun listAsJSON(list: List<Any?>): Any {
-            return MutableArray().apply {
-                addString("[]") // Array Operation
+            return buildList {
+                add("[]") // Array Operation
                 list.forEach {
-                    addValue(asJSON(it))
+                    add(asJSON(it))
                 }
             }
         }
@@ -60,10 +59,10 @@ public actual open class Expression {
     internal class AggregateExpression(val expressions: List<Expression>) : Expression() {
 
         public override fun asJSON(): Any {
-            return MutableArray().apply {
-                addString("[]")
+            return buildList {
+                add("[]")
                 expressions.forEach {
-                    addValue(it.asJSON())
+                    add(it.asJSON())
                 }
             }
         }
@@ -96,35 +95,35 @@ public actual open class Expression {
         }
 
         public override fun asJSON(): Any {
-            return MutableArray().apply {
+            return buildList {
                 when (type) {
-                    OpType.Add -> addString("+")
-                    OpType.Between -> addString("BETWEEN")
-                    OpType.Divide -> addString("/")
-                    OpType.EqualTo -> addString("=")
-                    OpType.GreaterThan -> addString(">")
-                    OpType.GreaterThanOrEqualTo -> addString(">=")
-                    OpType.In -> addString("IN")
-                    OpType.Is -> addString("IS")
-                    OpType.IsNot -> addString("IS NOT")
-                    OpType.LessThan -> addString("<")
-                    OpType.LessThanOrEqualTo -> addString("<=")
-                    OpType.Like -> addString("LIKE")
-                    OpType.Modulus -> addString("%")
-                    OpType.Multiply -> addString("*")
-                    OpType.NotEqualTo -> addString("!=")
-                    OpType.RegexLike -> addString("regexp_like()")
-                    OpType.Subtract -> addString("-")
+                    OpType.Add -> add("+")
+                    OpType.Between -> add("BETWEEN")
+                    OpType.Divide -> add("/")
+                    OpType.EqualTo -> add("=")
+                    OpType.GreaterThan -> add(">")
+                    OpType.GreaterThanOrEqualTo -> add(">=")
+                    OpType.In -> add("IN")
+                    OpType.Is -> add("IS")
+                    OpType.IsNot -> add("IS NOT")
+                    OpType.LessThan -> add("<")
+                    OpType.LessThanOrEqualTo -> add("<=")
+                    OpType.Like -> add("LIKE")
+                    OpType.Modulus -> add("%")
+                    OpType.Multiply -> add("*")
+                    OpType.NotEqualTo -> add("!=")
+                    OpType.RegexLike -> add("regexp_like()")
+                    OpType.Subtract -> add("-")
                 }
-                addValue(lhs.asJSON())
+                add(lhs.asJSON())
                 if (type != OpType.Between) {
-                    addValue(rhs.asJSON())
+                    add(rhs.asJSON())
                 } else {
                     // "between"'s RHS is an aggregate of the min and max, but the min and max need to be
                     // written out as parameters to the BETWEEN operation:
                     val rangeExprs = (rhs as AggregateExpression).expressions
-                    addValue(rangeExprs[0].asJSON())
-                    addValue(rangeExprs[1].asJSON())
+                    add(rangeExprs[0].asJSON())
+                    add(rangeExprs[1].asJSON())
                 }
             }
         }
@@ -140,14 +139,14 @@ public actual open class Expression {
         }
 
         public override fun asJSON(): Any {
-            return MutableArray().apply {
+            return buildList {
                 when (type) {
-                    OpType.And -> addString("AND")
-                    OpType.Or -> addString("OR")
-                    OpType.Not -> addString("NOT")
+                    OpType.And -> add("AND")
+                    OpType.Or -> add("OR")
+                    OpType.Not -> add("NOT")
                 }
                 subexpressions.forEach {
-                    addValue(it.asJSON())
+                    add(it.asJSON())
                 }
             }
         }
@@ -164,35 +163,31 @@ public actual open class Expression {
 
         public override fun asJSON(): Any {
             val opd = operand.asJSON()
-            return MutableArray().apply {
+            return buildList {
                 when (type) {
                     OpType.Missing -> {
-                        addString("IS")
-                        addValue(opd)
-                        addArray(MutableArray().apply {
-                            addString("MISSING")
-                        })
+                        add("IS")
+                        add(opd)
+                        add(listOf("MISSING"))
                     }
                     OpType.NotMissing -> {
-                        addString("IS NOT")
-                        addValue(opd)
-                        addArray(MutableArray().apply {
-                            addString("MISSING")
-                        })
+                        add("IS NOT")
+                        add(opd)
+                        add(listOf("MISSING"))
                     }
                     OpType.Null -> {
-                        addString("IS")
-                        addValue(opd)
-                        addValue(null)
+                        add("IS")
+                        add(opd)
+                        add(null)
                     }
                     OpType.NotNull -> {
-                        addString("IS NOT")
-                        addValue(opd)
-                        addValue(null)
+                        add("IS NOT")
+                        add(opd)
+                        add(null)
                     }
                     OpType.Valued -> {
-                        addString("IS VALUED")
-                        addValue(opd)
+                        add("IS VALUED")
+                        add(opd)
                     }
                 }
             }
@@ -201,11 +196,8 @@ public actual open class Expression {
 
     internal class ParameterExpression(val name: String) : Expression() {
 
-        public override fun asJSON(): Any {
-            return MutableArray().apply {
-                addString("$$name")
-            }
-        }
+        public override fun asJSON(): Any =
+            listOf("$$name")
     }
 
     internal class CollationExpression(
@@ -214,11 +206,11 @@ public actual open class Expression {
     ) : Expression() {
 
         public override fun asJSON(): Any {
-            return MutableArray().apply {
-                addString("COLLATE")
-                addValue(collation.asJSON())
-                addValue(operand.asJSON())
-            }
+            return listOf(
+                "COLLATE",
+                collation.asJSON(),
+                operand.asJSON()
+            )
         }
     }
 
@@ -228,10 +220,10 @@ public actual open class Expression {
     ) : Expression() {
 
         public override fun asJSON(): Any {
-            return MutableArray().apply {
-                addString(func)
+            return buildList {
+                add(func)
                 params.forEach {
-                    addValue(it.asJSON())
+                    add(it.asJSON())
                 }
             }
         }
@@ -362,5 +354,7 @@ public actual open class Expression {
     override fun toString(): String =
         "${this::class.simpleName} {@${hashCode().toString(16)},json=" + asJSON() + "}"
 
-    internal open fun asJSON(): Any? = null // overridden in subclasses
+    internal open fun asJSON(): Any? {
+        throw IllegalStateException("Should be overridden in subclass ${this::class}")
+    }
 }

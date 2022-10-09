@@ -1,8 +1,8 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.DbContext
+import com.couchbase.lite.kmp.internal.JsonUtils
 import com.couchbase.lite.kmp.internal.fleece.*
-import com.couchbase.lite.kmp.internal.fleece.parseJson
 import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.fleece.wrapFLError
 import com.udobny.kmp.ext.toStringMillis
@@ -45,7 +45,7 @@ internal constructor(
     }
 
     public actual fun setJSON(json: String): MutableArray {
-        val data = parseJson(json) as? List<Any?>
+        val data = JsonUtils.parseJson(json) as? List<Any?>
             ?: error("Parsed result is not an Array")
         setData(data)
         return this

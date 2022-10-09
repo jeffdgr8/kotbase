@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.internal.JsonUtils
 import kotlinx.cinterop.*
 import libcblite.CBLFullTextIndexConfiguration
 import libcblite.kCBLN1QLLanguage
@@ -22,11 +23,12 @@ internal constructor(private val items: List<FullTextIndexItem>) : Index() {
     public actual var isIgnoringAccents: Boolean = false
 
     private fun getJson(): String {
-        return MutableArray().apply {
+        val data = buildList {
             items.forEach {
-                addValue(it.expression.asJSON())
+                add(it.expression.asJSON())
             }
-        }.toJSON()
+        }
+        return JsonUtils.toJson(data)
     }
 
     internal fun getActual(memScope: MemScope): CValue<CBLFullTextIndexConfiguration> {

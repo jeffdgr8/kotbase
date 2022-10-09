@@ -3,17 +3,17 @@ package com.couchbase.lite.kmp
 public actual open class Join
 private constructor(
     internal val type: Type,
-    internal val datasource: DataSource,
-    internal val on: Expression? = null
+    protected val datasource: DataSource,
+    private val on: Expression? = null
 ) {
 
-    internal fun asJSON(): Dictionary {
-        return MutableDictionary().apply {
-            setString("JOIN", type.tag)
-            val datasource = datasource.asJSON()
-            datasource.forEach { key ->
-                setValue(key, datasource.getValue(key))
+    internal fun asJSON(): Map<String, Any?> {
+        return buildMap {
+            put("JOIN", type.tag)
+            if (on != null) {
+                put("ON", on.asJSON())
             }
+            putAll(datasource.asJSON())
         }
     }
 

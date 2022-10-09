@@ -10,11 +10,11 @@ private constructor(
         if (alias == null) {
             return expression.asJSON()
         }
-        return MutableArray().apply {
-            addString("AS")
-            addValue(expression.asJSON())
-            addString(alias)
-        }
+        return listOf(
+            "AS",
+            expression.asJSON(),
+            alias
+        )
     }
 
     public actual class From

@@ -196,14 +196,3 @@ internal fun FLValue.toDate(): Instant? {
         null
     }
 }
-
-internal fun parseJson(json: String): Any? {
-    val doc = wrapFLError { error ->
-        memScoped {
-            FLDoc_FromJSON(json.toFLString(this), error)
-        }
-    }
-    return FLDoc_GetRoot(doc)?.toObject(null, false).also {
-        FLDoc_Release(doc)
-    }
-}

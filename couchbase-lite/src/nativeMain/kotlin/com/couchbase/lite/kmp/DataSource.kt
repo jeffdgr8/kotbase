@@ -16,11 +16,8 @@ public actual open class DataSource(
     private fun getColumnName(): String =
         alias ?: source.name
 
-    internal fun asJSON(): Dictionary {
-        return MutableDictionary().apply {
-            setString("AS", getColumnName())
-        }
-    }
+    internal fun asJSON(): Map<String, Any?> =
+        mapOf("AS" to getColumnName())
 
     public actual companion object {
 

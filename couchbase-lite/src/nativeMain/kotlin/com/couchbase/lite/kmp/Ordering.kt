@@ -26,10 +26,10 @@ private constructor(internal val expression: Expression) {
                 return expression.asJSON()
             }
 
-            return MutableArray().apply {
-                addString("DESC")
-                addValue(expression.asJSON())
-            }
+            return listOf(
+                "DESC",
+                expression.asJSON()
+            )
         }
     }
 

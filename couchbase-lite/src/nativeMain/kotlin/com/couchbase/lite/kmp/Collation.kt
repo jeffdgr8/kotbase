@@ -6,13 +6,13 @@ public actual open class Collation(private val isUnicode: Boolean) {
     protected var ignAccents: Boolean = false
     protected var ignCase: Boolean = false
 
-    internal fun asJSON(): Dictionary {
-        return MutableDictionary().apply {
-            setBoolean("UNICODE", isUnicode)
-            setString("LOCALE", locale)
-            setBoolean("CASE", ignCase)
-            setBoolean("DIAC", ignAccents)
-        }
+    internal fun asJSON(): Map<String, Any?> {
+        return mapOf(
+            "UNICODE" to isUnicode,
+            "LOCALE" to locale,
+            "CASE" to ignCase,
+            "DIAC" to ignAccents
+        )
     }
 
     public actual class ASCII : Collation(false) {

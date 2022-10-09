@@ -7,4 +7,7 @@ internal constructor(
 
     public actual fun from(fromAlias: String): Expression =
         propertyExpression.from(fromAlias)
+
+    override fun asJSON(): Any =
+        propertyExpression.asJSON()
 }

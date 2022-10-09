@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
 import cnames.structs.CBLQuery
+import com.couchbase.lite.kmp.internal.JsonUtils
 import com.couchbase.lite.kmp.internal.fleece.toKString
 import com.couchbase.lite.kmp.internal.wrapCBLError
 import com.udobny.kmp.to
@@ -87,63 +88,52 @@ internal class QueryState(
     }
 
     private fun toJSON(): String {
-        return MutableDictionary().apply {
+        val data = buildMap {
             // DISTINCT:
             if (distinct) {
-                setBoolean("DISTINCT", true)
+                put("DISTINCT", true)
             }
 
             // JOIN / FROM:
-            setArray("FROM", MutableArray().apply {
-                addDictionary(from?.asJSON())
+            put("FROM", buildList {
+                add(from?.asJSON())
                 join?.forEach {
-                    addDictionary(it.asJSON())
+                    add(it.asJSON())
                 }
             })
 
             // SELECT:
-            setArray("WHAT", MutableArray().apply {
-                select.forEach {
-                    addValue(it.asJSON())
-                }
-            })
+            put("WHAT", select.map { it.asJSON() })
 
             // WHERE:
             if (where != null) {
-                setValue("WHERE", where)
+                put("WHERE", where?.asJSON())
             }
 
             // GROUPBY:
             if (groupBy != null) {
-                setArray("GROUP_BY", MutableArray().apply {
-                    groupBy?.forEach {
-                        addValue(it.asJSON())
-                    }
-                })
+                put("GROUP_BY", groupBy?.map { it.asJSON() })
             }
 
             // HAVING:
             if (having != null) {
-                setValue("HAVING", having?.asJSON())
+                put("HAVING", having?.asJSON())
             }
 
             // ORDERBY:
             if (orderBy != null) {
-                setArray("ORDER_BY", MutableArray().apply {
-                    orderBy?.forEach {
-                        addValue(it.asJSON())
-                    }
-                })
+                put("ORDER_BY", orderBy?.map { it.asJSON() })
             }
 
             // LIMIT/OFFSET:
             if (limit != null) {
-                setValue("LIMIT", limit?.limit?.asJSON())
+                put("LIMIT", limit?.limit?.asJSON())
                 if (limit?.offset != null) {
-                    setValue("OFFSET", limit?.offset?.asJSON())
+                    put("OFFSET", limit?.offset?.asJSON())
                 }
             }
-        }.toJSON()
+        }
+        return JsonUtils.toJson(data)
     }
 }
 
