@@ -23,8 +23,9 @@ internal constructor(private val actual: CPointer<CBLResultSet>) : Iterable<Resu
     }
 
     public actual operator fun next(): Result? {
-        CBLResultSet_Next(actual)
-        return Result(actual)
+        return if (CBLResultSet_Next(actual)) {
+            Result(actual)
+        } else null
     }
 
     public actual fun allResults(): List<Result> {

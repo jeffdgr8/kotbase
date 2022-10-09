@@ -15,15 +15,15 @@ import kotlin.native.internal.createCleaner
 
 public actual class Result
 private constructor(
-    private val query: CPointer<CBLQuery>?,
-    private val array: FLArray?,
-    private val dict: FLDict?
+    private val query: CPointer<CBLQuery>,
+    private val array: FLArray,
+    private val dict: FLDict
 ) : Iterable<String> {
 
     internal constructor(rs: CPointer<CBLResultSet>) : this(
-        CBLResultSet_GetQuery(rs),
-        CBLResultSet_ResultArray(rs),
-        CBLResultSet_ResultDict(rs)
+        CBLResultSet_GetQuery(rs)!!,
+        CBLResultSet_ResultArray(rs)!!,
+        CBLResultSet_ResultDict(rs)!!
     )
 
     private val memory = object {
@@ -91,7 +91,7 @@ private constructor(
         getFLValue(index)?.toDictionary(null)
 
     public actual fun toList(): List<Any?> =
-        array?.toList(null) ?: emptyList()
+        array.toList(null)
 
     public actual val keys: List<String>
         get() = buildList {
@@ -143,10 +143,10 @@ private constructor(
         getFLValue(key)?.toDictionary(null)
 
     public actual fun toMap(): Map<String, Any?> =
-        dict?.toMap(null) ?: emptyMap()
+        dict.toMap(null)
 
     public actual fun toJSON(): String =
-        FLValue_ToJSON(dict?.reinterpret()).toKString()!!
+        FLValue_ToJSON(dict.reinterpret()).toKString()!!
 
     public actual operator fun contains(key: String): Boolean =
         keys.contains(key)
