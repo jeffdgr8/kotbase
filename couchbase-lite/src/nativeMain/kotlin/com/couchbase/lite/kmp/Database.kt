@@ -8,10 +8,9 @@ import com.couchbase.lite.kmp.internal.toExceptionNotNull
 import com.couchbase.lite.kmp.internal.toKotlinInstant
 import com.couchbase.lite.kmp.internal.wrapCBLError
 import com.udobny.kmp.to
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.*
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.Instant
 import libcblite.*
 import kotlin.native.internal.createCleaner
@@ -459,13 +458,11 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
         mustBeOpen { }
     }
 
-    private val lock = Mutex()
+    private val lock = SynchronizedObject()
 
     internal inline fun <R> withLock(crossinline action: () -> R): R {
-        return runBlocking {
-            lock.withLock {
-                action()
-            }
+        return lock.withLock {
+            action()
         }
     }
 
