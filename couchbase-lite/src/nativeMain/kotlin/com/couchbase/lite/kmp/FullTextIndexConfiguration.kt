@@ -27,7 +27,7 @@ internal constructor(expressions: List<String>) : IndexConfiguration(expressions
     public actual var isIgnoringAccents: Boolean = false
 
     internal fun getActual(): CValue<CBLFullTextIndexConfiguration> {
-        val exp = expressions.joinToString(separator = ",", prefix = "[", postfix = "]")
+        val exp = expressions.joinToString(separator = ",")
         val lang = language
         return cValue {
             expressionLanguage = kCBLN1QLLanguage

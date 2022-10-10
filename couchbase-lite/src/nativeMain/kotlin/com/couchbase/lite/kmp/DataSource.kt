@@ -2,7 +2,7 @@ package com.couchbase.lite.kmp
 
 public actual open class DataSource(
     internal val source: Database,
-    internal val alias: String? = null
+    private val alias: String? = null
 ) {
 
     public actual class As
