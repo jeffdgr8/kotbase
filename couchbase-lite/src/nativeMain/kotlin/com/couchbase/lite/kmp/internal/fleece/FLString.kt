@@ -3,6 +3,7 @@ package com.couchbase.lite.kmp.internal.fleece
 import com.udobny.kmp.ext.toByteArray
 import kotlinx.cinterop.*
 import libcblite.FLSliceResult_Release
+import libcblite.FLStr
 import libcblite.FLString
 import libcblite.FLStringResult
 import platform.posix.strdup
@@ -24,28 +25,9 @@ internal fun CValue<FLStringResult>.toKString(): String? {
 }
 
 // TODO: ensure all usages of this actually take ownership of heap allocated C string
-internal fun String?.toFLString(): CValue<FLString> {
-    val string = this@toFLString
-    return cValue {
-        if (string != null) {
-            buf = strdup(string)
-            size = strlen(string)
-        } else {
-            buf = null
-            size = 0.convert()
-        }
-    }
-}
+internal fun String?.toFLString(): CValue<FLString> =
+    FLStr(this?.let { strdup(it) })
 
-internal fun String?.toFLString(memScope: MemScope): CValue<FLString> {
-    val string = this@toFLString
-    return cValue {
-        if (string != null) {
-            buf = string.cstr.getPointer(memScope)
-            size = strlen(string)
-        } else {
-            buf = null
-            size = 0.convert()
-        }
-    }
-}
+// TODO: ensure all usages don't access string past the scope
+internal fun String?.toFLString(memScope: MemScope): CValue<FLString> =
+    FLStr(this?.cstr?.getPointer(memScope))
