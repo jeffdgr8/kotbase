@@ -31,8 +31,16 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String, config: DatabaseConfiguration) : this(
-        wrapCBLError { error ->
-            CBLDatabase_Open(name.toFLString(), config.actual, error)!!
+        try {
+            wrapCBLError { error ->
+                CBLDatabase_Open(name.toFLString(), config.actual, error)!!
+            }
+        } catch (e: CouchbaseLiteException) {
+            if (e.getCode() == CBLError.Code.INVALID_PARAMETER && e.getDomain() == CBLError.Domain.CBLITE) {
+                throw IllegalArgumentException("Invalid parameter", e)
+            } else {
+                throw e
+            }
         }
     )
 

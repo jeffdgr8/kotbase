@@ -39,7 +39,7 @@ internal constructor(internal var actual: CValue<CBLDatabaseConfiguration>) {
     }
 
     public actual var directory: String
-        get() = actual.useContents { directory.toKString()!! }
+        get() = actual.useContents { directory.toKString()!!.dropLastWhile { it == '/' } }
         set(value) {
             free(directoryCstr.ptr)
             actual = cblDatabaseConfiguration(value)

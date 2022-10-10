@@ -37,7 +37,7 @@ actual object FileUtils {
     }
 
     private val Path.canonicalPath: String
-        get() = FileSystem.SYSTEM.canonicalize(this).name
+        get() = FileSystem.SYSTEM.canonicalize(this).toString()
 
     actual fun verifyDir(dirPath: String): String =
         verifyDir(dirPath.toPath())
