@@ -1,9 +1,11 @@
 package com.couchbase.lite.kmp
 
 import com.udobny.kmp.test.IgnoreApple
+import com.udobny.kmp.test.IgnoreNative
 import kotlin.test.*
 
-// iOS doesn't need initializing
+// native doesn't need initializing
+@IgnoreNative
 @IgnoreApple
 class PreInitTest : BaseTest() {
 
