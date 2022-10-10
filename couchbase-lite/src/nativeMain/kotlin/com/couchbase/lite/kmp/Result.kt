@@ -1,5 +1,6 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
 import com.couchbase.lite.kmp.internal.fleece.toFLString
 import com.couchbase.lite.kmp.internal.fleece.toKString
@@ -17,13 +18,15 @@ public actual class Result
 private constructor(
     private val query: CPointer<CBLQuery>,
     private val array: FLArray,
-    private val dict: FLDict
+    private val dict: FLDict,
+    private val dbContext: DbContext?
 ) : Iterable<String> {
 
-    internal constructor(rs: CPointer<CBLResultSet>) : this(
+    internal constructor(rs: CPointer<CBLResultSet>, dbContext: DbContext?) : this(
         CBLResultSet_GetQuery(rs)!!,
         CBLResultSet_ResultArray(rs)!!,
-        CBLResultSet_ResultDict(rs)!!
+        CBLResultSet_ResultDict(rs)!!,
+        dbContext
     )
 
     private val memory = object {
@@ -55,7 +58,7 @@ private constructor(
     }
 
     public actual fun getValue(index: Int): Any? =
-        getFLValue(index)?.toNative(null)
+        getFLValue(index)?.toNative(dbContext)
 
     public actual fun getString(index: Int): String? =
         getFLValue(index)?.toKString()
@@ -79,19 +82,19 @@ private constructor(
         getFLValue(index).toBoolean()
 
     public actual fun getBlob(index: Int): Blob? =
-        getFLValue(index)?.toBlob(null)
+        getFLValue(index)?.toBlob(dbContext)
 
     public actual fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
 
     public actual fun getArray(index: Int): Array? =
-        getFLValue(index)?.toArray(null)
+        getFLValue(index)?.toArray(dbContext)
 
     public actual fun getDictionary(index: Int): Dictionary? =
-        getFLValue(index)?.toDictionary(null)
+        getFLValue(index)?.toDictionary(dbContext)
 
     public actual fun toList(): List<Any?> =
-        array.toList(null)
+        array.toList(dbContext)
 
     public actual val keys: List<String>
         get() = buildList {
@@ -107,7 +110,7 @@ private constructor(
     }
 
     public actual fun getValue(key: String): Any? =
-        getFLValue(key)?.toNative(null)
+        getFLValue(key)?.toNative(dbContext)
 
     public actual fun getString(key: String): String? =
         getFLValue(key)?.toKString()
@@ -131,19 +134,19 @@ private constructor(
         getFLValue(key).toBoolean()
 
     public actual fun getBlob(key: String): Blob? =
-        getFLValue(key)?.toBlob(null)
+        getFLValue(key)?.toBlob(dbContext)
 
     public actual fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
     public actual fun getArray(key: String): Array? =
-        getFLValue(key)?.toArray(null)
+        getFLValue(key)?.toArray(dbContext)
 
     public actual fun getDictionary(key: String): Dictionary? =
-        getFLValue(key)?.toDictionary(null)
+        getFLValue(key)?.toDictionary(dbContext)
 
     public actual fun toMap(): Map<String, Any?> =
-        dict.toMap(null)
+        dict.toMap(dbContext)
 
     public actual fun toJSON(): String =
         FLValue_ToJSON(dict.reinterpret()).toKString()!!

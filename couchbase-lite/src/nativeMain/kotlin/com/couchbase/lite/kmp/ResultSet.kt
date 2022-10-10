@@ -1,13 +1,17 @@
 package com.couchbase.lite.kmp
 
 import cnames.structs.CBLResultSet
+import com.couchbase.lite.kmp.internal.DbContext
 import com.udobny.kmp.AutoCloseable
 import kotlinx.cinterop.CPointer
 import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual class ResultSet
-internal constructor(private val actual: CPointer<CBLResultSet>) : Iterable<Result>, AutoCloseable {
+internal constructor(
+    private val actual: CPointer<CBLResultSet>,
+    private val dbContext: DbContext? = null
+) : Iterable<Result>, AutoCloseable {
 
     private val memory = object {
         var closeCalled = false
@@ -24,7 +28,7 @@ internal constructor(private val actual: CPointer<CBLResultSet>) : Iterable<Resu
 
     public actual operator fun next(): Result? {
         return if (CBLResultSet_Next(actual)) {
-            Result(actual)
+            Result(actual, dbContext)
         } else null
     }
 

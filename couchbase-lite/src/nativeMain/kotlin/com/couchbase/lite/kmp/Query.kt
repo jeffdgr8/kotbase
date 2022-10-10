@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
 import cnames.structs.CBLQuery
+import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.JsonUtils
 import com.couchbase.lite.kmp.internal.fleece.toKString
 import com.couchbase.lite.kmp.internal.wrapCBLError
@@ -11,6 +12,8 @@ import libcblite.*
 internal abstract class AbstractQuery : Query {
 
     abstract val actual: CPointer<CBLQuery>
+
+    abstract val dbContext: DbContext
 
     override var parameters: Parameters?
         get() = CBLQuery_Parameters(actual)?.asParameters()
@@ -23,7 +26,7 @@ internal abstract class AbstractQuery : Query {
         val resultSet = wrapCBLError { error ->
             CBLQuery_Execute(actual, error)
         }
-        return ResultSet(resultSet!!)
+        return ResultSet(resultSet!!, dbContext)
     }
 
     @Throws(CouchbaseLiteException::class)
@@ -83,8 +86,16 @@ internal class QueryState(
     var limit: Limit? = null
 
     override val actual: CPointer<CBLQuery> by lazy {
+        database.createQuery(kCBLJSONLanguage, toJSON())
+    }
+
+    override val dbContext: DbContext by lazy {
+        DbContext(database)
+    }
+
+    private val database: Database by lazy {
         val from = requireNotNull(from) { "From statement is required." }
-        from.source.createQuery(kCBLJSONLanguage, toJSON())
+        from.source
     }
 
     private fun toJSON(): String {
@@ -137,4 +148,10 @@ internal class QueryState(
     }
 }
 
-internal class DelegatedQuery(override val actual: CPointer<CBLQuery>) : AbstractQuery()
+internal class DelegatedQuery(
+    override val actual: CPointer<CBLQuery>,
+    database: Database
+) : AbstractQuery() {
+
+    override val dbContext: DbContext = DbContext(database)
+}

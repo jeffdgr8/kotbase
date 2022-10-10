@@ -354,7 +354,7 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createQuery(query: String): Query =
-        DelegatedQuery(createQuery(kCBLN1QLLanguage, query))
+        DelegatedQuery(createQuery(kCBLN1QLLanguage, query), this)
 
     internal fun createQuery(language: CBLQueryLanguage, queryString: String): CPointer<CBLQuery> {
         return memScoped {
