@@ -215,8 +215,11 @@ private fun String.toFilePath(): Path {
     val match = """^(?:([a-zA-Z][a-zA-Z0-9+.-]*):)?.+$""".toRegex()
         .matchEntire(this)
     match?.groups?.get(1)?.let { scheme ->
-        if (!scheme.value.equals("file", ignoreCase = true)) {
-            throw IllegalArgumentException("$this must be a file-based URL.")
+        // Windows drive letters are ok
+        if (Platform.osFamily != OsFamily.WINDOWS || scheme.value.length != 1) {
+            if (!scheme.value.equals("file", ignoreCase = true)) {
+                throw IllegalArgumentException("$this must be a file-based URL.")
+            }
         }
     }
     if (access(this, R_OK) == -1 && errno == EINVAL) {
