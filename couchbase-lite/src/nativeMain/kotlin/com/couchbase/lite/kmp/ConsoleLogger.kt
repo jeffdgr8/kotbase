@@ -1,19 +1,15 @@
 package com.couchbase.lite.kmp
 
-import com.couchbase.lite.kmp.internal.fleece.toFLString
-import kotlinx.cinterop.memScoped
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import libcblite.CBLLog_ConsoleLevel
 import libcblite.CBLLog_SetConsoleLevel
-import libcblite.CBL_LogMessage
+import platform.posix.pthread_self
 
 public actual class ConsoleLogger : Logger {
 
-    public actual var domains: Set<LogDomain>
-        get() = LogDomain.ALL_DOMAINS
-        set(_) {
-            // no-op for native, no API support
-            println("Couchbase Lite C SDK does not support setting log domains")
-        }
+    public actual var domains: Set<LogDomain> = LogDomain.ALL_DOMAINS
 
     public actual fun setDomains(vararg domains: LogDomain) {
         this.domains = domains.toSet()
@@ -26,8 +22,20 @@ public actual class ConsoleLogger : Logger {
         }
 
     override fun log(level: LogLevel, domain: LogDomain, message: String) {
-        memScoped {
-            CBL_LogMessage(domain.actual, level.actual, message.toFLString(this))
-        }
+        if (level < this.level || !domains.contains(domain)) return
+        println(formatLog(level, domain.name, message))
+    }
+
+    private fun formatLog(level: LogLevel, domain: String, message: String): String {
+        val thread = pthread_self().toString().padStart(THREAD_FIELD_LEN, ' ')
+        val time = Clock.System.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .toString()
+        return "$time$thread $level$LOG_TAG$domain: $message"
+    }
+
+    private companion object {
+        private const val LOG_TAG = "/CouchbaseLite/"
+        private const val THREAD_FIELD_LEN = 7
     }
 }

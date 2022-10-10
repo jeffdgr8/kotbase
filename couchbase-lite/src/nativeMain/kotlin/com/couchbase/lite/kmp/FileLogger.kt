@@ -5,15 +5,20 @@ import com.couchbase.lite.kmp.internal.wrapCBLError
 import kotlinx.cinterop.memScoped
 import libcblite.CBLLog_SetFileConfig
 import libcblite.CBL_LogMessage
+import okio.FileSystem
+import okio.Path.Companion.toPath
 
 public actual class FileLogger : Logger {
 
     public actual var config: LogFileConfiguration? = null
         set(value) {
-            value ?: error("Can't set FileLogger.config to null in C SDK")
             field = value
+            if (value != null) {
+                FileSystem.SYSTEM.createDirectories(value.directory.toPath(), false)
+            }
+            val actual = value?.getActual(level) ?: LogFileConfiguration.getNullActual()
             wrapCBLError { error ->
-                CBLLog_SetFileConfig(value.getActual(level), error)
+                CBLLog_SetFileConfig(actual, error)
             }
         }
 

@@ -14,9 +14,10 @@ public actual class Log {
         FileLogger()
     }
 
-    public actual var custom: Logger? = null
+    public actual var custom: Logger?
+        get() = topLevelCustom
         set(value) {
-            field = value
+            topLevelCustom = value
             if (value != null) {
                 CBLLog_SetCallbackLevel(value.level.actual)
                 CBLLog_SetCallback(
