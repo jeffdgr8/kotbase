@@ -63,11 +63,11 @@ internal constructor(
     public actual val content: ByteArray?
         get() {
             if (blobContent == null) {
+                dbContext?.database?.mustBeOpen()
                 blobContent = wrapCBLError { error ->
                     CBLBlob_Content(actual, error).toByteArray()
                 }
             }
-            // TODO: throw exception when database is closed
             return blobContent?.copyOf()
         }
 

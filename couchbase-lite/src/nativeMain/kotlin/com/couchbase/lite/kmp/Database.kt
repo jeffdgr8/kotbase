@@ -33,7 +33,7 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
     public actual constructor(name: String, config: DatabaseConfiguration) : this(
         try {
             wrapCBLError { error ->
-                CBLDatabase_Open(name.toFLString(), config.actual, error)!!
+                CBLDatabase_Open(name.toFLString(), config.getActual(), error)!!
             }
         } catch (e: CouchbaseLiteException) {
             if (e.getCode() == CBLError.Code.INVALID_PARAMETER && e.getDomain() == CBLError.Domain.CBLITE) {
@@ -71,7 +71,7 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
         @Throws(CouchbaseLiteException::class)
         public actual fun copy(path: String, name: String, config: DatabaseConfiguration?) {
             wrapCBLError { error ->
-                CBL_CopyDatabase(path.toFLString(), name.toFLString(), config?.actual, error)
+                CBL_CopyDatabase(path.toFLString(), name.toFLString(), config?.getActual(), error)
             }
         }
     }

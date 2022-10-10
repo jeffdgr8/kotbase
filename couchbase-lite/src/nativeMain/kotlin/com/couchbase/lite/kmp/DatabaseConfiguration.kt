@@ -10,27 +10,17 @@ import platform.posix.strlen
 import kotlin.native.internal.createCleaner
 
 public actual class DatabaseConfiguration
-internal constructor(internal var actual: CValue<CBLDatabaseConfiguration>) {
-
-    private val directoryCstr = object {
-        var ptr = actual.useContents {
-            val default = CBLDatabaseConfiguration_Default().useContents { directory.buf }
-            if (directory.buf != default) directory.buf else null
-        }
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    @Suppress("unused")
-    private val cleaner = createCleaner(directoryCstr) {
-        free(it.ptr)
-    }
+internal constructor(public actual var directory: String) {
 
     public actual constructor(config: DatabaseConfiguration?) : this(
-        if (config != null) {
-            cblDatabaseConfiguration(config.directory)
-        } else {
-            CBLDatabaseConfiguration_Default()
-        }
+        config?.directory
+            ?: CBLDatabaseConfiguration_Default().useContents {
+                directory.toKString()!!.dropLastWhile { it == '/' }
+            }
+    )
+
+    internal constructor(actual: CValue<CBLDatabaseConfiguration>) : this(
+        actual.useContents { directory.toKString()!!.dropLastWhile { it == '/' } }
     )
 
     public actual fun setDirectory(directory: String): DatabaseConfiguration {
@@ -38,22 +28,12 @@ internal constructor(internal var actual: CValue<CBLDatabaseConfiguration>) {
         return this
     }
 
-    public actual var directory: String
-        get() = actual.useContents { directory.toKString()!!.dropLastWhile { it == '/' } }
-        set(value) {
-            free(directoryCstr.ptr)
-            actual = cblDatabaseConfiguration(value)
-            directoryCstr.ptr = actual.useContents { directory.buf }
-        }
-
-    private companion object {
-
-        private fun cblDatabaseConfiguration(directory: String): CValue<CBLDatabaseConfiguration> {
-            return cValue {
-                with(this.directory) {
-                    buf = strdup(directory)
-                    size = strlen(directory)
-                }
+    internal fun getActual(): CValue<CBLDatabaseConfiguration> {
+        val dir = directory
+        return cValue {
+            with(this.directory) {
+                buf = strdup(dir)
+                size = strlen(dir)
             }
         }
     }
