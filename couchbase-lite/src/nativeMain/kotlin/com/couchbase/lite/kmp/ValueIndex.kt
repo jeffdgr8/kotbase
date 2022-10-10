@@ -4,6 +4,8 @@ import com.couchbase.lite.kmp.internal.JsonUtils
 import kotlinx.cinterop.*
 import libcblite.CBLValueIndexConfiguration
 import libcblite.kCBLN1QLLanguage
+import platform.posix.strdup
+import platform.posix.strlen
 
 public actual class ValueIndex
 internal constructor(private val items: List<ValueIndexItem>) : Index() {
@@ -17,12 +19,12 @@ internal constructor(private val items: List<ValueIndexItem>) : Index() {
         return JsonUtils.toJson(data)
     }
 
-    internal fun getActual(memScope: MemScope): CValue<CBLValueIndexConfiguration> {
-        val expCstr = getJson().cstr
+    internal fun getActual(): CValue<CBLValueIndexConfiguration> {
+        val json = getJson()
         return cValue {
             expressionLanguage = kCBLN1QLLanguage
-            expressions.buf = expCstr.getPointer(memScope)
-            expressions.size = expCstr.size.convert()
+            expressions.buf = strdup(json)
+            expressions.size = strlen(json)
         }
     }
 }

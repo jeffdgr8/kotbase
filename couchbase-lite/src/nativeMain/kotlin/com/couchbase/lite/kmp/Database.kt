@@ -393,13 +393,13 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
                         is ValueIndex -> CBLDatabase_CreateValueIndex(
                             actual,
                             name.toFLString(this),
-                            index.getActual(this),
+                            index.getActual(),
                             error
                         )
                         is FullTextIndex -> CBLDatabase_CreateFullTextIndex(
                             actual,
                             name.toFLString(this),
-                            index.getActual(this),
+                            index.getActual(),
                             error
                         )
                         else -> error("Unknown Index type ${index::class}")

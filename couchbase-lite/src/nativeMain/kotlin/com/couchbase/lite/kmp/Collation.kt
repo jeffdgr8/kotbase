@@ -10,8 +10,8 @@ public actual open class Collation(private val isUnicode: Boolean) {
         return mapOf(
             "UNICODE" to isUnicode,
             "LOCALE" to locale,
-            "CASE" to ignCase,
-            "DIAC" to ignAccents
+            "CASE" to !ignCase,
+            "DIAC" to !ignAccents
         )
     }
 

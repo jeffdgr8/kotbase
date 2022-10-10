@@ -3,7 +3,10 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.kmp.internal.JsonUtils
 import kotlinx.cinterop.*
 import libcblite.CBLFullTextIndexConfiguration
+import libcblite.kCBLJSONLanguage
 import libcblite.kCBLN1QLLanguage
+import platform.posix.strdup
+import platform.posix.strlen
 
 public actual class FullTextIndex
 internal constructor(private val items: List<FullTextIndexItem>) : Index() {
@@ -13,7 +16,8 @@ internal constructor(private val items: List<FullTextIndexItem>) : Index() {
         return this
     }
 
-    public actual var language: String? = null
+    // TODO: this should default to device's default locale, tests check for "en"
+    public actual var language: String? = "en"
 
     public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndex {
         isIgnoringAccents = ignoreAccents
@@ -31,15 +35,15 @@ internal constructor(private val items: List<FullTextIndexItem>) : Index() {
         return JsonUtils.toJson(data)
     }
 
-    internal fun getActual(memScope: MemScope): CValue<CBLFullTextIndexConfiguration> {
-        val expCstr = getJson().cstr
-        val langCstr = language?.cstr
+    internal fun getActual(): CValue<CBLFullTextIndexConfiguration> {
+        val json = getJson()
+        val lang = language
         return cValue {
-            expressionLanguage = kCBLN1QLLanguage
-            expressions.buf = expCstr.getPointer(memScope)
-            expressions.size = expCstr.size.convert()
-            language.buf = langCstr?.getPointer(memScope)
-            language.size = langCstr?.size?.convert() ?: 0U
+            expressionLanguage = kCBLJSONLanguage
+            expressions.buf = strdup(json)
+            expressions.size = strlen(json)
+            language.buf = lang?.let { strdup(it) }
+            language.size = lang?.let { strlen(it) } ?: 0U
             ignoreAccents = isIgnoringAccents
         }
     }

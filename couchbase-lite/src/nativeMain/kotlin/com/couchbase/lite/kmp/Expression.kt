@@ -333,7 +333,7 @@ public actual open class Expression {
 
     public actual fun between(expression1: Expression, expression2: Expression): Expression {
         val aggr = AggregateExpression(listOf(expression1, expression2))
-        return BinaryExpression(this, aggr, BinaryExpression.OpType.NotEqualTo)
+        return BinaryExpression(this, aggr, BinaryExpression.OpType.Between)
     }
 
     public actual fun isValued(): Expression =
