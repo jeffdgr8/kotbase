@@ -2,19 +2,21 @@ package com.couchbase.lite.kmp
 
 import kotlinx.cinterop.*
 import libcblite.CBLValueIndexConfiguration
-import libcblite.kCBLJSONLanguage
+import libcblite.kCBLN1QLLanguage
+import platform.posix.strdup
+import platform.posix.strlen
 
 public actual class ValueIndexConfiguration
 internal constructor(expressions: List<String>) : IndexConfiguration(expressions) {
 
     public actual constructor(vararg expressions: String) : this(expressions.toList())
 
-    internal fun getActual(memScope: MemScope): CValue<CBLValueIndexConfiguration> {
-        val expCstr = expressions.joinToString(separator = ",", prefix = "[", postfix = "]").cstr
+    internal fun getActual(): CValue<CBLValueIndexConfiguration> {
+        val exp = expressions.joinToString(separator = ",", prefix = "[", postfix = "]")
         return cValue {
-            expressionLanguage = kCBLJSONLanguage
-            expressions.buf = expCstr.getPointer(memScope)
-            expressions.size = expCstr.size.convert()
+            expressionLanguage = kCBLN1QLLanguage
+            expressions.buf = strdup(exp)
+            expressions.size = strlen(exp)
         }
     }
 }

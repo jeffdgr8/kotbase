@@ -2,7 +2,6 @@ package com.couchbase.lite.kmp
 
 import kotlinx.cinterop.*
 import libcblite.CBLFullTextIndexConfiguration
-import libcblite.kCBLJSONLanguage
 import libcblite.kCBLN1QLLanguage
 import platform.posix.strdup
 import platform.posix.strlen
@@ -27,7 +26,7 @@ internal constructor(expressions: List<String>) : IndexConfiguration(expressions
 
     public actual var isIgnoringAccents: Boolean = false
 
-    internal fun getActual(memScope: MemScope): CValue<CBLFullTextIndexConfiguration> {
+    internal fun getActual(): CValue<CBLFullTextIndexConfiguration> {
         val exp = expressions.joinToString(separator = ",", prefix = "[", postfix = "]")
         val lang = language
         return cValue {

@@ -418,13 +418,13 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
                         is ValueIndexConfiguration -> CBLDatabase_CreateValueIndex(
                             actual,
                             name.toFLString(this),
-                            config.getActual(this),
+                            config.getActual(),
                             error
                         )
                         is FullTextIndexConfiguration -> CBLDatabase_CreateFullTextIndex(
                             actual,
                             name.toFLString(this),
-                            config.getActual(this),
+                            config.getActual(),
                             error
                         )
                         else -> error("Unknown IndexConfiguration type ${config::class}")

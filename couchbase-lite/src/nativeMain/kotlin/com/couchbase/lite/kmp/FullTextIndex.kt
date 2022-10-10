@@ -4,7 +4,6 @@ import com.couchbase.lite.kmp.internal.JsonUtils
 import kotlinx.cinterop.*
 import libcblite.CBLFullTextIndexConfiguration
 import libcblite.kCBLJSONLanguage
-import libcblite.kCBLN1QLLanguage
 import platform.posix.strdup
 import platform.posix.strlen
 

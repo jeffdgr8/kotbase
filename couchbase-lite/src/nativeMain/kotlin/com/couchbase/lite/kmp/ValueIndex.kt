@@ -3,7 +3,7 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.kmp.internal.JsonUtils
 import kotlinx.cinterop.*
 import libcblite.CBLValueIndexConfiguration
-import libcblite.kCBLN1QLLanguage
+import libcblite.kCBLJSONLanguage
 import platform.posix.strdup
 import platform.posix.strlen
 
@@ -22,7 +22,7 @@ internal constructor(private val items: List<ValueIndexItem>) : Index() {
     internal fun getActual(): CValue<CBLValueIndexConfiguration> {
         val json = getJson()
         return cValue {
-            expressionLanguage = kCBLN1QLLanguage
+            expressionLanguage = kCBLJSONLanguage
             expressions.buf = strdup(json)
             expressions.size = strlen(json)
         }
