@@ -19,7 +19,7 @@ private constructor(actual: com.couchbase.lite.SelectResult) :
     internal constructor(override val actual: com.couchbase.lite.SelectResult.As) :
         SelectResult(actual) {
 
-        public actual fun `as`(alias: String): SelectResult = chain {
+        public actual fun `as`(alias: String): As = chain {
             actual.`as`(alias)
         }
     }

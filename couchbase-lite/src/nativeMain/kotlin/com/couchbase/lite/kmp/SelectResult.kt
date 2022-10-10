@@ -2,8 +2,8 @@ package com.couchbase.lite.kmp
 
 public actual open class SelectResult
 private constructor(
-    protected val expression: Expression,
-    private val alias: String? = null
+    protected open val expression: Expression,
+    protected var alias: String? = null
 ) {
 
     internal fun asJSON(): Any? {
@@ -18,10 +18,10 @@ private constructor(
     }
 
     public actual class From
-    internal constructor(expression: Expression) : SelectResult(expression) {
+    internal constructor(override val expression: PropertyExpression) : SelectResult(expression) {
 
         public actual fun from(alias: String): SelectResult =
-            SelectResult(expression, alias)
+            SelectResult(expression.from(alias))
     }
 
     public actual class As
@@ -29,8 +29,9 @@ private constructor(
         expression: Expression
     ) : SelectResult(expression) {
 
-        public actual fun `as`(alias: String): SelectResult {
-            return SelectResult(expression, alias)
+        public actual fun `as`(alias: String): As {
+            this.alias = alias
+            return this
         }
     }
 

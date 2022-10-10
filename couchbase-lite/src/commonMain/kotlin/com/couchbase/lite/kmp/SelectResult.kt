@@ -32,7 +32,7 @@ public expect open class SelectResult {
          * @param alias The alias name.
          * @return The SelectResult object with the alias name specified.
          */
-        public fun `as`(alias: String): SelectResult
+        public fun `as`(alias: String): As
     }
 
     public companion object {

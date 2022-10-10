@@ -18,8 +18,9 @@ private constructor(actual: CBLQuerySelectResult) :
     public actual class As
     private constructor(
         private val function: (Any, String?) -> CBLQuerySelectResult,
-        private val param1: Any
-    ) : SelectResult(function(param1, null)) {
+        private val param1: Any,
+        param2: String? = null
+    ) : SelectResult(function(param1, param2)) {
 
         internal companion object {
 
@@ -30,8 +31,8 @@ private constructor(actual: CBLQuerySelectResult) :
             ): As = As(function as (Any, String?) -> CBLQuerySelectResult, param1 as Any)
         }
 
-        public actual fun `as`(alias: String): SelectResult {
-            return SelectResult(function(param1, alias))
+        public actual fun `as`(alias: String): As {
+            return As(function, param1, alias)
         }
     }
 
