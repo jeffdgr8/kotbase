@@ -149,7 +149,7 @@ private constructor(
         FLValue_ToJSON(dict.reinterpret()).toKString()!!
 
     public actual operator fun contains(key: String): Boolean =
-        keys.contains(key)
+        dict.keys().contains(key)
 
     actual override fun iterator(): Iterator<String> =
         keys.iterator()
