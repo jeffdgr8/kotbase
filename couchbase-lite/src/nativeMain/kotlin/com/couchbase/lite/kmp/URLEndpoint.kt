@@ -21,8 +21,12 @@ internal constructor(
     }
 
     public actual constructor(url: String) : this(
-        wrapCBLError { error ->
-            CBLEndpoint_CreateWithURL(url.toFLString(), error)!!
+        try {
+            wrapCBLError { error ->
+                CBLEndpoint_CreateWithURL(url.toFLString(), error)!!
+            }
+        } catch (e: CouchbaseLiteException) {
+            throw IllegalArgumentException(e.message, e)
         },
         url
     )
