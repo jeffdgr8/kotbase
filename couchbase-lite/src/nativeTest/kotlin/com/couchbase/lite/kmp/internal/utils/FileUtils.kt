@@ -19,7 +19,7 @@ actual object FileUtils {
         try {
             val files = FileSystem.SYSTEM.list(dir.toPath())
             val prefix = if (dir.endsWith('/')) dir else "$dir/"
-            return files.map { prefix + it.name }
+            return files.map { prefix + it.toString() }
         } catch (e: Exception) {
             throw IOException(e.message, e)
         }
@@ -43,7 +43,7 @@ actual object FileUtils {
         verifyDir(dirPath.toPath())
 
     private fun verifyDir(dir: Path): String {
-        if (!dirExists(dir.name)) {
+        if (!dirExists(dir.toString())) {
             try {
                 FileSystem.SYSTEM.createDirectories(dir, true)
             } catch (e: Exception) {

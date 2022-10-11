@@ -52,8 +52,11 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
 
         @Throws(CouchbaseLiteException::class)
         public actual fun delete(name: String, directory: String?) {
+            println("directory = $directory")
+            println("exists = ${exists(name, directory ?: DatabaseConfiguration().directory)}")
             // Java SDK throws not found error
             if (!exists(name, directory ?: DatabaseConfiguration().directory)) {
+                println("throwing exception")
                 throw CouchbaseLiteException(
                     "Database not found for delete",
                     CBLError.Domain.CBLITE,
@@ -61,8 +64,10 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
                 )
             }
             wrapCBLError { error ->
+                println("deleting database")
                 CBL_DeleteDatabase(name.toFLString(), directory.toFLString(), error)
             }
+            println("database deleted")
         }
 
         public actual fun exists(name: String, directory: String?): Boolean =
@@ -80,7 +85,7 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
         get() = CBLDatabase_Name(actual).toKString()!!
 
     public actual val path: String?
-        get() = CBLDatabase_Path(actual).toKString()
+        get() = if (isClosed) null else CBLDatabase_Path(actual).toKString()
 
     public actual val count: Long
         get() = CBLDatabase_Count(actual).toLong()
@@ -211,14 +216,14 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
         mustBeOpen {
-            val purged = wrapCBLError { error ->
-                CBLDatabase_PurgeDocument(actual, document.actual, error)
-            }
-            document.database = null
-            if (!purged) {
-                if (document.revisionID == null) {
-                    throw CouchbaseLiteException("The document doesn't exist in the database.", CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND)
+            try {
+                wrapCBLError { error ->
+                    CBLDatabase_PurgeDocument(actual, document.actual, error)
                 }
+            } catch (e: CouchbaseLiteException) {
+                if (e.getCode() != CBLError.Code.NOT_FOUND || e.getDomain() != CBLError.Domain.CBLITE || document.revisionID == null) {
+                    throw e
+                } else false
             }
         }
     }
