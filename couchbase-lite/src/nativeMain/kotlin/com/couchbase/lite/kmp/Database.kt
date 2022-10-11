@@ -52,11 +52,8 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
 
         @Throws(CouchbaseLiteException::class)
         public actual fun delete(name: String, directory: String?) {
-            println("directory = $directory")
-            println("exists = ${exists(name, directory ?: DatabaseConfiguration().directory)}")
             // Java SDK throws not found error
             if (!exists(name, directory ?: DatabaseConfiguration().directory)) {
-                println("throwing exception")
                 throw CouchbaseLiteException(
                     "Database not found for delete",
                     CBLError.Domain.CBLITE,
@@ -64,10 +61,8 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
                 )
             }
             wrapCBLError { error ->
-                println("deleting database")
                 CBL_DeleteDatabase(name.toFLString(), directory.toFLString(), error)
             }
-            println("database deleted")
         }
 
         public actual fun exists(name: String, directory: String?): Boolean =

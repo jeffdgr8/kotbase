@@ -3,7 +3,6 @@ package com.couchbase.lite.kmp.internal.fleece
 import com.couchbase.lite.kmp.*
 import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.wrapCBLError
-import kotlinx.cinterop.*
 import kotlinx.datetime.Instant
 import libcblite.*
 

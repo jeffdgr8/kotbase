@@ -25,16 +25,8 @@ actual object FileUtils {
         }
     }
 
-    actual fun getCanonicalPath(path: String): String {
-        try {
-            return path.toPath().canonicalPath
-        } catch (e: Exception) {
-            println("Exception getCanonicalPath($path)")
-            println(e)
-            e.printStackTrace()
-            throw e
-        }
-    }
+    actual fun getCanonicalPath(path: String): String =
+        path.toPath().canonicalPath
 
     private val Path.canonicalPath: String
         get() = FileSystem.SYSTEM.canonicalize(this).toString()

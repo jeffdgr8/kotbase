@@ -33,16 +33,8 @@ actual object FileUtils {
         }
     }
 
-    actual fun getCanonicalPath(path: String): String {
-        try {
-            return NSURL(fileURLWithPath = path).canonicalPath
-        } catch (e: Exception) {
-            println("Exception getCanonicalPath($path)")
-            println(e)
-            e.printStackTrace()
-            throw e
-        }
-    }
+    actual fun getCanonicalPath(path: String): String =
+        NSURL(fileURLWithPath = path).canonicalPath
 
     private val NSURL.canonicalPath: String
         get() = memScoped {
