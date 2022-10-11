@@ -179,12 +179,16 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
                     }
                 }
             } catch (e: Exception) {
-                throw CouchbaseLiteException(
-                    "Conflict handler threw an exception",
-                    wrapper.exception ?: e,
-                    CBLError.Domain.CBLITE,
-                    CBLError.Code.CONFLICT
-                )
+                if (wrapper.exception != null) {
+                    throw CouchbaseLiteException(
+                        "Conflict handler threw an exception",
+                        wrapper.exception!!,
+                        CBLError.Domain.CBLITE,
+                        CBLError.Code.CONFLICT
+                    )
+                } else {
+                    throw e
+                }
             } finally {
                 this.conflictHandler?.dispose()
                 this.conflictHandler = null
