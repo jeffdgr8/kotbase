@@ -4,10 +4,9 @@ import com.couchbase.lite.kmp.internal.fleece.toKString
 import kotlinx.cinterop.*
 import libcblite.CBLDatabaseConfiguration
 import libcblite.CBLDatabaseConfiguration_Default
-import platform.posix.free
+import okio.Path
 import platform.posix.strdup
 import platform.posix.strlen
-import kotlin.native.internal.createCleaner
 
 public actual class DatabaseConfiguration
 internal constructor(public actual var directory: String) {
@@ -15,12 +14,12 @@ internal constructor(public actual var directory: String) {
     public actual constructor(config: DatabaseConfiguration?) : this(
         config?.directory
             ?: CBLDatabaseConfiguration_Default().useContents {
-                directory.toKString()!!.dropLastWhile { it == '/' }
+                directory.toKString()!!.dropLastWhile { it == Path.DIRECTORY_SEPARATOR.first() }
             }
     )
 
     internal constructor(actual: CValue<CBLDatabaseConfiguration>) : this(
-        actual.useContents { directory.toKString()!!.dropLastWhile { it == '/' } }
+        actual.useContents { directory.toKString()!!.dropLastWhile { it == Path.DIRECTORY_SEPARATOR.first() } }
     )
 
     public actual fun setDirectory(directory: String): DatabaseConfiguration {

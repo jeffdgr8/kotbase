@@ -137,21 +137,26 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
         }
     }
 
-    private var conflictHandler: StableRef<ConflictHandler>? = null
+    private class ConflictHandlerWrapper(val db: Database, val conflictHandler: ConflictHandler)
+
+    private var conflictHandler: StableRef<ConflictHandlerWrapper>? = null
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
         return mustBeOpen {
             wrapCBLError { error ->
                 try {
-                    this.conflictHandler = StableRef.create(conflictHandler)
+                    this.conflictHandler = StableRef.create(
+                        ConflictHandlerWrapper(this, conflictHandler)
+                    )
                     CBLDatabase_SaveDocumentWithConflictHandler(
                         actual,
                         document.actual,
                         staticCFunction { ref, document, oldDocument ->
-                            ref.to<ConflictHandler>()(
-                                MutableDocument(document!!),
-                                oldDocument?.asDocument()
+                            val wrapper = ref.to<ConflictHandlerWrapper>()
+                            wrapper.conflictHandler(
+                                MutableDocument(document!!, wrapper.db),
+                                oldDocument?.asDocument(wrapper.db)
                             )
                         },
                         this.conflictHandler!!.asCPointer(),

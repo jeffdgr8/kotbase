@@ -11,7 +11,7 @@ import kotlin.native.internal.createCleaner
 public actual open class Document
 internal constructor(
     actual: CPointer<CBLDocument>,
-    database: Database? = null
+    database: Database?
 ) : Iterable<String> {
 
     private val memory = object {
@@ -171,5 +171,5 @@ internal constructor(
     }
 }
 
-internal fun CPointer<CBLDocument>.asDocument(database: Database? = null) =
+internal fun CPointer<CBLDocument>.asDocument(database: Database?) =
     Document(this, database)

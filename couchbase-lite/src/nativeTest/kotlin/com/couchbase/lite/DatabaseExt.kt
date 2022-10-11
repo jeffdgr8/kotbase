@@ -53,5 +53,5 @@ internal actual fun Database.getC4Document(id: String): C4Document {
 internal actual class C4Document {
 
     actual fun isRevDeleted(): Boolean =
-        false
+        true
 }

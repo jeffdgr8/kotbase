@@ -99,8 +99,8 @@ public actual class ReplicatorConfiguration actual constructor(
             config.conflictResolver?.invoke(
                 Conflict(
                     documentId.toKString()!!,
-                    localDocument?.asDocument(),
-                    remoteDocument?.asDocument()
+                    localDocument?.asDocument(config.database),
+                    remoteDocument?.asDocument(config.database)
                 )
             )?.actual
         }
@@ -110,7 +110,7 @@ public actual class ReplicatorConfiguration actual constructor(
         return staticCFunction { ref, document, flags ->
             val config = ref.to<ReplicatorConfiguration>()
             config.pullFilter?.invoke(
-                Document(document!!),
+                Document(document!!, config.database),
                 flags.toDocumentFlags()
             ) ?: true
         }
@@ -120,7 +120,7 @@ public actual class ReplicatorConfiguration actual constructor(
         return staticCFunction { ref, document, flags ->
             val config = ref.to<ReplicatorConfiguration>()
             config.pushFilter?.invoke(
-                Document(document!!),
+                Document(document!!, config.database),
                 flags.toDocumentFlags()
             ) ?: true
         }
