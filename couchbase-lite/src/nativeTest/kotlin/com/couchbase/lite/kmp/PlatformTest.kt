@@ -17,7 +17,7 @@ actual abstract class PlatformTest {
     }
 
     actual val tmpDir: String
-        get() = FileUtils.verifyDir((FileSystem.SYSTEM_TEMPORARY_DIRECTORY / SCRATCH_DIR_NAME).name)
+        get() = FileUtils.verifyDir((FileSystem.SYSTEM_TEMPORARY_DIRECTORY / SCRATCH_DIR_NAME).toString())
 
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         @OptIn(DelicateCoroutinesApi::class)
