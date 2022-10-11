@@ -3,6 +3,7 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.kmp.internal.utils.FileUtils
 import com.couchbase.lite.kmp.internal.utils.PlatformUtils
 import com.couchbase.lite.kmp.internal.utils.ZipUtils
+import com.udobny.kmp.test.IgnoreNative
 import kotlin.test.*
 
 class MigrationTest : BaseTest() {
@@ -21,6 +22,8 @@ class MigrationTest : BaseTest() {
         FileUtils.eraseFileOrDir(dbDir)
     }
 
+    // TODO: add logic for legacy 1.x blob to FLValue.asBlob() for native C
+    @IgnoreNative
     // TODO: 1.x DB's attachment is not automatically detected as blob
     // https://github.com/couchbase/couchbase-lite-android/issues/1237
     @Test

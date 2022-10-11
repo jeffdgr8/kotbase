@@ -179,7 +179,6 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
             wrapCBLError { error ->
                 CBLDatabase_DeleteDocument(actual, document.actual, error)
             }
-            document.database = null
         }
     }
 
