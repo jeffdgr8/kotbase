@@ -218,8 +218,9 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
             } catch (e: CouchbaseLiteException) {
                 if (e.getCode() != CBLError.Code.NOT_FOUND || e.getDomain() != CBLError.Domain.CBLITE || document.revisionID == null) {
                     throw e
-                } else false
+                }
             }
+            document.database = null
         }
     }
 

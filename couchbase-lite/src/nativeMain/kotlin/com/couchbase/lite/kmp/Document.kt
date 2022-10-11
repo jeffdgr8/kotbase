@@ -54,7 +54,7 @@ internal constructor(
         get() = CBLDocument_ID(actual).toKString()!!
 
     public actual val revisionID: String?
-        get() = CBLDocument_RevisionID(actual).toKString()
+        get() = if (dbContext.database != null) CBLDocument_RevisionID(actual).toKString() else null
 
     public actual val sequence: Long
         get() = CBLDocument_Sequence(actual).toLong()
