@@ -137,43 +137,57 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
         }
     }
 
-    private class ConflictHandlerWrapper(val db: Database, val conflictHandler: ConflictHandler)
+    private class ConflictHandlerWrapper(
+        val db: Database,
+        val handler: ConflictHandler,
+        var exception: Exception? = null
+    )
 
     private var conflictHandler: StableRef<ConflictHandlerWrapper>? = null
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
         return mustBeOpen {
-            wrapCBLError { error ->
-                try {
-                    this.conflictHandler = StableRef.create(
-                        ConflictHandlerWrapper(this, conflictHandler)
-                    )
+            val wrapper = ConflictHandlerWrapper(this, conflictHandler)
+            this.conflictHandler = StableRef.create(wrapper)
+            try {
+                wrapCBLError { error ->
                     CBLDatabase_SaveDocumentWithConflictHandler(
                         actual,
                         document.actual,
                         staticCFunction { ref, document, oldDocument ->
-                            val wrapper = ref.to<ConflictHandlerWrapper>()
-                            wrapper.conflictHandler(
-                                MutableDocument(document!!, wrapper.db),
-                                oldDocument?.asDocument(wrapper.db)
-                            )
+                            with(ref.to<ConflictHandlerWrapper>()) {
+                                try {
+                                    handler(
+                                        MutableDocument(document!!, db),
+                                        oldDocument?.asDocument(db)
+                                    )
+                                } catch (e: Exception) {
+                                    // save a reference, as Linux will propagate
+                                    // the error as an "unknown C++ exception"
+                                    exception = e
+                                    throw e
+                                }
+                            }
                         },
                         this.conflictHandler!!.asCPointer(),
                         error
-                    ).also {
-                        this.conflictHandler?.dispose()
-                        this.conflictHandler = null
+                    )
+                }.also { success ->
+                    if (success) {
                         document.database = this
                     }
-                } catch (e: Exception) {
-                    throw CouchbaseLiteException(
-                        "Conflict handler threw an exception",
-                        e,
-                        CBLError.Domain.CBLITE,
-                        CBLError.Code.CONFLICT
-                    )
                 }
+            } catch (e: Exception) {
+                throw CouchbaseLiteException(
+                    "Conflict handler threw an exception",
+                    wrapper.exception ?: e,
+                    CBLError.Domain.CBLITE,
+                    CBLError.Code.CONFLICT
+                )
+            } finally {
+                this.conflictHandler?.dispose()
+                this.conflictHandler = null
             }
         }
     }

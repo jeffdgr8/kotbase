@@ -252,7 +252,6 @@ class SaveConflictResolutionTest : BaseDbTest() {
             }
             fail("save should not succeed!")
         } catch (err: CouchbaseLiteException) {
-            // TODO: is UNEXPECTED_ERROR on Linux (correct on Windows)
             assertEquals(CBLError.Code.CONFLICT, err.getCode())
             assertEquals("freak out!", err.cause?.message)
         }
