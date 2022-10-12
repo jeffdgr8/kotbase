@@ -36,14 +36,13 @@ internal fun <T : Any> addListener(
     return Pair(index, stableRef.asCPointer())
 }
 
-internal fun <T : Any> removeListener(
-    listeners: MutableList<StableRef<T>?>,
-    index: Int
-) {
-    val stableRef = listeners[index]
-    stableRef?.dispose()
+internal fun <T : Any> removeListener(listeners: MutableList<StableRef<T>?>, index: Int): Boolean {
+    if (index > listeners.lastIndex) return false
+    val stableRef = listeners[index] ?: return false
+    stableRef.dispose()
     listeners[index] = null
     while (listeners.isNotEmpty() && listeners.last() == null) {
         listeners.removeLast()
     }
+    return true
 }

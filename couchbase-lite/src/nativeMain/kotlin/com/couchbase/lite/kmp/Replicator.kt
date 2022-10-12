@@ -120,12 +120,14 @@ internal constructor(
 
     public actual fun removeChangeListener(token: ListenerToken) {
         token as DelegatedListenerToken
-        CBLListener_Remove(token.actual)
-        when (token.type) {
+        val exists = when (token.type) {
             ListenerTokenType.REPLICATOR -> removeListener(changeListeners, token.index)
             ListenerTokenType.DOCUMENT_REPLICATION ->
                 removeListener(documentChangeListeners, token.index)
             else -> error("${token.type} change listener can't be removed from Replicator instance")
+        }
+        if (exists) {
+            CBLListener_Remove(token.actual)
         }
     }
 }

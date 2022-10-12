@@ -329,11 +329,13 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
 
     public actual fun removeChangeListener(token: ListenerToken) {
         token as DelegatedListenerToken
-        CBLListener_Remove(token.actual)
-        when (token.type) {
+        val exists = when (token.type) {
             ListenerTokenType.DATABASE -> removeListener(changeListeners, token.index)
             ListenerTokenType.DOCUMENT -> removeListener(documentChangeListeners, token.index)
             else -> error("${token.type} change listener can't be removed from Database instance")
+        }
+        if (exists) {
+            CBLListener_Remove(token.actual)
         }
     }
 
