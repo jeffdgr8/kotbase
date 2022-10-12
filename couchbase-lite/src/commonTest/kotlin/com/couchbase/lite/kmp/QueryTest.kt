@@ -1835,9 +1835,6 @@ class QueryTest : BaseQueryTest() {
         assertEquals(1, numRows)
     }
 
-    // TODO: iOS sets locale to NSLocale.currentLocale for unicode collations
-    //  https://forums.couchbase.com/t/unicode-collation-locale-null-or-device-locale/34103
-    @IgnoreApple
     @Test
     fun testGenerateJSONCollation() {
         val collations = arrayOf(

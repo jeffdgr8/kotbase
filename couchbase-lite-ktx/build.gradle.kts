@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_VARIABLE")
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
@@ -173,6 +174,10 @@ val javadocJar = tasks.register<Jar>("javadocJar") {
 
 publishing.publications.withType<MavenPublication> {
     artifact(javadocJar)
+}
+
+tasks.withType<KotlinNativeSimulatorTest> {
+    deviceId = "iPhone 14"
 }
 
 if (System.getProperty("os.name") == "Linux") {
