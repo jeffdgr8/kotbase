@@ -217,7 +217,6 @@ class SaveConflictResolutionTest : BaseDbTest() {
 
         // TODO: 3.1 API
         //val c4doc = baseTestDb.getDefaultCollection()?.getC4Document(docID)
-        // TODO: native C implement c4doc
         val c4doc = baseTestDb.getC4Document(docID)
         assertNotNull(c4doc)
         assertTrue(c4doc.isRevDeleted())
