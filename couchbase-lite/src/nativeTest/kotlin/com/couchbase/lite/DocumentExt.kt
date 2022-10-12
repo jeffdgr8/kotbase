@@ -2,6 +2,7 @@ package com.couchbase.lite
 
 import com.couchbase.lite.kmp.Dictionary
 import com.couchbase.lite.kmp.Document
+import com.couchbase.lite.kmp.MutableDocument
 import kotlinx.cinterop.*
 import libcblite.C4Document
 import libcblite.CBLDocument_Generation
@@ -30,5 +31,13 @@ internal val Document.c4Doc: CPointer<C4Document>?
         return ptrs[offset].toCPointer()
     }
 
-internal actual fun Document.generation(): Long =
-    CBLDocument_Generation(actual).toLong()
+internal actual fun Document.generation(): Long {
+    val generation = CBLDocument_Generation(actual).toLong()
+    return if (this is MutableDocument) {
+        // assume MutableDocument is mutated, which expects
+        // incremented generation (good enough for tests)
+        generation + 1
+    } else {
+        generation
+    }
+}

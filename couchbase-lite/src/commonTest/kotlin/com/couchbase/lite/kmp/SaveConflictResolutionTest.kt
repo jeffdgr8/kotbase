@@ -37,10 +37,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         var succeeded = baseTestDb.save(doc1b) { cur: MutableDocument, old: Document? ->
             assertEquals(doc1b, cur)
             assertEquals(doc1a, old)
-            println("cur.generation = ${cur.generation()}")
-            println("old.generation = ${old?.generation()}")
-            // TODO: native C expected 2, actual 1 (isMutated increments generation by 1)
-            //assertEquals(2L, cur.generation())
+            assertEquals(2L, cur.generation())
             assertEquals(2L, old?.generation())
             true
         }
@@ -63,10 +60,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         succeeded = baseTestDb.save(doc1d) { cur: MutableDocument, old: Document? ->
             assertEquals(doc1d, cur)
             assertEquals(doc1c, old)
-            println("cur.generation = ${cur.generation()}")
-            println("old.generation = ${old?.generation()}")
-            // TODO: native C expected 4, actual 3 (isMutated increments generation by 1)
-            //assertEquals(4L, cur.generation())
+            assertEquals(4L, cur.generation())
             assertEquals(4L, old?.generation())
             cur.setString("artist", "Sheep Jones")
             true
@@ -288,10 +282,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
             count++
             val doc1c = baseTestDb.getNonNullDoc(docID).toMutable()
             if (!doc1c.getBoolean("second update")) {
-                println("cur.generation = ${cur.generation()}")
-                println("old.generation = ${old?.generation()}")
-                // TODO: native C expected 2, actual 1 (isMutated increments generation by 1)
-                //assertEquals(2L, cur.generation())
+                assertEquals(2L, cur.generation())
                 assertEquals(2L, old?.generation())
                 doc1c.setBoolean("second update", true)
                 assertEquals(3L, saveDocInBaseTestDb(doc1c).generation())
