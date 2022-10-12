@@ -32,7 +32,6 @@ internal constructor(
         }!!,
         false
     ) {
-        // TODO: make sure this is called after it's retained for the second time
         FLDict_Release(actual)
     }
 

@@ -39,7 +39,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
             assertEquals(doc1a, old)
             println("cur.generation = ${cur.generation()}")
             println("old.generation = ${old?.generation()}")
-            // TODO: native expected 2, actual 1 (isMutated increments generation by 1)
+            // TODO: native C expected 2, actual 1 (isMutated increments generation by 1)
             //assertEquals(2L, cur.generation())
             assertEquals(2L, old?.generation())
             true
@@ -65,7 +65,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
             assertEquals(doc1c, old)
             println("cur.generation = ${cur.generation()}")
             println("old.generation = ${old?.generation()}")
-            // TODO: native expected 4, actual 3 (isMutated increments generation by 1)
+            // TODO: native C expected 4, actual 3 (isMutated increments generation by 1)
             //assertEquals(4L, cur.generation())
             assertEquals(4L, old?.generation())
             cur.setString("artist", "Sheep Jones")
@@ -217,7 +217,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
 
         // TODO: 3.1 API
         //val c4doc = baseTestDb.getDefaultCollection()?.getC4Document(docID)
-        // TODO: native implement c4doc
+        // TODO: native C implement c4doc
         val c4doc = baseTestDb.getC4Document(docID)
         assertNotNull(c4doc)
         assertTrue(c4doc.isRevDeleted())
@@ -291,7 +291,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
             if (!doc1c.getBoolean("second update")) {
                 println("cur.generation = ${cur.generation()}")
                 println("old.generation = ${old?.generation()}")
-                // TODO: native expected 2, actual 1 (isMutated increments generation by 1)
+                // TODO: native C expected 2, actual 1 (isMutated increments generation by 1)
                 //assertEquals(2L, cur.generation())
                 assertEquals(2L, old?.generation())
                 doc1c.setBoolean("second update", true)

@@ -44,7 +44,7 @@ internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? {
     }
 }
 
-// TODO: implement native C4Document
+// TODO: implement native C C4Document
 
 internal actual fun Database.getC4Document(id: String): C4Document {
     return C4Document()
