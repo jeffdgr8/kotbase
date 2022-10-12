@@ -615,7 +615,7 @@ class DatabaseTest : BaseDbTest() {
         doc.setValue("key1", "value")
     }
 
-    // TODO: CBLDatabase_GetBlob() returns null after database is deleted for native C
+    // CBLDatabase_GetBlob() returns null after database is deleted for native C
     @IgnoreNative
     @Test
     fun testDeleteThenAccessBlob() {
