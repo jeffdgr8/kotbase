@@ -1193,6 +1193,8 @@ class DatabaseTest : BaseDbTest() {
     }
 
     // TODO: doc1b sequence goes from 1 to 3 after deletion (expecting 2) for native C
+    //  https://forums.couchbase.com/t/cbl-c-sdk-kotlin-multiplatform-feedback-questions/34649
+    //  https://issues.couchbase.com/browse/CBL-3749
     @IgnoreNative
     @Test
     fun testDeleteAlreadyDeletedDoc() {
