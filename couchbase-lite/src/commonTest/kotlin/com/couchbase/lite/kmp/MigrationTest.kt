@@ -22,10 +22,8 @@ class MigrationTest : BaseTest() {
         FileUtils.eraseFileOrDir(dbDir)
     }
 
-    // TODO: add logic for legacy 1.x blob to FLValue.asBlob() for native C
+    // Native C doesn't support legacy 1.x blob
     @IgnoreNative
-    // TODO: 1.x DB's attachment is not automatically detected as blob
-    // https://github.com/couchbase/couchbase-lite-android/issues/1237
     @Test
     @Throws(Exception::class)
     fun testOpenExistingDBv1x() {
