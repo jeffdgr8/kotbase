@@ -64,7 +64,6 @@ kotlin {
             version = cblVersion
             // use local build
             //source = path("$rootDir/../couchbase-lite-ios")
-            moduleName = "CouchbaseLite"
             // Workaround for 'CBLQueryMeta' is going to be declared twice
             // https://youtrack.jetbrains.com/issue/KT-41709
             extraOpts = listOf("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")
@@ -145,9 +144,6 @@ kotlin {
             dependsOn(jvmCommonMain)
             dependencies {
                 api("com.couchbase.lite:couchbase-lite-android:$cblVersion")
-                // use local build
-                //api("com.couchbase.lite:couchbase-lite-android:3.1.0-SNAPSHOT")
-                //api(fileTree("libs/couchbase-lite"))
             }
         }
         val androidTest by getting {

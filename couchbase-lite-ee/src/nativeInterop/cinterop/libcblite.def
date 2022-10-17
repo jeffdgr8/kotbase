@@ -1,0 +1,5 @@
+headers = cbl/CouchbaseLite.h
+headerFilter = cbl/* fleece/*
+noStringConversion = FLStr
+
+staticLibraries.mingw_x64 = cblite.lib
