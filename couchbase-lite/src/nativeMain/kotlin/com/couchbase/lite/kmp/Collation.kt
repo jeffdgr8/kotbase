@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
-public actual open class Collation(private val isUnicode: Boolean) {
+public actual open class Collation
+internal constructor(private val isUnicode: Boolean) {
 
     protected var locale: String? = null
     protected var ignAccents: Boolean = false

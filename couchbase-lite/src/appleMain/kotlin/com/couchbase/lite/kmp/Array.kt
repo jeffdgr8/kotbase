@@ -8,8 +8,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 
 public actual open class Array
-internal constructor(actual: CBLArray) :
-    DelegatedClass<CBLArray>(actual), Iterable<Any?> {
+internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Iterable<Any?> {
 
     public actual fun toMutable(): MutableArray =
         MutableArray(actual.toMutable())

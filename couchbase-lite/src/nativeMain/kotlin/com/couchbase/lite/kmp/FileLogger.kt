@@ -8,7 +8,7 @@ import libcblite.CBL_LogMessage
 import okio.FileSystem
 import okio.Path.Companion.toPath
 
-public actual class FileLogger : Logger {
+public actual class FileLogger internal constructor() : Logger {
 
     public actual var config: LogFileConfiguration? = null
         set(value) {

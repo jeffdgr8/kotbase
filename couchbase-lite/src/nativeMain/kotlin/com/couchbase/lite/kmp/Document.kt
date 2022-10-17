@@ -155,9 +155,9 @@ internal constructor(
 
     override fun toString(): String {
         val buf = StringBuilder("Document{").append(super.toString())
-                .append(id).append('@').append(revisionID)
-                .append('(').append(if (isMutable) '+' else '.')
-                //.append(if (isDeleted) '?' else '.').append("):")
+            .append(id).append('@').append(revisionID)
+            .append('(').append(if (isMutable) '+' else '.')
+        //    .append(if (isDeleted) '?' else '.').append("):")
         var first = true
         for (key in keys) {
             if (first) {

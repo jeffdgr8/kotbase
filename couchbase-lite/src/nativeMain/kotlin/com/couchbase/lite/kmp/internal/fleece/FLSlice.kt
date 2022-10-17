@@ -32,7 +32,7 @@ internal fun ByteArray.toFLSlice(): CValue<FLSlice> {
     return cValue {
         size = this@toFLSlice.size.convert()
         buf = malloc(size)
-        if (size > 0U)  {
+        if (size > 0U) {
             memcpy(buf, this@toFLSlice.refTo(0), size)
         }
     }

@@ -1,6 +1,7 @@
 package com.couchbase.lite.kmp
 
-public actual open class DataSource(
+public actual open class DataSource
+internal constructor(
     internal val source: Database,
     private val alias: String? = null
 ) {

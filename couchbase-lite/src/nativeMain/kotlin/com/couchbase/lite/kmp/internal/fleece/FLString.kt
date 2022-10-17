@@ -7,7 +7,6 @@ import libcblite.FLStr
 import libcblite.FLString
 import libcblite.FLStringResult
 import platform.posix.strdup
-import platform.posix.strlen
 
 internal fun FLString.toKString(): String? =
     buf?.toByteArray(size.toInt())?.decodeToString()

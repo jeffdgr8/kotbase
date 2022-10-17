@@ -7,7 +7,7 @@ import libcblite.CBLLog_ConsoleLevel
 import libcblite.CBLLog_SetConsoleLevel
 import platform.posix.pthread_self
 
-public actual class ConsoleLogger : Logger {
+public actual class ConsoleLogger internal constructor() : Logger {
 
     public actual var domains: Set<LogDomain> = LogDomain.ALL_DOMAINS
 

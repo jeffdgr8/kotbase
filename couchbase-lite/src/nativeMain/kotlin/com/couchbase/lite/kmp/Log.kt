@@ -4,7 +4,7 @@ import com.couchbase.lite.kmp.internal.fleece.toKString
 import kotlinx.cinterop.staticCFunction
 import libcblite.*
 
-public actual class Log {
+public actual class Log internal constructor() {
 
     public actual val console: ConsoleLogger by lazy {
         ConsoleLogger()

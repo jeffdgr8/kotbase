@@ -19,7 +19,9 @@ internal constructor(public actual var directory: String) {
     )
 
     internal constructor(actual: CValue<CBLDatabaseConfiguration>) : this(
-        actual.useContents { directory.toKString()!!.dropLastWhile { it == Path.DIRECTORY_SEPARATOR.first() } }
+        actual.useContents {
+            directory.toKString()!!.dropLastWhile { it == Path.DIRECTORY_SEPARATOR.first() }
+        }
     )
 
     public actual fun setDirectory(directory: String): DatabaseConfiguration {

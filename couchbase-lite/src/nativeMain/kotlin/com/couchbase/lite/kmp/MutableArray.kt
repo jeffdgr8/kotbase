@@ -55,7 +55,7 @@ internal constructor(
         // invalid type error expected to supersede index out of bounds
         when (value) {
             is Boolean, is ByteArray, is Blob, is String, is Instant, is Number,
-            is List<*>, is Array, is Map<*, *>, is Dictionary, null -> {}
+            is List<*>, is Array, is Map<*, *>, is Dictionary, null -> Unit
             else -> invalidTypeError(value)
         }
         checkIndex(index)
