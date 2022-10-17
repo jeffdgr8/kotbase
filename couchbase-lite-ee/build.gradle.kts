@@ -111,7 +111,7 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
-            kotlin.srcDir("src/$name/base")
+            kotlin.srcDir("src/$name/ee")
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
@@ -129,7 +129,7 @@ kotlin {
         }
 
         val jvmCommonMain by creating {
-            kotlin.srcDir("src/$name/base")
+            kotlin.srcDir("src/$name/ee")
             dependsOn(commonMain)
             dependencies {
                 compileOnly("com.couchbase.lite:couchbase-lite-java-ee:$cblVersion")
@@ -139,7 +139,7 @@ kotlin {
             dependsOn(commonTest)
         }
         val androidMain by getting {
-            kotlin.srcDir("src/$name/base")
+            kotlin.srcDir("src/$name/ee")
             dependsOn(jvmCommonMain)
             dependencies {
                 api("com.couchbase.lite:couchbase-lite-android-ee:$cblVersion")
@@ -159,7 +159,7 @@ kotlin {
             }
         }
         val jvmMain by getting {
-            kotlin.srcDir("src/$name/base")
+            kotlin.srcDir("src/$name/ee")
             dependsOn(jvmCommonMain)
             dependencies {
                 api("com.couchbase.lite:couchbase-lite-java-ee:$cblVersion")
@@ -170,7 +170,7 @@ kotlin {
         }
 
         val nativeCommonMain by creating {
-            kotlin.srcDir("src/$name/base")
+            kotlin.srcDir("src/$name/ee")
             dependsOn(commonMain)
         }
         val nativeCommonTest by creating {
@@ -181,7 +181,7 @@ kotlin {
         }
 
         val appleMain by creating {
-            kotlin.srcDir("src/$name/base")
+            kotlin.srcDir("src/$name/ee")
             dependsOn(nativeCommonMain)
         }
         val appleTest by creating {
@@ -216,7 +216,7 @@ kotlin {
         }
 
         val nativeMain by creating {
-            kotlin.srcDir("src/$name/base")
+            kotlin.srcDir("src/$name/ee")
             dependsOn(nativeCommonMain)
         }
         val nativeTest by creating {
