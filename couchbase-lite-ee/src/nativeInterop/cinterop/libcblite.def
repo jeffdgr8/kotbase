@@ -3,3 +3,53 @@ headerFilter = cbl/* fleece/*
 noStringConversion = FLStr
 
 staticLibraries.mingw_x64 = cblite.lib
+
+---
+
+typedef uint32_t C4DocumentFlags; enum {
+    kDocDeleted         = 0x01,
+    kDocConflicted      = 0x02,
+    kDocHasAttachments  = 0x04,
+    kDocExists          = 0x1000
+};
+
+typedef uint8_t C4RevisionFlags; enum {
+    kRevDeleted        = 0x01,
+    kRevLeaf           = 0x02,
+    kRevNew            = 0x04,
+    kRevHasAttachments = 0x08,
+    kRevKeepBody       = 0x10,
+    kRevIsConflict     = 0x20,
+    kRevClosed         = 0x40,
+    kRevPurged         = 0x80
+};
+
+typedef struct C4Revision {
+    FLSlice revID;
+    C4RevisionFlags flags;
+    uint64_t sequence;
+} C4Revision;
+
+typedef struct C4ExtraInfo {
+    void* pointer;
+    void (* destructor)(void *ptr);
+} C4ExtraInfo;
+
+typedef struct C4Document {
+    void* _internal1;
+    void* _internal2;
+
+    C4DocumentFlags flags;
+    FLSlice docID;
+    FLSlice revID;
+    uint64_t sequence;
+
+    C4Revision selectedRev;
+
+    C4ExtraInfo extraInfo;
+} C4Document;
+
+// TODO: have this private API added to cblite C SDK to simplify this
+//bool CBLDocument_Exists(const CBLDocument* doc);
+
+unsigned CBLDocument_Generation(const CBLDocument*);
