@@ -1,8 +1,11 @@
 @file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.*
+import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.kotlin.gradle.tasks.DefFileTask
 import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
@@ -121,6 +124,7 @@ kotlin {
             }
         }
         val commonTest by getting {
+            kotlin.srcDir("src/$name/ee")
             dependencies {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
@@ -296,6 +300,98 @@ tasks.withType<KotlinNativeSimulatorTest> {
     deviceId = "iPhone 14"
 }
 
+// Internal headers required for tests
+tasks.named<DefFileTask>("generateDefCouchbaseLite") {
+    doLast {
+        // TODO: remove above --- and append, pending
+        //  https://github.com/JetBrains/kotlin/pull/4894 in Kotlin 1.8
+        //outputFile.appendText("""
+        outputFile.writeText(
+            """
+            language = Objective-C
+            headers = CouchbaseLite/CouchbaseLite.h
+            headerFilter = CouchbaseLite/**
+
+            ---
+
+            typedef struct FLSlice {
+                const void* buf;
+                size_t size;
+            } FLSlice;
+
+            typedef uint32_t C4DocumentFlags; enum {
+                kDocDeleted         = 0x01,
+                kDocConflicted      = 0x02,
+                kDocHasAttachments  = 0x04,
+                kDocExists          = 0x1000
+            };
+
+            typedef uint8_t C4RevisionFlags; enum {
+                kRevDeleted        = 0x01,
+                kRevLeaf           = 0x02,
+                kRevNew            = 0x04,
+                kRevHasAttachments = 0x08,
+                kRevKeepBody       = 0x10,
+                kRevIsConflict     = 0x20,
+                kRevClosed         = 0x40,
+                kRevPurged         = 0x80
+            };
+
+            typedef struct C4Revision {
+                FLSlice revID;
+                C4RevisionFlags flags;
+                uint64_t sequence;
+            } C4Revision;
+
+            typedef struct C4ExtraInfo {
+                void* pointer;
+                void (* destructor)(void *ptr);
+            } C4ExtraInfo;
+
+            typedef struct C4Document {
+                void* _internal1;
+                void* _internal2;
+
+                C4DocumentFlags flags;
+                FLSlice docID;
+                FLSlice revID;
+                uint64_t sequence;
+
+                C4Revision selectedRev;
+
+                C4ExtraInfo extraInfo;
+            } C4Document;
+
+            @interface CBLC4Document : NSObject
+            @property (readonly, nonatomic) C4Document* rawDoc;
+            @property (readonly, nonatomic) C4RevisionFlags revFlags;
+            @end
+
+            @interface CBLDocument ()
+            @property (atomic, nullable) CBLC4Document* c4Doc;
+            @property (nonatomic, readonly) NSUInteger generation;
+            - (nullable instancetype) initWithDatabase: (CBLDatabase*)database
+                                            documentID: (NSString*)documentID
+                                        includeDeleted: (BOOL)includeDeleted
+                                                 error: (NSError**)outError;
+            @end
+
+            @interface CBLDatabase ()
+            - (BOOL) isClosed;
+            @end
+
+            @interface CBLQueryExpression ()
+            - (id) asJSON;
+            @end
+
+            @interface CBLQueryCollation ()
+            - (id) asJSON;
+            @end
+        """.trimIndent()
+        )
+    }
+}
+
 if (System.getProperty("os.name") == "Linux") {
     tasks.withType<Test> {
         environment("LD_LIBRARY_PATH", "\$LD_LIBRARY_PATH:$projectDir/libs/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu")
@@ -304,11 +400,8 @@ if (System.getProperty("os.name") == "Linux") {
 
 tasks.withType<AbstractTestTask> {
     testLogging {
-        events(
-            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-        )
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        events(FAILED, PASSED)
+        exceptionFormat = FULL
         showExceptions = true
         showCauses = true
         showStackTraces = true

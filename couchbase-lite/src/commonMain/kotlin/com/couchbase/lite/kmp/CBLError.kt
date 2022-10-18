@@ -116,6 +116,9 @@ object CBLError {
          */
         const val UNSUPPORTED = 19
 
+        /**
+         * File is not a database  or encryption key is wrong
+         */
         const val NOT_A_DATABASE_FILE = 20
 
         /**
