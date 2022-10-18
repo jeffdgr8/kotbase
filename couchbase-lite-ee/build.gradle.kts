@@ -114,6 +114,11 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
+            // "Two modules in a project cannot share the same content root"
+            // symlinking common source from ce module as workaround
+            // Windows requires developer mode and git core.symlinks = true
+            // https://youtrack.jetbrains.com/issue/IDEA-210311
+            // https://youtrack.jetbrains.com/issue/IDEABKL-6745
             kotlin.srcDir("src/$name/ee")
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
