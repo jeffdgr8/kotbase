@@ -65,8 +65,9 @@ public actual class ReplicatorConfiguration actual constructor(
         isAutoPurgeEnabled = config.isAutoPurgeEnabled
     }
 
-    internal fun getActual(): CPointer<CBLReplicatorConfiguration> {
-        return memory.arena.alloc<CBLReplicatorConfiguration>().also {
+    internal val actual: CPointer<CBLReplicatorConfiguration> by lazy {
+        readonly = true
+        memory.arena.alloc<CBLReplicatorConfiguration>().also {
             it.authenticator = authenticator?.actual
             it.channels = channels?.toFLArray()?.retain()
             it.conflictResolver = nativeConflictResolver()
@@ -93,36 +94,39 @@ public actual class ReplicatorConfiguration actual constructor(
         }.ptr
     }
 
-    private fun nativeConflictResolver(): CBLConflictResolver {
+    private fun nativeConflictResolver(): CBLConflictResolver? {
+        if (conflictResolver == null) return null
         return staticCFunction { ref, documentId, localDocument, remoteDocument ->
             val config = ref.to<ReplicatorConfiguration>()
-            config.conflictResolver?.invoke(
+            config.conflictResolver!!.invoke(
                 Conflict(
                     documentId.toKString()!!,
                     localDocument?.asDocument(config.database),
                     remoteDocument?.asDocument(config.database)
                 )
-            )?.actual
+            ).actual
         }
     }
 
-    private fun nativePullFilter(): CBLReplicationFilter {
+    private fun nativePullFilter(): CBLReplicationFilter? {
+        if (pullFilter == null) return null
         return staticCFunction { ref, document, flags ->
             val config = ref.to<ReplicatorConfiguration>()
-            config.pullFilter?.invoke(
+            config.pullFilter!!.invoke(
                 Document(document!!, config.database),
                 flags.toDocumentFlags()
-            ) ?: true
+            )
         }
     }
 
-    private fun nativePushFilter(): CBLReplicationFilter {
+    private fun nativePushFilter(): CBLReplicationFilter? {
+        if (pushFilter == null) return null
         return staticCFunction { ref, document, flags ->
             val config = ref.to<ReplicatorConfiguration>()
-            config.pushFilter?.invoke(
+            config.pushFilter!!.invoke(
                 Document(document!!, config.database),
                 flags.toDocumentFlags()
-            ) ?: true
+            )
         }
     }
 
@@ -197,30 +201,92 @@ public actual class ReplicatorConfiguration actual constructor(
     }
 
     public actual var authenticator: Authenticator? = null
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var channels: List<String>? = null
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var conflictResolver: ConflictResolver? = null
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var isContinuous: Boolean = false
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var documentIDs: List<String>? = null
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var headers: Map<String, String>? = null
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var pinnedServerCertificate: ByteArray? = null
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var pullFilter: ReplicationFilter? = null
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var pushFilter: ReplicationFilter? = null
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var type: ReplicatorType = ReplicatorType.PUSH_AND_PULL
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var maxAttempts: Int = 0
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var maxAttemptWaitTime: Int = 0
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var heartbeat: Int = 0
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
 
     public actual var isAutoPurgeEnabled: Boolean = true
+        set(value) {
+            checkReadOnly()
+            field = value
+        }
+
+    private var readonly: Boolean = false
+
+    private fun checkReadOnly() {
+        if (readonly) throw IllegalStateException("DatabaseConfiguration is readonly mode.")
+    }
 }

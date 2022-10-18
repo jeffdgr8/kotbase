@@ -16,7 +16,10 @@ import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual class Database
-internal constructor(internal val actual: CPointer<CBLDatabase>) {
+internal constructor(
+    internal val actual: CPointer<CBLDatabase>,
+    public actual val config: DatabaseConfiguration
+) {
 
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
@@ -33,7 +36,7 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
     public actual constructor(name: String, config: DatabaseConfiguration) : this(
         try {
             wrapCBLError { error ->
-                CBLDatabase_Open(name.toFLString(), config.getActual(), error)!!
+                CBLDatabase_Open(name.toFLString(), config.actual, error)!!
             }
         } catch (e: CouchbaseLiteException) {
             if (e.getCode() == CBLError.Code.INVALID_PARAMETER && e.getDomain() == CBLError.Domain.CBLITE) {
@@ -41,6 +44,9 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
             } else {
                 throw e
             }
+        },
+        config.also {
+            it.readonly = true
         }
     )
 
@@ -71,7 +77,7 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
         @Throws(CouchbaseLiteException::class)
         public actual fun copy(path: String, name: String, config: DatabaseConfiguration?) {
             wrapCBLError { error ->
-                CBL_CopyDatabase(path.toFLString(), name.toFLString(), config?.getActual(), error)
+                CBL_CopyDatabase(path.toFLString(), name.toFLString(), config?.actual, error)
             }
         }
     }
@@ -84,9 +90,6 @@ internal constructor(internal val actual: CPointer<CBLDatabase>) {
 
     public actual val count: Long
         get() = CBLDatabase_Count(actual).toLong()
-
-    public actual val config: DatabaseConfiguration
-        get() = DatabaseConfiguration(CBLDatabase_Config(actual))
 
     public actual fun getDocument(id: String): Document? {
         return mustBeOpen {

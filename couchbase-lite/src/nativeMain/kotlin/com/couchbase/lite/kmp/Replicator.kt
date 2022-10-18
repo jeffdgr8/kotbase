@@ -24,7 +24,7 @@ internal constructor(
 
     public actual constructor(config: ReplicatorConfiguration) : this(
         wrapCBLError { error ->
-            CBLReplicator_Create(config.getActual(), error)!!
+            CBLReplicator_Create(config.actual, error)!!
         },
         config
     )
