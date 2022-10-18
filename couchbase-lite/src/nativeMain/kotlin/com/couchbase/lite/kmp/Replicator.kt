@@ -13,7 +13,7 @@ import kotlin.native.internal.createCleaner
 public actual class Replicator
 internal constructor(
     internal val actual: CPointer<CBLReplicator>,
-    public actual val config: ReplicatorConfiguration
+    private val _config: ReplicatorConfiguration
 ) {
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -42,6 +42,9 @@ internal constructor(
     public actual fun stop() {
         CBLReplicator_Stop(actual)
     }
+
+    public actual val config: ReplicatorConfiguration
+        get() = ReplicatorConfiguration(_config)
 
     public actual val status: ReplicatorStatus
         get() = ReplicatorStatus(CBLReplicator_Status(actual))

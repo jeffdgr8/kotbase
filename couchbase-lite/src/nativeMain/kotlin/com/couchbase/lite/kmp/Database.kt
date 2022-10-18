@@ -18,7 +18,7 @@ import kotlin.native.internal.createCleaner
 public actual class Database
 internal constructor(
     internal val actual: CPointer<CBLDatabase>,
-    public actual val config: DatabaseConfiguration
+    private val _config: DatabaseConfiguration
 ) {
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -90,6 +90,9 @@ internal constructor(
 
     public actual val count: Long
         get() = CBLDatabase_Count(actual).toLong()
+
+    public actual val config: DatabaseConfiguration
+        get() = DatabaseConfiguration(_config)
 
     public actual fun getDocument(id: String): Document? {
         return mustBeOpen {
