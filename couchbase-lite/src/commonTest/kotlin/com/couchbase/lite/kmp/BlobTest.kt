@@ -209,7 +209,7 @@ class BlobTest : BaseDbTest() {
             val content = blob.content
             assertContentEquals(content, bytes)
 
-            assertThrows(IllegalArgumentException::class) {
+            assertThrows<IllegalArgumentException> {
                 Blob(contentType, "http://java.sun.com")
             }
         } finally {

@@ -6,7 +6,7 @@ package com.couchbase.lite.kmp
 //import com.couchbase.lite.internal.core.CBLVersion
 //import com.couchbase.lite.internal.core.impl.NativeC4Log
 //import com.couchbase.lite.internal.support.Log
-import com.couchbase.lite.kmp.internal.utils.TestUtils
+import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrows
 import com.couchbase.lite.reset
 import com.udobny.kmp.test.AfterClass
 import com.udobny.kmp.use
@@ -415,11 +415,9 @@ class LogTest : BaseDbTest() {
     @Test
     fun testEditReadOnlyLogFileConfiguration() {
         testWithConfiguration(LogLevel.DEBUG, LogFileConfiguration(scratchDirPath!!)) {
-            TestUtils.assertThrows(IllegalStateException::class) { Database.log.file.config!!.maxSize = 1024 }
-            TestUtils.assertThrows(IllegalStateException::class) { Database.log.file.config!!.maxRotateCount = 3 }
-            TestUtils.assertThrows(IllegalStateException::class) {
-                Database.log.file.config!!.setUsePlaintext(true)
-            }
+            assertThrows<IllegalStateException> { Database.log.file.config!!.maxSize = 1024 }
+            assertThrows<IllegalStateException> { Database.log.file.config!!.maxRotateCount = 3 }
+            assertThrows<IllegalStateException> { Database.log.file.config!!.setUsePlaintext(true) }
         }
     }
 

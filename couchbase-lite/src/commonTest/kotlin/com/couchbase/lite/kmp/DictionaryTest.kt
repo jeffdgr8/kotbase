@@ -671,7 +671,7 @@ class DictionaryTest : BaseDbTest() {
         assertNull(array.getArray(2))
         assertNotNull(array.getArray(3))
 
-        assertThrows(IndexOutOfBoundsException::class) {
+        assertThrows<IndexOutOfBoundsException> {
             assertNull(array.getArray(4))
         }
 
