@@ -11,3 +11,10 @@ package com.couchbase.lite.kmp
 @Throws(CouchbaseLiteException::class)
 public expect fun Database.changeEncryptionKey(encryptionKey: EncryptionKey?)
 
+/**
+ * **ENTERPRISE EDITION API**
+ *
+ * The predictive model manager for registering and unregistering predictive models.
+ * This is part of the Public API.
+ */
+public expect val Database.Companion.prediction: Prediction

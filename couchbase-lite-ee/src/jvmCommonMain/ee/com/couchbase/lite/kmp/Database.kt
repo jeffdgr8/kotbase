@@ -4,3 +4,8 @@ package com.couchbase.lite.kmp
 public actual fun Database.changeEncryptionKey(encryptionKey: EncryptionKey?) {
     actual.changeEncryptionKey(encryptionKey)
 }
+
+public actual val Database.Companion.prediction: Prediction
+    get() = staticPrediction
+
+private val staticPrediction by lazy { Prediction(com.couchbase.lite.Database.prediction) }

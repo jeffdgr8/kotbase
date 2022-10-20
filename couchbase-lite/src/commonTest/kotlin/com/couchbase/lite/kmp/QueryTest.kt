@@ -5,7 +5,6 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.asJSON
 import com.couchbase.lite.kmp.internal.utils.Report
 import com.couchbase.lite.kmp.internal.utils.paddedString
-import com.udobny.kmp.test.IgnoreApple
 import com.udobny.kmp.use
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.TimeoutCancellationException

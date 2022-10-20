@@ -2,6 +2,7 @@ package com.couchbase.lite.kmp
 
 /**
  * IndexBuilder used for building database index objects.
+ * Use Database.createIndex(IndexConfiguration, String)
  */
 public expect object IndexBuilder {
 

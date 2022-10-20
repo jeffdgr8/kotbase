@@ -5,7 +5,19 @@ import kotlin.test.assertEquals
 
 fun assertIntContentEquals(expected: Array<Int?>?, actual: Array<Any?>?, message: String? = null) {
     @Suppress("UNCHECKED_CAST")
-    assertContentEquals(expected as Array<Any?>, actual?.map { it?.longToInt() }?.toTypedArray(), message)
+    assertContentEquals(
+        expected as Array<Any?>,
+        actual?.map { it?.longToInt() }?.toTypedArray(),
+        message
+    )
+}
+
+fun assertIntContentEquals(
+    expected: Iterable<Int?>?,
+    actual: Iterable<Any?>?,
+    message: String? = null
+) {
+    assertContentEquals(expected, actual?.map { it?.longToInt() }, message)
 }
 
 fun assertIntEquals(expected: Any?, actual: Any?, message: String? = null) {

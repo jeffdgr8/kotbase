@@ -8,6 +8,12 @@ import kotlin.test.fail
 
 object TestUtils {
 
+    inline fun <reified T : Exception> assertThrows(
+        noinline test: () -> Unit
+    ) {
+        assertThrows(T::class, test)
+    }
+
     fun <T : Exception> assertThrows(
         ex: KClass<T>,
         test: () -> Unit
