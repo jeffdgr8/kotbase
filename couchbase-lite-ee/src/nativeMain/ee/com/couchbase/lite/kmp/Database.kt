@@ -9,3 +9,9 @@ public actual fun Database.changeEncryptionKey(encryptionKey: EncryptionKey?) {
         CBLDatabase_ChangeEncryptionKey(actual, encryptionKey?.actual, error)
     }
 }
+
+public actual val Database.Companion.prediction: Prediction
+    get() = predictiveQueryUnsupported()
+
+internal inline fun predictiveQueryUnsupported(): Nothing =
+    throw UnsupportedOperationException("Predictive queries are not supported in CBL C SDK")

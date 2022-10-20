@@ -3,10 +3,13 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrowsCBL
 import com.udobny.kmp.ext.nowMillis
 import com.udobny.kmp.ext.toStringMillis
+import com.udobny.kmp.test.IgnoreNative
 import com.udobny.kmp.test.assertIntContentEquals
 import kotlinx.datetime.Clock
 import kotlin.test.*
 
+// predictive queries not supported in CBL C SDK
+@IgnoreNative
 class PredictiveQueryTest : BaseQueryTest() {
 
     @BeforeTest
