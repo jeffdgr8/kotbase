@@ -14,7 +14,7 @@ import kotlin.time.Duration.Companion.seconds
 abstract class BaseReplicatorTest : BaseDbTest() {
 
     protected var baseTestReplicator: Replicator? = null
-    protected var otherDB: Database? = null
+    protected lateinit var otherDB: Database
 
     @BeforeTest
     fun setUpBaseReplicatorTest() {
@@ -23,6 +23,8 @@ abstract class BaseReplicatorTest : BaseDbTest() {
 
     @AfterTest
     fun tearDownBaseReplicatorTest() {
+        otherDB.close()
+        baseTestDb.close()
         deleteDb(otherDB)
     }
 
@@ -81,7 +83,7 @@ abstract class BaseReplicatorTest : BaseDbTest() {
     ): Replicator =
         run(testReplicator(config), expectedErrorCode, expectedErrorDomain, reset, onReady)
 
-    private fun run(
+    protected fun run(
         repl: Replicator,
         expectedErrorCode: Int = 0,
         expectedErrorDomain: String? = null,

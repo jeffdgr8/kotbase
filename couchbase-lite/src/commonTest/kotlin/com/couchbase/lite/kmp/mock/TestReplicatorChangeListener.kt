@@ -35,11 +35,15 @@ class TestReplicatorChangeListener : ReplicatorChangeListener {
 
         this.error = error
 
-        when (state) {
-            ReplicatorActivityLevel.OFFLINE,
-            ReplicatorActivityLevel.STOPPED,
-            ReplicatorActivityLevel.IDLE -> mutex.unlock()
-            else -> {}
+        if (change.replicator.config.isContinuous
+            && status.activityLevel == ReplicatorActivityLevel.IDLE
+            && status.progress.completed == status.progress.total
+        ) {
+            change.replicator.stop()
+        }
+
+        if (status.activityLevel == ReplicatorActivityLevel.STOPPED) {
+            mutex.unlock()
         }
     }
 }
