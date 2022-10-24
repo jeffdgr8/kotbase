@@ -373,11 +373,11 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun close() {
-        wrapCBLError { error ->
-            withLock {
-                isClosed = true
+        withLock {
+            wrapCBLError { error ->
                 CBLDatabase_Close(actual, error)
             }
+            isClosed = true
         }
     }
 

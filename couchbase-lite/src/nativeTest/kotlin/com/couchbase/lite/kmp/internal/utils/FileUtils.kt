@@ -17,9 +17,8 @@ actual object FileUtils {
 
     actual fun listFiles(dir: String): List<String> {
         try {
-            val files = FileSystem.SYSTEM.list(dir.toPath())
-            val prefix = if (dir.endsWith('/')) dir else "$dir/"
-            return files.map { prefix + it.toString() }
+            return FileSystem.SYSTEM.list(dir.toPath())
+                .map { it.toString() }
         } catch (e: Exception) {
             throw IOException(e.message, e)
         }

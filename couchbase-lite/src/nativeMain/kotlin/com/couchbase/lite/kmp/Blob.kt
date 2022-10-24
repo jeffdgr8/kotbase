@@ -51,7 +51,7 @@ internal constructor(
 
     // TODO: stream data (requires db reference, so not feasible without triggering blob creation from document save)
     public actual constructor(contentType: String, stream: Source) :
-            this(contentType, stream.buffer().readByteArray())
+            this(contentType, stream.buffer().use { it.readByteArray() })
 
     @Throws(IOException::class)
     public actual constructor(contentType: String, fileURL: String) : this(
