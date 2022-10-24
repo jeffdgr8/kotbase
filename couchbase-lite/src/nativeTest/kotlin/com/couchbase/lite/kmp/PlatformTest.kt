@@ -2,7 +2,6 @@ package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.utils.FileUtils
 import kotlinx.coroutines.*
-import okio.FileSystem
 
 actual abstract class PlatformTest {
 
@@ -17,7 +16,7 @@ actual abstract class PlatformTest {
     }
 
     actual val tmpDir: String
-        get() = FileUtils.verifyDir((FileSystem.SYSTEM_TEMPORARY_DIRECTORY / SCRATCH_DIR_NAME).toString())
+        get() = FileUtils.verifyDir("build/cb-tmp/$SCRATCH_DIR_NAME")
 
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         @OptIn(DelicateCoroutinesApi::class)
