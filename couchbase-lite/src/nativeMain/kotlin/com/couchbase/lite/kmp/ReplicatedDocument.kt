@@ -7,16 +7,14 @@ import kotlinx.cinterop.pointed
 import libcblite.CBLReplicatedDocument
 
 public actual class ReplicatedDocument
-internal constructor(internal val actual: CPointer<CBLReplicatedDocument>) {
+internal constructor(actual: CPointer<CBLReplicatedDocument>) {
 
-    public actual val id: String
-        get() = actual.pointed.ID.toKString()!!
+    public actual val id: String =
+        actual.pointed.ID.toKString()!!
 
-    public actual val flags: Set<DocumentFlag> by lazy {
+    public actual val flags: Set<DocumentFlag> =
         actual.pointed.flags.toDocumentFlags()
-    }
 
-    public actual val error: CouchbaseLiteException? by lazy {
+    public actual val error: CouchbaseLiteException? =
         actual.pointed.error.toException()
-    }
 }
