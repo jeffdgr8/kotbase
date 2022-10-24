@@ -1,5 +1,7 @@
 package com.couchbase.lite.kmp.internal
 
+import com.couchbase.lite.kmp.CBLError.Code
+import com.couchbase.lite.kmp.CBLError.Domain
 import com.couchbase.lite.kmp.CouchbaseLiteException
 import com.couchbase.lite.kmp.internal.fleece.toKString
 import kotlinx.cinterop.*
@@ -34,13 +36,16 @@ internal fun CBLError.toExceptionNotNull(info: Map<String, Any?>? = null): Couch
 
 internal fun CBLError.toException(info: Map<String, Any?>? = null): CouchbaseLiteException? {
     if (domain == 0.toUByte() && code == 0) return null
+    val code = when (domain.toUInt()) {
+        kCBLNetworkDomain -> code + Code.NETWORK_OFFSET
+        kCBLWebSocketDomain -> code + Code.HTTP_BASE
+        else -> code
+    }
     val domain = when (domain.toUInt()) {
-        kCBLDomain -> com.couchbase.lite.kmp.CBLError.Domain.CBLITE
-        kCBLPOSIXDomain -> com.couchbase.lite.kmp.CBLError.Domain.POSIX
-        kCBLSQLiteDomain -> com.couchbase.lite.kmp.CBLError.Domain.SQLITE
-        kCBLFleeceDomain -> com.couchbase.lite.kmp.CBLError.Domain.FLEECE
-        kCBLNetworkDomain -> "CouchbaseLite.Network"
-        kCBLWebSocketDomain -> "CouchbaseLite.WebSocket"
+        kCBLDomain, kCBLNetworkDomain, kCBLWebSocketDomain -> Domain.CBLITE
+        kCBLPOSIXDomain -> Domain.POSIX
+        kCBLSQLiteDomain -> Domain.SQLITE
+        kCBLFleeceDomain -> Domain.FLEECE
         else -> "UnknownDomain"
     }
     return CouchbaseLiteException(
