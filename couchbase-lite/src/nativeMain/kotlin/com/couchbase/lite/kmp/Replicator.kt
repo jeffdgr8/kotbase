@@ -11,9 +11,9 @@ import libcblite.*
 import kotlin.native.internal.createCleaner
 
 public actual class Replicator
-internal constructor(
+private constructor(
     internal val actual: CPointer<CBLReplicator>,
-    private val _config: ReplicatorConfiguration
+    private val immutableConfig: ImmutableReplicatorConfiguration
 ) {
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -22,7 +22,10 @@ internal constructor(
         CBLReplicator_Release(it)
     }
 
-    public actual constructor(config: ReplicatorConfiguration) : this(
+    public actual constructor(config: ReplicatorConfiguration) :
+            this(ImmutableReplicatorConfiguration(config))
+
+    private constructor(config: ImmutableReplicatorConfiguration) : this(
         wrapCBLError { error ->
             CBLReplicator_Create(config.actual, error)!!
         },
@@ -44,7 +47,7 @@ internal constructor(
     }
 
     public actual val config: ReplicatorConfiguration
-        get() = ReplicatorConfiguration(_config)
+        get() = ReplicatorConfiguration(immutableConfig)
 
     public actual val status: ReplicatorStatus
         get() = ReplicatorStatus(CBLReplicator_Status(actual))

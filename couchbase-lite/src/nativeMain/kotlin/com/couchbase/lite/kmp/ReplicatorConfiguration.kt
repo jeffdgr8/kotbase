@@ -13,38 +13,6 @@ public actual class ReplicatorConfiguration actual constructor(
     public actual val target: Endpoint
 ) {
 
-    private val memory = object {
-        val arena = Arena()
-        val arrays = mutableListOf<FLArray>()
-        val dicts = mutableListOf<FLDict>()
-        val ref = StableRef.create(this@ReplicatorConfiguration)
-    }
-
-    private fun FLArray.retain(): FLArray {
-        memory.arrays.add(this)
-        return this
-    }
-
-    private fun FLDict.retain(): FLDict {
-        memory.dicts.add(this)
-        return this
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    @Suppress("unused")
-    private val cleaner = createCleaner(memory) {
-        with(it) {
-            arena.clear()
-            arrays.forEach { array ->
-                FLArray_Release(array)
-            }
-            dicts.forEach { dict ->
-                FLDict_Release(dict)
-            }
-            ref.dispose()
-        }
-    }
-
     public actual constructor(config: ReplicatorConfiguration) : this(
         config.database,
         config.target
@@ -65,69 +33,24 @@ public actual class ReplicatorConfiguration actual constructor(
         isAutoPurgeEnabled = config.isAutoPurgeEnabled
     }
 
-    internal val actual: CPointer<CBLReplicatorConfiguration> by lazy {
-        readonly = true
-        memory.arena.alloc<CBLReplicatorConfiguration>().also {
-            it.authenticator = authenticator?.actual
-            it.channels = channels?.toFLArray()?.retain()
-            it.conflictResolver = nativeConflictResolver()
-            it.context = memory.ref.asCPointer()
-            it.continuous = isContinuous
-            it.database = database.actual
-            it.disableAutoPurge = !isAutoPurgeEnabled
-            it.documentIDs = documentIDs?.toFLArray()?.retain()
-            it.endpoint = target.actual
-            it.headers = headers?.toFLDict()?.retain()
-            it.heartbeat = heartbeat.convert()
-            it.maxAttemptWaitTime = maxAttemptWaitTime.convert()
-            it.maxAttempts = maxAttempts.convert()
-            it.pinnedServerCertificate.apply {
-                pinnedServerCertificate?.let { bytes ->
-                    buf = memory.arena.allocArrayOf(bytes)
-                    size = bytes.size.convert()
-                }
-            }
-            it.proxy = null
-            it.pullFilter = nativePullFilter()
-            it.pushFilter = nativePushFilter()
-            it.replicatorType = type.actual
-        }.ptr
-    }
-
-    private fun nativeConflictResolver(): CBLConflictResolver? {
-        if (conflictResolver == null) return null
-        return staticCFunction { ref, documentId, localDocument, remoteDocument ->
-            val config = ref.to<ReplicatorConfiguration>()
-            config.conflictResolver!!.invoke(
-                Conflict(
-                    documentId.toKString()!!,
-                    localDocument?.asDocument(config.database),
-                    remoteDocument?.asDocument(config.database)
-                )
-            ).actual
-        }
-    }
-
-    private fun nativePullFilter(): CBLReplicationFilter? {
-        if (pullFilter == null) return null
-        return staticCFunction { ref, document, flags ->
-            val config = ref.to<ReplicatorConfiguration>()
-            config.pullFilter!!.invoke(
-                Document(document!!, config.database),
-                flags.toDocumentFlags()
-            )
-        }
-    }
-
-    private fun nativePushFilter(): CBLReplicationFilter? {
-        if (pushFilter == null) return null
-        return staticCFunction { ref, document, flags ->
-            val config = ref.to<ReplicatorConfiguration>()
-            config.pushFilter!!.invoke(
-                Document(document!!, config.database),
-                flags.toDocumentFlags()
-            )
-        }
+    internal constructor(config: ImmutableReplicatorConfiguration) : this(
+        config.database,
+        config.target
+    ) {
+        authenticator = config.authenticator
+        channels = config.channels
+        conflictResolver = config.conflictResolver
+        isContinuous = config.isContinuous
+        documentIDs = config.documentIDs
+        headers = config.headers
+        pinnedServerCertificate = config.pinnedServerCertificate
+        pullFilter = config.pullFilter
+        pushFilter = config.pushFilter
+        type = config.type
+        maxAttempts = config.maxAttempts
+        maxAttemptWaitTime = config.maxAttemptWaitTime
+        heartbeat = config.heartbeat
+        isAutoPurgeEnabled = config.isAutoPurgeEnabled
     }
 
     public actual fun setAuthenticator(authenticator: Authenticator): ReplicatorConfiguration {
@@ -201,92 +124,145 @@ public actual class ReplicatorConfiguration actual constructor(
     }
 
     public actual var authenticator: Authenticator? = null
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var channels: List<String>? = null
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var conflictResolver: ConflictResolver? = null
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var isContinuous: Boolean = false
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var documentIDs: List<String>? = null
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var headers: Map<String, String>? = null
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var pinnedServerCertificate: ByteArray? = null
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var pullFilter: ReplicationFilter? = null
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var pushFilter: ReplicationFilter? = null
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var type: ReplicatorType = ReplicatorType.PUSH_AND_PULL
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var maxAttempts: Int = 0
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var maxAttemptWaitTime: Int = 0
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var heartbeat: Int = 0
-        set(value) {
-            checkReadOnly()
-            field = value
-        }
 
     public actual var isAutoPurgeEnabled: Boolean = true
-        set(value) {
-            checkReadOnly()
-            field = value
+}
+
+internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration) {
+
+    private val memory = object {
+        val arena = Arena()
+        val arrays = mutableListOf<FLArray>()
+        val dicts = mutableListOf<FLDict>()
+        val ref = StableRef.create(this@ImmutableReplicatorConfiguration)
+    }
+
+    private fun FLArray.retain(): FLArray {
+        memory.arrays.add(this)
+        return this
+    }
+
+    private fun FLDict.retain(): FLDict {
+        memory.dicts.add(this)
+        return this
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    @Suppress("unused")
+    private val cleaner = createCleaner(memory) {
+        with(it) {
+            arena.clear()
+            arrays.forEach { array ->
+                FLArray_Release(array)
+            }
+            dicts.forEach { dict ->
+                FLDict_Release(dict)
+            }
+            ref.dispose()
         }
+    }
 
-    private var readonly: Boolean = false
+    val database: Database = config.database
+    val target: Endpoint = config.target
+    val authenticator: Authenticator? = config.authenticator
+    val channels: List<String>? = config.channels
+    val conflictResolver: ConflictResolver? = config.conflictResolver
+    val isContinuous: Boolean = config.isContinuous
+    val documentIDs: List<String>? = config.documentIDs
+    val headers: Map<String, String>? = config.headers
+    val pinnedServerCertificate: ByteArray? = config.pinnedServerCertificate
+    val pullFilter: ReplicationFilter? = config.pullFilter
+    val pushFilter: ReplicationFilter? = config.pushFilter
+    val type: ReplicatorType = config.type
+    val maxAttempts: Int = config.maxAttempts
+    val maxAttemptWaitTime: Int = config.maxAttemptWaitTime
+    val heartbeat: Int = config.heartbeat
+    val isAutoPurgeEnabled: Boolean = config.isAutoPurgeEnabled
 
-    private fun checkReadOnly() {
-        if (readonly) throw IllegalStateException("DatabaseConfiguration is readonly mode.")
+    val actual: CPointer<CBLReplicatorConfiguration> =
+        memory.arena.alloc<CBLReplicatorConfiguration>().also {
+            it.authenticator = config.authenticator?.actual
+            it.channels = config.channels?.toFLArray()?.retain()
+            it.conflictResolver = nativeConflictResolver()
+            it.context = memory.ref.asCPointer()
+            it.continuous = config.isContinuous
+            it.database = config.database.actual
+            it.disableAutoPurge = !config.isAutoPurgeEnabled
+            it.documentIDs = config.documentIDs?.toFLArray()?.retain()
+            it.endpoint = config.target.actual
+            it.headers = config.headers?.toFLDict()?.retain()
+            it.heartbeat = config.heartbeat.convert()
+            it.maxAttemptWaitTime = config.maxAttemptWaitTime.convert()
+            it.maxAttempts = config.maxAttempts.convert()
+            it.pinnedServerCertificate.apply {
+                config.pinnedServerCertificate?.let { bytes ->
+                    buf = memory.arena.allocArrayOf(bytes)
+                    size = bytes.size.convert()
+                }
+            }
+            it.proxy = null
+            it.pullFilter = nativePullFilter()
+            it.pushFilter = nativePushFilter()
+            it.replicatorType = config.type.actual
+        }.ptr
+
+    private fun nativeConflictResolver(): CBLConflictResolver? {
+        if (conflictResolver == null) return null
+        return staticCFunction { ref, documentId, localDocument, remoteDocument ->
+            val config = ref.to<ImmutableReplicatorConfiguration>()
+            config.conflictResolver!!.invoke(
+                Conflict(
+                    documentId.toKString()!!,
+                    localDocument?.asDocument(config.database),
+                    remoteDocument?.asDocument(config.database)
+                )
+            ).actual
+        }
+    }
+
+    private fun nativePullFilter(): CBLReplicationFilter? {
+        if (pullFilter == null) return null
+        return staticCFunction { ref, document, flags ->
+            val config = ref.to<ImmutableReplicatorConfiguration>()
+            config.pullFilter!!.invoke(
+                Document(document!!, config.database),
+                flags.toDocumentFlags()
+            )
+        }
+    }
+
+    private fun nativePushFilter(): CBLReplicationFilter? {
+        if (pushFilter == null) return null
+        return staticCFunction { ref, document, flags ->
+            val config = ref.to<ImmutableReplicatorConfiguration>()
+            config.pushFilter!!.invoke(
+                Document(document!!, config.database),
+                flags.toDocumentFlags()
+            )
+        }
     }
 }
