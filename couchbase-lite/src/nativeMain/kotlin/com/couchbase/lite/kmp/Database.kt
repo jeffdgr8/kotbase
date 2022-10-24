@@ -383,11 +383,11 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete() {
-        wrapCBLError { error ->
-            mustBeOpen {
+        mustBeOpen {
+            wrapCBLError { error ->
                 CBLDatabase_Delete(actual, error)
-                isClosed = true
             }
+            isClosed = true
         }
     }
 
