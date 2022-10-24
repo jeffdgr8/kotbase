@@ -18,8 +18,9 @@ private const val MIME_UNKNOWN = "application/octet-stream"
 
 public actual class Blob
 internal constructor(
-    internal val actual: CPointer<CBLBlob>,
-    internal var dbContext: DbContext? = null
+    internal val actual: CPointer<CBLBlob>?,
+    internal var dbContext: DbContext? = null,
+    private val dict: Dictionary? = null
 ) {
 
     init {
@@ -63,6 +64,7 @@ internal constructor(
     public actual val content: ByteArray?
         get() {
             if (blobContent == null) {
+                actual ?: return null
                 dbContext?.database?.mustBeOpen()
                 blobContent = wrapCBLError { error ->
                     CBLBlob_Content(actual, error).toByteArray()
@@ -78,29 +80,44 @@ internal constructor(
                     write(blobContent!!)
                 }
             }
+            actual ?: return null
             return wrapCBLError { error ->
                 CBLBlob_OpenContentStream(actual, error)?.source()
             }
         }
 
     public actual val contentType: String
-        get() = CBLBlob_ContentType(actual).toKString() ?: MIME_UNKNOWN
+        get() {
+            return if (actual != null) {
+                CBLBlob_ContentType(actual).toKString()
+            } else {
+                dict?.getString(PROP_CONTENT_TYPE)
+            } ?: MIME_UNKNOWN
+        }
 
     public actual fun toJSON(): String {
         if (digest == null) {
             throw IllegalStateException("A Blob may be encoded as JSON only after it has been saved in a database")
         }
-        return FLValue_ToJSON(CBLBlob_Properties(actual)?.reinterpret()).toKString()!!
+        return if (actual != null) {
+            FLValue_ToJSON(CBLBlob_Properties(actual)?.reinterpret()).toKString()!!
+        } else {
+            dict!!.toJSON()
+        }
     }
 
     public actual val length: Long
-        get() = CBLBlob_Length(actual).toLong()
+        get() {
+            return if (actual != null) CBLBlob_Length(actual).toLong()
+            else dict!!.getLong(PROP_LENGTH)
+        }
 
     public actual val digest: String?
         get() {
             // Java SDK sets digest only after installed in database
             return if (dbContext?.database == null) null
-            else CBLBlob_Digest(actual).toKString()
+            else if (actual != null) CBLBlob_Digest(actual).toKString()
+            else dict?.getString(PROP_DIGEST)
         }
 
     public actual val properties: Map<String, Any?>
@@ -109,7 +126,8 @@ internal constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Blob) return false
-        return CBLBlob_Equals(actual, other.actual)
+        return if (actual != null) CBLBlob_Equals(actual, other.actual)
+        else dict == other.dict
     }
 
     override fun hashCode(): Int =

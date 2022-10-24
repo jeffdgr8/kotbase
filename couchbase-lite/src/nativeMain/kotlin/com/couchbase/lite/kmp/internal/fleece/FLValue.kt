@@ -85,6 +85,8 @@ private fun FLValue.asBlob(ctxt: DbContext?): Blob? {
         }
     }
     return FLValue_GetBlob(this)?.asBlob(ctxt)
+        // last resort if still null, just use blob dictionary, content won't be available
+        ?: Blob(actual = null, dict = Dictionary(FLValue_AsDict(this)!!, null))
 }
 
 private fun FLValue.asDataBlob(): Blob =

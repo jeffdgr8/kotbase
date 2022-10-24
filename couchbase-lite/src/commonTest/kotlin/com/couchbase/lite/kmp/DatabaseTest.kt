@@ -637,6 +637,7 @@ class DatabaseTest : BaseDbTest() {
         assertEquals(BLOB_CONTENT.length.toLong(), blob.length)
 
         // NOTE content still exists in memory for this case.
+        // (except for native C, this is where test fails)
         assertNotNull(blob.content)
     }
 
