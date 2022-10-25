@@ -441,6 +441,8 @@ class BlobTest : BaseDbTest() {
         assertEquals(255.toByte(), blobStream.readByte())
         assertEquals(0xf0.toByte(), blobStream.readByte())
         assertEquals(0xa0.toByte(), blobStream.readByte())
+
+        blobStream.close()
     }
 
     private fun getPropsForSavedBlob(): Map<String, Any?> {
