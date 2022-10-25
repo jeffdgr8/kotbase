@@ -107,12 +107,12 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
-        wrapCBLError { error ->
-            mustBeOpen {
+        mustBeOpen {
+            wrapCBLError { error ->
                 CBLDatabase_SaveDocument(actual, document.actual, error)
             }
+            document.database = this
         }
-        document.database = this
     }
 
     @Throws(CouchbaseLiteException::class)

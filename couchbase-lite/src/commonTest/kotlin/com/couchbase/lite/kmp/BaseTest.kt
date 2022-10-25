@@ -130,9 +130,19 @@ abstract class BaseTest : PlatformTest() {
         return if (isOpen) {
             doSafely("Delete db " + db.name, db::delete)
         } else {
-            db.dbPath?.let { path ->
-                FileUtils.eraseFileOrDir(path)
-            } ?: true
+            //db.dbPath?.let { path ->
+            //    FileUtils.eraseFileOrDir(path)
+            //} ?: true
+
+            // Use Database.delete() as eraseFileOrDir() may fail
+            // to delete blobs right after database was closed
+            try {
+                Database.delete(db.name, db.config.directory)
+                true
+            } catch (e: CouchbaseLiteException) {
+                // Already deleted
+                e.getDomain() == CBLError.Domain.CBLITE && e.getCode() == CBLError.Code.NOT_FOUND
+            }
         }
     }
 
