@@ -373,6 +373,8 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertNull(otherDB.getDocument("doc3"))
     }
 
+    // native C fails sometimes
+    // kotlin.AssertionError: Expected <3>, actual <2>.
     @Test
     fun testPullFilter() {
         // Add a document to db database so that it can pull the deleted docs from:
@@ -490,6 +492,8 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // Removed Doc with Filter
 
+    // native C fails sometimes
+    // kotlin.AssertionError: Expected <2>, actual <1>.
     @Test
     fun testPullRemovedDocWithFilterSingleShot() {
         testPullRemovedDocWithFilter(false)
@@ -571,6 +575,8 @@ class ReplicatorEETest : BaseReplicatorTest() {
         testPullDeletedDocWithFilter(false)
     }
 
+    // native C fails sometimes
+    // kotlin.AssertionError: Expected <2>, actual <1>.
     @Test
     fun testPullDeletedDocWithFilterContinuous() {
         testPullDeletedDocWithFilter(true)
@@ -724,6 +730,8 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertEquals(2, otherDB.count)
     }
 
+    // native C fails sometimes
+    // kotlin.AssertionError: Expected <2>, actual <1>.
     @Test
     fun testStopAndRestartPullReplicationWithFilter() {
         // Create documents:
