@@ -161,21 +161,7 @@ internal constructor(
                     CBLDatabase_SaveDocumentWithConflictHandler(
                         actual,
                         document.actual,
-                        staticCFunction { ref, document, oldDocument ->
-                            with(ref.to<ConflictHandlerWrapper>()) {
-                                try {
-                                    handler(
-                                        MutableDocument(document!!, db),
-                                        oldDocument?.asDocument(db)
-                                    )
-                                } catch (e: Exception) {
-                                    // save a reference, as Linux will propagate
-                                    // the error as an "unknown C++ exception"
-                                    exception = e
-                                    throw e
-                                }
-                            }
-                        },
+                        nativeConflictHandler(),
                         this.conflictHandler!!.asCPointer(),
                         error
                     )
@@ -198,6 +184,24 @@ internal constructor(
             } finally {
                 this.conflictHandler?.dispose()
                 this.conflictHandler = null
+            }
+        }
+    }
+
+    private fun nativeConflictHandler(): CBLConflictHandler {
+        return staticCFunction { ref, document, oldDocument ->
+            with(ref.to<ConflictHandlerWrapper>()) {
+                try {
+                    handler(
+                        MutableDocument(document!!, db),
+                        oldDocument?.asDocument(db)
+                    )
+                } catch (e: Exception) {
+                    // save a reference, as Linux will propagate
+                    // the error as an "unknown C++ exception"
+                    exception = e
+                    throw e
+                }
             }
         }
     }
@@ -314,22 +318,26 @@ internal constructor(
             DelegatedListenerToken(
                 CBLDatabase_AddChangeListener(
                     actual,
-                    staticCFunction { ref, _, numDocs, docIds ->
-                        val size = numDocs.toInt()
-                        val documentIds = buildList(size) {
-                            repeat(size) { i ->
-                                add(docIds!![i].toKString()!!)
-                            }
-                        }
-                        with(ref.to<DatabaseChangeListenerHolder>()) {
-                            this.listener(DatabaseChange(database, documentIds))
-                        }
-                    },
+                    nativeChangeListener(),
                     stableRef
                 )!!,
                 ListenerTokenType.DATABASE,
                 index
             )
+        }
+    }
+
+    private fun nativeChangeListener(): CBLDatabaseChangeListener {
+        return staticCFunction { ref, _, numDocs, docIds ->
+            val size = numDocs.toInt()
+            val documentIds = buildList(size) {
+                repeat(size) { i ->
+                    add(docIds!![i].toKString()!!)
+                }
+            }
+            with(ref.to<DatabaseChangeListenerHolder>()) {
+                listener(DatabaseChange(database, documentIds))
+            }
         }
     }
 
@@ -358,16 +366,20 @@ internal constructor(
                 CBLDatabase_AddDocumentChangeListener(
                     actual,
                     id.toFLString(),
-                    staticCFunction { ref, _, docId ->
-                        with(ref.to<DocumentChangeListenerHolder>()) {
-                            this.listener(DocumentChange(database, docId.toKString()!!))
-                        }
-                    },
+                    nativeDocumentChangeListener(),
                     stableRef
                 )!!,
                 ListenerTokenType.DOCUMENT,
                 index
             )
+        }
+    }
+
+    private fun nativeDocumentChangeListener(): CBLDocumentChangeListener {
+        return staticCFunction { ref, _, docId ->
+            with(ref.to<DocumentChangeListenerHolder>()) {
+                listener(DocumentChange(database, docId.toKString()!!))
+            }
         }
     }
 
