@@ -63,28 +63,28 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testGetDocFromClosedDB() {
+        // Store doc:
+        createSingleDocInBaseTestDb("doc1")
+
+        // Close db:
+        baseTestDb.close()
+
+        // should fail
         assertFailsWith<IllegalStateException> {
-            // Store doc:
-            createSingleDocInBaseTestDb("doc1")
-
-            // Close db:
-            baseTestDb.close()
-
-            // should fail
             baseTestDb.getDocument("doc1")
         }
     }
 
     @Test
     fun testGetDocFromDeletedDB() {
+        // Store doc:
+        createSingleDocInBaseTestDb("doc1")
+
+        // Delete db:
+        baseTestDb.delete()
+
+        // should fail
         assertFailsWith<IllegalStateException> {
-            // Store doc:
-            createSingleDocInBaseTestDb("doc1")
-
-            // Delete db:
-            baseTestDb.delete()
-
-            // should fail
             baseTestDb.getDocument("doc1")
         }
     }
@@ -207,25 +207,25 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testSaveDocToClosedDB() {
+        baseTestDb.close()
+
+        val doc = MutableDocument("doc1")
+        doc.setValue("key", 1)
+
         assertFailsWith<IllegalStateException> {
-            baseTestDb.close()
-
-            val doc = MutableDocument("doc1")
-            doc.setValue("key", 1)
-
             saveDocInBaseTestDb(doc)
         }
     }
 
     @Test
     fun testSaveDocToDeletedDB() {
+        // Delete db:
+        baseTestDb.delete()
+
+        val doc = MutableDocument("doc1")
+        doc.setValue("key", 1)
+
         assertFailsWith<IllegalStateException> {
-            // Delete db:
-            baseTestDb.delete()
-
-            val doc = MutableDocument("doc1")
-            doc.setValue("key", 1)
-
             saveDocInBaseTestDb(doc)
         }
     }
@@ -315,13 +315,13 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testDeleteDocOnClosedDB() {
+        // Store doc:
+        val doc = createSingleDocInBaseTestDb("doc1")
+
+        // Close db:
+        baseTestDb.close()
+
         assertFailsWith<IllegalStateException> {
-            // Store doc:
-            val doc = createSingleDocInBaseTestDb("doc1")
-
-            // Close db:
-            baseTestDb.close()
-
             // Delete doc from db:
             baseTestDb.delete(doc)
         }
@@ -329,11 +329,11 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testDeleteDocOnDeletedDB() {
-        assertFailsWith<IllegalStateException> {
-            // Store doc:
-            val doc = createSingleDocInBaseTestDb("doc1")
-            baseTestDb.delete()
+        // Store doc:
+        val doc = createSingleDocInBaseTestDb("doc1")
+        baseTestDb.delete()
 
+        assertFailsWith<IllegalStateException> {
             // Delete doc from db:
             baseTestDb.delete(doc)
         }
@@ -443,13 +443,13 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testPurgeDocOnClosedDB() {
+        // Store doc:
+        val doc = createSingleDocInBaseTestDb("doc1")
+
+        // Close db:
+        baseTestDb.close()
+
         assertFailsWith<IllegalStateException> {
-            // Store doc:
-            val doc = createSingleDocInBaseTestDb("doc1")
-
-            // Close db:
-            baseTestDb.close()
-
             // Purge doc:
             baseTestDb.purge(doc)
         }
@@ -457,13 +457,13 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testPurgeDocOnDeletedDB() {
+        // Store doc:
+        val doc = createSingleDocInBaseTestDb("doc1")
+
+        // Close db:
+        baseTestDb.close()
+
         assertFailsWith<IllegalStateException> {
-            // Store doc:
-            val doc = createSingleDocInBaseTestDb("doc1")
-
-            // Close db:
-            baseTestDb.close()
-
             // Purge doc:
             baseTestDb.purge(doc)
         }
@@ -516,21 +516,21 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testCloseThenAccessBlob() {
+        // Store doc with blob:
+        val mDoc = createSingleDocInBaseTestDb("doc1").toMutable()
+        mDoc.setValue("blob", Blob("text/plain", BLOB_CONTENT.encodeToByteArray()))
+        val doc = saveDocInBaseTestDb(mDoc)
+
+        // Close db:
+        baseTestDb.close()
+
+        // content should be accessible & modifiable without error
+        assertTrue(doc.getValue("blob") is Blob)
+        val blob = doc.getBlob("blob")!!
+        assertEquals(BLOB_CONTENT.length.toLong(), blob.length)
+
+        // trying to get the content, however, should fail
         assertFailsWith<IllegalStateException> {
-            // Store doc with blob:
-            val mDoc = createSingleDocInBaseTestDb("doc1").toMutable()
-            mDoc.setValue("blob", Blob("text/plain", BLOB_CONTENT.encodeToByteArray()))
-            val doc = saveDocInBaseTestDb(mDoc)
-
-            // Close db:
-            baseTestDb.close()
-
-            // content should be accessible & modifiable without error
-            assertTrue(doc.getValue("blob") is Blob)
-            val blob = doc.getBlob("blob")!!
-            assertEquals(BLOB_CONTENT.length.toLong(), blob.length)
-
-            // trying to get the content, however, should fail
             blob.content
         }
     }
@@ -586,15 +586,15 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testDeleteTwice() {
+        // delete db twice
+        val path = baseTestDb.path!!
+        assertTrue(FileUtils.dirExists(path))
+
+        baseTestDb.delete()
+        assertFalse(FileUtils.dirExists(path))
+
+        // second delete should fail
         assertFailsWith<IllegalStateException> {
-            // delete db twice
-            val path = baseTestDb.path!!
-            assertTrue(FileUtils.dirExists(path))
-
-            baseTestDb.delete()
-            assertFalse(FileUtils.dirExists(path))
-
-            // second delete should fail
             baseTestDb.delete()
         }
     }
