@@ -9,13 +9,16 @@ package com.couchbase.lite.kmp
  * @param encryptionKey the key
  * @return The self object.
  */
-public expect fun DatabaseConfiguration.setEncryptionKey(encryptionKey: EncryptionKey?): DatabaseConfiguration
+public fun DatabaseConfiguration.setEncryptionKey(encryptionKey: EncryptionKey?): DatabaseConfiguration {
+    this.encryptionKey = encryptionKey
+    return this
+}
 
 /**
  * **ENTERPRISE EDITION API**
  *
- * Returns a key to encrypt the database with.
- *
- * @return the key
+ * A key to encrypt the database with.
  */
 public expect var DatabaseConfiguration.encryptionKey: EncryptionKey?
+
+// TODO: provide update EE KTX creator function
