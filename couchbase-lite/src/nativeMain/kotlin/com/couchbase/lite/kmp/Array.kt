@@ -6,11 +6,12 @@ import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
 import libcblite.*
 import kotlin.native.internal.createCleaner
+import kotlin.reflect.safeCast
 
 public actual open class Array
 internal constructor(
     actual: FLArray,
-    internal var dbContext: DbContext?
+    dbContext: DbContext?
 ) : Iterable<Any?> {
 
     init {
@@ -19,11 +20,27 @@ internal constructor(
 
     internal open val actual: FLArray = actual
 
+    internal open var dbContext: DbContext? = dbContext
+        set(value) {
+            field = value
+            collectionMap.forEach {
+                when (it) {
+                    is Array -> it.dbContext = value
+                    is Dictionary -> it.dbContext = value
+                }
+            }
+        }
+
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         FLArray_Release(it)
     }
+
+    protected val collectionMap: MutableMap<Int, Any> = mutableMapOf()
+
+    protected inline fun <reified T : Any> getInternalCollection(index: Int): T? =
+        T::class.safeCast(collectionMap[index])
 
     public actual fun toMutable(): MutableArray =
         MutableArray(
@@ -39,8 +56,11 @@ internal constructor(
         return actual.getValue(index)
     }
 
-    public actual open fun getValue(index: Int): Any? =
-        getFLValue(index)?.toNative(dbContext)
+    public actual open fun getValue(index: Int): Any? {
+        return collectionMap[index]
+            ?: getFLValue(index)?.toNative(dbContext)
+                ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
+    }
 
     public actual fun getString(index: Int): String? =
         getFLValue(index)?.toKString()
@@ -63,17 +83,23 @@ internal constructor(
     public actual fun getBoolean(index: Int): Boolean =
         getFLValue(index).toBoolean()
 
-    public actual fun getBlob(index: Int): Blob? =
+    public actual open fun getBlob(index: Int): Blob? =
         getFLValue(index)?.toBlob(dbContext)
 
     public actual fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
 
-    public actual open fun getArray(index: Int): Array? =
-        getFLValue(index)?.toArray(dbContext)
+    public actual open fun getArray(index: Int): Array? {
+        return getInternalCollection(index)
+            ?: getFLValue(index)?.toArray(dbContext)
+                ?.also { collectionMap[index] = it }
+    }
 
-    public actual open fun getDictionary(index: Int): Dictionary? =
-        getFLValue(index)?.toDictionary(dbContext)
+    public actual open fun getDictionary(index: Int): Dictionary? {
+        return getInternalCollection(index)
+            ?: getFLValue(index)?.toDictionary(dbContext)
+                ?.also { collectionMap[index] = it }
+    }
 
     public actual fun toList(): List<Any?> =
         actual.toList(dbContext)

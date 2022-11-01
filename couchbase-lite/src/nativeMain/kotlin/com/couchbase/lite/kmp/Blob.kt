@@ -4,6 +4,7 @@ import cnames.structs.CBLBlob
 import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
 import com.couchbase.lite.kmp.internal.wrapCBLError
+import com.udobny.kmp.identityHashCodeHex
 import kotlinx.cinterop.*
 import libcblite.*
 import okio.*
@@ -17,9 +18,9 @@ import kotlin.native.internal.createCleaner
 private const val MIME_UNKNOWN = "application/octet-stream"
 
 public actual class Blob
-internal constructor(
-    internal val actual: CPointer<CBLBlob>?,
-    internal var dbContext: DbContext? = null,
+private constructor(
+    actual: CPointer<CBLBlob>?,
+    dbContext: DbContext? = null,
     private val dict: Dictionary? = null
 ) {
 
@@ -27,10 +28,14 @@ internal constructor(
         CBLBlob_Retain(actual)
     }
 
+    private val memory = object {
+        var actual: CPointer<CBLBlob>? = actual
+    }
+
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
-    private val cleaner = createCleaner(actual) {
-        CBLBlob_Release(it)
+    private val cleaner = createCleaner(memory) {
+        CBLBlob_Release(it.actual)
     }
 
     public actual constructor(contentType: String, content: ByteArray) : this(
@@ -49,9 +54,15 @@ internal constructor(
         CBLBlob_Release(actual)
     }
 
-    // TODO: stream data (requires db reference, so not feasible without triggering blob creation from document save)
-    public actual constructor(contentType: String, stream: Source) :
-            this(contentType, stream.buffer().use { it.readByteArray() })
+    internal constructor(actual: CPointer<CBLBlob>?, dbContext: DbContext? = null) :
+            this(actual, dbContext, null)
+
+    internal constructor(dict: Dictionary?) : this(actual = null, dict = dict)
+
+    public actual constructor(contentType: String, stream: Source) : this(actual = null) {
+        blobContentType = contentType
+        blobContentStream = stream
+    }
 
     @Throws(IOException::class)
     public actual constructor(contentType: String, fileURL: String) : this(
@@ -59,19 +70,54 @@ internal constructor(
         fileURL.toFileSource()
     )
 
+    internal val actual: CPointer<CBLBlob>?
+        get() = memory.actual
+
+    private var dbContext: DbContext? = dbContext
+        set(value) {
+            field = value
+            val db = value?.database
+            if (db != null && actual == null) {
+                saveToDb(db)
+            } else {
+                value?.addStreamBlob(this)
+            }
+        }
+
+    internal fun saveToDb(db: Database) {
+        if (actual == null) {
+            memory.actual = CBLBlob_CreateWithStream(
+                blobContentType.toFLString(),
+                blobContentStream!!.blobWriteStream(db)
+            )
+        }
+    }
+
     private var blobContent: ByteArray? = null
 
     public actual val content: ByteArray?
         get() {
             if (blobContent == null) {
-                actual ?: return null
-                dbContext?.database?.mustBeOpen()
-                blobContent = wrapCBLError { error ->
-                    CBLBlob_Content(actual, error).toByteArray()
+                if (blobContentStream != null) {
+                    blobContentStream!!.buffer().use {
+                        blobContent = it.readByteArray()
+                    }
+                    blobContentStream = null
+                    memory.actual = CBLBlob_CreateWithData(
+                        blobContentType.toFLString(),
+                        blobContent!!.toFLSlice()
+                    )
+                } else if (actual != null) {
+                    dbContext?.database?.mustBeOpen()
+                    blobContent = wrapCBLError { error ->
+                        CBLBlob_Content(actual, error).toByteArray()
+                    }
                 }
             }
             return blobContent?.copyOf()
         }
+
+    private var blobContentStream: Source? = null
 
     public actual val contentStream: Source?
         get() {
@@ -86,13 +132,15 @@ internal constructor(
             }
         }
 
+    private var blobContentType: String? = null
+
     public actual val contentType: String
         get() {
             return if (actual != null) {
                 CBLBlob_ContentType(actual).toKString()
             } else {
                 dict?.getString(PROP_CONTENT_TYPE)
-            } ?: MIME_UNKNOWN
+            } ?: blobContentType ?: MIME_UNKNOWN
         }
 
     public actual fun toJSON(): String {
@@ -109,7 +157,7 @@ internal constructor(
     public actual val length: Long
         get() {
             return if (actual != null) CBLBlob_Length(actual).toLong()
-            else dict!!.getLong(PROP_LENGTH)
+            else dict?.getLong(PROP_LENGTH) ?: 0
         }
 
     public actual val digest: String?
@@ -127,6 +175,7 @@ internal constructor(
         if (this === other) return true
         if (other !is Blob) return false
         return if (actual != null) CBLBlob_Equals(actual, other.actual)
+        else if (blobContentStream != null) blobContentStream == other.blobContentStream
         else dict == other.dict
     }
 
@@ -134,7 +183,7 @@ internal constructor(
         content.contentHashCode()
 
     override fun toString(): String =
-        "Blob{${super.toString()}: $digest($contentType, $length)}"
+        "Blob{${identityHashCodeHex()}: $digest($contentType, $length)}"
 
     internal fun checkSetDb(dbContext: DbContext?) {
         if (this.dbContext == null) {
@@ -218,6 +267,28 @@ private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : So
     }
 
     override fun timeout(): Timeout = Timeout.NONE
+}
+
+private fun Source.blobWriteStream(db: Database): CPointer<CBLBlobWriteStream> {
+    val writer = wrapCBLError { error ->
+        CBLBlobWriter_Create(db.actual, error)!!
+    }
+    try {
+        val bufferSize = 8 * 1024
+        val buffer = ByteArray(bufferSize)
+        buffer().use { source ->
+            while (!source.exhausted()) {
+                val read = source.read(buffer)
+                wrapCBLError { error ->
+                    CBLBlobWriter_Write(writer, buffer.refTo(0), read.convert(), error)
+                }
+            }
+        }
+    } catch (e: Exception) {
+        CBLBlobWriter_Close(writer)
+        throw e
+    }
+    return writer
 }
 
 private fun String.toFileSource(): Source {

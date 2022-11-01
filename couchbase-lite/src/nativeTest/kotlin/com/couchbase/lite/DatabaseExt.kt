@@ -24,7 +24,7 @@ internal actual fun Database.saveBlob(blob: Blob) {
     wrapCBLError { error ->
         CBLDatabase_SaveBlob(actual, blob.actual, error)
     }
-    blob.dbContext = DbContext(this)
+    blob.checkSetDb(DbContext(this))
 }
 
 @Suppress("UNCHECKED_CAST")

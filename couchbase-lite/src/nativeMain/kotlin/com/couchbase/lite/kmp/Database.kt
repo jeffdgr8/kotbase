@@ -108,6 +108,7 @@ internal constructor(
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
         mustBeOpen {
+            document.willSave(this)
             wrapCBLError { error ->
                 CBLDatabase_SaveDocument(actual, document.actual, error)
             }
@@ -122,6 +123,7 @@ internal constructor(
     ): Boolean {
         return try {
             mustBeOpen {
+                document.willSave(this)
                 wrapCBLError { error ->
                     CBLDatabase_SaveDocumentWithConcurrencyControl(
                         actual,
@@ -154,6 +156,7 @@ internal constructor(
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
         return mustBeOpen {
+            document.willSave(this)
             val wrapper = ConflictHandlerWrapper(this, conflictHandler)
             this.conflictHandler = StableRef.create(wrapper)
             try {

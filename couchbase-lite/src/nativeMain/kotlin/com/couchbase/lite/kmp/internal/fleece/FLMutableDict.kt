@@ -64,12 +64,12 @@ internal fun FLMutableDict.setBoolean(key: String, value: Boolean) {
 }
 
 internal fun FLMutableDict.setBlob(key: String, value: Blob?, ctxt: DbContext?) {
-    if (value != null) {
-        FLMutableDict_SetBlob(this, key.toFLString(), value.actual)
-        value.checkSetDb(ctxt)
-    } else {
+    if (value?.actual == null) {
         FLMutableDict_SetNull(this, key.toFLString())
+    } else {
+        FLMutableDict_SetBlob(this, key.toFLString(), value.actual)
     }
+    value?.checkSetDb(ctxt)
 }
 
 internal fun FLMutableDict.setDate(key: String, value: Instant?) {

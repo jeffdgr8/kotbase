@@ -3,10 +3,12 @@ package com.couchbase.lite.kmp
 import cnames.structs.CBLDocument
 import com.couchbase.lite.kmp.internal.DbContext
 import com.couchbase.lite.kmp.internal.fleece.*
+import com.udobny.kmp.identityHashCodeHex
 import kotlinx.cinterop.CPointer
 import kotlinx.datetime.Instant
 import libcblite.*
 import kotlin.native.internal.createCleaner
+import kotlin.reflect.safeCast
 
 public actual open class Document
 internal constructor(
@@ -41,6 +43,10 @@ internal constructor(
 
     internal val dbContext: DbContext = DbContext(database)
 
+    internal fun willSave(db: Database) {
+        dbContext.willSave(db)
+    }
+
     internal open var properties: FLDict = CBLDocument_Properties(actual)!!
         set(value) {
             FLDict_Release(field)
@@ -49,6 +55,11 @@ internal constructor(
             FLDict_Retain(value)
             memory.properties = value
         }
+
+    protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
+
+    protected inline fun <reified T : Any> getInternalCollection(key: String): T? =
+        T::class.safeCast(collectionMap[key])
 
     public actual val id: String
         get() = CBLDocument_ID(actual).toKString()!!
@@ -71,8 +82,11 @@ internal constructor(
     protected fun getFLValue(key: String): FLValue? =
         properties.getValue(key)
 
-    public actual open fun getValue(key: String): Any? =
-        getFLValue(key)?.toNative(dbContext)
+    public actual open fun getValue(key: String): Any? {
+        return collectionMap[key]
+            ?: getFLValue(key)?.toNative(dbContext)
+                ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
+    }
 
     public actual fun getString(key: String): String? =
         getFLValue(key)?.toKString()
@@ -95,17 +109,23 @@ internal constructor(
     public actual fun getBoolean(key: String): Boolean =
         getFLValue(key).toBoolean()
 
-    public actual fun getBlob(key: String): Blob? =
+    public actual open fun getBlob(key: String): Blob? =
         getFLValue(key)?.toBlob(dbContext)
 
     public actual fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
-    public actual open fun getArray(key: String): Array? =
-        getFLValue(key)?.toArray(dbContext)
+    public actual open fun getArray(key: String): Array? {
+        return getInternalCollection(key)
+            ?: getFLValue(key)?.toArray(dbContext)
+                ?.also { collectionMap[key] = it }
+    }
 
-    public actual open fun getDictionary(key: String): Dictionary? =
-        getFLValue(key)?.toDictionary(dbContext)
+    public actual open fun getDictionary(key: String): Dictionary? {
+        return getInternalCollection(key)
+            ?: getFLValue(key)?.toDictionary(dbContext)
+                ?.also { collectionMap[key] = it }
+    }
 
     public actual fun toMap(): Map<String, Any?> =
         properties.toMap(dbContext)
@@ -154,7 +174,7 @@ internal constructor(
     protected open val isMutable: Boolean = false
 
     override fun toString(): String {
-        val buf = StringBuilder("Document{").append(super.toString())
+        val buf = StringBuilder("Document{").append(identityHashCodeHex())
             .append(id).append('@').append(revisionID)
             .append('(').append(if (isMutable) '+' else '.')
         //    .append(if (isDeleted) '?' else '.').append("):")

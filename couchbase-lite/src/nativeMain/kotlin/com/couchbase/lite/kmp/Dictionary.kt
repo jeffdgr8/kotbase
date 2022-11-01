@@ -6,11 +6,12 @@ import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
 import libcblite.*
 import kotlin.native.internal.createCleaner
+import kotlin.reflect.safeCast
 
 public actual open class Dictionary
 internal constructor(
     actual: FLDict,
-    internal var dbContext: DbContext?
+    dbContext: DbContext?
 ) : Iterable<String> {
 
     init {
@@ -19,17 +20,34 @@ internal constructor(
 
     internal open val actual: FLDict = actual
 
+    internal open var dbContext: DbContext? = dbContext
+        set(value) {
+            field = value
+            collectionMap.forEach {
+                when (it) {
+                    is Array -> it.dbContext = value
+                    is Dictionary -> it.dbContext
+                }
+            }
+        }
+
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         FLDict_Release(it)
     }
 
-    public actual fun toMutable(): MutableDictionary =
-        MutableDictionary(
+    protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
+
+    protected inline fun <reified T : Any> getInternalCollection(key: String): T? =
+        T::class.safeCast(collectionMap[key])
+
+    public actual fun toMutable(): MutableDictionary {
+        return MutableDictionary(
             FLDict_MutableCopy(actual, kFLDeepCopy)!!,
             dbContext?.let { DbContext(it.database) }
         )
+    }
 
     public actual val count: Int
         get() = FLDict_Count(actual).toInt()
@@ -40,8 +58,11 @@ internal constructor(
     protected fun getFLValue(key: String): FLValue? =
         actual.getValue(key)
 
-    public actual open fun getValue(key: String): Any? =
-        getFLValue(key)?.toNative(dbContext)
+    public actual open fun getValue(key: String): Any? {
+        return collectionMap[key]
+            ?: getFLValue(key)?.toNative(dbContext)
+                ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
+    }
 
     public actual fun getString(key: String): String? =
         getFLValue(key)?.toKString()
@@ -64,17 +85,23 @@ internal constructor(
     public actual fun getBoolean(key: String): Boolean =
         getFLValue(key).toBoolean()
 
-    public actual fun getBlob(key: String): Blob? =
+    public actual open fun getBlob(key: String): Blob? =
         getFLValue(key)?.toBlob(dbContext)
 
     public actual fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
-    public actual open fun getArray(key: String): Array? =
-        getFLValue(key)?.toArray(dbContext)
+    public actual open fun getArray(key: String): Array? {
+        return getInternalCollection(key)
+            ?: getFLValue(key)?.toArray(dbContext)
+                ?.also { collectionMap[key] = it }
+    }
 
-    public actual open fun getDictionary(key: String): Dictionary? =
-        getFLValue(key)?.toDictionary(dbContext)
+    public actual open fun getDictionary(key: String): Dictionary? {
+        return getInternalCollection(key)
+            ?: getFLValue(key)?.toDictionary(dbContext)
+                ?.also { collectionMap[key] = it }
+    }
 
     public actual fun toMap(): Map<String, Any?> =
         actual.toMap(dbContext)

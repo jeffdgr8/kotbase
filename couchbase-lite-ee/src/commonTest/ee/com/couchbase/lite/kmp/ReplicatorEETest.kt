@@ -577,6 +577,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // native C fails sometimes
     // kotlin.AssertionError: Expected <2>, actual <1>.
+    // or kotlin.AssertionError: Expected value to be true.
     @Test
     fun testPullDeletedDocWithFilterContinuous() {
         testPullDeletedDocWithFilter(true)

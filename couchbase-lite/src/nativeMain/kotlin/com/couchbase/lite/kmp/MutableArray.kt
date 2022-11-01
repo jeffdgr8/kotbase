@@ -36,8 +36,48 @@ internal constructor(
         FLMutableArray_Release(actual)
     }
 
+    override var dbContext: DbContext?
+        get() = super.dbContext
+        set(value) {
+            super.dbContext = value
+            if (unsavedBlobs.isNotEmpty()) {
+                value?.addStreamBlobArray(this)
+            }
+        }
+
+    private var addedToDbContext = false
+    private val unsavedBlobs = mutableMapOf<Int, Blob>()
+
+    private fun removeInternal(index: Int) {
+        collectionMap.remove(index)
+        unsavedBlobs.remove(index)
+        updateUnsavedBlobContext()
+    }
+
+    private fun updateUnsavedBlobContext() {
+        if (unsavedBlobs.isEmpty() && addedToDbContext) {
+            dbContext?.removeStreamBlobArray(this)
+            addedToDbContext = false
+        } else if (unsavedBlobs.isNotEmpty() && !addedToDbContext) {
+            dbContext?.addStreamBlobArray(this)
+            addedToDbContext = true
+        }
+    }
+
+    internal fun mergeSavedBlobs() {
+        unsavedBlobs.forEach { (index, value) ->
+            checkNotNull(value.actual) { "Blob stream should have been saved" }
+            if (getFLValue(index)?.toObject(null) != null) {
+                throw IllegalStateException("Blob stream placeholder should be null")
+            }
+            setBlob(index, value)
+        }
+        unsavedBlobs.clear()
+    }
+
     public actual fun setData(data: List<Any?>): MutableArray {
         FLMutableArray_Resize(actual, data.size.convert())
+        unsavedBlobs.clear()
         data.forEachIndexed { index, value ->
             setValue(index, value)
         }
@@ -84,6 +124,7 @@ internal constructor(
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
+        removeInternal(index)
         return this
     }
 
@@ -95,47 +136,59 @@ internal constructor(
             null -> FLMutableArray_SetNull(actual, index.convert())
             else -> FLMutableArray_SetInt(actual, index.convert(), value.toLong().convert())
         }
+        removeInternal(index)
         return this
     }
 
     public actual fun setInt(index: Int, value: Int): MutableArray {
         checkIndex(index)
         FLMutableArray_SetInt(actual, index.convert(), value.convert())
+        removeInternal(index)
         return this
     }
 
     public actual fun setLong(index: Int, value: Long): MutableArray {
         checkIndex(index)
         FLMutableArray_SetInt(actual, index.convert(), value.convert())
+        removeInternal(index)
         return this
     }
 
     public actual fun setFloat(index: Int, value: Float): MutableArray {
         checkIndex(index)
         FLMutableArray_SetFloat(actual, index.convert(), value)
+        removeInternal(index)
         return this
     }
 
     public actual fun setDouble(index: Int, value: Double): MutableArray {
         checkIndex(index)
         FLMutableArray_SetDouble(actual, index.convert(), value)
+        removeInternal(index)
         return this
     }
 
     public actual fun setBoolean(index: Int, value: Boolean): MutableArray {
         checkIndex(index)
         FLMutableArray_SetBool(actual, index.convert(), value)
+        removeInternal(index)
         return this
     }
 
     public actual fun setBlob(index: Int, value: Blob?): MutableArray {
         checkIndex(index)
-        if (value != null) {
-            FLMutableArray_SetBlob(actual, index.convert(), value.actual)
-            value.checkSetDb(dbContext)
-        } else {
+        collectionMap.remove(index)
+        unsavedBlobs.remove(index)
+        if (value?.actual == null) {
             FLMutableArray_SetNull(actual, index.convert())
+            if (value != null) {
+                unsavedBlobs[index] = value
+            }
+        } else {
+            FLMutableArray_SetBlob(actual, index.convert(), value.actual)
         }
+        value?.checkSetDb(dbContext)
+        updateUnsavedBlobContext()
         return this
     }
 
@@ -146,14 +199,17 @@ internal constructor(
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
+        removeInternal(index)
         return this
     }
 
     public actual fun setArray(index: Int, value: Array?): MutableArray {
         checkIndex(index)
+        removeInternal(index)
         if (value != null) {
             checkSelf(value.actual)
             FLMutableArray_SetArray(actual, index.convert(), value.actual)
+            collectionMap[index] = value
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
@@ -162,8 +218,10 @@ internal constructor(
 
     public actual fun setDictionary(index: Int, value: Dictionary?): MutableArray {
         checkIndex(index)
+        removeInternal(index)
         if (value != null) {
             FLMutableArray_SetDict(actual, index.convert(), value.actual)
+            collectionMap[index] = value
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
@@ -238,12 +296,15 @@ internal constructor(
     }
 
     public actual fun addBlob(value: Blob?): MutableArray {
-        if (value != null) {
-            FLMutableArray_AppendBlob(actual, value.actual)
-            value.checkSetDb(dbContext)
-        } else {
+        if (value?.actual == null) {
             FLMutableArray_AppendNull(actual)
+            if (value != null) {
+                unsavedBlobs[count - 1] = value
+            }
+        } else {
+            FLMutableArray_AppendBlob(actual, value.actual)
         }
+        value?.checkSetDb(dbContext)
         return this
     }
 
@@ -260,6 +321,7 @@ internal constructor(
         if (value != null) {
             checkSelf(value.actual)
             FLMutableArray_AppendArray(actual, value.actual)
+            collectionMap[count - 1] = value
         } else {
             FLMutableArray_AppendNull(actual)
         }
@@ -269,92 +331,98 @@ internal constructor(
     public actual fun addDictionary(value: Dictionary?): MutableArray {
         if (value != null) {
             FLMutableArray_AppendDict(actual, value.actual)
+            collectionMap[count - 1] = value
         } else {
             FLMutableArray_AppendNull(actual)
         }
         return this
     }
 
-    public actual fun insertValue(index: Int, value: Any?): MutableArray {
+    private fun insertAt(index: Int) {
         checkInsertIndex(index)
         FLMutableArray_Insert(actual, index.convert(), 1)
+        incrementAfter(index, collectionMap)
+        incrementAfter(index, unsavedBlobs)
+    }
+
+    private fun <T : Any> incrementAfter(index: Int, collection: MutableMap<Int, T>) {
+        for (key in collection.keys.sortedDescending()) {
+            if (key >= index) {
+                collection[key + 1] = collection.remove(key)!!
+            } else {
+                break
+            }
+        }
+    }
+
+    public actual fun insertValue(index: Int, value: Any?): MutableArray {
+        insertAt(index)
         setValue(index, value)
         return this
     }
 
     public actual fun insertString(index: Int, value: String?): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setString(index, value)
         return this
     }
 
     public actual fun insertNumber(index: Int, value: Number?): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setNumber(index, value)
         return this
     }
 
     public actual fun insertInt(index: Int, value: Int): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setInt(index, value)
         return this
     }
 
     public actual fun insertLong(index: Int, value: Long): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setLong(index, value)
         return this
     }
 
     public actual fun insertFloat(index: Int, value: Float): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setFloat(index, value)
         return this
     }
 
     public actual fun insertDouble(index: Int, value: Double): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setDouble(index, value)
         return this
     }
 
     public actual fun insertBoolean(index: Int, value: Boolean): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setBoolean(index, value)
         return this
     }
 
     public actual fun insertBlob(index: Int, value: Blob?): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setBlob(index, value)
         return this
     }
 
     public actual fun insertDate(index: Int, value: Instant?): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setDate(index, value)
         return this
     }
 
     public actual fun insertArray(index: Int, value: Array?): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setArray(index, value)
         return this
     }
 
     public actual fun insertDictionary(index: Int, value: Dictionary?): MutableArray {
-        checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        insertAt(index)
         setDictionary(index, value)
         return this
     }
@@ -362,17 +430,33 @@ internal constructor(
     public actual fun remove(index: Int): MutableArray {
         checkIndex(index)
         FLMutableArray_Remove(actual, index.convert(), 1)
+        removeInternal(index)
         return this
     }
 
-    override fun getValue(index: Int): Any? =
-        getFLValue(index)?.toMutableNative(dbContext) { setValue(index, it) }
+    override fun getValue(index: Int): Any? {
+        return collectionMap[index]
+            ?:getFLValue(index)?.toMutableNative(dbContext) { setValue(index, it) }
+                ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
+            ?: unsavedBlobs[index]
+    }
 
-    actual override fun getArray(index: Int): MutableArray? =
-        getFLValue(index)?.toMutableArray(dbContext) { setArray(index, it) }
+    override fun getBlob(index: Int): Blob? {
+        return super.getBlob(index)
+            ?: unsavedBlobs[index]
+    }
 
-    actual override fun getDictionary(index: Int): MutableDictionary? =
-        getFLValue(index)?.toMutableDictionary(dbContext) { setDictionary(index, it) }
+    actual override fun getArray(index: Int): MutableArray? {
+        return getInternalCollection(index)
+            ?: getFLValue(index)?.toMutableArray(dbContext) { setArray(index, it) }
+                ?.also { collectionMap[index] = it }
+    }
+
+    actual override fun getDictionary(index: Int): MutableDictionary? {
+        return getInternalCollection(index)
+            ?: getFLValue(index)?.toMutableDictionary(dbContext) { setDictionary(index, it) }
+                ?.also { collectionMap[index] = it }
+    }
 
     override fun toJSON(): String {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
