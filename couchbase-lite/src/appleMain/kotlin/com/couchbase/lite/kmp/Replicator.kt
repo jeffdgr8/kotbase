@@ -1,7 +1,7 @@
 package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.CBLReplicator
-import com.couchbase.lite.kmp.ext.throwError
+import com.couchbase.lite.kmp.ext.wrapCBLError
 import com.udobny.kmp.DelegatedClass
 import platform.Security.SecCertificateRef
 
@@ -41,13 +41,13 @@ internal constructor(actual: CBLReplicator) :
         get() = actual.serverCertificate
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun getPendingDocumentIds(): Set<String> = throwError { error ->
+    public actual fun getPendingDocumentIds(): Set<String> = wrapCBLError { error ->
         @Suppress("UNCHECKED_CAST")
         pendingDocumentIDs(error) as Set<String>
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun isDocumentPending(docId: String): Boolean = throwError { error ->
+    public actual fun isDocumentPending(docId: String): Boolean = wrapCBLError { error ->
         isDocumentPending(docId, error)
     }
 

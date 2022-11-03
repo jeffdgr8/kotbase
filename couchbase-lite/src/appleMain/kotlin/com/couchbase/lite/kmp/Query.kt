@@ -1,7 +1,7 @@
 package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.*
-import com.couchbase.lite.kmp.ext.throwError
+import com.couchbase.lite.kmp.ext.wrapCBLError
 import com.udobny.kmp.AbstractDelegatedClass
 
 internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Query {
@@ -16,7 +16,7 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
 
     @Throws(CouchbaseLiteException::class)
     override fun execute(): ResultSet {
-        val resultSet = throwError { error ->
+        val resultSet = wrapCBLError { error ->
             execute(error)
         }
         return ResultSet(resultSet!!)
@@ -24,7 +24,7 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
 
     @Throws(CouchbaseLiteException::class)
     override fun explain(): String {
-        return throwError { error ->
+        return wrapCBLError { error ->
             explain(error)
         }!!
     }

@@ -1,7 +1,7 @@
 package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.CBLMutableArray
-import com.couchbase.lite.kmp.ext.throwError
+import com.couchbase.lite.kmp.ext.wrapCBLError
 import com.udobny.kmp.chain
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
@@ -42,7 +42,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual fun setJSON(json: String): MutableArray = chain {
         try {
-            throwError { error ->
+            wrapCBLError { error ->
                 setJSON(json, error)
             }
         } catch (e: CouchbaseLiteException) {

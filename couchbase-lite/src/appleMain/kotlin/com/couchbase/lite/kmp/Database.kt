@@ -2,7 +2,7 @@ package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.isClosed
-import com.couchbase.lite.kmp.ext.throwError
+import com.couchbase.lite.kmp.ext.wrapCBLError
 import com.couchbase.lite.kmp.ext.toCouchbaseLiteException
 import com.udobny.kmp.DelegatedClass
 import com.udobny.kmp.ext.wrapError
@@ -84,7 +84,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
-        throwError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 saveDocument(document.actual, error)
             }
@@ -97,7 +97,7 @@ internal constructor(actual: CBLDatabase) :
         concurrencyControl: ConcurrencyControl
     ): Boolean {
         return try {
-            throwError { error ->
+            wrapCBLError { error ->
                 mustBeOpen {
                     saveDocument(document.actual, concurrencyControl.actual, error)
                 }
@@ -114,7 +114,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
-        return throwError { error ->
+        return wrapCBLError { error ->
             try {
                 mustBeOpen {
                     saveDocument(document.actual, conflictHandler.convert(), error)
@@ -132,7 +132,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
-        throwError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 deleteDocument(document.actual, error)
             }
@@ -142,7 +142,7 @@ internal constructor(actual: CBLDatabase) :
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
         return try {
-            throwError { error ->
+            wrapCBLError { error ->
                 mustBeOpen {
                     deleteDocument(document.actual, concurrencyControl.actual, error)
                 }
@@ -160,7 +160,7 @@ internal constructor(actual: CBLDatabase) :
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
         try {
-            throwError { error ->
+            wrapCBLError { error ->
                 mustBeOpen {
                     purgeDocument(document.actual, error)
                 }
@@ -176,7 +176,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
-        throwError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 purgeDocumentWithID(id, error)
             }
@@ -185,7 +185,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
-        throwError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 setDocumentExpirationWithID(id, expiration?.toNSDate(), error)
             }
@@ -201,7 +201,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun <R> inBatch(work: Database.() -> R): R {
-        return throwError { error ->
+        return wrapCBLError { error ->
             mustBeOpen {
                 var result: R? = null
                 inBatch(error) {
@@ -238,14 +238,14 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun close() {
-        throwError { error ->
+        wrapCBLError { error ->
             close(error)
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete() {
-        throwError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 delete(error)
             }
@@ -254,7 +254,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createQuery(query: String): Query {
-        val actualQuery = throwError { error ->
+        val actualQuery = wrapCBLError { error ->
             mustBeOpen {
                 createQuery(query, error)
             }
@@ -272,7 +272,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
-        throwError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 createIndex(index.actual, name, error)
             }
@@ -281,7 +281,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
-        throwError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 createIndexWithConfig(config.actual, name, error)
             }
@@ -290,7 +290,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {
-        throwError { error ->
+        wrapCBLError { error ->
             mustBeOpen {
                 deleteIndexForName(name, error)
             }
@@ -299,7 +299,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun performMaintenance(type: MaintenanceType): Boolean {
-        return throwError { error ->
+        return wrapCBLError { error ->
             mustBeOpen {
                 performMaintenance(type.actual, error)
             }
