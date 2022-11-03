@@ -47,14 +47,12 @@ constructor(config: ReplicatorConfiguration) {
      */
     public val status: ReplicatorStatus
 
-    // Implemented in each target
     /**
      * The server certificates received from the server during the TLS handshake.
      *
      * @return this replicator's server certificates.
      */
-    // platform-specific implementations
-    //public val serverCertificates: List<Certificate>?
+    public val serverCertificates: List<ByteArray>?
 
     /**
      * Get a best effort list of documents still pending replication.

@@ -2,7 +2,6 @@ package com.couchbase.lite.kmp
 
 import com.couchbase.lite.testReplicator
 import com.udobny.kmp.DelegatedClass
-import java.security.cert.Certificate
 
 public actual class Replicator
 internal constructor(
@@ -42,11 +41,8 @@ internal constructor(
     public actual val status: ReplicatorStatus
         get() = ReplicatorStatus(actual.status)
 
-    /**
-     * The server certificates received from the server during the TLS handshake.
-     */
-    public val serverCertificates: List<Certificate>?
-        get() = actual.serverCertificates
+    public actual val serverCertificates: List<ByteArray>?
+        get() = actual.serverCertificates?.map { it.encoded }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> =

@@ -52,11 +52,8 @@ private constructor(
     public actual val status: ReplicatorStatus
         get() = ReplicatorStatus(CBLReplicator_Status(actual))
 
-    ///**
-    // * The SSL/TLS certificate received when connecting to the server.
-    // */
-    //public val serverCertificate: SecCertificateRef?
-    //    get() = actual.serverCertificate
+    public actual val serverCertificates: List<ByteArray>?
+        get() = null
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> = wrapCBLError { error ->

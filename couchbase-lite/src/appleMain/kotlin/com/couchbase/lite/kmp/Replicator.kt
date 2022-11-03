@@ -3,7 +3,8 @@ package com.couchbase.lite.kmp
 import cocoapods.CouchbaseLite.CBLReplicator
 import com.couchbase.lite.kmp.ext.wrapCBLError
 import com.udobny.kmp.DelegatedClass
-import platform.Security.SecCertificateRef
+import com.udobny.kmp.ext.toByteArray
+import platform.Security.SecCertificateCopyData
 
 public actual class Replicator
 internal constructor(
@@ -36,11 +37,8 @@ internal constructor(
     public actual val status: ReplicatorStatus
         get() = ReplicatorStatus(actual.status)
 
-    /**
-     * The SSL/TLS certificate received when connecting to the server.
-     */
-    public val serverCertificate: SecCertificateRef?
-        get() = actual.serverCertificate
+    public actual val serverCertificates: List<ByteArray>?
+        get() = SecCertificateCopyData(actual.serverCertificate)?.toByteArray()?.let { listOf(it) }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {
