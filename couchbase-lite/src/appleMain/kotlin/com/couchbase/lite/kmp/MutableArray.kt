@@ -43,7 +43,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     public actual fun setJSON(json: String): MutableArray = chain {
         try {
             wrapCBLError { error ->
-                setJSON(json, error)
+                actual.setJSON(json, error)
             }
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)

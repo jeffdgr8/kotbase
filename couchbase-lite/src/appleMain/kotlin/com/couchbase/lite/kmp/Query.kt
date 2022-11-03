@@ -17,7 +17,7 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
     @Throws(CouchbaseLiteException::class)
     override fun execute(): ResultSet {
         val resultSet = wrapCBLError { error ->
-            execute(error)
+            actual.execute(error)
         }
         return ResultSet(resultSet!!)
     }
@@ -25,7 +25,7 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
     @Throws(CouchbaseLiteException::class)
     override fun explain(): String {
         return wrapCBLError { error ->
-            explain(error)
+            actual.explain(error)
         }!!
     }
 

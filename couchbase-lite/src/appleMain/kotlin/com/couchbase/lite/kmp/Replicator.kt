@@ -43,14 +43,18 @@ internal constructor(
         get() = actual.serverCertificate
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun getPendingDocumentIds(): Set<String> = wrapCBLError { error ->
-        @Suppress("UNCHECKED_CAST")
-        pendingDocumentIDs(error) as Set<String>
+    public actual fun getPendingDocumentIds(): Set<String> {
+        return wrapCBLError { error ->
+            @Suppress("UNCHECKED_CAST")
+            actual.pendingDocumentIDs(error) as Set<String>
+        }
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun isDocumentPending(docId: String): Boolean = wrapCBLError { error ->
-        isDocumentPending(docId, error)
+    public actual fun isDocumentPending(docId: String): Boolean {
+        return wrapCBLError { error ->
+            actual.isDocumentPending(docId, error)
+        }
     }
 
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken {

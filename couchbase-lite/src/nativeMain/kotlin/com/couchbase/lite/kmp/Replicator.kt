@@ -67,8 +67,10 @@ private constructor(
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun isDocumentPending(docId: String): Boolean = wrapCBLError { error ->
-        CBLReplicator_IsDocumentPending(actual, docId.toFLString(), error)
+    public actual fun isDocumentPending(docId: String): Boolean {
+        return wrapCBLError { error ->
+            CBLReplicator_IsDocumentPending(actual, docId.toFLString(), error)
+        }
     }
 
     private val changeListeners = mutableListOf<StableRef<ReplicatorChangeListenerHolder>?>()

@@ -84,9 +84,9 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
-        wrapCBLError { error ->
-            mustBeOpen {
-                saveDocument(document.actual, error)
+        mustBeOpen {
+            wrapCBLError { error ->
+                actual.saveDocument(document.actual, error)
             }
         }
     }
@@ -97,9 +97,9 @@ internal constructor(actual: CBLDatabase) :
         concurrencyControl: ConcurrencyControl
     ): Boolean {
         return try {
-            wrapCBLError { error ->
-                mustBeOpen {
-                    saveDocument(document.actual, concurrencyControl.actual, error)
+            mustBeOpen {
+                wrapCBLError { error ->
+                    actual.saveDocument(document.actual, concurrencyControl.actual, error)
                 }
             }
         } catch (e: CouchbaseLiteException) {
@@ -114,27 +114,27 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
-        return wrapCBLError { error ->
-            try {
-                mustBeOpen {
-                    saveDocument(document.actual, conflictHandler.convert(), error)
+        return mustBeOpen {
+            wrapCBLError { error ->
+                try {
+                    actual.saveDocument(document.actual, conflictHandler.convert(), error)
+                } catch (e: Exception) {
+                    throw CouchbaseLiteException(
+                        "Conflict handler threw an exception",
+                        e,
+                        CBLError.Domain.CBLITE,
+                        CBLError.Code.CONFLICT
+                    )
                 }
-            } catch (e: Exception) {
-                throw CouchbaseLiteException(
-                    "Conflict handler threw an exception",
-                    e,
-                    CBLError.Domain.CBLITE,
-                    CBLError.Code.CONFLICT
-                )
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
-        wrapCBLError { error ->
-            mustBeOpen {
-                deleteDocument(document.actual, error)
+        mustBeOpen {
+            wrapCBLError { error ->
+                actual.deleteDocument(document.actual, error)
             }
         }
     }
@@ -142,9 +142,9 @@ internal constructor(actual: CBLDatabase) :
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
         return try {
-            wrapCBLError { error ->
-                mustBeOpen {
-                    deleteDocument(document.actual, concurrencyControl.actual, error)
+            mustBeOpen {
+                wrapCBLError { error ->
+                    actual.deleteDocument(document.actual, concurrencyControl.actual, error)
                 }
             }
         } catch (e: CouchbaseLiteException) {
@@ -160,9 +160,9 @@ internal constructor(actual: CBLDatabase) :
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
         try {
-            wrapCBLError { error ->
-                mustBeOpen {
-                    purgeDocument(document.actual, error)
+            mustBeOpen {
+                wrapCBLError { error ->
+                    actual.purgeDocument(document.actual, error)
                 }
             }
         } catch (e: CouchbaseLiteException) {
@@ -176,18 +176,18 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
-        wrapCBLError { error ->
-            mustBeOpen {
-                purgeDocumentWithID(id, error)
+        mustBeOpen {
+            wrapCBLError { error ->
+                actual.purgeDocumentWithID(id, error)
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
-        wrapCBLError { error ->
-            mustBeOpen {
-                setDocumentExpirationWithID(id, expiration?.toNSDate(), error)
+        mustBeOpen {
+            wrapCBLError { error ->
+                actual.setDocumentExpirationWithID(id, expiration?.toNSDate(), error)
             }
         }
     }
@@ -201,15 +201,15 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun <R> inBatch(work: Database.() -> R): R {
-        return wrapCBLError { error ->
-            mustBeOpen {
+        return mustBeOpen {
+            wrapCBLError { error ->
                 var result: R? = null
-                inBatch(error) {
+                actual.inBatch(error) {
                     result = this@Database.work()
                 }
                 result
-            }
-        }!!
+            }!!
+        }
     }
 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {
@@ -239,24 +239,24 @@ internal constructor(actual: CBLDatabase) :
     @Throws(CouchbaseLiteException::class)
     public actual fun close() {
         wrapCBLError { error ->
-            close(error)
+            actual.close(error)
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete() {
-        wrapCBLError { error ->
-            mustBeOpen {
-                delete(error)
+        mustBeOpen {
+            wrapCBLError { error ->
+                actual.delete(error)
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createQuery(query: String): Query {
-        val actualQuery = wrapCBLError { error ->
-            mustBeOpen {
-                createQuery(query, error)
+        val actualQuery = mustBeOpen {
+            wrapCBLError { error ->
+                actual.createQuery(query, error)
             }
         }
         return DelegatedQuery(actualQuery!!)
@@ -272,36 +272,36 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
-        wrapCBLError { error ->
-            mustBeOpen {
-                createIndex(index.actual, name, error)
+        mustBeOpen {
+            wrapCBLError { error ->
+                actual.createIndex(index.actual, name, error)
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
-        wrapCBLError { error ->
-            mustBeOpen {
-                createIndexWithConfig(config.actual, name, error)
+        mustBeOpen {
+            wrapCBLError { error ->
+                actual.createIndexWithConfig(config.actual, name, error)
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {
-        wrapCBLError { error ->
-            mustBeOpen {
-                deleteIndexForName(name, error)
+        mustBeOpen {
+            wrapCBLError { error ->
+                actual.deleteIndexForName(name, error)
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun performMaintenance(type: MaintenanceType): Boolean {
-        return wrapCBLError { error ->
-            mustBeOpen {
-                performMaintenance(type.actual, error)
+        return mustBeOpen {
+            wrapCBLError { error ->
+                actual.performMaintenance(type.actual, error)
             }
         }
     }

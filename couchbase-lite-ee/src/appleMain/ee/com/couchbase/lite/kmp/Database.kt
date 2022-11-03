@@ -8,7 +8,7 @@ import com.couchbase.lite.kmp.ext.wrapCBLError
 @Throws(CouchbaseLiteException::class)
 public actual fun Database.changeEncryptionKey(encryptionKey: EncryptionKey?) {
     wrapCBLError { error ->
-        changeEncryptionKey(encryptionKey?.actual, error)
+        actual.changeEncryptionKey(encryptionKey?.actual, error)
     }
 }
 
