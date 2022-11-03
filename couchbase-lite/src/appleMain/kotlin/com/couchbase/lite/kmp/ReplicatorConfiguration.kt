@@ -9,15 +9,30 @@ import platform.Security.SecCertificateCopyData
 import platform.Security.SecCertificateCreateWithData
 
 public actual class ReplicatorConfiguration
-internal constructor(actual: CBLReplicatorConfiguration) :
-    DelegatedClass<CBLReplicatorConfiguration>(actual) {
+private constructor(
+    public actual val database: Database,
+    public actual val target: Endpoint,
+    actual: CBLReplicatorConfiguration,
+    authenticator: Authenticator? = null,
+    conflictResolver: ConflictResolver? = null,
+    pullFilter: ReplicationFilter? = null,
+    pushFilter: ReplicationFilter? = null
+) : DelegatedClass<CBLReplicatorConfiguration>(actual) {
 
     public actual constructor(database: Database, target: Endpoint) : this(
+        database,
+        target,
         CBLReplicatorConfiguration(database.actual, target.actual)
     )
 
     public actual constructor(config: ReplicatorConfiguration) : this(
-        CBLReplicatorConfiguration(config.actual)
+        config.database,
+        config.target,
+        CBLReplicatorConfiguration(config.actual),
+        config.authenticator,
+        config.conflictResolver,
+        config.pullFilter,
+        config.pushFilter
     )
 
     public actual fun setAuthenticator(authenticator: Authenticator): ReplicatorConfiguration =
@@ -82,9 +97,9 @@ internal constructor(actual: CBLReplicatorConfiguration) :
         this@ReplicatorConfiguration.isAutoPurgeEnabled = enabled
     }
 
-    public actual var authenticator: Authenticator?
-        get() = actual.authenticator?.toAuthenticator()
+    public actual var authenticator: Authenticator? = authenticator
         set(value) {
+            field = value
             actual.authenticator = value?.actual
         }
 
@@ -95,9 +110,9 @@ internal constructor(actual: CBLReplicatorConfiguration) :
             actual.channels = value
         }
 
-    public actual var conflictResolver: ConflictResolver?
-        get() = (actual.conflictResolver as DelegatedConflictResolver?)?.actual
+    public actual var conflictResolver: ConflictResolver? = conflictResolver
         set(value) {
+            field = value
             actual.conflictResolver = value?.convert()
         }
 
@@ -106,10 +121,6 @@ internal constructor(actual: CBLReplicatorConfiguration) :
         set(value) {
             actual.continuous = value
         }
-
-    public actual val database: Database by lazy {
-        Database(actual.database)
-    }
 
     public actual var documentIDs: List<String>?
         @Suppress("UNCHECKED_CAST")
@@ -132,15 +143,13 @@ internal constructor(actual: CBLReplicatorConfiguration) :
             actual.pinnedServerCertificate = cert
         }
 
-    public actual var pullFilter: ReplicationFilter? = null
-        get() = field ?: actual.pullFilter?.convert()
+    public actual var pullFilter: ReplicationFilter? = pullFilter
         set(value) {
             field = value
             actual.pullFilter = value?.convert()
         }
 
-    public actual var pushFilter: ReplicationFilter? = null
-        get() = field ?: actual.pushFilter?.convert()
+    public actual var pushFilter: ReplicationFilter? = pushFilter
         set(value) {
             field = value
             actual.pushFilter = value?.convert()
@@ -151,10 +160,6 @@ internal constructor(actual: CBLReplicatorConfiguration) :
         set(value) {
             actual.replicatorType = value.actual
         }
-
-    public actual val target: Endpoint by lazy {
-        actual.target.asEndpoint()
-    }
 
     public actual var maxAttempts: Int
         get() = actual.maxAttempts.toInt()

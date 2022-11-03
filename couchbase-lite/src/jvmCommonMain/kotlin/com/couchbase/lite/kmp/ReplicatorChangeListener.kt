@@ -2,8 +2,10 @@
 
 package com.couchbase.lite.kmp
 
-internal fun ReplicatorChangeListener.convert(): com.couchbase.lite.ReplicatorChangeListener {
+internal fun ReplicatorChangeListener.convert(
+    replicator: Replicator
+): com.couchbase.lite.ReplicatorChangeListener {
     return com.couchbase.lite.ReplicatorChangeListener { change ->
-        invoke(ReplicatorChange(change))
+        invoke(ReplicatorChange(change, replicator))
     }
 }

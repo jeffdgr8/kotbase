@@ -3,15 +3,30 @@ package com.couchbase.lite.kmp
 import com.udobny.kmp.DelegatedClass
 
 public actual class ReplicatorConfiguration
-internal constructor(actual: com.couchbase.lite.ReplicatorConfiguration) :
-    DelegatedClass<com.couchbase.lite.ReplicatorConfiguration>(actual) {
+private constructor(
+    public actual val database: Database,
+    public actual val target: Endpoint,
+    actual: com.couchbase.lite.ReplicatorConfiguration,
+    authenticator: Authenticator? = null,
+    conflictResolver: ConflictResolver? = null,
+    pullFilter: ReplicationFilter? = null,
+    pushFilter: ReplicationFilter? = null
+) : DelegatedClass<com.couchbase.lite.ReplicatorConfiguration>(actual) {
 
     public actual constructor(database: Database, target: Endpoint) : this(
+        database,
+        target,
         com.couchbase.lite.ReplicatorConfiguration(database.actual, target.actual)
     )
 
     public actual constructor(config: ReplicatorConfiguration) : this(
-        com.couchbase.lite.ReplicatorConfiguration(config.actual)
+        config.database,
+        config.target,
+        com.couchbase.lite.ReplicatorConfiguration(config.actual),
+        config.authenticator,
+        config.conflictResolver,
+        config.pullFilter,
+        config.pushFilter
     )
 
     public actual fun setAuthenticator(authenticator: Authenticator): ReplicatorConfiguration =
@@ -76,9 +91,9 @@ internal constructor(actual: com.couchbase.lite.ReplicatorConfiguration) :
         this@ReplicatorConfiguration.isAutoPurgeEnabled = enabled
     }
 
-    public actual var authenticator: Authenticator?
-        get() = actual.authenticator?.toAuthenticator()
+    public actual var authenticator: Authenticator? = authenticator
         set(value) {
+            field = value
             actual.setAuthenticator(value!!.actual)
         }
 
@@ -88,9 +103,9 @@ internal constructor(actual: com.couchbase.lite.ReplicatorConfiguration) :
             actual.channels = value
         }
 
-    public actual var conflictResolver: ConflictResolver?
-        get() = (actual.conflictResolver as DelegatedConflictResolver?)?.actual
+    public actual var conflictResolver: ConflictResolver? = conflictResolver
         set(value) {
+            field = value
             actual.conflictResolver = value?.convert()
         }
 
@@ -99,10 +114,6 @@ internal constructor(actual: com.couchbase.lite.ReplicatorConfiguration) :
         set(value) {
             actual.isContinuous = value
         }
-
-    public actual val database: Database by lazy {
-        Database(actual.database)
-    }
 
     public actual var documentIDs: List<String>?
         get() = actual.documentIDs
@@ -122,15 +133,15 @@ internal constructor(actual: com.couchbase.lite.ReplicatorConfiguration) :
             actual.pinnedServerCertificate = value
         }
 
-    public actual var pullFilter: ReplicationFilter?
-        get() = (actual.pullFilter as DelegatedReplicationFilter?)?.actual
+    public actual var pullFilter: ReplicationFilter? = pullFilter
         set(value) {
+            field = value
             actual.pullFilter = value?.convert()
         }
 
-    public actual var pushFilter: ReplicationFilter?
-        get() = (actual.pushFilter as DelegatedReplicationFilter?)?.actual
+    public actual var pushFilter: ReplicationFilter? = pushFilter
         set(value) {
+            field = value
             actual.pushFilter = value?.convert()
         }
 
@@ -139,10 +150,6 @@ internal constructor(actual: com.couchbase.lite.ReplicatorConfiguration) :
         set(value) {
             actual.type = value.actual
         }
-
-    public actual val target: Endpoint by lazy {
-        actual.target.asEndpoint()
-    }
 
     public actual var maxAttempts: Int
         get() = actual.maxAttempts

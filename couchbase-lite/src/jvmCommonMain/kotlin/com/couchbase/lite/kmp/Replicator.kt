@@ -5,11 +5,14 @@ import com.udobny.kmp.DelegatedClass
 import java.security.cert.Certificate
 
 public actual class Replicator
-internal constructor(actual: com.couchbase.lite.Replicator) :
-    DelegatedClass<com.couchbase.lite.Replicator>(actual) {
+internal constructor(
+    actual: com.couchbase.lite.Replicator,
+    private val _config: ReplicatorConfiguration
+) : DelegatedClass<com.couchbase.lite.Replicator>(actual) {
 
     public actual constructor(config: ReplicatorConfiguration) : this(
-        com.couchbase.lite.Replicator(config.actual)
+        com.couchbase.lite.Replicator(config.actual),
+        config
     )
 
     internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(
@@ -17,7 +20,8 @@ internal constructor(actual: com.couchbase.lite.Replicator) :
             testReplicator(config.actual)
         } else {
             com.couchbase.lite.Replicator(config.actual)
-        }
+        },
+        config
     )
 
     public actual fun start() {
@@ -32,9 +36,8 @@ internal constructor(actual: com.couchbase.lite.Replicator) :
         actual.stop()
     }
 
-    public actual val config: ReplicatorConfiguration by lazy {
-        ReplicatorConfiguration(actual.config)
-    }
+    public actual val config: ReplicatorConfiguration
+        get() = ReplicatorConfiguration(_config)
 
     public actual val status: ReplicatorStatus
         get() = ReplicatorStatus(actual.status)
@@ -54,13 +57,13 @@ internal constructor(actual: com.couchbase.lite.Replicator) :
         actual.isDocumentPending(docId)
 
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken =
-        actual.addChangeListener(listener.convert())
+        actual.addChangeListener(listener.convert(this))
 
     // TODO:
     //public actual fun addChangeListener(executor: Executor?, listener: ReplicatorChangeListener): ListenerToken
 
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken =
-        actual.addDocumentReplicationListener(listener.convert())
+        actual.addDocumentReplicationListener(listener.convert(this))
 
     // TODO:
     //public actual fun addDocumentReplicationListener(executor: Executor?, listener: DocumentReplicationListener): ListenerToken

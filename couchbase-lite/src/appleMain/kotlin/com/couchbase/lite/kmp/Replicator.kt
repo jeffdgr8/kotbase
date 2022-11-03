@@ -6,14 +6,17 @@ import com.udobny.kmp.DelegatedClass
 import platform.Security.SecCertificateRef
 
 public actual class Replicator
-internal constructor(actual: CBLReplicator) :
-    DelegatedClass<CBLReplicator>(actual) {
+internal constructor(
+    actual: CBLReplicator,
+    private val _config: ReplicatorConfiguration
+) : DelegatedClass<CBLReplicator>(actual) {
 
-    public actual constructor(config: ReplicatorConfiguration) : this(CBLReplicator(config.actual))
-
-    internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(
-        CBLReplicator(config.actual)
+    public actual constructor(config: ReplicatorConfiguration) : this(
+        CBLReplicator(config.actual),
+        config
     )
+
+    internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(config)
 
     public actual fun start() {
         actual.start()
@@ -27,9 +30,8 @@ internal constructor(actual: CBLReplicator) :
         actual.stop()
     }
 
-    public actual val config: ReplicatorConfiguration by lazy {
-        ReplicatorConfiguration(actual.config)
-    }
+    public actual val config: ReplicatorConfiguration
+        get() = ReplicatorConfiguration(_config)
 
     public actual val status: ReplicatorStatus
         get() = ReplicatorStatus(actual.status)
@@ -53,7 +55,7 @@ internal constructor(actual: CBLReplicator) :
 
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken {
         return DelegatedListenerToken(
-            actual.addChangeListener(listener.convert())
+            actual.addChangeListener(listener.convert(this))
         )
     }
 
@@ -62,7 +64,7 @@ internal constructor(actual: CBLReplicator) :
 
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken {
         return DelegatedListenerToken(
-            actual.addDocumentReplicationListener(listener.convert())
+            actual.addDocumentReplicationListener(listener.convert(this))
         )
     }
 

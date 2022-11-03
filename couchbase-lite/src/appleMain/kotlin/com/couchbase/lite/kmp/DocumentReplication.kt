@@ -5,12 +5,10 @@ import cocoapods.CouchbaseLite.CBLReplicatedDocument
 import com.udobny.kmp.DelegatedClass
 
 public actual class DocumentReplication
-internal constructor(actual: CBLDocumentReplication) :
-    DelegatedClass<CBLDocumentReplication>(actual) {
-
-    public actual val replicator: Replicator by lazy {
-        Replicator(actual.replicator)
-    }
+internal constructor(
+    actual: CBLDocumentReplication,
+    public actual val replicator: Replicator
+) : DelegatedClass<CBLDocumentReplication>(actual) {
 
     public actual val isPush: Boolean
         get() = actual.isPush

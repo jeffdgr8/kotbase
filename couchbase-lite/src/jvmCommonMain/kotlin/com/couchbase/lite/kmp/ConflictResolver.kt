@@ -2,14 +2,8 @@
 
 package com.couchbase.lite.kmp
 
-import com.udobny.kmp.DelegatedClass
-
-internal fun ConflictResolver.convert(): com.couchbase.lite.ConflictResolver =
-    DelegatedConflictResolver(this)
-
-internal class DelegatedConflictResolver(actual: ConflictResolver) :
-    DelegatedClass<ConflictResolver>(actual), com.couchbase.lite.ConflictResolver {
-
-    override fun resolve(conflict: com.couchbase.lite.Conflict): com.couchbase.lite.Document =
-        actual(Conflict(conflict)).actual
+internal fun ConflictResolver.convert(): com.couchbase.lite.ConflictResolver {
+    return com.couchbase.lite.ConflictResolver { conflict ->
+        invoke(Conflict(conflict)).actual
+    }
 }
