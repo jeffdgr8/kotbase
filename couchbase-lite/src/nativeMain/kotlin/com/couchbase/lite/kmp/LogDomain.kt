@@ -10,6 +10,15 @@ public actual enum class LogDomain {
     NETWORK,
     LISTENER;
 
+    internal val actual: CBLLogDomain
+        get() = when (this) {
+            DATABASE -> kCBLLogDomainDatabase
+            QUERY -> kCBLLogDomainQuery
+            REPLICATOR -> kCBLLogDomainReplicator
+            NETWORK -> kCBLLogDomainNetwork
+            LISTENER -> kCBLLogDomainListener
+        }.convert()
+
     public actual companion object {
 
         public actual val ALL_DOMAINS: Set<LogDomain> =
@@ -26,15 +35,6 @@ public actual enum class LogDomain {
             }
         }
     }
-
-    internal val actual: CBLLogDomain
-        get() = when (this) {
-            DATABASE -> kCBLLogDomainDatabase
-            QUERY -> kCBLLogDomainQuery
-            REPLICATOR -> kCBLLogDomainReplicator
-            NETWORK -> kCBLLogDomainNetwork
-            LISTENER -> kCBLLogDomainListener
-        }.convert()
 }
 
 // This constant is enterprise only in the C SDK, but not Java

@@ -7,6 +7,15 @@ public actual enum class LogDomain {
     NETWORK,
     LISTENER;
 
+    internal val actual: com.couchbase.lite.LogDomain
+        get() = when (this) {
+            DATABASE -> com.couchbase.lite.LogDomain.DATABASE
+            QUERY -> com.couchbase.lite.LogDomain.QUERY
+            REPLICATOR -> com.couchbase.lite.LogDomain.REPLICATOR
+            NETWORK -> com.couchbase.lite.LogDomain.NETWORK
+            LISTENER -> com.couchbase.lite.LogDomain.LISTENER
+        }
+
     public actual companion object {
 
         public actual val ALL_DOMAINS: Set<LogDomain> = values().toSet()
@@ -21,13 +30,4 @@ public actual enum class LogDomain {
             }
         }
     }
-
-    internal val actual: com.couchbase.lite.LogDomain
-        get() = when (this) {
-            DATABASE -> com.couchbase.lite.LogDomain.DATABASE
-            QUERY -> com.couchbase.lite.LogDomain.QUERY
-            REPLICATOR -> com.couchbase.lite.LogDomain.REPLICATOR
-            NETWORK -> com.couchbase.lite.LogDomain.NETWORK
-            LISTENER -> com.couchbase.lite.LogDomain.LISTENER
-        }
 }

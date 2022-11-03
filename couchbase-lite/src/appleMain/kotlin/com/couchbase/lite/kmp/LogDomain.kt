@@ -9,6 +9,15 @@ public actual enum class LogDomain {
     NETWORK,
     LISTENER;
 
+    internal val actual: CBLLogDomain
+        get() = when (this) {
+            DATABASE -> kCBLLogDomainDatabase
+            QUERY -> kCBLLogDomainQuery
+            REPLICATOR -> kCBLLogDomainReplicator
+            NETWORK -> kCBLLogDomainNetwork
+            LISTENER -> kCBLLogDomainListener
+        }
+
     public actual companion object {
 
         public actual val ALL_DOMAINS: Set<LogDomain> =
@@ -25,15 +34,6 @@ public actual enum class LogDomain {
             }
         }
     }
-
-    internal val actual: CBLLogDomain
-        get() = when (this) {
-            DATABASE -> kCBLLogDomainDatabase
-            QUERY -> kCBLLogDomainQuery
-            REPLICATOR -> kCBLLogDomainReplicator
-            NETWORK -> kCBLLogDomainNetwork
-            LISTENER -> kCBLLogDomainListener
-        }
 }
 
 internal fun CBLLogDomain.toLogDomain(): Set<LogDomain> = buildSet {
