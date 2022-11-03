@@ -1,11 +1,13 @@
 package com.couchbase.lite.kmp
 
 public actual class BasicAuthenticator
-internal constructor(override val actual: com.couchbase.lite.BasicAuthenticator) :
-    Authenticator(actual) {
+internal constructor(
+    override val actual: com.couchbase.lite.BasicAuthenticator
+) : Authenticator {
 
-    public actual constructor(username: String, password: CharArray) :
-            this(com.couchbase.lite.BasicAuthenticator(username, password))
+    public actual constructor(username: String, password: CharArray) : this(
+        com.couchbase.lite.BasicAuthenticator(username, password)
+    )
 
     public actual val username: String
         get() = actual.username

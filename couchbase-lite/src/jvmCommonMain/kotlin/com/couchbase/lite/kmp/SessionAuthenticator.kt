@@ -1,8 +1,9 @@
 package com.couchbase.lite.kmp
 
 public actual class SessionAuthenticator
-internal constructor(override val actual: com.couchbase.lite.SessionAuthenticator) :
-    Authenticator(actual) {
+internal constructor(
+    override val actual: com.couchbase.lite.SessionAuthenticator
+) : Authenticator {
 
     public actual constructor(sessionID: String, cookieName: String?) : this(
         com.couchbase.lite.SessionAuthenticator(sessionID, cookieName)

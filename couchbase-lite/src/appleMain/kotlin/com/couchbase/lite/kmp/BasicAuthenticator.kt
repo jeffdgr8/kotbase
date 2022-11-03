@@ -3,8 +3,9 @@ package com.couchbase.lite.kmp
 import cocoapods.CouchbaseLite.CBLBasicAuthenticator
 
 public actual class BasicAuthenticator
-internal constructor(override val actual: CBLBasicAuthenticator) :
-    Authenticator(actual) {
+internal constructor(
+    override val actual: CBLBasicAuthenticator
+) : Authenticator {
 
     public actual constructor(username: String, password: CharArray) : this(
         CBLBasicAuthenticator(username, password.concatToString())

@@ -1,6 +1,8 @@
 package com.couchbase.lite.kmp
 
+import cnames.structs.CBLAuthenticator
 import com.couchbase.lite.kmp.internal.fleece.toFLString
+import kotlinx.cinterop.CPointer
 import libcblite.CBLAuth_CreateSession
 
 public actual class SessionAuthenticator
@@ -8,12 +10,13 @@ public actual class SessionAuthenticator
 actual constructor(
     public actual val sessionID: String,
     cookieName: String?
-) : Authenticator(
-    CBLAuth_CreateSession(
-        sessionID.toFLString(),
-        (cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME).toFLString()
-    )!!
-) {
+) : Authenticator {
+
+    override val actual: CPointer<CBLAuthenticator> =
+        CBLAuth_CreateSession(
+            sessionID.toFLString(),
+            (cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME).toFLString()
+        )!!
 
     public actual val cookieName: String = cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME
 

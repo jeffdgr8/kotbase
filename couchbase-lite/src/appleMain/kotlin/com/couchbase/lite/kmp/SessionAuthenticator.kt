@@ -3,7 +3,9 @@ package com.couchbase.lite.kmp
 import cocoapods.CouchbaseLite.CBLSessionAuthenticator
 
 public actual class SessionAuthenticator
-internal constructor(override val actual: CBLSessionAuthenticator) : Authenticator(actual) {
+internal constructor(
+    override val actual: CBLSessionAuthenticator
+) : Authenticator {
 
     public actual constructor(sessionID: String, cookieName: String?) : this(
         CBLSessionAuthenticator(sessionID, cookieName)
