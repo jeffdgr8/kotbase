@@ -54,7 +54,7 @@ kotlin {
             isStatic = false
         }
         pod("CouchbaseLite") {
-            version = cblVersion
+            version = "3.0.2"//cblVersion
             // use local build
             //source = path("$rootDir/../couchbase-lite-ios")
             moduleName = "CouchbaseLite"

@@ -61,7 +61,7 @@ kotlin {
             isStatic = false
         }
         pod("CouchbaseLite-Enterprise") {
-            version = cblVersion
+            version = "3.0.2"//cblVersion
             moduleName = "CouchbaseLite"
             packageName = "cocoapods.CouchbaseLite"
             // Workaround for 'CBLQueryMeta' is going to be declared twice
@@ -490,4 +490,4 @@ val String.arch: String
     }
 
 fun libcblitePath(os: String, arch: String): String =
-    "libs/libcblite/$os/$arch/libcblite-$cblVersion"
+    "libs/libcblite/$os/$arch/libcblite-3.0.2"//$cblVersion"
