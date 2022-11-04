@@ -821,10 +821,14 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertEquals(docIds.size, replicator.getPendingDocumentIds().size)
         assertEquals(docIds, replicator.getPendingDocumentIds())
 
+        var first = true
         val token = replicator.addChangeListener { change ->
             val pDocIds = change.replicator.getPendingDocumentIds()
 
-            if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+            // TODO: native C does not receive ReplicatorActivityLevel.CONNECTING
+            //if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+            if (first) {
+                first = false
                 assertEquals(docIds, pDocIds)
                 assertEquals(docIds.size, pDocIds.size)
             } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
@@ -856,8 +860,12 @@ class ReplicatorEETest : BaseReplicatorTest() {
             assertEquals(present, replicator.isDocumentPending(docId))
         }
 
+        var first = true
         val token = replicator.addChangeListener { change ->
-            if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+            // TODO: native C does not receive ReplicatorActivityLevel.CONNECTING
+            //if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+            if (first) {
+                first = false
                 for ((docId, present) in expected) {
                     assertEquals(present, replicator.isDocumentPending(docId))
                 }
@@ -885,11 +893,13 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val replConfig = makeConfig(target, ReplicatorType.PULL, false)
         val replicator = Replicator(replConfig)
 
+        var first = true
         var pullOnlyError: CouchbaseLiteException? = null
         val token = replicator.addChangeListener { change ->
             // TODO: native C does not receive ReplicatorActivityLevel.CONNECTING
-            // checking for != ReplicatorActivityLevel.STOPPED as workaround
-            if (change.status.activityLevel != ReplicatorActivityLevel.STOPPED) {
+            //if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+            if (first) {
+                first = false
                 try {
                     replicator.getPendingDocumentIds()
                 } catch (e: CouchbaseLiteException) {
@@ -986,9 +996,13 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val replConfig = makeConfig(target, ReplicatorType.PULL, false)
         val replicator = Replicator(replConfig)
 
+        var first = true
         var pullOnlyError: CouchbaseLiteException? = null
         val token = replicator.addChangeListener { change ->
-            if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+            // TODO: native C does not receive ReplicatorActivityLevel.CONNECTING
+            //if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+            if (first) {
+                first = false
                 try {
                     replicator.isDocumentPending("doc-1")
                 } catch (e: CouchbaseLiteException) {

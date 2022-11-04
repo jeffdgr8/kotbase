@@ -58,10 +58,10 @@ private constructor(
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {
         return wrapCBLError { error ->
-            val dict = CBLReplicator_PendingDocumentIDs(actual, error)!!
-            dict.keys().toSet().also {
+            val dict = CBLReplicator_PendingDocumentIDs(actual, error)
+            dict?.keys()?.toSet()?.also {
                 FLDict_Release(dict)
-            }
+            } ?: emptySet()
         }
     }
 
