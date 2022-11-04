@@ -9,4 +9,4 @@ package com.couchbase.lite.kmp
  * @param conflict Description of the conflicting documents.
  * @return the resolved doc.
  */
-public typealias ConflictResolver = (conflict: Conflict) -> Document
+public typealias ConflictResolver = (conflict: Conflict) -> Document?
