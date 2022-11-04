@@ -1,5 +1,7 @@
-@file:Suppress("UNUSED_VARIABLE")
+@file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.*
+import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
@@ -57,7 +59,6 @@ kotlin {
             version = "3.0.2"//cblVersion
             // use local build
             //source = path("$rootDir/../couchbase-lite-ios")
-            moduleName = "CouchbaseLite"
             // Workaround for 'CBLQueryMeta' is going to be declared twice
             // https://youtrack.jetbrains.com/issue/KT-41709
             extraOpts = listOf("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")
@@ -83,7 +84,6 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(project(":couchbase-lite"))
             }
         }
 
@@ -184,8 +184,18 @@ if (System.getProperty("os.name") == "Linux") {
     tasks.withType<Test> {
         environment(
             "LD_LIBRARY_PATH",
-            "\$LD_LIBRARY_PATH:${project(":couchbase-lite").projectDir}/libs/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu"
+            "\$LD_LIBRARY_PATH:$rootDir/libs/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu"
         )
+    }
+}
+
+tasks.withType<AbstractTestTask> {
+    testLogging {
+        events(FAILED, PASSED)
+        exceptionFormat = FULL
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
     }
 }
 
@@ -266,4 +276,4 @@ val String.arch: String
     }
 
 fun libcblitePath(os: String, arch: String): String =
-    "${project(":couchbase-lite").projectDir}/libs/libcblite/$os/$arch/libcblite-$cblVersion"
+    "${project(":couchbase-lite").projectDir}/libs/libcblite/$os/$arch/libcblite-3.0.2"//$cblVersion"

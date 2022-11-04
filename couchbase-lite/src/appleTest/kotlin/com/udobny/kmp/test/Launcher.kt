@@ -5,7 +5,6 @@ package com.udobny.kmp.test
 import platform.CoreFoundation.CFRunLoopRun
 import kotlin.native.concurrent.TransferMode
 import kotlin.native.concurrent.Worker
-import kotlin.native.concurrent.freeze
 import kotlin.native.internal.test.testLauncherEntryPoint
 import kotlin.system.exitProcess
 
