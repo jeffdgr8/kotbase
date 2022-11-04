@@ -6,6 +6,8 @@ import kotlin.test.*
 
 class DatabaseEncryptionTest : BaseDbTest() {
 
+    // DatabaseEncryptionTest.swift
+
     private var seekrit: Database? = null
 
     @AfterTest

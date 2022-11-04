@@ -8,6 +8,8 @@ import kotlin.time.Duration.Companion.seconds
 
 class DatabaseEETest : BaseReplicatorTest() {
 
+    // DatabaseTest.swift
+
     // TODO: https://issues.couchbase.com/browse/CBL-3526
     @Test
     fun testCloseWithActiveReplicators() = runBlocking {

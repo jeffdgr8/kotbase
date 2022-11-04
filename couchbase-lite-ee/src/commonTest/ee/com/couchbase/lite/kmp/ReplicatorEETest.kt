@@ -9,6 +9,8 @@ import kotlin.time.Duration.Companion.seconds
 
 class ReplicatorEETest : BaseReplicatorTest() {
 
+    // ReplicatorTest.swift
+
     @Test
     fun testEmptyPush() {
         val target = DatabaseEndpoint(otherDB)
@@ -782,5 +784,296 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertNull(baseTestDb.getDocument("doc3"))
         assertEquals(3, otherDB.count)
         assertEquals(2, baseTestDb.count)
+    }
+
+    // ReplicatorTest+PendingDocIds.swift
+    
+    private val kActionKey = "action-key"
+    private var noOfDocument = 5
+    private val kCreateActionValue = "doc-create"
+    private val kUpdateActionValue = "doc-update"
+    
+    // Helper methods
+
+    /**
+     * create docs : [doc-1, doc-2, ...] up to `noOfDocument` docs.
+     */
+    private fun createDocs(): MutableSet<String> {
+        val docIds = mutableSetOf<String>()
+        for (i in 0 until noOfDocument) {
+            val doc = MutableDocument("doc-$i")
+            doc.setValue(kActionKey, kCreateActionValue)
+            saveDocInBaseTestDb(doc)
+            docIds.add("doc-$i")
+        }
+        return docIds
+    }
+
+    private fun validatePendingDocumentIDs(
+        docIds: Set<String>,
+        config: ReplicatorConfiguration? = null
+    ) = runBlocking {
+        val mutex = Mutex(true)
+        val replConfig = config ?: makeConfig(DatabaseEndpoint(otherDB), ReplicatorType.PUSH, false)
+        val replicator = Replicator(replConfig)
+
+        // verify before starting the replicator
+        assertEquals(docIds.size, replicator.getPendingDocumentIds().size)
+        assertEquals(docIds, replicator.getPendingDocumentIds())
+
+        val token = replicator.addChangeListener { change ->
+            val pDocIds = change.replicator.getPendingDocumentIds()
+
+            if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+                assertEquals(docIds, pDocIds)
+                assertEquals(docIds.size, pDocIds.size)
+            } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
+                assertEquals(0, pDocIds.size)
+                mutex.unlock()
+            }
+        }
+
+        replicator.start()
+        withTimeout(5.seconds) {
+            mutex.lock()
+        }
+        replicator.removeChangeListener(token)
+    }
+
+    /**
+     * expected: [docId: isPresent] e.g., @{"doc-1": true, "doc-2": false, "doc-3": false}
+     */
+    private fun validateIsDocumentPending(
+        expected: Map<String, Boolean>,
+        config: ReplicatorConfiguration? = null
+    ) = runBlocking {
+        val mutex = Mutex(true)
+        val replConfig = config ?: makeConfig(DatabaseEndpoint(otherDB), ReplicatorType.PUSH, false)
+        val replicator = Replicator(replConfig)
+
+        // verify before starting the replicator
+        for ((docId, present) in expected) {
+            assertEquals(present, replicator.isDocumentPending(docId))
+        }
+
+        val token = replicator.addChangeListener { change ->
+            if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+                for ((docId, present) in expected) {
+                    assertEquals(present, replicator.isDocumentPending(docId))
+                }
+            } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
+                for ((docId, _) in expected) {
+                    assertFalse(replicator.isDocumentPending(docId))
+                }
+                mutex.unlock()
+            }
+        }
+
+        replicator.start()
+        withTimeout(5.seconds) {
+            mutex.lock()
+        }
+        replicator.removeChangeListener(token)
+    }
+
+    // Unit Tests
+
+    @Test
+    fun testPendingDocIDsPullOnlyException() = runBlocking {
+        val mutex = Mutex(true)
+        val target = DatabaseEndpoint(otherDB)
+        val replConfig = makeConfig(target, ReplicatorType.PULL, false)
+        val replicator = Replicator(replConfig)
+
+        lateinit var pullOnlyError: CouchbaseLiteException
+        val token = replicator.addChangeListener { change ->
+            if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+                try {
+                    replicator.getPendingDocumentIds()
+                } catch (e: CouchbaseLiteException) {
+                    pullOnlyError = e
+                }
+            } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
+                mutex.unlock()
+            }
+        }
+        replicator.start()
+        withTimeout(5.seconds) {
+            mutex.lock()
+        }
+
+        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError.getCode())
+        replicator.removeChangeListener(token)
+    }
+
+    // TODO: https://issues.couchbase.com/browse/CBL-2448
+    @Test
+    fun testPendingDocIDsWithCreate() {
+        val docIds = createDocs()
+        validatePendingDocumentIDs(docIds)
+    }
+
+    // TODO: https://issues.couchbase.com/browse/CBL-2448
+    @Test
+    fun testPendingDocIDsWithUpdate() {
+        createDocs()
+
+        val target = DatabaseEndpoint(otherDB)
+        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
+        run(replConfig)
+
+        val updatedIds = setOf("doc-2", "doc-4")
+        for (docId in updatedIds) {
+            val doc = baseTestDb.getDocument(docId)!!.toMutable()
+            doc.setString(kActionKey, kUpdateActionValue)
+            saveDocInBaseTestDb(doc)
+        }
+
+        validatePendingDocumentIDs(updatedIds)
+    }
+    
+    // TODO: https://issues.couchbase.com/browse/CBL-2448
+    @Test
+    fun testPendingDocIdsWithDelete() {
+        createDocs()
+
+        val target = DatabaseEndpoint(otherDB)
+        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
+        run(replConfig)
+
+        val deletedIds = setOf("doc-2", "doc-4")
+        for (docId in deletedIds) {
+            val doc = baseTestDb.getDocument(docId)!!
+            baseTestDb.delete(doc)
+        }
+
+        validatePendingDocumentIDs(deletedIds)
+    }
+
+    // TODO: https://issues.couchbase.com/browse/CBL-2448
+    @Test
+    fun testPendingDocIdsWithPurge() {
+        val docs = createDocs()
+
+        baseTestDb.purge("doc-3")
+        docs.remove("doc-3")
+        
+        validatePendingDocumentIDs(docs)
+    }
+
+    // TODO: https://issues.couchbase.com/browse/CBL-2448
+    @Test
+    fun testPendingDocIdsWithFilter() {
+        createDocs()
+
+        val target = DatabaseEndpoint(otherDB)
+        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
+        replConfig.pushFilter = { doc, _ ->
+            doc.id == "doc-3"
+        }
+
+        validatePendingDocumentIDs(setOf("doc-3"), replConfig)
+    }
+
+    // isDocumentPending
+
+    @Test
+    fun testIsDocumentPendingPullOnlyException() = runBlocking {
+        val mutex = Mutex(true)
+        val target = DatabaseEndpoint(otherDB)
+        val replConfig = makeConfig(target, ReplicatorType.PULL, false)
+        val replicator = Replicator(replConfig)
+
+        lateinit var pullOnlyError: CouchbaseLiteException
+        val token = replicator.addChangeListener { change ->
+            if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+                try {
+                    replicator.isDocumentPending("doc-1")
+                } catch (e: CouchbaseLiteException) {
+                    pullOnlyError = e
+                }
+            } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
+                mutex.unlock()
+            }
+        }
+
+        replicator.start()
+        withTimeout(5.seconds) {
+            mutex.lock()
+        }
+
+        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError.getCode())
+        replicator.removeChangeListener(token)
+    }
+
+    // TODO: https://issues.couchbase.com/browse/CBL-2575
+    @Test
+    fun testIsDocumentPendingWithCreate() {
+        noOfDocument = 2
+        createDocs()
+
+        validateIsDocumentPending(mapOf("doc-0" to true, "doc-1" to true, "doc-3" to false))
+    }
+
+    // TODO: https://issues.couchbase.com/browse/CBL-2575
+    @Test
+    fun testIsDocumentPendingWithUpdate() {
+        createDocs()
+
+        val target = DatabaseEndpoint(otherDB)
+        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
+        run(replConfig)
+
+        val updatedIds = setOf("doc-2", "doc-4")
+        for (docId in updatedIds) {
+            val doc = baseTestDb.getDocument(docId)!!.toMutable()
+            doc.setString(kActionKey, kUpdateActionValue)
+            saveDocInBaseTestDb(doc)
+        }
+
+        validateIsDocumentPending(mapOf("doc-2" to true, "doc-4" to true, "doc-1" to false))
+    }
+
+    // TODO: https://issues.couchbase.com/browse/CBL-2575
+    @Test
+    fun testIsDocumentPendingWithDelete() {
+        createDocs()
+
+        val target = DatabaseEndpoint(otherDB)
+        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
+        run(replConfig)
+
+        val deletedIds = setOf("doc-2", "doc-4")
+        for (docId in deletedIds) {
+            val doc = baseTestDb.getDocument(docId)!!
+            baseTestDb.delete(doc)
+        }
+
+        validateIsDocumentPending(mapOf("doc-2" to true, "doc-4" to true, "doc-1" to false))
+    }
+
+    // TODO: https://issues.couchbase.com/browse/CBL-2575
+    @Test
+    fun testIsDocumentPendingWithPurge() {
+        noOfDocument = 3
+        createDocs()
+
+        baseTestDb.purge("doc-1")
+
+        validateIsDocumentPending(mapOf("doc-0" to true, "doc-1" to false, "doc-2" to true))
+    }
+
+    // TODO: https://issues.couchbase.com/browse/CBL-2575
+    @Test
+    fun testIsDocumentPendingWithPushFilter() {
+        createDocs()
+
+        val target = DatabaseEndpoint(otherDB)
+        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
+        replConfig.pushFilter = { doc, _ ->
+            doc.id == "doc-3"
+        }
+
+        validateIsDocumentPending(mapOf("doc-3" to true, "doc-1" to false), replConfig)
     }
 }

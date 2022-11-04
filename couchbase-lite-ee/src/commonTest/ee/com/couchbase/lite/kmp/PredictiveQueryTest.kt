@@ -12,6 +12,8 @@ import kotlin.test.*
 @IgnoreNative
 class PredictiveQueryTest : BaseQueryTest() {
 
+    // PredictiveQueryTest.swift
+
     @BeforeTest
     fun setUp() {
         Database.prediction.unregisterModel(AggregateModel.NAME)
