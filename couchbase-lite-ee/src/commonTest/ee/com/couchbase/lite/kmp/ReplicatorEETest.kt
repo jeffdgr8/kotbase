@@ -787,12 +787,12 @@ class ReplicatorEETest : BaseReplicatorTest() {
     }
 
     // ReplicatorTest+PendingDocIds.swift
-    
+
     private val kActionKey = "action-key"
     private var noOfDocument = 5
     private val kCreateActionValue = "doc-create"
     private val kUpdateActionValue = "doc-update"
-    
+
     // Helper methods
 
     /**
@@ -885,7 +885,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val replConfig = makeConfig(target, ReplicatorType.PULL, false)
         val replicator = Replicator(replConfig)
 
-        lateinit var pullOnlyError: CouchbaseLiteException
+        var pullOnlyError: CouchbaseLiteException? = null
         val token = replicator.addChangeListener { change ->
             if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
                 try {
@@ -902,7 +902,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             mutex.lock()
         }
 
-        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError.getCode())
+        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.getCode())
         replicator.removeChangeListener(token)
     }
 
@@ -984,7 +984,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val replConfig = makeConfig(target, ReplicatorType.PULL, false)
         val replicator = Replicator(replConfig)
 
-        lateinit var pullOnlyError: CouchbaseLiteException
+        var pullOnlyError: CouchbaseLiteException? = null
         val token = replicator.addChangeListener { change ->
             if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
                 try {
@@ -1002,7 +1002,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             mutex.lock()
         }
 
-        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError.getCode())
+        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.getCode())
         replicator.removeChangeListener(token)
     }
 
