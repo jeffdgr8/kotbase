@@ -57,14 +57,6 @@ private constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {
-        if (config.type == ReplicatorType.PULL) {
-            throw CouchbaseLiteException(
-                "Pending Document IDs are not supported on pull-only replicators.",
-                CBLError.Domain.CBLITE,
-                CBLError.Code.UNSUPPORTED
-            )
-        }
-
         return wrapCBLError { error ->
             val dict = CBLReplicator_PendingDocumentIDs(actual, error)!!
             dict.keys().toSet().also {

@@ -887,7 +887,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
         var pullOnlyError: CouchbaseLiteException? = null
         val token = replicator.addChangeListener { change ->
-            if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+            // TODO: native C does not receive ReplicatorActivityLevel.CONNECTING
+            // checking for != ReplicatorActivityLevel.STOPPED as workaround
+            if (change.status.activityLevel != ReplicatorActivityLevel.STOPPED) {
                 try {
                     replicator.getPendingDocumentIds()
                 } catch (e: CouchbaseLiteException) {
