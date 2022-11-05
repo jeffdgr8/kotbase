@@ -2,6 +2,7 @@ package com.couchbase.lite.kmp
 
 import com.couchbase.lite.generation
 import com.udobny.kmp.test.IgnoreApple
+import com.udobny.kmp.test.IgnoreNative
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -1421,18 +1422,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertTrue(docIds.contains(docID))
         assertEquals(mapOf("edit" to "update"), baseTestDb.getDocument(docID)!!.toMap())
 
-        println()
-        println("===")
-        println()
-
-        customLogger.lines.forEach {
-            println(it)
-        }
-
-        println()
-        println("===")
-        println()
-
         // validate the warning log
         assertTrue(
             customLogger.lines.contains( // iOS log
@@ -1440,8 +1429,12 @@ class ReplicatorEETest : BaseReplicatorTest() {
                         "is not matching with the document ID of the conflicting " +
                         "document '$docID'."
             ) || customLogger.lines.contains( // Java log
-                "[JAVA] The ID of the document produced by conflict resolution" +
-                        " for document ($wrongDocID) does not match the IDs of the conflicting documents ($docID)"
+                "[JAVA] The ID of the document produced by conflict resolution " +
+                        "for document ($wrongDocID) does not match the IDs of " +
+                        "the conflicting documents ($docID)"
+            ) || customLogger.lines.contains( // Native C log
+                "The document ID '$wrongDocID' of the resolved document is not " +
+                        "matching with the document ID '$docID' of the conflicting document."
             )
         )
 
@@ -1492,8 +1485,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
     /// disabling since, exceptions inside conflict handler will leak, since objc doesn't perform release
     /// when exception happens
     // TODO: Kotlin Exception without @Throws(), which resolve() interface lacks,
-    //  and NSException both unable to be forwarded to Objective-C caller
+    //  and NSException both unable to be forwarded to Objective-C or Native C caller
     @IgnoreApple
+    @IgnoreNative
     @Test
     fun testConflictResolverThrowingException() {
         val docID = "doc"
