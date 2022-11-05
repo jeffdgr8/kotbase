@@ -159,3 +159,9 @@ public expect open class Dictionary : Iterable<String> {
      */
     public operator fun contains(key: String): Boolean
 }
+
+/**
+ * Subscript access to a Fragment object by key.
+ */
+public operator fun Dictionary.get(key: String): Fragment =
+    Fragment(this, key)

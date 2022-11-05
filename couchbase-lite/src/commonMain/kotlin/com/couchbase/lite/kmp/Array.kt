@@ -141,3 +141,9 @@ public expect open class Array : Iterable<Any?> {
 
     public fun toJSON(): String
 }
+
+/**
+ * Subscript access to a Fragment object by index.
+ */
+public operator fun Array.get(index: Int): Fragment =
+    Fragment(this, index)

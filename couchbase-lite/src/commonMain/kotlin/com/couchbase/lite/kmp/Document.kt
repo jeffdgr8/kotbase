@@ -194,3 +194,9 @@ public expect open class Document : Iterable<String> {
      */
     override operator fun iterator(): Iterator<String>
 }
+
+/**
+ * Subscript access to a Fragment object by key.
+ */
+public operator fun Document.get(key: String): Fragment =
+    Fragment(this, key)
