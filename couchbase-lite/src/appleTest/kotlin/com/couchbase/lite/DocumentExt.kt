@@ -1,7 +1,6 @@
 package com.couchbase.lite
 
 import cocoapods.CouchbaseLite.c4Doc
-import cocoapods.CouchbaseLite.generation
 import cocoapods.CouchbaseLite.kDocExists
 import com.couchbase.lite.kmp.Dictionary
 import com.couchbase.lite.kmp.Document
@@ -16,6 +15,3 @@ internal actual fun Document.exists(): Boolean {
     val c4Doc = actual.c4Doc?.rawDoc ?: return false
     return (c4Doc.pointed.flags and kDocExists) != 0u
 }
-
-internal actual fun Document.generation(): Long =
-    actual.generation().toLong()

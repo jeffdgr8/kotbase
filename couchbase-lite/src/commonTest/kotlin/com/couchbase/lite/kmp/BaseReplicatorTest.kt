@@ -47,7 +47,7 @@ abstract class BaseReplicatorTest : BaseDbTest() {
         return ReplicatorConfiguration(source, target).apply {
             this.type = type
             isContinuous = continuous
-            heartbeat = DISABLE_HEARTBEAT
+            heartbeat = ReplicatorConfiguration.DISABLE_HEARTBEAT
         }
     }
 
@@ -138,5 +138,18 @@ abstract class BaseReplicatorTest : BaseDbTest() {
         fun testReplicator(config: ReplicatorConfiguration): Replicator {
             return Replicator(config, true)
         }
+    }
+}
+
+class TestConflictResolver(
+    // set this resolver, which will be used while resolving the conflict
+    val _resolver: ConflictResolver
+) : ConflictResolver {
+
+    var winner: Document? = null
+
+    override fun invoke(conflict: Conflict): Document? {
+        winner = _resolver(conflict)
+        return winner
     }
 }

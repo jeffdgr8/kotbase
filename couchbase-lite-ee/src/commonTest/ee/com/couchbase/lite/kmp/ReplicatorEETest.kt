@@ -1,5 +1,9 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.generation
+import com.udobny.kmp.test.IgnoreApple
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
@@ -201,7 +205,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val docs = mutableListOf<ReplicatedDocument>()
         run(config) { r ->
             replicator = r
-            token = r.addDocumentReplicationListener { replication -> 
+            token = r.addDocumentReplicationListener { replication ->
                 assertTrue(replication.isPush)
                 docs.addAll(replication.documents)
             }
@@ -943,7 +947,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
         validatePendingDocumentIDs(updatedIds)
     }
-    
+
     // TODO: https://issues.couchbase.com/browse/CBL-2448
     @Test
     fun testPendingDocIdsWithDelete() {
@@ -969,7 +973,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
         baseTestDb.purge("doc-3")
         docs.remove("doc-3")
-        
+
         validatePendingDocumentIDs(docs)
     }
 
@@ -1091,5 +1095,712 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
 
         validateIsDocumentPending(mapOf("doc-3" to true, "doc-1" to false), replConfig)
+    }
+
+    // ReplicatorTest+CustomConflict.swift
+
+    @Test
+    fun testConflictResolverConfigProperty() {
+        val target = URLEndpoint("wss://foo")
+        val pullConfig = makeConfig(target, ReplicatorType.PULL, false)
+
+        val conflictResolver = TestConflictResolver { conflict ->
+            conflict.remoteDocument
+        }
+        pullConfig.conflictResolver = conflictResolver
+        baseTestReplicator = Replicator(pullConfig)
+
+        assertNotNull(pullConfig.conflictResolver)
+        assertNotNull(baseTestReplicator!!.config.conflictResolver)
+    }
+
+    private fun getConfig(type: ReplicatorType): ReplicatorConfiguration {
+        val target = DatabaseEndpoint(otherDB)
+        return makeConfig(target, type, false)
+    }
+
+    private fun makeConflict(
+        docID: String,
+        localData: Map<String, Any?>?,
+        remoteData: Map<String, Any?>?
+    ) {
+        // create doc
+        val doc = MutableDocument(docID)
+        saveDocInBaseTestDb(doc)
+
+        // sync the doc in both DBs.
+        val config = getConfig(ReplicatorType.PUSH)
+        run(config)
+
+        // Now make different changes in db and oDBs
+        if (localData != null) {
+            val doc1a = baseTestDb.getDocument(docID)!!.toMutable()
+            doc1a.setData(localData)
+            saveDocInBaseTestDb(doc1a)
+        } else {
+            baseTestDb.delete(baseTestDb.getDocument(docID)!!)
+        }
+
+        if (remoteData != null) {
+            val doc1b = otherDB.getDocument(docID)!!.toMutable()
+            doc1b.setData(remoteData)
+            otherDB.save(doc1b)
+        } else {
+            otherDB.delete(otherDB.getDocument(docID)!!)
+        }
+    }
+
+    @Test
+    fun testConflictResolverRemoteWins() {
+        val localData = mapOf("name" to "Hobbes")
+        val remoteData = mapOf("pattern" to "striped")
+        makeConflict("doc", localData, remoteData)
+
+        val config = getConfig(ReplicatorType.PULL)
+        val resolver = TestConflictResolver { conflict ->
+            conflict.remoteDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertEquals(1, baseTestDb.count)
+        assertEquals(baseTestDb.getDocument("doc")!!, resolver.winner!!)
+        assertEquals(remoteData, baseTestDb.getDocument("doc")!!.toMap())
+    }
+
+    @Test
+    fun testConflictResolverLocalWins() {
+        val localData = mapOf("name" to "Hobbes")
+        val remoteData = mapOf("pattern" to "striped")
+        makeConflict("doc", localData, remoteData)
+
+        val config = getConfig(ReplicatorType.PULL)
+        val resolver = TestConflictResolver { conflict ->
+            conflict.localDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertEquals(1, baseTestDb.count)
+        assertEquals(baseTestDb.getDocument("doc")!!, resolver.winner!!)
+        assertEquals(localData, baseTestDb.getDocument("doc")!!.toMap())
+    }
+
+    @Test
+    fun testConflictResolverNullDoc() {
+        val localData = mapOf("name" to "Hobbes")
+        val remoteData = mapOf("pattern" to "striped")
+        makeConflict("doc", localData, remoteData)
+
+        val config = getConfig(ReplicatorType.PULL)
+        val resolver = TestConflictResolver {
+            null
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertNull(resolver.winner)
+        assertEquals(0, baseTestDb.count)
+        assertNull(baseTestDb.getDocument("doc"))
+    }
+
+    @Test
+    fun testConflictResolverDeletedLocalWins() {
+        val remoteData = mapOf("key2" to "value2")
+        makeConflict("doc", null, remoteData)
+
+        val config = getConfig(ReplicatorType.PULL)
+        val resolver = TestConflictResolver { conflict ->
+            assertNull(conflict.localDocument)
+            assertNotNull(conflict.remoteDocument)
+            null
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertNull(resolver.winner)
+        assertEquals(0, baseTestDb.count)
+        assertNull(baseTestDb.getDocument("doc"))
+    }
+
+    @Test
+    fun testConflictResolverDeletedRemoteWins() {
+        val localData = mapOf("key1" to "value1")
+        makeConflict("doc", localData, null)
+
+        val config = getConfig(ReplicatorType.PULL)
+        val resolver = TestConflictResolver { conflict ->
+            assertNotNull(conflict.localDocument)
+            assertNull(conflict.remoteDocument)
+            null
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertNull(resolver.winner)
+        assertEquals(0, baseTestDb.count)
+        assertNull(baseTestDb.getDocument("doc"))
+    }
+
+    @Test
+    fun testConflictResolverCalledTwice() {
+        val docID = "doc"
+        val localData = mapOf<String, Any?>("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+        val config = getConfig(ReplicatorType.PULL)
+
+        makeConflict(docID, localData, remoteData)
+        var count = 0
+        val resolver = TestConflictResolver { conflict ->
+            count += 1
+
+            // update the doc will cause a second conflict
+            val savedDoc = baseTestDb.getDocument(docID)!!.toMutable()
+            if (!savedDoc["secondUpdate"].exists) {
+                savedDoc.setBoolean("secondUpdate", true)
+                baseTestDb.save(savedDoc)
+            }
+
+            val mDoc = conflict.localDocument!!.toMutable()
+            mDoc.setString("edit", "local")
+            mDoc
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertEquals(2, count)
+        assertEquals(1, baseTestDb.count)
+        val expectedDocDict = localData.toMutableMap()
+        expectedDocDict["edit"] = "local"
+        expectedDocDict["secondUpdate"] = true
+        assertEquals(expectedDocDict, baseTestDb.getDocument(docID)!!.toMap())
+    }
+
+    @Test
+    fun testConflictResolverMergeDoc() {
+        val docID = "doc"
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+        val config = getConfig(ReplicatorType.PULL)
+
+        // EDIT LOCAL DOCUMENT
+        makeConflict(docID, localData, remoteData)
+        var resolver = TestConflictResolver { conflict ->
+            val doc = conflict.localDocument?.toMutable()
+            doc?.setString("edit", "local")
+            doc
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        var expectedDocDict = localData.toMutableMap()
+        expectedDocDict["edit"] = "local"
+        assertEquals(expectedDocDict, baseTestDb.getDocument(docID)!!.toMap())
+
+        // EDIT REMOTE DOCUMENT
+        makeConflict(docID, localData, remoteData)
+        resolver = TestConflictResolver { conflict ->
+            val doc = conflict.remoteDocument?.toMutable()
+            doc?.setString("edit", "remote")
+            doc
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        expectedDocDict = remoteData.toMutableMap()
+        expectedDocDict["edit"] = "remote"
+        assertEquals(expectedDocDict, baseTestDb.getDocument(docID)!!.toMap())
+
+        // CREATE NEW DOCUMENT
+        makeConflict(docID, localData, remoteData)
+        resolver = TestConflictResolver { conflict ->
+            val doc = MutableDocument(conflict.localDocument!!.id)
+            doc.setString("docType", "new-with-same-ID")
+            doc
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertEquals(
+            mapOf("docType" to "new-with-same-ID"),
+            baseTestDb.getDocument(docID)!!.toMap()
+        )
+    }
+
+    @Test
+    fun testDocumentReplicationEventForConflictedDocs() {
+        // when resolution is skipped: here doc from oDB throws an exception & skips it
+        var resolver = TestConflictResolver {
+            otherDB.getDocument("doc")
+        }
+        validateDocumentReplicationEventForConflictedDocs(resolver)
+
+        // when resolution is successful but wrong docID
+        resolver = TestConflictResolver {
+            MutableDocument()
+        }
+        validateDocumentReplicationEventForConflictedDocs(resolver)
+
+        // when resolution is successful.
+        resolver = TestConflictResolver { conflict ->
+            conflict.remoteDocument
+        }
+        validateDocumentReplicationEventForConflictedDocs(resolver)
+    }
+
+    private fun validateDocumentReplicationEventForConflictedDocs(resolver: TestConflictResolver) {
+        val docID = "doc"
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+        val config = getConfig(ReplicatorType.PULL)
+
+        config.conflictResolver = resolver
+
+        makeConflict(docID, localData, remoteData)
+
+        lateinit var token: ListenerToken
+        lateinit var replicator: Replicator
+        val docIds = mutableListOf<String>()
+        run(config) { r ->
+            replicator = r
+            token = r.addDocumentReplicationListener { docRepl ->
+                for (doc in docRepl.documents) {
+                    docIds.add(doc.id)
+                }
+            }
+        }
+
+        // make sure only single listener event is fired when conflict occured.
+        assertEquals(1, docIds.size)
+        assertEquals(docID, docIds.first())
+        replicator.removeChangeListener(token)
+
+        // resolve any un-resolved conflict through pull replication.
+        run(getConfig(ReplicatorType.PULL))
+    }
+
+    @Test
+    fun testConflictResolverWrongDocID() {
+        // use this to verify the logs generated during the conflict resolution.
+        val customLogger = CustomLogger()
+        customLogger.level = LogLevel.WARNING
+        Database.log.custom = customLogger
+
+        val docID = "doc"
+        val wrongDocID = "wrong-doc-id"
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+        val config = getConfig(ReplicatorType.PULL)
+
+        makeConflict(docID, localData, remoteData)
+        val resolver = TestConflictResolver {
+            val mDoc = MutableDocument(wrongDocID)
+            mDoc.setString("edit", "update")
+            mDoc
+        }
+        config.conflictResolver = resolver
+        lateinit var token: ListenerToken
+        lateinit var replicator: Replicator
+        val docIds = mutableSetOf<String>()
+        run(config) { repl ->
+            replicator = repl
+            token = repl.addDocumentReplicationListener { docRepl ->
+                if (docRepl.documents.isNotEmpty()) {
+                    assertEquals(1, docRepl.documents.size)
+                    docIds.add(docRepl.documents.first().id)
+                }
+
+                // shouldn't report an error from replicator
+                assertNull(docRepl.documents.firstOrNull()?.error)
+            }
+        }
+        replicator.removeChangeListener(token)
+
+        // validate wrong doc-id is resolved successfully
+        assertEquals(1, baseTestDb.count)
+        assertTrue(docIds.contains(docID))
+        assertEquals(mapOf("edit" to "update"), baseTestDb.getDocument(docID)!!.toMap())
+
+        println()
+        println("===")
+        println()
+
+        customLogger.lines.forEach {
+            println(it)
+        }
+
+        println()
+        println("===")
+        println()
+
+        // validate the warning log
+        assertTrue(
+            customLogger.lines.contains( // iOS log
+                "The document ID of the resolved document '$wrongDocID' " +
+                        "is not matching with the document ID of the conflicting " +
+                        "document '$docID'."
+            ) || customLogger.lines.contains( // Java log
+                "[JAVA] The ID of the document produced by conflict resolution" +
+                        " for document ($wrongDocID) does not match the IDs of the conflicting documents ($docID)"
+            )
+        )
+
+        Database.log.custom = null
+    }
+
+    @Test
+    fun testConflictResolverDifferentDBDoc() {
+        val docID = "doc"
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+        val config = getConfig(ReplicatorType.PULL)
+
+        makeConflict(docID, localData, remoteData)
+        var resolver = TestConflictResolver {
+            otherDB.getDocument(docID) // doc from different DB!!
+        }
+        config.conflictResolver = resolver
+        lateinit var token: ListenerToken
+        lateinit var replicator: Replicator
+        var error: CouchbaseLiteException? = null
+
+        run(config) { repl ->
+            replicator = repl
+            token = repl.addDocumentReplicationListener { docRepl ->
+                val err = docRepl.documents.firstOrNull()?.error
+                if (err != null) {
+                    error = err
+                }
+            }
+        }
+        assertNotNull(error)
+        assertTrue(
+            error!!.getCode() == CBLError.Code.CONFLICT || // iOS uses this code
+                    error!!.getCode() == CBLError.Code.UNEXPECTED_ERROR // Java uses this code
+        )
+        assertEquals(CBLError.Domain.CBLITE, error!!.getDomain())
+
+        replicator.removeChangeListener(token)
+        resolver = TestConflictResolver { conflict ->
+            conflict.remoteDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+        assertEquals(remoteData, baseTestDb.getDocument(docID)!!.toMap())
+    }
+
+    /// disabling since, exceptions inside conflict handler will leak, since objc doesn't perform release
+    /// when exception happens
+    // TODO: Kotlin Exception without @Throws(), which resolve() interface lacks,
+    //  and NSException both unable to be forwarded to Objective-C caller
+    @IgnoreApple
+    @Test
+    fun testConflictResolverThrowingException() {
+        val docID = "doc"
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+        val config = getConfig(ReplicatorType.PULL)
+
+        makeConflict(docID, localData, remoteData)
+        var resolver = TestConflictResolver {
+            throw IllegalStateException("some exception happened inside custom conflict resolution")
+        }
+        config.conflictResolver = resolver
+        lateinit var token: ListenerToken
+        lateinit var replicator: Replicator
+        var error: CouchbaseLiteException? = null
+
+        run(config) { repl ->
+            replicator = repl
+            token = repl.addDocumentReplicationListener { docRepl ->
+                val err = docRepl.documents.firstOrNull()?.error
+                if (err != null) {
+                    error = err
+                    assertEquals(CBLError.Code.CONFLICT, err.getCode())
+                    assertEquals(CBLError.Domain.CBLITE, err.getDomain())
+                }
+            }
+        }
+
+        assertNotNull(error)
+        replicator.removeChangeListener(token)
+        resolver = TestConflictResolver { conflict ->
+            conflict.remoteDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+        assertEquals(remoteData, baseTestDb.getDocument(docID)!!.toMap())
+    }
+
+    @Test
+    fun testConflictResolutionDefault() {
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+
+        // higher generation-id
+        var docID = "doc1"
+        makeConflict(docID, localData, remoteData)
+        var doc = baseTestDb.getDocument(docID)!!.toMutable()
+        println("before doc generation = ${doc.generation} revisionID = ${doc.revisionID}")
+        doc.setString("key3", "value3")
+        saveDocInBaseTestDb(doc)
+        println("after doc generation = ${doc.generation} revisionID = ${doc.revisionID}")
+
+        // delete local
+        docID = "doc2"
+        makeConflict(docID, localData, remoteData)
+        baseTestDb.delete(baseTestDb.getDocument(docID)!!)
+        doc = otherDB.getDocument(docID)!!.toMutable()
+        doc.setString("key3", "value3")
+        otherDB.save(doc)
+
+        // delete remote
+        docID = "doc3"
+        makeConflict(docID, localData, remoteData)
+        doc = baseTestDb.getDocument(docID)!!.toMutable()
+        doc.setString("key3", "value3")
+        baseTestDb.save(doc)
+        otherDB.delete(otherDB.getDocument(docID)!!)
+
+        // delete local but higher remote generation
+        docID = "doc4"
+        makeConflict(docID, localData, remoteData)
+        baseTestDb.delete(baseTestDb.getDocument(docID)!!)
+        doc = otherDB.getDocument(docID)!!.toMutable()
+        doc.setString("key3", "value3")
+        otherDB.save(doc)
+        doc = otherDB.getDocument(docID)!!.toMutable()
+        doc.setString("key4", "value4")
+        otherDB.save(doc)
+
+        val config = getConfig(ReplicatorType.PULL)
+        config.conflictResolver = ReplicatorConfiguration.DEFAULT_CONFLICT_RESOLVER
+        run(config)
+
+        // validate saved doc includes the key3, which is the highest generation.
+        assertEquals("value3", baseTestDb.getDocument("doc1")?.getString("key3"))
+
+        // validates the deleted doc is chosen for its counterpart doc which saved
+        assertNull(baseTestDb.getDocument("doc2"))
+        assertNull(baseTestDb.getDocument("doc3"))
+
+        // validates the deleted doc is chosen without considering the generation.
+        assertNull(baseTestDb.getDocument("doc4"))
+    }
+
+    @Test
+    fun testConflictResolverReturningBlob() {
+        val docID = "doc"
+        val content = "I am a blob".encodeToByteArray()
+        var blob = Blob("text/plain", content)
+
+        val config = getConfig(ReplicatorType.PULL)
+
+        // RESOLVE WITH REMOTE and BLOB data in LOCAL
+        var localData = mapOf("key1" to "value1", "blob" to blob)
+        var remoteData = mapOf<String, Any>("key2" to "value2")
+        makeConflict(docID, localData, remoteData)
+        var resolver = TestConflictResolver { conflict ->
+            conflict.remoteDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertNull(baseTestDb.getDocument(docID)?.getBlob("blob"))
+        assertEquals(remoteData, baseTestDb.getDocument(docID)!!.toMap())
+
+        // RESOLVE WITH LOCAL with BLOB data
+        makeConflict(docID, localData, remoteData)
+        resolver = TestConflictResolver { conflict ->
+            conflict.localDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertEquals(blob, baseTestDb.getDocument(docID)?.getBlob("blob"))
+        assertEquals("value1", baseTestDb.getDocument(docID)?.getString("key1"))
+
+        // RESOLVE WITH LOCAL and BLOB data in REMOTE
+        blob = Blob("text/plain", content)
+        localData = mapOf("key1" to "value1")
+        remoteData = mapOf("key2" to "value2", "blob" to blob)
+        makeConflict(docID, localData, remoteData)
+        resolver = TestConflictResolver { conflict ->
+            conflict.localDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertNull(baseTestDb.getDocument(docID)?.getBlob("blob"))
+        assertEquals(localData, baseTestDb.getDocument(docID)!!.toMap())
+
+        // RESOLVE WITH REMOTE with BLOB data
+        makeConflict(docID, localData, remoteData)
+        resolver = TestConflictResolver { conflict ->
+            conflict.remoteDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertEquals(blob, baseTestDb.getDocument(docID)?.getBlob("blob"))
+        assertEquals("value2", baseTestDb.getDocument(docID)?.getString("key2"))
+    }
+
+    @Test
+    fun testConflictResolverReturningBlobFromDifferentDB() {
+        val docID = "doc"
+        val content = "I am a blob".encodeToByteArray()
+        val blob = Blob("text/plain", content)
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2", "blob" to blob)
+        val config = getConfig(ReplicatorType.PULL)
+
+        // using remote document blob is okay to use!
+        makeConflict(docID, localData, remoteData)
+        var resolver = TestConflictResolver { conflict ->
+            val mDoc = conflict.localDocument?.toMutable()
+            mDoc?.setBlob("blob", conflict.remoteDocument?.getBlob("blob"))
+            mDoc
+        }
+        config.conflictResolver = resolver
+        lateinit var token: ListenerToken
+        lateinit var replicator: Replicator
+        run(config) { repl ->
+            replicator = repl
+            token = repl.addDocumentReplicationListener { docRepl ->
+                assertNull(docRepl.documents.firstOrNull()?.error)
+            }
+        }
+        replicator.removeChangeListener(token)
+
+        // using blob from remote document of user's- which is a different database
+        val oDBDoc = otherDB.getDocument(docID)!!
+        makeConflict(docID, localData, remoteData)
+        resolver = TestConflictResolver { conflict ->
+            val mDoc = conflict.localDocument?.toMutable()
+            mDoc?.setBlob("blob", oDBDoc.getBlob("blob"))
+            mDoc
+        }
+        config.conflictResolver = resolver
+        var error: CouchbaseLiteException? = null
+        run(config) { repl ->
+            replicator = repl
+            token = repl.addDocumentReplicationListener { docRepl ->
+                val err = docRepl.documents.firstOrNull()?.error
+                if (err != null) {
+                    error = err
+                }
+            }
+        }
+        assertNotNull(error)
+        assertEquals(CBLError.Code.UNEXPECTED_ERROR, error?.getCode())
+        println("error.message =")
+        println(error?.message)
+        assertTrue(
+            error!!.message!!.contains(
+                "A document contains a blob that was saved to a different " +
+                        "database. The save operation cannot complete."
+            )
+        )
+        replicator.removeChangeListener(token)
+    }
+
+    @Test
+    fun testNonBlockingDatabaseOperationConflictResolver() {
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+        val config = getConfig(ReplicatorType.PULL)
+        makeConflict("doc1", localData, remoteData)
+
+        var count = 0
+        val resolver = TestConflictResolver { conflict ->
+            count += 1
+
+            val timestamp = Clock.System.now().toString()
+            val mDoc = MutableDocument("doc2", mapOf("timestamp" to timestamp))
+            assertNotNull(mDoc)
+            assertTrue(baseTestDb.save(mDoc, ConcurrencyControl.FAIL_ON_CONFLICT))
+
+            val doc2 = baseTestDb.getDocument("doc2")
+            assertNotNull(doc2)
+            assertEquals(timestamp, doc2.getString("timestamp"))
+            conflict.remoteDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        assertEquals(1, count) // make sure, it entered the conflict resolver
+    }
+
+    @Test
+    fun testNonBlockingConflictResolver() = runBlocking {
+        val mutex = Mutex(true)
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+        makeConflict("doc1", localData, remoteData)
+        makeConflict("doc2", localData, remoteData)
+
+        val config = getConfig(ReplicatorType.PULL)
+        val order = mutableListOf<String>()
+        val lock = reentrantLock()
+        val resolver = TestConflictResolver { conflict ->
+            // concurrent conflict resolver queue can cause race here
+            lock.lock()
+            order.add(conflict.documentId)
+            val count = order.size
+            lock.unlock()
+
+            if (count == 1) {
+                runBlocking { delay(0.5.seconds) }
+            }
+
+            order.add(conflict.documentId)
+            if (order.size == 4) {
+                mutex.unlock()
+            }
+
+            conflict.remoteDocument
+        }
+        config.conflictResolver = resolver
+        run(config)
+
+        withTimeout(5.seconds) {
+            mutex.lock()
+        }
+
+        // make sure, first doc starts resolution but finishes last.
+        // in between second doc starts and finishes it.
+        assertEquals(order.last(), order.first())
+        assertEquals(order[2], order[1])
+    }
+
+    @Test
+    fun testConflictResolverWhenDocumentIsPurged() {
+        val docID = "doc"
+        val localData = mapOf("key1" to "value1")
+        val remoteData = mapOf("key2" to "value2")
+        val config = getConfig(ReplicatorType.PULL)
+
+        makeConflict(docID, localData, remoteData)
+        val resolver = TestConflictResolver { conflict ->
+            baseTestDb.purge(conflict.documentId)
+            conflict.remoteDocument
+        }
+        config.conflictResolver = resolver
+        var error: CouchbaseLiteException? = null
+        lateinit var replicator: Replicator
+        lateinit var token: ListenerToken
+        run(config) { repl ->
+            replicator = repl
+            token = repl.addDocumentReplicationListener { docRepl ->
+                val err = docRepl.documents.firstOrNull()?.error
+                if (err != null) {
+                    error = err
+                }
+            }
+        }
+        assertNotNull(error)
+        assertEquals(CBLError.Code.NOT_FOUND, error?.getCode())
+        replicator.removeChangeListener(token)
     }
 }

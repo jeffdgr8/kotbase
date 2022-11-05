@@ -51,7 +51,7 @@ class ErrorCaseTest : BaseDbTest() {
         var saved = saveDocInBaseTestDb(doc)
         doc.setValue("age", 20)
         saved = saveDocInBaseTestDb(doc)
-        assertEquals(2, saved.generation())
+        assertEquals(2, saved.generation)
         assertEquals(20, saved.getInt("age").toLong())
         assertEquals("Scott Tiger", saved.getString("name"))
     }

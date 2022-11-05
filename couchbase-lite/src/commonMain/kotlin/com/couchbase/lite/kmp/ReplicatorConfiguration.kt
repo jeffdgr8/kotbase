@@ -1,5 +1,7 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.generation
+
 /**
  * Replicator configuration.
  */
@@ -229,12 +231,39 @@ public expect class ReplicatorConfiguration {
      * Default is enabled.
      */
     public var isAutoPurgeEnabled: Boolean
+
+    public companion object
 }
 
 /**
  * This is a long time: just under 25 days.
  * This many seconds, however, is just less than Integer.MAX_INT millis, and will fit in the heartbeat property.
  */
-@Suppress("unused")
-public val ReplicatorConfiguration.DISABLE_HEARTBEAT: Int
+public val ReplicatorConfiguration.Companion.DISABLE_HEARTBEAT: Int
     get() = 2147483
+
+public val ReplicatorConfiguration.Companion.DEFAULT_CONFLICT_RESOLVER: ConflictResolver
+    get() = defaultConflictResolver
+
+private val defaultConflictResolver: ConflictResolver by lazy {
+    cr@{ conflict ->
+        // deletion always wins.
+        val localDoc = conflict.localDocument
+        val remoteDoc = conflict.remoteDocument
+        if (localDoc == null || remoteDoc == null) return@cr null
+
+        // if one of the docs is newer, return it
+        val localGen = localDoc.generation
+        val remoteGen: Long = remoteDoc.generation
+        if (localGen > remoteGen) {
+            return@cr localDoc
+        } else if (localGen < remoteGen) {
+            return@cr remoteDoc
+        }
+
+        // otherwise, choose one randomly, but deterministically.
+        val localRevId = localDoc.revisionID ?: return@cr remoteDoc
+        val remoteRevId = remoteDoc.revisionID
+        return@cr if (remoteRevId == null || localRevId < remoteRevId) remoteDoc else localDoc
+    }
+}

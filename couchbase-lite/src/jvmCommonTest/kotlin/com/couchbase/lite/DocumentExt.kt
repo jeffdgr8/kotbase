@@ -8,6 +8,3 @@ internal actual val Document.content: Dictionary
 
 internal actual fun Document.exists(): Boolean =
     actual.exists()
-
-internal actual fun Document.generation(): Long =
-    actual.generation()

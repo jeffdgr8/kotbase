@@ -30,14 +30,3 @@ internal val Document.c4Doc: CPointer<C4Document>?
         val ptrs = actual.reinterpret<LongVar>()
         return ptrs[offset].toCPointer()
     }
-
-internal actual fun Document.generation(): Long {
-    val generation = CBLDocument_Generation(actual).toLong()
-    return if (this is MutableDocument) {
-        // assume MutableDocument is mutated, which expects
-        // incremented generation (good enough for tests)
-        generation + 1
-    } else {
-        generation
-    }
-}

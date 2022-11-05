@@ -150,6 +150,8 @@ public actual class ReplicatorConfiguration actual constructor(
     public actual var heartbeat: Int = 0
 
     public actual var isAutoPurgeEnabled: Boolean = true
+
+    public actual companion object
 }
 
 internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration) {
@@ -240,7 +242,7 @@ internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration)
                     localDocument?.asDocument(config.database),
                     remoteDocument?.asDocument(config.database)
                 )
-            ).actual
+            )?.actual
         }
     }
 

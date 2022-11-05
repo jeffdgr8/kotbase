@@ -22,7 +22,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         doc.setString("location", "Olympia")
         saveDocInBaseTestDb(doc)
 
-        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation)
 
         val doc1a = baseTestDb.getNonNullDoc(docID).toMutable()
         val doc1b = baseTestDb.getNonNullDoc(docID).toMutable()
@@ -30,22 +30,22 @@ class SaveConflictResolutionTest : BaseDbTest() {
         doc1a.setString("artist", "Sheep Jones")
         baseTestDb.save(doc1a)
 
-        assertEquals(2, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(2, baseTestDb.getNonNullDoc(docID).generation)
 
         doc1b.setString("artist", "Holly Sears")
 
         var succeeded = baseTestDb.save(doc1b) { cur: MutableDocument, old: Document? ->
             assertEquals(doc1b, cur)
             assertEquals(doc1a, old)
-            assertEquals(2L, cur.generation())
-            assertEquals(2L, old?.generation())
+            assertEquals(2L, cur.generation)
+            assertEquals(2L, old?.generation)
             true
         }
         assertTrue(succeeded)
 
         val newDoc = baseTestDb.getNonNullDoc(docID)
         assertEquals(doc1b, newDoc)
-        assertEquals(3L, newDoc.generation())
+        assertEquals(3L, newDoc.generation)
 
         val doc1c = baseTestDb.getNonNullDoc(docID).toMutable()
         val doc1d = baseTestDb.getNonNullDoc(docID).toMutable()
@@ -53,15 +53,15 @@ class SaveConflictResolutionTest : BaseDbTest() {
         doc1c.setString("artist", "Marjorie Morgan")
         baseTestDb.save(doc1c)
 
-        assertEquals(4L, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(4L, baseTestDb.getNonNullDoc(docID).generation)
 
         doc1d.setString("artist", "G. Charnelet-Vasselon")
 
         succeeded = baseTestDb.save(doc1d) { cur: MutableDocument, old: Document? ->
             assertEquals(doc1d, cur)
             assertEquals(doc1c, old)
-            assertEquals(4L, cur.generation())
-            assertEquals(4L, old?.generation())
+            assertEquals(4L, cur.generation)
+            assertEquals(4L, old?.generation)
             cur.setString("artist", "Sheep Jones")
             true
         }
@@ -70,7 +70,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         val curDoc = baseTestDb.getNonNullDoc(docID)
         assertEquals("Olympia", curDoc.getString("location"))
         assertEquals("Sheep Jones", curDoc.getString("artist"))
-        assertEquals(5L, curDoc.generation())
+        assertEquals(5L, curDoc.generation)
     }
 
     /**
@@ -83,7 +83,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         doc.setString("location", "Olympia")
         saveDocInBaseTestDb(doc)
 
-        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation)
 
         val doc1a = baseTestDb.getNonNullDoc(docID).toMutable()
         val doc1b = baseTestDb.getNonNullDoc(docID).toMutable()
@@ -91,7 +91,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         doc1a.setString("artist", "Sheep Jones")
         baseTestDb.save(doc1a)
 
-        assertEquals(2, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(2, baseTestDb.getNonNullDoc(docID).generation)
 
         doc1b.setString("artist", "Holly Sears")
 
@@ -114,7 +114,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
 
         // make sure no update to revision and generation
         assertEquals(doc1a.revisionID, curDoc.revisionID)
-        assertEquals(2, curDoc.generation())
+        assertEquals(2, curDoc.generation)
 
         val doc1c = baseTestDb.getNonNullDoc(docID).toMutable()
         val doc1d = baseTestDb.getNonNullDoc(docID).toMutable()
@@ -122,7 +122,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         doc1c.setString("artist", "Marjorie Morgan")
         baseTestDb.save(doc1c)
 
-        assertEquals(3, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(3, baseTestDb.getNonNullDoc(docID).generation)
 
         doc1d.setString("artist", "G. Charnelet-Vasselon")
 
@@ -142,7 +142,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         val newDoc = baseTestDb.getNonNullDoc(docID)
         assertEquals(newDoc, doc1c)
         assertEquals(doc1c.revisionID, newDoc.revisionID)
-        assertEquals(3, newDoc.generation())
+        assertEquals(3, newDoc.generation)
     }
 
     /**
@@ -155,7 +155,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
     fun testConflictHandlerWithDeletedOldDoc1() {
         createSingleDocInBaseTestDb(docID)
 
-        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation)
 
         val doc1a = baseTestDb.getNonNullDoc(docID)
         val doc1b = baseTestDb.getNonNullDoc(docID).toMutable()
@@ -184,7 +184,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
     fun testConflictHandlerWithDeletedOldDoc2() {
         createSingleDocInBaseTestDb(docID)
 
-        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation)
 
         val doc1a = baseTestDb.getNonNullDoc(docID).toMutable()
         val doc1b = baseTestDb.getNonNullDoc(docID).toMutable()
@@ -225,7 +225,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         doc.setString("location", "Olympia")
         saveDocInBaseTestDb(doc)
 
-        assertEquals(1L, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(1L, baseTestDb.getNonNullDoc(docID).generation)
 
         val doc1a = baseTestDb.getNonNullDoc(docID).toMutable()
         val doc1b = baseTestDb.getNonNullDoc(docID).toMutable()
@@ -233,7 +233,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         doc1a.setString("artist", "Sheep Jones")
         baseTestDb.save(doc1a)
 
-        assertEquals(2L, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(2L, baseTestDb.getNonNullDoc(docID).generation)
 
         doc1b.setString("artist", "Holly Sears")
 
@@ -251,7 +251,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         assertFalse(succeeded)
 
         assertEquals(doc1a, baseTestDb.getNonNullDoc(docID))
-        assertEquals(2L, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(2L, baseTestDb.getNonNullDoc(docID).generation)
     }
 
     /**
@@ -266,14 +266,14 @@ class SaveConflictResolutionTest : BaseDbTest() {
         val doc = MutableDocument(docID)
         doc.setString("location", "Olympia")
         saveDocInBaseTestDb(doc)
-        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(1, baseTestDb.getNonNullDoc(docID).generation)
 
         val doc1a = baseTestDb.getNonNullDoc(docID).toMutable()
         val doc1b = baseTestDb.getNonNullDoc(docID).toMutable()
 
         doc1a.setString("artist", "Sheep Jones")
         baseTestDb.save(doc1a)
-        assertEquals(2, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(2, baseTestDb.getNonNullDoc(docID).generation)
 
         doc1b.setString("artist", "Holly Sears")
 
@@ -282,10 +282,10 @@ class SaveConflictResolutionTest : BaseDbTest() {
             count++
             val doc1c = baseTestDb.getNonNullDoc(docID).toMutable()
             if (!doc1c.getBoolean("second update")) {
-                assertEquals(2L, cur.generation())
-                assertEquals(2L, old?.generation())
+                assertEquals(2L, cur.generation)
+                assertEquals(2L, old?.generation)
                 doc1c.setBoolean("second update", true)
-                assertEquals(3L, saveDocInBaseTestDb(doc1c).generation())
+                assertEquals(3L, saveDocInBaseTestDb(doc1c).generation)
             }
 
             val data = old?.toMap()?.toMutableMap() ?: mutableMapOf()
@@ -301,7 +301,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         assertEquals(2, count)
 
         val newDoc = baseTestDb.getNonNullDoc(docID)
-        assertEquals(4, newDoc.generation())
+        assertEquals(4, newDoc.generation)
         assertEquals(newDoc.getString("location"), "Olympia")
         assertEquals(newDoc.getString("artist"), "Holly Sears")
         assertEquals(newDoc.getString("edit"), "local")
@@ -318,7 +318,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
         doc.setString("location", "Olympia")
         saveDocInBaseTestDb(doc)
 
-        assertEquals(1L, baseTestDb.getNonNullDoc(docID).generation())
+        assertEquals(1L, baseTestDb.getNonNullDoc(docID).generation)
 
         val doc1a = baseTestDb.getNonNullDoc(docID).toMutable()
 

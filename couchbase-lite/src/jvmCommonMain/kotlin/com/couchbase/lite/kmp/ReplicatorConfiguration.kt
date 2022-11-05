@@ -174,4 +174,6 @@ private constructor(
         set(value) {
             actual.isAutoPurgeEnabled = value
         }
+
+    public actual companion object
 }
