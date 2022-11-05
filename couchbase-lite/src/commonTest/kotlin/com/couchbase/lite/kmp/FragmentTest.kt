@@ -171,7 +171,7 @@ class FragmentTest : BaseDbTest() {
             assertEquals(100.10, fragment.double, 0.1)
             assertTrue(fragment.boolean)
             assertNull(fragment.array)
-            assertEquals(100.10F, fragment.value as Float)
+            assertEquals(100.10F, fragment.value)
             assertNull(fragment.dictionary)
         }
     }
@@ -191,7 +191,7 @@ class FragmentTest : BaseDbTest() {
             assertEquals(99.99, fragment.double)
             assertTrue(fragment.boolean)
             assertNull(fragment.array)
-            assertEquals(99.99, fragment.value as Double)
+            assertEquals(99.99, fragment.value)
             assertNull(fragment.dictionary)
         }
     }
@@ -211,7 +211,7 @@ class FragmentTest : BaseDbTest() {
             assertEquals(1.0, fragment.double)
             assertTrue(fragment.boolean)
             assertNull(fragment.array)
-            assertEquals(true, fragment.value as Boolean)
+            assertEquals(true, fragment.value)
             assertNull(fragment.dictionary)
         }
     }
@@ -233,7 +233,7 @@ class FragmentTest : BaseDbTest() {
             assertEquals(0.0, fragment.double)
             assertTrue(fragment.boolean)
             assertNull(fragment.array)
-            assertEquals(dateStr, fragment.value as String)
+            assertEquals(dateStr, fragment.value)
             assertNull(fragment.dictionary)
         }
     }
@@ -253,7 +253,7 @@ class FragmentTest : BaseDbTest() {
             assertEquals(0.0, fragment.double)
             assertTrue(fragment.boolean)
             assertNull(fragment.array)
-            assertEquals("hello world", fragment.value as String)
+            assertEquals("hello world", fragment.value)
             assertNull(fragment.dictionary)
         }
     }
@@ -329,7 +329,7 @@ class FragmentTest : BaseDbTest() {
             assertNotNull(fragment.array)
             assertNotNull(fragment.value)
             assertSame(fragment.array, fragment.value)
-            assertEquals(dict["nested-array"] as List<Any?>, fragment.array!!.toList())
+            assertIntEquals(dict["nested-array"] as List<Any?>, fragment.array!!.toList())
             assertNull(fragment.dictionary)
         }
     }
@@ -456,8 +456,8 @@ class FragmentTest : BaseDbTest() {
         saveDocInBaseTestDb(doc) { d ->
             val mDoc = d.toMutable()
             mDoc["string1"].value = 10
-            assertEquals(10, mDoc["string1"].value as Int)
-            assertEquals("value2", mDoc["string2"].value as String)
+            assertIntEquals(10, mDoc["string1"].value)
+            assertEquals("value2", mDoc["string2"].value)
         }
     }
 
