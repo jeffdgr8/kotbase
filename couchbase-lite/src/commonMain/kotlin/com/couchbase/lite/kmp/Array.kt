@@ -144,6 +144,14 @@ public expect open class Array : Iterable<Any?> {
 
 /**
  * Subscript access to a Fragment object by index.
+ *
+ * @param index The Index. If the index value exceeds the bounds of the array,
+ * the MutableFragment object will represent a nil value.
  */
-public operator fun Array.get(index: Int): Fragment =
-    Fragment(this, index)
+public operator fun Array.get(index: Int): Fragment {
+    return if (index in 0 until count) {
+        Fragment(this, index)
+    } else {
+        Fragment()
+    }
+}

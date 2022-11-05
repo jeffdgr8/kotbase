@@ -329,6 +329,17 @@ public expect class Database {
     @Throws(CouchbaseLiteException::class)
     public fun deleteIndex(name: String)
 
+    /**
+     * Performs database maintenance.
+     */
     @Throws(CouchbaseLiteException::class)
     public fun performMaintenance(type: MaintenanceType): Boolean
 }
+
+/**
+ * Gets document fragment object by the given document ID.
+ *
+ * @param key The key.
+ */
+public operator fun Database.get(key: String): DocumentFragment =
+    DocumentFragment(getDocument(key))

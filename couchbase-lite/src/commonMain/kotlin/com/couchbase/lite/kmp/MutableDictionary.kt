@@ -186,3 +186,11 @@ public expect class MutableDictionary : Dictionary {
      */
     override fun getDictionary(key: String): MutableDictionary?
 }
+
+/**
+ * Subscripting access to a MutableFragment object that represents the value of the dictionary by key.
+ *
+ * @param key The key.
+ */
+public operator fun MutableDictionary.get(key: String): MutableFragment =
+    MutableFragment(this, key)

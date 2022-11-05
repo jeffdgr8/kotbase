@@ -7,8 +7,8 @@ import kotlinx.datetime.Instant
  * by either key or index to the nested values which are wrapped by Fragment objects.
  */
 public open class Fragment
-private constructor(
-    protected val parent: Any,
+protected constructor(
+    protected val parent: Any?,
     protected val key: String?,
     protected val index: Int?
 ) {
@@ -22,11 +22,13 @@ private constructor(
     internal constructor(parent: Array, index: Int) :
             this(parent, null, index)
 
+    internal constructor() : this(null, null, null)
+
     /**
      * Gets the fragment value. The value types are Blob, Array, Dictionary, Number,
      * or String based on the underlying data type; or null if the value is null.
      */
-    public val value: Any?
+    public open val value: Any?
         get() {
             return when (parent) {
                 is Document -> parent.getValue(key!!)
@@ -39,7 +41,7 @@ private constructor(
     /**
      * Gets the value as a string. Returns null if the value is null, or the value is not a string.
      */
-    public val string: String?
+    public open val string: String?
         get() {
             return when (parent) {
                 is Document -> parent.getString(key!!)
@@ -53,7 +55,7 @@ private constructor(
      * Gets the value as a Number. Returns null if the value
      * doesn't exist, or its value is not a Number.
      */
-    public val number: Number?
+    public open val number: Number?
         get() {
             return when (parent) {
                 is Document -> parent.getNumber(key!!)
@@ -67,7 +69,7 @@ private constructor(
      * Gets the value as an int. Floating point values will be rounded. The value true is
      * returned as 1, false as 0. Returns 0 if the value is null or is not a numeric value.
      */
-    public val int: Int
+    public open val int: Int
         get() {
             return when (parent) {
                 is Document -> parent.getInt(key!!)
@@ -81,7 +83,7 @@ private constructor(
      * Gets the value as a long. Floating point values will be rounded. The value true is
      * returned as 1, false as 0. Returns 0 if the value is null or is not a numeric value.
      */
-    public val long: Long
+    public open val long: Long
         get() {
             return when (parent) {
                 is Document -> parent.getLong(key!!)
@@ -95,7 +97,7 @@ private constructor(
      * Gets the value as a float. Integers will be converted to float. The value true is
      * returned as 1.0, false as 0.0. Returns 0.0 if the value is null or is not a numeric value.
      */
-    public val float: Float
+    public open val float: Float
         get() {
             return when (parent) {
                 is Document -> parent.getFloat(key!!)
@@ -109,7 +111,7 @@ private constructor(
      * Gets the value as a double. Integers will be converted to double. The value true is
      * returned as 1.0, false as 0.0. Returns 0.0 if the value is null or is not a numeric value.
      */
-    public val double: Double
+    public open val double: Double
         get() {
             return when (parent) {
                 is Document -> parent.getDouble(key!!)
@@ -123,7 +125,7 @@ private constructor(
      * Gets the value as a boolean. Returns true if the value
      * is not null, and is either true or a nonzero number.
      */
-    public val boolean: Boolean
+    public open val boolean: Boolean
         get() {
             return when (parent) {
                 is Document -> parent.getBoolean(key!!)
@@ -136,7 +138,7 @@ private constructor(
     /**
      * Get the value as a Blob. Returns null if the value is null, or the value is not a Blob.
      */
-    public val blob: Blob?
+    public open val blob: Blob?
         get() {
             return when (parent) {
                 is Document -> parent.getBlob(key!!)
@@ -153,7 +155,7 @@ private constructor(
      * date. NOTE: This is not a generic date parser! It only recognizes the ISO-8601 format, with
      * or without milliseconds.
      */
-    public val date: Instant?
+    public open val date: Instant?
         get() {
             return when (parent) {
                 is Document -> parent.getDate(key!!)
@@ -167,7 +169,7 @@ private constructor(
      * Get the value as an Array, a mapping object of an array value.
      * Returns null if the value is null, or the value is not an array.
      */
-    public val array: Array?
+    public open val array: Array?
         get() {
             return when (parent) {
                 is Document -> parent.getArray(key!!)
@@ -181,7 +183,7 @@ private constructor(
      * Get a property’s value as a Dictionary, a mapping object of a dictionary
      * value. Returns null if the value is null, or the value is not a dictionary.
      */
-    public val dictionary: Dictionary?
+    public open val dictionary: Dictionary?
         get() {
             return when (parent) {
                 is Document -> parent.getDictionary(key!!)
@@ -196,4 +198,43 @@ private constructor(
      */
     public val exists: Boolean
         get() = value != null
+
+    /**
+     * Subscript access to a Fragment object by index.
+     *
+     * @param index The index. If the index value exceeds the bounds of the array,
+     * the MutableFragment object will represent a nil value.
+     */
+    public open operator fun get(index: Int): Fragment {
+        val parent = when (parent) {
+            is Document -> parent.getValue(key!!)
+            is Dictionary -> parent.getValue(key!!)
+            is Array -> parent.getValue(this.index!!)
+            else -> null
+        }
+        return if (parent is Array && index in 0 until parent.count) {
+            Fragment(parent, null, index)
+        } else {
+            Fragment()
+        }
+    }
+
+    /**
+     * Subscript access to a Fragment object by key.
+     *
+     * @param key The key.
+     */
+    public open operator fun get(key: String): Fragment {
+        val parent = when (parent) {
+            is Document -> parent.getValue(this.key!!)
+            is Dictionary -> parent.getValue(this.key!!)
+            is Array -> parent.getValue(index!!)
+            else -> null
+        }
+        return if (parent is Dictionary) {
+            Fragment(parent, key, null)
+        } else {
+            Fragment()
+        }
+    }
 }

@@ -197,6 +197,8 @@ public expect open class Document : Iterable<String> {
 
 /**
  * Subscript access to a Fragment object by key.
+ *
+ * @param key The key.
  */
 public operator fun Document.get(key: String): Fragment =
     Fragment(this, key)

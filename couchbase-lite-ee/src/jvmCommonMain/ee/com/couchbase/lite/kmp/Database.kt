@@ -1,3 +1,5 @@
+@file:JvmName("DatabaseEEJvm") // https://youtrack.jetbrains.com/issue/KT-21186
+
 package com.couchbase.lite.kmp
 
 @Throws(CouchbaseLiteException::class)

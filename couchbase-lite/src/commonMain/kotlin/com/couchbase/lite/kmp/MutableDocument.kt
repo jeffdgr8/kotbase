@@ -226,3 +226,11 @@ public expect class MutableDocument : Document {
      */
     override fun getDictionary(key: String): MutableDictionary?
 }
+
+/**
+ * Subscripting access to a MutableFragment object that represents the value of the document by key.
+ *
+ * @param key The key.
+ */
+public operator fun MutableDocument.get(key: String): MutableFragment =
+    MutableFragment(this, key)

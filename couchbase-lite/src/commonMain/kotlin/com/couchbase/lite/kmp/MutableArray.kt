@@ -388,3 +388,17 @@ public expect class MutableArray : Array {
      */
     override fun getDictionary(index: Int): MutableDictionary?
 }
+
+/**
+ * Subscripting access to a MutableFragment object that represents the value at the given index.
+ *
+ * @param index The index. If the index value exceeds the bounds of the array,
+ * the MutableFragment object will represent a nil value.
+ */
+public operator fun MutableArray.get(index: Int): MutableFragment {
+    return if (index in 0 until count) {
+        MutableFragment(this, index)
+    } else {
+        MutableFragment()
+    }
+}

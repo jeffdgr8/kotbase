@@ -162,6 +162,8 @@ public expect open class Dictionary : Iterable<String> {
 
 /**
  * Subscript access to a Fragment object by key.
+ *
+ * @param key The key.
  */
 public operator fun Dictionary.get(key: String): Fragment =
     Fragment(this, key)
