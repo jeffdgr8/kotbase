@@ -1468,8 +1468,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
         assertNotNull(error)
         assertTrue(
+            error!!.getCode() == CBLError.Code.UNEXPECTED_ERROR || // Java uses this code
             error!!.getCode() == CBLError.Code.CONFLICT || // iOS uses this code
-                    error!!.getCode() == CBLError.Code.UNEXPECTED_ERROR // Java uses this code
+            error!!.getCode() == CBLError.Code.INVALID_PARAMETER // Native C uses this code
         )
         assertEquals(CBLError.Domain.CBLITE, error!!.getDomain())
 
