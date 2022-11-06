@@ -194,6 +194,7 @@ kotlin {
             dependsOn(nativeCommonMain)
         }
         val appleTest by creating {
+            kotlin.srcDir("src/$name/ee")
             dependsOn(nativeCommonTest)
             // TODO: doesn't work, so using a copy task
             //  https://youtrack.jetbrains.com/issue/KT-53383
