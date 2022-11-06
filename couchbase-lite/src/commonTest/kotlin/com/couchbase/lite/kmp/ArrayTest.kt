@@ -12,20 +12,6 @@ import kotlin.test.*
 class ArrayTest : BaseDbTest() {
 
     @Test
-    fun testNumber() {
-        val array = MutableArray()
-        array.addValue(true)
-        val number = array.getNumber(0)
-        println("number = $number")
-        val int = array.getInt(0)
-        println("int = $int")
-        val double = array.getDouble(0)
-        println("double = $double")
-        val float = array.getFloat(0)
-        println("float = $float")
-    }
-
-    @Test
     fun testCreate() {
         val array = MutableArray()
         assertEquals(0, array.count)
