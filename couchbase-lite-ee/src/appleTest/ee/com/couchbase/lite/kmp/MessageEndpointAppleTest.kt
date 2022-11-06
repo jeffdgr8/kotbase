@@ -1,5 +1,7 @@
 package com.couchbase.lite.kmp
 
+import cocoapods.CouchbaseLite.CBLErrorHTTPNotFound
+import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrows
 import com.udobny.kmp.ext.toByteArray
 import com.udobny.kmp.ext.toNSData
 import com.udobny.kmp.ext.wrapError
@@ -13,6 +15,10 @@ import platform.darwin.NSObject
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
+// Tests sometimes pass, but usually fail
+// 2022-11-06 13:55:32.531 test.kexe[49475:1060252] CouchbaseLite Network WARNING: Caught exception opening a new connection: connection
+// 2022-11-06 13:55:32.532 test.kexe[49475:1060252] CouchbaseLite Network ERROR: {C4SocketImpl#3} WebSocket failed to connect! (reason=Unknown error 10)
+// Child process terminated with signal 4: Illegal instruction
 class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
 
     val nsObjectDelegate = NSObjectDelegate()
