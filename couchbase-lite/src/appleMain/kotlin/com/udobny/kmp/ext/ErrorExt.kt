@@ -25,6 +25,9 @@ public fun <R, E : Exception> wrapError(
     }
 }
 
+public fun <R> wrapError(action: (error: CPointer<ObjCObjectVar<NSError?>>) -> R): R =
+    wrapError(NSError::toException, action)
+
 public fun Exception.toNSError(): NSError {
     return when (this) {
         is NSErrorException -> nsError

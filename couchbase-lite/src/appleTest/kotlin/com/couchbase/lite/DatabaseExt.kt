@@ -5,10 +5,8 @@ import com.couchbase.lite.kmp.BaseTest.Companion.DB_EXTENSION
 import com.couchbase.lite.kmp.Blob
 import com.couchbase.lite.kmp.Database
 import com.couchbase.lite.kmp.asBlob
-import com.couchbase.lite.kmp.ext.toCouchbaseLiteException
+import com.couchbase.lite.kmp.ext.wrapCBLError
 import com.udobny.kmp.DelegatedClass
-import com.udobny.kmp.ext.wrapError
-import platform.Foundation.NSError
 
 internal actual val Database.isOpen: Boolean
     get() = !actual.isClosed()
@@ -25,7 +23,7 @@ internal actual val Database.dbPath: String?
     }
 
 internal actual fun Database.saveBlob(blob: Blob) {
-    wrapError(NSError::toCouchbaseLiteException) { error ->
+    wrapCBLError { error ->
         actual.saveBlob(blob.actual, error)
     }
 }
@@ -39,7 +37,7 @@ internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? {
 }
 
 internal actual fun Database.getC4Document(id: String): C4Document {
-    val doc = wrapError(NSError::toCouchbaseLiteException) { error ->
+    val doc = wrapCBLError { error ->
         CBLDocument.create(actual, id, true, error)
     }
     return C4Document(doc?.c4Doc!!)

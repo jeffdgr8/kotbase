@@ -2,11 +2,10 @@ package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.CBLBlob
 import cocoapods.CouchbaseLite.CBLDatabase
-import com.couchbase.lite.kmp.ext.toCouchbaseLiteException
+import com.couchbase.lite.kmp.ext.wrapCBLError
 import com.udobny.kmp.DelegatedClass
 import com.udobny.kmp.ext.toByteArray
 import com.udobny.kmp.ext.toNSData
-import com.udobny.kmp.ext.wrapError
 import okio.*
 import platform.Foundation.*
 
@@ -23,7 +22,7 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
 
     @Throws(IOException::class)
     public actual constructor(contentType: String, fileURL: String) : this(
-        wrapError(NSError::toCouchbaseLiteException) { error ->
+        wrapCBLError { error ->
             val url = fileURL.toFileUrl()
             if (!NSFileManager.defaultManager.fileExistsAtPath(url.path!!)) {
                 throw FileNotFoundException("${url.path}: open failed: ENOENT (No such file or directory)")

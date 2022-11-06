@@ -3,13 +3,10 @@ package com.couchbase.lite.kmp
 import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.isClosed
 import com.couchbase.lite.kmp.ext.wrapCBLError
-import com.couchbase.lite.kmp.ext.toCouchbaseLiteException
 import com.udobny.kmp.DelegatedClass
-import com.udobny.kmp.ext.wrapError
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
-import platform.Foundation.NSError
 import platform.objc.objc_sync_enter
 import platform.objc.objc_sync_exit
 
@@ -19,7 +16,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String) : this(
-        wrapError(NSError::toCouchbaseLiteException) { error ->
+        wrapCBLError { error ->
             require(name.isNotEmpty()) { "db name must not be empty" }
             CBLDatabase(name, error)
         }
@@ -27,7 +24,7 @@ internal constructor(actual: CBLDatabase) :
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String, config: DatabaseConfiguration) : this(
-        wrapError(NSError::toCouchbaseLiteException) { error ->
+        wrapCBLError { error ->
             CBLDatabase(name, config.actual, error)
         }
     )
@@ -48,7 +45,7 @@ internal constructor(actual: CBLDatabase) :
                     CBLError.Code.NOT_FOUND
                 )
             }
-            wrapError(NSError::toCouchbaseLiteException) { error ->
+            wrapCBLError { error ->
                 CBLDatabase.deleteDatabase(name, directory, error)
             }
         }
@@ -58,7 +55,7 @@ internal constructor(actual: CBLDatabase) :
 
         @Throws(CouchbaseLiteException::class)
         public actual fun copy(path: String, name: String, config: DatabaseConfiguration?) {
-            wrapError(NSError::toCouchbaseLiteException) { error ->
+            wrapCBLError { error ->
                 CBLDatabase.copyFromPath(path, name, config?.actual, error)
             }
         }
