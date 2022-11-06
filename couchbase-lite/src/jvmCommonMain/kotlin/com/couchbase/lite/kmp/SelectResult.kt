@@ -10,8 +10,9 @@ private constructor(actual: com.couchbase.lite.SelectResult) :
     internal constructor(override val actual: com.couchbase.lite.SelectResult.From) :
         SelectResult(actual) {
 
-        public actual fun from(alias: String): SelectResult = chain {
+        public actual fun from(alias: String): SelectResult {
             actual.from(alias)
+            return this
         }
     }
 
@@ -19,8 +20,9 @@ private constructor(actual: com.couchbase.lite.SelectResult) :
     internal constructor(override val actual: com.couchbase.lite.SelectResult.As) :
         SelectResult(actual) {
 
-        public actual fun `as`(alias: String): As = chain {
+        public actual fun `as`(alias: String): As {
             actual.`as`(alias)
+            return this
         }
     }
 

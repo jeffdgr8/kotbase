@@ -2,7 +2,6 @@ package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.CBLMutableDocument
 import com.couchbase.lite.kmp.ext.wrapCBLError
-import com.udobny.kmp.chain
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
@@ -30,8 +29,6 @@ internal constructor(override val actual: CBLMutableDocument) :
         setJSON(json)
     }
 
-    private inline fun chain(action: CBLMutableDocument.() -> Unit) = chain(actual, action)
-
     private fun setBooleans(data: Map<String, Any?>) {
         data.forEach { (key, value) ->
             if (value is Boolean) {
@@ -44,13 +41,14 @@ internal constructor(override val actual: CBLMutableDocument) :
     actual override fun toMutable(): MutableDocument =
         MutableDocument(actual.toMutable())
 
-    public actual fun setData(data: Map<String, Any?>): MutableDocument = chain {
+    public actual fun setData(data: Map<String, Any?>): MutableDocument {
         collectionMap.clear()
-        setData(data.actualIfDelegated())
+        actual.setData(data.actualIfDelegated())
         setBooleans(data)
+        return this
     }
 
-    public actual fun setJSON(json: String): MutableDocument = chain {
+    public actual fun setJSON(json: String): MutableDocument {
         collectionMap.clear()
         try {
             wrapCBLError { error ->
@@ -59,88 +57,102 @@ internal constructor(override val actual: CBLMutableDocument) :
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)
         }
+        return this
     }
 
-    public actual fun setValue(key: String, value: Any?): MutableDocument = chain {
+    public actual fun setValue(key: String, value: Any?): MutableDocument {
         checkType(value)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
-            is Boolean -> setBoolean(value, key)
-            else -> setValue(value?.actualIfDelegated(), key)
+            is Boolean -> actual.setBoolean(value, key)
+            else -> actual.setValue(value?.actualIfDelegated(), key)
         }
         if (value is Array || value is Dictionary) {
             collectionMap[key] = value
         } else {
             collectionMap.remove(key)
         }
+        return this
     }
 
-    public actual fun setString(key: String, value: String?): MutableDocument = chain {
-        setString(value, key)
+    public actual fun setString(key: String, value: String?): MutableDocument {
+        actual.setString(value, key)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setNumber(key: String, value: Number?): MutableDocument = chain {
-        setNumber(value as NSNumber?, key)
+    public actual fun setNumber(key: String, value: Number?): MutableDocument {
+        actual.setNumber(value as NSNumber?, key)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setInt(key: String, value: Int): MutableDocument = chain {
-        setInteger(value.convert(), key)
+    public actual fun setInt(key: String, value: Int): MutableDocument {
+        actual.setInteger(value.convert(), key)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setLong(key: String, value: Long): MutableDocument = chain {
-        setLongLong(value, key)
+    public actual fun setLong(key: String, value: Long): MutableDocument {
+        actual.setLongLong(value, key)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setFloat(key: String, value: Float): MutableDocument = chain {
-        setFloat(value, key)
+    public actual fun setFloat(key: String, value: Float): MutableDocument {
+        actual.setFloat(value, key)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setDouble(key: String, value: Double): MutableDocument = chain {
-        setDouble(value, key)
+    public actual fun setDouble(key: String, value: Double): MutableDocument {
+        actual.setDouble(value, key)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setBoolean(key: String, value: Boolean): MutableDocument = chain {
-        setBoolean(value, key)
+    public actual fun setBoolean(key: String, value: Boolean): MutableDocument {
+        actual.setBoolean(value, key)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setBlob(key: String, value: Blob?): MutableDocument = chain {
-        setBlob(value?.actual, key)
+    public actual fun setBlob(key: String, value: Blob?): MutableDocument {
+        actual.setBlob(value?.actual, key)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setDate(key: String, value: Instant?): MutableDocument = chain {
-        setDate(value?.toNSDate(), key)
+    public actual fun setDate(key: String, value: Instant?): MutableDocument {
+        actual.setDate(value?.toNSDate(), key)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setArray(key: String, value: Array?): MutableDocument = chain {
-        setArray(value?.actual, key)
+    public actual fun setArray(key: String, value: Array?): MutableDocument {
+        actual.setArray(value?.actual, key)
         if (value != null) {
             collectionMap[key] = value
         } else {
             collectionMap.remove(key)
         }
+        return this
     }
 
-    public actual fun setDictionary(key: String, value: Dictionary?): MutableDocument = chain {
-        setDictionary(value?.actual, key)
+    public actual fun setDictionary(key: String, value: Dictionary?): MutableDocument {
+        actual.setDictionary(value?.actual, key)
         if (value != null) {
             collectionMap[key] = value
         } else {
             collectionMap.remove(key)
         }
+        return this
     }
 
-    public actual fun remove(key: String): MutableDocument = chain {
-        removeValueForKey(key)
+    public actual fun remove(key: String): MutableDocument {
+        actual.removeValueForKey(key)
         collectionMap.remove(key)
+        return this
     }
 
     actual override fun getArray(key: String): MutableArray? {

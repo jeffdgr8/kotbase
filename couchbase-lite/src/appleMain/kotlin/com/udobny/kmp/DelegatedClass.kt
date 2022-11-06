@@ -17,11 +17,6 @@ public abstract class AbstractDelegatedClass<D : NSObject> {
 
     override fun toString(): String =
         actual.description ?: ""
-
-    protected fun <T : DelegatedClass<D>> T.chain(action: D.() -> Unit): T {
-        actual.action()
-        return this
-    }
 }
 
 internal inline fun <reified D : NSObject> Array<out DelegatedClass<D>>.actuals(): List<D> =

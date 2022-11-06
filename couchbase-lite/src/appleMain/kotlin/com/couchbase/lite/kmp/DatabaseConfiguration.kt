@@ -11,8 +11,9 @@ internal constructor(actual: CBLDatabaseConfiguration) :
         CBLDatabaseConfiguration(config?.actual)
     )
 
-    public actual fun setDirectory(directory: String): DatabaseConfiguration = chain {
-        setDirectory(directory)
+    public actual fun setDirectory(directory: String): DatabaseConfiguration {
+        actual.setDirectory(directory)
+        return this
     }
 
     public actual var directory: String

@@ -1,7 +1,6 @@
 package com.couchbase.lite.kmp
 
 import com.udobny.kmp.DelegatedClass
-import com.udobny.kmp.chain
 
 public actual abstract class Ordering
 private constructor(actual: com.couchbase.lite.Ordering) :
@@ -11,15 +10,14 @@ private constructor(actual: com.couchbase.lite.Ordering) :
     internal constructor(override val actual: com.couchbase.lite.Ordering.SortOrder) :
         Ordering(actual) {
 
-        private inline fun chain(action: com.couchbase.lite.Ordering.SortOrder.() -> Unit) =
-            chain(actual, action)
-
-        public actual fun ascending(): Ordering = chain {
-            ascending()
+        public actual fun ascending(): Ordering {
+            actual.ascending()
+            return this
         }
 
-        public actual fun descending(): Ordering = chain {
-            descending()
+        public actual fun descending(): Ordering {
+            actual.descending()
+            return this
         }
     }
 

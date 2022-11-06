@@ -1,7 +1,5 @@
 package com.couchbase.lite.kmp
 
-import com.udobny.kmp.chain
-
 public actual class FullTextIndexConfiguration
 internal constructor(override val actual: com.couchbase.lite.FullTextIndexConfiguration) :
     IndexConfiguration(actual) {
@@ -10,11 +8,9 @@ internal constructor(override val actual: com.couchbase.lite.FullTextIndexConfig
         com.couchbase.lite.FullTextIndexConfiguration(*expressions)
     )
 
-    private inline fun chain(action: com.couchbase.lite.FullTextIndexConfiguration.() -> Unit) =
-        chain(actual, action)
-
-    public actual fun setLanguage(language: String?): FullTextIndexConfiguration = chain {
-        setLanguage(language)
+    public actual fun setLanguage(language: String?): FullTextIndexConfiguration {
+        actual.language = language
+        return this
     }
 
     public actual var language: String?
@@ -23,8 +19,9 @@ internal constructor(override val actual: com.couchbase.lite.FullTextIndexConfig
             actual.language = value
         }
 
-    public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration = chain {
-        ignoreAccents(ignoreAccents)
+    public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration {
+        actual.ignoreAccents(ignoreAccents)
+        return this
     }
 
     public actual var isIgnoringAccents: Boolean

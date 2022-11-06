@@ -3,7 +3,6 @@ package com.couchbase.lite.kmp
 import cocoapods.CouchbaseLite.CBLQueryOrdering
 import cocoapods.CouchbaseLite.CBLQuerySortOrder
 import com.udobny.kmp.DelegatedClass
-import com.udobny.kmp.chain
 
 public actual abstract class Ordering
 private constructor(actual: CBLQueryOrdering) :
@@ -12,14 +11,14 @@ private constructor(actual: CBLQueryOrdering) :
     public actual class SortOrder
     internal constructor(override val actual: CBLQuerySortOrder) : Ordering(actual) {
 
-        private inline fun chain(action: CBLQuerySortOrder.() -> Unit) = chain(actual, action)
-
-        public actual fun ascending(): Ordering = chain {
-            ascending()
+        public actual fun ascending(): Ordering {
+            actual.ascending()
+            return this
         }
 
-        public actual fun descending(): Ordering = chain {
-            descending()
+        public actual fun descending(): Ordering {
+            actual.descending()
+            return this
         }
     }
 

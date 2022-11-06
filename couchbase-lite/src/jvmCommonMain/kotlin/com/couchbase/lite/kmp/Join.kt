@@ -9,8 +9,9 @@ private constructor(actual: com.couchbase.lite.Join) :
     public actual class On
     internal constructor(override val actual: com.couchbase.lite.Join.On) : Join(actual) {
 
-        public actual fun on(expression: Expression): Join = chain {
+        public actual fun on(expression: Expression): Join {
             actual.on(expression.actual)
+            return this
         }
     }
 

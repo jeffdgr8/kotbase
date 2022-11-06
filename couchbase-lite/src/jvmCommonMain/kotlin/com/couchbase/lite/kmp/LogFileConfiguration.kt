@@ -18,8 +18,9 @@ internal constructor(actual: com.couchbase.lite.LogFileConfiguration) :
         com.couchbase.lite.LogFileConfiguration(directory, config?.actual)
     )
 
-    public actual fun setUsePlaintext(usePlaintext: Boolean): LogFileConfiguration = chain {
-        setUsePlaintext(usePlaintext)
+    public actual fun setUsePlaintext(usePlaintext: Boolean): LogFileConfiguration {
+        actual.setUsePlaintext(usePlaintext)
+        return this
     }
 
     public actual var maxRotateCount: Int
@@ -28,8 +29,9 @@ internal constructor(actual: com.couchbase.lite.LogFileConfiguration) :
             actual.maxRotateCount = value
         }
 
-    public actual fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration = chain {
-        setMaxRotateCount(maxRotateCount)
+    public actual fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration {
+        actual.maxRotateCount = maxRotateCount
+        return this
     }
 
     public actual var maxSize: Long
@@ -38,8 +40,9 @@ internal constructor(actual: com.couchbase.lite.LogFileConfiguration) :
             actual.maxSize = value
         }
 
-    public actual fun setMaxSize(maxSize: Long): LogFileConfiguration = chain {
-        setMaxSize(maxSize)
+    public actual fun setMaxSize(maxSize: Long): LogFileConfiguration {
+        actual.maxSize = maxSize
+        return this
     }
 
     public actual var usesPlaintext: Boolean

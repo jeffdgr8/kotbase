@@ -1,16 +1,13 @@
 package com.couchbase.lite.kmp
 
-import com.udobny.kmp.chain
 import java.util.*
 
 public actual class FullTextIndex
 internal constructor(override val actual: com.couchbase.lite.FullTextIndex) : Index(actual) {
 
-    private inline fun chain(action: com.couchbase.lite.FullTextIndex.() -> Unit) =
-        chain(actual, action)
-
-    public actual fun setLanguage(language: String?): FullTextIndex = chain {
-        setLanguage(language)
+    public actual fun setLanguage(language: String?): FullTextIndex {
+        actual.setLanguage(language)
+        return this
     }
 
     // TODO: use actual getter instead of field in 3.1
@@ -20,8 +17,9 @@ internal constructor(override val actual: com.couchbase.lite.FullTextIndex) : In
             actual.setLanguage(value)
         }
 
-    public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndex = chain {
-        ignoreAccents(ignoreAccents)
+    public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndex {
+        actual.ignoreAccents(ignoreAccents)
+        return this
     }
 
     // TODO: use actual getter instead of field in 3.1

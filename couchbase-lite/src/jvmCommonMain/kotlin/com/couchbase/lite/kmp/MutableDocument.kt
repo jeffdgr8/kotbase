@@ -1,6 +1,5 @@
 package com.couchbase.lite.kmp
 
-import com.udobny.kmp.chain
 import com.udobny.kmp.ext.*
 import kotlinx.datetime.Instant
 
@@ -23,97 +22,109 @@ internal constructor(override val actual: com.couchbase.lite.MutableDocument) : 
         com.couchbase.lite.MutableDocument(id, json)
     )
 
-    private inline fun chain(action: com.couchbase.lite.MutableDocument.() -> Unit) =
-        chain(actual, action)
-
     actual override fun toMutable(): MutableDocument =
         MutableDocument(actual.toMutable())
 
-    public actual fun setData(data: Map<String, Any?>): MutableDocument = chain {
+    public actual fun setData(data: Map<String, Any?>): MutableDocument {
         collectionMap.clear()
-        setData(data.actualIfDelegated())
+        actual.setData(data.actualIfDelegated())
+        return this
     }
 
-    public actual fun setJSON(json: String): MutableDocument = chain {
+    public actual fun setJSON(json: String): MutableDocument {
         collectionMap.clear()
-        setJSON(json)
+        actual.setJSON(json)
+        return this
     }
 
-    public actual fun setValue(key: String, value: Any?): MutableDocument = chain {
-        setValue(key, value?.actualIfDelegated())
+    public actual fun setValue(key: String, value: Any?): MutableDocument {
+        actual.setValue(key, value?.actualIfDelegated())
         if (value is Array || value is Dictionary) {
             collectionMap[key] = value
         } else {
             collectionMap.remove(key)
         }
+        return this
     }
 
-    public actual fun setString(key: String, value: String?): MutableDocument = chain {
-        setString(key, value)
+    public actual fun setString(key: String, value: String?): MutableDocument {
+        actual.setString(key, value)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setNumber(key: String, value: Number?): MutableDocument = chain {
-        setNumber(key, value)
+    public actual fun setNumber(key: String, value: Number?): MutableDocument {
+        actual.setNumber(key, value)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setInt(key: String, value: Int): MutableDocument = chain {
-        setInt(key, value)
+    public actual fun setInt(key: String, value: Int): MutableDocument {
+        actual.setInt(key, value)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setLong(key: String, value: Long): MutableDocument = chain {
-        setLong(key, value)
+    public actual fun setLong(key: String, value: Long): MutableDocument {
+        actual.setLong(key, value)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setFloat(key: String, value: Float): MutableDocument = chain {
-        setFloat(key, value)
+    public actual fun setFloat(key: String, value: Float): MutableDocument {
+        actual.setFloat(key, value)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setDouble(key: String, value: Double): MutableDocument = chain {
-        setDouble(key, value)
+    public actual fun setDouble(key: String, value: Double): MutableDocument {
+        actual.setDouble(key, value)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setBoolean(key: String, value: Boolean): MutableDocument = chain {
-        setBoolean(key, value)
+    public actual fun setBoolean(key: String, value: Boolean): MutableDocument {
+        actual.setBoolean(key, value)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setBlob(key: String, value: Blob?): MutableDocument = chain {
-        setBlob(key, value?.actual)
+    public actual fun setBlob(key: String, value: Blob?): MutableDocument {
+        actual.setBlob(key, value?.actual)
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setDate(key: String, value: Instant?): MutableDocument = chain {
-        setDate(key, value?.toDate())
+    public actual fun setDate(key: String, value: Instant?): MutableDocument {
+        actual.setDate(key, value?.toDate())
         collectionMap.remove(key)
+        return this
     }
 
-    public actual fun setArray(key: String, value: Array?): MutableDocument = chain {
-        setArray(key, value?.actual)
+    public actual fun setArray(key: String, value: Array?): MutableDocument {
+        actual.setArray(key, value?.actual)
         if (value != null) {
             collectionMap[key] = value
         } else {
             collectionMap.remove(key)
         }
+        return this
     }
 
-    public actual fun setDictionary(key: String, value: Dictionary?): MutableDocument = chain {
-        setDictionary(key, value?.actual)
+    public actual fun setDictionary(key: String, value: Dictionary?): MutableDocument {
+        actual.setDictionary(key, value?.actual)
         if (value != null) {
             collectionMap[key] = value
         } else {
             collectionMap.remove(key)
         }
+        return this
     }
 
-    public actual fun remove(key: String): MutableDocument = chain {
-        remove(key)
+    public actual fun remove(key: String): MutableDocument {
+        actual.remove(key)
         collectionMap.remove(key)
+        return this
     }
 
     actual override fun getArray(key: String): MutableArray? {

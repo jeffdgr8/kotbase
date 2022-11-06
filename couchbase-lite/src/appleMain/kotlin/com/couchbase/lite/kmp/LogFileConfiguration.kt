@@ -26,9 +26,10 @@ internal constructor(actual: CBLLogFileConfiguration) :
 
     internal var readonly: Boolean = false
 
-    public actual fun setUsePlaintext(usePlaintext: Boolean): LogFileConfiguration = chain {
+    public actual fun setUsePlaintext(usePlaintext: Boolean): LogFileConfiguration {
         checkReadOnly()
-        setUsePlainText(usePlaintext)
+        actual.setUsePlainText(usePlaintext)
+        return this
     }
 
     public actual var maxRotateCount: Int
@@ -38,9 +39,10 @@ internal constructor(actual: CBLLogFileConfiguration) :
             actual.maxRotateCount = value.convert()
         }
 
-    public actual fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration = chain {
+    public actual fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration {
         checkReadOnly()
-        setMaxRotateCount(maxRotateCount.convert())
+        actual.setMaxRotateCount(maxRotateCount.convert())
+        return this
     }
 
     public actual var maxSize: Long
@@ -50,9 +52,10 @@ internal constructor(actual: CBLLogFileConfiguration) :
             actual.maxSize = value.convert()
         }
 
-    public actual fun setMaxSize(maxSize: Long): LogFileConfiguration = chain {
+    public actual fun setMaxSize(maxSize: Long): LogFileConfiguration {
         checkReadOnly()
-        setMaxSize(maxSize.convert())
+        actual.setMaxSize(maxSize.convert())
+        return this
     }
 
     public actual var usesPlaintext: Boolean

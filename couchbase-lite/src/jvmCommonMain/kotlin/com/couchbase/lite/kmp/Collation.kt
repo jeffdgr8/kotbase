@@ -1,7 +1,6 @@
 package com.couchbase.lite.kmp
 
 import com.udobny.kmp.DelegatedClass
-import com.udobny.kmp.chain
 
 public actual open class Collation
 private constructor(actual: com.couchbase.lite.Collation) :
@@ -11,8 +10,9 @@ private constructor(actual: com.couchbase.lite.Collation) :
     internal constructor(override val actual: com.couchbase.lite.Collation.ASCII) :
         Collation(actual) {
 
-        public actual fun setIgnoreCase(ignCase: Boolean): ASCII = chain {
+        public actual fun setIgnoreCase(ignCase: Boolean): ASCII {
             actual.setIgnoreCase(ignCase)
+            return this
         }
     }
 
@@ -20,19 +20,19 @@ private constructor(actual: com.couchbase.lite.Collation) :
     internal constructor(override val actual: com.couchbase.lite.Collation.Unicode) :
         Collation(actual) {
 
-        private inline fun chain(action: com.couchbase.lite.Collation.Unicode.() -> Unit) =
-            chain(actual, action)
-
-        public actual fun setLocale(locale: String?): Unicode = chain {
-            setLocale(locale)
+        public actual fun setLocale(locale: String?): Unicode {
+            actual.setLocale(locale)
+            return this
         }
 
-        public actual fun setIgnoreAccents(ignAccents: Boolean): Unicode = chain {
-            setIgnoreAccents(ignAccents)
+        public actual fun setIgnoreAccents(ignAccents: Boolean): Unicode {
+            actual.setIgnoreAccents(ignAccents)
+            return this
         }
 
-        public actual fun setIgnoreCase(ignCase: Boolean): Unicode = chain {
-            setIgnoreCase(ignCase)
+        public actual fun setIgnoreCase(ignCase: Boolean): Unicode {
+            actual.setIgnoreCase(ignCase)
+            return this
         }
     }
 

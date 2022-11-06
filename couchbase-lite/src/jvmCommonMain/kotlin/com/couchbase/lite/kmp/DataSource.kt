@@ -10,8 +10,9 @@ private constructor(actual: com.couchbase.lite.DataSource) :
     internal constructor(override val actual: com.couchbase.lite.DataSource.As) :
         DataSource(actual) {
 
-        public actual fun `as`(alias: String): DataSource = chain {
+        public actual fun `as`(alias: String): DataSource {
             actual.`as`(alias)
+            return this
         }
     }
 

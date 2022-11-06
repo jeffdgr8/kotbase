@@ -11,11 +11,6 @@ internal constructor(internal open val actual: D) {
 
     override fun toString(): String =
         actual.toString()
-
-    protected fun <T : DelegatedClass<D>> T.chain(action: D.() -> Unit): T {
-        actual.action()
-        return this
-    }
 }
 
 internal inline fun <reified D : Any> Array<out DelegatedClass<D>>.actuals(): Array<D> =

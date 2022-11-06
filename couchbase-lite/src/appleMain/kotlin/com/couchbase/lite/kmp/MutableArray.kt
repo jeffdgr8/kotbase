@@ -2,7 +2,6 @@ package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.CBLMutableArray
 import com.couchbase.lite.kmp.ext.wrapCBLError
-import com.udobny.kmp.chain
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
@@ -23,8 +22,6 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         setJSON(json)
     }
 
-    private inline fun chain(action: CBLMutableArray.() -> Unit) = chain(actual, action)
-
     private fun setBooleans(data: List<Any?>) {
         data.forEachIndexed { index, value ->
             if (value is Boolean) {
@@ -34,13 +31,14 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         }
     }
 
-    public actual fun setData(data: List<Any?>): MutableArray = chain {
+    public actual fun setData(data: List<Any?>): MutableArray {
         data.forEach { checkSelf(it) }
-        setData(data.actualIfDelegated())
+        actual.setData(data.actualIfDelegated())
         setBooleans(data)
+        return this
     }
 
-    public actual fun setJSON(json: String): MutableArray = chain {
+    public actual fun setJSON(json: String): MutableArray {
         try {
             wrapCBLError { error ->
                 actual.setJSON(json, error)
@@ -48,200 +46,238 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)
         }
+        return this
     }
 
-    public actual fun setValue(index: Int, value: Any?): MutableArray = chain {
+    public actual fun setValue(index: Int, value: Any?): MutableArray {
         checkSelf(value)
         checkType(value)
         checkIndex(index)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
-            is Boolean -> setBoolean(value, index.convert())
-            else -> setValue(value?.actualIfDelegated(), index.convert())
+            is Boolean -> actual.setBoolean(value, index.convert())
+            else -> actual.setValue(value?.actualIfDelegated(), index.convert())
         }
+        return this
     }
 
-    public actual fun setString(index: Int, value: String?): MutableArray = chain {
+    public actual fun setString(index: Int, value: String?): MutableArray {
         checkIndex(index)
-        setString(value, index.convert())
+        actual.setString(value, index.convert())
+        return this
     }
 
-    public actual fun setNumber(index: Int, value: Number?): MutableArray = chain {
+    public actual fun setNumber(index: Int, value: Number?): MutableArray {
         checkIndex(index)
-        setNumber(value as NSNumber?, index.convert())
+        actual.setNumber(value as NSNumber?, index.convert())
+        return this
     }
 
-    public actual fun setInt(index: Int, value: Int): MutableArray = chain {
+    public actual fun setInt(index: Int, value: Int): MutableArray {
         checkIndex(index)
-        setInteger(value.convert(), index.convert())
+        actual.setInteger(value.convert(), index.convert())
+        return this
     }
 
-    public actual fun setLong(index: Int, value: Long): MutableArray = chain {
+    public actual fun setLong(index: Int, value: Long): MutableArray {
         checkIndex(index)
-        setLongLong(value, index.convert())
+        actual.setLongLong(value, index.convert())
+        return this
     }
 
-    public actual fun setFloat(index: Int, value: Float): MutableArray = chain {
+    public actual fun setFloat(index: Int, value: Float): MutableArray {
         checkIndex(index)
-        setFloat(value, index.convert())
+        actual.setFloat(value, index.convert())
+        return this
     }
 
-    public actual fun setDouble(index: Int, value: Double): MutableArray = chain {
+    public actual fun setDouble(index: Int, value: Double): MutableArray {
         checkIndex(index)
-        setDouble(value, index.convert())
+        actual.setDouble(value, index.convert())
+        return this
     }
 
-    public actual fun setBoolean(index: Int, value: Boolean): MutableArray = chain {
+    public actual fun setBoolean(index: Int, value: Boolean): MutableArray {
         checkIndex(index)
-        setBoolean(value, index.convert())
+        actual.setBoolean(value, index.convert())
+        return this
     }
 
-    public actual fun setBlob(index: Int, value: Blob?): MutableArray = chain {
+    public actual fun setBlob(index: Int, value: Blob?): MutableArray {
         checkIndex(index)
-        setBlob(value?.actual, index.convert())
+        actual.setBlob(value?.actual, index.convert())
+        return this
     }
 
-    public actual fun setDate(index: Int, value: Instant?): MutableArray = chain {
+    public actual fun setDate(index: Int, value: Instant?): MutableArray {
         checkIndex(index)
-        setDate(value?.toNSDate(), index.convert())
+        actual.setDate(value?.toNSDate(), index.convert())
+        return this
     }
 
-    public actual fun setArray(index: Int, value: Array?): MutableArray = chain {
+    public actual fun setArray(index: Int, value: Array?): MutableArray {
         checkSelf(value)
         checkIndex(index)
-        setArray(value?.actual, index.convert())
+        actual.setArray(value?.actual, index.convert())
+        return this
     }
 
-    public actual fun setDictionary(index: Int, value: Dictionary?): MutableArray = chain {
+    public actual fun setDictionary(index: Int, value: Dictionary?): MutableArray {
         checkIndex(index)
-        setDictionary(value?.actual, index.convert())
+        actual.setDictionary(value?.actual, index.convert())
+        return this
     }
 
-    public actual fun addValue(value: Any?): MutableArray = chain {
+    public actual fun addValue(value: Any?): MutableArray {
         checkSelf(value)
         checkType(value)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
-            is Boolean -> addBoolean(value)
-            else -> addValue(value?.actualIfDelegated())
+            is Boolean -> actual.addBoolean(value)
+            else -> actual.addValue(value?.actualIfDelegated())
         }
+        return this
     }
 
-    public actual fun addString(value: String?): MutableArray = chain {
-        addString(value)
+    public actual fun addString(value: String?): MutableArray {
+        actual.addString(value)
+        return this
     }
 
-    public actual fun addNumber(value: Number?): MutableArray = chain {
-        addNumber(value as NSNumber?)
+    public actual fun addNumber(value: Number?): MutableArray {
+        actual.addNumber(value as NSNumber?)
+        return this
     }
 
-    public actual fun addInt(value: Int): MutableArray = chain {
-        addInteger(value.convert())
+    public actual fun addInt(value: Int): MutableArray {
+        actual.addInteger(value.convert())
+        return this
     }
 
-    public actual fun addLong(value: Long): MutableArray = chain {
-        addLongLong(value)
+    public actual fun addLong(value: Long): MutableArray {
+        actual.addLongLong(value)
+        return this
     }
 
-    public actual fun addFloat(value: Float): MutableArray = chain {
-        addFloat(value)
+    public actual fun addFloat(value: Float): MutableArray {
+        actual.addFloat(value)
+        return this
     }
 
-    public actual fun addDouble(value: Double): MutableArray = chain {
-        addDouble(value)
+    public actual fun addDouble(value: Double): MutableArray {
+        actual.addDouble(value)
+        return this
     }
 
-    public actual fun addBoolean(value: Boolean): MutableArray = chain {
-        addBoolean(value)
+    public actual fun addBoolean(value: Boolean): MutableArray {
+        actual.addBoolean(value)
+        return this
     }
 
-    public actual fun addBlob(value: Blob?): MutableArray = chain {
-        addBlob(value?.actual)
+    public actual fun addBlob(value: Blob?): MutableArray {
+        actual.addBlob(value?.actual)
+        return this
     }
 
-    public actual fun addDate(value: Instant?): MutableArray = chain {
-        addDate(value?.toNSDate())
+    public actual fun addDate(value: Instant?): MutableArray {
+        actual.addDate(value?.toNSDate())
+        return this
     }
 
-    public actual fun addArray(value: Array?): MutableArray = chain {
+    public actual fun addArray(value: Array?): MutableArray {
         checkSelf(value)
-        addArray(value?.actual)
+        actual.addArray(value?.actual)
+        return this
     }
 
-    public actual fun addDictionary(value: Dictionary?): MutableArray = chain {
-        addDictionary(value?.actual)
+    public actual fun addDictionary(value: Dictionary?): MutableArray {
+        actual.addDictionary(value?.actual)
+        return this
     }
 
-    public actual fun insertValue(index: Int, value: Any?): MutableArray = chain {
+    public actual fun insertValue(index: Int, value: Any?): MutableArray {
         checkSelf(value)
         checkType(value)
         checkInsertIndex(index)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
-            is Boolean -> insertBoolean(value, index.convert())
-            else -> insertValue(value?.actualIfDelegated(), index.convert())
+            is Boolean -> actual.insertBoolean(value, index.convert())
+            else -> actual.insertValue(value?.actualIfDelegated(), index.convert())
         }
+        return this
     }
 
-    public actual fun insertString(index: Int, value: String?): MutableArray = chain {
+    public actual fun insertString(index: Int, value: String?): MutableArray {
         checkInsertIndex(index)
-        insertString(value, index.convert())
+        actual.insertString(value, index.convert())
+        return this
     }
 
-    public actual fun insertNumber(index: Int, value: Number?): MutableArray = chain {
+    public actual fun insertNumber(index: Int, value: Number?): MutableArray {
         checkInsertIndex(index)
-        insertNumber(value as NSNumber?, index.convert())
+        actual.insertNumber(value as NSNumber?, index.convert())
+        return this
     }
 
-    public actual fun insertInt(index: Int, value: Int): MutableArray = chain {
+    public actual fun insertInt(index: Int, value: Int): MutableArray {
         checkInsertIndex(index)
-        insertInteger(value.convert(), index.convert())
+        actual.insertInteger(value.convert(), index.convert())
+        return this
     }
 
-    public actual fun insertLong(index: Int, value: Long): MutableArray = chain {
+    public actual fun insertLong(index: Int, value: Long): MutableArray {
         checkInsertIndex(index)
-        insertLongLong(value, index.convert())
+        actual.insertLongLong(value, index.convert())
+        return this
     }
 
-    public actual fun insertFloat(index: Int, value: Float): MutableArray = chain {
+    public actual fun insertFloat(index: Int, value: Float): MutableArray {
         checkInsertIndex(index)
-        insertFloat(value, index.convert())
+        actual.insertFloat(value, index.convert())
+        return this
     }
 
-    public actual fun insertDouble(index: Int, value: Double): MutableArray = chain {
+    public actual fun insertDouble(index: Int, value: Double): MutableArray {
         checkInsertIndex(index)
-        insertDouble(value, index.convert())
+        actual.insertDouble(value, index.convert())
+        return this
     }
 
-    public actual fun insertBoolean(index: Int, value: Boolean): MutableArray = chain {
+    public actual fun insertBoolean(index: Int, value: Boolean): MutableArray {
         checkInsertIndex(index)
-        insertBoolean(value, index.convert())
+        actual.insertBoolean(value, index.convert())
+        return this
     }
 
-    public actual fun insertBlob(index: Int, value: Blob?): MutableArray = chain {
+    public actual fun insertBlob(index: Int, value: Blob?): MutableArray {
         checkInsertIndex(index)
-        insertBlob(value?.actual, index.convert())
+        actual.insertBlob(value?.actual, index.convert())
+        return this
     }
 
-    public actual fun insertDate(index: Int, value: Instant?): MutableArray = chain {
+    public actual fun insertDate(index: Int, value: Instant?): MutableArray {
         checkInsertIndex(index)
-        insertDate(value?.toNSDate(), index.convert())
+        actual.insertDate(value?.toNSDate(), index.convert())
+        return this
     }
 
-    public actual fun insertArray(index: Int, value: Array?): MutableArray = chain {
+    public actual fun insertArray(index: Int, value: Array?): MutableArray {
         checkSelf(value)
         checkInsertIndex(index)
-        insertArray(value?.actual, index.convert())
+        actual.insertArray(value?.actual, index.convert())
+        return this
     }
 
-    public actual fun insertDictionary(index: Int, value: Dictionary?): MutableArray = chain {
+    public actual fun insertDictionary(index: Int, value: Dictionary?): MutableArray {
         checkInsertIndex(index)
-        insertDictionary(value?.actual, index.convert())
+        actual.insertDictionary(value?.actual, index.convert())
+        return this
     }
 
-    public actual fun remove(index: Int): MutableArray = chain {
+    public actual fun remove(index: Int): MutableArray {
         checkIndex(index)
-        removeValueAtIndex(index.convert())
+        actual.removeValueAtIndex(index.convert())
+        return this
     }
 
     actual override fun getArray(index: Int): MutableArray? {

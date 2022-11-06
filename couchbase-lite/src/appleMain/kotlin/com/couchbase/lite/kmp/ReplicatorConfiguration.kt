@@ -35,66 +35,74 @@ private constructor(
         config.pushFilter
     )
 
-    public actual fun setAuthenticator(authenticator: Authenticator): ReplicatorConfiguration =
-        chain {
-            this@ReplicatorConfiguration.authenticator = authenticator
-        }
+    public actual fun setAuthenticator(authenticator: Authenticator): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.authenticator = authenticator
+        return this
+    }
 
-    public actual fun setChannels(channels: List<String>?): ReplicatorConfiguration = chain {
+    public actual fun setChannels(channels: List<String>?): ReplicatorConfiguration {
         this@ReplicatorConfiguration.channels = channels
+        return this
     }
 
-    public actual fun setConflictResolver(conflictResolver: ConflictResolver?): ReplicatorConfiguration =
-        chain {
-            this@ReplicatorConfiguration.conflictResolver = conflictResolver
-        }
+    public actual fun setConflictResolver(conflictResolver: ConflictResolver?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.conflictResolver = conflictResolver
+        return this
+    }
 
-    public actual fun setContinuous(continuous: Boolean): ReplicatorConfiguration = chain {
+    public actual fun setContinuous(continuous: Boolean): ReplicatorConfiguration {
         this@ReplicatorConfiguration.isContinuous = continuous
+        return this
     }
 
-    public actual fun setDocumentIDs(documentIDs: List<String>?): ReplicatorConfiguration = chain {
+    public actual fun setDocumentIDs(documentIDs: List<String>?): ReplicatorConfiguration {
         this@ReplicatorConfiguration.documentIDs = documentIDs
+        return this
     }
 
-    public actual fun setHeaders(headers: Map<String, String>?): ReplicatorConfiguration = chain {
+    public actual fun setHeaders(headers: Map<String, String>?): ReplicatorConfiguration {
         this@ReplicatorConfiguration.headers = headers
+        return this
     }
 
-    public actual fun setPinnedServerCertificate(pinnedCert: ByteArray?): ReplicatorConfiguration =
-        chain {
-            this@ReplicatorConfiguration.pinnedServerCertificate = pinnedCert
-        }
+    public actual fun setPinnedServerCertificate(pinnedCert: ByteArray?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.pinnedServerCertificate = pinnedCert
+        return this
+    }
 
-    public actual fun setPullFilter(pullFilter: ReplicationFilter?): ReplicatorConfiguration =
-        chain {
-            this@ReplicatorConfiguration.pullFilter = pullFilter
-        }
+    public actual fun setPullFilter(pullFilter: ReplicationFilter?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.pullFilter = pullFilter
+        return this
+    }
 
-    public actual fun setPushFilter(pushFilter: ReplicationFilter?): ReplicatorConfiguration =
-        chain {
-            this@ReplicatorConfiguration.pushFilter = pushFilter
-        }
+    public actual fun setPushFilter(pushFilter: ReplicationFilter?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.pushFilter = pushFilter
+        return this
+    }
 
-    public actual fun setType(type: ReplicatorType): ReplicatorConfiguration = chain {
+    public actual fun setType(type: ReplicatorType): ReplicatorConfiguration {
         this@ReplicatorConfiguration.type = type
+        return this
     }
 
-    public actual fun setMaxAttempts(maxAttempts: Int): ReplicatorConfiguration = chain {
+    public actual fun setMaxAttempts(maxAttempts: Int): ReplicatorConfiguration {
         this@ReplicatorConfiguration.maxAttempts = maxAttempts
+        return this
     }
 
-    public actual fun setMaxAttemptWaitTime(maxAttemptWaitTime: Int): ReplicatorConfiguration =
-        chain {
-            this@ReplicatorConfiguration.maxAttemptWaitTime = maxAttemptWaitTime
-        }
+    public actual fun setMaxAttemptWaitTime(maxAttemptWaitTime: Int): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.maxAttemptWaitTime = maxAttemptWaitTime
+        return this
+    }
 
-    public actual fun setHeartbeat(heartbeat: Int): ReplicatorConfiguration = chain {
+    public actual fun setHeartbeat(heartbeat: Int): ReplicatorConfiguration {
         this@ReplicatorConfiguration.heartbeat = heartbeat
+        return this
     }
 
-    public actual fun setAutoPurgeEnabled(enabled: Boolean): ReplicatorConfiguration = chain {
+    public actual fun setAutoPurgeEnabled(enabled: Boolean): ReplicatorConfiguration {
         this@ReplicatorConfiguration.isAutoPurgeEnabled = enabled
+        return this
     }
 
     public actual var authenticator: Authenticator? = authenticator
