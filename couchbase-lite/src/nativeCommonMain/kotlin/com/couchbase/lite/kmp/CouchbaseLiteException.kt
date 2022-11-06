@@ -20,15 +20,15 @@ internal constructor(
     public actual constructor(message: String, cause: Exception, domain: String, code: Int) :
             this(message, cause, domain, code, null)
 
-    private val code = if (code > 0) code else 10
-
     private val domain: String = domain ?: CBLError.Domain.CBLITE
 
-    public actual fun getDomain(): String = domain
+    private val code: Int = if (code > 0) code else CBLError.Code.UNEXPECTED_ERROR
 
-    public actual fun getCode(): Int = code
+    internal actual fun getDomain(): String = domain
 
-    public actual fun getInfo(): Map<String, Any?>? = info
+    internal actual fun getCode(): Int = code
+
+    internal actual fun getInfo(): Map<String, Any?>? = info
 
     override fun toString(): String {
         val msg = message

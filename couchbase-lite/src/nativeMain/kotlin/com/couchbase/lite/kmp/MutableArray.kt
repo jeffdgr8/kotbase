@@ -436,7 +436,7 @@ internal constructor(
 
     override fun getValue(index: Int): Any? {
         return collectionMap[index]
-            ?:getFLValue(index)?.toMutableNative(dbContext) { setValue(index, it) }
+            ?: getFLValue(index)?.toMutableNative(dbContext) { setValue(index, it) }
                 ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
             ?: unsavedBlobs[index]
     }

@@ -2,10 +2,8 @@ package com.couchbase.lite
 
 import com.couchbase.lite.kmp.Dictionary
 import com.couchbase.lite.kmp.Document
-import com.couchbase.lite.kmp.MutableDocument
 import kotlinx.cinterop.*
 import libcblite.C4Document
-import libcblite.CBLDocument_Generation
 import libcblite.kDocExists
 
 internal actual val Document.content: Dictionary

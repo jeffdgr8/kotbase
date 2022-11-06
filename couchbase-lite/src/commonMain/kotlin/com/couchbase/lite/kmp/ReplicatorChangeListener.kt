@@ -7,4 +7,4 @@ package com.couchbase.lite.kmp
  *
  * @param change the Replicator change information
  */
-public typealias ReplicatorChangeListener = (change: ReplicatorChange) -> Unit
+public typealias ReplicatorChangeListener = ChangeListener<ReplicatorChange>

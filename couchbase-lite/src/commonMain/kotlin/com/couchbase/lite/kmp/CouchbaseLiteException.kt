@@ -38,25 +38,11 @@ public expect class CouchbaseLiteException : Exception {
      */
     public constructor(message: String, cause: Exception, domain: String, code: Int)
 
-    /**
-     * Access the error domain for this error.
-     *
-     * @return The domain code for this error.
-     *
-     * @see CBLError.Domain
-     */
-    public fun getDomain(): String
+    internal fun getDomain(): String
 
-    /**
-     * Access the error code for this error.
-     *
-     * @return The numerical error code for this error.
-     *
-     * @see CBLError.Code
-     */
-    public fun getCode(): Int
+    internal fun getCode(): Int
 
-    public fun getInfo(): Map<String, Any?>?
+    internal fun getInfo(): Map<String, Any?>?
 }
 
 /**

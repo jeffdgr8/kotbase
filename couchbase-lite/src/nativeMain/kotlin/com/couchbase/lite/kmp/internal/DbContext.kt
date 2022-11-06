@@ -7,6 +7,7 @@ internal class DbContext(var database: Database?) {
     // need to avoid calling expensive Blob.hashCode()
     // so using === comparison with List instead of Set
     private val streamBlobs = mutableListOf<Blob>()
+
     // can't unify with internal interface without making mergeSavedBlobs() public
     private val streamBlobDocs = mutableListOf<MutableDocument>()
     private val streamBlobDicts = mutableListOf<MutableDictionary>()
@@ -46,7 +47,7 @@ internal class DbContext(var database: Database?) {
 
     private fun <T> MutableList<T>.identityRemove(value: T) {
         // avoid calling equals() with remove()
-        run loop@ {
+        run loop@{
             forEachIndexed { i, v ->
                 if (value === v) {
                     removeAt(i)

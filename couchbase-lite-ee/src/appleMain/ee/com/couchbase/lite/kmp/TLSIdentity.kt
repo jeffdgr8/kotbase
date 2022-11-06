@@ -8,7 +8,6 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import platform.Security.SecCertificateRef
-import platform.Security.SecCertificateRefVar
 import platform.Security.SecIdentityRef
 
 public actual class TLSIdentity
