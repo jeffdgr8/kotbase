@@ -5,10 +5,16 @@ import com.udobny.kmp.DelegatedClass
 import com.udobny.kmp.ext.asNumber
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
+import kotlin.reflect.safeCast
 
 public actual open class Document
 internal constructor(actual: CBLDocument) :
     DelegatedClass<CBLDocument>(actual), Iterable<String> {
+
+    protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
+
+    protected inline fun <reified T : Any> getInternalCollection(key: String): T? =
+        T::class.safeCast(collectionMap[key])
 
     public actual val id: String
         get() = actual.id
@@ -29,8 +35,11 @@ internal constructor(actual: CBLDocument) :
     public actual val keys: List<String>
         get() = actual.keys as List<String>
 
-    public actual fun getValue(key: String): Any? =
-        actual.valueForKey(key)?.delegateIfNecessary()
+    public actual fun getValue(key: String): Any? {
+        return collectionMap[key]
+            ?: actual.valueForKey(key)?.delegateIfNecessary()
+                ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
+    }
 
     public actual fun getString(key: String): String? =
         actual.stringForKey(key)
@@ -59,11 +68,17 @@ internal constructor(actual: CBLDocument) :
     public actual fun getDate(key: String): Instant? =
         actual.dateForKey(key)?.toKotlinInstant()
 
-    public actual open fun getArray(key: String): Array? =
-        actual.arrayForKey(key)?.asArray()
+    public actual open fun getArray(key: String): Array? {
+        return getInternalCollection(key)
+            ?: actual.arrayForKey(key)?.asArray()
+                ?.also { collectionMap[key] = it }
+    }
 
-    public actual open fun getDictionary(key: String): Dictionary? =
-        actual.dictionaryForKey(key)?.asDictionary()
+    public actual open fun getDictionary(key: String): Dictionary? {
+        return getInternalCollection(key)
+            ?: actual.dictionaryForKey(key)?.asDictionary()
+                ?.also { collectionMap[key] = it }
+    }
 
     @Suppress("UNCHECKED_CAST")
     public actual fun toMap(): Map<String, Any?> =

@@ -76,6 +76,7 @@ internal constructor(
 
     public actual fun setData(data: Map<String, Any?>): MutableDictionary {
         FLMutableDict_RemoveAll(actual)
+        collectionMap.clear()
         unsavedBlobs.clear()
         data.forEach { (key, value) ->
             setValue(key, value)
@@ -93,7 +94,11 @@ internal constructor(
 
     public actual fun setValue(key: String, value: Any?): MutableDictionary {
         actual.setValue(key, value, dbContext)
-        collectionMap.remove(key)
+        if (value is Array || value is Dictionary) {
+            collectionMap[key] = value
+        } else {
+            collectionMap.remove(key)
+        }
         if (value is Blob && value.actual == null) {
             unsavedBlobs[key] = value
         } else {

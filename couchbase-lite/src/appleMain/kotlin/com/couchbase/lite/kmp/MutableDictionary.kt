@@ -36,11 +36,13 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
 
     public actual fun setData(data: Map<String, Any?>): MutableDictionary = chain {
         data.forEach { checkSelf(it.value) }
+        collectionMap.clear()
         setData(data.actualIfDelegated())
         setBooleans(data)
     }
 
     public actual fun setJSON(json: String): MutableDictionary = chain {
+        collectionMap.clear()
         try {
             wrapCBLError { error ->
                 actual.setJSON(json, error)
@@ -58,62 +60,85 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
             is Boolean -> setBoolean(value, key)
             else -> setValue(value?.actualIfDelegated(), key)
         }
+        if (value is Array || value is Dictionary) {
+            collectionMap[key] = value
+        } else {
+            collectionMap.remove(key)
+        }
     }
 
     public actual fun setString(key: String, value: String?): MutableDictionary = chain {
         setString(value, key)
+        collectionMap.remove(key)
     }
 
     public actual fun setNumber(key: String, value: Number?): MutableDictionary = chain {
         setNumber(value as NSNumber?, key)
+        collectionMap.remove(key)
     }
 
     public actual fun setInt(key: String, value: Int): MutableDictionary = chain {
         setInteger(value.convert(), key)
+        collectionMap.remove(key)
     }
 
     public actual fun setLong(key: String, value: Long): MutableDictionary = chain {
         setLongLong(value, key)
+        collectionMap.remove(key)
     }
 
     public actual fun setFloat(key: String, value: Float): MutableDictionary = chain {
         setFloat(value, key)
+        collectionMap.remove(key)
     }
 
     public actual fun setDouble(key: String, value: Double): MutableDictionary = chain {
         setDouble(value, key)
+        collectionMap.remove(key)
     }
 
     public actual fun setBoolean(key: String, value: Boolean): MutableDictionary = chain {
         setBoolean(value, key)
+        collectionMap.remove(key)
     }
 
     public actual fun setBlob(key: String, value: Blob?): MutableDictionary = chain {
         setBlob(value?.actual, key)
+        collectionMap.remove(key)
     }
 
     public actual fun setDate(key: String, value: Instant?): MutableDictionary = chain {
         setDate(value?.toNSDate(), key)
+        collectionMap.remove(key)
     }
 
     public actual fun setArray(key: String, value: Array?): MutableDictionary = chain {
         setArray(value?.actual, key)
+        collectionMap.remove(key)
     }
 
     public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary = chain {
         checkSelf(value)
         setDictionary(value?.actual, key)
+        collectionMap.remove(key)
     }
 
     public actual fun remove(key: String): MutableDictionary = chain {
         removeValueForKey(key)
+        collectionMap.remove(key)
     }
 
-    actual override fun getArray(key: String): MutableArray? =
-        actual.arrayForKey(key)?.asMutableArray()
+    actual override fun getArray(key: String): MutableArray? {
+        return getInternalCollection(key)
+            ?: actual.arrayForKey(key)?.asMutableArray()
+                ?.also { collectionMap[key] = it }
+    }
 
-    actual override fun getDictionary(key: String): MutableDictionary? =
-        actual.dictionaryForKey(key)?.asMutableDictionary()
+    actual override fun getDictionary(key: String): MutableDictionary? {
+        return getInternalCollection(key)
+            ?: actual.dictionaryForKey(key)?.asMutableDictionary()
+                ?.also { collectionMap[key] = it }
+    }
 
     override fun toJSON(): String {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")

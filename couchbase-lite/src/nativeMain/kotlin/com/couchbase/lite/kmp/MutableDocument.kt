@@ -100,7 +100,11 @@ internal constructor(
 
     public actual fun setValue(key: String, value: Any?): MutableDocument {
         properties.setValue(key, value, dbContext)
-        collectionMap.remove(key)
+        if (value is Array || value is Dictionary) {
+            collectionMap[key] = value
+        } else {
+            collectionMap.remove(key)
+        }
         if (value is Blob && value.actual == null) {
             unsavedBlobs[key] = value
         } else {

@@ -22,43 +22,57 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
         chain(actual, action)
 
     public actual fun setData(data: Map<String, Any?>): MutableDictionary = chain {
+        collectionMap.clear()
         setData(data.actualIfDelegated())
     }
 
     public actual fun setJSON(json: String): MutableDictionary = chain {
+        collectionMap.clear()
         setJSON(json)
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDictionary = chain {
         setValue(key, value?.actualIfDelegated())
+        if (value is Array || value is Dictionary) {
+            collectionMap[key] = value
+        } else {
+            collectionMap.remove(key)
+        }
     }
 
     public actual fun setString(key: String, value: String?): MutableDictionary = chain {
         setString(key, value)
+        collectionMap.remove(key)
     }
 
     public actual fun setNumber(key: String, value: Number?): MutableDictionary = chain {
         setNumber(key, value)
+        collectionMap.remove(key)
     }
 
     public actual fun setInt(key: String, value: Int): MutableDictionary = chain {
         setInt(key, value)
+        collectionMap.remove(key)
     }
 
     public actual fun setLong(key: String, value: Long): MutableDictionary = chain {
         setLong(key, value)
+        collectionMap.remove(key)
     }
 
     public actual fun setFloat(key: String, value: Float): MutableDictionary = chain {
         setFloat(key, value)
+        collectionMap.remove(key)
     }
 
     public actual fun setDouble(key: String, value: Double): MutableDictionary = chain {
         setDouble(key, value)
+        collectionMap.remove(key)
     }
 
     public actual fun setBoolean(key: String, value: Boolean): MutableDictionary = chain {
         setBoolean(key, value)
+        collectionMap.remove(key)
     }
 
     // TODO: Remove setValue() when nullable in 3.1
@@ -70,6 +84,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
             setBlob(key, value.actual)
         }
         //setBlob(key, value?.actual)
+        collectionMap.remove(key)
     }
 
     // TODO: Remove setValue() when nullable in 3.1
@@ -81,6 +96,7 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
             setDate(key, value.toDate())
         }
         //setDate(key, value?.toDate())
+        collectionMap.remove(key)
     }
 
     // TODO: Remove setValue() when nullable in 3.1
@@ -88,8 +104,10 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
     public actual fun setArray(key: String, value: Array?): MutableDictionary = chain {
         if (value == null) {
             setValue(key, null)
+            collectionMap.remove(key)
         } else {
             setArray(key, value.actual)
+            collectionMap[key] = value
         }
         //setArray(key, value?.actual)
     }
@@ -99,21 +117,30 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
     public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary = chain {
         if (value == null) {
             setValue(key, null)
+            collectionMap.remove(key)
         } else {
             setDictionary(key, value.actual)
+            collectionMap[key] = value
         }
         //setDictionary(key, value?.actual)
     }
 
     public actual fun remove(key: String): MutableDictionary = chain {
         remove(key)
+        collectionMap.remove(key)
     }
 
-    actual override fun getArray(key: String): MutableArray? =
-        actual.getArray(key)?.asMutableArray()
+    actual override fun getArray(key: String): MutableArray? {
+        return getInternalCollection(key)
+            ?: actual.getArray(key)?.asMutableArray()
+                ?.also { collectionMap[key] = it }
+    }
 
-    actual override fun getDictionary(key: String): MutableDictionary? =
-        actual.getDictionary(key)?.asMutableDictionary()
+    actual override fun getDictionary(key: String): MutableDictionary? {
+        return getInternalCollection(key)
+            ?: actual.getDictionary(key)?.asMutableDictionary()
+                ?.also { collectionMap[key] = it }
+    }
 }
 
 internal fun com.couchbase.lite.MutableDictionary.asMutableDictionary() =

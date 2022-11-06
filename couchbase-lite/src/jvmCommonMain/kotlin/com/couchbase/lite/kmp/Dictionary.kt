@@ -5,10 +5,16 @@ package com.couchbase.lite.kmp
 import com.udobny.kmp.DelegatedClass
 import com.udobny.kmp.ext.toKotlinInstant
 import kotlinx.datetime.Instant
+import kotlin.reflect.safeCast
 
 public actual open class Dictionary
 internal constructor(actual: com.couchbase.lite.Dictionary) :
     DelegatedClass<com.couchbase.lite.Dictionary>(actual), Iterable<String> {
+
+    protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
+
+    protected inline fun <reified T : Any> getInternalCollection(key: String): T? =
+        T::class.safeCast(collectionMap[key])
 
     public actual fun toMutable(): MutableDictionary =
         MutableDictionary(actual.toMutable())
@@ -19,8 +25,11 @@ internal constructor(actual: com.couchbase.lite.Dictionary) :
     public actual val keys: List<String>
         get() = actual.keys
 
-    public actual fun getValue(key: String): Any? =
-        actual.getValue(key)?.delegateIfNecessary()
+    public actual open fun getValue(key: String): Any? {
+        return collectionMap[key]
+            ?: actual.getValue(key)?.delegateIfNecessary()
+                ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
+    }
 
     public actual fun getString(key: String): String? =
         actual.getString(key)
@@ -49,11 +58,17 @@ internal constructor(actual: com.couchbase.lite.Dictionary) :
     public actual fun getDate(key: String): Instant? =
         actual.getDate(key)?.toKotlinInstant()
 
-    public actual open fun getArray(key: String): Array? =
-        actual.getArray(key)?.asArray()
+    public actual open fun getArray(key: String): Array? {
+        return getInternalCollection(key)
+            ?: actual.getArray(key)?.asArray()
+                ?.also { collectionMap[key] = it }
+    }
 
-    public actual open fun getDictionary(key: String): Dictionary? =
-        actual.getDictionary(key)?.asDictionary()
+    public actual open fun getDictionary(key: String): Dictionary? {
+        return getInternalCollection(key)
+            ?: actual.getDictionary(key)?.asDictionary()
+                ?.also { collectionMap[key] = it }
+    }
 
     public actual fun toMap(): Map<String, Any?> =
         actual.toMap().delegateIfNecessary()
