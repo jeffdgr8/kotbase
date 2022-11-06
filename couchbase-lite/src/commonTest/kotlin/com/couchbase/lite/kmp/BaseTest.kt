@@ -2,7 +2,6 @@
 
 package com.couchbase.lite.kmp
 
-import com.couchbase.lite.dbPath
 import com.couchbase.lite.isOpen
 import com.couchbase.lite.kmp.internal.utils.FileUtils
 import com.couchbase.lite.kmp.internal.utils.Report
@@ -141,7 +140,7 @@ abstract class BaseTest : PlatformTest() {
                 true
             } catch (e: CouchbaseLiteException) {
                 // Already deleted
-                e.getDomain() == CBLError.Domain.CBLITE && e.getCode() == CBLError.Code.NOT_FOUND
+                e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_FOUND
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.couchbase.lite.kmp.internal.utils
 
 import com.couchbase.lite.kmp.CouchbaseLiteException
+import com.couchbase.lite.kmp.code
+import com.couchbase.lite.kmp.domain
 import kotlin.reflect.KClass
 import kotlin.reflect.cast
 import kotlin.test.assertEquals
@@ -39,8 +41,8 @@ object TestUtils {
             task()
             fail("Expected a CouchbaseLiteException")
         } catch (e: CouchbaseLiteException) {
-            assertEquals(code, e.getCode())
-            assertEquals(domain, e.getDomain())
+            assertEquals(code, e.code)
+            assertEquals(domain, e.domain)
         }
     }
 }

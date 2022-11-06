@@ -36,7 +36,7 @@ class ErrorCaseTest : BaseDbTest() {
             baseTestDb.delete(doc)
             fail()
         } catch (e: CouchbaseLiteException) {
-            if (e.getCode() != CBLError.Code.NOT_FOUND) {
+            if (e.code != CBLError.Code.NOT_FOUND) {
                 fail()
             }
         }
@@ -77,7 +77,7 @@ class ErrorCaseTest : BaseDbTest() {
             baseTestDb.delete(saved)
             fail()
         } catch (e: CouchbaseLiteException) {
-            if (e.getCode() != CBLError.Code.NOT_FOUND) {
+            if (e.code != CBLError.Code.NOT_FOUND) {
                 fail()
             }
         }
@@ -121,7 +121,7 @@ class ErrorCaseTest : BaseDbTest() {
             baseTestDb.purge(saved)
             fail()
         } catch (e: CouchbaseLiteException) {
-            if (e.getCode() != CBLError.Code.NOT_FOUND) {
+            if (e.code != CBLError.Code.NOT_FOUND) {
                 fail()
             }
         }

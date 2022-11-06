@@ -49,10 +49,10 @@
 //        assertEquals(repChange.status.progress.completed, completed)
 //        assertEquals(repChange.status.progress.total, total)
 //        assertEquals(
-//            repChange.status.error!!.getCode(),
+//            repChange.status.error!!.code,
 //            errorCode
 //        )
-//        assertEquals(repChange.status.error!!.getDomain(), CBLError.Domain.CBLITE)
+//        assertEquals(repChange.status.error!!.domain, CBLError.Domain.CBLITE)
 //    }
 //
 //    @Test
@@ -295,8 +295,8 @@
 //        assertEquals(doc.id, docID)
 //        assertTrue(doc.flags.contains(DocumentFlag.DELETED))
 //        val err = doc.error
-//        assertEquals(CBLError.Domain.CBLITE, err!!.getDomain())
-//        assertEquals(CBLError.Code.BUSY, err!!.getCode())
+//        assertEquals(CBLError.Domain.CBLITE, err!!.domain)
+//        assertEquals(CBLError.Code.BUSY, err!!.code)
 //        assertEquals(java.util.Collection.DEFAULT_NAME, doc.getCollectionName())
 //    }
 //

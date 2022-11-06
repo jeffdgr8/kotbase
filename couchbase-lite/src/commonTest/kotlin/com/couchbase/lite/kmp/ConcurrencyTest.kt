@@ -235,7 +235,7 @@ class ConcurrencyTest : BaseDbTest() {
                     try {
                         baseTestDb.purge(doc)
                     } catch (e: CouchbaseLiteException) {
-                        assertEquals(404, e.getCode())
+                        assertEquals(404, e.code)
                     }
                 }
             }
@@ -248,7 +248,7 @@ class ConcurrencyTest : BaseDbTest() {
                     try {
                         baseTestDb.purge(doc)
                     } catch (e: CouchbaseLiteException) {
-                        assertEquals(404, e.getCode())
+                        assertEquals(404, e.code)
                     }
                 }
             }
@@ -272,7 +272,7 @@ class ConcurrencyTest : BaseDbTest() {
             try {
                 createDocs(100, "Create1")
             } catch (e: CouchbaseLiteException) {
-                if (e.getDomain() != CBLError.Domain.CBLITE || e.getCode() != CBLError.Code.NOT_OPEN) {
+                if (e.domain != CBLError.Domain.CBLITE || e.code != CBLError.Code.NOT_OPEN) {
                     // can't construct with cause
                     // https://youtrack.jetbrains.com/issue/KT-40728
                     //throw AssertionError("Unrecognized exception", e)
@@ -311,7 +311,7 @@ class ConcurrencyTest : BaseDbTest() {
             try {
                 createDocs(kNDocs, tag1)
             } catch (e: CouchbaseLiteException) {
-                if (e.getDomain() != CBLError.Domain.CBLITE || e.getCode() != CBLError.Code.NOT_OPEN) {
+                if (e.domain != CBLError.Domain.CBLITE || e.code != CBLError.Code.NOT_OPEN) {
                     fail()
                 }
             } catch (ignore: IllegalStateException) {
@@ -345,7 +345,7 @@ class ConcurrencyTest : BaseDbTest() {
             try {
                 createDocs(kNDocs, "Create1")
             } catch (e: CouchbaseLiteException) {
-                if (e.getDomain() != CBLError.Domain.CBLITE || e.getCode() != CBLError.Code.NOT_OPEN) {
+                if (e.domain != CBLError.Domain.CBLITE || e.code != CBLError.Code.NOT_OPEN) {
                     fail()
                 }
             }
@@ -380,7 +380,7 @@ class ConcurrencyTest : BaseDbTest() {
             try {
                 createDocs(kNDocs, "Create1")
             } catch (e: CouchbaseLiteException) {
-                if (e.getDomain() != CBLError.Domain.CBLITE || e.getCode() != CBLError.Code.NOT_OPEN) {
+                if (e.domain != CBLError.Domain.CBLITE || e.code != CBLError.Code.NOT_OPEN) {
                     fail()
                 }
             }

@@ -103,7 +103,7 @@ internal constructor(actual: CBLDatabase) :
                 }
             }
         } catch (e: CouchbaseLiteException) {
-            if (e.getCode() == CBLError.Code.CONFLICT && e.getDomain() == CBLError.Domain.CBLITE) {
+            if (e.code == CBLError.Code.CONFLICT && e.domain == CBLError.Domain.CBLITE) {
                 // Java SDK doesn't throw exception on conflict, only returns false
                 false
             } else {
@@ -148,7 +148,7 @@ internal constructor(actual: CBLDatabase) :
                 }
             }
         } catch (e: CouchbaseLiteException) {
-            if (e.getCode() == CBLError.Code.CONFLICT && e.getDomain() == CBLError.Domain.CBLITE) {
+            if (e.code == CBLError.Code.CONFLICT && e.domain == CBLError.Domain.CBLITE) {
                 // Java SDK doesn't throw exception on conflict, only returns false
                 false
             } else {
@@ -168,7 +168,7 @@ internal constructor(actual: CBLDatabase) :
         } catch (e: CouchbaseLiteException) {
             // Java SDK ignores not found error, except for new document
             val isNew = document.revisionID == null
-            if (isNew || e.getCode() != CBLError.Code.NOT_FOUND || e.getDomain() != CBLError.Domain.CBLITE) {
+            if (isNew || e.code != CBLError.Code.NOT_FOUND || e.domain != CBLError.Domain.CBLITE) {
                 throw e
             }
         }

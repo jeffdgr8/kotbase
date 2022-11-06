@@ -91,7 +91,7 @@ internal constructor(
             }
             properties = CBLDocument_MutableProperties(actual)!!
         } catch (e: CouchbaseLiteException) {
-            if (e.getCode() == CBLError.Code.INVALID_QUERY) {
+            if (e.code == CBLError.Code.INVALID_QUERY) {
                 throw IllegalArgumentException("Failed parsing JSON", e)
             }
         }

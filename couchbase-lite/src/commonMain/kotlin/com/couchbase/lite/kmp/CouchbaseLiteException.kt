@@ -41,7 +41,9 @@ public expect class CouchbaseLiteException : Exception {
     /**
      * Access the error domain for this error.
      *
-     * @return The numerical domain code for this error.
+     * @return The domain code for this error.
+     *
+     * @see CBLError.Domain
      */
     public fun getDomain(): String
 
@@ -49,8 +51,29 @@ public expect class CouchbaseLiteException : Exception {
      * Access the error code for this error.
      *
      * @return The numerical error code for this error.
+     *
+     * @see CBLError.Code
      */
     public fun getCode(): Int
 
     public fun getInfo(): Map<String, Any?>?
 }
+
+/**
+ * The domain code for this error.
+ *
+ * @see CBLError.Domain
+ */
+public val CouchbaseLiteException.domain: String
+    get() = getDomain()
+
+/**
+ * The numerical error code for this error.
+ *
+ * @see CBLError.Code
+ */
+public val CouchbaseLiteException.code: Int
+    get() = getCode()
+
+public val CouchbaseLiteException.info: Map<String, Any?>?
+    get() = getInfo()

@@ -105,7 +105,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
             }
             fail("save should not succeed!")
         } catch (err: CouchbaseLiteException) {
-            assertEquals(CBLError.Code.CONFLICT, err.getCode())
+            assertEquals(CBLError.Code.CONFLICT, err.code)
         }
         assertFalse(succeeded)
 
@@ -134,7 +134,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
             }
             fail("save should not succeed!")
         } catch (err: CouchbaseLiteException) {
-            assertEquals(CBLError.Code.CONFLICT, err.getCode())
+            assertEquals(CBLError.Code.CONFLICT, err.code)
         }
         assertFalse(succeeded)
 
@@ -203,7 +203,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
             }
             fail("save should not succeed!")
         } catch (err: CouchbaseLiteException) {
-            assertEquals(CBLError.Code.CONFLICT, err.getCode())
+            assertEquals(CBLError.Code.CONFLICT, err.code)
         }
         assertFalse(succeeded)
 
@@ -245,7 +245,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
             }
             fail("save should not succeed!")
         } catch (err: CouchbaseLiteException) {
-            assertEquals(CBLError.Code.CONFLICT, err.getCode())
+            assertEquals(CBLError.Code.CONFLICT, err.code)
             assertEquals("freak out!", err.cause?.message)
         }
         assertFalse(succeeded)
@@ -332,7 +332,7 @@ class SaveConflictResolutionTest : BaseDbTest() {
             succeeded = baseTestDb.save(doc1a) { _: MutableDocument, _: Document? -> true }
             fail("save should not succeed!")
         } catch (err: CouchbaseLiteException) {
-            assertEquals(CBLError.Code.NOT_FOUND, err.getCode())
+            assertEquals(CBLError.Code.NOT_FOUND, err.code)
         }
         assertFalse(succeeded)
     }

@@ -217,8 +217,8 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertEquals("doc1", docs[0].id)
         val err = docs[0].error
         assertNotNull(err)
-        assertEquals(CBLError.Domain.CBLITE, err.getDomain())
-        assertEquals(CBLError.Code.HTTP_CONFLICT, err.getCode())
+        assertEquals(CBLError.Domain.CBLITE, err.domain)
+        assertEquals(CBLError.Code.HTTP_CONFLICT, err.code)
         assertFalse(docs[0].flags.contains(DocumentFlag.DELETED))
         assertFalse(docs[0].flags.contains(DocumentFlag.ACCESS_REMOVED))
 
@@ -919,7 +919,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             mutex.lock()
         }
 
-        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.getCode())
+        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.code)
         replicator.removeChangeListener(token)
     }
 
@@ -1023,7 +1023,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             mutex.lock()
         }
 
-        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.getCode())
+        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.code)
         replicator.removeChangeListener(token)
     }
 
@@ -1468,11 +1468,11 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
         assertNotNull(error)
         assertTrue(
-            error!!.getCode() == CBLError.Code.UNEXPECTED_ERROR || // Java uses this code
-            error!!.getCode() == CBLError.Code.CONFLICT || // iOS uses this code
-            error!!.getCode() == CBLError.Code.INVALID_PARAMETER // Native C uses this code
+            error!!.code == CBLError.Code.UNEXPECTED_ERROR || // Java uses this code
+                    error!!.code == CBLError.Code.CONFLICT || // iOS uses this code
+                    error!!.code == CBLError.Code.INVALID_PARAMETER // Native C uses this code
         )
-        assertEquals(CBLError.Domain.CBLITE, error!!.getDomain())
+        assertEquals(CBLError.Domain.CBLITE, error!!.domain)
 
         replicator.removeChangeListener(token)
         resolver = TestConflictResolver { conflict ->
@@ -1511,8 +1511,8 @@ class ReplicatorEETest : BaseReplicatorTest() {
                 val err = docRepl.documents.firstOrNull()?.error
                 if (err != null) {
                     error = err
-                    assertEquals(CBLError.Code.CONFLICT, err.getCode())
-                    assertEquals(CBLError.Domain.CBLITE, err.getDomain())
+                    assertEquals(CBLError.Code.CONFLICT, err.code)
+                    assertEquals(CBLError.Domain.CBLITE, err.domain)
                 }
             }
         }
@@ -1688,7 +1688,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             }
         }
         assertNotNull(error)
-        assertEquals(CBLError.Code.UNEXPECTED_ERROR, error?.getCode())
+        assertEquals(CBLError.Code.UNEXPECTED_ERROR, error?.code)
         println("error.message =")
         println(error?.message)
         assertTrue(
@@ -1795,7 +1795,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             }
         }
         assertNotNull(error)
-        assertEquals(CBLError.Code.NOT_FOUND, error?.getCode())
+        assertEquals(CBLError.Code.NOT_FOUND, error?.code)
         replicator.removeChangeListener(token)
     }
 }

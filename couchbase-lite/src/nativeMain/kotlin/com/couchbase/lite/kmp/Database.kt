@@ -39,7 +39,7 @@ internal constructor(
                 CBLDatabase_Open(name.toFLString(), config.actual, error)!!
             }
         } catch (e: CouchbaseLiteException) {
-            if (e.getCode() == CBLError.Code.INVALID_PARAMETER && e.getDomain() == CBLError.Domain.CBLITE) {
+            if (e.code == CBLError.Code.INVALID_PARAMETER && e.domain == CBLError.Domain.CBLITE) {
                 throw IllegalArgumentException("Invalid parameter", e)
             } else {
                 throw e
@@ -136,7 +136,7 @@ internal constructor(
                 }
             }
         } catch (e: CouchbaseLiteException) {
-            if (e.getCode() == CBLError.Code.CONFLICT && e.getDomain() == CBLError.Domain.CBLITE) {
+            if (e.code == CBLError.Code.CONFLICT && e.domain == CBLError.Domain.CBLITE) {
                 // Java SDK doesn't throw exception on conflict, only returns false
                 false
             } else {
@@ -233,7 +233,7 @@ internal constructor(
                     }
                 }
             } catch (e: CouchbaseLiteException) {
-                if (e.getCode() == CBLError.Code.CONFLICT && e.getDomain() == CBLError.Domain.CBLITE) {
+                if (e.code == CBLError.Code.CONFLICT && e.domain == CBLError.Domain.CBLITE) {
                     // Java SDK doesn't throw exception on conflict, only returns false
                     false
                 } else {
@@ -251,7 +251,7 @@ internal constructor(
                     CBLDatabase_PurgeDocument(actual, document.actual, error)
                 }
             } catch (e: CouchbaseLiteException) {
-                if (e.getCode() != CBLError.Code.NOT_FOUND || e.getDomain() != CBLError.Domain.CBLITE || document.revisionID == null) {
+                if (e.code != CBLError.Code.NOT_FOUND || e.domain != CBLError.Domain.CBLITE || document.revisionID == null) {
                     throw e
                 }
             }

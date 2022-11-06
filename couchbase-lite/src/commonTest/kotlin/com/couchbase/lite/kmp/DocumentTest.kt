@@ -1860,7 +1860,7 @@ class DocumentTest : BaseDbTest() {
         try {
             baseTestDb.setDocumentExpiration("deleted_doc", dto30)
         } catch (e: CouchbaseLiteException) {
-            assertEquals(e.getCode(), CBLError.Code.NOT_FOUND)
+            assertEquals(e.code, CBLError.Code.NOT_FOUND)
         }
     }
 
@@ -1874,7 +1874,7 @@ class DocumentTest : BaseDbTest() {
         try {
             baseTestDb.getDocumentExpiration("deleted_doc")
         } catch (e: CouchbaseLiteException) {
-            assertEquals(e.getCode(), CBLError.Code.NOT_FOUND)
+            assertEquals(e.code, CBLError.Code.NOT_FOUND)
         }
     }
 
@@ -1884,7 +1884,7 @@ class DocumentTest : BaseDbTest() {
         try {
             baseTestDb.setDocumentExpiration("not_exist", dto30)
         } catch (e: CouchbaseLiteException) {
-            assertEquals(e.getCode(), CBLError.Code.NOT_FOUND)
+            assertEquals(e.code, CBLError.Code.NOT_FOUND)
         }
     }
 
@@ -1893,7 +1893,7 @@ class DocumentTest : BaseDbTest() {
         try {
             baseTestDb.getDocumentExpiration("not_exist")
         } catch (e: CouchbaseLiteException) {
-            assertEquals(e.getCode(), CBLError.Code.NOT_FOUND)
+            assertEquals(e.code, CBLError.Code.NOT_FOUND)
         }
     }
 

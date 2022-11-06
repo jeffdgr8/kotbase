@@ -122,10 +122,10 @@ abstract class BaseReplicatorTest : BaseDbTest() {
                 throw RuntimeException(err)
             }
             if (expectedErrorCode != 0) {
-                assertEquals(expectedErrorCode, err.getCode())
+                assertEquals(expectedErrorCode, err.code)
             }
             if (expectedErrorDomain != null) {
-                assertEquals(expectedErrorDomain, err.getDomain())
+                assertEquals(expectedErrorDomain, err.domain)
             }
         }
 
