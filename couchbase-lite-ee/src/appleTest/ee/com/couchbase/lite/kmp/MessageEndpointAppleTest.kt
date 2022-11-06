@@ -16,9 +16,22 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
 // TODO: Tests sometimes pass, but often fail:
-// 2022-11-06 13:55:32.531 test.kexe[49475:1060252] CouchbaseLite Network WARNING: Caught exception opening a new connection: connection
-// 2022-11-06 13:55:32.532 test.kexe[49475:1060252] CouchbaseLite Network ERROR: {C4SocketImpl#3} WebSocket failed to connect! (reason=Unknown error 10)
-// Child process terminated with signal 4: Illegal instruction
+/*
+2022-11-06 14:22:20.989 test.kexe[50923:1086836] CouchbaseLite/3.0.2 (ObjC; iOS 16.1; iPhone) Build/22 Commit/a75112d0 LiteCore/3.0.0 (22)
+2022-11-06 14:22:20.993 test.kexe[50923:1086836] CouchbaseLite Database WARNING: CBLDatabase.log.file.config is nil, meaning file logging is disabled. Log files required for product support are not being generated.
+INFO CouchbaseLite/TEST Created base test DB: CBLDatabase[base_db_86sCtJLvY7Hw]
+INFO CouchbaseLite/TEST >>>>>>>> Test started
+nwi_state: registration failed (8)
+*** Connecting: client
+*** Connecting: server
+*** Connected: server
+*** Connected: client
+2022-11-06 14:22:21.912 test.kexe[50923:1086837] *** ASSERTION FAILED: connection
+2022-11-06 14:22:21.912 test.kexe[50923:1086837] *** Assertion failure in -[CBLMessageSocket initWithC4Socket:queue:endpoint:options:](), /Users/couchbase/workspace/couchbase-lite-ios-edition-build-old/couchbase-lite-ios-ee/Sources/Objective-C/Internal/Replicator/CBLMessageSocket.mm:83
+2022-11-06 14:22:21.912 test.kexe[50923:1086837] CouchbaseLite Network WARNING: Caught exception opening a new connection: connection
+2022-11-06 14:22:21.912 test.kexe[50923:1086837] CouchbaseLite Network ERROR: {C4SocketImpl#3} WebSocket failed to connect! (reason=Unknown error 10)
+Child process terminated with signal 4: Illegal instruction
+ */
 class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
 
     val nsObjectDelegate = NSObjectDelegate()
