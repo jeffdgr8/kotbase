@@ -16,8 +16,11 @@ internal constructor(
     public actual val config: URLEndpointListenerConfiguration
         get() = URLEndpointListenerConfiguration(_config)
 
-    public actual val port: Int
-        get() = actual.port
+    public actual val port: Int?
+        get() {
+            val port = actual.port
+            return if (port > 0) port else null
+        }
 
     public actual val urls: List<String>
         get() = actual.urls.map { it.toString() }

@@ -9,7 +9,7 @@ actual constructor(config: URLEndpointListenerConfiguration) {
 
     public actual val config: URLEndpointListenerConfiguration
 
-    public actual val port: Int
+    public actual val port: Int?
 
     public actual val urls: List<String>
 

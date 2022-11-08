@@ -3,10 +3,8 @@ package com.couchbase.lite.kmp
 import cocoapods.CouchbaseLite.*
 import com.udobny.kmp.DelegatedClass
 import com.udobny.kmp.ext.toByteArray
-import com.udobny.kmp.ext.toCFData
+import com.udobny.kmp.ext.toSecCertificate
 import kotlinx.cinterop.convert
-import platform.Security.SecCertificateCopyData
-import platform.Security.SecCertificateCreateWithData
 
 public actual class ReplicatorConfiguration
 private constructor(
@@ -145,10 +143,9 @@ private constructor(
         }
 
     public actual var pinnedServerCertificate: ByteArray?
-        get() = SecCertificateCopyData(actual.pinnedServerCertificate)?.toByteArray()
+        get() = actual.pinnedServerCertificate?.toByteArray()
         set(value) {
-            val cert = SecCertificateCreateWithData(null, value?.toCFData())
-            actual.pinnedServerCertificate = cert
+            actual.pinnedServerCertificate = value?.toSecCertificate()
         }
 
     public actual var pullFilter: ReplicationFilter? = pullFilter

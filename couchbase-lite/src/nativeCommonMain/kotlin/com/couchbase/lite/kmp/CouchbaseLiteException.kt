@@ -20,7 +20,16 @@ internal constructor(
     public actual constructor(message: String, cause: Exception, domain: String, code: Int) :
             this(message, cause, domain, code, null)
 
-    private val domain: String = domain ?: CBLError.Domain.CBLITE
+    private val domain: String =
+        if (domain != null) {
+            if (domain.startsWith("NS")) {
+                domain.substring(2)
+            } else {
+                domain
+            }
+        } else {
+            CBLError.Domain.CBLITE
+        }
 
     private val code: Int = if (code > 0) code else CBLError.Code.UNEXPECTED_ERROR
 

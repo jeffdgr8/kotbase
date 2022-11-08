@@ -46,7 +46,7 @@ public expect class URLEndpointListenerConfiguration {
      *
      * A port number of 0 (the default) tells the OS to choose some available port.
      */
-    public var port: Int
+    public var port: Int?
 
     /**
      * If this configuration will disable TLS in its associated listener.

@@ -4,7 +4,6 @@ import cocoapods.CouchbaseLite.CBLReplicator
 import com.couchbase.lite.kmp.ext.wrapCBLError
 import com.udobny.kmp.DelegatedClass
 import com.udobny.kmp.ext.toByteArray
-import platform.Security.SecCertificateCopyData
 
 public actual class Replicator
 internal constructor(
@@ -38,7 +37,7 @@ internal constructor(
         get() = ReplicatorStatus(actual.status)
 
     public actual val serverCertificates: List<ByteArray>?
-        get() = SecCertificateCopyData(actual.serverCertificate)?.toByteArray()?.let { listOf(it) }
+        get() = actual.serverCertificate?.toByteArray()?.let { listOf(it) }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {

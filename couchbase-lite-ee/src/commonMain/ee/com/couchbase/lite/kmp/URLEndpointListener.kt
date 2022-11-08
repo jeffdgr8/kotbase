@@ -19,15 +19,15 @@ constructor(config: URLEndpointListenerConfiguration) {
 
     /**
      * Get the listener's port.
-     * This method will return a value of -1 except between the time
+     * This method will return null except between the time
      * the listener is started and the time it is stopped.
      *
      * When a listener is configured with the port number 0, the return value from this function will
      * give the port at which the listener is actually listening.
      *
-     * @return the listener's port, or -1.
+     * @return the listener's port, or null.
      */
-    public val port: Int
+    public val port: Int?
 
     /**
      * Get the list of URIs for the listener.

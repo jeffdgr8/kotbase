@@ -48,10 +48,10 @@ private constructor(
             actual.networkInterface = value
         }
 
-    public actual var port: Int
+    public actual var port: Int?
         get() = actual.port
         set(value) {
-            actual.port = value
+            actual.port = value ?: 0
         }
 
     public actual var isTlsDisabled: Boolean

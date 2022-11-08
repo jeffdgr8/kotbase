@@ -23,7 +23,7 @@ public actual class URLEndpointListenerConfiguration private constructor() {
 
     public actual var networkInterface: String?
 
-    public actual var port: Int
+    public actual var port: Int?
 
     public actual var isTlsDisabled: Boolean
 

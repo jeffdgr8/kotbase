@@ -6,6 +6,9 @@ import kotlinx.cinterop.*
 import platform.CoreFoundation.*
 import platform.Foundation.NSData
 import platform.Foundation.create
+import platform.Security.SecCertificateCopyData
+import platform.Security.SecCertificateCreateWithData
+import platform.Security.SecCertificateRef
 import platform.posix.memcpy
 
 public fun ByteArray.toNSData(): NSData {
@@ -37,3 +40,9 @@ public fun CFDataRef.toByteArray(): ByteArray {
         CFDataGetBytes(this@toByteArray, range, refTo(0))
     }.asByteArray()
 }
+
+public fun ByteArray.toSecCertificate(): SecCertificateRef =
+    SecCertificateCreateWithData(kCFAllocatorDefault, toCFData())!!
+
+public fun SecCertificateRef.toByteArray(): ByteArray =
+    SecCertificateCopyData(this)!!.toByteArray()
