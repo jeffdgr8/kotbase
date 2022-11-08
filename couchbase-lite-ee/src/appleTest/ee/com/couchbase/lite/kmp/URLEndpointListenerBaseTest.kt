@@ -75,13 +75,13 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
         val l = listener ?: this.listener
 
         l?.stop()
-        // TODO:
+        // TODO: private API
         //l?.tlsIdentity?.deleteFromKeyChain()
     }
 
     private fun cleanUpIdentities() {
         try {
-            // TODO:
+            // TODO: private API
             //URLEndpointListener.deleteAnonymousIdentities()
         } catch (e: Exception) {
             //ignore
