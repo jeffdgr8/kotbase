@@ -32,6 +32,7 @@ nwi_state: registration failed (8)
 2022-11-06 14:22:21.912 test.kexe[50923:1086837] CouchbaseLite Network ERROR: {C4SocketImpl#3} WebSocket failed to connect! (reason=Unknown error 10)
 Child process terminated with signal 4: Illegal instruction
  */
+@Ignore
 class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
 
     val nsObjectDelegate = NSObjectDelegate()
