@@ -133,7 +133,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
-                implementation("org.jetbrains.kotlinx:atomicfu:0.18.3")
+                implementation("org.jetbrains.kotlinx:atomicfu:0.18.5")
             }
         }
 
@@ -163,8 +163,8 @@ kotlin {
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
             dependencies {
-                implementation("androidx.test:core-ktx:1.4.0")
-                implementation("androidx.test:runner:1.4.0")
+                implementation("androidx.test:core-ktx:1.5.0")
+                implementation("androidx.test:runner:1.5.1")
             }
         }
         val jvmMain by getting {

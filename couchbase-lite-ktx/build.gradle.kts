@@ -107,8 +107,8 @@ kotlin {
         val androidAndroidTest by getting {
             dependsOn(jvmCommonTest)
             dependencies {
-                implementation("androidx.test:core-ktx:1.4.0")
-                implementation("androidx.test:runner:1.4.0")
+                implementation("androidx.test:core-ktx:1.5.0")
+                implementation("androidx.test:runner:1.5.1")
                 implementation("io.mockk:mockk-android:1.12.5")
             }
         }
