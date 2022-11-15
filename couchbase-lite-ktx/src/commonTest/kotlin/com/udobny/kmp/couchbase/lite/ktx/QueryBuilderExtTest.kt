@@ -4,25 +4,10 @@ import com.couchbase.lite.kmp.*
 import com.couchbase.lite.kmp.Function
 import com.molo17.couchbase.lite.kmp.all
 import com.molo17.couchbase.lite.kmp.from
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class QueryBuilderExtTest {
-
-    private lateinit var database: Database
-
-    @BeforeTest
-    fun setup() {
-        initCouchbaseLite()
-        database = createDatabase()
-    }
-
-    @AfterTest
-    fun teardown() {
-        database.delete()
-    }
+class QueryBuilderExtTest : BaseTest() {
 
     @Test
     fun select_expression_properties() {
@@ -60,11 +45,5 @@ class QueryBuilderExtTest {
         val actual = selectCount() from database
 
         assertEquals(expected.explain(), actual.explain())
-    }
-
-    private fun createDatabase(): Database {
-        val name = "test-db"
-        val config = DatabaseConfiguration()
-        return Database(name, config)
     }
 }

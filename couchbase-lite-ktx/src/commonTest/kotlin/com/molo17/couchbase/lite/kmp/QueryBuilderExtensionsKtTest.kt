@@ -24,36 +24,19 @@
 package com.molo17.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.DataSource
-import com.couchbase.lite.kmp.Database
-import com.couchbase.lite.kmp.DatabaseConfiguration
 import com.couchbase.lite.kmp.Expression
 import com.couchbase.lite.kmp.Ordering
 import com.couchbase.lite.kmp.QueryBuilder
 import com.couchbase.lite.kmp.SelectResult
-import com.udobny.kmp.couchbase.lite.ktx.initCouchbaseLite
+import com.udobny.kmp.couchbase.lite.ktx.BaseTest
 import kotlinx.datetime.Clock
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
  * Created by Damiano Giusti on 26/03/2020.
  */
-class QueryBuilderExtensionsKtTest {
-
-    private lateinit var database: Database
-
-    @BeforeTest
-    fun setup() {
-        initCouchbaseLite()
-        database = createDatabase()
-    }
-
-    @AfterTest
-    fun teardown() {
-        database.delete()
-    }
+class QueryBuilderExtensionsKtTest : BaseTest() {
 
     ///////////////////////////////////////////////////////////////////////////
     // Projection
@@ -290,12 +273,6 @@ class QueryBuilderExtensionsKtTest {
     ///////////////////////////////////////////////////////////////////////////
     // Private methods
     ///////////////////////////////////////////////////////////////////////////
-
-    private fun createDatabase(): Database {
-        val name = "test-database.db"
-        val config = DatabaseConfiguration()
-        return Database(name, config)
-    }
 
     private inline fun singleSelectionWhere(field: String, valueExpression: Expression, operator: Expression.(Expression) -> Expression) =
         QueryBuilder.select(SelectResult.all())
