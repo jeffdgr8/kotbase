@@ -99,6 +99,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 compileOnly("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+                compileOnly("androidx.paging:paging-common:3.1.1")
             }
         }
         val androidTest by getting {
@@ -110,6 +111,11 @@ kotlin {
                 implementation("androidx.test:core-ktx:1.5.0")
                 implementation("androidx.test:runner:1.5.1")
                 implementation("io.mockk:mockk-android:1.12.5")
+                implementation("com.google.truth:truth:1.1.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+                implementation("androidx.paging:paging-common:3.1.1")
+                implementation("androidx.paging:paging-runtime:3.1.1")
+                implementation("androidx.recyclerview:recyclerview:1.2.1")
             }
         }
 
