@@ -19,6 +19,7 @@
  *
  * - Use com.couchbase.lite.kmp package for couchbase-lite-kmp Kotlin Multiplatform bindings
  * - Resolve explicitApiWarning() requirements
+ * - Add support for additional Query subclasses
  */
 
 @file:Suppress("NOTHING_TO_INLINE", "unused")
@@ -42,10 +43,37 @@ public inline infix fun Select.from(database: Database): From = from(DataSource.
 public inline infix fun From.where(builder: WhereBuilder.() -> Expression): Where =
     where(WhereBuilder().builder())
 
+public inline infix fun Joins.where(builder: WhereBuilder.() -> Expression): Where =
+    where(WhereBuilder().builder())
+
+public inline fun From.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy =
+    orderBy(*OrderByBuilder().apply(builder).orderings())
+
+public inline fun Joins.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy =
+    orderBy(*OrderByBuilder().apply(builder).orderings())
+
 public inline fun Where.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy =
     orderBy(*OrderByBuilder().apply(builder).orderings())
 
+public inline fun GroupBy.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy =
+    orderBy(*OrderByBuilder().apply(builder).orderings())
+
+public inline fun Having.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy =
+    orderBy(*OrderByBuilder().apply(builder).orderings())
+
+public inline fun From.limit(count: Int, offset: Int? = null): Limit =
+    limit(Expression.intValue(count), offset?.let(Expression::intValue))
+
+public inline fun Joins.limit(count: Int, offset: Int? = null): Limit =
+    limit(Expression.intValue(count), offset?.let(Expression::intValue))
+
 public inline fun Where.limit(count: Int, offset: Int? = null): Limit =
+    limit(Expression.intValue(count), offset?.let(Expression::intValue))
+
+public inline fun GroupBy.limit(count: Int, offset: Int? = null): Limit =
+    limit(Expression.intValue(count), offset?.let(Expression::intValue))
+
+public inline fun Having.limit(count: Int, offset: Int? = null): Limit =
     limit(Expression.intValue(count), offset?.let(Expression::intValue))
 
 public inline fun OrderBy.limit(count: Int, offset: Int? = null): Limit =
