@@ -1,6 +1,5 @@
 package com.udobny.kmp.couchbase.lite.ktx.paging3
 
-import app.cash.paging.PagingSource.LoadResult
 import androidx.recyclerview.widget.DiffUtil
 import app.cash.paging.*
 import com.couchbase.lite.kmp.Meta
@@ -11,14 +10,11 @@ import com.molo17.couchbase.lite.kmp.limit
 import com.udobny.kmp.couchbase.lite.ktx.BaseTest
 import com.udobny.kmp.couchbase.lite.ktx.select
 import com.udobny.kmp.couchbase.lite.ktx.selectCount
-import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 @ExperimentalCoroutinesApi
 class OffsetQueryPagingSourceTest : BaseTest() {
@@ -44,7 +40,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
-                assertThat(itemCount).isEqualTo(100)
+                assertEquals(100, itemCount)
             }
     }
 
@@ -60,13 +56,13 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         )
         // load once to register db observers
         pagingSource.refresh()
-        assertThat(pagingSource.invalid).isFalse()
+        assertFalse(pagingSource.invalid)
 
         val result = deleteItem(TestItem(1000))
 
         // invalid delete. Should have 0 items deleted and paging source remains valid
-        assertThat(result).isEqualTo(0)
-        assertThat(pagingSource.invalid).isFalse()
+        assertEquals(0, result)
+        assertFalse(pagingSource.invalid)
     }
 
     @Test
@@ -79,9 +75,9 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             ::query,
         )
         insertItems()
-        val result = pagingSource.refresh() as LoadResult.Page
+        val result = pagingSource.refresh() as PagingSourceLoadResultPage<Int, TestItem>
 
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(0, 15))
+        assertContentEquals(ITEMS_LIST.subList(0, 15), result.data)
     }
 
     @Test
@@ -93,7 +89,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             EmptyCoroutineContext,
             ::query,
         )
-        val result = pagingSource.refresh() as LoadResult.Page
+        val result = pagingSource.refresh() as PagingSourceLoadResultPage<Int, TestItem>
 
         assertTrue(result.data.isEmpty())
 
@@ -105,8 +101,8 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         assertTrue(pagingSource.invalid)
 
         // this refresh should check pagingSource's invalid status, realize it is invalid, and
-        // return a LoadResult.Invalid
-        assertThat(pagingSource.refresh()).isInstanceOf(LoadResult.Invalid::class.java)
+        // return a PagingSourceLoadResultInvalid
+        assertIs<PagingSourceLoadResultInvalid<Int, TestItem>>(pagingSource.refresh())
     }
 
     @Test
@@ -120,10 +116,10 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             ::query,
         )
         // refresh with initial key = 20
-        val result = pagingSource.refresh(key = 20) as LoadResult.Page
+        val result = pagingSource.refresh(key = 20) as PagingSourceLoadResultPage<Int, TestItem>
 
         // item in pos 21-35 (TestItemId 20-34) loaded
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(20, 35))
+        assertContentEquals(ITEMS_LIST.subList(20, 35), result.data)
     }
 
     @Test
@@ -135,9 +131,9 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             EmptyCoroutineContext,
             ::query,
         )
-        val result = pagingSource.refresh(key = 101) as LoadResult.Page
+        val result = pagingSource.refresh(key = 101) as PagingSourceLoadResultPage<Int, TestItem>
 
-        assertThat(result.data).isEmpty()
+        assertTrue(result.data.isEmpty())
     }
 
     @Test
@@ -150,10 +146,10 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             ::query,
         )
         insertItems()
-        val result = pagingSource.refresh(key = 101) as LoadResult.Page
+        val result = pagingSource.refresh(key = 101) as PagingSourceLoadResultPage<Int, TestItem>
 
         // should load the last page
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(85, 100))
+        assertContentEquals(ITEMS_LIST.subList(85, 100), result.data)
     }
 
     @Test
@@ -171,7 +167,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             pagingSource.refresh(key = -1)
         }
         // default message from Paging 3 for negative initial key
-        assertThat(expectedException.message).isEqualTo("itemsBefore cannot be negative")
+        assertEquals("itemsBefore cannot be negative", expectedException.message)
     }
 
     @Test
@@ -184,12 +180,12 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             ::query,
         )
         insertItems()
-        val result = pagingSource.append(key = 20) as LoadResult.Page
+        val result = pagingSource.append(key = 20) as PagingSourceLoadResultPage<Int, TestItem>
 
         // item in pos 21-25 (TestItemId 20-24) loaded
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(20, 25))
-        assertThat(result.nextKey).isEqualTo(25)
-        assertThat(result.prevKey).isEqualTo(20)
+        assertContentEquals(ITEMS_LIST.subList(20, 25), result.data)
+        assertEquals(25, result.nextKey)
+        assertEquals(20, result.prevKey)
     }
 
     @Test
@@ -202,12 +198,12 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             ::query,
         )
         insertItems()
-        val result = pagingSource.append(key = 97) as LoadResult.Page
+        val result = pagingSource.append(key = 97) as PagingSourceLoadResultPage<Int, TestItem>
 
         // item in pos 98-100 (TestItemId 97-99) loaded
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(97, 100))
-        assertThat(result.nextKey).isNull()
-        assertThat(result.prevKey).isEqualTo(97)
+        assertContentEquals(ITEMS_LIST.subList(97, 100), result.data)
+        assertNull(result.nextKey)
+        assertEquals(97, result.prevKey)
     }
 
     @Test
@@ -221,15 +217,15 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         )
         insertItems()
         // first append
-        val result = pagingSource.append(key = 30) as LoadResult.Page
+        val result = pagingSource.append(key = 30) as PagingSourceLoadResultPage<Int, TestItem>
 
         // TestItemId 30-34 loaded
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(30, 35))
+        assertContentEquals(ITEMS_LIST.subList(30, 35), result.data)
         // second append using nextKey from previous load
-        val result2 = pagingSource.append(key = result.nextKey) as LoadResult.Page
+        val result2 = pagingSource.append(key = result.nextKey) as PagingSourceLoadResultPage<Int, TestItem>
 
         // TestItemId 35 - 39 loaded
-        assertThat(result2.data).containsExactlyElementsIn(ITEMS_LIST.subList(35, 40))
+        assertContentEquals(ITEMS_LIST.subList(35, 40), result2.data)
     }
 
     @Test
@@ -243,19 +239,19 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         )
         insertItems()
         // first append
-        val result = pagingSource.append(key = 30) as LoadResult.Page
+        val result = pagingSource.append(key = 30) as PagingSourceLoadResultPage<Int, TestItem>
 
         // TestItemId 30-34 loaded
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(30, 35))
+        assertContentEquals(ITEMS_LIST.subList(30, 35), result.data)
 
         // invalidate pagingSource to imitate invalidation from running refreshVersionSync
         pagingSource.invalidate()
 
         // this append should check pagingSource's invalid status, realize it is invalid, and
-        // return a LoadResult.Invalid
+        // return a PagingSourceLoadResultInvalid
         val result2 = pagingSource.append(key = result.nextKey)
 
-        assertThat(result2).isInstanceOf(LoadResult.Invalid::class.java)
+        assertIs<PagingSourceLoadResultInvalid<Int, TestItem>>(result2)
     }
 
     @Test
@@ -268,11 +264,11 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             ::query,
         )
         insertItems()
-        val result = pagingSource.prepend(key = 30) as LoadResult.Page
+        val result = pagingSource.prepend(key = 30) as PagingSourceLoadResultPage<Int, TestItem>
 
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(25, 30))
-        assertThat(result.nextKey).isEqualTo(30)
-        assertThat(result.prevKey).isEqualTo(25)
+        assertContentEquals(ITEMS_LIST.subList(25, 30), result.data)
+        assertEquals(30, result.nextKey)
+        assertEquals(25, result.prevKey)
     }
 
     @Test
@@ -285,12 +281,12 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             ::query,
         )
         insertItems()
-        val result = pagingSource.prepend(key = 3) as LoadResult.Page
+        val result = pagingSource.prepend(key = 3) as PagingSourceLoadResultPage<Int, TestItem>
 
         // items in pos 0 - 2 (TestItemId 0 - 2) loaded
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(0, 3))
-        assertThat(result.nextKey).isEqualTo(3)
-        assertThat(result.prevKey).isNull()
+        assertContentEquals(ITEMS_LIST.subList(0, 3), result.data)
+        assertEquals(3, result.nextKey)
+        assertNull(result.prevKey)
     }
 
     @Test
@@ -304,15 +300,15 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         )
         insertItems()
         // first prepend
-        val result = pagingSource.prepend(key = 20) as LoadResult.Page
+        val result = pagingSource.prepend(key = 20) as PagingSourceLoadResultPage<Int, TestItem>
 
         // items pos 16-20 (TestItemId 15-19) loaded
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(15, 20))
+        assertContentEquals(ITEMS_LIST.subList(15, 20), result.data)
         // second prepend using prevKey from previous load
-        val result2 = pagingSource.prepend(key = result.prevKey) as LoadResult.Page
+        val result2 = pagingSource.prepend(key = result.prevKey) as PagingSourceLoadResultPage<Int, TestItem>
 
         // items pos 11-15 (TestItemId 10 - 14) loaded
-        assertThat(result2.data).containsExactlyElementsIn(ITEMS_LIST.subList(10, 15))
+        assertContentEquals(ITEMS_LIST.subList(10, 15), result2.data)
     }
 
     @Test
@@ -326,19 +322,19 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         )
         insertItems()
         // first prepend
-        val result = pagingSource.prepend(key = 20) as LoadResult.Page
+        val result = pagingSource.prepend(key = 20) as PagingSourceLoadResultPage<Int, TestItem>
 
         // items pos 16-20 (TestItemId 15-19) loaded
-        assertThat(result.data).containsExactlyElementsIn(ITEMS_LIST.subList(15, 20))
+        assertContentEquals(ITEMS_LIST.subList(15, 20), result.data)
 
         // invalidate pagingSource to imitate invalidation from running refreshVersionSync
         pagingSource.invalidate()
 
         // this prepend should check pagingSource's invalid status, realize it is invalid, and
-        // return LoadResult.Invalid
+        // return PagingSourceLoadResultInvalid
         val result2 = pagingSource.prepend(key = result.prevKey)
 
-        assertThat(result2).isInstanceOf(LoadResult.Invalid::class.java)
+        assertIs<PagingSourceLoadResultInvalid<Int, TestItem>>(result2)
     }
 
     @Test
@@ -352,22 +348,22 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         )
         insertItems()
         // for initial load
-        val result = pagingSource.refresh(key = 50) as LoadResult.Page
+        val result = pagingSource.refresh(key = 50) as PagingSourceLoadResultPage<Int, TestItem>
 
         // initial loads items in pos 51 - 65, should have 50 items before
-        assertThat(result.itemsBefore).isEqualTo(50)
+        assertEquals(50, result.itemsBefore)
 
         // prepend from initial load
-        val result2 = pagingSource.prepend(key = result.prevKey) as LoadResult.Page
+        val result2 = pagingSource.prepend(key = result.prevKey) as PagingSourceLoadResultPage<Int, TestItem>
 
         // prepend loads items in pos 46 - 50, should have 45 item before
-        assertThat(result2.itemsBefore).isEqualTo(45)
+        assertEquals(45, result2.itemsBefore)
 
         // append from initial load
-        val result3 = pagingSource.append(key = result.nextKey) as LoadResult.Page
+        val result3 = pagingSource.append(key = result.nextKey) as PagingSourceLoadResultPage<Int, TestItem>
 
         // append loads items in position 66 - 70 , should have 65 item before
-        assertThat(result3.itemsBefore).isEqualTo(65)
+        assertEquals(65, result3.itemsBefore)
     }
 
     @Test
@@ -381,22 +377,22 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         )
         insertItems()
         // for initial load
-        val result = pagingSource.refresh(key = 30) as LoadResult.Page
+        val result = pagingSource.refresh(key = 30) as PagingSourceLoadResultPage<Int, TestItem>
 
         // initial loads items in position 31 - 45, should have 55 items after
-        assertThat(result.itemsAfter).isEqualTo(55)
+        assertEquals(55, result.itemsAfter)
 
         // prepend from initial load
-        val result2 = pagingSource.prepend(key = result.prevKey) as LoadResult.Page
+        val result2 = pagingSource.prepend(key = result.prevKey) as PagingSourceLoadResultPage<Int, TestItem>
 
         // prepend loads items in position 26 - 30, should have 70 item after
-        assertThat(result2.itemsAfter).isEqualTo(70)
+        assertEquals(70, result2.itemsAfter)
 
         // append from initial load
-        val result3 = pagingSource.append(result.nextKey) as LoadResult.Page
+        val result3 = pagingSource.append(result.nextKey) as PagingSourceLoadResultPage<Int, TestItem>
 
         // append loads items in position 46 - 50 , should have 50 item after
-        assertThat(result3.itemsAfter).isEqualTo(50)
+        assertEquals(50, result3.itemsAfter)
     }
 
     @Test
@@ -410,10 +406,10 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         )
         insertItems()
         // initial load
-        val result = pagingSource.refresh() as LoadResult.Page
+        val result = pagingSource.refresh() as PagingSourceLoadResultPage<Int, TestItem>
         // 15 items loaded, assuming anchorPosition = 14 as the last item loaded
         var refreshKey = pagingSource.getRefreshKey(
-            PagingState(
+            PagingState<Int, TestItem>(
                 pages = listOf(result),
                 anchorPosition = 14,
                 config = CONFIG,
@@ -423,14 +419,14 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         // should load around anchor position
         // Initial load size = 15, refresh key should be (15/2 = 7) items
         // before anchorPosition (14 - 7 = 7)
-        assertThat(refreshKey).isEqualTo(7)
+        assertEquals(7, refreshKey)
 
         // append after refresh
-        val result2 = pagingSource.append(key = result.nextKey) as LoadResult.Page
+        val result2 = pagingSource.append(key = result.nextKey) as PagingSourceLoadResultPage<Int, TestItem>
 
-        assertThat(result2.data).isEqualTo(ITEMS_LIST.subList(15, 20))
+        assertContentEquals(ITEMS_LIST.subList(15, 20), result2.data)
         refreshKey = pagingSource.getRefreshKey(
-            PagingState(
+            PagingState<Int, TestItem>(
                 pages = listOf(result, result2),
                 // 20 items loaded, assume anchorPosition = 19 as the last item loaded
                 anchorPosition = 19,
@@ -440,7 +436,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         )
         // initial load size 15. Refresh key should be (15/2 = 7) items before anchorPosition
         // (19 - 7 = 12)
-        assertThat(refreshKey).isEqualTo(12)
+        assertEquals(12, refreshKey)
     }
 
     @Test
@@ -460,7 +456,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         // assume user was viewing last item of the refresh load with anchorPosition = 85,
         // initialLoadSize = 15. This mimics how getRefreshKey() calculates refresh key.
         val refreshKey = 85 - (15 / 2)
-        assertThat(refreshKey).isEqualTo(78)
+        assertEquals(78, refreshKey)
 
         val pagingSource2 = QueryPagingSource(
             countQuery(),
@@ -469,7 +465,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             EmptyCoroutineContext,
             ::query,
         )
-        val result2 = pagingSource2.refresh(key = refreshKey) as LoadResult.Page
+        val result2 = pagingSource2.refresh(key = refreshKey) as PagingSourceLoadResultPage<Int, TestItem>
 
         // database should only have 40 items left. Refresh key is invalid at this point
         // (greater than item count after deletion)
@@ -477,19 +473,19 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
-                assertThat(itemCount).isEqualTo(40)
+                assertEquals(40, itemCount)
             }
         // ensure that paging source can handle invalid refresh key properly
         // should load last page with items 25 - 40
-        assertThat(result2.data).containsExactlyElementsIn(ITEMS_LIST.subList(25, 40))
+        assertContentEquals(ITEMS_LIST.subList(25, 40), result2.data)
 
         // should account for updated item count to return correct itemsBefore, itemsAfter,
         // prevKey, nextKey
-        assertThat(result2.itemsBefore).isEqualTo(25)
-        assertThat(result2.itemsAfter).isEqualTo(0)
+        assertEquals(25, result2.itemsBefore)
+        assertEquals(0, result2.itemsAfter)
         // no append can be triggered
-        assertThat(result2.prevKey).isEqualTo(25)
-        assertThat(result2.nextKey).isNull()
+        assertEquals(25, result2.prevKey)
+        assertNull(result2.nextKey)
     }
 
     /**
@@ -519,7 +515,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
-                assertThat(itemCount).isEqualTo(100)
+                assertEquals(100, itemCount)
             }
 
         // items id 0 - 29 deleted (30 items removed)
@@ -536,25 +532,25 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         // clips to 0
         val refreshKey = 0
 
-        val result2 = pagingSource2.refresh(key = refreshKey) as LoadResult.Page
+        val result2 = pagingSource2.refresh(key = refreshKey) as PagingSourceLoadResultPage<Int, TestItem>
 
         // database should only have 70 items left
         Pager(CONFIG, pagingSourceFactory = { pagingSource2 })
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
-                assertThat(itemCount).isEqualTo(70)
+                assertEquals(70, itemCount)
             }
         // first 30 items deleted, refresh should load starting from pos 31 (item id 30 - 45)
-        assertThat(result2.data).containsExactlyElementsIn(ITEMS_LIST.subList(30, 45))
+        assertContentEquals(ITEMS_LIST.subList(30, 45), result2.data)
 
         // should account for updated item count to return correct itemsBefore, itemsAfter,
         // prevKey, nextKey
-        assertThat(result2.itemsBefore).isEqualTo(0)
-        assertThat(result2.itemsAfter).isEqualTo(55)
+        assertEquals(0, result2.itemsBefore)
+        assertEquals(55, result2.itemsAfter)
         // no prepend can be triggered
-        assertThat(result2.prevKey).isNull()
-        assertThat(result2.nextKey).isEqualTo(15)
+        assertNull(result2.prevKey)
+        assertEquals(15, result2.nextKey)
     }
 
     @Test
@@ -573,7 +569,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
-                assertThat(itemCount).isEqualTo(100)
+                assertEquals(100, itemCount)
             }
         // items id 0 - 94 deleted (95 items removed)
         deleteItems(0..94)
@@ -589,23 +585,23 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         // clips to 0
         val refreshKey = 0
 
-        val result2 = pagingSource2.refresh(key = refreshKey) as LoadResult.Page
+        val result2 = pagingSource2.refresh(key = refreshKey) as PagingSourceLoadResultPage<Int, TestItem>
 
         // database should only have 5 items left
         Pager(CONFIG, pagingSourceFactory = { pagingSource2 })
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
-                assertThat(itemCount).isEqualTo(5)
+                assertEquals(5, itemCount)
             }
         // only 5 items should be loaded with offset = 0
-        assertThat(result2.data).containsExactlyElementsIn(ITEMS_LIST.subList(95, 100))
+        assertContentEquals(ITEMS_LIST.subList(95, 100), result2.data)
 
         // should recognize that this is a terminal load
-        assertThat(result2.itemsBefore).isEqualTo(0)
-        assertThat(result2.itemsAfter).isEqualTo(0)
-        assertThat(result2.prevKey).isNull()
-        assertThat(result2.nextKey).isNull()
+        assertEquals(0, result2.itemsBefore)
+        assertEquals(0, result2.itemsAfter)
+        assertNull(result2.prevKey)
+        assertNull(result2.nextKey)
     }
 
     @Test
@@ -689,13 +685,15 @@ private fun createLoadParam(loadType: LoadType, key: Int?): PagingSourceLoadPara
         loadSize = CONFIG.pageSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
     )
-}
 
-private suspend fun PagingSource<Int, TestItem>.refresh(key: Int? = null): LoadResult<Int, TestItem> =
+    else -> error("Unknown PagingSourceLoadParams ${loadType::class}")
+} as PagingSourceLoadParams<Int>
+
+private suspend fun PagingSource<Int, TestItem>.refresh(key: Int? = null): PagingSourceLoadResult<Int, TestItem> =
     load(createLoadParam(LoadType.REFRESH, key))
 
-private suspend fun PagingSource<Int, TestItem>.append(key: Int?): LoadResult<Int, TestItem> =
+private suspend fun PagingSource<Int, TestItem>.append(key: Int?): PagingSourceLoadResult<Int, TestItem> =
     load(createLoadParam(LoadType.APPEND, key))
 
-private suspend fun PagingSource<Int, TestItem>.prepend(key: Int?): LoadResult<Int, TestItem> =
+private suspend fun PagingSource<Int, TestItem>.prepend(key: Int?): PagingSourceLoadResult<Int, TestItem> =
     load(createLoadParam(LoadType.PREPEND, key))

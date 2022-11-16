@@ -96,7 +96,6 @@ kotlin {
         val jvmIosCommonTest by creating {
             dependsOn(commonTest)
             dependencies {
-                implementation("com.google.truth:truth:1.1.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
                 implementation("app.cash.paging:paging-common:3.1.1-0.1.1")
                 implementation("co.touchlab:stately-concurrency:1.2.3")
@@ -126,6 +125,7 @@ kotlin {
         }
         val androidAndroidTest by getting {
             dependsOn(jvmCommonTest)
+            dependsOn(jvmIosCommonTest)
             dependencies {
                 implementation("androidx.test:core-ktx:1.5.0")
                 implementation("androidx.test:runner:1.5.1")
@@ -142,6 +142,7 @@ kotlin {
         }
         val iosTest by getting {
             dependsOn(nativeCommonTest)
+            dependsOn(jvmIosCommonTest)
         }
         val iosSimulatorArm64Main by getting {
             dependsOn(iosMain)
