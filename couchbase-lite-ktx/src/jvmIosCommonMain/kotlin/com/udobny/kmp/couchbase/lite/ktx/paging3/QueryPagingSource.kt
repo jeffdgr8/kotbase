@@ -1,9 +1,10 @@
 package com.udobny.kmp.couchbase.lite.ktx.paging3
 
-import androidx.paging.PagingSource
+import app.cash.paging.PagingSource
 import com.couchbase.lite.kmp.Database
 import com.couchbase.lite.kmp.ListenerToken
 import com.couchbase.lite.kmp.Query
+import com.udobny.kmp.IO
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 import kotlin.properties.Delegates

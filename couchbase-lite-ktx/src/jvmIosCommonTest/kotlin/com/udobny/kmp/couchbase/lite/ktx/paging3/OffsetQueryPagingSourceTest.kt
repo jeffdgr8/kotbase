@@ -1,12 +1,8 @@
 package com.udobny.kmp.couchbase.lite.ktx.paging3
 
-import androidx.paging.LoadType
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
-import androidx.paging.PagingSource.LoadResult
-import androidx.paging.PagingState
+import app.cash.paging.PagingSource.LoadResult
 import androidx.recyclerview.widget.DiffUtil
+import app.cash.paging.*
 import com.couchbase.lite.kmp.Meta
 import com.couchbase.lite.kmp.MutableDocument
 import com.couchbase.lite.kmp.Query
@@ -19,8 +15,8 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
@@ -675,20 +671,20 @@ private val testItemDiffCallback = object : DiffUtil.ItemCallback<TestItem>() {
 
 data class TestItem(val id: Long)
 
-private fun createLoadParam(loadType: LoadType, key: Int?): PagingSource.LoadParams<Int> = when (loadType) {
-    LoadType.REFRESH -> PagingSource.LoadParams.Refresh(
+private fun createLoadParam(loadType: LoadType, key: Int?): PagingSourceLoadParams<Int> = when (loadType) {
+    LoadType.REFRESH -> PagingSourceLoadParamsRefresh(
         key = key,
         loadSize = CONFIG.initialLoadSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
     )
 
-    LoadType.APPEND -> PagingSource.LoadParams.Append(
+    LoadType.APPEND -> PagingSourceLoadParamsAppend(
         key = key ?: -1,
         loadSize = CONFIG.pageSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
     )
 
-    LoadType.PREPEND -> PagingSource.LoadParams.Prepend(
+    LoadType.PREPEND -> PagingSourceLoadParamsPrepend(
         key = key ?: -1,
         loadSize = CONFIG.pageSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
