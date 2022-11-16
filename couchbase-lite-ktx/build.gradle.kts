@@ -130,7 +130,6 @@ kotlin {
                 implementation("androidx.test:core-ktx:1.5.0")
                 implementation("androidx.test:runner:1.5.1")
                 implementation("io.mockk:mockk-android:1.12.5")
-                implementation("androidx.paging:paging-runtime:3.1.1")
             }
         }
 
