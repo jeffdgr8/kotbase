@@ -1,7 +1,7 @@
 package com.udobny.kmp.couchbase.lite.ktx.paging3
 
 import androidx.paging.AsyncPagingDataDiffer
-import androidx.paging.PagingData
+import app.cash.paging.PagingData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import kotlinx.coroutines.ExperimentalCoroutinesApi
