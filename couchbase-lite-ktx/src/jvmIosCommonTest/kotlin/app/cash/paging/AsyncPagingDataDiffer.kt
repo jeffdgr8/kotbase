@@ -16,9 +16,9 @@
 
 @file:Suppress("OPTIONAL_DECLARATION_USAGE_IN_NON_COMMON_SOURCE")
 
-package androidx.paging
+package app.cash.paging
 
-import androidx.paging.LoadType.REFRESH
+import app.cash.paging.LoadType.REFRESH
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import co.touchlab.stately.concurrency.AtomicInt
@@ -26,7 +26,6 @@ import kotlin.jvm.JvmOverloads
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**

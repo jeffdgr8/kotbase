@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package androidx.paging
+package app.cash.paging
 
-import androidx.paging.DiffingChangePayload.ITEM_TO_PLACEHOLDER
-import androidx.paging.DiffingChangePayload.PLACEHOLDER_POSITION_CHANGE
-import androidx.paging.DiffingChangePayload.PLACEHOLDER_TO_ITEM
+import app.cash.paging.DiffingChangePayload.ITEM_TO_PLACEHOLDER
+import app.cash.paging.DiffingChangePayload.PLACEHOLDER_POSITION_CHANGE
+import app.cash.paging.DiffingChangePayload.PLACEHOLDER_TO_ITEM
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
