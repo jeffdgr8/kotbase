@@ -58,7 +58,7 @@ internal abstract class QueryPagingSource<Key : Any, RowType : Any> :
 @Suppress("FunctionName")
 public fun <RowType : Any> QueryPagingSource(
     countQuery: Query,
-    mapper: (Map<String, Any?>) -> RowType?,
+    mapper: (Map<String, Any?>) -> RowType,
     database: Database,
     context: CoroutineContext = Dispatchers.IO,
     queryProvider: (limit: Int, offset: Int) -> Query,
@@ -67,5 +67,5 @@ public fun <RowType : Any> QueryPagingSource(
     countQuery,
     mapper,
     database,
-    context,
+    context
 )
