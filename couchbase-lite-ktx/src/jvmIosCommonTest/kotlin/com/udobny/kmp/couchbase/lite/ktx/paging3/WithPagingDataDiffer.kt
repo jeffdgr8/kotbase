@@ -40,6 +40,7 @@ private object NoopListCallback : ListUpdateCallback {
     override fun onRemoved(position: Int, count: Int) = Unit
 }
 
+@Suppress("unused")
 @ExperimentalCoroutinesApi
 fun <T : Any> PagingData<T>.withPagingDataDiffer(
     testScope: TestScope,
