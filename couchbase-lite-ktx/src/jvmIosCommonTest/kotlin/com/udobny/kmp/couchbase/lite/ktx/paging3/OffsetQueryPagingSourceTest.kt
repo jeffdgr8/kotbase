@@ -247,7 +247,8 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         // TestItemId 30-34 loaded
         assertContentEquals(ITEMS_LIST.subList(30, 35), result.data)
         // second append using nextKey from previous load
-        val result2 = pagingSource.append(key = result.nextKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result2 = pagingSource.append(key = result.nextKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         // TestItemId 35 - 39 loaded
         assertContentEquals(ITEMS_LIST.subList(35, 40), result2.data)
@@ -330,7 +331,8 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         // items pos 16-20 (TestItemId 15-19) loaded
         assertContentEquals(ITEMS_LIST.subList(15, 20), result.data)
         // second prepend using prevKey from previous load
-        val result2 = pagingSource.prepend(key = result.prevKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result2 = pagingSource.prepend(key = result.prevKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         // items pos 11-15 (TestItemId 10 - 14) loaded
         assertContentEquals(ITEMS_LIST.subList(10, 15), result2.data)
@@ -379,13 +381,15 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         assertEquals(50, result.itemsBefore)
 
         // prepend from initial load
-        val result2 = pagingSource.prepend(key = result.prevKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result2 = pagingSource.prepend(key = result.prevKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         // prepend loads items in pos 46 - 50, should have 45 item before
         assertEquals(45, result2.itemsBefore)
 
         // append from initial load
-        val result3 = pagingSource.append(key = result.nextKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result3 = pagingSource.append(key = result.nextKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         // append loads items in position 66 - 70 , should have 65 item before
         assertEquals(65, result3.itemsBefore)
@@ -408,13 +412,15 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         assertEquals(55, result.itemsAfter)
 
         // prepend from initial load
-        val result2 = pagingSource.prepend(key = result.prevKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result2 = pagingSource.prepend(key = result.prevKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         // prepend loads items in position 26 - 30, should have 70 item after
         assertEquals(70, result2.itemsAfter)
 
         // append from initial load
-        val result3 = pagingSource.append(result.nextKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result3 = pagingSource.append(result.nextKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         // append loads items in position 46 - 50 , should have 50 item after
         assertEquals(50, result3.itemsAfter)
@@ -447,7 +453,8 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         assertEquals(7, refreshKey)
 
         // append after refresh
-        val result2 = pagingSource.append(key = result.nextKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result2 = pagingSource.append(key = result.nextKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         assertContentEquals(ITEMS_LIST.subList(15, 20), result2.data)
         refreshKey = pagingSource.getRefreshKey(
@@ -490,7 +497,8 @@ class OffsetQueryPagingSourceTest : BaseTest() {
             EmptyCoroutineContext,
             ::query,
         )
-        val result2 = pagingSource2.refresh(key = refreshKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result2 = pagingSource2.refresh(key = refreshKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         // database should only have 40 items left. Refresh key is invalid at this point
         // (greater than item count after deletion)
@@ -557,7 +565,8 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         // clips to 0
         val refreshKey = 0
 
-        val result2 = pagingSource2.refresh(key = refreshKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result2 = pagingSource2.refresh(key = refreshKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         // database should only have 70 items left
         Pager(CONFIG, pagingSourceFactory = { pagingSource2 })
@@ -610,7 +619,8 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         // clips to 0
         val refreshKey = 0
 
-        val result2 = pagingSource2.refresh(key = refreshKey) as PagingSourceLoadResultPage<Int, TestItem>
+        val result2 = pagingSource2.refresh(key = refreshKey)
+                as PagingSourceLoadResultPage<Int, TestItem>
 
         // database should only have 5 items left
         Pager(CONFIG, pagingSourceFactory = { pagingSource2 })
@@ -686,32 +696,38 @@ private val CONFIG = PagingConfig(
 private val ITEMS_LIST = List(100) { TestItem(id = it.toLong()) }
 
 private val testItemDiffCallback = object : DiffUtil.ItemCallback<TestItem>() {
-    override fun areItemsTheSame(oldItem: TestItem, newItem: TestItem): Boolean = oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: TestItem, newItem: TestItem): Boolean = oldItem == newItem
+
+    override fun areItemsTheSame(oldItem: TestItem, newItem: TestItem): Boolean =
+        oldItem.id == newItem.id
+
+    override fun areContentsTheSame(oldItem: TestItem, newItem: TestItem): Boolean =
+        oldItem == newItem
 }
 
 data class TestItem(val id: Long)
 
-private fun createLoadParam(loadType: LoadType, key: Int?): PagingSourceLoadParams<Int> = when (loadType) {
-    LoadType.REFRESH -> PagingSourceLoadParamsRefresh(
-        key = key,
-        loadSize = CONFIG.initialLoadSize,
-        placeholdersEnabled = CONFIG.enablePlaceholders,
-    ) as PagingSourceLoadParams<Int>
+private fun createLoadParam(loadType: LoadType, key: Int?): PagingSourceLoadParams<Int> {
+    return when (loadType) {
+        LoadType.REFRESH -> PagingSourceLoadParamsRefresh(
+            key = key,
+            loadSize = CONFIG.initialLoadSize,
+            placeholdersEnabled = CONFIG.enablePlaceholders,
+        ) as PagingSourceLoadParams<Int>
 
-    LoadType.APPEND -> PagingSourceLoadParamsAppend(
-        key = key ?: -1,
-        loadSize = CONFIG.pageSize,
-        placeholdersEnabled = CONFIG.enablePlaceholders,
-    ) as PagingSourceLoadParams<Int>
+        LoadType.APPEND -> PagingSourceLoadParamsAppend(
+            key = key ?: -1,
+            loadSize = CONFIG.pageSize,
+            placeholdersEnabled = CONFIG.enablePlaceholders,
+        ) as PagingSourceLoadParams<Int>
 
-    LoadType.PREPEND -> PagingSourceLoadParamsPrepend(
-        key = key ?: -1,
-        loadSize = CONFIG.pageSize,
-        placeholdersEnabled = CONFIG.enablePlaceholders,
-    ) as PagingSourceLoadParams<Int>
+        LoadType.PREPEND -> PagingSourceLoadParamsPrepend(
+            key = key ?: -1,
+            loadSize = CONFIG.pageSize,
+            placeholdersEnabled = CONFIG.enablePlaceholders,
+        ) as PagingSourceLoadParams<Int>
 
-    else -> error("Unknown PagingSourceLoadParams ${loadType::class}")
+        else -> error("Unknown PagingSourceLoadParams ${loadType::class}")
+    }
 }
 
 private suspend fun PagingSource<Int, TestItem>.refresh(key: Int? = null): PagingSourceLoadResult<Int, TestItem> =
