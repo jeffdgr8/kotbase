@@ -21,7 +21,10 @@
  * - Replace AndroidX Paging with Multiplatform Paging
  */
 
-@file:Suppress("USELESS_IS_CHECK", "CAST_NEVER_SUCCEEDS", "NOTHING_TO_OVERRIDE", "ABSTRACT_CLASS_MEMBER_NOT_IMPLEMENTED")
+@file:Suppress(
+    "USELESS_IS_CHECK", "CAST_NEVER_SUCCEEDS",
+    "NOTHING_TO_OVERRIDE", "ABSTRACT_CLASS_MEMBER_NOT_IMPLEMENTED"
+)
 
 package com.udobny.kmp.couchbase.lite.ktx.paging3
 
@@ -57,7 +60,8 @@ internal class OffsetQueryPagingSource<RowType : Any>(
                 val offset = when (params) {
                     is PagingSourceLoadParamsPrepend<*> -> maxOf(0, key - params.loadSize)
                     is PagingSourceLoadParamsAppend<*> -> key
-                    is PagingSourceLoadParamsRefresh<*> -> if (key >= count) maxOf(0, count - params.loadSize) else key
+                    is PagingSourceLoadParamsRefresh<*> ->
+                        if (key >= count) maxOf(0, count - params.loadSize) else key
                     else -> error("Unknown PagingSourceLoadParams ${params::class}")
                 }
                 val data = queryProvider(limit, offset)

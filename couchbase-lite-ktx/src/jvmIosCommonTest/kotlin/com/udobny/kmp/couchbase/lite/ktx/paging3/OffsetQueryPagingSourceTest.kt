@@ -21,6 +21,8 @@
  * - Replace AndroidX Paging with Multiplatform Paging
  */
 
+@file:Suppress("CAST_NEVER_SUCCEEDS", "TYPE_MISMATCH", "UNRESOLVED_REFERENCE")
+
 package com.udobny.kmp.couchbase.lite.ktx.paging3
 
 import androidx.recyclerview.widget.DiffUtil
@@ -695,22 +697,22 @@ private fun createLoadParam(loadType: LoadType, key: Int?): PagingSourceLoadPara
         key = key,
         loadSize = CONFIG.initialLoadSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
-    )
+    ) as PagingSourceLoadParams<Int>
 
     LoadType.APPEND -> PagingSourceLoadParamsAppend(
         key = key ?: -1,
         loadSize = CONFIG.pageSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
-    )
+    ) as PagingSourceLoadParams<Int>
 
     LoadType.PREPEND -> PagingSourceLoadParamsPrepend(
         key = key ?: -1,
         loadSize = CONFIG.pageSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
-    )
+    ) as PagingSourceLoadParams<Int>
 
     else -> error("Unknown PagingSourceLoadParams ${loadType::class}")
-} as PagingSourceLoadParams<Int>
+}
 
 private suspend fun PagingSource<Int, TestItem>.refresh(key: Int? = null): PagingSourceLoadResult<Int, TestItem> =
     load(createLoadParam(LoadType.REFRESH, key))
