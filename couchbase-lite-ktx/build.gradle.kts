@@ -136,11 +136,16 @@ kotlin {
         val nativeCommonTest by creating {
             dependsOn(commonTest)
         }
+
+        val appleTest by creating {
+            dependsOn(nativeCommonTest)
+        }
+
         val iosMain by getting {
             dependsOn(jvmIosCommonMain)
         }
         val iosTest by getting {
-            dependsOn(nativeCommonTest)
+            dependsOn(appleTest)
             dependsOn(jvmIosCommonTest)
         }
         val iosSimulatorArm64Main by getting {
@@ -150,27 +155,31 @@ kotlin {
             dependsOn(iosTest)
         }
         val macosX64Test by getting {
-            dependsOn(nativeCommonTest)
+            dependsOn(appleTest)
         }
         val macosArm64Test by getting {
+            dependsOn(appleTest)
+        }
+
+        val nativeTest by creating {
             dependsOn(nativeCommonTest)
         }
 
         val linuxX64Test by getting {
-            dependsOn(nativeCommonTest)
+            dependsOn(nativeTest)
         }
         // TODO: use linux arm builds from https://github.com/danbrough/kotlinxtras/
         //val linuxArm64Main by getting {
-        //    dependsOn(nativeCommonTest)
+        //    dependsOn(nativeTest)
         //}
         //val linuxArm64Test by getting {
-        //    dependsOn(nativeCommonTest)
+        //    dependsOn(nativeTest)
         //}
         //val linuxArm32HfpTest by getting {
-        //    dependsOn(nativeCommonTest)
+        //    dependsOn(nativeTest)
         //}
         val mingwX64Test by getting {
-            dependsOn(nativeCommonTest)
+            dependsOn(nativeTest)
         }
     }
 }
