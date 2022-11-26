@@ -65,53 +65,42 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     @Test
     fun testStartWithResetCheckpointContinuous() {
-        println("1")
         val doc1 = MutableDocument("doc1")
         doc1.setString("species", "Tiger")
         doc1.setString("pattern", "Hobbes")
         baseTestDb.save(doc1)
 
-        println("2")
         val doc2 = MutableDocument("doc2")
         doc2.setString("species", "Tiger")
         doc2.setString("pattern", "striped")
         baseTestDb.save(doc2)
 
-        println("3")
         // Push:
         val target = DatabaseEndpoint(otherDB)
         var config = makeConfig(target, ReplicatorType.PUSH, true)
         run(config)
 
-        println("4")
         // Pull:
         config = makeConfig(target, ReplicatorType.PULL, true)
         run(config)
 
         assertEquals(2, baseTestDb.count)
 
-        println("5")
         var doc = baseTestDb.getDocument("doc1")!!
         baseTestDb.purge(doc)
 
-        println("6")
         doc = baseTestDb.getDocument("doc2")!!
         baseTestDb.purge(doc)
 
-        println("7")
         assertEquals(0, baseTestDb.count)
 
-        println("8")
         // Pull again, shouldn't have any new changes:
         run(config)
         assertEquals(0, baseTestDb.count)
 
-        println("9")
         // Reset and pull:
         run(config, reset = true)
-        println("10")
         assertEquals(2, baseTestDb.count)
-        println("11")
     }
 
     @Test
@@ -1536,10 +1525,8 @@ class ReplicatorEETest : BaseReplicatorTest() {
         var docID = "doc1"
         makeConflict(docID, localData, remoteData)
         var doc = baseTestDb.getDocument(docID)!!.toMutable()
-        println("before doc generation = ${doc.generation} revisionID = ${doc.revisionID}")
         doc.setString("key3", "value3")
         saveDocInBaseTestDb(doc)
-        println("after doc generation = ${doc.generation} revisionID = ${doc.revisionID}")
 
         // delete local
         docID = "doc2"
@@ -1689,8 +1676,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
         assertNotNull(error)
         assertEquals(CBLError.Code.UNEXPECTED_ERROR, error?.code)
-        println("error.message =")
-        println(error?.message)
         assertTrue(
             error!!.message!!.contains(
                 "A document contains a blob that was saved to a different " +
