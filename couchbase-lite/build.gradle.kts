@@ -92,10 +92,11 @@ kotlin {
     }
 
     /*
-     * Manually install libicu-dev v66 from
-     * libs/libicu-dev/linux/x86_64/libicu-dev-66.1/lib/x86_64-linux-gnu
+     * On Linux, manually install libicu-dev v54 and v66 from
+     * libs/libicu-dev/linux/x86_64/libicu-dev-{v}/lib/x86_64-linux-gnu
      * as -rpath doesn't work to resolve:
      *
+     * sudo cp -P libicuuc.so.54* libicui18n.so.54* libicudata.so.54* /usr/lib/x86_64-linux-gnu/
      * sudo cp -P libicuuc.so.66* libicui18n.so.66* libicudata.so.66* /usr/lib/x86_64-linux-gnu/
      */
 
