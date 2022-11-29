@@ -5,7 +5,10 @@ import com.couchbase.lite.kmp.internal.utils.PlatformUtils
 import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrowsCBL
 import com.udobny.kmp.ext.toByteArray
 import com.udobny.kmp.ext.toSecCertificate
-import kotlinx.cinterop.*
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.value
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
@@ -13,7 +16,8 @@ import okio.buffer
 import okio.use
 import platform.CoreFoundation.CFStringRefVar
 import platform.Foundation.CFBridgingRelease
-import platform.Security.*
+import platform.Security.SecCertificateCopyCommonName
+import platform.Security.errSecSuccess
 import platform.posix.EADDRINUSE
 import platform.posix.ECONNREFUSED
 import kotlin.math.max
@@ -146,8 +150,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         val changeListener = { change: ReplicatorChange ->
             if (change.status.activityLevel == ReplicatorActivityLevel.IDLE
-                && change.status.progress.completed == change.status.progress.total) {
-
+                && change.status.progress.completed == change.status.progress.total
+            ) {
                 if (change.replicator.config.database.name == "db2") {
                     idleMutex2.unlock()
                 } else {
@@ -214,8 +218,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         )
         val token1 = repl1.addChangeListener { change ->
             if (change.status.activityLevel == ReplicatorActivityLevel.IDLE
-                && change.status.progress.completed == change.status.progress.total) {
-
+                && change.status.progress.completed == change.status.progress.total
+            ) {
                 idleMutex.unlock()
 
             } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
@@ -544,7 +548,11 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val clientCertData = PlatformUtils.getAsset("identity/client.p12")!!.use { input ->
             input.buffer().readByteArray()
         }
-        val identity = TLSIdentity.importIdentity(clientCertData, "123".toCharArray(), clientCertLabel)
+        val identity = TLSIdentity.importIdentity(
+            clientCertData,
+            "123".toCharArray(),
+            clientCertLabel
+        )
 
         // Replicator:
         val auth = ClientCertificateAuthenticator(identity)
@@ -620,7 +628,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val rConfig = ReplicatorConfiguration(baseTestDb, listener!!.localURLEndpoint)
         rConfig.type = ReplicatorType.PULL
         rConfig.isContinuous = false
-        rConfig.pullFilter = { doc, flags ->
+        rConfig.pullFilter = { _, _ ->
             val s = listener!!.status!!
             maxConnectionCount = max(s.connectionCount, maxConnectionCount)
             maxActiveCount = max(s.activeConnectionCount, maxActiveCount)
@@ -705,7 +713,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         val changeListener = { change: ReplicatorChange ->
             if (change.status.activityLevel == ReplicatorActivityLevel.IDLE &&
-                change.status.progress.completed == change.status.progress.total) {
+                change.status.progress.completed == change.status.progress.total
+            ) {
                 if (otherDB.count == 3L && baseTestDb.count == 3L && db2.count == 3L) {
                     change.replicator.stop()
                 }
@@ -926,7 +935,11 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         x1 = Mutex(true)
         val x2 = Mutex(true)
         serverCert = receivedServerCert
-        repl = createReplicator(otherDB, listener.localURLEndpoint, serverCert = serverCert.toByteArray())
+        repl = createReplicator(
+            otherDB,
+            listener.localURLEndpoint,
+            serverCert = serverCert.toByteArray()
+        )
         repl.addChangeListener { change ->
             val activity = change.status.activityLevel
             if (activity == ReplicatorActivityLevel.IDLE) {
@@ -1084,7 +1097,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         }
 
         assertNotNull(listener!!.tlsIdentity)
-        assertTrue(identity == listener!!.tlsIdentity!!)
+        assertEquals(identity, listener!!.tlsIdentity!!)
 
         createSingleDocInBaseTestDb("doc-1")
         assertEquals(0, otherDB.count)
