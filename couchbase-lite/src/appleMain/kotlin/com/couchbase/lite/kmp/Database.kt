@@ -38,7 +38,7 @@ internal constructor(actual: CBLDatabase) :
         @Throws(CouchbaseLiteException::class)
         public actual fun delete(name: String, directory: String?) {
             // Java SDK throws not found error
-            if (!exists(name, directory ?: DatabaseConfiguration().directory)) {
+            if (!exists(name, directory ?: DatabaseConfiguration(null).directory)) {
                 throw CouchbaseLiteException(
                     "Database not found for delete",
                     CBLError.Domain.CBLITE,

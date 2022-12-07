@@ -30,7 +30,7 @@ internal constructor(
     internal var isClosed = false
 
     @Throws(CouchbaseLiteException::class)
-    public actual constructor(name: String) : this(name, DatabaseConfiguration())
+    public actual constructor(name: String) : this(name, DatabaseConfiguration(null))
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String, config: DatabaseConfiguration) : this(
@@ -59,7 +59,7 @@ internal constructor(
         @Throws(CouchbaseLiteException::class)
         public actual fun delete(name: String, directory: String?) {
             // Java SDK throws not found error
-            if (!exists(name, directory ?: DatabaseConfiguration().directory)) {
+            if (!exists(name, directory ?: DatabaseConfiguration(null).directory)) {
                 throw CouchbaseLiteException(
                     "Database not found for delete",
                     CBLError.Domain.CBLITE,
