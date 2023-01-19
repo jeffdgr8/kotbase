@@ -16,10 +16,11 @@ plugins {
     id("maven-publish")
 }
 
-val cblVersion = project.property("VERSION") as String
+val cblVersion = project.property("CBL_VERSION") as String
+val kmpVersion = project.property("KMP_VERSION") as String
 
 group = project.property("GROUP") as String
-version = cblVersion
+version = "$cblVersion-$kmpVersion"
 
 repositories {
     maven("https://mobile.maven.couchbase.com/maven2/dev/")
