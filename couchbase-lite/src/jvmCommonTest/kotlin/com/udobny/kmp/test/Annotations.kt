@@ -1,4 +1,4 @@
-@file:JvmName("AnnotationsAndroidAndroidTest") // https://youtrack.jetbrains.com/issue/KT-21186
+@file:JvmName("AnnotationsJvm") // https://youtrack.jetbrains.com/issue/KT-21186
 @file:Suppress("unused")
 
 package com.udobny.kmp.test

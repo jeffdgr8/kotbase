@@ -138,6 +138,9 @@ kotlin {
         }
         val jvmCommonTest by creating {
             dependsOn(commonTest)
+            dependencies {
+                implementation("junit:junit:4.13.2")
+            }
         }
         val androidMain by getting {
             dependsOn(jvmCommonMain)
@@ -145,17 +148,17 @@ kotlin {
                 api("com.couchbase.lite:couchbase-lite-android:$cblVersion")
             }
         }
-        val androidTest by getting {
+        val androidUnitTest by getting {
             (dependsOn as MutableSet).remove(commonTest)
         }
-        val androidAndroidTest by getting {
+        val androidInstrumentedTest by getting {
             dependsOn(jvmCommonTest)
             // TODO: doesn't work, so using a symlink
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
             dependencies {
                 implementation("androidx.test:core-ktx:1.5.0")
-                implementation("androidx.test:runner:1.5.1")
+                implementation("androidx.test:runner:1.5.2")
             }
         }
         val jvmMain by getting {
@@ -289,20 +292,14 @@ publishing.publications.withType<MavenPublication> {
 }
 
 tasks.withType<KotlinNativeSimulatorTest> {
-    deviceId = "iPhone 14"
+    device.set("iPhone 14")
 }
 
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
-        // TODO: remove above --- and append, pending
-        //  https://github.com/JetBrains/kotlin/pull/4894 in Kotlin 1.8
-        //outputFile.appendText("""
-        outputFile.writeText(
+        outputFile.appendText(
             """
-            language = Objective-C
-            headers = CouchbaseLite/CouchbaseLite.h
-            headerFilter = CouchbaseLite/**
 
             ---
 

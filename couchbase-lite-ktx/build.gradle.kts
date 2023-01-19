@@ -118,15 +118,15 @@ kotlin {
                 compileOnly("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
             }
         }
-        val androidTest by getting {
+        val androidUnitTest by getting {
             (dependsOn as MutableSet).remove(commonTest)
         }
-        val androidAndroidTest by getting {
+        val androidInstrumentedTest by getting {
             dependsOn(jvmCommonTest)
             dependsOn(jvmIosCommonTest)
             dependencies {
                 implementation("androidx.test:core-ktx:1.5.0")
-                implementation("androidx.test:runner:1.5.1")
+                implementation("androidx.test:runner:1.5.2")
                 implementation("io.mockk:mockk-android:1.12.5")
             }
         }
@@ -141,6 +141,9 @@ kotlin {
 
         val iosMain by getting {
             dependsOn(jvmIosCommonMain)
+            dependencies {
+                implementation("app.cash.paging:paging-common:3.1.1-0.1.1")
+            }
         }
         val iosTest by getting {
             dependsOn(appleTest)
@@ -211,7 +214,7 @@ publishing.publications.withType<MavenPublication> {
 }
 
 tasks.withType<KotlinNativeSimulatorTest> {
-    deviceId = "iPhone 14"
+    device.set("iPhone 14")
 }
 
 if (System.getProperty("os.name") == "Linux") {
