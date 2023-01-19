@@ -199,13 +199,14 @@ internal constructor(actual: CBLDatabase) :
     @Throws(CouchbaseLiteException::class)
     public actual fun <R> inBatch(work: Database.() -> R): R {
         return mustBeOpen {
+            @Suppress("UNCHECKED_CAST")
             wrapCBLError { error ->
                 var result: R? = null
                 actual.inBatch(error) {
                     result = this@Database.work()
                 }
                 result
-            }!!
+            } as R
         }
     }
 

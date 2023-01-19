@@ -115,7 +115,8 @@ internal constructor(actual: com.couchbase.lite.Database) :
         actual.inBatch(UnitOfWork {
             result = this.work()
         })
-        return result!!
+        @Suppress("UNCHECKED_CAST")
+        return result as R
     }
 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken =
