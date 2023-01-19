@@ -4,7 +4,6 @@ package com.udobny.kmp.couchbase.lite.ktx
 
 import com.couchbase.lite.kmp.ArrayFunction
 import com.couchbase.lite.kmp.Expression
-import com.udobny.kmp.ext.toNativeDate
 import kotlinx.datetime.Instant
 
 /**
@@ -16,7 +15,7 @@ import kotlinx.datetime.Instant
  * @return a between expression.
  */
 public fun Expression.between(lower: Instant, upper: Instant): Expression =
-    between(Expression.value(lower.toNativeDate()), Expression.value(upper.toNativeDate()))
+    between(Expression.value(lower), Expression.value(upper))
 
 /**
  * Creates an ARRAY_CONTAINS(expr, value) function that checks whether

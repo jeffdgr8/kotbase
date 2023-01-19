@@ -3,8 +3,6 @@ package com.udobny.kmp.ext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
-public expect fun Instant.toNativeDate(): Any
-
 /**
  * An ISO 8601 UTC string with milliseconds
  * precision. The default [Instant.toString]
