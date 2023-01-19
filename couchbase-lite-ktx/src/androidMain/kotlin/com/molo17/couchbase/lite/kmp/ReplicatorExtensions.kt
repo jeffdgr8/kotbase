@@ -18,6 +18,7 @@
  * Modified by Jeff Lockhart
  *
  * - Use com.couchbase.lite.kmp package for couchbase-lite-kmp Kotlin Multiplatform bindings
+ * - Resolve explicitApiWarning() requirements
  */
 
 @file:JvmName("ReplicatorExtensionsJvm") // https://youtrack.jetbrains.com/issue/KT-21186
