@@ -299,86 +299,8 @@ tasks.withType<KotlinNativeSimulatorTest> {
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
-        outputFile.appendText(
-            """
-
-            ---
-
-            typedef struct FLSlice {
-                const void* buf;
-                size_t size;
-            } FLSlice;
-
-            typedef uint32_t C4DocumentFlags; enum {
-                kDocDeleted         = 0x01,
-                kDocConflicted      = 0x02,
-                kDocHasAttachments  = 0x04,
-                kDocExists          = 0x1000
-            };
-
-            typedef uint8_t C4RevisionFlags; enum {
-                kRevDeleted        = 0x01,
-                kRevLeaf           = 0x02,
-                kRevNew            = 0x04,
-                kRevHasAttachments = 0x08,
-                kRevKeepBody       = 0x10,
-                kRevIsConflict     = 0x20,
-                kRevClosed         = 0x40,
-                kRevPurged         = 0x80
-            };
-
-            typedef struct C4Revision {
-                FLSlice revID;
-                C4RevisionFlags flags;
-                uint64_t sequence;
-            } C4Revision;
-
-            typedef struct C4ExtraInfo {
-                void* pointer;
-                void (* destructor)(void *ptr);
-            } C4ExtraInfo;
-
-            typedef struct C4Document {
-                void* _internal1;
-                void* _internal2;
-
-                C4DocumentFlags flags;
-                FLSlice docID;
-                FLSlice revID;
-                uint64_t sequence;
-
-                C4Revision selectedRev;
-
-                C4ExtraInfo extraInfo;
-            } C4Document;
-
-            @interface CBLC4Document : NSObject
-            @property (readonly, nonatomic) C4Document* rawDoc;
-            @property (readonly, nonatomic) C4RevisionFlags revFlags;
-            @end
-
-            @interface CBLDocument ()
-            @property (atomic, nullable) CBLC4Document* c4Doc;
-            @property (nonatomic, readonly) NSUInteger generation;
-            - (nullable instancetype) initWithDatabase: (CBLDatabase*)database
-                                            documentID: (NSString*)documentID
-                                        includeDeleted: (BOOL)includeDeleted
-                                                 error: (NSError**)outError;
-            @end
-
-            @interface CBLDatabase ()
-            - (BOOL) isClosed;
-            @end
-
-            @interface CBLQueryExpression ()
-            - (id) asJSON;
-            @end
-
-            @interface CBLQueryCollation ()
-            - (id) asJSON;
-            @end
-        """.trimIndent()
-        )
+        val defFile = File(projectDir, "src/nativeInterop/cinterop/podCouchbaseLite.def")
+        outputFile.appendText(defFile.readText())
     }
 }
 
