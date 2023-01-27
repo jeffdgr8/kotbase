@@ -25,6 +25,7 @@
 package com.molo17.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.*
+import com.couchbase.lite.kmp.Array
 import kotlinx.datetime.Instant
 
 /**

@@ -1,4 +1,5 @@
 
+#language=C
 ---
 
 typedef struct FLSlice {

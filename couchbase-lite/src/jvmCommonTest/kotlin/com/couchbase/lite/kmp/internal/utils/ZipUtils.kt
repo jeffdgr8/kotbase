@@ -2,6 +2,7 @@ package com.couchbase.lite.kmp.internal.utils
 
 import okio.Source
 import okio.buffer
+import okio.use
 import java.io.File
 import java.io.FileOutputStream
 import java.util.zip.ZipInputStream

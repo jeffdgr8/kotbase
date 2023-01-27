@@ -4,6 +4,7 @@ noStringConversion = FLStr
 
 staticLibraries.mingw_x64 = cblite.lib
 
+#language=C
 ---
 
 typedef uint32_t C4DocumentFlags; enum {
