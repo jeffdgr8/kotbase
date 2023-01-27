@@ -16,10 +16,10 @@ plugins {
     id("maven-publish")
 }
 
-val cblVersion = project.property("CBL_VERSION") as String
-val kmpVersion = project.property("KMP_VERSION") as String
+val cblVersion = property("CBL_VERSION") as String
+val kmpVersion = property("KMP_VERSION") as String
 
-group = project.property("GROUP") as String
+group = property("GROUP") as String
 version = "$cblVersion-$kmpVersion"
 
 repositories {
@@ -91,10 +91,11 @@ kotlin {
     }
 
     /*
-     * Manually install libicu-dev v66 from
-     * libs/libicu-dev/linux/x86_64/libicu-dev-66.1/lib/x86_64-linux-gnu
+     * On Linux, manually install libicu-dev v54 and v66 from
+     * libs/libicu-dev/linux/x86_64/libicu-dev-{v}/lib/x86_64-linux-gnu
      * as -rpath doesn't work to resolve:
      *
+     * sudo cp -P libicuuc.so.54* libicui18n.so.54* libicudata.so.54* /usr/lib/x86_64-linux-gnu/
      * sudo cp -P libicuuc.so.66* libicui18n.so.66* libicudata.so.66* /usr/lib/x86_64-linux-gnu/
      */
 
@@ -163,7 +164,7 @@ kotlin {
             //resources.srcDir("src/commonTest/resources")
             dependencies {
                 implementation("androidx.test:core-ktx:1.5.0")
-                implementation("androidx.test:runner:1.5.1")
+                implementation("androidx.test:runner:1.5.2")
             }
         }
         val jvmMain by getting {
@@ -308,7 +309,7 @@ tasks.withType<KotlinNativeSimulatorTest> {
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
-        val defFile = File(projectDir, "src/nativeInterop/cinterop/podCouchbaseLite.def")
+        val defFile = file("src/nativeInterop/cinterop/podCouchbaseLite.def")
         outputFile.appendText(defFile.readText())
     }
 }

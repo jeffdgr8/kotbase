@@ -16,10 +16,10 @@ plugins {
     id("maven-publish")
 }
 
-val cblVersion = project.property("CBL_VERSION") as String
-val kmpVersion = project.property("KMP_VERSION") as String
+val cblVersion = property("CBL_VERSION") as String
+val kmpVersion = property("KMP_VERSION") as String
 
-group = project.property("GROUP") as String
+group = property("GROUP") as String
 version = "$cblVersion-$kmpVersion"
 
 kotlin {
@@ -299,7 +299,7 @@ tasks.withType<KotlinNativeSimulatorTest> {
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
-        val defFile = File(projectDir, "src/nativeInterop/cinterop/podCouchbaseLite.def")
+        val defFile = file("src/nativeInterop/cinterop/podCouchbaseLite.def")
         outputFile.appendText(defFile.readText())
     }
 }

@@ -15,10 +15,10 @@ plugins {
     id("maven-publish")
 }
 
-val cblVersion = project.property("CBL_VERSION") as String
-val kmpVersion = project.property("KMP_VERSION") as String
+val cblVersion = property("CBL_VERSION") as String
+val kmpVersion = property("KMP_VERSION") as String
 
-group = project.property("GROUP") as String
+group = property("GROUP") as String
 version = "$cblVersion-$kmpVersion"
 
 kotlin {
