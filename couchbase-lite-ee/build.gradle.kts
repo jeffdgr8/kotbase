@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
@@ -72,7 +73,7 @@ kotlin {
     targets.withType<KotlinNativeTarget> {
         if (konanTarget.family.isAppleFamily) {
             // Run iOS tests on background thread with main run loop
-            compilations["test"].kotlinOptions {
+            binaries.withType<TestExecutable> {
                 freeCompilerArgs += listOf("-e", "com.udobny.kmp.test.mainBackground")
             }
         } else {
