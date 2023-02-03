@@ -128,7 +128,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
-                implementation("org.jetbrains.kotlinx:atomicfu:0.18.5")
+                implementation("org.jetbrains.kotlinx:atomicfu:0.19.0")
             }
         }
 
