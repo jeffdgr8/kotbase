@@ -179,7 +179,7 @@ kotlin {
         val nativeCommonTest by creating {
             dependsOn(commonTest)
             dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:3.2.0")
+                implementation("com.soywiz.korlibs.korio:korio:3.4.0")
             }
         }
 
