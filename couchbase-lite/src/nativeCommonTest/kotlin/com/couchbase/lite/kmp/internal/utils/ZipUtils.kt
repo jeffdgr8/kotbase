@@ -13,7 +13,7 @@ actual object ZipUtils {
     actual fun unzip(input: Source, destination: String) {
         runBlocking {
             input.asyncStream().openAsZip { zipFile ->
-                zipFile.copyToTree(applicationVfs[destination])
+                zipFile.copyRecursively(applicationVfs[destination])
             }
         }
     }
