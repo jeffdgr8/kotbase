@@ -1,6 +1,5 @@
 package com.couchbase.lite.kmp
 
-import com.couchbase.lite.generation
 import com.udobny.kmp.test.IgnoreApple
 import com.udobny.kmp.test.IgnoreNative
 import kotlinx.atomicfu.locks.reentrantLock

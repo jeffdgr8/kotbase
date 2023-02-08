@@ -89,6 +89,11 @@ kotlin {
                 binaries.getTest(DEBUG).linkerOpts += listOf("-L$libraryPath", "-lcblite", "-rpath", libraryPath)
             }
         }
+        if (konanTarget.family != Family.MINGW) {
+            binaries.all {
+                binaryOptions["sourceInfoType"] = "libbacktrace"
+            }
+        }
     }
 
     /*
