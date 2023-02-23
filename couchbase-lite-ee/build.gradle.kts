@@ -139,7 +139,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
-                implementation("org.jetbrains.kotlinx:atomicfu:0.18.5")
+                implementation("org.jetbrains.kotlinx:atomicfu:0.19.0")
             }
         }
 
@@ -152,6 +152,9 @@ kotlin {
         }
         val jvmCommonTest by creating {
             dependsOn(commonTest)
+            dependencies {
+                implementation("junit:junit:4.13.2")
+            }
         }
         val androidMain by getting {
             kotlin.srcDir("src/$name/ee")
@@ -323,7 +326,10 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
 
 if (System.getProperty("os.name") == "Linux") {
     tasks.withType<Test> {
-        environment("LD_LIBRARY_PATH", "\$LD_LIBRARY_PATH:$projectDir/libs/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu")
+        environment(
+            "LD_LIBRARY_PATH",
+            "\$LD_LIBRARY_PATH:$projectDir/libs/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu"
+        )
     }
 }
 

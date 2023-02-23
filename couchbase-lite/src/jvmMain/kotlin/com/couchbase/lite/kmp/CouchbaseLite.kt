@@ -10,7 +10,6 @@ public object CouchbaseLite {
     /**
      * Initialize CouchbaseLite library. This method MUST be called before using CouchbaseLite.
      *
-     *
      * This method expects the current directory to be writeable
      * and will throw an `IllegalStateException` if it is not.
      * Use `init(boolean, File, File)` to specify alternative root and scratch directories.
@@ -25,7 +24,6 @@ public object CouchbaseLite {
 
     /**
      * Initialize CouchbaseLite library. This method MUST be called before using CouchbaseLite.
-     *
      *
      * This method allows specifying a default root directory for database files,
      * and the scratch directory used for temporary files (the native library, etc).
