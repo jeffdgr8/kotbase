@@ -130,8 +130,8 @@ kotlin {
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
                 // TODO: https://github.com/square/okio/pull/1123
-                //api("com.squareup.okio:okio:3.3.0")
-                api("com.squareup.okio:okio:3.3.0-SNAPSHOT")
+                //api("com.squareup.okio:okio:3.4.0")
+                api("com.squareup.okio:okio:3.4.0-SNAPSHOT")
             }
         }
         val commonTest by getting {
