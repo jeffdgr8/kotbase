@@ -36,15 +36,13 @@ import com.udobny.kmp.couchbase.lite.ktx.BaseTest
 import com.udobny.kmp.couchbase.lite.ktx.select
 import com.udobny.kmp.couchbase.lite.ktx.selectCount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import com.udobny.kmp.test.IgnoreApple
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestScope
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.*
 
-// Occasionally hangs on iOS
-// https://kotlinlang.slack.com/archives/C1CFAFJSK/p1669167000879859
-@IgnoreApple
 @ExperimentalCoroutinesApi
 class OffsetQueryPagingSourceTest : BaseTest() {
 
@@ -641,6 +639,15 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         assertEquals(0, result2.itemsAfter)
         assertNull(result2.prevKey)
         assertNull(result2.nextKey)
+    }
+
+    private fun runTest(
+        testBody: suspend TestScope.() -> Unit
+    ) {
+        kotlinx.coroutines.test.runTest(testBody = testBody)
+        // Occasionally hangs on iOS without this delay
+        // https://kotlinlang.slack.com/archives/C1CFAFJSK/p1669167000879859
+        runBlocking { delay(1) }
     }
 
     @Test
