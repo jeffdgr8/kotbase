@@ -18,7 +18,6 @@
  * Modified by Jeff Lockhart
  *
  * - Replace SQLDelight database with Couchbase Lite KMP
- * - Replace AndroidX Paging with Multiplatform Paging
  */
 
 @file:Suppress("CAST_NEVER_SUCCEEDS", "TYPE_MISMATCH", "UNRESOLVED_REFERENCE")
