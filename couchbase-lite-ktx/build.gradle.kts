@@ -121,7 +121,7 @@ kotlin {
         val androidMain by getting {
             dependsOn(jvmIosCommonMain)
             dependencies {
-                compileOnly("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+                compileOnly("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
             }
         }
         val androidUnitTest by getting {
