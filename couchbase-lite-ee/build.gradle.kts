@@ -284,7 +284,6 @@ kotlin {
 android {
     namespace = "com.udobny.kmp.couchbase.lite"
     compileSdk = 33
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 22
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
