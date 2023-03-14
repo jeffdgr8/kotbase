@@ -15,12 +15,6 @@ plugins {
     id("maven-publish")
 }
 
-val cblVersion = property("CBL_VERSION") as String
-val kmpVersion = property("KMP_VERSION") as String
-
-group = property("GROUP") as String
-version = "$cblVersion-$kmpVersion"
-
 kotlin {
     explicitApiWarning()
 
@@ -55,7 +49,7 @@ kotlin {
             isStatic = false
         }
         pod("CouchbaseLite") {
-            version = "3.0.2"//cblVersion
+            version = libs.versions.couchbase.lite.objc.get()
             // use local build
             //source = path("$rootDir/../couchbase-lite-ios")
             // Workaround for 'CBLQueryMeta' is going to be declared twice
@@ -82,27 +76,27 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":couchbase-lite"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                api(libs.kotlinx.coroutines.core)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
+                implementation(libs.kotlin.test)
             }
         }
 
         val jvmIosCommonMain by creating {
             dependsOn(commonMain)
             dependencies {
-                compileOnly("app.cash.paging:paging-common:3.1.1-0.1.1")
+                compileOnly(libs.paging)
             }
         }
         val jvmIosCommonTest by creating {
             dependsOn(commonTest)
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-                implementation("app.cash.paging:paging-common:3.1.1-0.1.1")
-                implementation("co.touchlab:stately-concurrency:1.2.3")
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.paging)
+                implementation(libs.stately.concurrency)
             }
         }
 
@@ -115,13 +109,13 @@ kotlin {
         val jvmTest by getting {
             dependsOn(jvmCommonTest)
             dependencies {
-                implementation("io.mockk:mockk:1.12.5")
+                implementation(libs.mockk)
             }
         }
         val androidMain by getting {
             dependsOn(jvmIosCommonMain)
             dependencies {
-                compileOnly("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
+                compileOnly(libs.androidx.lifecycle.runtime.ktx)
             }
         }
         val androidUnitTest by getting {
@@ -132,9 +126,9 @@ kotlin {
             dependsOn(jvmCommonTest)
             dependsOn(jvmIosCommonTest)
             dependencies {
-                implementation("androidx.test:core-ktx:1.5.0")
-                implementation("androidx.test:runner:1.5.2")
-                implementation("io.mockk:mockk-android:1.12.5")
+                implementation(libs.androidx.test.core.ktx)
+                implementation(libs.androidx.test.runner)
+                implementation(libs.mockk.android)
             }
         }
 
@@ -149,7 +143,7 @@ kotlin {
         val iosMain by getting {
             dependsOn(jvmIosCommonMain)
             dependencies {
-                implementation("app.cash.paging:paging-common:3.1.1-0.1.1")
+                implementation(libs.paging)
             }
         }
         val iosTest by getting {
@@ -310,4 +304,4 @@ val String.arch: String
     }
 
 fun libcblitePath(os: String, arch: String): String =
-    "${project(":couchbase-lite").projectDir}/libs/libcblite/$os/$arch/libcblite-3.0.2"//$cblVersion"
+    "${project(":couchbase-lite").projectDir}/libs/libcblite/$os/$arch/libcblite-${libs.versions.couchbase.lite.c.get()}"

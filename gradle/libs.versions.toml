@@ -1,0 +1,29 @@
+[versions]
+couchbase-lite-java = "3.0.5"
+couchbase-lite-objc = "3.0.2"
+couchbase-lite-c = "3.0.2"
+kotlinx-coroutines = "1.6.4"
+mockk = "1.12.5"
+
+[libraries]
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.6.0" }
+androidx-test-core-ktx = { module = "androidx.test:core-ktx", version = "1.5.0" }
+androidx-test-runner = { module = "androidx.test:runner", version = "1.5.2" }
+couchbase-lite-android = { module = "com.couchbase.lite:couchbase-lite-android", version.ref = "couchbase-lite-java" }
+couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-android-ee", version.ref = "couchbase-lite-java" }
+couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", version.ref = "couchbase-lite-java" }
+couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
+junit = { module = "junit:junit", version = "4.13.2" }
+korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "3.4.0" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.19.0" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.0" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.4.1" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+# TODO: https://github.com/square/okio/pull/1123
+okio = { module = "com.squareup.okio:okio", version = "3.4.0-SNAPSHOT" }
+paging = { module = "app.cash.paging:paging-common", version = "3.1.1-0.1.1" }
+stately-concurrency = { module = "co.touchlab:stately-concurrency", version = "1.2.3" }

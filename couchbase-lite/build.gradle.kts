@@ -17,12 +17,6 @@ plugins {
     id("maven-publish")
 }
 
-val cblVersion = property("CBL_VERSION") as String
-val kmpVersion = property("KMP_VERSION") as String
-
-group = property("GROUP") as String
-version = "$cblVersion-$kmpVersion"
-
 kotlin {
     explicitApiWarning()
 
@@ -61,7 +55,7 @@ kotlin {
             isStatic = false
         }
         pod("CouchbaseLite") {
-            version = "3.0.2"//cblVersion
+            version = libs.versions.couchbase.lite.objc.get()
             // use local build
             //source = path("$rootDir/../couchbase-lite-ios")
             // Workaround for 'CBLQueryMeta' is going to be declared twice
@@ -121,37 +115,35 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-                // TODO: https://github.com/square/okio/pull/1123
-                //api("com.squareup.okio:okio:3.4.0")
-                api("com.squareup.okio:okio:3.4.0-SNAPSHOT")
+                api(libs.kotlinx.coroutines.core)
+                api(libs.kotlinx.datetime)
+                api(libs.okio)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
-                implementation("org.jetbrains.kotlinx:atomicfu:0.19.0")
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kotlinx.atomicfu)
             }
         }
 
         val jvmCommonMain by creating {
             dependsOn(commonMain)
             dependencies {
-                compileOnly("com.couchbase.lite:couchbase-lite-java:$cblVersion")
+                compileOnly(libs.couchbase.lite.java)
             }
         }
         val jvmCommonTest by creating {
             dependsOn(commonTest)
             dependencies {
-                implementation("junit:junit:4.13.2")
+                implementation(libs.junit)
             }
         }
         val androidMain by getting {
             dependsOn(jvmCommonMain)
             dependencies {
-                api("com.couchbase.lite:couchbase-lite-android:$cblVersion")
+                api(libs.couchbase.lite.android)
             }
         }
         val androidUnitTest by getting {
@@ -164,14 +156,14 @@ kotlin {
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
             dependencies {
-                implementation("androidx.test:core-ktx:1.5.0")
-                implementation("androidx.test:runner:1.5.2")
+                implementation(libs.androidx.test.core.ktx)
+                implementation(libs.androidx.test.runner)
             }
         }
         val jvmMain by getting {
             dependsOn(jvmCommonMain)
             dependencies {
-                api("com.couchbase.lite:couchbase-lite-java:$cblVersion")
+                api(libs.couchbase.lite.java)
             }
         }
         val jvmTest by getting {
@@ -184,7 +176,7 @@ kotlin {
         val nativeCommonTest by creating {
             dependsOn(commonTest)
             dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:3.4.0")
+                implementation(libs.korlibs.korio)
             }
         }
 
@@ -396,4 +388,4 @@ val String.arch: String
     }
 
 fun libcblitePath(os: String, arch: String): String =
-    "libs/libcblite/$os/$arch/libcblite-3.0.2"//$cblVersion"
+    "libs/libcblite/$os/$arch/libcblite-${libs.versions.couchbase.lite.c.get()}"
