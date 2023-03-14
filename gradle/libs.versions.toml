@@ -1,7 +1,7 @@
 [versions]
 couchbase-lite-java = "3.0.5"
 couchbase-lite-objc = "3.0.2"
-couchbase-lite-c = "3.0.2"
+couchbase-lite-c = "3.0.10"
 kotlinx-coroutines = "1.6.4"
 mockk = "1.12.5"
 
