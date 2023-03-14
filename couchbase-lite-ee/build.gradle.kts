@@ -25,6 +25,11 @@ kotlin {
     explicitApiWarning()
 
     android {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
         publishLibraryVariants("release")
     }
     jvm()
@@ -283,11 +288,6 @@ android {
     defaultConfig {
         minSdk = 22
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
