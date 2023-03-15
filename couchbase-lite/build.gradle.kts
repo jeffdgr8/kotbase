@@ -20,12 +20,9 @@ plugins {
 kotlin {
     explicitApiWarning()
 
+    jvmToolchain(8)
+
     android {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
         publishLibraryVariants("release")
     }
     jvm()
