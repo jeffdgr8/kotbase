@@ -646,7 +646,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         kotlinx.coroutines.test.runTest(testBody = testBody)
         // Occasionally hangs on iOS without this delay
         // https://kotlinlang.slack.com/archives/C1CFAFJSK/p1669167000879859
-        runBlocking { delay(1) }
+        runBlocking { delay(10) }
     }
 
     @Test
