@@ -1,5 +1,6 @@
 @file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
+import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
@@ -68,7 +69,9 @@ kotlin {
         if (!konanTarget.family.isAppleFamily) {
             val libraryPath = "${konanTarget.libcblitePath}/${konanTarget.libcbliteLib}"
             if (konanTarget.family == Family.LINUX) {
-                binaries.getTest(DEBUG).linkerOpts += listOf("-L$libraryPath", "-lcblite", "-rpath", libraryPath)
+                binaries.getTest(DEBUG).linkerOpts += listOf(
+                    "-L$libraryPath", "-lcblite", "-rpath", libraryPath
+                )
             }
         }
         if (konanTarget.family != Family.MINGW) {
@@ -235,7 +238,7 @@ if (System.getProperty("os.name") == "Linux") {
 tasks.withType<KotlinNativeTest> {
     val dir = name.substring(0, name.lastIndex - 3)
     dependsOn(
-        tasks.register<Copy>("copy${name.capitalize()}Resources") {
+        tasks.register<Copy>("copy${name.capitalized()}Resources") {
             from("src/commonTest/resources")
             into("build/bin/$dir/debugTest")
         }
