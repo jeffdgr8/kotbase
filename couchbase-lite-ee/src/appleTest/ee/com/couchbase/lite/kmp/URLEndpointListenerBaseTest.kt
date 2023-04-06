@@ -1,7 +1,6 @@
 package com.couchbase.lite.kmp
 
 import cocoapods.CouchbaseLite.kCBLCertAttrCommonName
-import com.soywiz.kmem.Platform
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
@@ -26,7 +25,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
 
     val isHostApp: Boolean
         get() {
-            return if (Platform.os.isIos) {
+            return if (Platform.osFamily == OsFamily.IOS) {
                 val defaults = NSUserDefaults.standardUserDefaults
                 defaults.boolForKey("hostApp")
             } else {
@@ -36,7 +35,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
 
     val keyChainAccessAllowed: Boolean
         get() {
-            return if (Platform.os.isIos) {
+            return if (Platform.osFamily == OsFamily.IOS) {
                 isHostApp
             } else {
                 true
