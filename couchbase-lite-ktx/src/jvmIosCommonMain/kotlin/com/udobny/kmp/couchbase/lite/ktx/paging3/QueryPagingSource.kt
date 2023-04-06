@@ -27,8 +27,8 @@ import app.cash.paging.PagingSource
 import com.couchbase.lite.kmp.Database
 import com.couchbase.lite.kmp.ListenerToken
 import com.couchbase.lite.kmp.Query
-import com.udobny.kmp.IO
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlin.coroutines.CoroutineContext
 import kotlin.properties.Delegates
 

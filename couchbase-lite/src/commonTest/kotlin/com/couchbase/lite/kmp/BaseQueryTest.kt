@@ -1,8 +1,8 @@
 package com.couchbase.lite.kmp
 
-import com.udobny.kmp.use
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalStdlibApi::class)
 abstract class BaseQueryTest : BaseDbTest() {
 
     fun interface QueryResult {

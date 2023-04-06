@@ -5,7 +5,6 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.asJSON
 import com.couchbase.lite.kmp.internal.utils.Report
 import com.couchbase.lite.kmp.internal.utils.paddedString
-import com.udobny.kmp.use
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
@@ -19,6 +18,7 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalStdlibApi::class)
 class QueryTest : BaseQueryTest() {
 
     private class MathFn(val name: String, val expr: Expression, val expected: Double)

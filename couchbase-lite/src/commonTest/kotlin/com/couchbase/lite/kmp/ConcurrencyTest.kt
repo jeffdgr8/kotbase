@@ -2,7 +2,6 @@ package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.utils.Report
 import com.couchbase.lite.kmp.internal.utils.paddedString
-import com.udobny.kmp.use
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
@@ -10,6 +9,7 @@ import kotlinx.datetime.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalStdlibApi::class)
 class ConcurrencyTest : BaseDbTest() {
 
     internal fun interface Callback {

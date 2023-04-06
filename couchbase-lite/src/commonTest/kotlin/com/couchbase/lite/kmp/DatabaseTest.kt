@@ -5,13 +5,13 @@ import com.couchbase.lite.kmp.internal.utils.TestUtils
 import com.couchbase.lite.kmp.internal.utils.paddedString
 import com.couchbase.lite.kmp.internal.utils.getParentDir
 import com.udobny.kmp.test.IgnoreNative
-import com.udobny.kmp.use
 import kotlin.test.*
 
 // The rules in this test are:
 // baseTestDb is managed by the superclass
 // If a test opens a new database it guarantee that it is deleted.
 // If a test opens a copy of the baseTestDb, it must close (but NOT delete)
+@OptIn(ExperimentalStdlibApi::class)
 class DatabaseTest : BaseDbTest() {
 
     //---------------------------------------------

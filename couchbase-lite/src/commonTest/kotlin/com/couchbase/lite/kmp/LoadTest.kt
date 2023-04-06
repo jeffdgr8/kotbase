@@ -3,7 +3,6 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.kmp.internal.utils.PlatformUtils
 import com.couchbase.lite.kmp.internal.utils.Report
 import com.couchbase.lite.kmp.internal.utils.paddedString
-import com.udobny.kmp.use
 import kotlinx.atomicfu.atomic
 import kotlinx.datetime.Clock
 import kotlin.test.*
@@ -16,6 +15,7 @@ private fun interface Verifier {
 }
 
 // Timings were chosen to allow a Nexus 6 running Android 7.0 to pass.
+@OptIn(ExperimentalStdlibApi::class)
 class LoadTest : BaseDbTest() {
 
     @Test

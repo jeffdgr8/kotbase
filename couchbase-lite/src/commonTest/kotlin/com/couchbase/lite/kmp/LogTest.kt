@@ -9,9 +9,9 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrows
 import com.couchbase.lite.reset
 import com.udobny.kmp.test.AfterClass
-import com.udobny.kmp.use
 import kotlin.test.*
 
+@OptIn(ExperimentalStdlibApi::class)
 class LogTest : BaseDbTest() {
 
 //    private class SingleLineLogger(private val prefix: String?) : Logger {

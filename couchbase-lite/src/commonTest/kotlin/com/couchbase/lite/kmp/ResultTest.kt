@@ -3,11 +3,11 @@ package com.couchbase.lite.kmp
 import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrows
 import com.udobny.kmp.ArrayIndexOutOfBoundsException
 import com.udobny.kmp.ext.toStringMillis
-import com.udobny.kmp.use
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
 
+@OptIn(ExperimentalStdlibApi::class)
 class ResultTest : BaseQueryTest() {
 
     @Test

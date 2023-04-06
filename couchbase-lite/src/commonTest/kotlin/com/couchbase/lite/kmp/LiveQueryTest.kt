@@ -1,6 +1,5 @@
 package com.couchbase.lite.kmp
 
-import com.udobny.kmp.use
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
@@ -13,6 +12,7 @@ import kotlin.test.assertFailsWith
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalStdlibApi::class)
 class LiveQueryTest : BaseDbTest() {
 
     /**
