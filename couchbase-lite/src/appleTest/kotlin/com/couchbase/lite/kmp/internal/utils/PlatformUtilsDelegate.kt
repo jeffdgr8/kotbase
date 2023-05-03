@@ -1,7 +1,8 @@
 package com.couchbase.lite.kmp.internal.utils
 
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import okio.Source
-import okio.source
 import platform.Foundation.*
 import kotlin.native.internal.GC
 
@@ -13,11 +14,11 @@ actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
 
     override fun getAsset(asset: String): Source? {
         val dotIndex = asset.lastIndexOf('.')
-        val filePath = asset.substring(0, dotIndex)
-        val ext = asset.substring(dotIndex + 1)
+        val name = asset.substring(0, dotIndex)
+        val type = asset.substring(dotIndex + 1)
         val path = NSBundle.mainBundle
-            .pathForResource(filePath, ext)
+            .pathForResource(name, type)
             ?: return null
-        return NSInputStream(NSURL(fileURLWithPath = path)).source()
+        return FileSystem.SYSTEM.source(path.toPath())
     }
 }
