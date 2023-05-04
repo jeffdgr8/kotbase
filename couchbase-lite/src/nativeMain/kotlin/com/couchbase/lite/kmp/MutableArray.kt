@@ -340,7 +340,7 @@ internal constructor(
 
     private fun insertAt(index: Int) {
         checkInsertIndex(index)
-        FLMutableArray_Insert(actual, index.convert(), 1)
+        FLMutableArray_Insert(actual, index.convert(), 1.convert())
         incrementAfter(index, collectionMap)
         incrementAfter(index, unsavedBlobs)
     }
@@ -429,7 +429,7 @@ internal constructor(
 
     public actual fun remove(index: Int): MutableArray {
         checkIndex(index)
-        FLMutableArray_Remove(actual, index.convert(), 1)
+        FLMutableArray_Remove(actual, index.convert(), 1.convert())
         removeInternal(index)
         return this
     }

@@ -33,7 +33,7 @@ actual abstract class PlatformTest {
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         dispatch_after(
             dispatch_time(DISPATCH_TIME_NOW, delayMs),
-            dispatch_get_global_queue(QOS_CLASS_DEFAULT.convert(), 0),
+            dispatch_get_global_queue(QOS_CLASS_DEFAULT.convert(), 0.convert()),
             task
         )
     }
