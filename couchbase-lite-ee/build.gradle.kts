@@ -160,10 +160,6 @@ kotlin {
                 api(libs.couchbase.lite.android.ee)
             }
         }
-        val androidUnitTest by getting {
-            // TODO: hack no longer works in Kotlin 1.8, proposed fix for 1.9
-            //(dependsOn as MutableSet).remove(commonTest)
-        }
         val androidInstrumentedTest by getting {
             dependsOn(jvmCommonTest)
             // TODO: doesn't work, so using a symlink
