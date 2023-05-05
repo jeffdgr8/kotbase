@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package app.cash.paging
+/*
+ * Copied from https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:paging/paging-runtime/src/main/java/androidx/paging/NullPaddedListDiffHelper.kt
+ * Modified by Jeff Lockhart
+ *
+ * - Use Multiplatform Paging
+ */
 
-import app.cash.paging.DiffingChangePayload.ITEM_TO_PLACEHOLDER
-import app.cash.paging.DiffingChangePayload.PLACEHOLDER_POSITION_CHANGE
-import app.cash.paging.DiffingChangePayload.PLACEHOLDER_TO_ITEM
+package androidx.paging
+
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
+import app.cash.paging.DiffingChangePayload.ITEM_TO_PLACEHOLDER
+import app.cash.paging.DiffingChangePayload.PLACEHOLDER_POSITION_CHANGE
+import app.cash.paging.DiffingChangePayload.PLACEHOLDER_TO_ITEM
+import app.cash.paging.NullPaddedList
 
 /**
  * Methods for computing and applying DiffResults between PagedLists.

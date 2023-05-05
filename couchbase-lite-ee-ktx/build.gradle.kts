@@ -105,7 +105,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.paging)
-                implementation(libs.stately.concurrency)
+                implementation(libs.kotlinx.atomicfu)
             }
         }
 

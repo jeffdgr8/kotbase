@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-@file:Suppress("OPTIONAL_DECLARATION_USAGE_IN_NON_COMMON_SOURCE")
+/*
+ * Copied from https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:paging/paging-runtime/src/main/java/androidx/paging/AsyncPagingDataDiffer.kt
+ * Modified by Jeff Lockhart
+ *
+ * - Use Multiplatform Paging
+ * - Replace JVM AtomicInteger
+ * - Removed Android-specific functions and annotations
+ */
 
-package app.cash.paging
+package androidx.paging
 
-import app.cash.paging.LoadType.REFRESH
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
-import co.touchlab.stately.concurrency.AtomicInt
-import kotlin.jvm.JvmOverloads
+import app.cash.paging.CombinedLoadStates
+import app.cash.paging.DifferCallback
+import app.cash.paging.ItemSnapshotList
+import app.cash.paging.LoadType.REFRESH
+import app.cash.paging.NullPaddedList
+import app.cash.paging.PagingData
+import app.cash.paging.PagingDataDiffer
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlin.jvm.JvmOverloads
 
 /**
  * Helper class for mapping a [PagingData] into a
@@ -118,7 +131,7 @@ class AsyncPagingDataDiffer<T : Any> @JvmOverloads constructor(
         }
     }
 
-    private val submitDataId = AtomicInt(0)
+    private val submitDataId = atomic(0)
 
     /**
      * Present a [PagingData] until it is invalidated by a call to [refresh] or

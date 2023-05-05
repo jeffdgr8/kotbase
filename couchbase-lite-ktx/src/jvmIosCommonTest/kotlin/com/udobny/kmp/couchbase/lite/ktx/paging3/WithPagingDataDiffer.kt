@@ -23,7 +23,7 @@
 
 package com.udobny.kmp.couchbase.lite.ktx.paging3
 
-import app.cash.paging.AsyncPagingDataDiffer
+import androidx.paging.AsyncPagingDataDiffer
 import app.cash.paging.PagingData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback

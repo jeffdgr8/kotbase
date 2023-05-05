@@ -15,15 +15,17 @@
  */
 
 /*
+ * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonMain/kotlin/app/cash/sqldelight/paging3/OffsetQueryPagingSource.kt
  * Modified by Jeff Lockhart
  *
  * - Replace SQLDelight database with Couchbase Lite KMP
- * - Replace AndroidX Paging with Multiplatform Paging
  */
 
 @file:Suppress(
-    "USELESS_IS_CHECK", "CAST_NEVER_SUCCEEDS",
-    "NOTHING_TO_OVERRIDE", "ABSTRACT_CLASS_MEMBER_NOT_IMPLEMENTED"
+    "USELESS_IS_CHECK",
+    "CAST_NEVER_SUCCEEDS",
+    "NOTHING_TO_OVERRIDE",
+    "ABSTRACT_CLASS_MEMBER_NOT_IMPLEMENTED"
 )
 
 package com.udobny.kmp.couchbase.lite.ktx.paging3

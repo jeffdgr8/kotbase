@@ -129,6 +129,7 @@ kotlin {
                 api(libs.kotlinx.coroutines.core)
                 api(libs.kotlinx.datetime)
                 api(libs.okio)
+                implementation(libs.kotlinx.atomicfu)
             }
         }
         val commonTest by getting {
@@ -136,7 +137,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.kotlinx.serialization.json)
-                implementation(libs.kotlinx.atomicfu)
             }
         }
 

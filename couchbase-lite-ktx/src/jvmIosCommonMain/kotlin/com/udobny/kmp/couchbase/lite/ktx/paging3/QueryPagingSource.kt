@@ -15,10 +15,10 @@
  */
 
 /*
+ * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonMain/kotlin/app/cash/sqldelight/paging3/QueryPagingSource.kt
  * Modified by Jeff Lockhart
  *
  * - Replace SQLDelight database with Couchbase Lite KMP
- * - Replace AndroidX Paging with Multiplatform Paging
  */
 
 package com.udobny.kmp.couchbase.lite.ktx.paging3
