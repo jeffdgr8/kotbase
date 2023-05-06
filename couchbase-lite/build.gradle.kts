@@ -1,6 +1,8 @@
 @file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
 import org.gradle.configurationcache.extensions.capitalized
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.KotlinTargetHierarchy.SourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
@@ -23,9 +25,15 @@ kotlin {
 
     jvmToolchain(8)
 
-    android {
+    androidTarget {
         publishLibraryVariants("release")
     }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    targetHierarchy.android {
+        instrumentedTest.sourceSetTree.set(SourceSetTree.test)
+        unitTest.sourceSetTree.set(SourceSetTree.unitTest)
+    }
+
     jvm()
     ios()
     iosSimulatorArm64()
