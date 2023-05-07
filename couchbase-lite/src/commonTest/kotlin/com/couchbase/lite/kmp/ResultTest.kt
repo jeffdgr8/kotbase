@@ -1,7 +1,6 @@
 package com.couchbase.lite.kmp
 
 import com.couchbase.lite.kmp.internal.utils.TestUtils.assertThrows
-import com.udobny.kmp.ArrayIndexOutOfBoundsException
 import com.udobny.kmp.ext.toStringMillis
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -65,9 +64,9 @@ class ResultTest : BaseQueryTest() {
                 assertTrue(r.getValue(11) is Blob)
                 assertNull(r.getValue(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getValue(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getValue(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getValue(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getValue(100) }
             }
 
             assertEquals(1, rows)
@@ -127,9 +126,9 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getString(11))
                 assertNull(r.getString(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getString(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getString(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getString(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getString(100) }
             }
 
             assertEquals(1, rows)
@@ -189,9 +188,9 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getNumber(11))
                 assertNull(r.getNumber(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getNumber(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getNumber(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getNumber(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getNumber(100) }
             }
 
             assertEquals(1, rows)
@@ -253,9 +252,9 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0, r.getInt(11))
                 assertEquals(0, r.getInt(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getInt(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getInt(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getInt(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getInt(100) }
             }
 
             assertEquals(1, rows)
@@ -317,9 +316,9 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0, r.getLong(11))
                 assertEquals(0, r.getLong(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getLong(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getLong(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getLong(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getLong(100) }
             }
 
             assertEquals(1, rows)
@@ -381,9 +380,9 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0.0f, r.getFloat(11), 0.0f)
                 assertEquals(0.0f, r.getFloat(12), 0.0f)
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getFloat(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getFloat(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getFloat(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getFloat(100) }
             }
 
             assertEquals(1, rows)
@@ -445,9 +444,9 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0.0, r.getDouble(11), 0.0)
                 assertEquals(0.0, r.getDouble(12), 0.0)
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getDouble(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getDouble(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getDouble(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getDouble(100) }
             }
 
             assertEquals(1, rows)
@@ -509,9 +508,9 @@ class ResultTest : BaseQueryTest() {
                 assertTrue(r.getBoolean(11))
                 assertFalse(r.getBoolean(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getBoolean(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getBoolean(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getBoolean(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getBoolean(100) }
             }
 
             assertEquals(1, rows)
@@ -573,9 +572,9 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getDate(11))
                 assertNull(r.getDate(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getDate(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getDate(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getDate(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getDate(100) }
             }
 
             assertEquals(1, rows)
@@ -639,9 +638,9 @@ class ResultTest : BaseQueryTest() {
                 assertContentEquals(BLOB_CONTENT.encodeToByteArray(), r.getBlob(11)?.content)
                 assertNull(r.getBlob(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getBlob(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getBlob(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getBlob(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getBlob(100) }
             }
 
             assertEquals(1, rows)
@@ -715,9 +714,9 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getDictionary(11))
                 assertNull(r.getDictionary(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getDictionary(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getDictionary(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getDictionary(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getDictionary(100) }
             }
 
             assertEquals(1, rows)
@@ -783,9 +782,9 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getArray(11))
                 assertNull(r.getArray(12))
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getArray(-1) }
+                assertThrows<IndexOutOfBoundsException> { r.getArray(-1) }
 
-                assertThrows<ArrayIndexOutOfBoundsException> { r.getArray(100) }
+                assertThrows<IndexOutOfBoundsException> { r.getArray(100) }
             }
 
             assertEquals(1, rows)

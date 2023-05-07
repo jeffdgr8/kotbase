@@ -163,7 +163,7 @@ private constructor(
 
     private fun assertInBounds(index: Int) {
         if (!isInBounds(index)) {
-            throw ArrayIndexOutOfBoundsException("index $index must be between 0 and $count")
+            throw IndexOutOfBoundsException("index $index must be between 0 and $count")
         }
     }
 }
