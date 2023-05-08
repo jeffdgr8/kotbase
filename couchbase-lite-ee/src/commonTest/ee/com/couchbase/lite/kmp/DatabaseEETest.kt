@@ -65,7 +65,7 @@ class DatabaseEETest : BaseReplicatorTest() {
     private fun startReplicator(replicator: Replicator, idleMutex: Mutex, stoppedMutex: Mutex) {
         replicator.addChangeListener { change ->
             when (change.status.activityLevel) {
-                ReplicatorActivityLevel.IDLE -> idleMutex.unlock()
+                ReplicatorActivityLevel.IDLE -> if (idleMutex.isLocked) idleMutex.unlock()
                 ReplicatorActivityLevel.STOPPED -> stoppedMutex.unlock()
                 else -> {}
             }
