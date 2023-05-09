@@ -27,8 +27,8 @@ class ConcurrencyTest : BaseDbTest() {
         testFailure.value = null
     }
 
-    // native C fails sometimes
-    // kotlin.AssertionError: Expected <50>, actual <49>.
+    // TODO: native C fails sometimes
+    //  kotlin.AssertionError: Expected <50>, actual <49>.
     @Test
     fun testConcurrentCreate() = runBlocking {
         Database.log.console.level = LogLevel.DEBUG
