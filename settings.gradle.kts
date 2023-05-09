@@ -12,3 +12,5 @@ include(":couchbase-lite")
 include(":couchbase-lite-ktx")
 include(":couchbase-lite-ee")
 include(":couchbase-lite-ee-ktx")
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

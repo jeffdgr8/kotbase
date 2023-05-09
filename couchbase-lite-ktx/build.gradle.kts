@@ -88,7 +88,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":couchbase-lite"))
+                api(projects.couchbaseLite)
                 api(libs.kotlinx.coroutines.core)
             }
         }
@@ -318,4 +318,4 @@ val String.arch: String
     }
 
 fun libcblitePath(os: String, arch: String): String =
-    "${project(":couchbase-lite").projectDir}/libs/libcblite/$os/$arch/libcblite-${libs.versions.couchbase.lite.c.get()}"
+    "${projects.couchbaseLite.dependencyProject.projectDir}/libs/libcblite/$os/$arch/libcblite-${libs.versions.couchbase.lite.c.get()}"
