@@ -268,6 +268,13 @@ kotlin {
         val mingwX64Test by getting {
             dependsOn(nativeTest)
         }
+
+        all {
+            // Native C interop APIs are considered experimental and may change with better designed and
+            // documented alternatives in the future https://youtrack.jetbrains.com/issue/KT-57728
+            languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")
+            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
     }
 }
 
