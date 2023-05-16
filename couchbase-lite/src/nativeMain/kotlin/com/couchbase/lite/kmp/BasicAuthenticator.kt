@@ -17,7 +17,6 @@ actual constructor(
     override val actual: CPointer<CBLAuthenticator> =
         CBLAuth_CreatePassword(username.toFLString(), password.concatToString().toFLString())!!
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLAuth_Free(it)

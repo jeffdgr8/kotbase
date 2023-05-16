@@ -173,7 +173,6 @@ internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration)
         return this
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         with(it) {

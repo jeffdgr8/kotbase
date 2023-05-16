@@ -18,7 +18,6 @@ internal constructor(
         FLDict_Retain(actual)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         FLDict_Release(it)

@@ -12,7 +12,6 @@ internal constructor(
     public actual val database: Database
 ) : Endpoint {
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLEndpoint_Free(it)

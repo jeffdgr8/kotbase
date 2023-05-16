@@ -11,7 +11,6 @@ import com.couchbase.lite.reset
 import com.udobny.kmp.test.AfterClass
 import kotlin.test.*
 
-@OptIn(ExperimentalStdlibApi::class)
 class LogTest : BaseDbTest() {
 
 //    private class SingleLineLogger(private val prefix: String?) : Logger {

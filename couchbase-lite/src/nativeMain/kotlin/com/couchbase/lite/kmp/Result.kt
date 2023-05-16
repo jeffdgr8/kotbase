@@ -41,7 +41,6 @@ private constructor(
         FLDict_Retain(dict)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         CBLQuery_Release(it.query)

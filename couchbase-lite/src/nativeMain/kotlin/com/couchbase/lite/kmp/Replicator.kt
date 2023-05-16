@@ -16,7 +16,6 @@ private constructor(
     private val immutableConfig: ImmutableReplicatorConfiguration
 ) {
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLReplicator_Release(it)

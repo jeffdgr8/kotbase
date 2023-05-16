@@ -15,7 +15,6 @@ private fun interface Verifier {
 }
 
 // Timings were chosen to allow a Nexus 6 running Android 7.0 to pass.
-@OptIn(ExperimentalStdlibApi::class)
 class LoadTest : BaseDbTest() {
 
     @Test

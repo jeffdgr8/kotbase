@@ -14,7 +14,6 @@ internal constructor(actual: CPointer<CBLEncryptionKey>? = null) {
 
     private val arena = Arena()
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(arena) {
         it.clear()

@@ -21,7 +21,6 @@ internal constructor(
     private val _config: DatabaseConfiguration
 ) {
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLDatabase_Release(it)

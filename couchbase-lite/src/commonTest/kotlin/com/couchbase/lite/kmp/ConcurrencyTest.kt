@@ -9,7 +9,6 @@ import kotlinx.datetime.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalStdlibApi::class)
 class ConcurrencyTest : BaseDbTest() {
 
     internal fun interface Callback {

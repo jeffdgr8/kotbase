@@ -28,7 +28,6 @@ internal constructor(
 
     internal open val actual: CPointer<CBLDocument> = actual
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         CBLDocument_Release(it.actual)

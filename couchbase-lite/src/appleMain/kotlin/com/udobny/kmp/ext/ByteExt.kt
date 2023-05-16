@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalUnsignedTypes::class)
-
 package com.udobny.kmp.ext
 
 import kotlinx.cinterop.*

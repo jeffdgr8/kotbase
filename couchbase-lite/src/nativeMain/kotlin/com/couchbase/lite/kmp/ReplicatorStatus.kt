@@ -9,7 +9,6 @@ public actual class ReplicatorStatus {
 
     private val arena = Arena()
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(arena) {
         it.clear()

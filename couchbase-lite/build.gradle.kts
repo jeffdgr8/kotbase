@@ -270,10 +270,12 @@ kotlin {
         }
 
         all {
-            // Native C interop APIs are considered experimental and may change with better designed and
-            // documented alternatives in the future https://youtrack.jetbrains.com/issue/KT-57728
-            languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")
-            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            languageSettings {
+                optIn("kotlin.ExperimentalStdlibApi")
+                optIn("kotlin.ExperimentalUnsignedTypes")
+                optIn("kotlinx.cinterop.BetaInteropApi")
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            }
         }
     }
 }

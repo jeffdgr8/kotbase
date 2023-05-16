@@ -20,7 +20,6 @@ actual constructor(
             (cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME).toFLString()
         )!!
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLAuth_Free(it)

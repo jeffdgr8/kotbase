@@ -6,7 +6,6 @@ import kotlinx.cinterop.CPointer
 import libcblite.*
 import kotlin.native.internal.createCleaner
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual class ResultSet
 internal constructor(
     private val actual: CPointer<CBLResultSet>,
@@ -18,7 +17,6 @@ internal constructor(
         val actual = this@ResultSet.actual
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         if (!it.closeCalled) {

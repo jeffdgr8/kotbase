@@ -23,7 +23,6 @@ public actual constructor(config: DatabaseConfiguration?) {
         val actual = this@DatabaseConfiguration.actual
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         free(it.actual.pointed.directory.buf)

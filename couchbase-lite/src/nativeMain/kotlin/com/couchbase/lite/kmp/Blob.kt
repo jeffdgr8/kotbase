@@ -32,7 +32,6 @@ private constructor(
         var actual: CPointer<CBLBlob>? = actual
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         CBLBlob_Release(it.actual)
@@ -240,7 +239,6 @@ private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : So
         val actual = this@BlobReadStreamSource.actual
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         if (!it.closeCalled) {
