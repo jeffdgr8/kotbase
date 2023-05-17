@@ -35,7 +35,9 @@ allprojects {
         }
     }
 
-    // Note transformCommonMainDependenciesMetadata needs to be run first before publishToMavenLocal
+    // TODO: Report this if it's still a bug in 1.9.0-RC
+    // Note in Kotlin 1.9.0-Beta-152 (1.8.21 works without this)
+    // transformCommonMainDependenciesMetadata needs to be run first before publishToMavenLocal
     // and even still, paging modules are missing a file generated in other modules
     // build/kotlinTransformedCInteropMetadataLibraries/iosMain/.couchbase-lite-paging-iosMain.cinteropLibraries
     // copy from ktx modules and fix file path, then publishToMavenLocal will succeed
