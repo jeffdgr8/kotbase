@@ -1,3 +1,8 @@
+@file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
+
+import org.jetbrains.dokka.gradle.AbstractDokkaTask
+import org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask
+
 plugins {
     kotlin("multiplatform") version "1.9.0-Beta-152" apply false
     id("org.jetbrains.dokka") version "1.8.10" apply false
@@ -16,6 +21,24 @@ allprojects {
     val cblVersion = rootProject.libs.versions.couchbase.lite.java.get()
     val kmpVersion = property("VERSION") as String
     version = "$cblVersion-$kmpVersion"
+
+    // Workaround for https://github.com/Kotlin/dokka/issues/2977.
+    // We disable the C Interop IDE metadata task when generating documentation using Dokka.
+    gradle.taskGraph.whenReady {
+        val hasDokkaTasks = allTasks.any {
+            it is AbstractDokkaTask
+        }
+        if (hasDokkaTasks) {
+            tasks.withType<CInteropMetadataDependencyTransformationTask>().configureEach {
+                enabled = false
+            }
+        }
+    }
+
+    // Note transformCommonMainDependenciesMetadata needs to be run first before publishToMavenLocal
+    // and even still, paging modules are missing a file generated in other modules
+    // build/kotlinTransformedCInteropMetadataLibraries/iosMain/.couchbase-lite-paging-iosMain.cinteropLibraries
+    // copy from ktx modules and fix file path, then publishToMavenLocal will succeed
 }
 
 tasks.register("clean", Delete::class) {
