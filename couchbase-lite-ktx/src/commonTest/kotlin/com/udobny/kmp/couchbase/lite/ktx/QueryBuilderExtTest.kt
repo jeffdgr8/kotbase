@@ -4,6 +4,7 @@ import com.couchbase.lite.kmp.*
 import com.couchbase.lite.kmp.Function
 import com.molo17.couchbase.lite.kmp.all
 import com.molo17.couchbase.lite.kmp.from
+import com.udobny.kmp.couchbase.lite.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

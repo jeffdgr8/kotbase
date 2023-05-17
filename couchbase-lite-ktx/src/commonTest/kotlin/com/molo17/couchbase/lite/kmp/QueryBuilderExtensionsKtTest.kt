@@ -28,7 +28,7 @@ import com.couchbase.lite.kmp.Expression
 import com.couchbase.lite.kmp.Ordering
 import com.couchbase.lite.kmp.QueryBuilder
 import com.couchbase.lite.kmp.SelectResult
-import com.udobny.kmp.couchbase.lite.ktx.BaseTest
+import com.udobny.kmp.couchbase.lite.BaseTest
 import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.test.assertEquals

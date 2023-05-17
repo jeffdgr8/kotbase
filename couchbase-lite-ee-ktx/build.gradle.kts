@@ -42,13 +42,6 @@ kotlin {
     macosX64()
     macosArm64()
     linuxX64()
-    // TODO: kotlinx atomicfu, datetime, and coroutines don't support arm64 or armhf
-    //  https://github.com/Kotlin/kotlinx.atomicfu/pull/193
-    //  https://github.com/Kotlin/kotlinx-datetime/issues/75
-    //  https://github.com/Kotlin/kotlinx.coroutines/issues/855
-    //  https://github.com/square/okio/issues/1006
-    //linuxArm64()
-    //linuxArm32Hfp()
     mingwX64()
 
     cocoapods {
@@ -65,11 +58,7 @@ kotlin {
         }
         pod("CouchbaseLite-Enterprise") {
             version = libs.versions.couchbase.lite.objc.get()
-            moduleName = "CouchbaseLite"
-            packageName = "cocoapods.CouchbaseLite"
-            // Workaround for 'CBLQueryMeta' is going to be declared twice
-            // https://youtrack.jetbrains.com/issue/KT-41709
-            extraOpts = listOf("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")
+            linkOnly = true
         }
     }
 
@@ -98,30 +87,12 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(libs.kotlin.test)
-            }
-        }
-
-        val jvmIosCommonMain by creating {
-            dependsOn(commonMain)
-            dependencies {
-                compileOnly(libs.paging)
-            }
-        }
-        val jvmIosCommonTest by creating {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(libs.kotlinx.coroutines.test)
-                implementation(libs.paging)
-                implementation(libs.kotlinx.atomicfu)
+                implementation(projects.testingSupportEe)
             }
         }
 
         val jvmCommonTest by creating {
-            dependsOn(jvmIosCommonTest)
-        }
-        val jvmMain by getting {
-            dependsOn(jvmIosCommonMain)
+            dependsOn(commonTest)
         }
         val jvmTest by getting {
             dependsOn(jvmCommonTest)
@@ -130,16 +101,13 @@ kotlin {
             }
         }
         val androidMain by getting {
-            dependsOn(jvmIosCommonMain)
             dependencies {
                 compileOnly(libs.androidx.lifecycle.runtime.ktx)
             }
         }
         val androidInstrumentedTest by getting {
             dependsOn(jvmCommonTest)
-            dependsOn(jvmIosCommonTest)
             dependencies {
-                implementation(libs.androidx.test.core.ktx)
                 implementation(libs.androidx.test.runner)
                 implementation(libs.mockk.android)
             }
@@ -153,15 +121,9 @@ kotlin {
             dependsOn(nativeCommonTest)
         }
 
-        val iosMain by getting {
-            dependsOn(jvmIosCommonMain)
-            dependencies {
-                implementation(libs.paging)
-            }
-        }
+        val iosMain by getting
         val iosTest by getting {
             dependsOn(appleTest)
-            dependsOn(jvmIosCommonTest)
         }
         val iosSimulatorArm64Main by getting {
             dependsOn(iosMain)
@@ -183,16 +145,6 @@ kotlin {
         val linuxX64Test by getting {
             dependsOn(nativeTest)
         }
-        // TODO: use linux arm builds from https://github.com/danbrough/kotlinxtras/
-        //val linuxArm64Main by getting {
-        //    dependsOn(nativeTest)
-        //}
-        //val linuxArm64Test by getting {
-        //    dependsOn(nativeTest)
-        //}
-        //val linuxArm32HfpTest by getting {
-        //    dependsOn(nativeTest)
-        //}
         val mingwX64Test by getting {
             dependsOn(nativeTest)
         }

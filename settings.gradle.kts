@@ -8,10 +8,10 @@ pluginManagement {
 }
 
 rootProject.name = "couchbase-lite-kmp"
-include(":couchbase-lite")
-include(":couchbase-lite-ktx")
-include(":couchbase-lite-ee")
-include(":couchbase-lite-ee-ktx")
+include(":couchbase-lite", ":couchbase-lite-ee")
+include(":couchbase-lite-ktx", ":couchbase-lite-ee-ktx")
+include(":couchbase-lite-paging", ":couchbase-lite-ee-paging")
+include(":testing-support", ":testing-support-ee")
 
 // Add gradle module metadata to differentiate between Couchbase Lite Java and Android variants
 // Fixes false positive error in IDE in CouchbaseLite.init() in androidMain
