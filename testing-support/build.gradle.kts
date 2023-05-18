@@ -13,13 +13,11 @@ plugins {
 kotlin {
     jvmToolchain(8)
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     androidTarget {
         publishLibraryVariants("release")
-    }
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    targetHierarchy.android {
-        instrumentedTest.sourceSetTree.set(SourceSetTree.test)
-        unitTest.sourceSetTree.set(SourceSetTree.unitTest)
+        instrumentedTestVariant.sourceSetTree.set(SourceSetTree.test)
+        unitTestVariant.sourceSetTree.set(SourceSetTree.unitTest)
     }
 
     jvm()
