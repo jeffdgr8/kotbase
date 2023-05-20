@@ -46,24 +46,27 @@ abstract class CouchbaseLiteRule @Inject constructor(
     }
 }
 
+fun ComponentMetadataHandler.applyCouchbaseLiteRule(jvmLib: String, androidLib: String) {
+    withModule<CouchbaseLiteRule>(jvmLib) {
+        params(
+            TargetJvmEnvironment.STANDARD_JVM,
+            TargetJvmEnvironment.ANDROID,
+            androidLib,
+        )
+    }
+    withModule<CouchbaseLiteRule>(androidLib) {
+        params(
+            TargetJvmEnvironment.ANDROID,
+            TargetJvmEnvironment.STANDARD_JVM,
+            jvmLib,
+        )
+    }
+}
+
 dependencyResolutionManagement {
     components {
-        val cblJava = "com.couchbase.lite:couchbase-lite-java"
-        val cblAndroid = "com.couchbase.lite:couchbase-lite-android"
-        withModule<CouchbaseLiteRule>(cblJava) {
-            params(
-                TargetJvmEnvironment.STANDARD_JVM,
-                TargetJvmEnvironment.ANDROID,
-                cblAndroid,
-            )
-        }
-        withModule<CouchbaseLiteRule>(cblAndroid) {
-            params(
-                TargetJvmEnvironment.ANDROID,
-                TargetJvmEnvironment.STANDARD_JVM,
-                cblJava,
-            )
-        }
+        applyCouchbaseLiteRule("com.couchbase.lite:couchbase-lite-java", "com.couchbase.lite:couchbase-lite-android")
+        applyCouchbaseLiteRule("com.couchbase.lite:couchbase-lite-java-ee", "com.couchbase.lite:couchbase-lite-android-ee")
     }
 }
 
