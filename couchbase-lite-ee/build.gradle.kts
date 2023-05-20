@@ -17,7 +17,7 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     id("org.jetbrains.dokka")
-    id("maven-publish")
+    `maven-publish`
 }
 
 repositories {
