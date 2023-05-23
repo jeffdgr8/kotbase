@@ -2,7 +2,7 @@
 couchbase-lite-java = "3.0.5"
 couchbase-lite-objc = "3.0.2"
 couchbase-lite-c = "3.0.10"
-kotlinx-coroutines = "1.7.0"
+kotlinx-coroutines = "1.7.1"
 mockk = "1.13.3" # 1.13.4 breaks QueryExtensionKtTest on Android https://github.com/mockk/mockk/issues/1035
 
 [libraries]
@@ -14,14 +14,14 @@ couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-androi
 couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", version.ref = "couchbase-lite-java" }
 couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
 junit = { module = "junit:junit", version = "4.13.2" }
-korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.0-rc5" }
+korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.0" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.20.2" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.0" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.5.0" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.5.1" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 # TODO: https://github.com/square/okio/pull/1123

@@ -4,7 +4,7 @@ import org.jetbrains.dokka.gradle.AbstractDokkaTask
 import org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask
 
 plugins {
-    kotlin("multiplatform") version "1.9.0-Beta-201" apply false
+    kotlin("multiplatform") version "1.9.0-Beta" apply false
     id("org.jetbrains.dokka") version "1.8.10" apply false
     id("com.android.library") version "7.4.2" apply false
     id("com.louiscad.complete-kotlin") version "1.1.0"
