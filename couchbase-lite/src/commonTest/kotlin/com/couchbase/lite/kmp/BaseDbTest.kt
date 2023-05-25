@@ -2040,10 +2040,7 @@ abstract class BaseDbTest : BaseTest() {
             db
         } catch (e: IOException) {
             deleteDb(db)
-            // can't construct with cause
-            // https://youtrack.jetbrains.com/issue/KT-40728
-            // throw AssertionError("Unable to get db path", e)
-            throw AssertionError("Unable to get db path")
+            throw AssertionError("Unable to get db path", e)
         } catch (e: AssertionError) {
             deleteDb(db)
             throw e

@@ -272,10 +272,7 @@ class ConcurrencyTest : BaseDbTest() {
                 createDocs(100, "Create1")
             } catch (e: CouchbaseLiteException) {
                 if (e.domain != CBLError.Domain.CBLITE || e.code != CBLError.Code.NOT_OPEN) {
-                    // can't construct with cause
-                    // https://youtrack.jetbrains.com/issue/KT-40728
-                    //throw AssertionError("Unrecognized exception", e)
-                    throw AssertionError("Unrecognized exception")
+                    throw AssertionError("Unrecognized exception", e)
                 }
             } catch (ignore: IllegalStateException) {
                 // db not open
@@ -648,10 +645,7 @@ class ConcurrencyTest : BaseDbTest() {
     private fun checkForFailure() {
         val failure = testFailure.value
         if (failure != null) {
-            // can't construct with cause
-            // https://youtrack.jetbrains.com/issue/KT-40728
-            //throw AssertionError(failure)
-            throw failure
+            throw AssertionError(failure)
         }
     }
 
