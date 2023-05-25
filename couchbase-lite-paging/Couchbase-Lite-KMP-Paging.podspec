@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'Couchbase-Lite-KMP-Paging'
-    spec.version                  = '3.0.5-1-SNAPSHOT'
+    spec.version                  = '3.0.5-1.0.0-SNAPSHOT'
     spec.homepage                 = 'https://github.com/udobny/couchbase-lite-kmp'
     spec.source                   = { :http=> ''}
     spec.authors                  = 'Jeff Lockhart'
