@@ -26,12 +26,12 @@ package com.udobny.kmp.couchbase.lite.ktx.paging3
 
 import androidx.recyclerview.widget.DiffUtil
 import app.cash.paging.*
+import com.couchbase.lite.kmp.BaseDbTest
 import com.couchbase.lite.kmp.Meta
 import com.couchbase.lite.kmp.MutableDocument
 import com.couchbase.lite.kmp.Query
 import com.molo17.couchbase.lite.kmp.from
 import com.molo17.couchbase.lite.kmp.limit
-import com.udobny.kmp.couchbase.lite.BaseTest
 import com.udobny.kmp.couchbase.lite.ktx.select
 import com.udobny.kmp.couchbase.lite.ktx.selectCount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,7 +43,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.*
 
 @ExperimentalCoroutinesApi
-class OffsetQueryPagingSourceTest : BaseTest() {
+class OffsetQueryPagingSourceTest : BaseDbTest() {
 
     private val mapper = { json: Map<String, Any?> ->
         TestItem((json["id"] as String).toLong())
@@ -56,7 +56,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -76,7 +76,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -96,7 +96,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -111,7 +111,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -137,7 +137,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -153,7 +153,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -167,7 +167,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -183,7 +183,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -201,7 +201,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -219,7 +219,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -237,7 +237,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -260,7 +260,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -286,7 +286,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -303,7 +303,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -321,7 +321,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -344,7 +344,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -370,7 +370,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -401,7 +401,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -432,7 +432,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -477,7 +477,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -494,7 +494,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource2 = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -538,7 +538,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -558,7 +558,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource2 = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -593,7 +593,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -612,7 +612,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource2 = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -654,7 +654,7 @@ class OffsetQueryPagingSourceTest : BaseTest() {
         val pagingSource = QueryPagingSource(
             countQuery(),
             mapper,
-            database,
+            baseTestDb,
             EmptyCoroutineContext,
             ::query,
         )
@@ -663,24 +663,24 @@ class OffsetQueryPagingSourceTest : BaseTest() {
 
     private fun query(limit: Int, offset: Int): Query {
         return select(Meta.id)
-            .from(database)
+            .from(baseTestDb)
             .limit(limit, offset)
     }
 
     private fun countQuery(): Query =
-        selectCount() from database
+        selectCount() from baseTestDb
 
     private fun insertItems(items: List<TestItem> = ITEMS_LIST) {
-        database.inBatch {
+        baseTestDb.inBatch {
             items.forEach {
-                database.save(MutableDocument(it.id.toString()))
+                baseTestDb.save(MutableDocument(it.id.toString()))
             }
         }
     }
 
     private fun deleteItem(item: TestItem): Int {
-        return database.getDocument(item.id.toString())?.let { doc ->
-            database.delete(doc)
+        return baseTestDb.getDocument(item.id.toString())?.let { doc ->
+            baseTestDb.delete(doc)
             1
         } ?: 0
     }
@@ -688,8 +688,8 @@ class OffsetQueryPagingSourceTest : BaseTest() {
     private fun deleteItems(range: IntRange): Int {
         var deleted = 0
         for (id in range) {
-            database.getDocument(id.toString())?.let { doc ->
-                database.delete(doc)
+            baseTestDb.getDocument(id.toString())?.let { doc ->
+                baseTestDb.delete(doc)
                 deleted++
             }
         }

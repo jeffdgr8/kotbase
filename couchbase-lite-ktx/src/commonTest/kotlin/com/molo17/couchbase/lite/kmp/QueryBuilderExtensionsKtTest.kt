@@ -23,12 +23,12 @@
 
 package com.molo17.couchbase.lite.kmp
 
+import com.couchbase.lite.kmp.BaseDbTest
 import com.couchbase.lite.kmp.DataSource
 import com.couchbase.lite.kmp.Expression
 import com.couchbase.lite.kmp.Ordering
 import com.couchbase.lite.kmp.QueryBuilder
 import com.couchbase.lite.kmp.SelectResult
-import com.udobny.kmp.couchbase.lite.BaseTest
 import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,7 +36,7 @@ import kotlin.test.assertEquals
 /**
  * Created by Damiano Giusti on 26/03/2020.
  */
-class QueryBuilderExtensionsKtTest : BaseTest() {
+class QueryBuilderExtensionsKtTest : BaseDbTest() {
 
     ///////////////////////////////////////////////////////////////////////////
     // Projection
@@ -44,8 +44,8 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
 
     @Test
     fun select_all() {
-        val expected = QueryBuilder.select(SelectResult.all()).from(DataSource.database(database))
-        val actual = select(all()) from database
+        val expected = QueryBuilder.select(SelectResult.all()).from(DataSource.database(baseTestDb))
+        val actual = select(all()) from baseTestDb
         assertEquals(expected.explain(), actual.explain())
     }
 
@@ -56,8 +56,8 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
                 SelectResult.property("name"),
                 SelectResult.property("age")
             )
-            .from(DataSource.database(database))
-        val actual = select("name", "age") from database
+            .from(DataSource.database(baseTestDb))
+        val actual = select("name", "age") from baseTestDb
         assertEquals(expected.explain(), actual.explain())
     }
 
@@ -68,62 +68,62 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
     @Test
     fun select_all_where_equalTo() {
         val expected = singleSelectionWhere("type", Expression.string("user"), Expression::equalTo)
-        val actual = select(all()) from database where { "type" equalTo "user" }
+        val actual = select(all()) from baseTestDb where { "type" equalTo "user" }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_notEqualTo() {
         val expected = singleSelectionWhere("type", Expression.string("user"), Expression::notEqualTo)
-        val actual = select(all()) from database where { "type" notEqualTo "user" }
+        val actual = select(all()) from baseTestDb where { "type" notEqualTo "user" }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_lessThan() {
         val expected = singleSelectionWhere("age", Expression.intValue(40), Expression::lessThan)
-        val actual = select(all()) from database where { "age" lessThan 40 }
+        val actual = select(all()) from baseTestDb where { "age" lessThan 40 }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_lessThanOrEqualTo() {
         val expected = singleSelectionWhere("age", Expression.intValue(40), Expression::lessThanOrEqualTo)
-        val actual = select(all()) from database where { "age" lessThanOrEqualTo 40 }
+        val actual = select(all()) from baseTestDb where { "age" lessThanOrEqualTo 40 }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_greaterThan() {
         val expected = singleSelectionWhere("age", Expression.intValue(40), Expression::greaterThan)
-        val actual = select(all()) from database where { "age" greaterThan 40 }
+        val actual = select(all()) from baseTestDb where { "age" greaterThan 40 }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_greaterThanOrEqualTo() {
         val expected = singleSelectionWhere("age", Expression.intValue(40), Expression::greaterThanOrEqualTo)
-        val actual = select(all()) from database where { "age" greaterThanOrEqualTo 40 }
+        val actual = select(all()) from baseTestDb where { "age" greaterThanOrEqualTo 40 }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_like() {
         val expected = singleSelectionWhere("name", Expression.string("dam"), Expression::like)
-        val actual = select(all()) from database where { "name" like "dam" }
+        val actual = select(all()) from baseTestDb where { "name" like "dam" }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_with_AND_condition() {
         val expected = QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(database))
+            .from(DataSource.database(baseTestDb))
             .where(
                 Expression.property("type").equalTo(Expression.string("user"))
                     .and(Expression.property("name").equalTo(Expression.string("damiano")))
             )
         val actual = select(all())
-            .from(database)
+            .from(baseTestDb)
             .where { ("type" equalTo "user") and ("name" equalTo "damiano") }
         assertEquals(expected.explain(), actual.explain())
     }
@@ -131,7 +131,7 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
     @Test
     fun select_all_where_with_two_AND_condition_joined_with_OR() {
         val expected = QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(database))
+            .from(DataSource.database(baseTestDb))
             .where(
                 Expression.property("type").equalTo(Expression.string("user"))
                     .and(Expression.property("name").equalTo(Expression.string("damiano")))
@@ -141,7 +141,7 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
                     )
             )
         val actual = select(all())
-            .from(database)
+            .from(baseTestDb)
             .where {
                 (("type" equalTo "user") and ("name" equalTo "damiano")) or
                     (("type" equalTo "pet") and ("name" equalTo "kitty"))
@@ -156,42 +156,42 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
     @Test
     fun select_all_where_equalTo_String() {
         val expected = singleSelectionWhere("type", Expression.string("user"), Expression::equalTo)
-        val actual = select(all()) from database where { "type" equalTo "user" }
+        val actual = select(all()) from baseTestDb where { "type" equalTo "user" }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_equalTo_int() {
         val expected = singleSelectionWhere("age", Expression.intValue(24), Expression::equalTo)
-        val actual = select(all()) from database where { "age" equalTo 24 }
+        val actual = select(all()) from baseTestDb where { "age" equalTo 24 }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_equalTo_long() {
         val expected = singleSelectionWhere("age", Expression.longValue(24), Expression::equalTo)
-        val actual = select(all()) from database where { "age" equalTo 24L }
+        val actual = select(all()) from baseTestDb where { "age" equalTo 24L }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_equalTo_float() {
         val expected = singleSelectionWhere("age", Expression.floatValue(24.50F), Expression::equalTo)
-        val actual = select(all()) from database where { "age" equalTo 24.50F }
+        val actual = select(all()) from baseTestDb where { "age" equalTo 24.50F }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_equalTo_double() {
         val expected = singleSelectionWhere("age", Expression.doubleValue(24.50), Expression::equalTo)
-        val actual = select(all()) from database where { "age" equalTo 24.50 }
+        val actual = select(all()) from baseTestDb where { "age" equalTo 24.50 }
         assertEquals(expected.explain(), actual.explain())
     }
 
     @Test
     fun select_all_where_equalTo_boolean() {
         val expected = singleSelectionWhere("isBorn", Expression.booleanValue(true), Expression::equalTo)
-        val actual = select(all()) from database where { "isBorn" equalTo true }
+        val actual = select(all()) from baseTestDb where { "isBorn" equalTo true }
         assertEquals(expected.explain(), actual.explain())
     }
 
@@ -199,7 +199,7 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
     fun select_all_where_equalTo_map() {
         val map = mutableMapOf<String, Any>("key" to "value")
         val expected = singleSelectionWhere("properties", Expression.map(map), Expression::equalTo)
-        val actual = select(all()) from database where { "properties" equalTo map }
+        val actual = select(all()) from baseTestDb where { "properties" equalTo map }
         assertEquals(expected.explain(), actual.explain())
     }
 
@@ -207,7 +207,7 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
     fun select_all_where_equalTo_list() {
         val list = listOf("key", "value")
         val expected = singleSelectionWhere("channels", Expression.list(list), Expression::equalTo)
-        val actual = select(all()) from database where { "channels" equalTo list }
+        val actual = select(all()) from baseTestDb where { "channels" equalTo list }
         assertEquals(expected.explain(), actual.explain())
     }
 
@@ -215,7 +215,7 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
     fun select_all_where_equalTo_date() {
         val date = Clock.System.now()
         val expected = singleSelectionWhere("channels", Expression.date(date), Expression::equalTo)
-        val actual = select(all()) from database where { "channels" equalTo date }
+        val actual = select(all()) from baseTestDb where { "channels" equalTo date }
         assertEquals(expected.explain(), actual.explain())
     }
 
@@ -228,7 +228,7 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
         val expected = singleSelectionWhere("type", Expression.string("user"), Expression::equalTo)
             .orderBy(Ordering.property("name").ascending())
         val actual = select(all())
-            .from(database)
+            .from(baseTestDb)
             .where { "type" equalTo "user" }
             .orderBy { "name".ascending() }
         assertEquals(expected.explain(), actual.explain())
@@ -239,7 +239,7 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
         val expected = singleSelectionWhere("type", Expression.string("user"), Expression::equalTo)
             .orderBy(Ordering.property("name").descending())
         val actual = select(all())
-            .from(database)
+            .from(baseTestDb)
             .where { "type" equalTo "user" }
             .orderBy { "name".descending() }
         assertEquals(expected.explain(), actual.explain())
@@ -253,7 +253,7 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
     fun select_all_where_limit() {
         val expected = singleSelectionWhere("type", Expression.string("user"), Expression::equalTo)
             .limit(Expression.intValue(1))
-        val actual = select(all()).from(database).where { "type" equalTo "user" }.limit(1)
+        val actual = select(all()).from(baseTestDb).where { "type" equalTo "user" }.limit(1)
         assertEquals(expected.explain(), actual.explain())
     }
 
@@ -263,7 +263,7 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
             .orderBy(Ordering.property("name").ascending())
             .limit(Expression.intValue(1))
         val actual = select(all())
-            .from(database)
+            .from(baseTestDb)
             .where { "type" equalTo "user" }
             .orderBy { "name".ascending() }
             .limit(1)
@@ -276,6 +276,6 @@ class QueryBuilderExtensionsKtTest : BaseTest() {
 
     private inline fun singleSelectionWhere(field: String, valueExpression: Expression, operator: Expression.(Expression) -> Expression) =
         QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(database))
+            .from(DataSource.database(baseTestDb))
             .where(Expression.property(field).operator(valueExpression))
 }

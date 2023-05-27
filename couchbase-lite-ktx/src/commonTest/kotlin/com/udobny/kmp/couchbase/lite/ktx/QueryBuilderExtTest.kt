@@ -4,11 +4,10 @@ import com.couchbase.lite.kmp.*
 import com.couchbase.lite.kmp.Function
 import com.molo17.couchbase.lite.kmp.all
 import com.molo17.couchbase.lite.kmp.from
-import com.udobny.kmp.couchbase.lite.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class QueryBuilderExtTest : BaseTest() {
+class QueryBuilderExtTest : BaseDbTest() {
 
     @Test
     fun select_expression_properties() {
@@ -16,9 +15,9 @@ class QueryBuilderExtTest : BaseTest() {
             SelectResult.expression(Meta.id),
             SelectResult.property("foo"),
             SelectResult.property("bar")
-        ).from(DataSource.database(database))
+        ).from(DataSource.database(baseTestDb))
 
-        val actual = select(Meta.id, "foo", "bar") from database
+        val actual = select(Meta.id, "foo", "bar") from baseTestDb
 
         assertEquals(expected.explain(), actual.explain())
     }
@@ -28,9 +27,9 @@ class QueryBuilderExtTest : BaseTest() {
         val expected = QueryBuilder.select(
             SelectResult.expression(Meta.id),
             SelectResult.all()
-        ).from(DataSource.database(database))
+        ).from(DataSource.database(baseTestDb))
 
-        val actual = select(Meta.id, all()) from database
+        val actual = select(Meta.id, all()) from baseTestDb
 
         assertEquals(expected.explain(), actual.explain())
     }
@@ -41,9 +40,9 @@ class QueryBuilderExtTest : BaseTest() {
             SelectResult.expression(
                 Function.count(Expression.string("*"))
             )
-        ).from(DataSource.database(database))
+        ).from(DataSource.database(baseTestDb))
 
-        val actual = selectCount() from database
+        val actual = selectCount() from baseTestDb
 
         assertEquals(expected.explain(), actual.explain())
     }

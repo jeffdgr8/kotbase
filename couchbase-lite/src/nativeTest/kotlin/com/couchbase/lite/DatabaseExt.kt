@@ -6,12 +6,6 @@ import com.couchbase.lite.kmp.internal.wrapCBLError
 import libcblite.CBLDatabase_GetBlob
 import libcblite.CBLDatabase_SaveBlob
 
-internal actual val Database.isOpen: Boolean
-    get() = !isClosed
-
-internal actual fun <R> Database.withLock(action: () -> R): R =
-    withLock(action)
-
 internal actual val Database.dbPath: String?
     get() {
         // CBLDatabase.databasePath(name, dir)
@@ -27,7 +21,6 @@ internal actual fun Database.saveBlob(blob: Blob) {
     blob.checkSetDb(DbContext(this))
 }
 
-@Suppress("UNCHECKED_CAST")
 internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? {
     if (!Blob.isBlob(props)) {
         throw IllegalArgumentException("getBlob arg does not specify a blob")

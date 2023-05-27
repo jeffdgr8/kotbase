@@ -7,12 +7,6 @@ import com.couchbase.lite.kmp.Database
 import com.couchbase.lite.kmp.asBlob
 import com.udobny.kmp.DelegatedClass
 
-internal actual val Database.isOpen: Boolean
-    get() = actual.isOpen
-
-internal actual fun <R> Database.withLock(action: () -> R): R =
-    synchronized(actual.dbLock, action)
-
 internal actual val Database.dbPath: String?
     get() = actual.dbPath
 

@@ -8,12 +8,6 @@ import com.couchbase.lite.kmp.asBlob
 import com.couchbase.lite.kmp.ext.wrapCBLError
 import com.udobny.kmp.DelegatedClass
 
-internal actual val Database.isOpen: Boolean
-    get() = !actual.isClosed()
-
-internal actual fun <R> Database.withLock(action: () -> R): R =
-    withLock(action)
-
 internal actual val Database.dbPath: String?
     get() {
         // CBLDatabase.databasePath(name, dir)

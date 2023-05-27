@@ -1,11 +1,9 @@
 @file:Suppress("UNUSED_VARIABLE")
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.KotlinTargetHierarchy.SourceSetTree
 
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
     id("com.android.library")
 }
 
@@ -13,30 +11,45 @@ repositories {
     maven("https://mobile.maven.couchbase.com/maven2/dev/")
 }
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     jvmToolchain(8)
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    androidTarget {
-        publishLibraryVariants("release")
-        instrumentedTestVariant.sourceSetTree.set(SourceSetTree.test)
-        unitTestVariant.sourceSetTree.set(SourceSetTree.unitTest)
+    targetHierarchy.custom {
+        common {
+            group("jvmCommon") {
+                withAndroidTarget()
+                withJvm()
+            }
+            group("nativeCommon") {
+                group("apple") {
+                    withApple()
+                }
+                group("native") {
+                    withLinux()
+                    withMingw()
+                }
+            }
+        }
     }
 
+    androidTarget()
     jvm()
-    ios()
+    iosArm64()
     iosSimulatorArm64()
+    iosX64()
     macosX64()
     macosArm64()
     linuxX64()
     mingwX64()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(projects.couchbaseLiteEe)
                 api(libs.kotlin.test)
                 api(libs.kotlin.test.junit)
+                api(libs.kotlinx.serialization.json)
             }
         }
         val androidMain by getting {
@@ -44,26 +57,17 @@ kotlin {
                 api(libs.androidx.test.core.ktx)
             }
         }
-        val nativeMain by creating {
-            dependsOn(commonMain)
+        val nativeCommonMain by getting {
+            dependencies {
+                implementation(libs.korlibs.korio)
+            }
         }
-        val iosMain by getting {
-            dependsOn(nativeMain)
-        }
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-        val macosX64Main by getting {
-            dependsOn(nativeMain)
-        }
-        val macosArm64Main by getting {
-            dependsOn(nativeMain)
-        }
-        val linuxX64Main by getting {
-            dependsOn(nativeMain)
-        }
-        val mingwX64Main by getting {
-            dependsOn(nativeMain)
+
+        all {
+            languageSettings {
+                optIn("kotlinx.cinterop.BetaInteropApi")
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            }
         }
     }
 }
