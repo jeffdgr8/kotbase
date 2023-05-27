@@ -15,7 +15,7 @@ public actual constructor(config: DatabaseConfiguration?) {
 
     private val arena = Arena()
 
-    internal val actual: CPointer<CBLDatabaseConfiguration> =
+    public val actual: CPointer<CBLDatabaseConfiguration> =
         arena.alloc<CBLDatabaseConfiguration>().ptr
 
     private val memory = object {

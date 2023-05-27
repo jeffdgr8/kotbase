@@ -18,7 +18,7 @@ internal constructor(
         FLArray_Retain(actual)
     }
 
-    internal open val actual: FLArray = actual
+    public open val actual: FLArray = actual
 
     internal open var dbContext: DbContext? = dbContext
         set(value) {

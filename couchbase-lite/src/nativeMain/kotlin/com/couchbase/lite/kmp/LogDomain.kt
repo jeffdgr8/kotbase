@@ -10,7 +10,7 @@ public actual enum class LogDomain {
     NETWORK,
     LISTENER;
 
-    internal val actual: CBLLogDomain
+    public val actual: CBLLogDomain
         get() = when (this) {
             DATABASE -> kCBLLogDomainDatabase
             QUERY -> kCBLLogDomainQuery

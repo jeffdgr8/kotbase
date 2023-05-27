@@ -7,7 +7,7 @@ public actual enum class LogDomain {
     NETWORK,
     LISTENER;
 
-    internal val actual: com.couchbase.lite.LogDomain
+    public val actual: com.couchbase.lite.LogDomain
         get() = when (this) {
             DATABASE -> com.couchbase.lite.LogDomain.DATABASE
             QUERY -> com.couchbase.lite.LogDomain.QUERY

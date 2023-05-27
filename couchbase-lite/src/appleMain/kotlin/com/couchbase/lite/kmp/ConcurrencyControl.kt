@@ -8,7 +8,7 @@ public actual enum class ConcurrencyControl {
     LAST_WRITE_WINS,
     FAIL_ON_CONFLICT;
 
-    internal val actual: CBLConcurrencyControl
+    public val actual: CBLConcurrencyControl
         get() = when (this) {
             LAST_WRITE_WINS -> kCBLConcurrencyControlLastWriteWins
             FAIL_ON_CONFLICT -> kCBLConcurrencyControlFailOnConflict

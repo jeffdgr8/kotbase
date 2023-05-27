@@ -11,7 +11,7 @@ public actual enum class LogLevel {
     ERROR,
     NONE;
 
-    internal val actual: CBLLogLevel
+    public val actual: CBLLogLevel
         get() = when (this) {
             DEBUG -> kCBLLogDebug
             VERBOSE -> kCBLLogVerbose

@@ -9,7 +9,6 @@ import kotlin.native.internal.createCleaner
 
 public actual class BasicAuthenticator
 actual constructor(
-    @Suppress("CanBeParameter")
     public actual val username: String,
     password: CharArray
 ) : Authenticator {

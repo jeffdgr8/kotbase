@@ -10,7 +10,7 @@ public actual enum class ReplicatorActivityLevel {
     IDLE,
     BUSY;
 
-    internal val actual: CBLReplicatorActivityLevel
+    public val actual: CBLReplicatorActivityLevel
         get() = when (this) {
             STOPPED -> kCBLReplicatorStopped
             OFFLINE -> kCBLReplicatorOffline

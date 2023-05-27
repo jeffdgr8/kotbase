@@ -17,7 +17,7 @@ import kotlin.native.internal.createCleaner
 
 public actual class Database
 internal constructor(
-    internal val actual: CPointer<CBLDatabase>,
+    public val actual: CPointer<CBLDatabase>,
     private val _config: DatabaseConfiguration
 ) {
 

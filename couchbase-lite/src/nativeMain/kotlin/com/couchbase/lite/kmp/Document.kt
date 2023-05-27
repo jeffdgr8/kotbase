@@ -26,7 +26,7 @@ internal constructor(
         FLDict_Retain(memory.properties)
     }
 
-    internal open val actual: CPointer<CBLDocument> = actual
+    public open val actual: CPointer<CBLDocument> = actual
 
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {

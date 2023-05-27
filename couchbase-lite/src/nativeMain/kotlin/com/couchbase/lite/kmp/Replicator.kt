@@ -12,7 +12,7 @@ import kotlin.native.internal.createCleaner
 
 public actual class Replicator
 private constructor(
-    internal val actual: CPointer<CBLReplicator>,
+    public val actual: CPointer<CBLReplicator>,
     private val immutableConfig: ImmutableReplicatorConfiguration
 ) {
 

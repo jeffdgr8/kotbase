@@ -8,7 +8,7 @@ import kotlin.native.internal.createCleaner
 
 public actual class ResultSet
 internal constructor(
-    private val actual: CPointer<CBLResultSet>,
+    public val actual: CPointer<CBLResultSet>,
     private val dbContext: DbContext? = null
 ) : Iterable<Result>, AutoCloseable {
 

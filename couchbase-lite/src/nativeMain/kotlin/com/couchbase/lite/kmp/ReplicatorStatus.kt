@@ -14,7 +14,7 @@ public actual class ReplicatorStatus {
         it.clear()
     }
 
-    internal val actual: CPointer<CBLReplicatorStatus>
+    public val actual: CPointer<CBLReplicatorStatus>
 
     internal constructor(actual: CValue<CBLReplicatorStatus>) {
         this.actual = actual.getPointer(arena)

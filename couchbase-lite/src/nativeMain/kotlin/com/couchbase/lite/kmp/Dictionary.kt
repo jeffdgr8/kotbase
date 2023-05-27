@@ -18,7 +18,7 @@ internal constructor(
         FLDict_Retain(actual)
     }
 
-    internal open val actual: FLDict = actual
+    public open val actual: FLDict = actual
 
     internal open var dbContext: DbContext? = dbContext
         set(value) {

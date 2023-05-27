@@ -10,7 +10,7 @@ import kotlin.native.internal.createCleaner
 
 public actual class Parameters
 internal constructor(
-    internal val actual: FLDict,
+    public val actual: FLDict,
     private val readonly: Boolean
 ) {
 

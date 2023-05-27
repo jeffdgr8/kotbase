@@ -5,7 +5,7 @@ public actual enum class ReplicatorType {
     PUSH,
     PULL;
 
-    internal val actual: com.couchbase.lite.ReplicatorType
+    public val actual: com.couchbase.lite.ReplicatorType
         get() = when (this) {
             PUSH_AND_PULL -> com.couchbase.lite.ReplicatorType.PUSH_AND_PULL
             PUSH -> com.couchbase.lite.ReplicatorType.PUSH

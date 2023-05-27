@@ -7,7 +7,7 @@ public actual enum class ReplicatorActivityLevel {
     IDLE,
     BUSY;
 
-    internal val actual: com.couchbase.lite.ReplicatorActivityLevel
+    public val actual: com.couchbase.lite.ReplicatorActivityLevel
         get() = when (this) {
             STOPPED -> com.couchbase.lite.ReplicatorActivityLevel.STOPPED
             OFFLINE -> com.couchbase.lite.ReplicatorActivityLevel.OFFLINE
