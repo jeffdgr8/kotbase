@@ -1,7 +1,7 @@
 @file:Suppress("UNUSED_VARIABLE")
 
 plugins {
-    `multiplatform-convention`
+    id("multiplatform-convention")
 }
 
 kotlin {

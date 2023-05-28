@@ -19,6 +19,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "couchbase-lite-kmp"
 
+includeBuild("build-logic")
+
 include(":couchbase-lite", ":couchbase-lite-ee")
 include(":couchbase-lite-ktx", ":couchbase-lite-ee-ktx")
 include(":couchbase-lite-paging", ":couchbase-lite-ee-paging")

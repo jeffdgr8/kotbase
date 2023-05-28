@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetHierarchy.SourceSetTree
 
 plugins {
-    `library-convention`
+    id("library-convention")
     kotlin("native.cocoapods")
 }
 
