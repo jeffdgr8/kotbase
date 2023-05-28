@@ -76,13 +76,12 @@ kotlin {
      */
 
     sourceSets {
+        // "Two modules in a project cannot share the same content root"
+        // symlinking src dirs from ce module as workaround
+        // Windows requires developer mode and git core.symlinks = true
+        // https://youtrack.jetbrains.com/issue/IDEA-210311
+        // https://youtrack.jetbrains.com/issue/IDEABKL-6745
         commonMain {
-            // "Two modules in a project cannot share the same content root"
-            // symlinking common source from ce module as workaround
-            // Windows requires developer mode and git core.symlinks = true
-            // https://youtrack.jetbrains.com/issue/IDEA-210311
-            // https://youtrack.jetbrains.com/issue/IDEABKL-6745
-            kotlin.srcDir("src/$name/ee")
             dependencies {
                 api(libs.kotlinx.coroutines.core)
                 api(libs.kotlinx.datetime)
@@ -91,13 +90,11 @@ kotlin {
             }
         }
         commonTest {
-            kotlin.srcDir("src/$name/ee")
             dependencies {
                 implementation(projects.testingSupportEe)
             }
         }
         val jvmCommonMain by getting {
-            kotlin.srcDir("src/$name/ee")
             dependencies {
                 compileOnly(libs.couchbase.lite.java.ee)
             }
@@ -108,13 +105,11 @@ kotlin {
             }
         }
         val jvmMain by getting {
-            kotlin.srcDir("src/$name/ee")
             dependencies {
                 api(libs.couchbase.lite.java.ee)
             }
         }
         val androidMain by getting {
-            kotlin.srcDir("src/$name/ee")
             dependencies {
                 api(libs.couchbase.lite.android.ee)
             }
@@ -128,14 +123,10 @@ kotlin {
                 implementation(libs.androidx.test.runner)
             }
         }
-        val appleMain by getting {
+
+        all {
             kotlin.srcDir("src/$name/ee")
-        }
-        val appleTest by getting {
-            kotlin.srcDir("src/$name/ee")
-        }
-        val nativeMain by getting {
-            kotlin.srcDir("src/$name/ee")
+            println(kotlin.srcDirs)
         }
     }
 }
