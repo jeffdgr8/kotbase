@@ -1,5 +1,7 @@
 import org.gradle.accessors.dm.LibrariesForLibs
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
+import org.jetbrains.kotlin.konan.target.Family
 import rules.applyCouchbaseLiteRule
 
 plugins {
@@ -19,6 +21,14 @@ kotlin {
             optIn("kotlin.ExperimentalUnsignedTypes")
             optIn("kotlinx.cinterop.BetaInteropApi")
             optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+    }
+
+    targets.withType<KotlinNativeTarget> {
+        if (konanTarget.family != Family.MINGW) {
+            binaries.all {
+                binaryOptions["sourceInfoType"] = "libbacktrace"
+            }
         }
     }
 }
