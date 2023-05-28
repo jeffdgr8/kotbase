@@ -1,5 +1,5 @@
 @file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
-@file:JvmName("DatabaseExtJvm") // https://youtrack.jetbrains.com/issue/KT-21186
+@file:JvmName("DatabaseExtTestingSupport") // Disambiguate from :couchbase-lite module file
 
 package com.couchbase.lite
 
