@@ -1,47 +1,19 @@
 @file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
 import org.gradle.configurationcache.extensions.capitalized
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.KotlinTargetHierarchy.SourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
 plugins {
-    kotlin("multiplatform")
+    `multiplatform-convention`
+    `library-convention`
     kotlin("native.cocoapods")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    `maven-publish`
-}
-
-repositories {
-    maven("https://mobile.maven.couchbase.com/maven2/dev/")
 }
 
 kotlin {
-    explicitApiWarning()
-
-    jvmToolchain(8)
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    androidTarget {
-        publishLibraryVariants("release")
-        instrumentedTestVariant.sourceSetTree.set(SourceSetTree.test)
-        unitTestVariant.sourceSetTree.set(SourceSetTree.unitTest)
-    }
-
-    jvm()
-    ios()
-    iosSimulatorArm64()
-    macosX64()
-    macosArm64()
-    linuxX64()
-    mingwX64()
-
     cocoapods {
         name = "CouchbaseLite-Enterprise-KMP-KTX"
         homepage = "https://github.com/udobny/couchbase-lite-kmp"
@@ -77,23 +49,18 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(projects.couchbaseLiteEe)
                 api(libs.kotlinx.coroutines.core)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(projects.testingSupportEe)
             }
         }
-
-        val jvmCommonTest by creating {
-            dependsOn(commonTest)
-        }
         val jvmTest by getting {
-            dependsOn(jvmCommonTest)
             dependencies {
                 implementation(libs.mockk)
             }
@@ -104,89 +71,15 @@ kotlin {
             }
         }
         val androidInstrumentedTest by getting {
-            dependsOn(jvmCommonTest)
             dependencies {
                 implementation(libs.androidx.test.runner)
                 implementation(libs.mockk.android)
             }
         }
-
-        val nativeCommonTest by creating {
-            dependsOn(commonTest)
-        }
-
-        val appleTest by creating {
-            dependsOn(nativeCommonTest)
-        }
-
-        val iosMain by getting
-        val iosTest by getting {
-            dependsOn(appleTest)
-        }
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-        val iosSimulatorArm64Test by getting {
-            dependsOn(iosTest)
-        }
-        val macosX64Test by getting {
-            dependsOn(appleTest)
-        }
-        val macosArm64Test by getting {
-            dependsOn(appleTest)
-        }
-
-        val nativeTest by creating {
-            dependsOn(nativeCommonTest)
-        }
-
-        val linuxX64Test by getting {
-            dependsOn(nativeTest)
-        }
-        val mingwX64Test by getting {
-            dependsOn(nativeTest)
-        }
     }
 }
 
-android {
-    namespace = "com.udobny.kmp.couchbase.lite.ktx"
-    compileSdk = 33
-    defaultConfig {
-        minSdk = 22
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    // required by coroutines 1.7.0
-    android.packagingOptions.resources.pickFirsts += "META-INF/LICENSE*"
-    // required until AGP 8.1.0-alpha09+
-    // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
-
-// Documentation Jar
-
-val dokkaOutputDir = buildDir.resolve("dokka")
-
-tasks.dokkaHtml.configure {
-    outputDirectory.set(dokkaOutputDir)
-}
-
-val javadocJar = tasks.register<Jar>("javadocJar") {
-    dependsOn(tasks.dokkaHtml)
-    archiveClassifier.set("javadoc")
-    from(dokkaOutputDir)
-}
-
-publishing.publications.withType<MavenPublication> {
-    artifact(javadocJar)
-}
-
-tasks.withType<KotlinNativeSimulatorTest> {
-    device.set("iPhone 14")
-}
+android.namespace = "com.udobny.kmp.couchbase.lite.ktx"
 
 if (System.getProperty("os.name") == "Linux") {
     tasks.withType<Test> {

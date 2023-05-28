@@ -1,32 +1,16 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetHierarchy.SourceSetTree
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
 plugins {
-    kotlin("multiplatform")
+    `library-convention`
     kotlin("native.cocoapods")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    `maven-publish`
 }
 
 kotlin {
-    explicitApiWarning()
-
-    jvmToolchain(8)
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    androidTarget {
-        publishLibraryVariants("release")
-        instrumentedTestVariant.sourceSetTree.set(SourceSetTree.test)
-        unitTestVariant.sourceSetTree.set(SourceSetTree.unitTest)
-    }
-
     jvm()
-    ios()
+    iosArm64()
     iosSimulatorArm64()
+    iosX64()
 
     cocoapods {
         name = "Couchbase-Lite-KMP-Paging"
@@ -48,63 +32,20 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(projects.couchbaseLiteKtx)
                 api(libs.paging)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(projects.testingSupport)
                 implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.kotlinx.atomicfu)
             }
         }
-        val iosMain by getting
-        val iosTest by getting
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-        val iosSimulatorArm64Test by getting {
-            dependsOn(iosTest)
-        }
     }
 }
 
-android {
-    namespace = "com.udobny.kmp.couchbase.lite.paging"
-    compileSdk = 33
-    defaultConfig {
-        minSdk = 22
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    // required until AGP 8.1.0-alpha09+
-    // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
-
-// Documentation Jar
-
-val dokkaOutputDir = buildDir.resolve("dokka")
-
-tasks.dokkaHtml.configure {
-    outputDirectory.set(dokkaOutputDir)
-}
-
-val javadocJar = tasks.register<Jar>("javadocJar") {
-    dependsOn(tasks.dokkaHtml)
-    archiveClassifier.set("javadoc")
-    from(dokkaOutputDir)
-}
-
-publishing.publications.withType<MavenPublication> {
-    artifact(javadocJar)
-}
-
-tasks.withType<KotlinNativeSimulatorTest> {
-    device.set("iPhone 14")
-}
+android.namespace = "com.udobny.kmp.couchbase.lite.paging"

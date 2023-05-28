@@ -1,11 +1,8 @@
 @file:Suppress("UNUSED_VARIABLE", "SuspiciousCollectionReassignment")
 
 import org.gradle.configurationcache.extensions.capitalized
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.KotlinTargetHierarchy.SourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
 import org.jetbrains.kotlin.konan.target.Architecture
@@ -13,40 +10,12 @@ import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
 plugins {
-    kotlin("multiplatform")
+    `multiplatform-convention`
+    `library-convention`
     kotlin("native.cocoapods")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    `maven-publish`
 }
 
 kotlin {
-    explicitApiWarning()
-
-    jvmToolchain(8)
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    androidTarget {
-        publishLibraryVariants("release")
-        instrumentedTestVariant.sourceSetTree.set(SourceSetTree.test)
-        unitTestVariant.sourceSetTree.set(SourceSetTree.unitTest)
-    }
-
-    jvm()
-    ios()
-    iosSimulatorArm64()
-    macosX64()
-    macosArm64()
-    linuxX64()
-    // TODO: kotlinx atomicfu, datetime, and coroutines don't support arm64 or armhf
-    //  https://github.com/Kotlin/kotlinx.atomicfu/pull/193
-    //  https://github.com/Kotlin/kotlinx-datetime/issues/75
-    //  https://github.com/Kotlin/kotlinx.coroutines/issues/855
-    //  https://github.com/square/okio/issues/1006
-    //linuxArm64()
-    //linuxArm32Hfp()
-    mingwX64()
-
     cocoapods {
         name = "CouchbaseLite-KMP"
         homepage = "https://github.com/udobny/couchbase-lite-kmp"
@@ -110,21 +79,8 @@ kotlin {
      * sudo cp -P libicuuc.so.66* libicui18n.so.66* libicudata.so.66* /usr/lib/x86_64-linux-gnu/
      */
 
-    /*
-     * Source set dependency graph:
-     *                                    ___________common____________
-     *                                   |                             |
-     *                        ______nativeCommon_____                  |
-     *                       |                       |                 |
-     *              _______apple______        _____native_____     jvmCommon
-     *             |         |        |      |     |    |     |     |     |
-     *         ___ios__  macosX64 macosArm64 |     |    |     |     |     |
-     *        |    |   |                  linuxX64 | mingwX64 |  android jvm
-     * iosArm64 iosX64 iosSimulatorArm64  linuxArm32Hfp linuxArm64
-     */
-
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(libs.kotlinx.coroutines.core)
                 api(libs.kotlinx.datetime)
@@ -132,33 +88,32 @@ kotlin {
                 implementation(libs.kotlinx.atomicfu)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
-                implementation(libs.kotlin.test)
-                implementation(libs.kotlinx.serialization.json)
+                implementation(projects.testingSupport)
             }
         }
-
-        val jvmCommonMain by creating {
-            dependsOn(commonMain)
+        val jvmCommonMain by getting {
             dependencies {
                 compileOnly(libs.couchbase.lite.java)
             }
         }
-        val jvmCommonTest by creating {
-            dependsOn(commonTest)
+        val jvmCommonTest by getting {
             dependencies {
                 implementation(libs.junit)
             }
         }
+        val jvmMain by getting {
+            dependencies {
+                api(libs.couchbase.lite.java)
+            }
+        }
         val androidMain by getting {
-            dependsOn(jvmCommonMain)
             dependencies {
                 api(libs.couchbase.lite.android)
             }
         }
         val androidInstrumentedTest by getting {
-            dependsOn(jvmCommonTest)
             // TODO: doesn't work, so using a symlink
             //  https://youtrack.jetbrains.com/issue/KT-53383
             //resources.srcDir("src/commonTest/resources")
@@ -167,153 +122,10 @@ kotlin {
                 implementation(libs.androidx.test.runner)
             }
         }
-        val jvmMain by getting {
-            dependsOn(jvmCommonMain)
-            dependencies {
-                api(libs.couchbase.lite.java)
-            }
-        }
-        val jvmTest by getting {
-            dependsOn(jvmCommonTest)
-        }
-
-        val nativeCommonMain by creating {
-            dependsOn(commonMain)
-        }
-        val nativeCommonTest by creating {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(libs.korlibs.korio)
-            }
-        }
-
-        val appleMain by creating {
-            dependsOn(nativeCommonMain)
-        }
-        val appleTest by creating {
-            dependsOn(nativeCommonTest)
-            // TODO: doesn't work, so using a copy task
-            //  https://youtrack.jetbrains.com/issue/KT-53383
-            //resources.srcDir("src/commonTest/resources")
-        }
-        val iosMain by getting {
-            dependsOn(appleMain)
-        }
-        val iosTest by getting {
-            dependsOn(appleTest)
-        }
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-        val iosSimulatorArm64Test by getting {
-            dependsOn(iosTest)
-        }
-        val macosX64Main by getting {
-            dependsOn(appleMain)
-        }
-        val macosX64Test by getting {
-            dependsOn(appleTest)
-        }
-        val macosArm64Main by getting {
-            dependsOn(appleMain)
-        }
-        val macosArm64Test by getting {
-            dependsOn(appleTest)
-        }
-
-        val nativeMain by creating {
-            dependsOn(nativeCommonMain)
-        }
-        val nativeTest by creating {
-            dependsOn(nativeCommonTest)
-        }
-        val linuxX64Main by getting {
-            dependsOn(nativeMain)
-        }
-        val linuxX64Test by getting {
-            dependsOn(nativeTest)
-        }
-        // TODO: use linux arm builds from https://github.com/danbrough/kotlinxtras/
-        //val linuxArm64Main by getting {
-        //    dependsOn(nativeMain)
-        //    dependencies {
-        //        api("org.danbrough.kotlinx:kotlinx-datetime:0.4.0")
-        //        api("org.danbrough.kotlinx:kotlinx-coroutines-core:1.6.4")
-        //    }
-        //}
-        //val linuxArm64Test by getting {
-        //    dependsOn(nativeTest)
-        //    dependencies {
-        //        implementation("org.danbrough.kotlinx:atomicfu:0.18.3")
-        //    }
-        //}
-        //val linuxArm32HfpMain by getting {
-        //    dependsOn(nativeMain)
-        //    dependencies {
-        //        api("org.danbrough.kotlinx:kotlinx-datetime:0.4.0")
-        //        api("org.danbrough.kotlinx:kotlinx-coroutines-core:1.6.4")
-        //    }
-        //}
-        //val linuxArm32HfpTest by getting {
-        //    dependsOn(nativeTest)
-        //    dependencies {
-        //        implementation("org.danbrough.kotlinx:atomicfu:0.18.3")
-        //    }
-        //}
-        val mingwX64Main by getting {
-            dependsOn(nativeMain)
-        }
-        val mingwX64Test by getting {
-            dependsOn(nativeTest)
-        }
-
-        all {
-            languageSettings {
-                optIn("kotlin.ExperimentalStdlibApi")
-                optIn("kotlin.ExperimentalUnsignedTypes")
-                optIn("kotlinx.cinterop.BetaInteropApi")
-                optIn("kotlinx.cinterop.ExperimentalForeignApi")
-            }
-        }
     }
 }
 
-android {
-    namespace = "com.udobny.kmp.couchbase.lite"
-    compileSdk = 33
-    defaultConfig {
-        minSdk = 22
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    // required until AGP 8.1.0-alpha09+
-    // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
-
-// Documentation Jar
-
-val dokkaOutputDir = buildDir.resolve("dokka")
-
-tasks.dokkaHtml.configure {
-    outputDirectory.set(dokkaOutputDir)
-}
-
-val javadocJar = tasks.register<Jar>("javadocJar") {
-    dependsOn(tasks.dokkaHtml)
-    archiveClassifier.set("javadoc")
-    from(dokkaOutputDir)
-}
-
-publishing.publications.withType<MavenPublication> {
-    artifact(javadocJar)
-}
-
-tasks.withType<KotlinNativeSimulatorTest> {
-    device.set("iPhone 14")
-}
+android.namespace = "com.udobny.kmp.couchbase.lite"
 
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
