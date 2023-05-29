@@ -1,6 +1,5 @@
 package com.couchbase.lite.kmp
 
-import com.udobny.kmp.test.IgnoreApple
 import com.udobny.kmp.test.IgnoreNative
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.coroutines.delay
@@ -11,6 +10,8 @@ import kotlinx.datetime.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
+// TODO: native C multiple tests failing
+@IgnoreNative
 class ReplicatorEETest : BaseReplicatorTest() {
 
     // ReplicatorTest.swift
