@@ -17,6 +17,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(libs.androidx.test.core.ktx)
+                api(libs.androidx.test.runner)
             }
         }
         val nativeCommonMain by getting {

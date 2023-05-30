@@ -4,6 +4,7 @@ plugins {
 }
 
 kotlin {
+    androidTarget()
     jvm()
     iosArm64()
     iosSimulatorArm64()

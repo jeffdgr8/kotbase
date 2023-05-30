@@ -18,7 +18,6 @@ couchbase-lite-android = { module = "com.couchbase.lite:couchbase-lite-android",
 couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-android-ee", version.ref = "couchbase-lite-java" }
 couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", version.ref = "couchbase-lite-java" }
 couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
-junit = { module = "junit:junit", version = "4.13.2" }
 korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.2" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }

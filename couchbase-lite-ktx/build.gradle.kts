@@ -53,7 +53,6 @@ kotlin {
         }
         val androidInstrumentedTest by getting {
             dependencies {
-                implementation(libs.androidx.test.runner)
                 implementation(libs.mockk.android)
             }
         }

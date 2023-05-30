@@ -86,11 +86,6 @@ kotlin {
                 compileOnly(libs.couchbase.lite.java)
             }
         }
-        val jvmCommonTest by getting {
-            dependencies {
-                implementation(libs.junit)
-            }
-        }
         val jvmMain by getting {
             dependencies {
                 api(libs.couchbase.lite.java)
@@ -99,15 +94,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(libs.couchbase.lite.android)
-            }
-        }
-        val androidInstrumentedTest by getting {
-            // TODO: doesn't work, so using a symlink
-            //  https://youtrack.jetbrains.com/issue/KT-53383
-            //resources.srcDir("src/commonTest/resources")
-            dependencies {
-                implementation(libs.androidx.test.core.ktx)
-                implementation(libs.androidx.test.runner)
             }
         }
     }
