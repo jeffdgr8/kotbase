@@ -1,6 +1,8 @@
 import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.konan.target.Family
 import rules.applyCouchbaseLiteRule
 
@@ -49,6 +51,16 @@ android {
 
 tasks.withType<KotlinNativeSimulatorTest> {
     device.set("iPhone 14")
+}
+
+tasks.withType<KotlinNativeTest> {
+    val dir = name.substring(0, name.lastIndex - 3)
+    dependsOn(
+        tasks.register<Copy>("copy${name.capitalized()}Resources") {
+            from("src/commonTest/resources")
+            into("build/bin/$dir/debugTest")
+        }
+    )
 }
 
 dependencies {

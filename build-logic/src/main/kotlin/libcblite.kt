@@ -41,17 +41,11 @@ fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(fromProject: Project
 
         tasks.withType<KotlinNativeTest> {
             val dir = name.substring(0, name.lastIndex - 3)
-            dependsOn(
-                tasks.register<Copy>("copy${name.capitalized()}Resources") {
-                    from("src/commonTest/resources")
-                    into("build/bin/$dir/debugTest")
-                }
-            )
             if (dir.isWindows) {
                 dependsOn(
                     tasks.register<Copy>("copyLibcbliteDll") {
                         val version = libs.versions.couchbase.lite.c.get()
-                        from("${libcblitePath(dir.os, dir.arch, version)}/bin/cblite.dll")
+                        from("${fromProject.projectDir}/${libcblitePath(dir.os, dir.arch, version)}/bin/cblite.dll")
                         into("build/bin/$dir/debugTest")
                     }
                 )
