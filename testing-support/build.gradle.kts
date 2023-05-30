@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 plugins {
     id("multiplatform-convention")
 }
@@ -14,13 +12,13 @@ kotlin {
                 api(libs.kotlinx.serialization.json)
             }
         }
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 api(libs.androidx.test.core.ktx)
                 api(libs.androidx.test.runner)
             }
         }
-        val nativeCommonMain by getting {
+        nativeCommonMain {
             dependencies {
                 implementation(libs.korlibs.korio)
             }

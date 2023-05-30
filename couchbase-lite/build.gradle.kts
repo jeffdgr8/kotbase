@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
@@ -48,11 +46,10 @@ kotlin {
             }
         } else {
             val main by compilations.getting
-            val libraryPath = "$projectDir/$libcbliteLibPath"
-            val libcblite by main.cinterops.creating {
+            main.cinterops.create("libcblite") {
                 includeDirs(libcbliteIncludePath)
                 if (konanTarget.family == Family.MINGW) {
-                    extraOpts("-libraryPath", libraryPath)
+                    extraOpts("-libraryPath", "$projectDir/$libcbliteLibPath")
                 }
             }
         }
@@ -81,17 +78,17 @@ kotlin {
                 implementation(projects.testingSupport)
             }
         }
-        val jvmCommonMain by getting {
+        jvmCommonMain {
             dependencies {
                 compileOnly(libs.couchbase.lite.java)
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 api(libs.couchbase.lite.java)
             }
         }
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 api(libs.couchbase.lite.android)
             }

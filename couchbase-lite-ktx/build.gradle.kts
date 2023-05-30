@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 plugins {
     id("multiplatform-convention")
     id("library-convention")
@@ -41,17 +39,17 @@ kotlin {
                 implementation(projects.testingSupport)
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
                 implementation(libs.mockk)
             }
         }
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 compileOnly(libs.androidx.lifecycle.runtime.ktx)
             }
         }
-        val androidInstrumentedTest by getting {
+        androidInstrumentedTest {
             dependencies {
                 implementation(libs.mockk.android)
             }
