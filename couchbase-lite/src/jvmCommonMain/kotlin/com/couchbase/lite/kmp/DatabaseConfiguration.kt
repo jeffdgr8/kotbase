@@ -20,4 +20,11 @@ internal constructor(actual: com.couchbase.lite.DatabaseConfiguration) :
         set(value) {
             actual.directory = value
         }
+
+    private companion object {
+
+        init {
+            CouchbaseLite.internalInit()
+        }
+    }
 }

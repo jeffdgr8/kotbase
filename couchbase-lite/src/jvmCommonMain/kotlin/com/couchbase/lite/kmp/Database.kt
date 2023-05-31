@@ -24,6 +24,10 @@ internal constructor(actual: com.couchbase.lite.Database) :
 
     public actual companion object {
 
+        init {
+            CouchbaseLite.internalInit()
+        }
+
         public actual val log: Log by lazy { Log(com.couchbase.lite.Database.log) }
 
         @Throws(CouchbaseLiteException::class)

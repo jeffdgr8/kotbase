@@ -1,14 +1,20 @@
 package com.couchbase.lite.kmp
 
+import com.couchbase.lite.internal.CouchbaseLiteInternal
+import kotlinx.atomicfu.atomic
 import java.io.File
 
 /**
  * CouchbaseLite Utility
  */
-public object CouchbaseLite {
+public actual object CouchbaseLite {
+
+    private val initCalled = atomic(false)
 
     /**
-     * Initialize CouchbaseLite library. This method MUST be called before using CouchbaseLite.
+     * Initialize CouchbaseLite library. Unlike the Couchbase Lite Java SDK,
+     * this method is optional to call before using CouchbaseLite. The no-parameter
+     * `CouchbaseLite.init()` will be called automatically by default.
      *
      * This method expects the current directory to be writeable
      * and will throw an `IllegalStateException` if it is not.
@@ -19,11 +25,15 @@ public object CouchbaseLite {
      */
     @JvmOverloads
     public fun init(debug: Boolean = false) {
+        if (initCalled.getAndSet(true)) return
+        resetInit()
         com.couchbase.lite.CouchbaseLite.init(debug)
     }
 
     /**
-     * Initialize CouchbaseLite library. This method MUST be called before using CouchbaseLite.
+     * Initialize CouchbaseLite library. Unlike the Couchbase Lite Java SDK,
+     * this method is optional to call before using CouchbaseLite. The no-parameter
+     * `CouchbaseLite.init()` will be called automatically by default.
      *
      * This method allows specifying a default root directory for database files,
      * and the scratch directory used for temporary files (the native library, etc).
@@ -35,6 +45,26 @@ public object CouchbaseLite {
      * @throws IllegalStateException on initialization failure
      */
     public fun init(debug: Boolean, rootDir: File, scratchDir: File) {
+        if (initCalled.getAndSet(true)) return
+        resetInit()
         com.couchbase.lite.CouchbaseLite.init(debug, rootDir, scratchDir)
+    }
+
+    /**
+     * Allow default internalInit() to be overridden by manual init() call
+     */
+    private fun resetInit() {
+        @Suppress("VisibleForTests")
+        CouchbaseLiteInternal.reset(false)
+    }
+
+    /**
+     * Default init that will guarantee to initialize native Couchbase Lite library
+     * from [Database] and [DatabaseConfiguration] static initializers.
+     * Doesn't set [initCalled] to allow a manual [init] call to succeed.
+     */
+    internal actual fun internalInit() {
+        if (initCalled.value) return
+        com.couchbase.lite.CouchbaseLite.init()
     }
 }
