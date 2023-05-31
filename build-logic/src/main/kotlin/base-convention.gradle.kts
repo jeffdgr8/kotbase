@@ -38,6 +38,9 @@ android {
         minSdk = 22
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    // required by coroutines 1.7.0 to avoid error:
+    // 6 files found with path 'META-INF/LICENSE.md'.
+    packagingOptions.resources.pickFirsts += "META-INF/LICENSE*"
     // required until AGP 8.1.0-alpha09+
     // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
     compileOptions {
