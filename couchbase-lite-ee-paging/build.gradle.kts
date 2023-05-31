@@ -1,6 +1,5 @@
 plugins {
     id("library-convention")
-    kotlin("native.cocoapods")
 }
 
 kotlin {

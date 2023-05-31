@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.konan.target.Family
 plugins {
     id("multiplatform-convention")
     id("library-convention")
-    kotlin("native.cocoapods")
 }
 
 kotlin {

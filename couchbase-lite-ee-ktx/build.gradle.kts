@@ -1,7 +1,6 @@
 plugins {
     id("multiplatform-convention")
     id("library-convention")
-    kotlin("native.cocoapods")
 }
 
 kotlin {

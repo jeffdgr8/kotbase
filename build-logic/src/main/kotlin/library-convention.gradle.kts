@@ -7,7 +7,8 @@ import org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDepen
 
 plugins {
     id("base-convention")
-    id("org.jetbrains.dokka")
+    `kotlin-native-cocoapods`
+    org.jetbrains.dokka
     `maven-publish`
 }
 

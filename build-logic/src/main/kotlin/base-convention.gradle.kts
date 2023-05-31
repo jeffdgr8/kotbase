@@ -7,12 +7,9 @@ import org.jetbrains.kotlin.konan.target.Family
 import rules.applyCouchbaseLiteRule
 
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
+    `kotlin-multiplatform`
+    `android-library`
 }
-
-// https://github.com/gradle/gradle/issues/15383#issuecomment-779893192
-val libs = the<LibrariesForLibs>()
 
 kotlin {
     jvmToolchain(8)
