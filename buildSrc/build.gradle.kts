@@ -14,6 +14,7 @@ dependencies {
     implementation(plugin(libs.plugins.kotlin.multiplatform))
     implementation(plugin(libs.plugins.android.library))
     implementation(plugin(libs.plugins.dokka))
+    implementation(plugin(libs.plugins.kotlinx.kover))
 }
 
 fun plugin(provider: Provider<PluginDependency>) = with(provider.get()) {
