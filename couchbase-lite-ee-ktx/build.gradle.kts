@@ -1,6 +1,6 @@
 plugins {
-    id("multiplatform-convention")
-    id("library-convention")
+    `multiplatform-convention`
+    `library-convention`
 }
 
 kotlin {

@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.DefFileTask
 import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
-    id("multiplatform-convention")
-    id("library-convention")
+    `multiplatform-convention`
+    `library-convention`
 }
 
 kotlin {
