@@ -96,10 +96,7 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.udobny.kmp.couchbase.lite"
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-}
+android.namespace = "com.udobny.kmp.couchbase.lite"
 
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
