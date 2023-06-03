@@ -44,7 +44,7 @@ import platform.posix.memcpy
 import platform.posix.uint8_tVar
 
 /** Returns an input stream that reads from this source. */
-fun BufferedSource.inputStream(): NSInputStream = BufferedSourceInputStream(this)
+public fun BufferedSource.inputStream(): NSInputStream = BufferedSourceInputStream(this)
 
 @OptIn(UnsafeNumber::class)
 private class BufferedSourceInputStream(
