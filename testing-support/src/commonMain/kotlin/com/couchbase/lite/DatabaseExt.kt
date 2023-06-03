@@ -1,6 +1,6 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Database
+import kotbase.Database
 
 expect val Database.isOpen: Boolean
 

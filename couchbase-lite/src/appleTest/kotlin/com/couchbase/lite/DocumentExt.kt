@@ -2,10 +2,10 @@ package com.couchbase.lite
 
 import cocoapods.CouchbaseLite.c4Doc
 import cocoapods.CouchbaseLite.kDocExists
-import com.couchbase.lite.kmp.Dictionary
-import com.couchbase.lite.kmp.Document
-import com.couchbase.lite.kmp.MutableDictionary
-import kotlinx.cinterop.*
+import kotbase.Dictionary
+import kotbase.Document
+import kotbase.MutableDictionary
+import kotlinx.cinterop.pointed
 
 @Suppress("UNCHECKED_CAST")
 internal actual val Document.content: Dictionary

@@ -2,7 +2,7 @@
 
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Database
+import kotbase.Database
 
 actual val Database.isOpen: Boolean
     get() = !isClosed

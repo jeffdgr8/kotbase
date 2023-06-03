@@ -10,12 +10,12 @@ plugins {
 
 kotlin {
     cocoapods {
-        name = "CouchbaseLite-KMP"
-        homepage = "https://github.com/udobny/couchbase-lite-kmp"
+        name = "Kotbase"
+        homepage = "https://github.com/jeffdgr8/kotbase"
         // TODO: this isn't working
         //  https://youtrack.jetbrains.com/issue/KT-53362
         //  https://github.com/JetBrains/kotlin/pull/4909
-        source = "{ :git => 'https://github.com/udobny/couchbase-lite-kmp.git', :tag => $version }"
+        source = "{ :git => 'https://github.com/jeffdgr8/kotbase.git', :tag => $version }"
         authors = "Couchbase, Jeff Lockhart"
         license = "Apache License, Version 2.0"
         summary = "Couchbase Lite for Kotlin Multiplatform"
@@ -41,7 +41,7 @@ kotlin {
         if (konanTarget.family.isAppleFamily) {
             // Run iOS tests on background thread with main run loop
             binaries.withType<TestExecutable> {
-                freeCompilerArgs += listOf("-e", "com.udobny.kmp.test.mainBackground")
+                freeCompilerArgs += listOf("-e", "kotbase.test.mainBackground")
             }
         } else {
             val main by compilations.getting
@@ -96,7 +96,7 @@ kotlin {
     }
 }
 
-android.namespace = "com.udobny.kmp.couchbase.lite"
+android.namespace = "kotbase"
 
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {

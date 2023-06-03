@@ -9,8 +9,8 @@ kotlin {
     iosX64()
 
     cocoapods {
-        name = "CouchbaseLite-Enterprise-KMP-Paging"
-        homepage = "https://github.com/udobny/couchbase-lite-kmp"
+        name = "Kotbase-Enterprise-Paging"
+        homepage = "https://github.com/jeffdgr8/kotbase"
         authors = "Couchbase, Jeff Lockhart"
         license = "Custom, Apache License, Version 2.0"
         summary = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform AndroidX Paging Extensions"
@@ -42,4 +42,4 @@ kotlin {
     }
 }
 
-android.namespace = "com.udobny.kmp.couchbase.lite.paging"
+android.namespace = "kotbase.paging"

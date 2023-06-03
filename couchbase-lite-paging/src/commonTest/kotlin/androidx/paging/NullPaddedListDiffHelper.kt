@@ -26,9 +26,7 @@ package androidx.paging
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
-import app.cash.paging.DiffingChangePayload.ITEM_TO_PLACEHOLDER
-import app.cash.paging.DiffingChangePayload.PLACEHOLDER_POSITION_CHANGE
-import app.cash.paging.DiffingChangePayload.PLACEHOLDER_TO_ITEM
+import app.cash.paging.DiffingChangePayload.*
 import app.cash.paging.NullPaddedList
 
 /**

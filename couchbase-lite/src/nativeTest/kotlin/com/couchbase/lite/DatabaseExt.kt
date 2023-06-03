@@ -1,8 +1,8 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.*
-import com.couchbase.lite.kmp.internal.DbContext
-import com.couchbase.lite.kmp.internal.wrapCBLError
+import kotbase.*
+import kotbase.internal.DbContext
+import kotbase.internal.wrapCBLError
 import libcblite.CBLDatabase_GetBlob
 import libcblite.CBLDatabase_SaveBlob
 

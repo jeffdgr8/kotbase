@@ -1,12 +1,12 @@
 package com.couchbase.lite
 
 import cocoapods.CouchbaseLite.*
-import com.couchbase.lite.kmp.BaseTest.Companion.DB_EXTENSION
-import com.couchbase.lite.kmp.Blob
-import com.couchbase.lite.kmp.Database
-import com.couchbase.lite.kmp.asBlob
-import com.couchbase.lite.kmp.ext.wrapCBLError
-import com.udobny.kmp.DelegatedClass
+import kotbase.BaseTest.Companion.DB_EXTENSION
+import kotbase.Blob
+import kotbase.Database
+import kotbase.asBlob
+import kotbase.base.DelegatedClass
+import kotbase.ext.wrapCBLError
 
 internal actual val Database.dbPath: String?
     get() {

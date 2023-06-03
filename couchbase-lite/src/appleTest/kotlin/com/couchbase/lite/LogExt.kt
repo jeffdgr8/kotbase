@@ -1,8 +1,8 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Log
-import com.couchbase.lite.kmp.LogDomain
-import com.couchbase.lite.kmp.LogLevel
+import kotbase.Log
+import kotbase.LogDomain
+import kotbase.LogLevel
 
 internal actual fun Log.reset() {
     console.apply {

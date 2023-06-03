@@ -1,5 +1,5 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Collation
+import kotbase.Collation
 
 expect fun Collation.asJSON(): Any?

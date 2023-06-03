@@ -17,7 +17,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "couchbase-lite-kmp"
+rootProject.name = "kotbase"
 
 include(":couchbase-lite", ":couchbase-lite-ee")
 include(":couchbase-lite-ktx", ":couchbase-lite-ee-ktx")

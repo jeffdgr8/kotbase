@@ -20,12 +20,14 @@
 
 package okio.temp
 
+import kotlinx.cinterop.UnsafeNumber
+import okio.Buffer
+import okio.Segment
+import okio.Source
+import platform.Foundation.NSInputStream
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
-import kotlinx.cinterop.UnsafeNumber
-import okio.*
-import platform.Foundation.NSInputStream
 
 @OptIn(UnsafeNumber::class)
 class AppleSourceTest {

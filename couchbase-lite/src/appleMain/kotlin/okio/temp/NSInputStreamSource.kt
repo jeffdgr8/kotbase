@@ -20,11 +20,7 @@
 
 package okio.temp
 
-import kotlinx.cinterop.UnsafeNumber
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.reinterpret
-import kotlinx.cinterop.usePinned
+import kotlinx.cinterop.*
 import okio.*
 import platform.Foundation.NSInputStream
 import platform.darwin.UInt8Var

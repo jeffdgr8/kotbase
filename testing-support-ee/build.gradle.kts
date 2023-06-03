@@ -26,4 +26,4 @@ kotlin {
     }
 }
 
-android.namespace = "com.udobny.kmp.couchbase.lite.testingsupport"
+android.namespace = "kotbase.testingsupport"

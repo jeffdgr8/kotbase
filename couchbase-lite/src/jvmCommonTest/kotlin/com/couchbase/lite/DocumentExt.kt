@@ -1,7 +1,7 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Dictionary
-import com.couchbase.lite.kmp.Document
+import kotbase.Dictionary
+import kotbase.Document
 
 internal actual val Document.content: Dictionary
     get() = Dictionary(actual.content)

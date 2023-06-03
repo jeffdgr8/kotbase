@@ -1,7 +1,7 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Blob
-import com.couchbase.lite.kmp.Database
+import kotbase.Blob
+import kotbase.Database
 
 internal expect val Database.dbPath: String?
 

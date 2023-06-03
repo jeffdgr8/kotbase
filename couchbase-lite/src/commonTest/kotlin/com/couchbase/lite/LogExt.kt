@@ -1,5 +1,5 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Log
+import kotbase.Log
 
 internal expect fun Log.reset()

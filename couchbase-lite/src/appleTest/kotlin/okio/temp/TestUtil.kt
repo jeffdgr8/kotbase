@@ -4,13 +4,13 @@
 
 package okio.temp
 
-import kotlin.test.assertTrue
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
 import okio.Buffer
 import platform.Foundation.NSData
 import platform.Foundation.create
+import kotlin.test.assertTrue
 
 fun ByteArray.toNSData(): NSData = memScoped {
     NSData.create(bytes = allocArrayOf(this@toNSData), length = size.convert())

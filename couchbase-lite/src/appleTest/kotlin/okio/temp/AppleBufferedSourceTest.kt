@@ -16,29 +16,17 @@
 
 // TODO: workaround until these extensions are merged and released in Okio
 //  https://github.com/square/okio/pull/1123
-@file:Suppress("INVISIBLE_MEMBER")
+@file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
 
 package okio.temp
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
-import kotlinx.cinterop.CPointerVar
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.alloc
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.get
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.ptr
-import kotlinx.cinterop.reinterpret
-import kotlinx.cinterop.usePinned
-import kotlinx.cinterop.value
-import okio.*
+import kotlinx.cinterop.*
+import okio.Buffer
+import okio.RealBufferedSource
 import platform.Foundation.NSInputStream
 import platform.darwin.NSUIntegerVar
 import platform.darwin.UInt8Var
+import kotlin.test.*
 
 class AppleBufferedSourceTest {
     @Test fun bufferInputStream() {

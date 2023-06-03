@@ -2,10 +2,10 @@
 
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Blob
-import com.couchbase.lite.kmp.Database
-import com.couchbase.lite.kmp.asBlob
-import com.udobny.kmp.DelegatedClass
+import kotbase.Blob
+import kotbase.Database
+import kotbase.asBlob
+import kotbase.base.DelegatedClass
 
 internal actual val Database.dbPath: String?
     get() = actual.dbPath

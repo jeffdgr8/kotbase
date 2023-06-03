@@ -5,8 +5,8 @@ plugins {
 
 kotlin {
     cocoapods {
-        name = "CouchbaseLite-KMP-KTX"
-        homepage = "https://github.com/udobny/couchbase-lite-kmp"
+        name = "Kotbase-KTX"
+        homepage = "https://github.com/jeffdgr8/kotbase"
         authors = "Couchbase, MOLO17, Jeff Lockhart"
         license = "Apache License, Version 2.0"
         summary = "Couchbase Lite for Kotlin Multiplatform Kotlin Extensions"
@@ -56,4 +56,4 @@ kotlin {
     }
 }
 
-android.namespace = "com.udobny.kmp.couchbase.lite.ktx"
+android.namespace = "kotbase.ktx"

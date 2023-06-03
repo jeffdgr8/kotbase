@@ -1,7 +1,7 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Document
-import com.couchbase.lite.kmp.MutableDocument
+import kotbase.Document
+import kotbase.MutableDocument
 import libcblite.CBLDocument_Generation
 
 internal actual val Document.generation: Long

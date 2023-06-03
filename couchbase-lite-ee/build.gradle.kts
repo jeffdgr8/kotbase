@@ -10,8 +10,8 @@ plugins {
 
 kotlin {
     cocoapods {
-        name = "CouchbaseLite-Enterprise-KMP"
-        homepage = "https://github.com/udobny/couchbase-lite-kmp"
+        name = "Kotbase-Enterprise"
+        homepage = "https://github.com/jeffdgr8/kotbase"
         authors = "Couchbase, Jeff Lockhart"
         license = "Custom, Apache License, Version 2.0"
         summary = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform"
@@ -37,7 +37,7 @@ kotlin {
         if (konanTarget.family.isAppleFamily) {
             // Run iOS tests on background thread with main run loop
             binaries.withType<TestExecutable> {
-                freeCompilerArgs += listOf("-e", "com.udobny.kmp.test.mainBackground")
+                freeCompilerArgs += listOf("-e", "kotbase.test.mainBackground")
             }
         } else {
             val main by compilations.getting
@@ -101,7 +101,7 @@ kotlin {
     }
 }
 
-android.namespace = "com.udobny.kmp.couchbase.lite"
+android.namespace = "kotbase"
 
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {

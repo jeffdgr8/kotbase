@@ -1,6 +1,6 @@
 package com.couchbase.lite
 
-import com.couchbase.lite.kmp.Expression
+import kotbase.Expression
 
 actual fun Expression.asJSON(): Any? =
     asJSON()
