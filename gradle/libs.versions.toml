@@ -30,6 +30,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.5.1" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
-# TODO: https://github.com/square/okio/pull/1123
-okio = { module = "com.squareup.okio:okio", version = "3.4.0-SNAPSHOT" }
+# TODO: replace Okio NSInputStream Source extensions when PR is merged and released
+#  https://github.com/square/okio/pull/1123
+okio = { module = "com.squareup.okio:okio", version = "3.3.0" }
 paging = { module = "app.cash.paging:paging-common", version = "3.1.1-0.2.0" }

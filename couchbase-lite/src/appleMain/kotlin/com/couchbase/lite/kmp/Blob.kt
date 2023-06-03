@@ -7,6 +7,8 @@ import com.udobny.kmp.DelegatedClass
 import com.udobny.kmp.ext.toByteArray
 import com.udobny.kmp.ext.toNSData
 import okio.*
+import okio.temp.inputStream
+import okio.temp.source
 import platform.Foundation.*
 
 public actual class Blob
