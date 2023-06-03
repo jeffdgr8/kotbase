@@ -8,8 +8,8 @@ mockk = "1.13.3" # 1.13.4 breaks QueryExtensionKtTest on Android https://github.
 [plugins]
 android-library = { id = "com.android.library", version = "7.4.2" }
 dokka = { id = "org.jetbrains.dokka", version = "1.8.10" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.0-RC-243" }
-kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.0" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.0-RC-251" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.1" }
 
 [libraries]
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.6.1" }
@@ -20,7 +20,7 @@ couchbase-lite-android = { module = "com.couchbase.lite:couchbase-lite-android",
 couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-android-ee", version.ref = "couchbase-lite-java" }
 couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", version.ref = "couchbase-lite-java" }
 couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
-korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.2" }
+korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.3" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.20.2" }

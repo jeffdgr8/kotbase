@@ -7,7 +7,7 @@ plugins {
     `kotlin-native-cocoapods`
     org.jetbrains.dokka
     `maven-publish`
-    id("org.jetbrains.kotlinx.kover")
+    org.jetbrains.kotlinx.kover
 }
 
 kotlin {
