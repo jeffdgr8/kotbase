@@ -33,7 +33,7 @@ fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(fromProject: Project
             tasks.withType<Test> {
                 environment(
                     "LD_LIBRARY_PATH",
-                    "\$LD_LIBRARY_PATH:$rootDir/libs/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu"
+                    "\$LD_LIBRARY_PATH:$rootDir/vendor/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu"
                 )
             }
         }
@@ -124,4 +124,4 @@ private val String.arch: String
     }
 
 private fun libcblitePath(os: String, arch: String, version: String): String =
-    "libs/libcblite/$os/$arch/libcblite-$version"
+    "vendor/libcblite/$os/$arch/libcblite-$version"
