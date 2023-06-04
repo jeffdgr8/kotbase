@@ -1,11 +1,10 @@
 package kotbase
 
-import com.couchbase.lite.ArrayExpressionIn
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.ArrayExpressionIn as CBLArrayExpressionIn
 
 public actual class ArrayExpressionIn
-internal constructor(actual: com.couchbase.lite.ArrayExpressionIn) :
-    DelegatedClass<ArrayExpressionIn>(actual) {
+internal constructor(actual: CBLArrayExpressionIn) : DelegatedClass<CBLArrayExpressionIn>(actual) {
 
     public actual fun `in`(expression: Expression): ArrayExpressionSatisfies =
         ArrayExpressionSatisfies(actual.`in`(expression.actual))

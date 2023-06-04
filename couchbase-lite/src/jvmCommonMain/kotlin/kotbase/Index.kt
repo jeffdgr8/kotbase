@@ -1,7 +1,6 @@
 package kotbase
 
-import com.couchbase.lite.Index
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Index as CBLIndex
 
-public actual abstract class Index(actual: com.couchbase.lite.Index) :
-    DelegatedClass<Index>(actual)
+public actual abstract class Index(actual: CBLIndex) : DelegatedClass<CBLIndex>(actual)

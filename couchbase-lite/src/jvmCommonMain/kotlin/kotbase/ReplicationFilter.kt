@@ -2,8 +2,9 @@
 
 package kotbase
 
-internal fun ReplicationFilter.convert(): com.couchbase.lite.ReplicationFilter {
-    return com.couchbase.lite.ReplicationFilter { document, flags ->
+import com.couchbase.lite.ReplicationFilter as CBLReplicationFilter
+
+internal fun ReplicationFilter.convert(): CBLReplicationFilter =
+    CBLReplicationFilter { document, flags ->
         invoke(Document(document), flags)
     }
-}

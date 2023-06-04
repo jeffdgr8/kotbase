@@ -1,11 +1,10 @@
 package kotbase
 
-import com.couchbase.lite.FileLogger
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.FileLogger as CBLFileLogger
 
 public actual class FileLogger
-internal constructor(override val actual: com.couchbase.lite.FileLogger) :
-    DelegatedClass<FileLogger>(actual), Logger {
+internal constructor(override val actual: CBLFileLogger) : DelegatedClass<CBLFileLogger>(actual), Logger {
 
     public actual var config: LogFileConfiguration?
         get() = actual.config?.asLogFileConfiguration()

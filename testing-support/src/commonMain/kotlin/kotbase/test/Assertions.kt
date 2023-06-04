@@ -24,14 +24,12 @@ fun assertIntEquals(expected: Any?, actual: Any?, message: String? = null) {
     assertEquals(expected, actual?.longToInt(), message)
 }
 
-private fun Any.longToInt(): Any {
-    @Suppress("UNCHECKED_CAST")
-    return when (this) {
-        is Long -> toInt()
-        is Map<*, *> -> (this as Map<String, Any?>).longToInt()
-        is List<*> -> longToInt()
-        else -> this
-    }
+@Suppress("UNCHECKED_CAST")
+private fun Any.longToInt(): Any = when (this) {
+    is Long -> toInt()
+    is Map<*, *> -> (this as Map<String, Any?>).longToInt()
+    is List<*> -> longToInt()
+    else -> this
 }
 
 private fun Map<String, Any?>.longToInt(): Map<String, Any?> =

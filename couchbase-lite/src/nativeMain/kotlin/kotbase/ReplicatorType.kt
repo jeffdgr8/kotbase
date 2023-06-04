@@ -20,13 +20,11 @@ public actual enum class ReplicatorType {
 
     internal companion object {
 
-        internal fun from(replicatorType: CBLReplicatorType): ReplicatorType {
-            return when (replicatorType.toUInt()) {
-                kCBLReplicatorTypePushAndPull -> PUSH_AND_PULL
-                kCBLReplicatorTypePush -> PUSH
-                kCBLReplicatorTypePull -> PULL
-                else -> error("Unexpected CBLReplicatorType")
-            }
+        internal fun from(replicatorType: CBLReplicatorType): ReplicatorType = when (replicatorType.toUInt()) {
+            kCBLReplicatorTypePushAndPull -> PUSH_AND_PULL
+            kCBLReplicatorTypePush -> PUSH
+            kCBLReplicatorTypePull -> PULL
+            else -> error("Unexpected CBLReplicatorType")
         }
     }
 }

@@ -10,17 +10,17 @@ import kotbase.ext.toFile
 import kotbase.ext.toKotlinInstant
 import kotlinx.datetime.Instant
 import java.io.File
+import com.couchbase.lite.Database as CBLDatabase
 
 public actual class Database
-internal constructor(actual: com.couchbase.lite.Database) :
-    DelegatedClass<com.couchbase.lite.Database>(actual) {
+internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) {
 
     @Throws(CouchbaseLiteException::class)
-    public actual constructor(name: String) : this(com.couchbase.lite.Database(name))
+    public actual constructor(name: String) : this(CBLDatabase(name))
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String, config: DatabaseConfiguration) :
-            this(com.couchbase.lite.Database(name, config.actual))
+            this(CBLDatabase(name, config.actual))
 
     public actual companion object {
 
@@ -28,15 +28,15 @@ internal constructor(actual: com.couchbase.lite.Database) :
             CouchbaseLite.internalInit()
         }
 
-        public actual val log: Log by lazy { Log(com.couchbase.lite.Database.log) }
+        public actual val log: Log by lazy { Log(CBLDatabase.log) }
 
         @Throws(CouchbaseLiteException::class)
         public actual fun delete(name: String, directory: String?) {
-            com.couchbase.lite.Database.delete(name, directory?.toFile())
+            CBLDatabase.delete(name, directory?.toFile())
         }
 
         public actual fun exists(name: String, directory: String?): Boolean =
-            com.couchbase.lite.Database.exists(
+            CBLDatabase.exists(
                 name,
                 // TODO: remove CouchbaseLiteInternal.getRootDir() when nullable in Java SDK
                 //  should be in 3.1
@@ -46,7 +46,7 @@ internal constructor(actual: com.couchbase.lite.Database) :
 
         @Throws(CouchbaseLiteException::class)
         public actual fun copy(path: String, name: String, config: DatabaseConfiguration?) {
-            com.couchbase.lite.Database.copy(
+            CBLDatabase.copy(
                 File(path),
                 name,
                 config?.actual ?: com.couchbase.lite.DatabaseConfiguration()

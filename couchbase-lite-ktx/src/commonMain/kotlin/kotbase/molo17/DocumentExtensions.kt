@@ -16,8 +16,7 @@
 
 /*
  * Modified by Jeff Lockhart
- *
- * - Use kotbase package for couchbase-lite-kmp Kotlin Multiplatform bindings
+ * - Use kotbase package
  * - Resolve explicitApiWarning() requirements
  * - Implement MutableDictionaryInterface explicitly (not part of KMP API)
  */

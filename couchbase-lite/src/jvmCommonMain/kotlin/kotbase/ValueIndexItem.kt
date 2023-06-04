@@ -1,17 +1,17 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.ValueIndexItem as CBLValueIndexItem
 
 public actual class ValueIndexItem
-private constructor(actual: com.couchbase.lite.ValueIndexItem) :
-    DelegatedClass<com.couchbase.lite.ValueIndexItem>(actual) {
+private constructor(actual: CBLValueIndexItem) : DelegatedClass<CBLValueIndexItem>(actual) {
 
     public actual companion object {
 
         public actual fun property(property: String): ValueIndexItem =
-            ValueIndexItem(com.couchbase.lite.ValueIndexItem.property(property))
+            ValueIndexItem(CBLValueIndexItem.property(property))
 
         public actual fun expression(expression: Expression): ValueIndexItem =
-            ValueIndexItem(com.couchbase.lite.ValueIndexItem.expression(expression.actual))
+            ValueIndexItem(CBLValueIndexItem.expression(expression.actual))
     }
 }

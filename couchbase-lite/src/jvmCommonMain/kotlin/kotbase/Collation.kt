@@ -1,13 +1,13 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Collation as CBLCollation
 
 public actual open class Collation
-private constructor(actual: com.couchbase.lite.Collation) :
-    DelegatedClass<com.couchbase.lite.Collation>(actual) {
+private constructor(actual: CBLCollation) : DelegatedClass<CBLCollation>(actual) {
 
     public actual class ASCII
-    internal constructor(override val actual: com.couchbase.lite.Collation.ASCII) :
+    internal constructor(override val actual: CBLCollation.ASCII) :
         Collation(actual) {
 
         public actual fun setIgnoreCase(ignCase: Boolean): ASCII {
@@ -17,7 +17,7 @@ private constructor(actual: com.couchbase.lite.Collation) :
     }
 
     public actual class Unicode
-    internal constructor(override val actual: com.couchbase.lite.Collation.Unicode) :
+    internal constructor(override val actual: CBLCollation.Unicode) :
         Collation(actual) {
 
         public actual fun setLocale(locale: String?): Unicode {
@@ -39,9 +39,9 @@ private constructor(actual: com.couchbase.lite.Collation) :
     public actual companion object {
 
         public actual fun ascii(): ASCII =
-            ASCII(com.couchbase.lite.Collation.ascii())
+            ASCII(CBLCollation.ascii())
 
         public actual fun unicode(): Unicode =
-            Unicode(com.couchbase.lite.Collation.unicode())
+            Unicode(CBLCollation.unicode())
     }
 }

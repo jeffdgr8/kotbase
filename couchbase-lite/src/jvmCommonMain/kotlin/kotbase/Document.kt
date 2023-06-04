@@ -6,10 +6,10 @@ import kotbase.base.DelegatedClass
 import kotbase.ext.toKotlinInstant
 import kotlinx.datetime.Instant
 import kotlin.reflect.safeCast
+import com.couchbase.lite.Document as CBLDocument
 
 public actual open class Document
-internal constructor(actual: com.couchbase.lite.Document) :
-    DelegatedClass<com.couchbase.lite.Document>(actual), Iterable<String> {
+internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual), Iterable<String> {
 
     protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
@@ -92,4 +92,4 @@ internal constructor(actual: com.couchbase.lite.Document) :
         actual.iterator()
 }
 
-internal fun com.couchbase.lite.Document.asDocument() = Document(this)
+internal fun CBLDocument.asDocument() = Document(this)

@@ -1,13 +1,13 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.DataSource as CBLDataSource
 
 public actual open class DataSource
-private constructor(actual: com.couchbase.lite.DataSource) :
-    DelegatedClass<com.couchbase.lite.DataSource>(actual) {
+private constructor(actual: CBLDataSource) : DelegatedClass<CBLDataSource>(actual) {
 
     public actual class As
-    internal constructor(override val actual: com.couchbase.lite.DataSource.As) :
+    internal constructor(override val actual: CBLDataSource.As) :
         DataSource(actual) {
 
         public actual fun `as`(alias: String): DataSource {
@@ -19,6 +19,6 @@ private constructor(actual: com.couchbase.lite.DataSource) :
     public actual companion object {
 
         public actual fun database(database: Database): As =
-            As(com.couchbase.lite.DataSource.database(database.actual))
+            As(CBLDataSource.database(database.actual))
     }
 }

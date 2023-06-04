@@ -1,10 +1,9 @@
 package kotbase
 
-public actual class ValueIndexConfiguration
-internal constructor(override val actual: com.couchbase.lite.ValueIndexConfiguration) :
-    IndexConfiguration(actual) {
+import com.couchbase.lite.ValueIndexConfiguration as CBLValueIndexConfiguration
 
-    public actual constructor(vararg expressions: String) : this(
-        com.couchbase.lite.ValueIndexConfiguration(*expressions)
-    )
+public actual class ValueIndexConfiguration
+internal constructor(override val actual: CBLValueIndexConfiguration) : IndexConfiguration(actual) {
+
+    public actual constructor(vararg expressions: String) : this(CBLValueIndexConfiguration(*expressions))
 }

@@ -13,11 +13,9 @@ actual object FileUtils {
 
     private val fm = NSFileManager.defaultManager
 
-    actual fun dirExists(dir: String): Boolean {
-        return memScoped {
-            val isDir = alloc<BooleanVar>()
-            fm.fileExistsAtPath(dir, isDir.ptr) && isDir.value
-        }
+    actual fun dirExists(dir: String): Boolean = memScoped {
+        val isDir = alloc<BooleanVar>()
+        fm.fileExistsAtPath(dir, isDir.ptr) && isDir.value
     }
 
     actual fun listFiles(dir: String): List<String> {

@@ -1,13 +1,11 @@
 package kotbase
 
-import com.couchbase.lite.Having
 import kotbase.base.DelegatedClass
 import kotbase.base.actuals
+import com.couchbase.lite.Having as CBLHaving
 
 public actual class Having
-internal constructor(actual: com.couchbase.lite.Having) :
-    DelegatedClass<Having>(actual),
-    Query by DelegatedQuery(actual) {
+internal constructor(actual: CBLHaving) : DelegatedClass<CBLHaving>(actual), Query by DelegatedQuery(actual) {
 
     public actual fun orderBy(vararg orderings: Ordering): OrderBy =
         OrderBy(actual.orderBy(*orderings.actuals()))

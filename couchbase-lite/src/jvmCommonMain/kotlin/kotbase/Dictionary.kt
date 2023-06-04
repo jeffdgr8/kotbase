@@ -6,10 +6,10 @@ import kotbase.base.DelegatedClass
 import kotbase.ext.toKotlinInstant
 import kotlinx.datetime.Instant
 import kotlin.reflect.safeCast
+import com.couchbase.lite.Dictionary as CBLDictionary
 
 public actual open class Dictionary
-internal constructor(actual: com.couchbase.lite.Dictionary) :
-    DelegatedClass<com.couchbase.lite.Dictionary>(actual), Iterable<String> {
+internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actual), Iterable<String> {
 
     protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
@@ -83,4 +83,4 @@ internal constructor(actual: com.couchbase.lite.Dictionary) :
         actual.iterator()
 }
 
-internal fun com.couchbase.lite.Dictionary.asDictionary() = Dictionary(this)
+internal fun CBLDictionary.asDictionary() = Dictionary(this)

@@ -1,25 +1,22 @@
 package kotbase
 
-import com.couchbase.lite.Replicator
 import com.couchbase.lite.testReplicator
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Replicator as CBLReplicator
 
 public actual class Replicator
 internal constructor(
-    actual: com.couchbase.lite.Replicator,
+    actual: CBLReplicator,
     private val _config: ReplicatorConfiguration
-) : DelegatedClass<Replicator>(actual) {
+) : DelegatedClass<CBLReplicator>(actual) {
 
-    public actual constructor(config: ReplicatorConfiguration) : this(
-        com.couchbase.lite.Replicator(config.actual),
-        config
-    )
+    public actual constructor(config: ReplicatorConfiguration) : this(CBLReplicator(config.actual), config)
 
     internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(
         if (test) {
             testReplicator(config.actual)
         } else {
-            com.couchbase.lite.Replicator(config.actual)
+            CBLReplicator(config.actual)
         },
         config
     )

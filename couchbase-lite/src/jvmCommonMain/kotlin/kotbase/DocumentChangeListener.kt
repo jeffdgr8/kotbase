@@ -2,8 +2,9 @@
 
 package kotbase
 
-internal fun DocumentChangeListener.convert(): com.couchbase.lite.DocumentChangeListener {
-    return com.couchbase.lite.DocumentChangeListener { change ->
+import com.couchbase.lite.DocumentChangeListener as CBLDocumentChangeListener
+
+internal fun DocumentChangeListener.convert(): CBLDocumentChangeListener =
+    CBLDocumentChangeListener { change ->
         invoke(DocumentChange(change))
     }
-}

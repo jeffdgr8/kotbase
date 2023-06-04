@@ -2,8 +2,9 @@
 
 package kotbase
 
-internal fun ConflictResolver.convert(): com.couchbase.lite.ConflictResolver {
-    return com.couchbase.lite.ConflictResolver { conflict ->
+import com.couchbase.lite.ConflictResolver as CBLConflictResolver
+
+internal fun ConflictResolver.convert(): CBLConflictResolver =
+    CBLConflictResolver { conflict ->
         invoke(Conflict(conflict))?.actual
     }
-}

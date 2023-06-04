@@ -1,13 +1,11 @@
 package kotbase
 
-import com.couchbase.lite.From
 import kotbase.base.DelegatedClass
 import kotbase.base.actuals
+import com.couchbase.lite.From as CBLFrom
 
 public actual class From
-internal constructor(actual: com.couchbase.lite.From) :
-    DelegatedClass<From>(actual),
-    Query by DelegatedQuery(actual) {
+internal constructor(actual: CBLFrom) : DelegatedClass<CBLFrom>(actual), Query by DelegatedQuery(actual) {
 
     public actual fun join(vararg joins: Join): Joins =
         Joins(actual.join(*joins.actuals()))

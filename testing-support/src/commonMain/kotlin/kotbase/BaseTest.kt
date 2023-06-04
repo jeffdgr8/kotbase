@@ -42,9 +42,7 @@ abstract class BaseTest : PlatformTest() {
         Report.log("<<<<<<<< Test completed(${formatInterval(Clock.System.now() - startTime)})")
     }
 
-    protected fun getUniqueName(prefix: String): String {
-        return StringUtils.getUniqueName(prefix, 12)
-    }
+    protected fun getUniqueName(prefix: String): String = StringUtils.getUniqueName(prefix, 12)
 
     protected fun waitUntil(maxTime: Long, test: () -> Boolean) {
         val delay = 100L

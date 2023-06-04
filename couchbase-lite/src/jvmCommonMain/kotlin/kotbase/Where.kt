@@ -1,13 +1,11 @@
 package kotbase
 
-import com.couchbase.lite.Where
 import kotbase.base.DelegatedClass
 import kotbase.base.actuals
+import com.couchbase.lite.Where as CBLWhere
 
 public actual class Where
-internal constructor(actual: com.couchbase.lite.Where) :
-    DelegatedClass<Where>(actual),
-    Query by DelegatedQuery(actual) {
+internal constructor(actual: CBLWhere) : DelegatedClass<CBLWhere>(actual), Query by DelegatedQuery(actual) {
 
     public actual fun groupBy(vararg expressions: Expression): GroupBy =
         GroupBy(actual.groupBy(*expressions.actuals()))

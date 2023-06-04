@@ -1,11 +1,10 @@
 package kotbase
 
-import com.couchbase.lite.Conflict
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Conflict as CBLConflict
 
 public actual class Conflict
-internal constructor(actual: com.couchbase.lite.Conflict) :
-    DelegatedClass<Conflict>(actual) {
+internal constructor(actual: CBLConflict) : DelegatedClass<CBLConflict>(actual) {
 
     public actual val documentId: String
         get() = actual.documentId!!

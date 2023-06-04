@@ -1,13 +1,13 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.SelectResult as CBLSelectResult
 
 public actual open class SelectResult
-private constructor(actual: com.couchbase.lite.SelectResult) :
-    DelegatedClass<com.couchbase.lite.SelectResult>(actual) {
+private constructor(actual: CBLSelectResult) : DelegatedClass<CBLSelectResult>(actual) {
 
     public actual class From
-    internal constructor(override val actual: com.couchbase.lite.SelectResult.From) :
+    internal constructor(override val actual: CBLSelectResult.From) :
         SelectResult(actual) {
 
         public actual fun from(alias: String): SelectResult {
@@ -17,7 +17,7 @@ private constructor(actual: com.couchbase.lite.SelectResult) :
     }
 
     public actual class As
-    internal constructor(override val actual: com.couchbase.lite.SelectResult.As) :
+    internal constructor(override val actual: CBLSelectResult.As) :
         SelectResult(actual) {
 
         public actual fun `as`(alias: String): As {
@@ -29,12 +29,12 @@ private constructor(actual: com.couchbase.lite.SelectResult) :
     public actual companion object {
 
         public actual fun property(property: String): As =
-            As(com.couchbase.lite.SelectResult.property(property))
+            As(CBLSelectResult.property(property))
 
         public actual fun expression(expression: Expression): As =
-            As(com.couchbase.lite.SelectResult.expression(expression.actual))
+            As(CBLSelectResult.expression(expression.actual))
 
         public actual fun all(): From =
-            From(com.couchbase.lite.SelectResult.all())
+            From(CBLSelectResult.all())
     }
 }

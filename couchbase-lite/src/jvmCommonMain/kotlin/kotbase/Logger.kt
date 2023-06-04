@@ -1,12 +1,13 @@
 package kotbase
 
-internal fun Logger.convert() = object : com.couchbase.lite.Logger {
+import com.couchbase.lite.LogDomain as CBLLogDomain
+import com.couchbase.lite.Logger as CBLLogger
 
-    override fun getLevel(): LogLevel {
-        return this@convert.level
-    }
+internal fun Logger.convert() = object : CBLLogger {
 
-    override fun log(level: LogLevel, domain: com.couchbase.lite.LogDomain, message: String) {
+    override fun getLevel(): LogLevel = this@convert.level
+
+    override fun log(level: LogLevel, domain: CBLLogDomain, message: String) {
         this@convert.log(level, LogDomain.from(domain), message)
     }
 }

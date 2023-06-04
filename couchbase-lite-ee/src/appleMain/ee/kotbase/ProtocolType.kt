@@ -16,12 +16,10 @@ public actual enum class ProtocolType {
 
     internal companion object {
 
-        internal fun from(protocolType: CBLProtocolType): ProtocolType {
-            return when (protocolType) {
-                kCBLProtocolTypeMessageStream -> MESSAGE_STREAM
-                kCBLProtocolTypeByteStream -> BYTE_STREAM
-                else -> error("Unexpected CBLProtocolType")
-            }
+        internal fun from(protocolType: CBLProtocolType): ProtocolType = when (protocolType) {
+            kCBLProtocolTypeMessageStream -> MESSAGE_STREAM
+            kCBLProtocolTypeByteStream -> BYTE_STREAM
+            else -> error("Unexpected CBLProtocolType")
         }
     }
 }

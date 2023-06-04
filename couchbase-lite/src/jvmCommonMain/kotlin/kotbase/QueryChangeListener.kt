@@ -2,8 +2,9 @@
 
 package kotbase
 
-internal fun QueryChangeListener.convert(): com.couchbase.lite.QueryChangeListener {
-    return com.couchbase.lite.QueryChangeListener { change ->
+import com.couchbase.lite.QueryChangeListener as CBLQueryChangeListener
+
+internal fun QueryChangeListener.convert(): CBLQueryChangeListener =
+    CBLQueryChangeListener { change ->
         invoke(QueryChange(change))
     }
-}

@@ -16,8 +16,7 @@
 
 /*
  * Modified by Jeff Lockhart
- *
- * - Replace SQLDelight database with Couchbase Lite KMP
+ * - Replace SQLDelight database with Kotbase
  */
 
 @file:Suppress("CAST_NEVER_SUCCEEDS")

@@ -69,58 +69,48 @@ private val Project.libs: LibrariesForLibs
     get() = extensions.getByName("libs") as LibrariesForLibs
 
 private val KonanTarget.os: String
-    get() {
-        return when (family) {
-            Family.LINUX -> "linux"
-            Family.MINGW -> "windows"
-            else -> error("Unhandled native OS: $this")
-        }
+    get() = when (family) {
+        Family.LINUX -> "linux"
+        Family.MINGW -> "windows"
+        else -> error("Unhandled native OS: $this")
     }
 
 private val KonanTarget.arch: String
-    get() {
-        return when (architecture) {
-            Architecture.X64 -> "x86_64"
-            Architecture.ARM64 -> "arm64"
-            Architecture.ARM32 -> "armhf"
-            else -> error("Unhandled native architecture: $this")
-        }
+    get() = when (architecture) {
+        Architecture.X64 -> "x86_64"
+        Architecture.ARM64 -> "arm64"
+        Architecture.ARM32 -> "armhf"
+        else -> error("Unhandled native architecture: $this")
     }
 
 private val KonanTarget.libcbliteLib: String
-    get() {
-        return when (family) {
-            Family.LINUX -> when (architecture) {
-                Architecture.X64 -> "lib/x86_64-linux-gnu"
-                Architecture.ARM64 -> "lib/aarch64-linux-gnu"
-                Architecture.ARM32 -> "lib/arm-linux-gnueabihf"
-                else -> error("Unhandled native architecture: $arch")
-            }
-            Family.MINGW -> "lib"
-            else -> error("Unhandled native OS: $os")
+    get() = when (family) {
+        Family.LINUX -> when (architecture) {
+            Architecture.X64 -> "lib/x86_64-linux-gnu"
+            Architecture.ARM64 -> "lib/aarch64-linux-gnu"
+            Architecture.ARM32 -> "lib/arm-linux-gnueabihf"
+            else -> error("Unhandled native architecture: $arch")
         }
+        Family.MINGW -> "lib"
+        else -> error("Unhandled native OS: $os")
     }
 
 private val String.isWindows: Boolean
     get() = startsWith("mingw")
 
 private val String.os: String
-    get() {
-        return when {
-            startsWith("linux") -> "linux"
-            startsWith("mingw") -> "windows"
-            else -> error("Unhandled native OS: $this")
-        }
+    get() = when {
+        startsWith("linux") -> "linux"
+        startsWith("mingw") -> "windows"
+        else -> error("Unhandled native OS: $this")
     }
 
 private val String.arch: String
-    get() {
-        return when {
-            endsWith("X64") -> "x86_64"
-            endsWith("Arm64") -> "arm64"
-            endsWith("Arm32") -> "armhf"
-            else -> error("Unhandled native architecture: $this")
-        }
+    get() = when {
+        endsWith("X64") -> "x86_64"
+        endsWith("Arm64") -> "arm64"
+        endsWith("Arm32") -> "armhf"
+        else -> error("Unhandled native architecture: $this")
     }
 
 private fun libcblitePath(os: String, arch: String, version: String): String =

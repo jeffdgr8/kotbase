@@ -2,25 +2,22 @@ package kotbase
 
 import kotbase.ext.toDate
 import kotlinx.datetime.Instant
+import com.couchbase.lite.MutableDocument as CBLMutableDocument
 
 public actual class MutableDocument
-internal constructor(override val actual: com.couchbase.lite.MutableDocument) : Document(actual) {
+internal constructor(override val actual: CBLMutableDocument) : Document(actual) {
 
-    public actual constructor() : this(com.couchbase.lite.MutableDocument())
+    public actual constructor() : this(CBLMutableDocument())
 
-    public actual constructor(id: String?) : this(com.couchbase.lite.MutableDocument(id))
+    public actual constructor(id: String?) : this(CBLMutableDocument(id))
 
-    public actual constructor(data: Map<String, Any?>) : this(
-        com.couchbase.lite.MutableDocument(data.actualIfDelegated())
-    )
+    public actual constructor(data: Map<String, Any?>) : this(CBLMutableDocument(data.actualIfDelegated()))
 
     public actual constructor(id: String?, data: Map<String, Any?>) : this(
-        com.couchbase.lite.MutableDocument(id, data.actualIfDelegated())
+        CBLMutableDocument(id, data.actualIfDelegated())
     )
 
-    public actual constructor(id: String?, json: String) : this(
-        com.couchbase.lite.MutableDocument(id, json)
-    )
+    public actual constructor(id: String?, json: String) : this(CBLMutableDocument(id, json))
 
     actual override fun toMutable(): MutableDocument =
         MutableDocument(actual.toMutable())

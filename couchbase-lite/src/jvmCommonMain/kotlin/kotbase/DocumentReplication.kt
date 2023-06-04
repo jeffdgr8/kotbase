@@ -1,13 +1,13 @@
 package kotbase
 
-import com.couchbase.lite.DocumentReplication
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.DocumentReplication as CBLDocumentReplication
 
 public actual class DocumentReplication
 internal constructor(
-    actual: com.couchbase.lite.DocumentReplication,
+    actual: CBLDocumentReplication,
     public actual val replicator: Replicator
-) : DelegatedClass<DocumentReplication>(actual) {
+) : DelegatedClass<CBLDocumentReplication>(actual) {
 
     public actual val isPush: Boolean
         get() = actual.isPush

@@ -8,11 +8,10 @@ import kotbase.*
  * @param properties The properties to be indexed
  * @return The value index
  */
-public fun valueIndex(vararg properties: String): ValueIndex {
-    return IndexBuilder.valueIndex(
+public fun valueIndex(vararg properties: String): ValueIndex =
+    IndexBuilder.valueIndex(
         *properties.map { ValueIndexItem.property(it) }.toTypedArray()
     )
-}
 
 /**
  * Create a full-text search index with the given properties to be
@@ -21,8 +20,7 @@ public fun valueIndex(vararg properties: String): ValueIndex {
  * @param properties Properties used to perform the match operation against with.
  * @return The full-text search index
  */
-public fun fullTextIndex(vararg properties: String): FullTextIndex {
-    return IndexBuilder.fullTextIndex(
+public fun fullTextIndex(vararg properties: String): FullTextIndex =
+    IndexBuilder.fullTextIndex(
         *properties.map { FullTextIndexItem.property(it) }.toTypedArray()
     )
-}

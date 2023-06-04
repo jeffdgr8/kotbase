@@ -1,13 +1,11 @@
 package kotbase
 
-import com.couchbase.lite.Joins
 import kotbase.base.DelegatedClass
 import kotbase.base.actuals
+import com.couchbase.lite.Joins as CBLJoins
 
 public actual class Joins
-internal constructor(actual: com.couchbase.lite.Joins) :
-    DelegatedClass<Joins>(actual),
-    Query by DelegatedQuery(actual) {
+internal constructor(actual: CBLJoins) : DelegatedClass<CBLJoins>(actual), Query by DelegatedQuery(actual) {
 
     public actual fun where(expression: Expression): Where =
         Where(actual.where(expression.actual))

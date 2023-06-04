@@ -28,25 +28,21 @@ public fun <R, E : Exception> wrapError(
 public fun <R> wrapError(action: (error: CPointer<ObjCObjectVar<NSError?>>) -> R): R =
     wrapError(NSError::toException, action)
 
-public fun Exception.toNSError(): NSError {
-    return when (this) {
-        is NSErrorException -> nsError
-        else -> NSError(
-            "Kotlin",
-            0,
-            mapOf(
-                NSLocalizedDescriptionKey to message,
-                NSUnderlyingErrorKey to this
-            )
+public fun Exception.toNSError(): NSError = when (this) {
+    is NSErrorException -> nsError
+    else -> NSError(
+        "Kotlin",
+        0,
+        mapOf(
+            NSLocalizedDescriptionKey to message,
+            NSUnderlyingErrorKey to this
         )
-    }
+    )
 }
 
-public fun NSError.toException(): Exception {
-    return when (val cause = userInfo[NSUnderlyingErrorKey]) {
-        is Exception -> cause
-        else -> NSErrorException(this)
-    }
+public fun NSError.toException(): Exception = when (val cause = userInfo[NSUnderlyingErrorKey]) {
+    is Exception -> cause
+    else -> NSErrorException(this)
 }
 
 public class NSErrorException(public val nsError: NSError) : Exception(nsError.localizedDescription)

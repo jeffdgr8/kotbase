@@ -3,10 +3,10 @@ package kotbase
 import kotbase.base.DelegatedClass
 import kotbase.ext.toKotlinInstant
 import kotlinx.datetime.Instant
+import com.couchbase.lite.Result as CBLResult
 
 public actual class Result
-internal constructor(actual: com.couchbase.lite.Result) :
-    DelegatedClass<com.couchbase.lite.Result>(actual), Iterable<String> {
+internal constructor(actual: CBLResult) : DelegatedClass<CBLResult>(actual), Iterable<String> {
 
     public actual val count: Int
         get() = actual.count()
@@ -102,4 +102,4 @@ internal constructor(actual: com.couchbase.lite.Result) :
         actual.iterator()
 }
 
-internal fun com.couchbase.lite.Result.asResult() = Result(this)
+internal fun CBLResult.asResult() = Result(this)

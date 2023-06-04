@@ -1,11 +1,10 @@
 package kotbase
 
-import com.couchbase.lite.ReplicatorStatus
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.ReplicatorStatus as CBLReplicatorStatus
 
 public actual class ReplicatorStatus
-internal constructor(actual: com.couchbase.lite.ReplicatorStatus) :
-    DelegatedClass<ReplicatorStatus>(actual) {
+internal constructor(actual: CBLReplicatorStatus) : DelegatedClass<CBLReplicatorStatus>(actual) {
 
     public actual val activityLevel: ReplicatorActivityLevel by lazy {
         ReplicatorActivityLevel.from(actual.activityLevel)

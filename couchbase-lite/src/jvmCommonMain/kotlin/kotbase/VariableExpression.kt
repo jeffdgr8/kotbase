@@ -1,5 +1,6 @@
 package kotbase
 
+import com.couchbase.lite.VariableExpression as CBLVariableExpression
+
 public actual class VariableExpression
-internal constructor(override val actual: com.couchbase.lite.VariableExpression) :
-    Expression(actual)
+internal constructor(override val actual: CBLVariableExpression) : Expression(actual)

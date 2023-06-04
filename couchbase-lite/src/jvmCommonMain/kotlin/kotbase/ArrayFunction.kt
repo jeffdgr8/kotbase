@@ -1,10 +1,12 @@
 package kotbase
 
+import com.couchbase.lite.ArrayFunction as CBLArrayFunction
+
 public actual object ArrayFunction {
 
     public actual fun contains(expression: Expression, value: Expression): Expression =
-        Expression(com.couchbase.lite.ArrayFunction.contains(expression.actual, value.actual))
+        Expression(CBLArrayFunction.contains(expression.actual, value.actual))
 
     public actual fun length(expression: Expression): Expression =
-        Expression(com.couchbase.lite.ArrayFunction.length(expression.actual))
+        Expression(CBLArrayFunction.length(expression.actual))
 }

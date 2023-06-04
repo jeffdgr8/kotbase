@@ -1,11 +1,10 @@
 package kotbase
 
-import com.couchbase.lite.Log
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Log as CBLLog
 
 public actual class Log
-internal constructor(actual: com.couchbase.lite.Log) :
-    DelegatedClass<Log>(actual) {
+internal constructor(actual: CBLLog) : DelegatedClass<CBLLog>(actual) {
 
     public actual val console: ConsoleLogger = ConsoleLogger(actual.console)
         get() {

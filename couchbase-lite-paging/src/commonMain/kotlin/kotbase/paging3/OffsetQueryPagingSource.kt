@@ -17,8 +17,7 @@
 /*
  * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonMain/kotlin/app/cash/sqldelight/paging3/OffsetQueryPagingSource.kt
  * Modified by Jeff Lockhart
- *
- * - Replace SQLDelight database with Couchbase Lite KMP
+ * - Replace SQLDelight database with Kotbase
  */
 
 @file:Suppress(

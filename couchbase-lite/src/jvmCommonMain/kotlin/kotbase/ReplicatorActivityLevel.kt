@@ -1,5 +1,7 @@
 package kotbase
 
+import com.couchbase.lite.ReplicatorActivityLevel as CBLReplicatorActivityLevel
+
 public actual enum class ReplicatorActivityLevel {
     STOPPED,
     OFFLINE,
@@ -7,25 +9,23 @@ public actual enum class ReplicatorActivityLevel {
     IDLE,
     BUSY;
 
-    public val actual: com.couchbase.lite.ReplicatorActivityLevel
+    public val actual: CBLReplicatorActivityLevel
         get() = when (this) {
-            STOPPED -> com.couchbase.lite.ReplicatorActivityLevel.STOPPED
-            OFFLINE -> com.couchbase.lite.ReplicatorActivityLevel.OFFLINE
-            CONNECTING -> com.couchbase.lite.ReplicatorActivityLevel.CONNECTING
-            IDLE -> com.couchbase.lite.ReplicatorActivityLevel.IDLE
-            BUSY -> com.couchbase.lite.ReplicatorActivityLevel.BUSY
+            STOPPED -> CBLReplicatorActivityLevel.STOPPED
+            OFFLINE -> CBLReplicatorActivityLevel.OFFLINE
+            CONNECTING -> CBLReplicatorActivityLevel.CONNECTING
+            IDLE -> CBLReplicatorActivityLevel.IDLE
+            BUSY -> CBLReplicatorActivityLevel.BUSY
         }
 
     internal companion object {
 
-        internal fun from(activityLevel: com.couchbase.lite.ReplicatorActivityLevel): ReplicatorActivityLevel {
-            return when (activityLevel) {
-                com.couchbase.lite.ReplicatorActivityLevel.STOPPED -> STOPPED
-                com.couchbase.lite.ReplicatorActivityLevel.OFFLINE -> OFFLINE
-                com.couchbase.lite.ReplicatorActivityLevel.CONNECTING -> CONNECTING
-                com.couchbase.lite.ReplicatorActivityLevel.IDLE -> IDLE
-                com.couchbase.lite.ReplicatorActivityLevel.BUSY -> BUSY
-            }
+        internal fun from(activityLevel: CBLReplicatorActivityLevel): ReplicatorActivityLevel = when (activityLevel) {
+            CBLReplicatorActivityLevel.STOPPED -> STOPPED
+            CBLReplicatorActivityLevel.OFFLINE -> OFFLINE
+            CBLReplicatorActivityLevel.CONNECTING -> CONNECTING
+            CBLReplicatorActivityLevel.IDLE -> IDLE
+            CBLReplicatorActivityLevel.BUSY -> BUSY
         }
     }
 }

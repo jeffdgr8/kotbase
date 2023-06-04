@@ -1,28 +1,29 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.ReplicatorConfiguration as CBLReplicatorConfiguration
 
 public actual class ReplicatorConfiguration
 private constructor(
     public actual val database: Database,
     public actual val target: Endpoint,
-    actual: com.couchbase.lite.ReplicatorConfiguration,
+    actual: CBLReplicatorConfiguration,
     authenticator: Authenticator? = null,
     conflictResolver: ConflictResolver? = null,
     pullFilter: ReplicationFilter? = null,
     pushFilter: ReplicationFilter? = null
-) : DelegatedClass<com.couchbase.lite.ReplicatorConfiguration>(actual) {
+) : DelegatedClass<CBLReplicatorConfiguration>(actual) {
 
     public actual constructor(database: Database, target: Endpoint) : this(
         database,
         target,
-        com.couchbase.lite.ReplicatorConfiguration(database.actual, target.actual)
+        CBLReplicatorConfiguration(database.actual, target.actual)
     )
 
     public actual constructor(config: ReplicatorConfiguration) : this(
         config.database,
         config.target,
-        com.couchbase.lite.ReplicatorConfiguration(config.actual),
+        CBLReplicatorConfiguration(config.actual),
         config.authenticator,
         config.conflictResolver,
         config.pullFilter,

@@ -4,17 +4,16 @@ package kotbase
 
 import kotbase.ext.toDate
 import kotlinx.datetime.Instant
+import com.couchbase.lite.MutableArray as CBLMutableArray
 
 public actual class MutableArray
-internal constructor(override val actual: com.couchbase.lite.MutableArray) : Array(actual) {
+internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
-    public actual constructor() : this(com.couchbase.lite.MutableArray())
+    public actual constructor() : this(CBLMutableArray())
 
-    public actual constructor(data: List<Any?>) : this(
-        com.couchbase.lite.MutableArray(data.actualIfDelegated())
-    )
+    public actual constructor(data: List<Any?>) : this(CBLMutableArray(data.actualIfDelegated()))
 
-    public actual constructor(json: String) : this(com.couchbase.lite.MutableArray(json))
+    public actual constructor(json: String) : this(CBLMutableArray(json))
 
     public actual fun setData(data: List<Any?>): MutableArray {
         actual.setData(data.actualIfDelegated())
@@ -218,4 +217,4 @@ internal constructor(override val actual: com.couchbase.lite.MutableArray) : Arr
         actual.getDictionary(index)?.asMutableDictionary()
 }
 
-internal fun com.couchbase.lite.MutableArray.asMutableArray() = MutableArray(this)
+internal fun CBLMutableArray.asMutableArray() = MutableArray(this)

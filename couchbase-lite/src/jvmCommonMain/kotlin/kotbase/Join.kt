@@ -1,13 +1,13 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Join as CBLJoin
 
 public actual open class Join
-private constructor(actual: com.couchbase.lite.Join) :
-    DelegatedClass<com.couchbase.lite.Join>(actual) {
+private constructor(actual: CBLJoin) : DelegatedClass<CBLJoin>(actual) {
 
     public actual class On
-    internal constructor(override val actual: com.couchbase.lite.Join.On) : Join(actual) {
+    internal constructor(override val actual: CBLJoin.On) : Join(actual) {
 
         public actual fun on(expression: Expression): Join {
             actual.on(expression.actual)
@@ -18,18 +18,18 @@ private constructor(actual: com.couchbase.lite.Join) :
     public actual companion object {
 
         public actual fun join(datasource: DataSource): On =
-            On(com.couchbase.lite.Join.join(datasource.actual))
+            On(CBLJoin.join(datasource.actual))
 
         public actual fun innerJoin(datasource: DataSource): On =
-            On(com.couchbase.lite.Join.innerJoin(datasource.actual))
+            On(CBLJoin.innerJoin(datasource.actual))
 
         public actual fun leftJoin(datasource: DataSource): On =
-            On(com.couchbase.lite.Join.leftJoin(datasource.actual))
+            On(CBLJoin.leftJoin(datasource.actual))
 
         public actual fun leftOuterJoin(datasource: DataSource): On =
-            On(com.couchbase.lite.Join.leftOuterJoin(datasource.actual))
+            On(CBLJoin.leftOuterJoin(datasource.actual))
 
         public actual fun crossJoin(datasource: DataSource): Join =
-            Join(com.couchbase.lite.Join.crossJoin(datasource.actual))
+            Join(CBLJoin.crossJoin(datasource.actual))
     }
 }

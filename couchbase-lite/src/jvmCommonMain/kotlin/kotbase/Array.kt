@@ -5,10 +5,10 @@ package kotbase
 import kotbase.base.DelegatedClass
 import kotbase.ext.toKotlinInstant
 import kotlinx.datetime.Instant
+import com.couchbase.lite.Array as CBLArray
 
 public actual open class Array
-internal constructor(actual: com.couchbase.lite.Array) :
-    DelegatedClass<com.couchbase.lite.Array>(actual), Iterable<Any?> {
+internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Iterable<Any?> {
 
     public actual fun toMutable(): MutableArray =
         MutableArray(actual.toMutable())
@@ -58,16 +58,14 @@ internal constructor(actual: com.couchbase.lite.Array) :
     public actual fun toJSON(): String =
         actual.toJSON()
 
-    override operator fun iterator(): Iterator<Any?> {
-        return object : Iterator<Any?> {
+    override operator fun iterator(): Iterator<Any?> = object : Iterator<Any?> {
 
-            private val itr = actual.iterator()
+        private val itr = actual.iterator()
 
-            override fun hasNext(): Boolean = itr.hasNext()
+        override fun hasNext(): Boolean = itr.hasNext()
 
-            override fun next(): Any? = itr.next()?.delegateIfNecessary()
-        }
+        override fun next(): Any? = itr.next()?.delegateIfNecessary()
     }
 }
 
-internal fun com.couchbase.lite.Array.asArray() = Array(this)
+internal fun CBLArray.asArray() = Array(this)

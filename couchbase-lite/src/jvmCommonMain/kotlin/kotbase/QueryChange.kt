@@ -1,11 +1,10 @@
 package kotbase
 
-import com.couchbase.lite.QueryChange
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.QueryChange as CBLQueryChange
 
 public actual class QueryChange
-internal constructor(actual: com.couchbase.lite.QueryChange) :
-    DelegatedClass<QueryChange>(actual) {
+internal constructor(actual: CBLQueryChange) : DelegatedClass<CBLQueryChange>(actual) {
 
     public actual val query: Query by lazy {
         actual.query.asQuery()

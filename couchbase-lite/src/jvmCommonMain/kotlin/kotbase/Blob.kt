@@ -7,23 +7,19 @@ import okio.source
 import java.io.File
 import java.net.MalformedURLException
 import java.net.URL
+import com.couchbase.lite.Blob as CBLBlob
 
 public actual class Blob
-internal constructor(actual: com.couchbase.lite.Blob) :
-    DelegatedClass<com.couchbase.lite.Blob>(actual) {
+internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
 
-    public actual constructor(contentType: String, content: ByteArray) : this(
-        com.couchbase.lite.Blob(contentType, content)
-    )
+    public actual constructor(contentType: String, content: ByteArray) : this(CBLBlob(contentType, content))
 
     public actual constructor(contentType: String, stream: Source) : this(
-        com.couchbase.lite.Blob(contentType, stream.buffer().inputStream())
+        CBLBlob(contentType, stream.buffer().inputStream())
     )
 
     @Throws(CouchbaseLiteException::class)
-    public actual constructor(contentType: String, fileURL: String) : this(
-        com.couchbase.lite.Blob(contentType, fileURL.toFileUrl())
-    )
+    public actual constructor(contentType: String, fileURL: String) : this(CBLBlob(contentType, fileURL.toFileUrl()))
 
     public actual val content: ByteArray?
         get() = actual.content
@@ -49,11 +45,11 @@ internal constructor(actual: com.couchbase.lite.Blob) :
     public actual companion object {
 
         public actual fun isBlob(props: Map<String, Any?>?): Boolean =
-            com.couchbase.lite.Blob.isBlob(props)
+            CBLBlob.isBlob(props)
     }
 }
 
-internal fun com.couchbase.lite.Blob.asBlob() = Blob(this)
+internal fun CBLBlob.asBlob() = Blob(this)
 
 private fun String.toFileUrl(): URL {
     return try {

@@ -1,21 +1,17 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.LogFileConfiguration as CBLLogFileConfiguration
 
 public actual class LogFileConfiguration
-internal constructor(actual: com.couchbase.lite.LogFileConfiguration) :
-    DelegatedClass<com.couchbase.lite.LogFileConfiguration>(actual) {
+internal constructor(actual: CBLLogFileConfiguration) : DelegatedClass<CBLLogFileConfiguration>(actual) {
 
-    public actual constructor(directory: String) : this(
-        com.couchbase.lite.LogFileConfiguration(directory)
-    )
+    public actual constructor(directory: String) : this(CBLLogFileConfiguration(directory))
 
-    public actual constructor(config: LogFileConfiguration) : this(
-        com.couchbase.lite.LogFileConfiguration(config.actual)
-    )
+    public actual constructor(config: LogFileConfiguration) : this(CBLLogFileConfiguration(config.actual))
 
     public actual constructor(directory: String, config: LogFileConfiguration?) : this(
-        com.couchbase.lite.LogFileConfiguration(directory, config?.actual)
+        CBLLogFileConfiguration(directory, config?.actual)
     )
 
     public actual fun setUsePlaintext(usePlaintext: Boolean): LogFileConfiguration {
@@ -55,5 +51,5 @@ internal constructor(actual: com.couchbase.lite.LogFileConfiguration) :
         get() = actual.directory
 }
 
-internal fun com.couchbase.lite.LogFileConfiguration.asLogFileConfiguration() =
+internal fun CBLLogFileConfiguration.asLogFileConfiguration() =
     LogFileConfiguration(this)

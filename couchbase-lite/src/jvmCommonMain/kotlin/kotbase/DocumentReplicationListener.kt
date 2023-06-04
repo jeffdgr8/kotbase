@@ -2,10 +2,9 @@
 
 package kotbase
 
-internal fun DocumentReplicationListener.convert(
-    replicator: Replicator
-): com.couchbase.lite.DocumentReplicationListener {
-    return com.couchbase.lite.DocumentReplicationListener { replication ->
+import com.couchbase.lite.DocumentReplicationListener as CBLDocumentReplicationListener
+
+internal fun DocumentReplicationListener.convert(replicator: Replicator): CBLDocumentReplicationListener =
+    CBLDocumentReplicationListener { replication ->
         invoke(DocumentReplication(replication, replicator))
     }
-}

@@ -2,10 +2,11 @@
 
 package kotbase
 
+import com.couchbase.lite.ReplicatorChangeListener as CBLReplicatorChangeListener
+
 internal fun ReplicatorChangeListener.convert(
     replicator: Replicator
-): com.couchbase.lite.ReplicatorChangeListener {
-    return com.couchbase.lite.ReplicatorChangeListener { change ->
+): CBLReplicatorChangeListener =
+    CBLReplicatorChangeListener { change ->
         invoke(ReplicatorChange(change, replicator))
     }
-}

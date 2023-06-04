@@ -17,7 +17,6 @@
 /*
  * Copied from https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:paging/paging-runtime/src/main/java/androidx/paging/NullPaddedListDiffHelper.kt
  * Modified by Jeff Lockhart
- *
  * - Use Multiplatform Paging
  */
 

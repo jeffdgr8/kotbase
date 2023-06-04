@@ -160,13 +160,11 @@ internal constructor(
      * value. Returns null if the value is null, or the value is not an array.
      */
     override var array: MutableArray?
-        get() {
-            return when (parent) {
-                is MutableDocument -> parent.getArray(key!!)
-                is MutableDictionary -> parent.getArray(key!!)
-                is MutableArray -> parent.getArray(index!!)
-                else -> null
-            }
+        get() = when (parent) {
+            is MutableDocument -> parent.getArray(key!!)
+            is MutableDictionary -> parent.getArray(key!!)
+            is MutableArray -> parent.getArray(index!!)
+            else -> null
         }
         set(value) {
             when (parent) {
@@ -181,13 +179,11 @@ internal constructor(
      * value. Returns null if the value is null, or the value is not a dictionary.
      */
     override var dictionary: MutableDictionary?
-        get() {
-            return when (parent) {
-                is MutableDocument -> parent.getDictionary(key!!)
-                is MutableDictionary -> parent.getDictionary(key!!)
-                is MutableArray -> parent.getDictionary(index!!)
-                else -> null
-            }
+        get() = when (parent) {
+            is MutableDocument -> parent.getDictionary(key!!)
+            is MutableDictionary -> parent.getDictionary(key!!)
+            is MutableArray -> parent.getDictionary(index!!)
+            else -> null
         }
         set(value) {
             when (parent) {

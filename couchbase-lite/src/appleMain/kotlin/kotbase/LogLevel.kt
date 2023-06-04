@@ -23,16 +23,14 @@ public actual enum class LogLevel {
 
     internal companion object {
 
-        internal fun from(logLevel: CBLLogLevel): LogLevel {
-            return when (logLevel) {
-                kCBLLogLevelDebug -> DEBUG
-                kCBLLogLevelVerbose -> VERBOSE
-                kCBLLogLevelInfo -> INFO
-                kCBLLogLevelWarning -> WARNING
-                kCBLLogLevelError -> ERROR
-                kCBLLogLevelNone -> NONE
-                else -> error("Unexpected CBLLogLevel")
-            }
+        internal fun from(logLevel: CBLLogLevel): LogLevel = when (logLevel) {
+            kCBLLogLevelDebug -> DEBUG
+            kCBLLogLevelVerbose -> VERBOSE
+            kCBLLogLevelInfo -> INFO
+            kCBLLogLevelWarning -> WARNING
+            kCBLLogLevelError -> ERROR
+            kCBLLogLevelNone -> NONE
+            else -> error("Unexpected CBLLogLevel")
         }
     }
 }

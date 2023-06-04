@@ -1,12 +1,10 @@
 package kotbase
 
-import com.couchbase.lite.OrderBy
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.OrderBy as CBLOrderBy
 
 public actual class OrderBy
-internal constructor(actual: com.couchbase.lite.OrderBy) :
-    DelegatedClass<OrderBy>(actual),
-    Query by DelegatedQuery(actual) {
+internal constructor(actual: CBLOrderBy) : DelegatedClass<CBLOrderBy>(actual), Query by DelegatedQuery(actual) {
 
     public actual fun limit(limit: Expression): Limit =
         Limit(actual.limit(limit.actual))

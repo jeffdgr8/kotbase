@@ -24,11 +24,9 @@ actual abstract class PlatformTest {
     }
 
     actual val tmpDir: String
-        get() {
-            return FileUtils.verifyDir(
-                NSFileManager.defaultManager.temporaryDirectory.path!! + SCRATCH_DIR_NAME
-            )
-        }
+        get() = FileUtils.verifyDir(
+            NSFileManager.defaultManager.temporaryDirectory.path!! + SCRATCH_DIR_NAME
+        )
 
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         dispatch_after(

@@ -21,8 +21,8 @@ public actual enum class ReplicatorActivityLevel {
 
     internal companion object {
 
-        internal fun from(activityLevel: CBLReplicatorActivityLevel): ReplicatorActivityLevel {
-            return when (activityLevel.toUInt()) {
+        internal fun from(activityLevel: CBLReplicatorActivityLevel): ReplicatorActivityLevel =
+            when (activityLevel.toUInt()) {
                 kCBLReplicatorStopped -> STOPPED
                 kCBLReplicatorOffline -> OFFLINE
                 kCBLReplicatorConnecting -> CONNECTING
@@ -30,6 +30,5 @@ public actual enum class ReplicatorActivityLevel {
                 kCBLReplicatorBusy -> BUSY
                 else -> error("Unexpected CBLReplicatorActivityLevel")
             }
-        }
     }
 }

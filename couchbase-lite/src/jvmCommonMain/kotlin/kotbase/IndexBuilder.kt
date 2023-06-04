@@ -1,12 +1,13 @@
 package kotbase
 
 import kotbase.base.actuals
+import com.couchbase.lite.IndexBuilder as CBLIndexBuilder
 
 public actual object IndexBuilder {
 
     public actual fun valueIndex(vararg items: ValueIndexItem): ValueIndex =
-        ValueIndex(com.couchbase.lite.IndexBuilder.valueIndex(*items.actuals()))
+        ValueIndex(CBLIndexBuilder.valueIndex(*items.actuals()))
 
     public actual fun fullTextIndex(vararg items: FullTextIndexItem): FullTextIndex =
-        FullTextIndex(com.couchbase.lite.IndexBuilder.fullTextIndex(*items.actuals()))
+        FullTextIndex(CBLIndexBuilder.fullTextIndex(*items.actuals()))
 }

@@ -2,8 +2,9 @@
 
 package kotbase
 
-internal fun DatabaseChangeListener.convert(): com.couchbase.lite.DatabaseChangeListener {
-    return com.couchbase.lite.DatabaseChangeListener { change ->
+import com.couchbase.lite.DatabaseChangeListener as CBLDatabaseChangeListener
+
+internal fun DatabaseChangeListener.convert(): CBLDatabaseChangeListener =
+    CBLDatabaseChangeListener { change ->
         invoke(DatabaseChange(change))
     }
-}

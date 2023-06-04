@@ -1,10 +1,13 @@
+@file:Suppress("ACTUAL_WITHOUT_EXPECT")
+
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Result as CBLResult
+import com.couchbase.lite.ResultSet as CBLResultSet
 
 public actual class ResultSet
-internal constructor(actual: com.couchbase.lite.ResultSet) :
-    DelegatedClass<com.couchbase.lite.ResultSet>(actual), Iterable<Result>, AutoCloseable {
+internal constructor(actual: CBLResultSet) : DelegatedClass<CBLResultSet>(actual), Iterable<Result>, AutoCloseable {
 
     public actual operator fun next(): Result? =
         actual.next()?.asResult()
@@ -12,18 +15,16 @@ internal constructor(actual: com.couchbase.lite.ResultSet) :
     public actual fun allResults(): List<Result> =
         actual.allResults().map { Result(it) }
 
-    actual override operator fun iterator(): Iterator<Result> {
-        return object : Iterator<Result> {
+    actual override operator fun iterator(): Iterator<Result> = object : Iterator<Result> {
 
-            private val iter: Iterator<com.couchbase.lite.Result> =
-                actual.iterator()
+        private val iter: Iterator<CBLResult> =
+            actual.iterator()
 
-            override fun hasNext(): Boolean =
-                iter.hasNext()
+        override fun hasNext(): Boolean =
+            iter.hasNext()
 
-            override fun next(): Result =
-                Result(iter.next())
-        }
+        override fun next(): Result =
+            Result(iter.next())
     }
 
     override fun close() {
@@ -31,4 +32,4 @@ internal constructor(actual: com.couchbase.lite.ResultSet) :
     }
 }
 
-internal fun com.couchbase.lite.ResultSet.asResultSet() = ResultSet(this)
+internal fun CBLResultSet.asResultSet() = ResultSet(this)

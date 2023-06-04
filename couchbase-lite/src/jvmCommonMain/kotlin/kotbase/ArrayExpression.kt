@@ -1,16 +1,18 @@
 package kotbase
 
+import com.couchbase.lite.ArrayExpression as CBLArrayExpression
+
 public actual object ArrayExpression {
 
     public actual fun any(variable: VariableExpression): ArrayExpressionIn =
-        ArrayExpressionIn(com.couchbase.lite.ArrayExpression.any(variable.actual))
+        ArrayExpressionIn(CBLArrayExpression.any(variable.actual))
 
     public actual fun every(variable: VariableExpression): ArrayExpressionIn =
-        ArrayExpressionIn(com.couchbase.lite.ArrayExpression.every(variable.actual))
+        ArrayExpressionIn(CBLArrayExpression.every(variable.actual))
 
     public actual fun anyAndEvery(variable: VariableExpression): ArrayExpressionIn =
-        ArrayExpressionIn(com.couchbase.lite.ArrayExpression.anyAndEvery(variable.actual))
+        ArrayExpressionIn(CBLArrayExpression.anyAndEvery(variable.actual))
 
     public actual fun variable(name: String): VariableExpression =
-        VariableExpression(com.couchbase.lite.ArrayExpression.variable(name))
+        VariableExpression(CBLArrayExpression.variable(name))
 }

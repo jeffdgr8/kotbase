@@ -11,9 +11,7 @@ object StringUtils {
     val ALPHANUMERIC = NUMERIC + ALPHA + ALPHA.lowercase()
     private val CHARS = ALPHANUMERIC.toCharArray()
 
-    fun getUniqueName(prefix: String, len: Int): String {
-        return prefix + '_' + randomString(len)
-    }
+    fun getUniqueName(prefix: String, len: Int): String = prefix + '_' + randomString(len)
 
     fun randomString(len: Int): String {
         val buf = CharArray(len)

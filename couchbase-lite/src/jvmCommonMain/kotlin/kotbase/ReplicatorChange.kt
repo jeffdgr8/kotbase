@@ -1,13 +1,13 @@
 package kotbase
 
-import com.couchbase.lite.ReplicatorChange
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.ReplicatorChange as CBLReplicatorChange
 
 public actual class ReplicatorChange
 internal constructor(
-    actual: com.couchbase.lite.ReplicatorChange,
+    actual: CBLReplicatorChange,
     public actual val replicator: Replicator
-) : DelegatedClass<ReplicatorChange>(actual) {
+) : DelegatedClass<CBLReplicatorChange>(actual) {
 
     public actual val status: ReplicatorStatus by lazy {
         ReplicatorStatus(actual.status)

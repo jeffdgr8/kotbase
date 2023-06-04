@@ -23,15 +23,13 @@ public actual enum class LogDomain {
         public actual val ALL_DOMAINS: Set<LogDomain> =
             values().toSet()
 
-        internal fun from(logDomain: CBLLogDomain): LogDomain {
-            return when (logDomain) {
-                kCBLLogDomainDatabase -> DATABASE
-                kCBLLogDomainQuery -> QUERY
-                kCBLLogDomainReplicator -> REPLICATOR
-                kCBLLogDomainNetwork -> NETWORK
-                kCBLLogDomainListener -> LISTENER
-                else -> error("Unexpected CBLLogDomain")
-            }
+        internal fun from(logDomain: CBLLogDomain): LogDomain = when (logDomain) {
+            kCBLLogDomainDatabase -> DATABASE
+            kCBLLogDomainQuery -> QUERY
+            kCBLLogDomainReplicator -> REPLICATOR
+            kCBLLogDomainNetwork -> NETWORK
+            kCBLLogDomainListener -> LISTENER
+            else -> error("Unexpected CBLLogDomain")
         }
     }
 }

@@ -1,11 +1,10 @@
 package kotbase
 
-import com.couchbase.lite.DatabaseChange
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.DatabaseChange as CBLDatabaseChange
 
 public actual class DatabaseChange
-internal constructor(actual: com.couchbase.lite.DatabaseChange) :
-    DelegatedClass<DatabaseChange>(actual) {
+internal constructor(actual: CBLDatabaseChange) : DelegatedClass<CBLDatabaseChange>(actual) {
 
     public actual val database: Database by lazy {
         Database(actual.database)

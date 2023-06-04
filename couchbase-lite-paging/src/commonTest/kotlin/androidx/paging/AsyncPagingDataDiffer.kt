@@ -17,7 +17,6 @@
 /*
  * Copied from https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:paging/paging-runtime/src/main/java/androidx/paging/AsyncPagingDataDiffer.kt
  * Modified by Jeff Lockhart
- *
  * - Use Multiplatform Paging
  * - Replace JVM AtomicInteger
  * - Removed Android-specific functions and annotations

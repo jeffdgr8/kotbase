@@ -1,13 +1,13 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Ordering as CBLOrdering
 
 public actual abstract class Ordering
-private constructor(actual: com.couchbase.lite.Ordering) :
-    DelegatedClass<com.couchbase.lite.Ordering>(actual) {
+private constructor(actual: CBLOrdering) : DelegatedClass<CBLOrdering>(actual) {
 
     public actual class SortOrder
-    internal constructor(override val actual: com.couchbase.lite.Ordering.SortOrder) :
+    internal constructor(override val actual: CBLOrdering.SortOrder) :
         Ordering(actual) {
 
         public actual fun ascending(): Ordering {
@@ -24,9 +24,9 @@ private constructor(actual: com.couchbase.lite.Ordering) :
     public actual companion object {
 
         public actual fun property(property: String): SortOrder =
-            SortOrder(com.couchbase.lite.Ordering.property(property))
+            SortOrder(CBLOrdering.property(property))
 
         public actual fun expression(expression: Expression): SortOrder =
-            SortOrder(com.couchbase.lite.Ordering.expression(expression.actual))
+            SortOrder(CBLOrdering.expression(expression.actual))
     }
 }

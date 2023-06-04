@@ -1,14 +1,13 @@
 package kotbase
 
-import com.couchbase.lite.URLEndpoint
 import kotbase.base.DelegatedClass
 import java.net.URI
+import com.couchbase.lite.URLEndpoint as CBLURLEndpoint
 
 public actual class URLEndpoint
-internal constructor(override val actual: com.couchbase.lite.URLEndpoint) :
-    DelegatedClass<URLEndpoint>(actual), Endpoint {
+internal constructor(override val actual: CBLURLEndpoint) : DelegatedClass<CBLURLEndpoint>(actual), Endpoint {
 
-    public actual constructor(url: String) : this(com.couchbase.lite.URLEndpoint(URI(url)))
+    public actual constructor(url: String) : this(CBLURLEndpoint(URI(url)))
 
     public actual val url: String
         get() = actual.url.toString()

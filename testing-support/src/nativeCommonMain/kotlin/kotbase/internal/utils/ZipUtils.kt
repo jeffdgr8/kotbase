@@ -20,10 +20,8 @@ actual object ZipUtils {
     }
 }
 
-fun Source.asyncStream(): AsyncStream {
-    return use { source ->
-        source.buffer().use { buffer ->
-            buffer.readByteArray().openAsync()
-        }
+fun Source.asyncStream(): AsyncStream = use { source ->
+    source.buffer().use { buffer ->
+        buffer.readByteArray().openAsync()
     }
 }

@@ -16,8 +16,7 @@
 
 /*
  * Modified by Jeff Lockhart
- *
- * - Use kotbase package for couchbase-lite-kmp Kotlin Multiplatform bindings
+ * - Use kotbase package
  * - Resolve explicitApiWarning() requirements
  * - Add support for additional Query subclasses
  */

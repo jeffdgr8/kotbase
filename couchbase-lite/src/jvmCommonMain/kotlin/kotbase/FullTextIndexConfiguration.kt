@@ -1,12 +1,11 @@
 package kotbase
 
-public actual class FullTextIndexConfiguration
-internal constructor(override val actual: com.couchbase.lite.FullTextIndexConfiguration) :
-    IndexConfiguration(actual) {
+import com.couchbase.lite.FullTextIndexConfiguration as CBLFullTextIndexConfiguration
 
-    public actual constructor(vararg expressions: String) : this(
-        com.couchbase.lite.FullTextIndexConfiguration(*expressions)
-    )
+public actual class FullTextIndexConfiguration
+internal constructor(override val actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
+
+    public actual constructor(vararg expressions: String) : this(CBLFullTextIndexConfiguration(*expressions))
 
     public actual fun setLanguage(language: String?): FullTextIndexConfiguration {
         actual.language = language

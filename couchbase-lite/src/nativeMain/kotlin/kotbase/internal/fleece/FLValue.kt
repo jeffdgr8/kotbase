@@ -9,34 +9,30 @@ import libcblite.*
 private inline val FLValue.type: FLValueType
     get() = FLValue_GetType(this)
 
-internal fun FLValue.toNative(ctxt: DbContext?): Any? {
-    return when (type) {
-        kFLArray -> asArray(ctxt)
-        kFLDict -> {
-            if (FLValue_IsBlob(this)) {
-                asBlob(ctxt)
-            } else {
-                asDictionary(ctxt)
-            }
+internal fun FLValue.toNative(ctxt: DbContext?): Any? = when (type) {
+    kFLArray -> asArray(ctxt)
+    kFLDict -> {
+        if (FLValue_IsBlob(this)) {
+            asBlob(ctxt)
+        } else {
+            asDictionary(ctxt)
         }
-        kFLData -> asDataBlob()
-        else -> toObject(ctxt)
     }
+    kFLData -> asDataBlob()
+    else -> toObject(ctxt)
 }
 
-internal fun FLValue.toMutableNative(ctxt: DbContext?, saveMutableCopy: (Any) -> Unit): Any? {
-    return when (type) {
-        kFLArray -> asMutableArray(ctxt, saveMutableCopy)
-        kFLDict -> {
-            if (FLValue_IsBlob(this)) {
-                asBlob(ctxt)
-            } else {
-                asMutableDictionary(ctxt, saveMutableCopy)
-            }
+internal fun FLValue.toMutableNative(ctxt: DbContext?, saveMutableCopy: (Any) -> Unit): Any? = when (type) {
+    kFLArray -> asMutableArray(ctxt, saveMutableCopy)
+    kFLDict -> {
+        if (FLValue_IsBlob(this)) {
+            asBlob(ctxt)
+        } else {
+            asMutableDictionary(ctxt, saveMutableCopy)
         }
-        kFLData -> asDataBlob()
-        else -> toObject(ctxt)
     }
+    kFLData -> asDataBlob()
+    else -> toObject(ctxt)
 }
 
 private fun FLValue.asArray(ctxt: DbContext?): Array =
@@ -118,48 +114,42 @@ internal fun FLValue.toMutableDictionary(
     } else null
 }
 
-internal fun FLValue.toBlob(ctxt: DbContext?): Blob? {
-    return when (type) {
-        kFLDict -> asBlob(ctxt)
-        kFLData -> asDataBlob()
-        else -> null
-    }
+internal fun FLValue.toBlob(ctxt: DbContext?): Blob? = when (type) {
+    kFLDict -> asBlob(ctxt)
+    kFLData -> asDataBlob()
+    else -> null
 }
 
-internal fun FLValue.toObject(ctxt: DbContext?, blobDictAsBlob: Boolean = true): Any? {
-    return when (type) {
-        kFLBoolean -> asBoolean()
-        kFLNumber -> asNumber()
-        kFLString -> asKString()
-        kFLData -> FLValue_AsData(this).toByteArray()
-        kFLArray -> FLValue_AsArray(this)?.toList(ctxt)
-        kFLDict -> {
-            if (blobDictAsBlob && FLValue_IsBlob(this)) {
-                asBlob(ctxt)
-            } else {
-                FLValue_AsDict(this)?.toMap(ctxt)
-            }
+internal fun FLValue.toObject(ctxt: DbContext?, blobDictAsBlob: Boolean = true): Any? = when (type) {
+    kFLBoolean -> asBoolean()
+    kFLNumber -> asNumber()
+    kFLString -> asKString()
+    kFLData -> FLValue_AsData(this).toByteArray()
+    kFLArray -> FLValue_AsArray(this)?.toList(ctxt)
+    kFLDict -> {
+        if (blobDictAsBlob && FLValue_IsBlob(this)) {
+            asBlob(ctxt)
+        } else {
+            FLValue_AsDict(this)?.toMap(ctxt)
         }
-        kFLNull -> null
-        else -> null
     }
+    kFLNull -> null
+    else -> null
 }
 
 private fun FLValue.asBoolean(): Boolean =
     FLValue_AsBool(this)
 
-private fun FLValue.asNumber(): Number {
-    return when {
-        FLValue_IsInteger(this) -> {
-            if (FLValue_IsUnsigned(this)) {
-                FLValue_AsUnsigned(this).toLong()
-            } else {
-                FLValue_AsInt(this)
-            }
+private fun FLValue.asNumber(): Number = when {
+    FLValue_IsInteger(this) -> {
+        if (FLValue_IsUnsigned(this)) {
+            FLValue_AsUnsigned(this).toLong()
+        } else {
+            FLValue_AsInt(this)
         }
-        FLValue_IsDouble(this) -> FLValue_AsDouble(this)
-        else -> FLValue_AsFloat(this)
     }
+    FLValue_IsDouble(this) -> FLValue_AsDouble(this)
+    else -> FLValue_AsFloat(this)
 }
 
 private fun FLValue.asKString(): String? =
@@ -168,12 +158,10 @@ private fun FLValue.asKString(): String? =
 internal fun FLValue?.toBoolean(): Boolean =
     FLValue_AsBool(this)
 
-internal fun FLValue.toNumber(): Number? {
-    return when (type) {
-        kFLNumber -> asNumber()
-        kFLBoolean -> if (asBoolean()) 1 else 0
-        else -> null
-    }
+internal fun FLValue.toNumber(): Number? = when (type) {
+    kFLNumber -> asNumber()
+    kFLBoolean -> if (asBoolean()) 1 else 0
+    else -> null
 }
 
 internal fun FLValue?.toInt(): Int =

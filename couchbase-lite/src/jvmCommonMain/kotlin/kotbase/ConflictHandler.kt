@@ -2,8 +2,9 @@
 
 package kotbase
 
-internal fun ConflictHandler.convert(): com.couchbase.lite.ConflictHandler {
-    return com.couchbase.lite.ConflictHandler { document, oldDocument ->
+import com.couchbase.lite.ConflictHandler as CBLConflictHandler
+
+internal fun ConflictHandler.convert(): CBLConflictHandler =
+    CBLConflictHandler { document, oldDocument ->
         invoke(MutableDocument(document), oldDocument?.asDocument())
     }
-}

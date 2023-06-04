@@ -1,5 +1,7 @@
 package kotbase
 
+import com.couchbase.lite.LogDomain as CBLLogDomain
+
 public actual enum class LogDomain {
     DATABASE,
     QUERY,
@@ -7,27 +9,25 @@ public actual enum class LogDomain {
     NETWORK,
     LISTENER;
 
-    public val actual: com.couchbase.lite.LogDomain
+    public val actual: CBLLogDomain
         get() = when (this) {
-            DATABASE -> com.couchbase.lite.LogDomain.DATABASE
-            QUERY -> com.couchbase.lite.LogDomain.QUERY
-            REPLICATOR -> com.couchbase.lite.LogDomain.REPLICATOR
-            NETWORK -> com.couchbase.lite.LogDomain.NETWORK
-            LISTENER -> com.couchbase.lite.LogDomain.LISTENER
+            DATABASE -> CBLLogDomain.DATABASE
+            QUERY -> CBLLogDomain.QUERY
+            REPLICATOR -> CBLLogDomain.REPLICATOR
+            NETWORK -> CBLLogDomain.NETWORK
+            LISTENER -> CBLLogDomain.LISTENER
         }
 
     public actual companion object {
 
         public actual val ALL_DOMAINS: Set<LogDomain> = values().toSet()
 
-        internal fun from(logDomain: com.couchbase.lite.LogDomain): LogDomain {
-            return when (logDomain) {
-                com.couchbase.lite.LogDomain.DATABASE -> DATABASE
-                com.couchbase.lite.LogDomain.QUERY -> QUERY
-                com.couchbase.lite.LogDomain.REPLICATOR -> REPLICATOR
-                com.couchbase.lite.LogDomain.NETWORK -> NETWORK
-                com.couchbase.lite.LogDomain.LISTENER -> LISTENER
-            }
+        internal fun from(logDomain: CBLLogDomain): LogDomain = when (logDomain) {
+            CBLLogDomain.DATABASE -> DATABASE
+            CBLLogDomain.QUERY -> QUERY
+            CBLLogDomain.REPLICATOR -> REPLICATOR
+            CBLLogDomain.NETWORK -> NETWORK
+            CBLLogDomain.LISTENER -> LISTENER
         }
     }
 }

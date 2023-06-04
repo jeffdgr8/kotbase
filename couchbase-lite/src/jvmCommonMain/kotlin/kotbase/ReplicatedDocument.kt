@@ -1,11 +1,10 @@
 package kotbase
 
-import com.couchbase.lite.ReplicatedDocument
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.ReplicatedDocument as CBLReplicatedDocument
 
 public actual class ReplicatedDocument
-internal constructor(actual: com.couchbase.lite.ReplicatedDocument) :
-    DelegatedClass<ReplicatedDocument>(actual) {
+internal constructor(actual: CBLReplicatedDocument) : DelegatedClass<CBLReplicatedDocument>(actual) {
 
     public actual val id: String
         get() = actual.id

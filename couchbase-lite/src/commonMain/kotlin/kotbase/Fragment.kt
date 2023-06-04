@@ -29,26 +29,22 @@ protected constructor(
      * or String based on the underlying data type; or null if the value is null.
      */
     public open val value: Any?
-        get() {
-            return when (parent) {
-                is Document -> parent.getValue(key!!)
-                is Dictionary -> parent.getValue(key!!)
-                is Array -> parent.getValue(index!!)
-                else -> null
-            }
+        get() = when (parent) {
+            is Document -> parent.getValue(key!!)
+            is Dictionary -> parent.getValue(key!!)
+            is Array -> parent.getValue(index!!)
+            else -> null
         }
 
     /**
      * Gets the value as a string. Returns null if the value is null, or the value is not a string.
      */
     public open val string: String?
-        get() {
-            return when (parent) {
-                is Document -> parent.getString(key!!)
-                is Dictionary -> parent.getString(key!!)
-                is Array -> parent.getString(index!!)
-                else -> null
-            }
+        get() = when (parent) {
+            is Document -> parent.getString(key!!)
+            is Dictionary -> parent.getString(key!!)
+            is Array -> parent.getString(index!!)
+            else -> null
         }
 
     /**
@@ -56,13 +52,11 @@ protected constructor(
      * doesn't exist, or its value is not a Number.
      */
     public open val number: Number?
-        get() {
-            return when (parent) {
-                is Document -> parent.getNumber(key!!)
-                is Dictionary -> parent.getNumber(key!!)
-                is Array -> parent.getNumber(index!!)
-                else -> null
-            }
+        get() = when (parent) {
+            is Document -> parent.getNumber(key!!)
+            is Dictionary -> parent.getNumber(key!!)
+            is Array -> parent.getNumber(index!!)
+            else -> null
         }
 
     /**
@@ -70,13 +64,11 @@ protected constructor(
      * returned as 1, false as 0. Returns 0 if the value is null or is not a numeric value.
      */
     public open val int: Int
-        get() {
-            return when (parent) {
-                is Document -> parent.getInt(key!!)
-                is Dictionary -> parent.getInt(key!!)
-                is Array -> parent.getInt(index!!)
-                else -> 0
-            }
+        get() = when (parent) {
+            is Document -> parent.getInt(key!!)
+            is Dictionary -> parent.getInt(key!!)
+            is Array -> parent.getInt(index!!)
+            else -> 0
         }
 
     /**
@@ -84,13 +76,11 @@ protected constructor(
      * returned as 1, false as 0. Returns 0 if the value is null or is not a numeric value.
      */
     public open val long: Long
-        get() {
-            return when (parent) {
-                is Document -> parent.getLong(key!!)
-                is Dictionary -> parent.getLong(key!!)
-                is Array -> parent.getLong(index!!)
-                else -> 0
-            }
+        get() = when (parent) {
+            is Document -> parent.getLong(key!!)
+            is Dictionary -> parent.getLong(key!!)
+            is Array -> parent.getLong(index!!)
+            else -> 0
         }
 
     /**
@@ -98,13 +88,11 @@ protected constructor(
      * returned as 1.0, false as 0.0. Returns 0.0 if the value is null or is not a numeric value.
      */
     public open val float: Float
-        get() {
-            return when (parent) {
-                is Document -> parent.getFloat(key!!)
-                is Dictionary -> parent.getFloat(key!!)
-                is Array -> parent.getFloat(index!!)
-                else -> 0F
-            }
+        get() = when (parent) {
+            is Document -> parent.getFloat(key!!)
+            is Dictionary -> parent.getFloat(key!!)
+            is Array -> parent.getFloat(index!!)
+            else -> 0F
         }
 
     /**
@@ -112,13 +100,11 @@ protected constructor(
      * returned as 1.0, false as 0.0. Returns 0.0 if the value is null or is not a numeric value.
      */
     public open val double: Double
-        get() {
-            return when (parent) {
-                is Document -> parent.getDouble(key!!)
-                is Dictionary -> parent.getDouble(key!!)
-                is Array -> parent.getDouble(index!!)
-                else -> 0.0
-            }
+        get() = when (parent) {
+            is Document -> parent.getDouble(key!!)
+            is Dictionary -> parent.getDouble(key!!)
+            is Array -> parent.getDouble(index!!)
+            else -> 0.0
         }
 
     /**
@@ -126,26 +112,22 @@ protected constructor(
      * is not null, and is either true or a nonzero number.
      */
     public open val boolean: Boolean
-        get() {
-            return when (parent) {
-                is Document -> parent.getBoolean(key!!)
-                is Dictionary -> parent.getBoolean(key!!)
-                is Array -> parent.getBoolean(index!!)
-                else -> false
-            }
+        get() = when (parent) {
+            is Document -> parent.getBoolean(key!!)
+            is Dictionary -> parent.getBoolean(key!!)
+            is Array -> parent.getBoolean(index!!)
+            else -> false
         }
 
     /**
      * Get the value as a Blob. Returns null if the value is null, or the value is not a Blob.
      */
     public open val blob: Blob?
-        get() {
-            return when (parent) {
-                is Document -> parent.getBlob(key!!)
-                is Dictionary -> parent.getBlob(key!!)
-                is Array -> parent.getBlob(index!!)
-                else -> null
-            }
+        get() = when (parent) {
+            is Document -> parent.getBlob(key!!)
+            is Dictionary -> parent.getBlob(key!!)
+            is Array -> parent.getBlob(index!!)
+            else -> null
         }
 
     /**
@@ -156,13 +138,11 @@ protected constructor(
      * or without milliseconds.
      */
     public open val date: Instant?
-        get() {
-            return when (parent) {
-                is Document -> parent.getDate(key!!)
-                is Dictionary -> parent.getDate(key!!)
-                is Array -> parent.getDate(index!!)
-                else -> null
-            }
+        get() = when (parent) {
+            is Document -> parent.getDate(key!!)
+            is Dictionary -> parent.getDate(key!!)
+            is Array -> parent.getDate(index!!)
+            else -> null
         }
 
     /**
@@ -170,13 +150,11 @@ protected constructor(
      * Returns null if the value is null, or the value is not an array.
      */
     public open val array: Array?
-        get() {
-            return when (parent) {
-                is Document -> parent.getArray(key!!)
-                is Dictionary -> parent.getArray(key!!)
-                is Array -> parent.getArray(index!!)
-                else -> null
-            }
+        get() = when (parent) {
+            is Document -> parent.getArray(key!!)
+            is Dictionary -> parent.getArray(key!!)
+            is Array -> parent.getArray(index!!)
+            else -> null
         }
 
     /**
@@ -184,13 +162,11 @@ protected constructor(
      * value. Returns null if the value is null, or the value is not a dictionary.
      */
     public open val dictionary: Dictionary?
-        get() {
-            return when (parent) {
-                is Document -> parent.getDictionary(key!!)
-                is Dictionary -> parent.getDictionary(key!!)
-                is Array -> parent.getDictionary(index!!)
-                else -> null
-            }
+        get() = when (parent) {
+            is Document -> parent.getDictionary(key!!)
+            is Dictionary -> parent.getDictionary(key!!)
+            is Array -> parent.getDictionary(index!!)
+            else -> null
         }
 
     /**

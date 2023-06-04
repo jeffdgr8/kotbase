@@ -3,14 +3,12 @@ package kotbase
 import kotbase.base.DelegatedClass
 import kotbase.ext.toDate
 import kotlinx.datetime.Instant
+import com.couchbase.lite.Parameters as CBLParameters
 
 public actual class Parameters
-internal constructor(actual: com.couchbase.lite.Parameters) :
-    DelegatedClass<com.couchbase.lite.Parameters>(actual) {
+internal constructor(actual: CBLParameters) : DelegatedClass<CBLParameters>(actual) {
 
-    public actual constructor(parameters: Parameters?) : this(
-        com.couchbase.lite.Parameters(parameters?.actual)
-    )
+    public actual constructor(parameters: Parameters?) : this(CBLParameters(parameters?.actual))
 
     public actual fun getValue(name: String): Any? =
         actual.getValue(name)?.delegateIfNecessary()
@@ -76,4 +74,4 @@ internal constructor(actual: com.couchbase.lite.Parameters) :
     }
 }
 
-internal fun com.couchbase.lite.Parameters.asParameters() = Parameters(this)
+internal fun CBLParameters.asParameters() = Parameters(this)

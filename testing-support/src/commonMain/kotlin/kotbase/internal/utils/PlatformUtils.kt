@@ -10,9 +10,7 @@ object PlatformUtils {
         DELEGATE.gc()
     }
 
-    fun getAsset(asset: String): Source? {
-        return DELEGATE.getAsset(asset)
-    }
+    fun getAsset(asset: String): Source? = DELEGATE.getAsset(asset)
 
     interface Delegate {
         fun gc()

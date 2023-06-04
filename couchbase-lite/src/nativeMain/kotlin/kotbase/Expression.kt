@@ -14,17 +14,15 @@ public actual open class Expression {
         public override fun asJSON(): Any? =
             asJSON(value)
 
-        private fun asJSON(value: Any?): Any? {
-            @Suppress("UNCHECKED_CAST")
-            return when (value) {
-                is Instant -> value.toStringMillis()
-                is Map<*, *> -> mapAsJSON(value as Map<String, Any?>)
-                is List<*> -> listAsJSON(value)
-                is Expression -> value.asJSON()
-                else -> {
-                    verifySupportedType(value)
-                    value
-                }
+        @Suppress("UNCHECKED_CAST")
+        private fun asJSON(value: Any?): Any? = when (value) {
+            is Instant -> value.toStringMillis()
+            is Map<*, *> -> mapAsJSON(value as Map<String, Any?>)
+            is List<*> -> listAsJSON(value)
+            is Expression -> value.asJSON()
+            else -> {
+                verifySupportedType(value)
+                value
             }
         }
 

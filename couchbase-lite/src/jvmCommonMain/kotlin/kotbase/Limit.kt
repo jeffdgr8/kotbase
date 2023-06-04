@@ -1,9 +1,7 @@
 package kotbase
 
-import com.couchbase.lite.Limit
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Limit as CBLLimit
 
 public actual class Limit
-internal constructor(actual: com.couchbase.lite.Limit) :
-    DelegatedClass<Limit>(actual),
-    Query by DelegatedQuery(actual)
+internal constructor(actual: CBLLimit) : DelegatedClass<CBLLimit>(actual), Query by DelegatedQuery(actual)

@@ -17,12 +17,10 @@ public actual enum class ConcurrencyControl {
 
     internal companion object {
 
-        internal fun from(value: CBLConcurrencyControl): ConcurrencyControl {
-            return when (value.toUInt()) {
-                kCBLConcurrencyControlLastWriteWins -> LAST_WRITE_WINS
-                kCBLConcurrencyControlFailOnConflict -> FAIL_ON_CONFLICT
-                else -> error("Unexpected CBLConcurrencyControl")
-            }
+        internal fun from(value: CBLConcurrencyControl): ConcurrencyControl = when (value.toUInt()) {
+            kCBLConcurrencyControlLastWriteWins -> LAST_WRITE_WINS
+            kCBLConcurrencyControlFailOnConflict -> FAIL_ON_CONFLICT
+            else -> error("Unexpected CBLConcurrencyControl")
         }
     }
 }

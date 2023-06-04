@@ -4,60 +4,60 @@ import kotbase.base.DelegatedClass
 import kotbase.base.actuals
 import kotbase.ext.toDate
 import kotlinx.datetime.Instant
+import com.couchbase.lite.Expression as CBLExpression
 
 public actual open class Expression
-internal constructor(actual: com.couchbase.lite.Expression) :
-    DelegatedClass<com.couchbase.lite.Expression>(actual) {
+internal constructor(actual: CBLExpression) : DelegatedClass<CBLExpression>(actual) {
 
     public actual companion object {
 
         public actual fun value(value: Any?): Expression =
-            Expression(com.couchbase.lite.Expression.value(value?.actualIfDelegated()))
+            Expression(CBLExpression.value(value?.actualIfDelegated()))
 
         public actual fun string(value: String?): Expression =
-            Expression(com.couchbase.lite.Expression.string(value))
+            Expression(CBLExpression.string(value))
 
         public actual fun number(value: Number?): Expression =
-            Expression(com.couchbase.lite.Expression.number(value))
+            Expression(CBLExpression.number(value))
 
         public actual fun intValue(value: Int): Expression =
-            Expression(com.couchbase.lite.Expression.intValue(value))
+            Expression(CBLExpression.intValue(value))
 
         public actual fun longValue(value: Long): Expression =
-            Expression(com.couchbase.lite.Expression.longValue(value))
+            Expression(CBLExpression.longValue(value))
 
         public actual fun floatValue(value: Float): Expression =
-            Expression(com.couchbase.lite.Expression.floatValue(value))
+            Expression(CBLExpression.floatValue(value))
 
         public actual fun doubleValue(value: Double): Expression =
-            Expression(com.couchbase.lite.Expression.doubleValue(value))
+            Expression(CBLExpression.doubleValue(value))
 
         public actual fun booleanValue(value: Boolean): Expression =
-            Expression(com.couchbase.lite.Expression.booleanValue(value))
+            Expression(CBLExpression.booleanValue(value))
 
         public actual fun date(value: Instant?): Expression =
-            Expression(com.couchbase.lite.Expression.date(value?.toDate()))
+            Expression(CBLExpression.date(value?.toDate()))
 
         public actual fun map(value: Map<String, Any?>?): Expression =
-            Expression(com.couchbase.lite.Expression.map(value?.actualIfDelegated()))
+            Expression(CBLExpression.map(value?.actualIfDelegated()))
 
         public actual fun list(value: List<Any?>?): Expression =
-            Expression(com.couchbase.lite.Expression.list(value?.actualIfDelegated()))
+            Expression(CBLExpression.list(value?.actualIfDelegated()))
 
         public actual fun all(): PropertyExpression =
-            PropertyExpression(com.couchbase.lite.Expression.all())
+            PropertyExpression(CBLExpression.all())
 
         public actual fun property(property: String): PropertyExpression =
-            PropertyExpression(com.couchbase.lite.Expression.property(property))
+            PropertyExpression(CBLExpression.property(property))
 
         public actual fun parameter(name: String): Expression =
-            Expression(com.couchbase.lite.Expression.parameter(name))
+            Expression(CBLExpression.parameter(name))
 
         public actual fun negated(expression: Expression): Expression =
-            Expression(com.couchbase.lite.Expression.negated(expression.actual))
+            Expression(CBLExpression.negated(expression.actual))
 
         public actual fun not(expression: Expression): Expression =
-            Expression(com.couchbase.lite.Expression.not(expression.actual))
+            Expression(CBLExpression.not(expression.actual))
     }
 
     public actual fun multiply(expression: Expression): Expression =

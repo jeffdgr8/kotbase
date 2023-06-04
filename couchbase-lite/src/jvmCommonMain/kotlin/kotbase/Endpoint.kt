@@ -1,13 +1,14 @@
 package kotbase
 
+import com.couchbase.lite.Endpoint as CBLEndpoint
+import com.couchbase.lite.URLEndpoint as CBLURLEndpoint
+
 public actual interface Endpoint {
 
-    public val actual: com.couchbase.lite.Endpoint
+    public val actual: CBLEndpoint
 }
 
-internal fun com.couchbase.lite.Endpoint.asEndpoint(): Endpoint {
-    return when (this) {
-        is com.couchbase.lite.URLEndpoint -> URLEndpoint(this)
-        else -> error("Unknown Endpoint type ${this::class}")
-    }
+internal fun CBLEndpoint.asEndpoint(): Endpoint = when (this) {
+    is CBLURLEndpoint -> URLEndpoint(this)
+    else -> error("Unknown Endpoint type ${this::class}")
 }

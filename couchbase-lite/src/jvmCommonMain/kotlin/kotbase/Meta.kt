@@ -1,19 +1,21 @@
 package kotbase
 
+import com.couchbase.lite.Meta as CBLMeta
+
 public actual object Meta {
 
     public actual val id: MetaExpression
-        get() = MetaExpression(com.couchbase.lite.Meta.id)
+        get() = MetaExpression(CBLMeta.id)
 
     public actual val revisionID: MetaExpression
-        get() = MetaExpression(com.couchbase.lite.Meta.revisionID)
+        get() = MetaExpression(CBLMeta.revisionID)
 
     public actual val sequence: MetaExpression
-        get() = MetaExpression(com.couchbase.lite.Meta.sequence)
+        get() = MetaExpression(CBLMeta.sequence)
 
     public actual val deleted: MetaExpression
-        get() = MetaExpression(com.couchbase.lite.Meta.deleted)
+        get() = MetaExpression(CBLMeta.deleted)
 
     public actual val expiration: MetaExpression
-        get() = MetaExpression(com.couchbase.lite.Meta.expiration)
+        get() = MetaExpression(CBLMeta.expiration)
 }

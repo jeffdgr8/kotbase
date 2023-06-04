@@ -1,14 +1,15 @@
 package kotbase
 
 import kotbase.base.actuals
+import com.couchbase.lite.QueryBuilder as CBLQueryBuilder
 
 public actual object QueryBuilder {
 
     public actual fun select(vararg results: SelectResult): Select =
-        Select(com.couchbase.lite.QueryBuilder.select(*results.actuals()))
+        Select(CBLQueryBuilder.select(*results.actuals()))
 
     public actual fun selectDistinct(vararg results: SelectResult): Select =
-        Select(com.couchbase.lite.QueryBuilder.selectDistinct(*results.actuals()))
+        Select(CBLQueryBuilder.selectDistinct(*results.actuals()))
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createQuery(query: String, database: Database): Query =

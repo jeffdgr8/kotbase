@@ -16,8 +16,7 @@
 
 /*
  * Modified by Jeff Lockhart
- *
- * - Use kotbase package for couchbase-lite-kmp Kotlin Multiplatform bindings
+ * - Use kotbase package
  * - Switch from Mockito to MockK for better Kotlin+Android support (can't mock Kotlin/Native yet)
  */
 

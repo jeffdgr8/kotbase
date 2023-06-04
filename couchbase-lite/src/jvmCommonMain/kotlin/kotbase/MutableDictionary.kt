@@ -4,18 +4,16 @@ package kotbase
 
 import kotbase.ext.toDate
 import kotlinx.datetime.Instant
+import com.couchbase.lite.MutableDictionary as CBLMutableDictionary
 
 public actual class MutableDictionary
-internal constructor(override val actual: com.couchbase.lite.MutableDictionary) :
-    Dictionary(actual) {
+internal constructor(override val actual: CBLMutableDictionary) : Dictionary(actual) {
 
-    public actual constructor() : this(com.couchbase.lite.MutableDictionary())
+    public actual constructor() : this(CBLMutableDictionary())
 
-    public actual constructor(data: Map<String, Any?>) : this(
-        com.couchbase.lite.MutableDictionary(data.actualIfDelegated())
-    )
+    public actual constructor(data: Map<String, Any?>) : this(CBLMutableDictionary(data.actualIfDelegated()))
 
-    public actual constructor(json: String) : this(com.couchbase.lite.MutableDictionary(json))
+    public actual constructor(json: String) : this(CBLMutableDictionary(json))
 
     public actual fun setData(data: Map<String, Any?>): MutableDictionary {
         collectionMap.clear()
@@ -154,5 +152,5 @@ internal constructor(override val actual: com.couchbase.lite.MutableDictionary) 
     }
 }
 
-internal fun com.couchbase.lite.MutableDictionary.asMutableDictionary() =
+internal fun CBLMutableDictionary.asMutableDictionary() =
     MutableDictionary(this)
