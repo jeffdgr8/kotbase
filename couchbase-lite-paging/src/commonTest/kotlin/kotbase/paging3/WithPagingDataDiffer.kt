@@ -15,9 +15,7 @@
  */
 
 /*
- * Modified by Jeff Lockhart
- * - Replace SQLDelight database with Kotbase
- * - Replace AndroidX Paging with Multiplatform Paging
+ * Copied from https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonTest/kotlin/app/cash/sqldelight/paging3/WithPagingDataDiffer.kt
  */
 
 package kotbase.paging3
@@ -39,7 +37,6 @@ private object NoopListCallback : ListUpdateCallback {
     override fun onRemoved(position: Int, count: Int) = Unit
 }
 
-@Suppress("unused")
 @ExperimentalCoroutinesApi
 fun <T : Any> PagingData<T>.withPagingDataDiffer(
     testScope: TestScope,
