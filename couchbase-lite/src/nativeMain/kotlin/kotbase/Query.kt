@@ -75,18 +75,17 @@ internal abstract class AbstractQuery : Query {
 }
 
 @Suppress("MemberVisibilityCanBePrivate")
-internal class QueryState(
+internal data class QueryState(
     var select: List<SelectResult>,
-    var distinct: Boolean = false
-) : AbstractQuery() {
-
-    var from: DataSource? = null
-    var join: List<Join>? = null
-    var where: Expression? = null
-    var groupBy: List<Expression>? = null
-    var having: Expression? = null
-    var orderBy: List<Ordering>? = null
+    var distinct: Boolean = false,
+    var from: DataSource? = null,
+    var join: List<Join>? = null,
+    var where: Expression? = null,
+    var groupBy: List<Expression>? = null,
+    var having: Expression? = null,
+    var orderBy: List<Ordering>? = null,
     var limit: Limit? = null
+) : AbstractQuery() {
 
     override val actual: CPointer<CBLQuery> by lazy {
         database.createQuery(kCBLJSONLanguage, toJSON())

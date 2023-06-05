@@ -4,34 +4,26 @@ public actual class From
 internal constructor(private val state: QueryState) : Query by state {
 
     public actual fun join(vararg joins: Join): Joins {
-        state.join = joins.toList()
-        return Joins(state)
+        return Joins(state.copy(join = joins.toList()))
     }
 
     public actual fun where(expression: Expression): Where {
-        state.where = expression
-        return Where(state)
+        return Where(state.copy(where = expression))
     }
 
     public actual fun groupBy(vararg expressions: Expression): GroupBy {
-        state.groupBy = expressions.toList()
-        return GroupBy(state)
+        return GroupBy(state.copy(groupBy = expressions.toList()))
     }
 
     public actual fun orderBy(vararg orderings: Ordering): OrderBy {
-        state.orderBy = orderings.toList()
-        return OrderBy(state)
+        return OrderBy(state.copy(orderBy = orderings.toList()))
     }
 
     public actual fun limit(limit: Expression): Limit {
-        return Limit(state, limit).also {
-            state.limit = it
-        }
+        return Limit(state.copy(), limit)
     }
 
     public actual fun limit(limit: Expression, offset: Expression?): Limit {
-        return Limit(state, limit, offset).also {
-            state.limit = it
-        }
+        return Limit(state.copy(), limit, offset)
     }
 }

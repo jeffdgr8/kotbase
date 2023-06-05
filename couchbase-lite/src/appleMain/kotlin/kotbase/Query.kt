@@ -41,19 +41,17 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
     }
 }
 
-@Suppress("MemberVisibilityCanBePrivate")
-internal class QueryState(
+internal data class QueryState(
     var select: List<CBLQuerySelectResult>,
-    var distinct: Boolean = false
-) : AbstractQuery() {
-
-    var from: CBLQueryDataSource? = null
-    var join: List<CBLQueryJoin>? = null
-    var where: CBLQueryExpression? = null
-    var groupBy: List<CBLQueryExpression>? = null
-    var having: CBLQueryExpression? = null
-    var orderBy: List<CBLQueryOrdering>? = null
+    var distinct: Boolean = false,
+    var from: CBLQueryDataSource? = null,
+    var join: List<CBLQueryJoin>? = null,
+    var where: CBLQueryExpression? = null,
+    var groupBy: List<CBLQueryExpression>? = null,
+    var having: CBLQueryExpression? = null,
+    var orderBy: List<CBLQueryOrdering>? = null,
     var limit: CBLQueryLimit? = null
+) : AbstractQuery() {
 
     override val actual: CBLQuery by lazy {
         val from = requireNotNull(from) { "From statement is required." }

@@ -5,4 +5,9 @@ internal constructor(
     private val state: QueryState,
     internal val limit: Expression,
     internal val offset: Expression? = null
-) : Query by state
+) : Query by state {
+
+    init {
+        state.limit = this
+    }
+}
