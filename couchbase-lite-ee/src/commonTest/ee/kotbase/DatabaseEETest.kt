@@ -1,5 +1,6 @@
 package kotbase
 
+import kotbase.test.IgnoreApple
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
@@ -11,6 +12,9 @@ class DatabaseEETest : BaseReplicatorTest() {
     // DatabaseTest.swift
 
     // TODO: https://issues.couchbase.com/browse/CBL-3526
+    // Hangs often on iOS (just recently)
+    // at mutex2.lock(), q2 listener never called
+    @IgnoreApple
     @Test
     fun testCloseWithActiveReplicators() = runBlocking {
         // Live Queries:

@@ -1,6 +1,4 @@
 plugins {
-    id(libs.plugins.kotlin.multiplatform.get().pluginId) apply false
-    id(libs.plugins.android.library.get().pluginId) apply false
     id(libs.plugins.dokka.get().pluginId)
     id(libs.plugins.kotlinx.kover.get().pluginId)
 }
