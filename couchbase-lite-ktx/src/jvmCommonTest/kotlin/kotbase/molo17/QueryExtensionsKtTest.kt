@@ -15,6 +15,7 @@
  */
 
 /*
+ * From https://github.com/MOLO17/couchbase-lite-kotlin/blob/master/library/src/test/java/com/molo17/couchbase/lite/QueryExtensionsKtTest.kt
  * Modified by Jeff Lockhart
  * - Use kotbase package
  * - Switch from Mockito to MockK for better Kotlin+Android support (can't mock Kotlin/Native yet)

@@ -15,6 +15,7 @@
  */
 
 /*
+ * From https://github.com/MOLO17/couchbase-lite-kotlin/blob/master/library/src/test/java/com/molo17/couchbase/lite/DocumentExtensionsKtTest.kt
  * Modified by Jeff Lockhart
  * - Use kotbase package
  */

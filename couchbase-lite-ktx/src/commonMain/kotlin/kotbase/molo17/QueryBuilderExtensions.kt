@@ -15,6 +15,7 @@
  */
 
 /*
+ * From https://github.com/MOLO17/couchbase-lite-kotlin/blob/master/library/src/main/java/com/molo17/couchbase/lite/QueryBuilderExtensions.kt
  * Modified by Jeff Lockhart
  * - Use kotbase package
  * - Resolve explicitApiWarning() requirements
