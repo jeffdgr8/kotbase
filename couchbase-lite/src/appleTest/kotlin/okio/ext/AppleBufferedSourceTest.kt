@@ -18,7 +18,7 @@
 //  https://github.com/square/okio/pull/1123
 @file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
 
-package okio.temp
+package okio.ext
 
 import kotlinx.cinterop.*
 import okio.Buffer

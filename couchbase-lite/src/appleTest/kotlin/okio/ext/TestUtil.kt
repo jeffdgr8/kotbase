@@ -2,7 +2,7 @@
 //  https://github.com/square/okio/pull/1123
 @file:Suppress("INVISIBLE_MEMBER")
 
-package okio.temp
+package okio.ext
 
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.convert

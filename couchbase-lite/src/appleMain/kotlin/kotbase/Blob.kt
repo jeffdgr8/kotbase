@@ -10,8 +10,8 @@ import okio.FileNotFoundException
 import okio.IOException
 import okio.Source
 import okio.buffer
-import okio.temp.inputStream
-import okio.temp.source
+import okio.ext.inputStream
+import okio.ext.source
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.valueForKey
