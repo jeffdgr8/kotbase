@@ -1,8 +1,10 @@
 plugins {
     `multiplatform-convention`
+    `kotlin-native-cocoapods`
 }
 
 kotlin {
+    cocoapods { noPodspec() }
     sourceSets {
         commonMain {
             dependencies {
