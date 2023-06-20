@@ -91,3 +91,4 @@ nav:
   - Getting Started:
     - Installation: installation.md
     - Supported Platforms: platforms.md
+  - API Reference: api/index.html

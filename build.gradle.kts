@@ -10,7 +10,16 @@ allprojects {
     version = "$cblVersion-$kmpVersion"
 }
 
-tasks.register("clean", Delete::class) {
+val apiDocsDir = projectDir.resolve("docs/api")
+val cleanDocsTask = tasks.register<Delete>("cleanDocs") {
+    delete(apiDocsDir)
+}
+tasks.dokkaHtmlMultiModule {
+    outputDirectory.set(apiDocsDir)
+    dependsOn(cleanDocsTask)
+}
+
+tasks.register<Delete>("clean") {
     delete(rootProject.buildDir)
 }
 

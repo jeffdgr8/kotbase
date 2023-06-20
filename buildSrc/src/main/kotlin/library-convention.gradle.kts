@@ -23,16 +23,10 @@ kotlin {
 
 // Documentation Jar
 
-val dokkaOutputDir = buildDir.resolve("dokka")
-
-tasks.dokkaHtml.configure {
-    outputDirectory.set(dokkaOutputDir)
-}
-
 val javadocJar = tasks.register<Jar>("javadocJar") {
     dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
     archiveClassifier.set("javadoc")
-    from(dokkaOutputDir)
 }
 
 publishing.publications.withType<MavenPublication> {
