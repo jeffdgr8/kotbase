@@ -2,4 +2,4 @@ package kotbase.ext
 
 import java.io.File
 
-public fun String.toFile(): File = File(this)
+internal fun String.toFile(): File = File(this)

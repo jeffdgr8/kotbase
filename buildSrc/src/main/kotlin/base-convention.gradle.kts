@@ -17,6 +17,7 @@ kotlin {
         languageSettings {
             optIn("kotlin.ExperimentalStdlibApi")
             optIn("kotlin.ExperimentalUnsignedTypes")
+            optIn("kotlin.native.ExperimentalNativeAp")
             optIn("kotlinx.cinterop.BetaInteropApi")
             optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }

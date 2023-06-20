@@ -5,7 +5,7 @@ import platform.Foundation.NSError
 import platform.Foundation.NSLocalizedDescriptionKey
 import platform.Foundation.NSUnderlyingErrorKey
 
-public fun <R, E : Exception> wrapError(
+internal fun <R, E : Exception> wrapError(
     exceptionFactory: NSError.() -> E,
     action: (error: CPointer<ObjCObjectVar<NSError?>>) -> R
 ): R = memScoped {
@@ -25,10 +25,10 @@ public fun <R, E : Exception> wrapError(
     }
 }
 
-public fun <R> wrapError(action: (error: CPointer<ObjCObjectVar<NSError?>>) -> R): R =
+internal fun <R> wrapError(action: (error: CPointer<ObjCObjectVar<NSError?>>) -> R): R =
     wrapError(NSError::toException, action)
 
-public fun Exception.toNSError(): NSError = when (this) {
+internal fun Exception.toNSError(): NSError = when (this) {
     is NSErrorException -> nsError
     else -> NSError(
         "Kotlin",
@@ -40,9 +40,9 @@ public fun Exception.toNSError(): NSError = when (this) {
     )
 }
 
-public fun NSError.toException(): Exception = when (val cause = userInfo[NSUnderlyingErrorKey]) {
+internal fun NSError.toException(): Exception = when (val cause = userInfo[NSUnderlyingErrorKey]) {
     is Exception -> cause
     else -> NSErrorException(this)
 }
 
-public class NSErrorException(public val nsError: NSError) : Exception(nsError.localizedDescription)
+internal class NSErrorException(val nsError: NSError) : Exception(nsError.localizedDescription)

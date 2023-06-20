@@ -26,7 +26,7 @@ import platform.Foundation.NSInputStream
 import platform.darwin.UInt8Var
 
 /** Returns a source that reads from `in`. */
-public fun NSInputStream.source(): Source = NSInputStreamSource(this)
+internal fun NSInputStream.source(): Source = NSInputStreamSource(this)
 
 @OptIn(UnsafeNumber::class)
 private open class NSInputStreamSource(

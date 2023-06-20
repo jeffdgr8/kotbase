@@ -5,6 +5,6 @@ package kotbase.ext
 import kotlinx.datetime.Instant
 import java.util.*
 
-public fun Instant.toDate(): Date = Date(toEpochMilliseconds())
+internal fun Instant.toDate(): Date = Date(toEpochMilliseconds())
 
-public fun Date.toKotlinInstant(): Instant = Instant.fromEpochMilliseconds(time)
+internal fun Date.toKotlinInstant(): Instant = Instant.fromEpochMilliseconds(time)
