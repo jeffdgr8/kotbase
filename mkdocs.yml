@@ -1,0 +1,93 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: Kotbase
+site_url: https://kotbase.dev/
+site_description: Kotlin Multiplatform library for Couchbase Lite—a lightweight, embedded, syncable, NoSQL database
+site_author: Jeff Lockhart
+copyright: "&copy; 2023 Jeff Lockhart"
+repo_name: Kotbase
+repo_url: https://github.com/jeffdgr8/kotbase
+remote_branch: gh-pages
+theme:
+  name: material
+  logo: assets/images/couchbase-logo.svg
+  favicon: assets/images/couchbase-logo.svg
+  font:
+    text: DM Sans
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: red
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: red
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    admonition:
+      link: material/link
+  features:
+    - content.code.copy
+    - content.tabs.link
+    - navigation.expand
+    - navigation.footer
+    - navigation.instant
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - search.suggest
+    - toc.follow
+extra_css:
+  - assets/stylesheets/permalink.css
+markdown_extensions:
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - toc:
+      permalink: ""
+plugins:
+  - search
+  - macros
+extra:
+  version: 3.0.5-1.0.0
+  generator: false
+  social:
+    - icon: simple/github
+      link: https://github.com/jeffdgr8
+    - icon: simple/twitter
+      link: https://twitter.com/jeffdgr8
+    - icon: simple/linkedin
+      link: https://linkedin.com/in/lockhartjeff/
+nav:
+  - Overview:
+    - Kotbase: index.md
+    - Differences from Couchbase Lite Java SDK: differences.md
+    - Extensions:
+        - KTX: ktx.md
+        - Paging: paging.md
+    - Roadmap: roadmap.md
+    - Community: community.md
+    - License: license.md
+  - Getting Started:
+    - Installation: installation.md
+    - Supported Platforms: platforms.md

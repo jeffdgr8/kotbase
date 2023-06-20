@@ -1,0 +1,22 @@
+/* https://github.com/squidfunk/mkdocs-material/discussions/3535 */
+.headerlink {
+    --permalink-size: 1.0em;
+
+    width: var(--permalink-size);
+    height: var(--permalink-size);
+    vertical-align: middle;
+    background-color: var(--md-default-fg-color--lighter);
+    background-size: var(--permalink-size);
+    mask-size: var(--permalink-size);
+    -webkit-mask-size: var(--permalink-size);
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    visibility: visible;
+    -webkit-mask-image: var(--md-admonition-icon--link);
+    mask-image: var(--md-admonition-icon--link);
+}
+
+.headerlink:hover,
+[id]:target .headerlink {
+    background-color: var(--md-accent-fg-color) !important;
+}
