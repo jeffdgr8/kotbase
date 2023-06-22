@@ -20,7 +20,7 @@ fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(delegate: Delegating
 @OptIn(ExternalVariantApi::class)
 fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(fromProject: Project = project) {
     with(project) {
-        targets.withType<KotlinNativeTarget> {
+        targets.withType<KotlinNativeTarget>().configureEach {
             if (konanTarget.family == Family.LINUX) {
                 val libraryPath = "${fromProject.projectDir}/$libcbliteLibPath"
                 binaries.getTest(DEBUG).linkerOpts += listOf(
@@ -30,7 +30,7 @@ fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(fromProject: Project
         }
 
         if (System.getProperty("os.name") == "Linux") {
-            tasks.withType<Test> {
+            tasks.withType<Test>().configureEach {
                 environment(
                     "LD_LIBRARY_PATH",
                     "\$LD_LIBRARY_PATH:$rootDir/vendor/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu"

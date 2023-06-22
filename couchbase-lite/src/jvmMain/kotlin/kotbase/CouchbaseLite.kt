@@ -23,7 +23,6 @@ public actual object CouchbaseLite {
      * @param debug true if debugging
      * @throws IllegalStateException on initialization failure
      */
-    @JvmOverloads
     public fun init(debug: Boolean = false) {
         if (initCalled.getAndSet(true)) return
         resetInit()

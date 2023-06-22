@@ -33,10 +33,10 @@ kotlin {
 
     useCouchbaseLiteNativeCLib()
 
-    targets.withType<KotlinNativeTarget> {
+    targets.withType<KotlinNativeTarget>().configureEach {
         if (konanTarget.family.isAppleFamily) {
             // Run iOS tests on background thread with main run loop
-            binaries.withType<TestExecutable> {
+            binaries.withType<TestExecutable>().configureEach {
                 freeCompilerArgs += listOf("-e", "kotbase.test.mainBackground")
             }
         } else {

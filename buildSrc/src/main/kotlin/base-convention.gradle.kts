@@ -17,13 +17,13 @@ kotlin {
         languageSettings {
             optIn("kotlin.ExperimentalStdlibApi")
             optIn("kotlin.ExperimentalUnsignedTypes")
-            optIn("kotlin.native.ExperimentalNativeAp")
+            optIn("kotlin.experimental.ExperimentalNativeApi")
             optIn("kotlinx.cinterop.BetaInteropApi")
             optIn("kotlinx.cinterop.ExperimentalForeignApi")
         }
     }
 
-    targets.withType<KotlinNativeTarget> {
+    targets.withType<KotlinNativeTarget>().configureEach {
         if (konanTarget.family != Family.MINGW) {
             binaries.all {
                 binaryOptions["sourceInfoType"] = "libbacktrace"
@@ -49,7 +49,7 @@ android {
     }
 }
 
-tasks.withType<KotlinNativeSimulatorTest> {
+tasks.withType<KotlinNativeSimulatorTest>().configureEach {
     device.set("iPhone 14")
 }
 

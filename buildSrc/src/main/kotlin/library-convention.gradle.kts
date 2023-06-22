@@ -29,12 +29,12 @@ val javadocJar = tasks.register<Jar>("javadocJar") {
     archiveClassifier.set("javadoc")
 }
 
-publishing.publications.withType<MavenPublication> {
+publishing.publications.withType<MavenPublication>().configureEach {
     artifact(javadocJar)
 }
 
 // Workaround for https://github.com/Kotlin/dokka/issues/2977.
-tasks.withType<AbstractDokkaTask> {
+tasks.withType<AbstractDokkaTask>().configureEach {
     val className = "org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask"
     @Suppress("UNCHECKED_CAST")
     val taskClass = Class.forName(className) as Class<Task>
