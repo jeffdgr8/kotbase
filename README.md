@@ -103,7 +103,9 @@ as well as other convenience functions for composing queries, observing change `
 
 **build.gradle.kts**
 ```kotlin
-implementation("dev.kotbase:couchbase-lite-ktx:3.0.5-1.0.0") // or
+// Community Edition
+implementation("dev.kotbase:couchbase-lite-ktx:3.0.5-1.0.0")
+// or Enterprise Edition
 implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.5-1.0.0")
 ```
 
@@ -119,7 +121,9 @@ based on a user-supplied database query.
 
 **build.gradle.kts**
 ```kotlin
-implementation("dev.kotbase:couchbase-lite-paging:3.0.5-1.0.0") // or
+// Community Edition
+implementation("dev.kotbase:couchbase-lite-paging:3.0.5-1.0.0")
+// or Enterprise Edition
 implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.5-1.0.0")
 ```
 
