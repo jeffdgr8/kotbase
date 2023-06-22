@@ -1,20 +1,25 @@
 package kotbase.ext
 
-import kotlinx.cinterop.allocArrayOf
+import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
-import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.refTo
+import kotlinx.cinterop.usePinned
 import platform.CoreFoundation.*
 import platform.Foundation.NSData
 import platform.Foundation.create
+import platform.Foundation.data
 import platform.Security.SecCertificateCopyData
 import platform.Security.SecCertificateCreateWithData
 import platform.Security.SecCertificateRef
 import platform.posix.memcpy
 
 internal fun ByteArray.toNSData(): NSData {
-    return memScoped {
-        NSData.create(bytes = allocArrayOf(this@toNSData), length = size.convert())
+    return if (isNotEmpty()) {
+        usePinned {
+            NSData.create(bytes = it.addressOf(0), length = size.convert())
+        }
+    } else {
+        NSData.data()
     }
 }
 
