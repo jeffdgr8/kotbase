@@ -1,6 +1,8 @@
 import org.jetbrains.dokka.gradle.AbstractDokkaTask
+import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetHierarchy.SourceSetTree
+import java.net.URL
 
 plugins {
     id("base-convention")
@@ -21,7 +23,15 @@ kotlin {
     }
 }
 
-// Documentation Jar
+tasks.withType<AbstractDokkaLeafTask>().configureEach {
+    dokkaSourceSets.all {
+        sourceLink {
+            localDirectory.set(projectDir.resolve("src"))
+            remoteUrl.set(URL("https://github.com/jeffdgr8/kotbase/tree/main/${project.name}/src"))
+            remoteLineSuffix.set("#L")
+        }
+    }
+}
 
 val javadocJar = tasks.register<Jar>("javadocJar") {
     dependsOn(tasks.dokkaHtml)

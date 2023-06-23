@@ -11,15 +11,16 @@ allprojects {
 }
 
 val apiDocsDir = projectDir.resolve("docs/api")
-val cleanDocsTask = tasks.register<Delete>("cleanDocs") {
+tasks.register<Delete>("cleanApiDocs") {
+    group = "documentation"
     delete(apiDocsDir)
 }
 tasks.dokkaHtmlMultiModule {
     outputDirectory.set(apiDocsDir)
-    dependsOn(cleanDocsTask)
 }
 
 tasks.register<Delete>("clean") {
+    group = "build"
     delete(rootProject.buildDir)
 }
 
