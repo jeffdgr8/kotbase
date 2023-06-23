@@ -17,9 +17,15 @@ kotlin {
         languageSettings {
             optIn("kotlin.ExperimentalStdlibApi")
             optIn("kotlin.ExperimentalUnsignedTypes")
-            optIn("kotlin.experimental.ExperimentalNativeApi")
-            optIn("kotlinx.cinterop.BetaInteropApi")
-            optIn("kotlinx.cinterop.ExperimentalForeignApi")
+
+            if (!name.startsWith("common") &&
+                !name.startsWith("jvm") &&
+                !name.startsWith("android")
+            ) {
+                optIn("kotlin.experimental.ExperimentalNativeApi")
+                optIn("kotlinx.cinterop.BetaInteropApi")
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            }
         }
     }
 
