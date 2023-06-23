@@ -13,7 +13,7 @@ plugins {
 kotlin {
     jvmToolchain(8)
 
-    sourceSets.all {
+    sourceSets.configureEach {
         languageSettings {
             optIn("kotlin.ExperimentalStdlibApi")
             optIn("kotlin.ExperimentalUnsignedTypes")
@@ -25,7 +25,7 @@ kotlin {
 
     targets.withType<KotlinNativeTarget>().configureEach {
         if (konanTarget.family != Family.MINGW) {
-            binaries.all {
+            binaries.configureEach {
                 binaryOptions["sourceInfoType"] = "libbacktrace"
             }
         }

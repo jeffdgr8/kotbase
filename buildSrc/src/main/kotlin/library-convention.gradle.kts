@@ -24,12 +24,22 @@ kotlin {
 }
 
 tasks.withType<AbstractDokkaLeafTask>().configureEach {
-    dokkaSourceSets.all {
+    dokkaSourceSets.configureEach {
         sourceLink {
             localDirectory.set(projectDir.resolve("src"))
             remoteUrl.set(URL("https://github.com/jeffdgr8/kotbase/tree/main/${project.name}/src"))
             remoteLineSuffix.set("#L")
         }
+
+        externalDocumentationLink("https://kotlinlang.org/api/kotlinx.coroutines/")
+        externalDocumentationLink(
+            url = "https://kotlinlang.org/api/kotlinx-datetime/",
+            packageListUrl = "https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/package-list"
+        )
+        externalDocumentationLink(
+            url = "https://square.github.io/okio/3.x/okio/",
+            packageListUrl = "https://square.github.io/okio/3.x/okio/okio/package-list"
+        )
     }
 }
 
