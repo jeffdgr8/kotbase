@@ -3,6 +3,7 @@ package kotbase
 import com.couchbase.lite.internal.CouchbaseLiteInternal
 import kotlinx.atomicfu.atomic
 import java.io.File
+import com.couchbase.lite.CouchbaseLite as CBLCouchbaseLite
 
 /**
  * CouchbaseLite Utility
@@ -26,7 +27,7 @@ public actual object CouchbaseLite {
     public fun init(debug: Boolean = false) {
         if (initCalled.getAndSet(true)) return
         resetInit()
-        com.couchbase.lite.CouchbaseLite.init(debug)
+        CBLCouchbaseLite.init(debug)
     }
 
     /**
@@ -46,7 +47,7 @@ public actual object CouchbaseLite {
     public fun init(debug: Boolean, rootDir: File, scratchDir: File) {
         if (initCalled.getAndSet(true)) return
         resetInit()
-        com.couchbase.lite.CouchbaseLite.init(debug, rootDir, scratchDir)
+        CBLCouchbaseLite.init(debug, rootDir, scratchDir)
     }
 
     /**
@@ -64,6 +65,6 @@ public actual object CouchbaseLite {
      */
     internal actual fun internalInit() {
         if (initCalled.value) return
-        com.couchbase.lite.CouchbaseLite.init()
+        CBLCouchbaseLite.init()
     }
 }

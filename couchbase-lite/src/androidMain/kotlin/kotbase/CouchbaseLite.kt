@@ -5,6 +5,7 @@ import com.couchbase.lite.BuildConfig
 import com.couchbase.lite.internal.CouchbaseLiteInternal
 import kotlinx.atomicfu.atomic
 import java.io.File
+import com.couchbase.lite.CouchbaseLite as CBLCouchbaseLite
 
 public actual object CouchbaseLite {
 
@@ -49,7 +50,7 @@ public actual object CouchbaseLite {
     public fun init(ctxt: Context, debug: Boolean, rootDbDir: File, scratchDir: File) {
         if (initCalled.getAndSet(true)) return
         resetInit()
-        com.couchbase.lite.CouchbaseLite.init(ctxt, debug, rootDbDir, scratchDir)
+        CBLCouchbaseLite.init(ctxt, debug, rootDbDir, scratchDir)
     }
 
     /**

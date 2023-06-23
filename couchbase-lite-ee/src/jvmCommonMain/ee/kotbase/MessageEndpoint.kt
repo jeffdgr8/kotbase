@@ -1,13 +1,13 @@
 package kotbase
 
-import com.couchbase.lite.MessageEndpoint
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.MessageEndpoint as CBLMessageEndpoint
 
 public actual class MessageEndpoint
 internal constructor(
-    override val actual: com.couchbase.lite.MessageEndpoint,
+    override val actual: CBLMessageEndpoint,
     public actual val delegate: MessageEndpointDelegate
-) : DelegatedClass<MessageEndpoint>(actual), Endpoint {
+) : DelegatedClass<CBLMessageEndpoint>(actual), Endpoint {
 
     public actual constructor(
         uid: String,
@@ -15,7 +15,7 @@ internal constructor(
         protocolType: ProtocolType,
         delegate: MessageEndpointDelegate
     ) : this(
-        com.couchbase.lite.MessageEndpoint(uid, target, protocolType, delegate.convert()),
+        CBLMessageEndpoint(uid, target, protocolType, delegate.convert()),
         delegate
     )
 

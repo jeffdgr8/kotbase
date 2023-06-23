@@ -1,10 +1,10 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.Message as CBLMessage
 
 public actual class Message
-internal constructor(actual: com.couchbase.lite.Message) :
-    DelegatedClass<com.couchbase.lite.Message>(actual) {
+internal constructor(actual: CBLMessage) : DelegatedClass<CBLMessage>(actual) {
 
     public actual fun toData(): ByteArray =
         actual.toData()
@@ -12,6 +12,6 @@ internal constructor(actual: com.couchbase.lite.Message) :
     public actual companion object {
 
         public actual fun fromData(data: ByteArray): Message =
-            Message(com.couchbase.lite.Message.fromData(data))
+            Message(CBLMessage.fromData(data))
     }
 }

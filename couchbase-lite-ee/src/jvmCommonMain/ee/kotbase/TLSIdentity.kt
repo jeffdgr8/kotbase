@@ -1,5 +1,7 @@
 package kotbase
 
-internal expect val TLSIdentity.actual: com.couchbase.lite.TLSIdentity
+import com.couchbase.lite.TLSIdentity as CBLTLSIdentity
 
-internal expect fun com.couchbase.lite.TLSIdentity.asTLSIdentity(): TLSIdentity
+internal expect val TLSIdentity.actual: CBLTLSIdentity
+
+internal expect fun CBLTLSIdentity.asTLSIdentity(): TLSIdentity

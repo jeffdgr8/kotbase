@@ -1,16 +1,16 @@
 package kotbase
 
-import com.couchbase.lite.URLEndpointListener
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.URLEndpointListener as CBLURLEndpointListener
 
 public actual class URLEndpointListener
 internal constructor(
-    actual: com.couchbase.lite.URLEndpointListener,
+    actual: CBLURLEndpointListener,
     private val _config: URLEndpointListenerConfiguration
-) : DelegatedClass<URLEndpointListener>(actual) {
+) : DelegatedClass<CBLURLEndpointListener>(actual) {
 
     public actual constructor(config: URLEndpointListenerConfiguration) : this(
-        com.couchbase.lite.URLEndpointListener(config.actual),
+        CBLURLEndpointListener(config.actual),
         config
     )
 

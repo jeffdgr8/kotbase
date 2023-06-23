@@ -1,16 +1,16 @@
 package kotbase
 
-import com.couchbase.lite.ClientCertificateAuthenticator
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.ClientCertificateAuthenticator as CBLClientCertificateAuthenticator
 
 public actual class ClientCertificateAuthenticator
 private constructor(
-    override val actual: com.couchbase.lite.ClientCertificateAuthenticator,
+    override val actual: CBLClientCertificateAuthenticator,
     public actual val identity: TLSIdentity
-) : DelegatedClass<ClientCertificateAuthenticator>(actual), Authenticator {
+) : DelegatedClass<CBLClientCertificateAuthenticator>(actual), Authenticator {
 
     public actual constructor(identity: TLSIdentity) : this(
-        com.couchbase.lite.ClientCertificateAuthenticator(identity.actual),
+        CBLClientCertificateAuthenticator(identity.actual),
         identity
     )
 }

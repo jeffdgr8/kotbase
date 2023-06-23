@@ -3,17 +3,16 @@ package kotbase
 import kotbase.base.DelegatedClass
 import kotbase.ext.toDate
 import kotlinx.datetime.Instant
+import com.couchbase.lite.TLSIdentity as CBLTLSIdentity
 
 public actual class TLSIdentity
-internal constructor(actual: com.couchbase.lite.TLSIdentity) :
-    DelegatedClass<com.couchbase.lite.TLSIdentity>(actual) {
+internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(actual) {
 
     public actual companion object {
 
         @Throws(CouchbaseLiteException::class)
-        public actual fun getIdentity(alias: String): TLSIdentity? {
-            return com.couchbase.lite.TLSIdentity.getIdentity(alias)?.asTLSIdentity()
-        }
+        public actual fun getIdentity(alias: String): TLSIdentity? =
+            CBLTLSIdentity.getIdentity(alias)?.asTLSIdentity()
 
         @Throws(CouchbaseLiteException::class)
         public actual fun createIdentity(
@@ -21,19 +20,18 @@ internal constructor(actual: com.couchbase.lite.TLSIdentity) :
             attributes: Map<String, String>,
             expiration: Instant?,
             alias: String
-        ): TLSIdentity {
-            return com.couchbase.lite.TLSIdentity.createIdentity(
-                isServer,
-                attributes,
-                expiration?.toDate(),
-                alias
-            ).asTLSIdentity()
-        }
+        ): TLSIdentity = CBLTLSIdentity.createIdentity(
+            isServer,
+            attributes,
+            expiration?.toDate(),
+            alias
+        ).asTLSIdentity()
     }
 }
 
-internal actual val TLSIdentity.actual: com.couchbase.lite.TLSIdentity
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+internal actual val TLSIdentity.actual: CBLTLSIdentity
     get() = actual
 
-internal actual fun com.couchbase.lite.TLSIdentity.asTLSIdentity(): TLSIdentity =
+internal actual fun CBLTLSIdentity.asTLSIdentity(): TLSIdentity =
     TLSIdentity(this)

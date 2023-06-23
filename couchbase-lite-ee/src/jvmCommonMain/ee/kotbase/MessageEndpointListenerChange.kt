@@ -1,11 +1,11 @@
 package kotbase
 
-import com.couchbase.lite.MessageEndpointListenerChange
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.MessageEndpointListenerChange as CBLMessageEndpointListenerChange
 
 public actual class MessageEndpointListenerChange
-internal constructor(actual: com.couchbase.lite.MessageEndpointListenerChange) :
-    DelegatedClass<MessageEndpointListenerChange>(actual) {
+internal constructor(actual: CBLMessageEndpointListenerChange) :
+    DelegatedClass<CBLMessageEndpointListenerChange>(actual) {
 
     public actual val connection: MessageEndpointConnection
         get() = (actual.connection as NativeMessageEndpointConnection).original

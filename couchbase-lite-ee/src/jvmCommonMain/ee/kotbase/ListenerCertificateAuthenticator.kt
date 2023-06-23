@@ -1,22 +1,22 @@
 package kotbase
 
-import com.couchbase.lite.ListenerCertificateAuthenticator
 import kotbase.base.DelegatedClass
 import java.io.ByteArrayInputStream
 import java.security.cert.Certificate
 import java.security.cert.CertificateFactory
+import com.couchbase.lite.ListenerCertificateAuthenticator as CBLListenerCertificateAuthenticator
 
 public actual class ListenerCertificateAuthenticator
-internal constructor(override val actual: com.couchbase.lite.ListenerCertificateAuthenticator) :
-    DelegatedClass<ListenerCertificateAuthenticator>(actual),
+internal constructor(override val actual: CBLListenerCertificateAuthenticator) :
+    DelegatedClass<CBLListenerCertificateAuthenticator>(actual),
     ListenerAuthenticator {
 
     public actual constructor(rootCerts: List<ByteArray>) : this(
-        com.couchbase.lite.ListenerCertificateAuthenticator(rootCerts.toCertificates())
+        CBLListenerCertificateAuthenticator(rootCerts.toCertificates())
     )
 
     public actual constructor(delegate: ListenerCertificateAuthenticatorDelegate) : this(
-        com.couchbase.lite.ListenerCertificateAuthenticator(delegate.convert())
+        CBLListenerCertificateAuthenticator(delegate.convert())
     )
 }
 

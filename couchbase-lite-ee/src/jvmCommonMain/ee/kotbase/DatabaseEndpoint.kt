@@ -1,16 +1,16 @@
 package kotbase
 
-import com.couchbase.lite.DatabaseEndpoint
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.DatabaseEndpoint as CBLDatabaseEndpoint
 
 public actual class DatabaseEndpoint
 internal constructor(
-    override val actual: com.couchbase.lite.DatabaseEndpoint,
+    override val actual: CBLDatabaseEndpoint,
     public actual val database: Database
-) : DelegatedClass<DatabaseEndpoint>(actual), Endpoint {
+) : DelegatedClass<CBLDatabaseEndpoint>(actual), Endpoint {
 
     public actual constructor(database: Database) : this(
-        com.couchbase.lite.DatabaseEndpoint(database.actual),
+        CBLDatabaseEndpoint(database.actual),
         database
     )
 }

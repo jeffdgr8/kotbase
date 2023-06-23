@@ -1,3 +1,5 @@
 package kotbase
 
-public actual class PredictiveIndex(actual: com.couchbase.lite.PredictiveIndex) : Index(actual)
+import com.couchbase.lite.PredictiveIndex as CBLPredictiveIndex
+
+public actual class PredictiveIndex(actual: CBLPredictiveIndex) : Index(actual)

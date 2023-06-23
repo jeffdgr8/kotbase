@@ -1,14 +1,15 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.URLEndpointListenerConfiguration as CBLURLEndpointListenerConfiguration
 
 public actual class URLEndpointListenerConfiguration
 private constructor(
     public actual val database: Database,
     identity: TLSIdentity?,
     authenticator: ListenerAuthenticator?,
-    actual: com.couchbase.lite.URLEndpointListenerConfiguration
-) : DelegatedClass<com.couchbase.lite.URLEndpointListenerConfiguration>(actual) {
+    actual: CBLURLEndpointListenerConfiguration
+) : DelegatedClass<CBLURLEndpointListenerConfiguration>(actual) {
 
     public actual constructor(
         database: Database,
@@ -23,7 +24,7 @@ private constructor(
         database,
         identity,
         authenticator,
-        com.couchbase.lite.URLEndpointListenerConfiguration(
+        CBLURLEndpointListenerConfiguration(
             database.actual,
             networkInterface,
             port,
@@ -39,7 +40,7 @@ private constructor(
         config.database,
         config.tlsIdentity,
         config.authenticator,
-        com.couchbase.lite.URLEndpointListenerConfiguration(config.actual)
+        CBLURLEndpointListenerConfiguration(config.actual)
     )
 
     public actual var networkInterface: String?

@@ -1,19 +1,19 @@
 package kotbase
 
-import com.couchbase.lite.MessageEndpointListenerConfiguration
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.MessageEndpointListenerConfiguration as CBLMessageEndpointListenerConfiguration
 
 public actual class MessageEndpointListenerConfiguration
 internal constructor(
-    actual: com.couchbase.lite.MessageEndpointListenerConfiguration,
+    actual: CBLMessageEndpointListenerConfiguration,
     public actual val database: Database
-) : DelegatedClass<MessageEndpointListenerConfiguration>(actual) {
+) : DelegatedClass<CBLMessageEndpointListenerConfiguration>(actual) {
 
     public actual constructor(
         database: Database,
         protocolType: ProtocolType
     ) : this(
-        com.couchbase.lite.MessageEndpointListenerConfiguration(database.actual, protocolType),
+        CBLMessageEndpointListenerConfiguration(database.actual, protocolType),
         database
     )
 

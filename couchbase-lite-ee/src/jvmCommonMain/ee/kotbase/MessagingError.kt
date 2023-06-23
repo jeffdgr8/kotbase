@@ -1,14 +1,13 @@
 package kotbase
 
-import com.couchbase.lite.MessagingError
 import kotbase.base.DelegatedClass
+import com.couchbase.lite.MessagingError as CBLMessagingError
 
 public actual class MessagingError
-internal constructor(actual: com.couchbase.lite.MessagingError) :
-    DelegatedClass<MessagingError>(actual) {
+internal constructor(actual: CBLMessagingError) : DelegatedClass<CBLMessagingError>(actual) {
 
     public actual constructor(error: Exception, recoverable: Boolean) : this(
-        com.couchbase.lite.MessagingError(error, recoverable)
+        CBLMessagingError(error, recoverable)
     )
 
     public actual val isRecoverable: Boolean
