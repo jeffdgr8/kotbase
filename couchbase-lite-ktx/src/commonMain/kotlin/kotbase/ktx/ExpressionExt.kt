@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
+
 package kotbase.ktx
 
 import kotbase.ArrayFunction
@@ -12,7 +14,7 @@ import kotlinx.datetime.Instant
  * @param upper the inclusive upper bound date
  * @return a between expression.
  */
-public fun Expression.between(lower: Instant, upper: Instant): Expression =
+public inline fun Expression.between(lower: Instant, upper: Instant): Expression =
     between(Expression.value(lower), Expression.value(upper))
 
 /**

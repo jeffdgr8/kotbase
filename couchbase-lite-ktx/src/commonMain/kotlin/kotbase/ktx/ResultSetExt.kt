@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
+
 package kotbase.ktx
 
 import kotbase.ResultSet

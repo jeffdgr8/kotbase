@@ -22,7 +22,7 @@
  * - Resolve explicitApiWarning() requirements
  */
 
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
 
 package kotbase.molo17
 

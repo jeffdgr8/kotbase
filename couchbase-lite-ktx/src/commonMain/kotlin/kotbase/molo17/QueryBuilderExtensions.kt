@@ -22,7 +22,7 @@
  * - Add support for additional Query subclasses
  */
 
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("NOTHING_TO_INLINE", "unused", "KotlinRedundantDiagnosticSuppress")
 
 package kotbase.molo17
 

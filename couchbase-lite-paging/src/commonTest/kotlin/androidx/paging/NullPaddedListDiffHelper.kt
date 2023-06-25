@@ -214,7 +214,7 @@ internal object OverlappingListsDiffDispatcher {
         callbackWrapper.fixPlaceholders()
     }
 
-    @Suppress("NOTHING_TO_INLINE")
+    @Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
     private class PlaceholderUsingUpdateCallback<T>(
         private val oldList: NullPaddedList<T>,
         private val newList: NullPaddedList<T>,

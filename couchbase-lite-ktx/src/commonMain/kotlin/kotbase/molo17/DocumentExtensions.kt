@@ -44,7 +44,6 @@ import kotlinx.datetime.Instant
  *
  * @return a [MutableDocument] instance
  */
-@Suppress("FunctionName")
 public fun MutableDocument(block: DocumentBuilder.() -> Unit): MutableDocument =
     DocumentBuilder().apply(block).build()
 
