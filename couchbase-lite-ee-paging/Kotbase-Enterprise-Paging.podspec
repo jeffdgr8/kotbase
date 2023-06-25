@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'Kotbase-Enterprise-Paging'
-    spec.version                  = '3.0.5-1.0.0-SNAPSHOT'
+    spec.version                  = '3.0.12-1.0.0-SNAPSHOT'
     spec.homepage                 = 'https://github.com/jeffdgr8/kotbase'
     spec.source                   = { :http=> ''}
     spec.authors                  = 'Couchbase, Jeff Lockhart'
@@ -9,7 +9,7 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/Kotbase_Enterprise_Paging.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '9.0'
-    spec.dependency 'CouchbaseLite-Enterprise', '3.0.2'
+    spec.dependency 'CouchbaseLite-Enterprise', '3.0.12'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':couchbase-lite-ee-paging',

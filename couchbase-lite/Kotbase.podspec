@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'Kotbase'
-    spec.version                  = '3.0.5-1.0.0-SNAPSHOT'
+    spec.version                  = '3.0.12-1.0.0-SNAPSHOT'
     spec.homepage                 = 'https://github.com/jeffdgr8/kotbase'
     spec.source                   = { :http=> ''}
     spec.authors                  = 'Couchbase, Jeff Lockhart'
@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '9.0'
     spec.osx.deployment_target = '10.11'
-    spec.dependency 'CouchbaseLite', '3.0.2'
+    spec.dependency 'CouchbaseLite', '3.0.12'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':couchbase-lite',
