@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Kotbase</string>
+    <string name="doc_update_input_value">Doc update input value</string>
+    <string name="run_db_work">Run database work</string>
+    <string name="replicate">Replicate</string>
+</resources>

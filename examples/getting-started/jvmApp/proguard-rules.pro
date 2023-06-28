@@ -1,0 +1,5 @@
+-dontwarn android.**
+-dontwarn javax.annotation.**
+-dontwarn edu.umd.cs.findbugs.annotations.*
+-dontwarn kotlinx.serialization.**
+-dontwarn org.conscrypt.*

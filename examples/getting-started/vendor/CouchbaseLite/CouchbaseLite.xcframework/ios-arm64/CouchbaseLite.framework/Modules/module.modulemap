@@ -1,0 +1,6 @@
+framework module CouchbaseLite {
+  umbrella header "CouchbaseLite.h"
+
+  export *
+  module * { export * }
+}

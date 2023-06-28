@@ -1,0 +1,35 @@
+[versions]
+android-gradle-plugin = "7.4.2"
+androidx-appcompat = "1.6.1"
+androidx-constraintlayout = "2.1.4"
+androidx-core-ktx = "1.10.1"
+androidx-lifecycle-ktx = "2.6.1"
+androidx-material = "1.9.0"
+compose = "1.4.1"
+couchbase-lite-c = "3.0.12"
+kmp-native-coroutines = "1.0.0-ALPHA-7"
+kotbase = "3.0.12-1.0.0-SNAPSHOT"
+kotlin = "1.8.20"
+kotlinx-coroutines = "1.7.1"
+kotlinx-datetime = "0.4.0"
+ksp = "1.8.20-1.0.11"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+kmp-native-coroutines = { id = "com.rickclephas.kmp.nativecoroutines", version.ref = "kmp-native-coroutines" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+[libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
+androidx-lifecycle-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-ktx" }
+androidx-material = { module = "com.google.android.material:material", version.ref = "androidx-material" }
+kotbase = { module = "dev.kotbase:couchbase-lite-ktx", version.ref = "kotbase" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
