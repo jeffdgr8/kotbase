@@ -17,7 +17,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.awt.Dimension
 
-fun main() = singleWindowApplication {
+fun main() = singleWindowApplication(title = "Kotbase") {
     window.minimumSize = Dimension(600, 200)
     MaterialTheme {
         App()
