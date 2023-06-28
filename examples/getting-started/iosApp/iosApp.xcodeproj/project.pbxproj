@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7555FF7A242A565900829871 /* Kotbase */ = {
+		7555FF7A242A565900829871 /* iosApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7555FFA5242A565B00829871 /* Build configuration list for PBXNativeTarget "Kotbase" */;
+			buildConfigurationList = 7555FFA5242A565B00829871 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
 				7555FFB5242A651A00829871 /* ShellScript */,
 				7555FF77242A565900829871 /* Sources */,
@@ -109,7 +109,7 @@
 			);
 			dependencies = (
 			);
-			name = Kotbase;
+			name = iosApp;
 			packageProductDependencies = (
 				1FAC0B3B2A4BAB6B006C5DB7 /* KMPNativeCoroutinesAsync */,
 			);
@@ -148,7 +148,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7555FF7A242A565900829871 /* Kotbase */,
+				7555FF7A242A565900829871 /* iosApp */,
 			);
 		};
 /* End PBXProject section */
@@ -337,7 +337,7 @@
 					shared,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.kotbase.gettingstarted;
-				PRODUCT_NAME = "${TARGET_NAME}";
+				PRODUCT_NAME = Kotbase;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -366,7 +366,7 @@
 					shared,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.kotbase.gettingstarted;
-				PRODUCT_NAME = "${TARGET_NAME}";
+				PRODUCT_NAME = Kotbase;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -384,7 +384,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7555FFA5242A565B00829871 /* Build configuration list for PBXNativeTarget "Kotbase" */ = {
+		7555FFA5242A565B00829871 /* Build configuration list for PBXNativeTarget "iosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7555FFA6242A565B00829871 /* Debug */,
