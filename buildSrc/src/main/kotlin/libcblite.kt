@@ -23,9 +23,7 @@ fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(fromProject: Project
         targets.withType<KotlinNativeTarget>().configureEach {
             if (konanTarget.family == Family.LINUX) {
                 val libraryPath = "${fromProject.projectDir}/$libcbliteLibPath"
-                binaries.getTest(DEBUG).linkerOpts += listOf(
-                    "-L$libraryPath", "-lcblite", "-rpath", libraryPath
-                )
+                binaries.getTest(DEBUG).linkerOpts("-L$libraryPath", "-lcblite", "-rpath", libraryPath)
             }
         }
 
