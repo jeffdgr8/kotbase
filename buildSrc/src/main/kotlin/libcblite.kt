@@ -14,6 +14,8 @@ import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
+// On Linux, install libicu v71 from vendor/libicu as -rpath and LD_LIBRARY_PATH both don't work to resolve
+
 fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(delegate: DelegatingProjectDependency) =
     useCouchbaseLiteNativeCLib(delegate.dependencyProject)
 
@@ -24,15 +26,6 @@ fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(fromProject: Project
             if (konanTarget.family == Family.LINUX) {
                 val libraryPath = "${fromProject.projectDir}/$libcbliteLibPath"
                 binaries.getTest(DEBUG).linkerOpts("-L$libraryPath", "-lcblite", "-rpath", libraryPath)
-            }
-        }
-
-        if (System.getProperty("os.name") == "Linux") {
-            tasks.withType<Test>().configureEach {
-                environment(
-                    "LD_LIBRARY_PATH",
-                    "\$LD_LIBRARY_PATH:$rootDir/vendor/libicu-dev/linux/x86_64/libicu-dev-54.1/lib/x86_64-linux-gnu"
-                )
             }
         }
 

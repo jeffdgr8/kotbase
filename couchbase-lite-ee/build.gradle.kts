@@ -50,15 +50,6 @@ kotlin {
         }
     }
 
-    /*
-     * On Linux, manually install libicu-dev v54 and v66 from
-     * vendor/libicu-dev/linux/x86_64/libicu-dev-{v}/lib/x86_64-linux-gnu
-     * as -rpath doesn't work to resolve:
-     *
-     * sudo cp -P libicuuc.so.54* libicui18n.so.54* libicudata.so.54* /usr/lib/x86_64-linux-gnu/
-     * sudo cp -P libicuuc.so.66* libicui18n.so.66* libicudata.so.66* /usr/lib/x86_64-linux-gnu/
-     */
-
     sourceSets {
         // "Two modules in a project cannot share the same content root"
         // symlinking src dirs from ce module as workaround
