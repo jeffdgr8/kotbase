@@ -11,15 +11,9 @@ See [Differences from Couchbase Lite Java SDK](differences.md) for details about
 
 Kotbase will pull in the correct Couchbase Lite Java dependencies via Gradle.
 
-### Android
+### Minification
 
-| API |       x86        |       x64        |      ARM32       |      ARM64       |
-|:---:|:----------------:|:----------------:|:----------------:|:----------------:|
-| 22+ | :material-check: | :material-check: | :material-check: | :material-check: |
-
-#### Minification
-
-An application that enables minification must ensure that certain pieces of Couchbase Lite library code are not changed.
+An application that enables ProGuard minification must ensure that certain pieces of Couchbase Lite library code are not changed.
 
 ??? note "Near-minimal rule set that retains the needed code"
 
@@ -39,6 +33,12 @@ An application that enables minification must ensure that certain pieces of Couc
         <init>(...);
     }
     ```
+
+### Android
+
+| API |       x86        |       x64        |      ARM32       |      ARM64       |
+|:---:|:----------------:|:----------------:|:----------------:|:----------------:|
+| 22+ | :material-check: | :material-check: | :material-check: | :material-check: |
 
 ### JVM
 
