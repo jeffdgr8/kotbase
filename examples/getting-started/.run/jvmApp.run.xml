@@ -15,7 +15,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="runDistributable" />
+          <option value="run" />
         </list>
       </option>
       <option name="vmOptions" value="" />

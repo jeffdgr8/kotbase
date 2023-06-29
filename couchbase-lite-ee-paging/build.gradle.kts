@@ -8,6 +8,8 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     iosX64()
+    linuxX64()
+    mingwX64()
 
     cocoapods {
         name = "Kotbase-Enterprise-Paging"
@@ -25,6 +27,8 @@ kotlin {
             linkOnly = true
         }
     }
+
+    useCouchbaseLiteNativeCLib(projects.couchbaseLiteEe)
 
     sourceSets {
         commonMain {
