@@ -2,14 +2,14 @@
 couchbase-lite-java = "3.0.12"
 couchbase-lite-objc = "3.0.12"
 couchbase-lite-c = "3.0.12"
-kotlinx-coroutines = "1.7.1"
+kotlinx-coroutines = "1.7.2"
 mockk = "1.13.3" # 1.13.4 breaks QueryExtensionKtTest on Android https://github.com/mockk/mockk/issues/1035
 
 [plugins]
 android-library = { id = "com.android.library", version = "7.4.2" }
 dokka = { id = "org.jetbrains.dokka", version = "1.8.20" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.0-RC" }
-kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.1" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.2" }
 
 [libraries]
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.6.1" }
@@ -20,10 +20,10 @@ couchbase-lite-android = { module = "com.couchbase.lite:couchbase-lite-android",
 couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-android-ee", version.ref = "couchbase-lite-java" }
 couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", version.ref = "couchbase-lite-java" }
 couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
-korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.3" }
+korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.6" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
-kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.20.2" }
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.21.0" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.0" }
@@ -31,4 +31,4 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 okio = { module = "com.squareup.okio:okio", version = "3.3.0" }
-paging = { module = "app.cash.paging:paging-common", version = "3.1.1-0.2.0" }
+paging = { module = "app.cash.paging:paging-common", version = "3.1.1-0.3.0" }
