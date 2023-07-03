@@ -36,8 +36,8 @@ kotlin {
         linkerOpts(linkerOpts)
         if (isMingwX64) {
             // Windows doesn't have a rpath linker option, copy the .dll to the .exe build path
-            compilation.compileTaskProvider.configure {
-                doFirst {
+            linkTaskProvider.configure {
+                doLast {
                     projectDir.resolve("vendor/libcblite/windows/x86_64/libcblite-$cblVersion/bin/cblite.dll")
                         .copyTo(outputDirectory.resolve("cblite.dll"), overwrite = true)
                 }
