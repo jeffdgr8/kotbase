@@ -24,7 +24,7 @@ kotlin {
         }
     }
 
-    useCouchbaseLiteNativeCLib(projects.couchbaseLite)
+    linkLibcblite(projects.couchbaseLite)
 
     sourceSets {
         commonMain {

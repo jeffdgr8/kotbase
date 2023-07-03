@@ -9,6 +9,7 @@ package kotbase
 import com.couchbase.lite.reset
 import kotbase.internal.utils.TestUtils.assertThrows
 import kotbase.test.AfterClass
+import kotlin.jvm.JvmStatic
 import kotlin.test.*
 
 class LogTest : BaseDbTest() {
@@ -87,6 +88,7 @@ class LogTest : BaseDbTest() {
         private const val LOG_HEADER = "[JAVA] "
 
         @AfterClass
+        @JvmStatic
         fun tearDownLogTestClass() = Database.log.reset()
     }
 

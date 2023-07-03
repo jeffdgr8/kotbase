@@ -35,7 +35,7 @@ kotlin {
         }
     }
 
-    useCouchbaseLiteNativeCLib()
+    linkLibcblite()
 
     targets.withType<KotlinNativeTarget>().configureEach {
         if (konanTarget.family.isAppleFamily) {

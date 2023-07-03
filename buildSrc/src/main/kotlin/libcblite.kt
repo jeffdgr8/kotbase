@@ -1,44 +1,41 @@
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.Project
 import org.gradle.api.internal.catalog.DelegatingProjectDependency
-import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.kpm.external.ExternalVariantApi
 import org.jetbrains.kotlin.gradle.kpm.external.project
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
 // On Linux, install libicu v71 from vendor/libicu as -rpath and LD_LIBRARY_PATH both don't work to resolve
 
-fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(delegate: DelegatingProjectDependency) =
-    useCouchbaseLiteNativeCLib(delegate.dependencyProject)
+fun KotlinMultiplatformExtension.linkLibcblite(delegate: DelegatingProjectDependency) =
+    linkLibcblite(delegate.dependencyProject)
 
 @OptIn(ExternalVariantApi::class)
-fun KotlinMultiplatformExtension.useCouchbaseLiteNativeCLib(fromProject: Project = project) {
+fun KotlinMultiplatformExtension.linkLibcblite(fromProject: Project = project) {
     with(project) {
         targets.withType<KotlinNativeTarget>().configureEach {
-            if (konanTarget.family == Family.LINUX) {
-                val libraryPath = "${fromProject.projectDir}/$libcbliteLibPath"
-                binaries.getTest(DEBUG).linkerOpts("-L$libraryPath", "-lcblite", "-rpath", libraryPath)
-            }
-        }
-
-        tasks.withType<KotlinNativeTest> {
-            val dir = name.substring(0, name.lastIndex - 3)
-            if (dir.isWindows) {
-                dependsOn(
-                    tasks.register<Copy>("copyLibcbliteDll") {
-                        val version = libs.versions.couchbase.lite.c.get()
-                        from("${fromProject.projectDir}/${libcblitePath(dir.os, dir.arch, version)}/bin/cblite.dll")
-                        into("build/bin/$dir/debugTest")
+            when (konanTarget.family) {
+                Family.LINUX -> {
+                    val libraryPath = "${fromProject.projectDir}/$libcbliteLibPath"
+                    binaries.getTest(DEBUG).linkerOpts("-L$libraryPath", "-lcblite", "-rpath", libraryPath)
+                }
+                Family.MINGW -> {
+                    binaries.getTest(NativeBuildType.DEBUG).linkTaskProvider.configure {
+                        doLast {
+                            val version = libs.versions.couchbase.lite.c.get()
+                            val outputDir = outputFile.get().parentFile
+                            fromProject.projectDir.resolve("${libcblitePath("windows", "x86_64", version)}/bin/cblite.dll")
+                                .copyTo(outputDir.resolve("cblite.dll"), overwrite = true)
+                        }
                     }
-                )
+                }
+                else -> {}
             }
         }
     }
