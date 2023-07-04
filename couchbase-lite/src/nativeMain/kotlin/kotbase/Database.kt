@@ -12,8 +12,10 @@ import kotbase.util.to
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.*
+import kotlinx.coroutines.*
 import kotlinx.datetime.Instant
 import libcblite.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.native.internal.createCleaner
 
 public actual class Database
@@ -316,7 +318,7 @@ internal constructor(
 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {
         return mustBeOpen {
-            val holder = DatabaseChangeListenerHolder(listener, this)
+            val holder = DatabaseChangeDefaultListenerHolder(listener, this)
             val (index, stableRef) = addListener(changeListeners, holder)
             DelegatedListenerToken(
                 CBLDatabase_AddChangeListener(
@@ -330,6 +332,43 @@ internal constructor(
         }
     }
 
+    public actual fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken {
+        return mustBeOpen {
+            val scope = CoroutineScope(SupervisorJob() + context)
+            val holder = DatabaseChangeSuspendListenerHolder(listener, this, scope)
+            val (index, stableRef) = addListener(changeListeners, holder)
+            val token = DelegatedListenerToken(
+                CBLDatabase_AddChangeListener(
+                    actual,
+                    nativeChangeListener(),
+                    stableRef
+                )!!,
+                ListenerTokenType.DATABASE,
+                index
+            )
+            SuspendListenerToken(scope, token)
+        }
+    }
+
+    public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
+        mustBeOpen {
+            val holder = DatabaseChangeSuspendListenerHolder(listener, this, scope)
+            val (index, stableRef) = addListener(changeListeners, holder)
+            val token = DelegatedListenerToken(
+                CBLDatabase_AddChangeListener(
+                    actual,
+                    nativeChangeListener(),
+                    stableRef
+                )!!,
+                ListenerTokenType.DATABASE,
+                index
+            )
+            scope.coroutineContext[Job]?.invokeOnCompletion {
+                removeChangeListener(token)
+            }
+        }
+    }
+
     private fun nativeChangeListener(): CBLDatabaseChangeListener {
         return staticCFunction { ref, _, numDocs, docIds ->
             val size = numDocs.toInt()
@@ -339,13 +378,26 @@ internal constructor(
                 }
             }
             with(ref.to<DatabaseChangeListenerHolder>()) {
-                listener(DatabaseChange(database, documentIds))
+                when (this) {
+                    is DatabaseChangeDefaultListenerHolder -> listener(DatabaseChange(database, documentIds))
+                    is DatabaseChangeSuspendListenerHolder -> scope.launch {
+                        listener(DatabaseChange(database, documentIds))
+                    }
+                }
             }
         }
     }
 
     public actual fun removeChangeListener(token: ListenerToken) {
-        token as DelegatedListenerToken
+        if (token is SuspendListenerToken) {
+            removeChangeListener(token.token)
+            token.scope.cancel()
+        } else {
+            removeChangeListener(token as DelegatedListenerToken)
+        }
+    }
+
+    private fun removeChangeListener(token: DelegatedListenerToken) {
         val ref = when (token.type) {
             ListenerTokenType.DATABASE -> changeListeners.getOrNull(token.index)
             ListenerTokenType.DOCUMENT -> documentChangeListeners.getOrNull(token.index)

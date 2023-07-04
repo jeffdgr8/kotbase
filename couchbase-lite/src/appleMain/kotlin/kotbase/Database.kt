@@ -4,11 +4,13 @@ import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.isClosed
 import kotbase.base.DelegatedClass
 import kotbase.ext.wrapCBLError
+import kotlinx.coroutines.*
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import platform.objc.objc_sync_enter
 import platform.objc.objc_sync_exit
+import kotlin.coroutines.CoroutineContext
 
 public actual class Database
 internal constructor(actual: CBLDatabase) :
@@ -218,9 +220,35 @@ internal constructor(actual: CBLDatabase) :
         )
     }
 
+    public actual fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken {
+        val scope = CoroutineScope(SupervisorJob() + context)
+        val token = actual.addChangeListener { change ->
+            scope.launch {
+                listener(DatabaseChange(change!!))
+            }
+        }
+        return SuspendListenerToken(scope, DelegatedListenerToken(token))
+    }
+
+    public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
+        val token = actual.addChangeListener { change ->
+            scope.launch {
+                listener(DatabaseChange(change!!))
+            }
+        }
+        scope.coroutineContext[Job]?.invokeOnCompletion {
+            removeChangeListener(DelegatedListenerToken(token))
+        }
+    }
+
     public actual fun removeChangeListener(token: ListenerToken) {
-        token as DelegatedListenerToken
-        actual.removeChangeListenerWithToken(token.actual)
+        if (token is SuspendListenerToken) {
+            actual.removeChangeListenerWithToken(token.token.actual)
+            token.scope.cancel()
+        } else {
+            token as DelegatedListenerToken
+            actual.removeChangeListenerWithToken(token.actual)
+        }
     }
 
     public actual fun addDocumentChangeListener(

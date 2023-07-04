@@ -1,6 +1,8 @@
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Instant
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A Couchbase Lite database.
@@ -215,30 +217,43 @@ public expect class Database {
     public fun <R> inBatch(work: Database.() -> R): R
 
     /**
-     * Adds a change listener for the changes that occur in the database. The changes will be delivered on the UI
-     * thread for the Android platform and on an arbitrary thread for the Java platform. When developing a Java
-     * Desktop application using Swing or JavaFX that needs to update the UI after receiving the changes, make
-     * sure to schedule the UI update on the UI thread by using SwingUtilities.invokeLater(Runnable) or
-     * Platform.runLater(Runnable) respectively.
+     * Adds a change listener for the changes that occur in the database. The changes will be delivered
+     * on the main thread for platforms that support it (Android, iOS, macOS, Linux, and Windows).
+     * Callbacks are on an arbitrary thread for the JVM platform.
      *
      * @param listener callback
+     * @return token to remove the listener with
+     *
+     * @see removeChangeListener
      */
     public fun addChangeListener(listener: DatabaseChangeListener): ListenerToken
 
-    // TODO:
-    ///**
-    // * Adds a change listener for the changes that occur in the database with an executor on which the changes will be
-    // * posted to the listener. If the executor is not specified, the changes will be delivered on the UI thread for
-    // * the Android platform and on an arbitrary thread for the Java platform.
-    // *
-    // * @param listener callback
-    // */
-    //public fun addChangeListener(executor: Executor?, listener: DatabaseChangeListener): ListenerToken
+    /**
+     * Adds a change listener for the changes that occur in the database with a [CoroutineContext] that will be
+     * used to launch coroutines the listener will be called on. Coroutines will be launched in a [CoroutineScope]
+     * that is canceled when the listener is removed.
+     *
+     * @param context coroutine context in which the listener will run
+     * @param listener callback
+     * @return token to remove the listener with
+     *
+     * @see removeChangeListener
+     */
+    public fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken
+
+    /**
+     * Adds a change listener for the changes that occur in the database with a [CoroutineScope] that will be used
+     * to launch coroutines the listener will be called on. The listener is removed when the scope is canceled.
+     *
+     * @param scope coroutine scope in which the listener will run
+     * @param listener callback
+     */
+    public fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener)
 
     /**
      * Removes the change listener added to the database.
      *
-     * @param token returned by a previous call to addChangeListener or addDocumentListener.
+     * @param token returned by a previous call to [addChangeListener] or [addDocumentChangeListener].
      */
     public fun removeChangeListener(token: ListenerToken)
 

@@ -8,8 +8,10 @@ import kotbase.base.DelegatedClass
 import kotbase.ext.toDate
 import kotbase.ext.toFile
 import kotbase.ext.toKotlinInstant
+import kotlinx.coroutines.*
 import kotlinx.datetime.Instant
 import java.io.File
+import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Database as CBLDatabase
 
 public actual class Database
@@ -126,8 +128,34 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken =
         actual.addChangeListener(listener.convert())
 
+    public actual fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken {
+        val scope = CoroutineScope(SupervisorJob() + context)
+        val token = actual.addChangeListener { change ->
+            scope.launch {
+                listener(DatabaseChange(change))
+            }
+        }
+        return SuspendListenerToken(scope, token)
+    }
+
+    public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
+        val token = actual.addChangeListener { change ->
+            scope.launch {
+                listener(DatabaseChange(change))
+            }
+        }
+        scope.coroutineContext[Job]?.invokeOnCompletion {
+            removeChangeListener(token)
+        }
+    }
+
     public actual fun removeChangeListener(token: ListenerToken) {
-        actual.removeChangeListener(token)
+        if (token is SuspendListenerToken) {
+            actual.removeChangeListener(token.actual)
+            token.scope.cancel()
+        } else {
+            actual.removeChangeListener(token)
+        }
     }
 
     public actual fun addDocumentChangeListener(

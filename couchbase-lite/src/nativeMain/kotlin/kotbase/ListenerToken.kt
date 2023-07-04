@@ -4,6 +4,7 @@ import cnames.structs.CBLListenerToken
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.StableRef
+import kotlinx.coroutines.CoroutineScope
 
 public actual interface ListenerToken
 
@@ -11,6 +12,11 @@ internal class DelegatedListenerToken(
     val actual: CPointer<CBLListenerToken>,
     val type: ListenerTokenType,
     val index: Int
+) : ListenerToken
+
+internal class SuspendListenerToken(
+    val scope: CoroutineScope,
+    val token: DelegatedListenerToken
 ) : ListenerToken
 
 internal enum class ListenerTokenType {
