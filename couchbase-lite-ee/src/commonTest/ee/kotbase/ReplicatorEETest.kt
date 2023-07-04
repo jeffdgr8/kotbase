@@ -10,8 +10,6 @@ import kotlinx.datetime.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
-// TODO: native C multiple tests failing
-@IgnoreNative
 class ReplicatorEETest : BaseReplicatorTest() {
 
     // ReplicatorTest.swift
@@ -571,9 +569,10 @@ class ReplicatorEETest : BaseReplicatorTest() {
         testPullDeletedDocWithFilter(false)
     }
 
-    // TODO: native C fails sometimes
-    //  kotlin.AssertionError: Expected <2>, actual <1>.
-    //  or kotlin.AssertionError: Expected value to be true.
+    // TODO: native C fails
+    //  AssertionError: Expected <2>, actual <1>.
+    //  or AssertionError: Expected value to be true.
+    @IgnoreNative
     @Test
     fun testPullDeletedDocWithFilterContinuous() {
         testPullDeletedDocWithFilter(true)
@@ -1089,6 +1088,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // ReplicatorTest+CustomConflict.swift
 
+    // TODO: native C fails
+    //  IllegalArgumentException: Invalid URLEndpoint url 'wss://foo'
+    @IgnoreNative
     @Test
     fun testConflictResolverConfigProperty() {
         val target = URLEndpoint("wss://foo")
@@ -1232,6 +1234,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertNull(baseTestDb.getDocument("doc"))
     }
 
+    // TODO: native C fails
+    //  AssertionError: Expected <2>, actual <1>.
+    @IgnoreNative
     @Test
     fun testConflictResolverCalledTwice() {
         val docID = "doc"
@@ -1628,6 +1633,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertEquals("value2", baseTestDb.getDocument(docID)?.getString("key2"))
     }
 
+    // TODO: native C fails
+    //  AssertionError: Expected value to be not null.
+    @IgnoreNative
     @Test
     fun testConflictResolverReturningBlobFromDifferentDB() {
         val docID = "doc"
@@ -1712,6 +1720,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertEquals(1, count) // make sure, it entered the conflict resolver
     }
 
+    // TODO: native C fails
+    //  AssertionError: Expected <doc2>, actual <doc1>.
+    @IgnoreNative
     @Test
     fun testNonBlockingConflictResolver() = runBlocking {
         val mutex = Mutex(true)
@@ -1754,6 +1765,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertEquals(order[2], order[1])
     }
 
+    // TODO: native C fails
+    //  AssertionError: Expected value to be not null.
+    @IgnoreNative
     @Test
     fun testConflictResolverWhenDocumentIsPurged() {
         val docID = "doc"
