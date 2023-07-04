@@ -65,8 +65,9 @@ internal abstract class AbstractQuery : Query {
     override fun removeChangeListener(token: ListenerToken) {
         token as DelegatedListenerToken
         if (token.type == ListenerTokenType.QUERY) {
-            if (removeListener(changeListeners, token.index)) {
+            if (changeListeners.getOrNull(token.index) != null) {
                 CBLListener_Remove(token.actual)
+                removeListener(changeListeners, token.index)
             }
         } else {
             error("${token.type} change listener can't be removed from Query instance")

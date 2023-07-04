@@ -346,13 +346,18 @@ internal constructor(
 
     public actual fun removeChangeListener(token: ListenerToken) {
         token as DelegatedListenerToken
-        val exists = when (token.type) {
-            ListenerTokenType.DATABASE -> removeListener(changeListeners, token.index)
-            ListenerTokenType.DOCUMENT -> removeListener(documentChangeListeners, token.index)
+        val ref = when (token.type) {
+            ListenerTokenType.DATABASE -> changeListeners.getOrNull(token.index)
+            ListenerTokenType.DOCUMENT -> documentChangeListeners.getOrNull(token.index)
             else -> error("${token.type} change listener can't be removed from Database instance")
         }
-        if (exists) {
+        if (ref != null) {
             CBLListener_Remove(token.actual)
+            when (token.type) {
+                ListenerTokenType.DATABASE -> removeListener(changeListeners, token.index)
+                ListenerTokenType.DOCUMENT -> removeListener(documentChangeListeners, token.index)
+                else -> error("${token.type} change listener can't be removed from Database instance")
+            }
         }
     }
 
