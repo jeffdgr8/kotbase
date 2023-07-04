@@ -33,6 +33,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             else -> params.loadSize
         }
 
+        lateinit var query: Query
         val loadResult = database.inBatch {
             val count = selectCount().from(database)
                 .queryProvider()
@@ -48,7 +49,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             val data = select.from(database)
                 .queryProvider()
                 .limit(limit, offset)
-                .also { currentQuery = it }
+                .also { query = it }
                 .execute()
                 .toObjects(mapper)
             val nextPosToLoad = offset + data.size
@@ -60,6 +61,9 @@ internal class OffsetQueryPagingSource<RowType : Any>(
                 itemsAfter = maxOf(0, count - nextPosToLoad),
             )
         }
+        // workaround for query listener can't be added during transaction in CBL C SDK
+        // https://www.couchbase.com/forums/t/36504
+        currentQuery = query
         (if (invalid) PagingSourceLoadResultInvalid<Int, RowType>() else loadResult) as PagingSourceLoadResult<Int, RowType>
     }
 
