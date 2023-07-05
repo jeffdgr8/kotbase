@@ -223,22 +223,14 @@ internal constructor(actual: CBLDatabase) :
     public actual fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken {
         return mustBeOpen {
             val scope = CoroutineScope(SupervisorJob() + context)
-            val token = actual.addChangeListener { change ->
-                scope.launch {
-                    listener(DatabaseChange(change!!))
-                }
-            }
+            val token = actual.addChangeListener(listener.convert(scope))
             SuspendListenerToken(scope, DelegatedListenerToken(token))
         }
     }
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         mustBeOpen {
-            val token = actual.addChangeListener { change ->
-                scope.launch {
-                    listener(DatabaseChange(change!!))
-                }
-            }
+            val token = actual.addChangeListener(listener.convert(scope))
             scope.coroutineContext[Job]?.invokeOnCompletion {
                 actual.removeChangeListenerWithToken(token)
             }
@@ -270,11 +262,7 @@ internal constructor(actual: CBLDatabase) :
     ): ListenerToken {
         return mustBeOpen {
             val scope = CoroutineScope(SupervisorJob() + context)
-            val token = actual.addDocumentChangeListenerWithID(id) { change ->
-                scope.launch {
-                    listener(DocumentChange(change!!))
-                }
-            }
+            val token = actual.addDocumentChangeListenerWithID(id, listener.convert(scope))
             SuspendListenerToken(scope, DelegatedListenerToken(token))
         }
     }
@@ -285,11 +273,7 @@ internal constructor(actual: CBLDatabase) :
         listener: DocumentChangeSuspendListener
     ) {
         mustBeOpen {
-            val token = actual.addDocumentChangeListenerWithID(id) { change ->
-                scope.launch {
-                    listener(DocumentChange(change!!))
-                }
-            }
+            val token = actual.addDocumentChangeListenerWithID(id, listener.convert(scope))
             scope.coroutineContext[Job]?.invokeOnCompletion {
                 actual.removeChangeListenerWithToken(token)
             }

@@ -133,20 +133,12 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         listener: DatabaseChangeSuspendListener
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener { change ->
-            scope.launch {
-                listener(DatabaseChange(change))
-            }
-        }
+        val token = actual.addChangeListener(listener.convert(scope))
         return SuspendListenerToken(scope, token)
     }
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
-        val token = actual.addChangeListener { change ->
-            scope.launch {
-                listener(DatabaseChange(change))
-            }
-        }
+        val token = actual.addChangeListener(listener.convert(scope))
         scope.coroutineContext[Job]?.invokeOnCompletion {
             actual.removeChangeListener(token)
         }
@@ -170,11 +162,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         listener: DocumentChangeSuspendListener
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addDocumentChangeListener(id) { change ->
-            scope.launch {
-                listener(DocumentChange(change))
-            }
-        }
+        val token = actual.addDocumentChangeListener(id, listener.convert(scope))
         return SuspendListenerToken(scope, token)
     }
 
@@ -183,11 +171,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         scope: CoroutineScope,
         listener: DocumentChangeSuspendListener
     ) {
-        val token = actual.addDocumentChangeListener(id) { change ->
-            scope.launch {
-                listener(DocumentChange(change))
-            }
-        }
+        val token = actual.addDocumentChangeListener(id, listener.convert(scope))
         scope.coroutineContext[Job]?.invokeOnCompletion {
             actual.removeChangeListener(token)
         }
