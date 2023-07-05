@@ -258,25 +258,46 @@ public expect class Database {
     public fun removeChangeListener(token: ListenerToken)
 
     /**
-     * Adds a change listener for the changes that occur to the specified document.
-     * The changes will be delivered on the UI thread for the Android platform and on an arbitrary
-     * thread for the Java platform. When developing a Java Desktop application using Swing or JavaFX
-     * that needs to update the UI after receiving the changes, make sure to schedule the UI update
-     * on the UI thread by using SwingUtilities.invokeLater(Runnable) or Platform.runLater(Runnable)
-     * respectively.
+     * Adds a change listener for the changes that occur to the specified document. The changes will be
+     * delivered on the main thread for platforms that support it (Android, iOS, macOS, Linux, and Windows).
+     * Callbacks are on an arbitrary thread for the JVM platform.
+     *
+     * @param id document ID
+     * @param listener callback
+     * @return token to remove the listener with
+     *
+     * @see removeChangeListener
+     */
+    public fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken
+
+    /**
+     * Adds a change listener for the changes that occur to the specified document with a [CoroutineContext]
+     * that will be used to launch coroutines the listener will be called on. Coroutines will be launched in
+     * a [CoroutineScope] that is canceled when the listener is removed.
+     *
+     * @param id document ID
+     * @param context coroutine context in which the listener will run
+     * @param listener callback
+     * @return token to remove the listener with
+     *
+     * @see removeChangeListener
      */
     public fun addDocumentChangeListener(
         id: String,
-        listener: DocumentChangeListener
+        context: CoroutineContext,
+        listener: DocumentChangeSuspendListener
     ): ListenerToken
 
-    // TODO:
-    ///**
-    // * Adds a change listener for the changes that occur to the specified document with an executor on which
-    // * the changes will be posted to the listener.  If the executor is not specified, the changes will be
-    // * delivered on the UI thread for the Android platform and on an arbitrary thread for the Java platform.
-    // */
-    //public fun addDocumentChangeListener(id: String, executor: Executor?, listener: DocumentChangeListener): ListenerToken
+    /**
+     * Adds a change listener for the changes that occur to the specified document with a [CoroutineScope]
+     * that will be used to launch coroutines the listener will be called on. The listener is removed when
+     * the scope is canceled.
+     *
+     * @param id document ID
+     * @param scope coroutine scope in which the listener will run
+     * @param listener callback
+     */
+    public fun addDocumentChangeListener(id: String, scope: CoroutineScope, listener: DocumentChangeSuspendListener)
 
     /**
      * Closes a database.

@@ -16,4 +16,4 @@ public typealias DatabaseChangeListener = ChangeListener<DatabaseChange>
  *
  * @param change the database change information
  */
-public typealias DatabaseChangeSuspendListener = SuspendChangeListener<DatabaseChange>
+public typealias DatabaseChangeSuspendListener = ChangeSuspendListener<DatabaseChange>

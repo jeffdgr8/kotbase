@@ -221,23 +221,27 @@ internal constructor(actual: CBLDatabase) :
     }
 
     public actual fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken {
-        val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener { change ->
-            scope.launch {
-                listener(DatabaseChange(change!!))
+        return mustBeOpen {
+            val scope = CoroutineScope(SupervisorJob() + context)
+            val token = actual.addChangeListener { change ->
+                scope.launch {
+                    listener(DatabaseChange(change!!))
+                }
             }
+            SuspendListenerToken(scope, DelegatedListenerToken(token))
         }
-        return SuspendListenerToken(scope, DelegatedListenerToken(token))
     }
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
-        val token = actual.addChangeListener { change ->
-            scope.launch {
-                listener(DatabaseChange(change!!))
+        mustBeOpen {
+            val token = actual.addChangeListener { change ->
+                scope.launch {
+                    listener(DatabaseChange(change!!))
+                }
             }
-        }
-        scope.coroutineContext[Job]?.invokeOnCompletion {
-            removeChangeListener(DelegatedListenerToken(token))
+            scope.coroutineContext[Job]?.invokeOnCompletion {
+                actual.removeChangeListenerWithToken(token)
+            }
         }
     }
 
@@ -251,15 +255,45 @@ internal constructor(actual: CBLDatabase) :
         }
     }
 
-    public actual fun addDocumentChangeListener(
-        id: String,
-        listener: DocumentChangeListener
-    ): ListenerToken {
+    public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken {
         return DelegatedListenerToken(
             mustBeOpen {
                 actual.addDocumentChangeListenerWithID(id, listener.convert())
             }
         )
+    }
+
+    public actual fun addDocumentChangeListener(
+        id: String,
+        context: CoroutineContext,
+        listener: DocumentChangeSuspendListener
+    ): ListenerToken {
+        return mustBeOpen {
+            val scope = CoroutineScope(SupervisorJob() + context)
+            val token = actual.addDocumentChangeListenerWithID(id) { change ->
+                scope.launch {
+                    listener(DocumentChange(change!!))
+                }
+            }
+            SuspendListenerToken(scope, DelegatedListenerToken(token))
+        }
+    }
+
+    public actual fun addDocumentChangeListener(
+        id: String,
+        scope: CoroutineScope,
+        listener: DocumentChangeSuspendListener
+    ) {
+        mustBeOpen {
+            val token = actual.addDocumentChangeListenerWithID(id) { change ->
+                scope.launch {
+                    listener(DocumentChange(change!!))
+                }
+            }
+            scope.coroutineContext[Job]?.invokeOnCompletion {
+                actual.removeChangeListenerWithToken(token)
+            }
+        }
     }
 
     @Throws(CouchbaseLiteException::class)

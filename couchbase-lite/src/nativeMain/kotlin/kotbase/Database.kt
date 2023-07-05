@@ -319,33 +319,18 @@ internal constructor(
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {
         return mustBeOpen {
             val holder = DatabaseChangeDefaultListenerHolder(listener, this)
-            val (index, stableRef) = addListener(changeListeners, holder)
-            DelegatedListenerToken(
-                CBLDatabase_AddChangeListener(
-                    actual,
-                    nativeChangeListener(),
-                    stableRef
-                )!!,
-                ListenerTokenType.DATABASE,
-                index
-            )
+            addNativeChangeListener(holder)
         }
     }
 
-    public actual fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken {
+    public actual fun addChangeListener(
+        context: CoroutineContext,
+        listener: DatabaseChangeSuspendListener
+    ): ListenerToken {
         return mustBeOpen {
             val scope = CoroutineScope(SupervisorJob() + context)
             val holder = DatabaseChangeSuspendListenerHolder(listener, this, scope)
-            val (index, stableRef) = addListener(changeListeners, holder)
-            val token = DelegatedListenerToken(
-                CBLDatabase_AddChangeListener(
-                    actual,
-                    nativeChangeListener(),
-                    stableRef
-                )!!,
-                ListenerTokenType.DATABASE,
-                index
-            )
+            val token = addNativeChangeListener(holder)
             SuspendListenerToken(scope, token)
         }
     }
@@ -353,20 +338,24 @@ internal constructor(
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         mustBeOpen {
             val holder = DatabaseChangeSuspendListenerHolder(listener, this, scope)
-            val (index, stableRef) = addListener(changeListeners, holder)
-            val token = DelegatedListenerToken(
-                CBLDatabase_AddChangeListener(
-                    actual,
-                    nativeChangeListener(),
-                    stableRef
-                )!!,
-                ListenerTokenType.DATABASE,
-                index
-            )
+            val token = addNativeChangeListener(holder)
             scope.coroutineContext[Job]?.invokeOnCompletion {
                 removeChangeListener(token)
             }
         }
+    }
+
+    private fun addNativeChangeListener(holder: DatabaseChangeListenerHolder): DelegatedListenerToken {
+        val (index, stableRef) = addListener(changeListeners, holder)
+        return DelegatedListenerToken(
+            CBLDatabase_AddChangeListener(
+                actual,
+                nativeChangeListener(),
+                stableRef
+            )!!,
+            ListenerTokenType.DATABASE,
+            index
+        )
     }
 
     private fun nativeChangeListener(): CBLDatabaseChangeListener {
@@ -415,30 +404,63 @@ internal constructor(
 
     private val documentChangeListeners = mutableListOf<StableRef<DocumentChangeListenerHolder>?>()
 
+    public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken {
+        return mustBeOpen {
+            val holder = DocumentChangeDefaultListenerHolder(listener, this)
+            addNativeDocumentChangeListener(id, holder)
+        }
+    }
+
     public actual fun addDocumentChangeListener(
         id: String,
-        listener: DocumentChangeListener
+        context: CoroutineContext,
+        listener: DocumentChangeSuspendListener
     ): ListenerToken {
         return mustBeOpen {
-            val holder = DocumentChangeListenerHolder(listener, this)
-            val (index, stableRef) = addListener(documentChangeListeners, holder)
-            DelegatedListenerToken(
-                CBLDatabase_AddDocumentChangeListener(
-                    actual,
-                    id.toFLString(),
-                    nativeDocumentChangeListener(),
-                    stableRef
-                )!!,
-                ListenerTokenType.DOCUMENT,
-                index
-            )
+            val scope = CoroutineScope(SupervisorJob() + context)
+            val holder = DocumentChangeSuspendListenerHolder(listener, this, scope)
+            val token = addNativeDocumentChangeListener(id, holder)
+            SuspendListenerToken(scope, token)
         }
+    }
+
+    public actual fun addDocumentChangeListener(
+        id: String,
+        scope: CoroutineScope,
+        listener: DocumentChangeSuspendListener
+    ) {
+        mustBeOpen {
+            val holder = DocumentChangeSuspendListenerHolder(listener, this, scope)
+            val token = addNativeDocumentChangeListener(id, holder)
+            scope.coroutineContext[Job]?.invokeOnCompletion {
+                removeChangeListener(token)
+            }
+        }
+    }
+
+    private fun addNativeDocumentChangeListener(id: String, holder: DocumentChangeListenerHolder): DelegatedListenerToken {
+        val (index, stableRef) = addListener(documentChangeListeners, holder)
+        return DelegatedListenerToken(
+            CBLDatabase_AddDocumentChangeListener(
+                actual,
+                id.toFLString(),
+                nativeDocumentChangeListener(),
+                stableRef
+            )!!,
+            ListenerTokenType.DOCUMENT,
+            index
+        )
     }
 
     private fun nativeDocumentChangeListener(): CBLDocumentChangeListener {
         return staticCFunction { ref, _, docId ->
             with(ref.to<DocumentChangeListenerHolder>()) {
-                listener(DocumentChange(database, docId.toKString()!!))
+                when (this) {
+                    is DocumentChangeDefaultListenerHolder -> listener(DocumentChange(database, docId.toKString()!!))
+                    is DocumentChangeSuspendListenerHolder -> scope.launch {
+                        listener(DocumentChange(database, docId.toKString()!!))
+                    }
+                }
             }
         }
     }
