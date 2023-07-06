@@ -38,7 +38,9 @@ class DelegatedClassTest {
         val obj2 = MyNSObject(42)
         val delegate2 = MyDelegatedObject(obj2)
         assertEquals(obj1, obj2, "objects should be equal")
+        assertEquals(obj2, obj1, "objects should be transitively equal")
         assertEquals(delegate1, delegate2, "delegates should be equal")
+        assertEquals(delegate2, delegate1, "delegates should be transitively equal")
     }
 
     @Test

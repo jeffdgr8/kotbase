@@ -5,8 +5,7 @@ import kotbase.base.DelegatedClass
 import kotbase.ext.toCouchbaseLiteException
 
 public actual class QueryChange
-internal constructor(actual: CBLQueryChange) :
-    DelegatedClass<CBLQueryChange>(actual) {
+internal constructor(actual: CBLQueryChange) : DelegatedClass<CBLQueryChange>(actual) {
 
     public actual val query: Query by lazy {
         DelegatedQuery(actual.query)

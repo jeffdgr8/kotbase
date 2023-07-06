@@ -1,10 +1,12 @@
 package kotbase
 
+import cocoapods.CouchbaseLite.CBLQuery
 import cocoapods.CouchbaseLite.CBLQueryLimit
+import kotbase.base.AbstractDelegatedClass
 import kotbase.base.actuals
 
 public actual class Joins
-internal constructor(private val state: QueryState) : Query by state {
+internal constructor(private val state: QueryState) : AbstractDelegatedClass<CBLQuery>(), Query by state {
 
     public actual fun where(expression: Expression): Where {
         return Where(state.copy(where = expression.actual))
@@ -21,4 +23,7 @@ internal constructor(private val state: QueryState) : Query by state {
     public actual fun limit(limit: Expression, offset: Expression?): Limit {
         return Limit(state.copy(limit = CBLQueryLimit.limit(limit.actual, offset?.actual)))
     }
+
+    override val actual: CBLQuery
+        get() = state.actual
 }

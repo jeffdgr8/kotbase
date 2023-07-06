@@ -10,13 +10,13 @@ public abstract class AbstractDelegatedClass<D : NSObject> {
     public abstract val actual: D
 
     override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? DelegatedClass<*>)?.actual)
+        actual.isEqual((other as? AbstractDelegatedClass<*>)?.actual)
 
     override fun hashCode(): Int =
         actual.hash.toInt()
 
     override fun toString(): String =
-        actual.description ?: ""
+        actual.description ?: super.toString()
 }
 
 internal inline fun <reified D : NSObject> Array<out DelegatedClass<D>>.actuals(): List<D> =
