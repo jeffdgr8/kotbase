@@ -222,7 +222,7 @@ public expect class Database {
      * Callbacks are on an arbitrary thread for the JVM platform.
      *
      * @param listener callback
-     * @return token to remove the listener with
+     * @return An opaque listener token object for removing the listener.
      *
      * @see removeChangeListener
      */
@@ -234,8 +234,8 @@ public expect class Database {
      * that is canceled when the listener is removed.
      *
      * @param context coroutine context in which the listener will run
-     * @param listener callback
-     * @return token to remove the listener with
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
      *
      * @see removeChangeListener
      */
@@ -263,8 +263,8 @@ public expect class Database {
      * Callbacks are on an arbitrary thread for the JVM platform.
      *
      * @param id document ID
-     * @param listener callback
-     * @return token to remove the listener with
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
      *
      * @see removeChangeListener
      */
@@ -277,8 +277,8 @@ public expect class Database {
      *
      * @param id document ID
      * @param context coroutine context in which the listener will run
-     * @param listener callback
-     * @return token to remove the listener with
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
      *
      * @see removeChangeListener
      */

@@ -1,5 +1,8 @@
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * A database query used for querying data from the database. The query statement of the Query
  * object can be fluently constructed by calling the static select methods.
@@ -47,30 +50,35 @@ public interface Query {
     public fun explain(): String
 
     /**
-     * Adds a change listener for the changes that occur in the query results.
-     * The changes will be delivered on the UI thread for the Android platform and on an arbitrary
-     * thread for the Java platform. When developing a Java Desktop application using Swing or JavaFX
-     * that needs to update the UI after receiving the changes, make sure to schedule the UI update
-     * on the UI thread by using SwingUtilities.invokeLater(Runnable) or Platform.runLater(Runnable)
-     * respectively.
+     * Adds a change listener for the changes that occur in the query results. The changes will be delivered
+     * on the main thread for platforms that support it (Android, iOS, macOS, Linux, and Windows).
+     * Callbacks are on an arbitrary thread for the JVM platform.
      *
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      */
     public fun addChangeListener(listener: QueryChangeListener): ListenerToken
 
-    // TODO:
-    ///**
-    // * Adds a change listener for the changes that occur in the query results with an executor
-    // * on which the changes will be posted to the listener. If the executor is not specified,
-    // * the changes will be delivered on the UI thread for the Android platform and on an
-    // * arbitrary thread for the Java platform.
-    // *
-    // * @param executor The executor object that calls listener
-    // * @param listener The listener to post changes.
-    // * @return An opaque listener token object for removing the listener.
-    // */
-    //public fun addChangeListener(executor: Executor?, listener: QueryChangeListener): ListenerToken
+    /**
+     * Adds a change listener for the changes that occur in the query results with a [CoroutineContext]
+     * that will be used to launch coroutines the listener will be called on. Coroutines will be launched in
+     * a [CoroutineScope] that is canceled when the listener is removed.
+     *
+     * @param context coroutine context in which the listener will run
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
+     */
+    public fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
+
+    /**
+     * Adds a change listener for the changes that occur in the query results with a [CoroutineScope] that will be used
+     * to launch coroutines the listener will be called on. The listener is removed when the scope is canceled.
+     *
+     * @param scope coroutine scope in which the listener will run
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
+     */
+    public fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
 
     /**
      * Removes a change listener wih the given listener token.

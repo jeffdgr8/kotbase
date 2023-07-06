@@ -9,7 +9,9 @@ import kotbase.util.to
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.staticCFunction
+import kotlinx.coroutines.*
 import libcblite.*
+import kotlin.coroutines.CoroutineContext
 
 internal abstract class AbstractQuery : Query {
 
@@ -38,20 +40,53 @@ internal abstract class AbstractQuery : Query {
     private val changeListeners = mutableListOf<StableRef<QueryChangeListenerHolder>?>()
 
     override fun addChangeListener(listener: QueryChangeListener): ListenerToken {
-        val holder = QueryChangeListenerHolder(listener, this)
+        val holder = QueryChangeDefaultListenerHolder(listener, this)
+        return addNativeChangeListener(holder)
+    }
+
+    override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken {
+        val scope = CoroutineScope(SupervisorJob() + context)
+        val holder = QueryChangeSuspendListenerHolder(listener, this, scope)
+        val token = addNativeChangeListener(holder)
+        return SuspendListenerToken(scope, token)
+    }
+
+    override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener) {
+        val holder = QueryChangeSuspendListenerHolder(listener, this, scope)
+        val token = addNativeChangeListener(holder)
+        scope.coroutineContext[Job]?.invokeOnCompletion {
+            removeChangeListener(token)
+        }
+    }
+
+    private fun addNativeChangeListener(holder: QueryChangeListenerHolder): DelegatedListenerToken {
         val (index, stableRef) = addListener(changeListeners, holder)
         return DelegatedListenerToken(
             CBLQuery_AddChangeListener(
                 actual,
-                staticCFunction { ref, query, token ->
+                staticCFunction { ref, cblQuery, token ->
                     with(ref.to<QueryChangeListenerHolder>()) {
-                        try {
-                            val resultSet = wrapCBLError { error ->
-                                CBLQuery_CopyCurrentResults(query, token, error)!!.asResultSet()
+                        when (this) {
+                            is QueryChangeDefaultListenerHolder -> {
+                                try {
+                                    val resultSet = wrapCBLError { error ->
+                                        CBLQuery_CopyCurrentResults(cblQuery, token, error)!!.asResultSet()
+                                    }
+                                    listener(QueryChange(query, resultSet, null))
+                                } catch (e: CouchbaseLiteException) {
+                                    listener(QueryChange(query, null, e))
+                                }
                             }
-                            this.listener(QueryChange(this.query, resultSet, null))
-                        } catch (e: CouchbaseLiteException) {
-                            this.listener(QueryChange(this.query, null, e))
+                            is QueryChangeSuspendListenerHolder -> scope.launch {
+                                try {
+                                    val resultSet = wrapCBLError { error ->
+                                        CBLQuery_CopyCurrentResults(cblQuery, token, error)!!.asResultSet()
+                                    }
+                                    listener(QueryChange(query, resultSet, null))
+                                } catch (e: CouchbaseLiteException) {
+                                    listener(QueryChange(query, null, e))
+                                }
+                            }
                         }
                     }
                 },
@@ -63,7 +98,15 @@ internal abstract class AbstractQuery : Query {
     }
 
     override fun removeChangeListener(token: ListenerToken) {
-        token as DelegatedListenerToken
+        if (token is SuspendListenerToken) {
+            removeChangeListener(token.token)
+            token.scope.cancel()
+        } else {
+            removeChangeListener(token as DelegatedListenerToken)
+        }
+    }
+
+    private fun removeChangeListener(token: DelegatedListenerToken) {
         if (token.type == ListenerTokenType.QUERY) {
             if (changeListeners.getOrNull(token.index) != null) {
                 CBLListener_Remove(token.actual)
