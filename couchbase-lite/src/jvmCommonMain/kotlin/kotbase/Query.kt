@@ -1,9 +1,11 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.From as CBLFrom
@@ -37,12 +39,15 @@ internal class DelegatedQuery(actual: CBLQuery) : DelegatedClass<CBLQuery>(actua
 
     override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener(listener.convert(scope))
+        val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(scope))
         return SuspendListenerToken(scope, token)
     }
 
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener) {
-        val token = actual.addChangeListener(listener.convert(scope))
+        val token = actual.addChangeListener(
+            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            listener.convert(scope)
+        )
         scope.coroutineContext[Job]?.invokeOnCompletion {
             actual.removeChangeListener(token)
         }

@@ -8,7 +8,12 @@ import kotbase.base.DelegatedClass
 import kotbase.ext.toDate
 import kotbase.ext.toFile
 import kotbase.ext.toKotlinInstant
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.cancel
 import kotlinx.datetime.Instant
 import java.io.File
 import kotlin.coroutines.CoroutineContext
@@ -133,12 +138,15 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         listener: DatabaseChangeSuspendListener
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener(listener.convert(scope))
+        val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(scope))
         return SuspendListenerToken(scope, token)
     }
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
-        val token = actual.addChangeListener(listener.convert(scope))
+        val token = actual.addChangeListener(
+            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            listener.convert(scope)
+        )
         scope.coroutineContext[Job]?.invokeOnCompletion {
             actual.removeChangeListener(token)
         }
@@ -162,7 +170,11 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         listener: DocumentChangeSuspendListener
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addDocumentChangeListener(id, listener.convert(scope))
+        val token = actual.addDocumentChangeListener(
+            id,
+            context[CoroutineDispatcher]?.asExecutor(),
+            listener.convert(scope)
+        )
         return SuspendListenerToken(scope, token)
     }
 
@@ -171,7 +183,11 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         scope: CoroutineScope,
         listener: DocumentChangeSuspendListener
     ) {
-        val token = actual.addDocumentChangeListener(id, listener.convert(scope))
+        val token = actual.addDocumentChangeListener(
+            id,
+            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            listener.convert(scope)
+        )
         scope.coroutineContext[Job]?.invokeOnCompletion {
             actual.removeChangeListener(token)
         }

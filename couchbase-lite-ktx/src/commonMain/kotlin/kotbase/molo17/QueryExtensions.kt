@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.onEach
 /**
  * Returns a [Flow] that emits the Query [ResultSet] every time the underlying
  * data set changes.
- * Consider using asKtxFlow() from Ktx library version with Android.
  *
  * If the query fails, the [Flow] throws an error.
  */
@@ -46,7 +45,6 @@ public fun Query.asFlow(): Flow<ResultSet> = asQueryFlow().mapNotNull { it.resul
 /**
  * Returns a [Flow] that maps the Query [ResultSet] to instances of a class
  * that can be created using the given [factory] lambda.
- * Consider using asKtxObjectsFlow() from Ktx library version with Android.
  *
  * Example of usage:
  *

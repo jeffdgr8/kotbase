@@ -1,12 +1,22 @@
 package kotbase
 
-import cocoapods.CouchbaseLite.*
+import cocoapods.CouchbaseLite.CBLQuery
+import cocoapods.CouchbaseLite.CBLQueryBuilder
+import cocoapods.CouchbaseLite.CBLQueryDataSource
+import cocoapods.CouchbaseLite.CBLQueryExpression
+import cocoapods.CouchbaseLite.CBLQueryJoin
+import cocoapods.CouchbaseLite.CBLQueryLimit
+import cocoapods.CouchbaseLite.CBLQueryOrdering
+import cocoapods.CouchbaseLite.CBLQuerySelectResult
 import kotbase.base.AbstractDelegatedClass
 import kotbase.ext.wrapCBLError
+import kotlinx.cinterop.convert
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import platform.darwin.DISPATCH_QUEUE_PRIORITY_DEFAULT
+import platform.darwin.dispatch_get_global_queue
 import kotlin.coroutines.CoroutineContext
 
 internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Query {
@@ -42,12 +52,18 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
 
     override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener(listener.convert(scope))
+        val token = actual.addChangeListenerWithQueue(
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert()),
+            listener.convert(scope)
+        )
         return SuspendListenerToken(scope, DelegatedListenerToken(token))
     }
 
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener) {
-        val token = actual.addChangeListener(listener.convert(scope))
+        val token = actual.addChangeListenerWithQueue(
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert()),
+            listener.convert(scope)
+        )
         scope.coroutineContext[Job]?.invokeOnCompletion {
             actual.removeChangeListenerWithToken(token)
         }
