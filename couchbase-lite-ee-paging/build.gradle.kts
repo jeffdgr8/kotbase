@@ -40,7 +40,6 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(projects.testingSupportEe)
-                implementation(libs.kotlinx.coroutines.test)
                 implementation(libs.kotlinx.atomicfu)
             }
         }

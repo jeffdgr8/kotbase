@@ -7,41 +7,18 @@
 package kotbase.paging3
 
 import app.cash.paging.PagingSource
-import kotbase.*
+import kotbase.Database
+import kotbase.From
+import kotbase.GroupBy
+import kotbase.Having
+import kotbase.Joins
+import kotbase.OrderBy
+import kotbase.Query
+import kotbase.Select
+import kotbase.Where
 import kotbase.molo17.limit
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
-import kotlin.properties.Delegates
-
-internal abstract class QueryPagingSource<Key : Any, RowType : Any> : PagingSource<Key, RowType>() {
-
-    private var listenerToken: ListenerToken? = null
-    private var firstResult = true
-
-    protected var currentQuery: Query? by Delegates.observable(null) { _, old, new ->
-        listenerToken?.let {
-            old?.removeChangeListener(it)
-        }
-        firstResult = true
-        listenerToken = new?.addChangeListener {
-            if (firstResult) {
-                firstResult = false
-            } else {
-                invalidate()
-            }
-        }
-    }
-
-    init {
-        registerInvalidatedCallback {
-            listenerToken?.let {
-                currentQuery?.removeChangeListener(it)
-            }
-            listenerToken = null
-            currentQuery = null
-        }
-    }
-}
 
 /**
  * Create a [PagingSource] that pages through all results from the [database]. Queries

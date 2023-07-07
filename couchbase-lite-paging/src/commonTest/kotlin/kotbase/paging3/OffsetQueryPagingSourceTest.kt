@@ -2,21 +2,40 @@
  * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonTest/kotlin/app/cash/sqldelight/paging3/OffsetQueryPagingSourceTest.kt
  */
 
-@file:Suppress("CAST_NEVER_SUCCEEDS")
+@file:Suppress("CAST_NEVER_SUCCEEDS", "TYPE_MISMATCH", "UNRESOLVED_REFERENCE")
 
 package kotbase.paging3
 
 import androidx.recyclerview.widget.DiffUtil
-import app.cash.paging.*
-import kotbase.*
+import app.cash.paging.LoadType
+import app.cash.paging.Pager
+import app.cash.paging.PagingConfig
+import app.cash.paging.PagingSource
+import app.cash.paging.PagingSourceLoadParams
+import app.cash.paging.PagingSourceLoadParamsAppend
+import app.cash.paging.PagingSourceLoadParamsPrepend
+import app.cash.paging.PagingSourceLoadParamsRefresh
+import app.cash.paging.PagingSourceLoadResult
+import app.cash.paging.PagingSourceLoadResultInvalid
+import app.cash.paging.PagingSourceLoadResultPage
+import app.cash.paging.PagingState
+import kotbase.BaseDbTest
+import kotbase.Meta
+import kotbase.MutableDocument
+import kotbase.Select
 import kotbase.ktx.select
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestScope
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
 class OffsetQueryPagingSourceTest : BaseDbTest() {
@@ -26,7 +45,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun test_itemCount() = runTest {
+    fun test_itemCount() = runBlocking {
         insertItems()
 
         val pagingSource = QueryPagingSource(
@@ -46,7 +65,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun invalidDbQuery_pagingSourceDoesNotInvalidate() = runTest {
+    fun invalidDbQuery_pagingSourceDoesNotInvalidate() = runBlocking {
         insertItems()
         val pagingSource = QueryPagingSource(
             select(),
@@ -66,7 +85,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun load_initialLoad() = runTest {
+    fun load_initialLoad() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -80,7 +99,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun load_initialEmptyLoad() = runTest {
+    fun load_initialEmptyLoad(): Unit = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -104,7 +123,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun load_initialLoadWithInitialKey() = runTest {
+    fun load_initialLoadWithInitialKey() = runBlocking {
         insertItems()
         val pagingSource = QueryPagingSource(
             select(),
@@ -120,7 +139,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun invalidInitialKey_dbEmpty_returnsEmpty() = runTest {
+    fun invalidInitialKey_dbEmpty_returnsEmpty() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -133,7 +152,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun invalidInitialKey_keyTooLarge_returnsLastPage() = runTest {
+    fun invalidInitialKey_keyTooLarge_returnsLastPage() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -148,7 +167,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun invalidInitialKey_negativeKey() = runTest {
+    fun invalidInitialKey_negativeKey() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -165,7 +184,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun append_middleOfList() = runTest {
+    fun append_middleOfList() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -182,7 +201,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun append_availableItemsLessThanLoadSize() = runTest {
+    fun append_availableItemsLessThanLoadSize() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -199,7 +218,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun load_consecutiveAppend() = runTest {
+    fun load_consecutiveAppend() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -221,7 +240,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun append_invalidResult() = runTest {
+    fun append_invalidResult(): Unit = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -246,7 +265,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun prepend_middleOfList() = runTest {
+    fun prepend_middleOfList() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -262,7 +281,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun prepend_availableItemsLessThanLoadSize() = runTest {
+    fun prepend_availableItemsLessThanLoadSize() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -279,7 +298,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun load_consecutivePrepend() = runTest {
+    fun load_consecutivePrepend() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -301,7 +320,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun prepend_invalidResult() = runTest {
+    fun prepend_invalidResult(): Unit = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -326,7 +345,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun test_itemsBefore() = runTest {
+    fun test_itemsBefore() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -356,7 +375,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun test_itemsAfter() = runTest {
+    fun test_itemsAfter() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -386,7 +405,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun test_getRefreshKey() = runTest {
+    fun test_getRefreshKey() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -430,7 +449,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun load_refreshKeyGreaterThanItemCount_lastPage() = runTest {
+    fun load_refreshKeyGreaterThanItemCount_lastPage() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -489,7 +508,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
      * Ideally, in the future Paging will be able to handle this case better.
      */
     @Test
-    fun load_refreshKeyGreaterThanItemCount_firstPage() = runTest {
+    fun load_refreshKeyGreaterThanItemCount_firstPage() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -542,7 +561,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     }
 
     @Test
-    fun load_loadSizeAndRefreshKeyGreaterThanItemCount() = runTest {
+    fun load_loadSizeAndRefreshKeyGreaterThanItemCount() = runBlocking {
         val pagingSource = QueryPagingSource(
             select(),
             baseTestDb,
@@ -591,15 +610,6 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         assertNull(result2.nextKey)
     }
 
-    private fun runTest(
-        testBody: suspend TestScope.() -> Unit
-    ) {
-        kotlinx.coroutines.test.runTest(testBody = testBody)
-        // Occasionally hangs on iOS without this delay
-        // https://kotlinlang.slack.com/archives/C1CFAFJSK/p1669167000879859
-        runBlocking { delay(10) }
-    }
-
     @Test
     fun test_jumpSupport() {
         val pagingSource = QueryPagingSource(
@@ -630,10 +640,12 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
 
     private fun deleteItems(range: IntRange): Int {
         var deleted = 0
-        for (id in range) {
-            baseTestDb.getDocument(id.toString())?.let { doc ->
-                baseTestDb.delete(doc)
-                deleted++
+        baseTestDb.inBatch {
+            for (id in range) {
+                baseTestDb.getDocument(id.toString())?.let { doc ->
+                    baseTestDb.delete(doc)
+                    deleted++
+                }
             }
         }
         return deleted

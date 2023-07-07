@@ -1,21 +1,5 @@
 /*
- * Copyright (C) 2016 Square, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
- * Copied from https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonTest/kotlin/app/cash/sqldelight/paging3/WithPagingDataDiffer.kt
+ * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonTest/kotlin/app/cash/sqldelight/paging3/WithPagingDataDiffer.kt
  */
 
 package kotbase.paging3
@@ -24,11 +8,11 @@ import androidx.paging.AsyncPagingDataDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import app.cash.paging.PagingData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 
 private object NoopListCallback : ListUpdateCallback {
     override fun onChanged(position: Int, count: Int, payload: Any?) = Unit
@@ -38,22 +22,22 @@ private object NoopListCallback : ListUpdateCallback {
 }
 
 @ExperimentalCoroutinesApi
-fun <T : Any> PagingData<T>.withPagingDataDiffer(
-    testScope: TestScope,
+suspend fun <T : Any> PagingData<T>.withPagingDataDiffer(
+    scope: CoroutineScope,
     diffCallback: DiffUtil.ItemCallback<T>,
     block: AsyncPagingDataDiffer<T>.() -> Unit,
 ) {
-    val testDispatcher = UnconfinedTestDispatcher(testScope.testScheduler)
     val pagingDataDiffer = AsyncPagingDataDiffer(
         diffCallback,
         NoopListCallback,
-        mainDispatcher = testDispatcher,
-        workerDispatcher = testDispatcher,
+        mainDispatcher = Dispatchers.Unconfined,
+        workerDispatcher = Dispatchers.Unconfined,
     )
-    val job = testScope.launch {
+    val job = scope.launch {
         pagingDataDiffer.submitData(this@withPagingDataDiffer)
     }
-    testScope.advanceUntilIdle()
+    // TODO: figure out better way to await database load completion
+    delay(100)
     block(pagingDataDiffer)
     job.cancel()
 }
