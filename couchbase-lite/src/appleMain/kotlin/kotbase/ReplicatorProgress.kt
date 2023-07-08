@@ -14,4 +14,6 @@ internal constructor(public val actual: CValue<CBLReplicatorProgress>) {
     public actual val total: Long by lazy {
         actual.useContents { total.toLong() }
     }
+
+    override fun toString(): String = "Progress{completed=$completed, total=$total}"
 }

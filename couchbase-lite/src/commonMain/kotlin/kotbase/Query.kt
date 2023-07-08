@@ -50,9 +50,10 @@ public interface Query {
     public fun explain(): String
 
     /**
-     * Adds a change listener for the changes that occur in the query results. The changes will be delivered
-     * on the main thread for platforms that support it (Android, iOS, macOS, Linux, and Windows).
-     * Callbacks are on an arbitrary thread for the JVM platform.
+     * Adds a change listener for the changes that occur in the query results.
+     *
+     * The changes will be delivered on the main thread for platforms that support it (Android, iOS,
+     * macOS, Linux, and Windows). Callbacks are on an arbitrary thread for the JVM platform.
      *
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.

@@ -35,4 +35,6 @@ public actual class ReplicatorStatus {
 
     public actual val error: CouchbaseLiteException?
         get() = actual.pointed.error.toException()
+
+    override fun toString(): String = "Status{activityLevel=$activityLevel, progress=$progress, error=$error}"
 }

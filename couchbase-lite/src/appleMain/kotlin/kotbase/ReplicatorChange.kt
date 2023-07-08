@@ -12,4 +12,6 @@ internal constructor(
     public actual val status: ReplicatorStatus by lazy {
         ReplicatorStatus(actual.status!!)
     }
+
+    override fun toString(): String = "ReplicatorChange{$replicator => $status}"
 }

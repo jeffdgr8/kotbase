@@ -1,5 +1,8 @@
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * A replicator for replicating document changes between a local database and a target database.
  * The replicator can be bidirectional or either push or pull. The replicator can also be one-shot
@@ -74,55 +77,93 @@ constructor(config: ReplicatorConfiguration) {
     /**
      * Adds a change listener for the changes in the replication status and progress.
      *
-     * The changes will be delivered on the UI thread for the Android platform
-     * On other Java platforms, the callback will occur on an arbitrary thread.
+     * The changes will be delivered on the main thread for platforms that support it (Android, iOS,
+     * macOS, Linux, and Windows). Callbacks are on an arbitrary thread for the JVM platform.
      *
-     * When developing a Java Desktop application using Swing or JavaFX that needs to update the UI after
-     * receiving the changes, make sure to schedule the UI update on the UI thread by using
-     * SwingUtilities.invokeLater(Runnable) or Platform.runLater(Runnable) respectively.
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
      *
-     * @param listener callback
+     * @see removeChangeListener
      */
     public fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken
 
-    // TODO:
-    ///**
-    // * Adds a change listener for the changes in the replication status and progress with an executor on which
-    // * the changes will be posted to the listener. If the executor is not specified, the changes will be delivered
-    // * on the UI thread on Android platform and on an arbitrary thread on other Java platform.
-    // *
-    // * @param executor executor on which events will be delivered
-    // * @param listener callback
-    // */
-    //public fun addChangeListener(executor: Executor?, listener: ReplicatorChangeListener): ListenerToken
+    /**
+     * Adds a change listener for the changes in the replication status and progress with a [CoroutineContext]
+     * that will be used to launch coroutines the listener will be called on. Coroutines will be launched in
+     * a [CoroutineScope] that is canceled when the listener is removed.
+     *
+     * @param context coroutine context in which the listener will run
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
+     *
+     * @see removeChangeListener
+     */
+    public fun addChangeListener(context: CoroutineContext, listener: ReplicatorChangeSuspendListener): ListenerToken
 
     /**
-     * Adds a listener for receiving the replication status of the specified document. The status will be
-     * delivered on the UI thread for the Android platform and on an arbitrary thread for the Java platform.
-     * When developing a Java Desktop application using Swing or JavaFX that needs to update the UI after
-     * receiving the status, make sure to schedule the UI update on the UI thread by using
-     * SwingUtilities.invokeLater(Runnable) or Platform.runLater(Runnable) respectively.
+     * Adds a change listener for the changes in the replication status and progress with a [CoroutineScope]
+     * that will be used to launch coroutines the listener will be called on. The listener is removed when
+     * the scope is canceled.
      *
-     * @param listener callback
-     * @return A ListenerToken that can be used to remove the handler in the future.
+     * @param scope coroutine scope in which the listener will run
+     * @param listener The listener to post changes.
+     */
+    public fun addChangeListener(scope: CoroutineScope, listener: ReplicatorChangeSuspendListener)
+
+    /**
+     * Adds a document replication event listener.
+     *
+     * The events will be delivered on the main thread for platforms that support it (Android, iOS,
+     * macOS, Linux, and Windows). Callbacks are on an arbitrary thread for the JVM platform.
+     *
+     * According to performance optimization in the replicator, the document replication listeners need to be added
+     * before starting the replicator. If the listeners are added after the replicator is started, the replicator needs
+     * to be stopped and restarted again to ensure that the listeners will get the document replication events.
+     *
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
+     *
+     * @see removeChangeListener
      */
     public fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken
 
-    // TODO:
-    ///**
-    // * Adds a listener for receiving the replication status of the specified document with an executor on which
-    // * the status will be posted to the listener. If the executor is not specified, the status will be delivered
-    // * on the UI thread for the Android platform and on an arbitrary thread for the Java platform.
-    // *
-    // * @param executor executor on which events will be delivered
-    // * @param listener callback
-    // */
-    //public fun addDocumentReplicationListener(executor: Executor?, listener: DocumentReplicationListener): ListenerToken
+    /**
+     * Adds a document replication event listener with a [CoroutineContext] that will be used to launch coroutines
+     * the listener will be called on. Coroutines will be launched in a [CoroutineScope] that is canceled when the
+     * listener is removed.
+     *
+     * According to performance optimization in the replicator, the document replication listeners need to be added
+     * before starting the replicator. If the listeners are added after the replicator is started, the replicator needs
+     * to be stopped and restarted again to ensure that the listeners will get the document replication events.
+     *
+     * @param context coroutine context in which the listener will run
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
+     *
+     * @see removeChangeListener
+     */
+    public fun addDocumentReplicationListener(
+        context: CoroutineContext,
+        listener: DocumentReplicationSuspendListener
+    ): ListenerToken
 
     /**
-     * Remove the given ReplicatorChangeListener or DocumentReplicationListener from the this replicator.
+     * Adds a document replication event listener with a [CoroutineScope] that will be used to launch coroutines
+     * the listener will be called on. The listener is removed when the scope is canceled.
      *
-     * @param token returned by a previous call to addChangeListener or addDocumentListener.
+     * According to performance optimization in the replicator, the document replication listeners need to be added
+     * before starting the replicator. If the listeners are added after the replicator is started, the replicator needs
+     * to be stopped and restarted again to ensure that the listeners will get the document replication events.
+     *
+     * @param scope coroutine scope in which the listener will run
+     * @param listener The listener to post changes.
+     */
+    public fun addDocumentReplicationListener(scope: CoroutineScope, listener: DocumentReplicationSuspendListener)
+
+    /**
+     * Remove the given ReplicatorChangeListener or DocumentReplicationListener from the replicator.
+     *
+     * @param token returned by a previous call to [addChangeListener] or [addDocumentReplicationListener].
      */
     public fun removeChangeListener(token: ListenerToken)
 }

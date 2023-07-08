@@ -2,6 +2,13 @@ package kotbase
 
 import com.couchbase.lite.testReplicator
 import kotbase.base.DelegatedClass
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.cancel
+import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Replicator as CBLReplicator
 
 public actual class Replicator
@@ -53,16 +60,56 @@ internal constructor(
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken =
         actual.addChangeListener(listener.convert(this))
 
-    // TODO:
-    //public actual fun addChangeListener(executor: Executor?, listener: ReplicatorChangeListener): ListenerToken
+    public actual fun addChangeListener(context: CoroutineContext, listener: ReplicatorChangeSuspendListener): ListenerToken {
+        val scope = CoroutineScope(SupervisorJob() + context)
+        val token = actual.addChangeListener(
+            context[CoroutineDispatcher]?.asExecutor(),
+            listener.convert(this, scope)
+        )
+        return SuspendListenerToken(scope, token)
+    }
+
+    public actual fun addChangeListener(scope: CoroutineScope, listener: ReplicatorChangeSuspendListener) {
+        val token = actual.addChangeListener(
+            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            listener.convert(this, scope)
+        )
+        scope.coroutineContext[Job]?.invokeOnCompletion {
+            actual.removeChangeListener(token)
+        }
+    }
 
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken =
         actual.addDocumentReplicationListener(listener.convert(this))
 
-    // TODO:
-    //public actual fun addDocumentReplicationListener(executor: Executor?, listener: DocumentReplicationListener): ListenerToken
+    public actual fun addDocumentReplicationListener(
+        context: CoroutineContext,
+        listener: DocumentReplicationSuspendListener
+    ): ListenerToken {
+        val scope = CoroutineScope(SupervisorJob() + context)
+        val token = actual.addDocumentReplicationListener(
+            context[CoroutineDispatcher]?.asExecutor(),
+            listener.convert(this, scope)
+        )
+        return SuspendListenerToken(scope, token)
+    }
+
+    public actual fun addDocumentReplicationListener(scope: CoroutineScope, listener: DocumentReplicationSuspendListener) {
+        val token = actual.addDocumentReplicationListener(
+            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            listener.convert(this, scope)
+        )
+        scope.coroutineContext[Job]?.invokeOnCompletion {
+            actual.removeChangeListener(token)
+        }
+    }
 
     public actual fun removeChangeListener(token: ListenerToken) {
-        actual.removeChangeListener(token)
+        if (token is SuspendListenerToken) {
+            actual.removeChangeListener(token.actual)
+            token.scope.cancel()
+        } else {
+            actual.removeChangeListener(token)
+        }
     }
 }

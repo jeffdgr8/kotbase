@@ -217,11 +217,12 @@ public expect class Database {
     public fun <R> inBatch(work: Database.() -> R): R
 
     /**
-     * Adds a change listener for the changes that occur in the database. The changes will be delivered
-     * on the main thread for platforms that support it (Android, iOS, macOS, Linux, and Windows).
-     * Callbacks are on an arbitrary thread for the JVM platform.
+     * Adds a change listener for the changes that occur in the database.
      *
-     * @param listener callback
+     * The changes will be delivered on the main thread for platforms that support it (Android, iOS,
+     * macOS, Linux, and Windows). Callbacks are on an arbitrary thread for the JVM platform.
+     *
+     * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      *
      * @see removeChangeListener
@@ -246,7 +247,7 @@ public expect class Database {
      * to launch coroutines the listener will be called on. The listener is removed when the scope is canceled.
      *
      * @param scope coroutine scope in which the listener will run
-     * @param listener callback
+     * @param listener The listener to post changes.
      */
     public fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener)
 
@@ -258,9 +259,10 @@ public expect class Database {
     public fun removeChangeListener(token: ListenerToken)
 
     /**
-     * Adds a change listener for the changes that occur to the specified document. The changes will be
-     * delivered on the main thread for platforms that support it (Android, iOS, macOS, Linux, and Windows).
-     * Callbacks are on an arbitrary thread for the JVM platform.
+     * Adds a change listener for the changes that occur to the specified document.
+     *
+     * The changes will be delivered on the main thread for platforms that support it (Android, iOS,
+     * macOS, Linux, and Windows). Callbacks are on an arbitrary thread for the JVM platform.
      *
      * @param id document ID
      * @param listener The listener to post changes.

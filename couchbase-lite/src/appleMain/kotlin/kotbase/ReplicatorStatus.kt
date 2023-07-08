@@ -19,4 +19,6 @@ internal constructor(actual: CBLReplicatorStatus) :
     public actual val error: CouchbaseLiteException? by lazy {
         actual.error?.toCouchbaseLiteException()
     }
+
+    override fun toString(): String = "Status{activityLevel=$activityLevel, progress=$progress, error=$error}"
 }
