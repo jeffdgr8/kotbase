@@ -4,11 +4,11 @@ import kotbase.internal.utils.FileUtils
 import kotlinx.cinterop.convert
 import platform.Foundation.NSFileManager
 import platform.Foundation.temporaryDirectory
+import platform.darwin.DISPATCH_QUEUE_PRIORITY_DEFAULT
 import platform.darwin.DISPATCH_TIME_NOW
 import platform.darwin.dispatch_after
 import platform.darwin.dispatch_get_global_queue
 import platform.darwin.dispatch_time
-import platform.posix.QOS_CLASS_DEFAULT
 
 actual abstract class PlatformTest {
 
@@ -31,7 +31,7 @@ actual abstract class PlatformTest {
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         dispatch_after(
             dispatch_time(DISPATCH_TIME_NOW, delayMs),
-            dispatch_get_global_queue(QOS_CLASS_DEFAULT.convert(), 0.convert()),
+            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert()),
             task
         )
     }

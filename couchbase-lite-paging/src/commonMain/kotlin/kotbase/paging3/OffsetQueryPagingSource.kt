@@ -24,8 +24,6 @@ import kotbase.ktx.countResult
 import kotbase.ktx.selectCount
 import kotbase.molo17.from
 import kotbase.molo17.toObjects
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -86,13 +84,13 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             .limit(limit, offset)
             .also { currentQuery = it }
         val results = suspendCancellableCoroutine { continuation ->
-            listenerToken = query.addChangeListener(Dispatchers.IO) {
-                if (continuation.isActive) { // first results
+            listenerToken = query.addChangeListener(context) {
+                if (continuation.isActive) {
                     when (val results = it.results) {
                         null -> continuation.resumeWithException(it.error ?: IllegalStateException("No query results or error"))
                         else -> continuation.resume(results)
                     }
-                } else { // query changed
+                } else {
                     invalidate()
                 }
             }

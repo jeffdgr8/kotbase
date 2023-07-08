@@ -3,8 +3,9 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.isClosed
 import kotbase.base.DelegatedClass
+import kotbase.ext.asDispatchQueue
 import kotbase.ext.wrapCBLError
-import kotlinx.cinterop.convert
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -12,8 +13,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
-import platform.darwin.DISPATCH_QUEUE_PRIORITY_DEFAULT
-import platform.darwin.dispatch_get_global_queue
 import platform.objc.objc_sync_enter
 import platform.objc.objc_sync_exit
 import kotlin.coroutines.CoroutineContext
@@ -230,7 +229,7 @@ internal constructor(actual: CBLDatabase) :
         return mustBeOpen {
             val scope = CoroutineScope(SupervisorJob() + context)
             val token = actual.addChangeListenerWithQueue(
-                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert()),
+                context[CoroutineDispatcher]?.asDispatchQueue(),
                 listener.convert(scope)
             )
             SuspendListenerToken(scope, DelegatedListenerToken(token))
@@ -240,7 +239,7 @@ internal constructor(actual: CBLDatabase) :
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         mustBeOpen {
             val token = actual.addChangeListenerWithQueue(
-                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert()),
+                scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
                 listener.convert(scope)
             )
             scope.coroutineContext[Job]?.invokeOnCompletion {
@@ -276,7 +275,7 @@ internal constructor(actual: CBLDatabase) :
             val scope = CoroutineScope(SupervisorJob() + context)
             val token = actual.addDocumentChangeListenerWithID(
                 id,
-                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert()),
+                context[CoroutineDispatcher]?.asDispatchQueue(),
                 listener.convert(scope)
             )
             SuspendListenerToken(scope, DelegatedListenerToken(token))
@@ -291,7 +290,7 @@ internal constructor(actual: CBLDatabase) :
         mustBeOpen {
             val token = actual.addDocumentChangeListenerWithID(
                 id,
-                dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert()),
+                scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
                 listener.convert(scope)
             )
             scope.coroutineContext[Job]?.invokeOnCompletion {

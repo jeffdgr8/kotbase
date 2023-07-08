@@ -38,12 +38,7 @@ kotlin {
     linkLibcblite()
 
     targets.withType<KotlinNativeTarget>().configureEach {
-        if (konanTarget.family.isAppleFamily) {
-            // Run iOS tests on background thread with main run loop
-            binaries.withType<TestExecutable>().configureEach {
-                freeCompilerArgs += listOf("-e", "kotbase.test.mainBackground")
-            }
-        } else {
+        if (!konanTarget.family.isAppleFamily) {
             val main by compilations.getting
             main.cinterops.create("libcblite") {
                 includeDirs(libcbliteIncludePath)

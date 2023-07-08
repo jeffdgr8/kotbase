@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.jetbrains.kotlin.konan.target.Family
 import rules.applyCouchbaseLiteRule
@@ -29,6 +30,12 @@ kotlin {
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {
+        if (konanTarget.family.isAppleFamily) {
+            // Run Apple tests on background thread with main run loop
+            binaries.withType<TestExecutable>().configureEach {
+                freeCompilerArgs += listOf("-e", "kotbase.test.mainBackground")
+            }
+        }
         if (konanTarget.family != Family.MINGW) {
             binaries.configureEach {
                 binaryOptions["sourceInfoType"] = "libbacktrace"
