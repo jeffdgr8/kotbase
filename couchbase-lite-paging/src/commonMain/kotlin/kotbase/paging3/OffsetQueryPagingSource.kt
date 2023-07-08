@@ -95,19 +95,17 @@ internal class OffsetQueryPagingSource<RowType : Any>(
                 }
             }
         }
+        val data = results.toObjects(mapper)
+        val nextPosToLoad = offset + data.size
         when {
             invalid -> PagingSourceLoadResultInvalid<Int, RowType>()
-            else -> {
-                val data = results.toObjects(mapper)
-                val nextPosToLoad = offset + data.size
-                PagingSourceLoadResultPage(
-                    data = data,
-                    prevKey = offset.takeIf { it > 0 && data.isNotEmpty() },
-                    nextKey = nextPosToLoad.takeIf { data.isNotEmpty() && data.size >= limit && it < count },
-                    itemsBefore = offset,
-                    itemsAfter = maxOf(0, count - nextPosToLoad),
-                )
-            }
+            else -> PagingSourceLoadResultPage(
+                data = data,
+                prevKey = offset.takeIf { it > 0 && data.isNotEmpty() },
+                nextKey = nextPosToLoad.takeIf { data.isNotEmpty() && data.size >= limit && it < count },
+                itemsBefore = offset,
+                itemsAfter = maxOf(0, count - nextPosToLoad),
+            )
         } as PagingSourceLoadResult<Int, RowType>
     }
 
