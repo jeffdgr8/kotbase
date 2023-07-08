@@ -40,9 +40,9 @@ Windows ([via C SDK](https://github.com/couchbase/couchbase-lite-C)).
 kotlin.sourceSets.commonMain {
     dependencies {
         // Community Edition
-        implementation("dev.kotbase:couchbase-lite:3.0.5-1.0.0")
+        implementation("dev.kotbase:couchbase-lite:3.0.12-1.0.0")
         // or Enterprise Edition
-        implementation("dev.kotbase:couchbase-lite-ee:3.0.5-1.0.0")
+        implementation("dev.kotbase:couchbase-lite-ee:3.0.12-1.0.0")
     }
 }
 ```
@@ -59,14 +59,14 @@ exceptions:
 * `Date` APIs use [KotlinX Date/Time's `Instant`](
 https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/).
 * `Blob` `InputStream` APIs use [Okio's `Source`](https://square.github.io/okio/3.x/okio/okio/okio/-source/index.html).
-* `Executor` APIs are not implemented. Listener callbacks are on the main thread.
+* `Executor` APIs use Kotlin's `CoroutineContext`.
 * Certificate APIs are available as raw `ByteArray`s or in platform-specific code.
 * There's no need to explicitly call `CouchbaseLite.init()`. Initialization functions can still be called with custom
-parameters in JVM and Android platform code if required.
+  parameters in JVM and Android platform code.
 * Efforts have been made to detect and throw Kotlin exceptions for common error conditions, but `NSError` may still leak
-through on Apple platforms. [Please report](https://github.com/jeffdgr8/kotbase/issues/new) any occurrences that may
-deserve addressing.
-* Deprecated APIs are omitted.
+  through on Apple platforms. [Please report](https://github.com/jeffdgr8/kotbase/issues/new) any occurrences that may
+  deserve addressing.
+* Some deprecated APIs are omitted.
 * While not available in the Java SDK, as Java doesn't support operator overloading, `Fragment` subscript APIs for
 `Database`, `Document`, `Array`, and `Dictionary` are available in Kotbase, similar to [Swift](
 https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
@@ -104,9 +104,9 @@ as well as other convenience functions for composing queries, observing change `
 **build.gradle.kts**
 ```kotlin
 // Community Edition
-implementation("dev.kotbase:couchbase-lite-ktx:3.0.5-1.0.0")
+implementation("dev.kotbase:couchbase-lite-ktx:3.0.12-1.0.0")
 // or Enterprise Edition
-implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.5-1.0.0")
+implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.12-1.0.0")
 ```
 
 ### Kotbase Paging
@@ -122,15 +122,26 @@ based on a user-supplied database query.
 **build.gradle.kts**
 ```kotlin
 // Community Edition
-implementation("dev.kotbase:couchbase-lite-paging:3.0.5-1.0.0")
+implementation("dev.kotbase:couchbase-lite-paging:3.0.12-1.0.0")
 // or Enterprise Edition
-implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.5-1.0.0")
+implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.12-1.0.0")
 ```
 
 ## Roadmap
 
-* [ ] Public release
 * [ ] Documentation website ([kotbase.dev](https://kotbase.dev/))
+* [ ] Public release
 * [ ] Sample apps
+    * [x] [Getting Started](examples/getting-started)
 * [ ] Couchbase Lite [3.1 API](https://docs.couchbase.com/couchbase-lite/3.1/cbl-whatsnew.html) - Scopes and Collections
 * [ ] Versioned docs
+
+## Development
+
+* The Kotlin 1.9.0 IDE plugin introduced a false positive `ModuleVersionResolveException` caused by
+  `NoMatchingConfigurationSelectionException` during Gradle sync, which can be [safely ignored](
+  https://youtrack.jetbrains.com/issue/KT-59020#focus=Comments-27-7411306.0-0).
+* When building the project on Linux, be sure to install the [libicu dependency](vendor/libicu).
+* When checking out the git repo on Windows, enable [developer mode](
+  https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development) and symbolic links in
+  git with `git config --global core.symlinks true`.

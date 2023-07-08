@@ -13,14 +13,14 @@ exceptions:
 * `Date` APIs use [KotlinX Date/Time's `Instant`](
   https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/).
 * `Blob` `InputStream` APIs use [Okio's `Source`](https://square.github.io/okio/3.x/okio/okio/okio/-source/index.html).
-* `Executor` APIs are not implemented. Listener callbacks are on the main thread.
+* `Executor` APIs use Kotlin's `CoroutineContext`.
 * Certificate APIs are available as raw `ByteArray`s or in platform-specific code.
 * There's no need to explicitly call `CouchbaseLite.init()`. Initialization functions can still be called with custom
-  parameters in JVM and Android platform code if required.
+  parameters in JVM and Android platform code.
 * Efforts have been made to detect and throw Kotlin exceptions for common error conditions, but `NSError` may still leak
   through on Apple platforms. [Please report](https://github.com/jeffdgr8/kotbase/issues/new) any occurrences that may
   deserve addressing.
-* Deprecated APIs are omitted.
+* Some deprecated APIs are omitted.
 * While not available in the Java SDK, as Java doesn't support operator overloading, `Fragment` subscript APIs for
   `Database`, `Document`, `Array`, and `Dictionary` are available in Kotbase, similar to [Swift](
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](

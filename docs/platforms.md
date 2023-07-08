@@ -125,7 +125,8 @@ Kotbase, e.g. libcblite {{ version_short }}.x for Kotbase {{ version }}.
 ### Linux
 
 Linux also [requires](https://github.com/couchbase/couchbase-lite-core#linux) libz, libicu, and libpthread, which may or
-may not be installed on your system.
+may not be installed on your system. The required version of libicu can be found [here](
+https://github.com/jeffdgr8/kotbase/tree/main/vendor/libicu).
 
 |     Distro      | Version |       x64        | ARM32 | ARM64 |
 |:---------------:|:-------:|:----------------:|:-----:|:-----:|

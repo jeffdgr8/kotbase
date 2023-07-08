@@ -5,9 +5,6 @@ import kotlinx.atomicfu.atomic
 import java.io.File
 import com.couchbase.lite.CouchbaseLite as CBLCouchbaseLite
 
-/**
- * CouchbaseLite Utility
- */
 public actual object CouchbaseLite {
 
     private val initCalled = atomic(false)
