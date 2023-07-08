@@ -9,7 +9,13 @@ import kotbase.util.toList
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.staticCFunction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import libcblite.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.native.internal.createCleaner
 
 public actual class Replicator
@@ -76,16 +82,31 @@ private constructor(
     private val changeListeners = mutableListOf<StableRef<ReplicatorChangeListenerHolder>?>()
 
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken {
-        val holder = ReplicatorChangeListenerHolder(listener, this)
+        val holder = ReplicatorChangeDefaultListenerHolder(listener, this)
+        return addNativeChangeListener(holder)
+    }
+
+    public actual fun addChangeListener(context: CoroutineContext, listener: ReplicatorChangeSuspendListener): ListenerToken {
+        val scope = CoroutineScope(SupervisorJob() + context)
+        val holder = ReplicatorChangeSuspendListenerHolder(listener, this, scope)
+        val token = addNativeChangeListener(holder)
+        return SuspendListenerToken(scope, token)
+    }
+
+    public actual fun addChangeListener(scope: CoroutineScope, listener: ReplicatorChangeSuspendListener) {
+        val holder = ReplicatorChangeSuspendListenerHolder(listener, this, scope)
+        val token = addNativeChangeListener(holder)
+        scope.coroutineContext[Job]?.invokeOnCompletion {
+            removeChangeListener(token)
+        }
+    }
+
+    private fun addNativeChangeListener(holder: ReplicatorChangeListenerHolder): DelegatedListenerToken {
         val (index, stableRef) = addListener(changeListeners, holder)
         return DelegatedListenerToken(
             CBLReplicator_AddChangeListener(
                 actual,
-                staticCFunction { ref, _, status ->
-                    with(ref.to<ReplicatorChangeListenerHolder>()) {
-                        this.listener(ReplicatorChange(replicator, ReplicatorStatus(status!!)))
-                    }
-                },
+                nativeChangeListener(),
                 stableRef
             )!!,
             ListenerTokenType.REPLICATOR,
@@ -93,29 +114,52 @@ private constructor(
         )
     }
 
-    // TODO:
-    //public actual fun addChangeListener(executor: Executor?, listener: ReplicatorChangeListener): ListenerToken
+    private fun nativeChangeListener(): CBLReplicatorChangeListener {
+        return staticCFunction { ref, _, status ->
+            with(ref.to<ReplicatorChangeListenerHolder>()) {
+                val change = { ReplicatorChange(replicator, ReplicatorStatus(status!!)) }
+                when (this) {
+                    is ReplicatorChangeDefaultListenerHolder -> listener(change())
+                    is ReplicatorChangeSuspendListenerHolder -> scope.launch {
+                        listener(change())
+                    }
+                }
+            }
+        }
+    }
 
     private val documentChangeListeners =
         mutableListOf<StableRef<DocumentReplicationListenerHolder>?>()
 
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken {
-        val holder = DocumentReplicationListenerHolder(listener, this)
+        val holder = DocumentReplicationDefaultListenerHolder(listener, this)
+        return addNativeDocumentReplicationListener(holder)
+    }
+
+    public actual fun addDocumentReplicationListener(
+        context: CoroutineContext,
+        listener: DocumentReplicationSuspendListener
+    ): ListenerToken {
+        val scope = CoroutineScope(SupervisorJob() + context)
+        val holder = DocumentReplicationSuspendListenerHolder(listener, this, scope)
+        val token = addNativeDocumentReplicationListener(holder)
+        return SuspendListenerToken(scope, token)
+    }
+
+    public actual fun addDocumentReplicationListener(scope: CoroutineScope, listener: DocumentReplicationSuspendListener) {
+        val holder = DocumentReplicationSuspendListenerHolder(listener, this, scope)
+        val token = addNativeDocumentReplicationListener(holder)
+        scope.coroutineContext[Job]?.invokeOnCompletion {
+            removeChangeListener(token)
+        }
+    }
+
+    private fun addNativeDocumentReplicationListener(holder: DocumentReplicationListenerHolder): DelegatedListenerToken {
         val (index, stableRef) = addListener(documentChangeListeners, holder)
         return DelegatedListenerToken(
             CBLReplicator_AddDocumentReplicationListener(
                 actual,
-                staticCFunction { ref, _, isPush, numDocuments, documents ->
-                    with(ref.to<DocumentReplicationListenerHolder>()) {
-                        this.listener(
-                            DocumentReplication(
-                                replicator,
-                                isPush,
-                                documents!!.toList(numDocuments.toInt()) { ReplicatedDocument(it) }
-                            )
-                        )
-                    }
-                },
+                nativeDocumentReplicationListener(),
                 stableRef
             )!!,
             ListenerTokenType.DOCUMENT_REPLICATION,
@@ -123,11 +167,33 @@ private constructor(
         )
     }
 
-    // TODO:
-    //public actual fun addDocumentReplicationListener(executor: Executor?, listener: DocumentReplicationListener): ListenerToken
+    private fun nativeDocumentReplicationListener(): CBLDocumentReplicationListener {
+        return staticCFunction { ref, _, isPush, numDocuments, docs ->
+            with(ref.to<DocumentReplicationListenerHolder>()) {
+                val replication = {
+                    val documents = docs!!.toList(numDocuments.toInt()) { ReplicatedDocument(it) }
+                    DocumentReplication(replicator, isPush, documents)
+                }
+                when (this) {
+                    is DocumentReplicationDefaultListenerHolder -> listener(replication())
+                    is DocumentReplicationSuspendListenerHolder -> scope.launch {
+                        listener(replication())
+                    }
+                }
+            }
+        }
+    }
 
     public actual fun removeChangeListener(token: ListenerToken) {
-        token as DelegatedListenerToken
+        if (token is SuspendListenerToken) {
+            removeChangeListener(token.token)
+            token.scope.cancel()
+        } else {
+            removeChangeListener(token as DelegatedListenerToken)
+        }
+    }
+
+    private fun removeChangeListener(token: DelegatedListenerToken) {
         val ref = when (token.type) {
             ListenerTokenType.REPLICATOR -> changeListeners.getOrNull(token.index)
             ListenerTokenType.DOCUMENT_REPLICATION -> documentChangeListeners.getOrNull(token.index)

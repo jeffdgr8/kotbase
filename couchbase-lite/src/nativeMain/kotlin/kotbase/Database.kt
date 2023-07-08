@@ -9,6 +9,7 @@ import kotbase.internal.toExceptionNotNull
 import kotbase.internal.toKotlinInstant
 import kotbase.internal.wrapCBLError
 import kotbase.util.to
+import kotbase.util.toList
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.*
@@ -360,17 +361,15 @@ internal constructor(
 
     private fun nativeChangeListener(): CBLDatabaseChangeListener {
         return staticCFunction { ref, _, numDocs, docIds ->
-            val size = numDocs.toInt()
-            val documentIds = buildList(size) {
-                repeat(size) { i ->
-                    add(docIds!![i].toKString()!!)
-                }
-            }
             with(ref.to<DatabaseChangeListenerHolder>()) {
+                val change = {
+                    val documentIds = docIds!!.toList(numDocs.toInt()) { it.pointed.toKString()!! }
+                    DatabaseChange(database, documentIds)
+                }
                 when (this) {
-                    is DatabaseChangeDefaultListenerHolder -> listener(DatabaseChange(database, documentIds))
+                    is DatabaseChangeDefaultListenerHolder -> listener(change())
                     is DatabaseChangeSuspendListenerHolder -> scope.launch {
-                        listener(DatabaseChange(database, documentIds))
+                        listener(change())
                     }
                 }
             }
@@ -455,10 +454,11 @@ internal constructor(
     private fun nativeDocumentChangeListener(): CBLDocumentChangeListener {
         return staticCFunction { ref, _, docId ->
             with(ref.to<DocumentChangeListenerHolder>()) {
+                val change = { DocumentChange(database, docId.toKString()!!) }
                 when (this) {
-                    is DocumentChangeDefaultListenerHolder -> listener(DocumentChange(database, docId.toKString()!!))
+                    is DocumentChangeDefaultListenerHolder -> listener(change())
                     is DocumentChangeSuspendListenerHolder -> scope.launch {
-                        listener(DocumentChange(database, docId.toKString()!!))
+                        listener(change())
                     }
                 }
             }

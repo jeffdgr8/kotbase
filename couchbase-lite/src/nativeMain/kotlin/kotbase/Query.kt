@@ -64,37 +64,35 @@ internal abstract class AbstractQuery : Query {
         return DelegatedListenerToken(
             CBLQuery_AddChangeListener(
                 actual,
-                staticCFunction { ref, cblQuery, token ->
-                    with(ref.to<QueryChangeListenerHolder>()) {
-                        when (this) {
-                            is QueryChangeDefaultListenerHolder -> {
-                                try {
-                                    val resultSet = wrapCBLError { error ->
-                                        CBLQuery_CopyCurrentResults(cblQuery, token, error)!!.asResultSet()
-                                    }
-                                    listener(QueryChange(query, resultSet, null))
-                                } catch (e: CouchbaseLiteException) {
-                                    listener(QueryChange(query, null, e))
-                                }
-                            }
-                            is QueryChangeSuspendListenerHolder -> scope.launch {
-                                try {
-                                    val resultSet = wrapCBLError { error ->
-                                        CBLQuery_CopyCurrentResults(cblQuery, token, error)!!.asResultSet()
-                                    }
-                                    listener(QueryChange(query, resultSet, null))
-                                } catch (e: CouchbaseLiteException) {
-                                    listener(QueryChange(query, null, e))
-                                }
-                            }
-                        }
-                    }
-                },
+                nativeChangeListener(),
                 stableRef
             )!!,
             ListenerTokenType.QUERY,
             index
         )
+    }
+
+    private fun nativeChangeListener(): CBLQueryChangeListener {
+        return staticCFunction { ref, cblQuery, token ->
+            with(ref.to<QueryChangeListenerHolder>()) {
+                val change = {
+                    try {
+                        val resultSet = wrapCBLError { error ->
+                            CBLQuery_CopyCurrentResults(cblQuery, token, error)!!.asResultSet()
+                        }
+                        QueryChange(query, resultSet, null)
+                    } catch (e: CouchbaseLiteException) {
+                        QueryChange(query, null, e)
+                    }
+                }
+                when (this) {
+                    is QueryChangeDefaultListenerHolder -> listener(change())
+                    is QueryChangeSuspendListenerHolder -> scope.launch {
+                        listener(change())
+                    }
+                }
+            }
+        }
     }
 
     override fun removeChangeListener(token: ListenerToken) {

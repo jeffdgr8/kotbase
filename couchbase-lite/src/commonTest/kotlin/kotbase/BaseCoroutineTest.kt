@@ -21,6 +21,7 @@ import kotlin.test.assertEquals
 import kotlin.test.fail
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalCoroutinesApi::class)
 abstract class BaseCoroutineTest : BaseReplicatorTest() {
 
     protected fun testOnCoroutineContext(
@@ -28,19 +29,16 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
         change: () -> Unit
     ) = runBlocking {
         val mutex = Mutex(true)
-        @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+        @OptIn(DelicateCoroutinesApi::class)
         val testContext = newSingleThreadContext("test-context-thread") + CoroutineName("test-context")
         addListener(testContext) {
             checkContext(testContext)
-            println("context check passed ${mutex.isLocked}")
             if (mutex.isLocked) mutex.unlock()
         }
         change()
         withTimeout(STD_TIMEOUT_SEC.seconds) {
-            println("waiting on mutex")
             mutex.lock()
         }
-        println("done!")
     }
 
     private suspend fun checkContext(context: CoroutineContext) {
@@ -55,7 +53,7 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
     ) = runBlocking {
         val started = Mutex(true)
         val canceled = Mutex(true)
-        val token = addListener(Dispatchers.Default) {
+        val token = addListener(Dispatchers.Default.limitedParallelism(1)) {
             try {
                 started.unlock()
                 delay(1000)
