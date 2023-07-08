@@ -22,6 +22,8 @@
  * - Removed Android-specific functions and annotations
  */
 
+@file:Suppress("TYPE_MISMATCH", "UNRESOLVED_REFERENCE", "NOTHING_TO_OVERRIDE", "ABSTRACT_CLASS_MEMBER_NOT_IMPLEMENTED")
+
 package androidx.paging
 
 import androidx.recyclerview.widget.DiffUtil

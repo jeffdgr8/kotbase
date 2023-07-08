@@ -18,7 +18,6 @@ actual abstract class PlatformTest {
 
     actual fun setupPlatform() {
         val console = Database.log.console
-        // iOS tests don't handle a lot of logging (may terminate prematurely on verbose log-level)
         console.level = LogLevel.WARNING
         console.domains = LogDomain.ALL_DOMAINS
     }
