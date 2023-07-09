@@ -126,7 +126,8 @@ internal data class QueryState(
     val groupBy: List<Expression>? = null,
     val having: Expression? = null,
     val orderBy: List<Ordering>? = null,
-    val limit: Limit? = null
+    val limit: Expression? = null,
+    val offset: Expression? = null
 ) : AbstractQuery() {
 
     override val actual: CPointer<CBLQuery> by lazy {
@@ -182,9 +183,9 @@ internal data class QueryState(
 
             // LIMIT/OFFSET:
             if (limit != null) {
-                put("LIMIT", limit.limit.asJSON())
-                if (limit.offset != null) {
-                    put("OFFSET", limit.offset.asJSON())
+                put("LIMIT", limit.asJSON())
+                if (offset != null) {
+                    put("OFFSET", offset.asJSON())
                 }
             }
         }
