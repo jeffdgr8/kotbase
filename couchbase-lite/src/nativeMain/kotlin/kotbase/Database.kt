@@ -361,15 +361,13 @@ internal constructor(
 
     private fun nativeChangeListener(): CBLDatabaseChangeListener {
         return staticCFunction { ref, _, numDocs, docIds ->
+            val documentIds = docIds!!.toList(numDocs.toInt()) { it.pointed.toKString()!! }
             with(ref.to<DatabaseChangeListenerHolder>()) {
-                val change = {
-                    val documentIds = docIds!!.toList(numDocs.toInt()) { it.pointed.toKString()!! }
-                    DatabaseChange(database, documentIds)
-                }
+                val change = DatabaseChange(database, documentIds)
                 when (this) {
-                    is DatabaseChangeDefaultListenerHolder -> listener(change())
+                    is DatabaseChangeDefaultListenerHolder -> listener(change)
                     is DatabaseChangeSuspendListenerHolder -> scope.launch {
-                        listener(change())
+                        listener(change)
                     }
                 }
             }
@@ -454,11 +452,11 @@ internal constructor(
     private fun nativeDocumentChangeListener(): CBLDocumentChangeListener {
         return staticCFunction { ref, _, docId ->
             with(ref.to<DocumentChangeListenerHolder>()) {
-                val change = { DocumentChange(database, docId.toKString()!!) }
+                val change = DocumentChange(database, docId.toKString()!!)
                 when (this) {
-                    is DocumentChangeDefaultListenerHolder -> listener(change())
+                    is DocumentChangeDefaultListenerHolder -> listener(change)
                     is DocumentChangeSuspendListenerHolder -> scope.launch {
-                        listener(change())
+                        listener(change)
                     }
                 }
             }

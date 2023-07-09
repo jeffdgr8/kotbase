@@ -117,11 +117,11 @@ private constructor(
     private fun nativeChangeListener(): CBLReplicatorChangeListener {
         return staticCFunction { ref, _, status ->
             with(ref.to<ReplicatorChangeListenerHolder>()) {
-                val change = { ReplicatorChange(replicator, ReplicatorStatus(status!!)) }
+                val change = ReplicatorChange(replicator, ReplicatorStatus(status!!))
                 when (this) {
-                    is ReplicatorChangeDefaultListenerHolder -> listener(change())
+                    is ReplicatorChangeDefaultListenerHolder -> listener(change)
                     is ReplicatorChangeSuspendListenerHolder -> scope.launch {
-                        listener(change())
+                        listener(change)
                     }
                 }
             }
@@ -169,15 +169,13 @@ private constructor(
 
     private fun nativeDocumentReplicationListener(): CBLDocumentReplicationListener {
         return staticCFunction { ref, _, isPush, numDocuments, docs ->
+            val documents = docs!!.toList(numDocuments.toInt()) { ReplicatedDocument(it) }
             with(ref.to<DocumentReplicationListenerHolder>()) {
-                val replication = {
-                    val documents = docs!!.toList(numDocuments.toInt()) { ReplicatedDocument(it) }
-                    DocumentReplication(replicator, isPush, documents)
-                }
+                val replication = DocumentReplication(replicator, isPush, documents)
                 when (this) {
-                    is DocumentReplicationDefaultListenerHolder -> listener(replication())
+                    is DocumentReplicationDefaultListenerHolder -> listener(replication)
                     is DocumentReplicationSuspendListenerHolder -> scope.launch {
-                        listener(replication())
+                        listener(replication)
                     }
                 }
             }

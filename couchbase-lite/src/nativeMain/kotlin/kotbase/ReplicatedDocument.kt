@@ -17,4 +17,6 @@ internal constructor(actual: CPointer<CBLReplicatedDocument>) {
 
     public actual val error: CouchbaseLiteException? =
         actual.pointed.error.toException()
+
+    override fun toString(): String = "ReplicatedDocument{@$id, $error}"
 }

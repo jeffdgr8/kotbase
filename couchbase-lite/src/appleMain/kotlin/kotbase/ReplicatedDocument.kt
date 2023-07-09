@@ -18,4 +18,6 @@ internal constructor(actual: CBLReplicatedDocument) :
     public actual val error: CouchbaseLiteException? by lazy {
         actual.error?.toCouchbaseLiteException()
     }
+
+    override fun toString(): String = "ReplicatedDocument{@$id, $error}"
 }
