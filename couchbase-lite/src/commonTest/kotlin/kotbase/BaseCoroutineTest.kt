@@ -94,6 +94,6 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
         scope.cancel()
         canceled.value = true
         notListenedChange()
-        delay(100) // give listener time to be called if still listening
+        delay(200) // give listener time to be called if still listening
     }
 }
