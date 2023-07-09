@@ -2,8 +2,10 @@
 
 package kotbase
 
-internal fun ListenerCertificateAuthenticatorDelegate.convert(): com.couchbase.lite.ListenerCertificateAuthenticatorDelegate {
-    return com.couchbase.lite.ListenerCertificateAuthenticatorDelegate { certs ->
+import com.couchbase.lite.ListenerCertificateAuthenticatorDelegate as CBLListenerCertificateAuthenticatorDelegate
+
+internal fun ListenerCertificateAuthenticatorDelegate.convert(): CBLListenerCertificateAuthenticatorDelegate {
+    return CBLListenerCertificateAuthenticatorDelegate { certs ->
         invoke(certs.map { it.encoded })
     }
 }

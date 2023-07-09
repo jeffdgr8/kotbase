@@ -1,14 +1,16 @@
 package kotbase
 
+import com.couchbase.lite.Function as CBLFunction
+
 public actual fun Function.prediction(model: String, input: Expression): PredictionFunction =
-    PredictionFunction(com.couchbase.lite.Function.prediction(model, input.actual))
+    PredictionFunction(CBLFunction.prediction(model, input.actual))
 
 public actual fun Function.euclideanDistance(
     expression1: Expression,
     expression2: Expression
 ): Expression {
     return Expression(
-        com.couchbase.lite.Function.euclideanDistance(
+        CBLFunction.euclideanDistance(
             expression1.actual,
             expression2.actual
         )
@@ -20,7 +22,7 @@ public actual fun Function.squaredEuclideanDistance(
     expression2: Expression
 ): Expression {
     return Expression(
-        com.couchbase.lite.Function.squaredEuclideanDistance(
+        CBLFunction.squaredEuclideanDistance(
             expression1.actual,
             expression2.actual
         )
@@ -32,7 +34,7 @@ public actual fun Function.cosineDistance(
     expression2: Expression
 ): Expression {
     return Expression(
-        com.couchbase.lite.Function.cosineDistance(
+        CBLFunction.cosineDistance(
             expression1.actual,
             expression2.actual
         )

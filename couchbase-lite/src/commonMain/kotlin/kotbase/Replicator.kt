@@ -77,8 +77,8 @@ constructor(config: ReplicatorConfiguration) {
     /**
      * Adds a change listener for the changes in the replication status and progress.
      *
-     * The changes will be delivered on the main thread for platforms that support it (Android, iOS,
-     * macOS, Linux, and Windows). Callbacks are on an arbitrary thread for the JVM platform.
+     * The changes will be delivered on the main thread for platforms that support it: Android, iOS, and macOS.
+     * Callbacks are on an arbitrary thread for the JVM, Linux, and Windows platform.
      *
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
@@ -113,8 +113,8 @@ constructor(config: ReplicatorConfiguration) {
     /**
      * Adds a document replication event listener.
      *
-     * The events will be delivered on the main thread for platforms that support it (Android, iOS,
-     * macOS, Linux, and Windows). Callbacks are on an arbitrary thread for the JVM platform.
+     * The changes will be delivered on the main thread for platforms that support it: Android, iOS, and macOS.
+     * Callbacks are on an arbitrary thread for the JVM, Linux, and Windows platform.
      *
      * According to performance optimization in the replicator, the document replication listeners need to be added
      * before starting the replicator. If the listeners are added after the replicator is started, the replicator needs

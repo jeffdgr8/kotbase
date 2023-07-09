@@ -1,5 +1,8 @@
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * MessageEndpointListener to serve incoming message endpoint connection.
  */
@@ -27,20 +30,36 @@ public expect class MessageEndpointListener(config: MessageEndpointListenerConfi
     /**
      * Add a change listener.
      *
-     * @param listener the listener
-     * @return listener identifier
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
+     *
+     * @see removeChangeListener
      */
     public fun addChangeListener(listener: MessageEndpointListenerChangeListener): ListenerToken
 
-    // TODO:
-    ///**
-    // * Add a change listener with the given dispatch queue.
-    // *
-    // * @param queue    the executor on which the listener will run
-    // * @param listener the listener
-    // * @return listener identifier
-    // */
-    //public fun addChangeListener(queue: Executor?, listener: MessageEndpointListenerChangeListener): ListenerToken
+    /**
+     * Add a change listener with a [CoroutineContext] that will be used to launch coroutines the listener will be
+     * called on. Coroutines will be launched in a [CoroutineScope] that is canceled when the listener is removed.
+     *
+     * @param context coroutine context in which the listener will run
+     * @param listener The listener to post changes.
+     * @return An opaque listener token object for removing the listener.
+     *
+     * @see removeChangeListener
+     */
+    public fun addChangeListener(
+        context: CoroutineContext,
+        listener: MessageEndpointListenerChangeSuspendListener
+    ): ListenerToken
+
+    /**
+     * Add a change listener with a [CoroutineScope] that will be used to launch coroutines the listener will be
+     * called on. The listener is removed when the scope is canceled.
+     *
+     * @param scope coroutine scope in which the listener will run
+     * @param listener The listener to post changes.
+     */
+    public fun addChangeListener(scope: CoroutineScope, listener: MessageEndpointListenerChangeSuspendListener)
 
     /**
      * Remove a change listener.

@@ -2,8 +2,10 @@
 
 package kotbase
 
-internal fun MessageEndpointDelegate.convert(): com.couchbase.lite.MessageEndpointDelegate {
-    return com.couchbase.lite.MessageEndpointDelegate { endpoint ->
+import com.couchbase.lite.MessageEndpointDelegate as CBLMessageEndpointDelegate
+
+internal fun MessageEndpointDelegate.convert(): CBLMessageEndpointDelegate {
+    return CBLMessageEndpointDelegate { endpoint ->
         invoke(MessageEndpoint(endpoint, this)).convert()
     }
 }

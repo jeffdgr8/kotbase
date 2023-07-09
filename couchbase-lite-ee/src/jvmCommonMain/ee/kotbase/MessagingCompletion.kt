@@ -2,7 +2,9 @@
 
 package kotbase
 
-internal fun com.couchbase.lite.MessagingCompletion.convert(): MessagingCompletion {
+import com.couchbase.lite.MessagingCompletion as CBLMessagingCompletion
+
+internal fun CBLMessagingCompletion.convert(): MessagingCompletion {
     return { success, error ->
         complete(success, error?.actual)
     }

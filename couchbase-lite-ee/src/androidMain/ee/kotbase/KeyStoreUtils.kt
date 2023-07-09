@@ -6,6 +6,7 @@ import java.security.KeyStoreException
 import java.security.NoSuchAlgorithmException
 import java.security.UnrecoverableEntryException
 import java.security.cert.CertificateException
+import com.couchbase.lite.KeyStoreUtils as CBLKeyStoreUtils
 
 /**
  * Key Store Utilities
@@ -51,7 +52,7 @@ public object KeyStoreUtils {
         extKeyPass: CharArray?,
         newAlias: String
     ) {
-        com.couchbase.lite.KeyStoreUtils.importEntry(
+        CBLKeyStoreUtils.importEntry(
             storeType,
             storeStream,
             storePassword,

@@ -1,29 +1,35 @@
 package kotbase
 
-internal fun MessageEndpointConnection.convert(): com.couchbase.lite.MessageEndpointConnection =
+import com.couchbase.lite.Message as CBLMessage
+import com.couchbase.lite.MessageEndpointConnection as CBLMessageEndpointConnection
+import com.couchbase.lite.MessagingCloseCompletion as CBLMessagingCloseCompletion
+import com.couchbase.lite.MessagingCompletion as CBLMessagingCompletion
+import com.couchbase.lite.ReplicatorConnection as CBLReplicatorConnection
+
+internal fun MessageEndpointConnection.convert(): CBLMessageEndpointConnection =
     NativeMessageEndpointConnection(this)
 
 internal class NativeMessageEndpointConnection(
     internal val original: MessageEndpointConnection
-) : com.couchbase.lite.MessageEndpointConnection {
+) : CBLMessageEndpointConnection {
 
     override fun open(
-        connection: com.couchbase.lite.ReplicatorConnection,
-        completion: com.couchbase.lite.MessagingCompletion
+        connection: CBLReplicatorConnection,
+        completion: CBLMessagingCompletion
     ) {
         original.open(connection.convert(), completion.convert())
     }
 
     override fun close(
         error: Exception?,
-        completion: com.couchbase.lite.MessagingCloseCompletion
+        completion: CBLMessagingCloseCompletion
     ) {
         original.close(error, completion.convert())
     }
 
     override fun send(
-        message: com.couchbase.lite.Message,
-        completion: com.couchbase.lite.MessagingCompletion
+        message: CBLMessage,
+        completion: CBLMessagingCompletion
     ) {
         original.send(Message(message), completion.convert())
     }

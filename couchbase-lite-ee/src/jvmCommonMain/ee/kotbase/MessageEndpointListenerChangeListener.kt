@@ -2,8 +2,22 @@
 
 package kotbase
 
-internal fun MessageEndpointListenerChangeListener.convert(): com.couchbase.lite.MessageEndpointListenerChangeListener {
-    return com.couchbase.lite.MessageEndpointListenerChangeListener { change ->
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import com.couchbase.lite.MessageEndpointListenerChangeListener as CBLMessageEndpointListenerChangeListener
+
+internal fun MessageEndpointListenerChangeListener.convert(): CBLMessageEndpointListenerChangeListener {
+    return CBLMessageEndpointListenerChangeListener { change ->
         invoke(MessageEndpointListenerChange(change))
+    }
+}
+
+internal fun MessageEndpointListenerChangeSuspendListener.convert(
+    scope: CoroutineScope
+): CBLMessageEndpointListenerChangeListener {
+    return CBLMessageEndpointListenerChangeListener { change ->
+        scope.launch {
+            invoke(MessageEndpointListenerChange(change))
+        }
     }
 }

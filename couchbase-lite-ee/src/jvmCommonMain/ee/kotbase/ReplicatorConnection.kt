@@ -1,6 +1,8 @@
 package kotbase
 
-internal fun com.couchbase.lite.ReplicatorConnection.convert(): ReplicatorConnection {
+import com.couchbase.lite.ReplicatorConnection as CBLReplicatorConnection
+
+internal fun CBLReplicatorConnection.convert(): ReplicatorConnection {
     return object : ReplicatorConnection {
 
         override fun close(error: MessagingError?) {

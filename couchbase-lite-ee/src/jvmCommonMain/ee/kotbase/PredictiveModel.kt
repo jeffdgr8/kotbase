@@ -1,7 +1,9 @@
 package kotbase
 
-internal fun PredictiveModel.convert(): com.couchbase.lite.PredictiveModel {
-    return com.couchbase.lite.PredictiveModel { input ->
+import com.couchbase.lite.PredictiveModel as CBLPredictiveModel
+
+internal fun PredictiveModel.convert(): CBLPredictiveModel {
+    return CBLPredictiveModel { input ->
         predict(Dictionary(input))?.actual
     }
 }

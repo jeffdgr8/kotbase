@@ -219,8 +219,8 @@ public expect class Database {
     /**
      * Adds a change listener for the changes that occur in the database.
      *
-     * The changes will be delivered on the main thread for platforms that support it (Android, iOS,
-     * macOS, Linux, and Windows). Callbacks are on an arbitrary thread for the JVM platform.
+     * The changes will be delivered on the main thread for platforms that support it: Android, iOS, and macOS.
+     * Callbacks are on an arbitrary thread for the JVM, Linux, and Windows platform.
      *
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
@@ -261,8 +261,8 @@ public expect class Database {
     /**
      * Adds a change listener for the changes that occur to the specified document.
      *
-     * The changes will be delivered on the main thread for platforms that support it (Android, iOS,
-     * macOS, Linux, and Windows). Callbacks are on an arbitrary thread for the JVM platform.
+     * The changes will be delivered on the main thread for platforms that support it: Android, iOS, and macOS.
+     * Callbacks are on an arbitrary thread for the JVM, Linux, and Windows platform.
      *
      * @param id document ID
      * @param listener The listener to post changes.

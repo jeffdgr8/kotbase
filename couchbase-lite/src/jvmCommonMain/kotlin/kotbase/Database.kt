@@ -18,6 +18,7 @@ import kotlinx.datetime.Instant
 import java.io.File
 import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Database as CBLDatabase
+import com.couchbase.lite.DatabaseConfiguration as CBLDatabaseConfiguration
 
 public actual class Database
 internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) {
@@ -56,7 +57,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
             CBLDatabase.copy(
                 File(path),
                 name,
-                config?.actual ?: com.couchbase.lite.DatabaseConfiguration()
+                config?.actual ?: CBLDatabaseConfiguration()
             )
         }
     }
