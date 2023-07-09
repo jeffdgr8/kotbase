@@ -118,15 +118,15 @@ internal abstract class AbstractQuery : Query {
 
 @Suppress("MemberVisibilityCanBePrivate")
 internal data class QueryState(
-    var select: List<SelectResult>,
-    var distinct: Boolean = false,
-    var from: DataSource? = null,
-    var join: List<Join>? = null,
-    var where: Expression? = null,
-    var groupBy: List<Expression>? = null,
-    var having: Expression? = null,
-    var orderBy: List<Ordering>? = null,
-    var limit: Limit? = null
+    val select: List<SelectResult>,
+    val distinct: Boolean = false,
+    val from: DataSource? = null,
+    val join: List<Join>? = null,
+    val where: Expression? = null,
+    val groupBy: List<Expression>? = null,
+    val having: Expression? = null,
+    val orderBy: List<Ordering>? = null,
+    val limit: Limit? = null
 ) : AbstractQuery() {
 
     override val actual: CPointer<CBLQuery> by lazy {
@@ -162,29 +162,29 @@ internal data class QueryState(
 
             // WHERE:
             if (where != null) {
-                put("WHERE", where?.asJSON())
+                put("WHERE", where.asJSON())
             }
 
             // GROUPBY:
             if (groupBy != null) {
-                put("GROUP_BY", groupBy?.map { it.asJSON() })
+                put("GROUP_BY", groupBy.map { it.asJSON() })
             }
 
             // HAVING:
             if (having != null) {
-                put("HAVING", having?.asJSON())
+                put("HAVING", having.asJSON())
             }
 
             // ORDERBY:
             if (orderBy != null) {
-                put("ORDER_BY", orderBy?.map { it.asJSON() })
+                put("ORDER_BY", orderBy.map { it.asJSON() })
             }
 
             // LIMIT/OFFSET:
             if (limit != null) {
-                put("LIMIT", limit?.limit?.asJSON())
-                if (limit?.offset != null) {
-                    put("OFFSET", limit?.offset?.asJSON())
+                put("LIMIT", limit.limit.asJSON())
+                if (limit.offset != null) {
+                    put("OFFSET", limit.offset.asJSON())
                 }
             }
         }
