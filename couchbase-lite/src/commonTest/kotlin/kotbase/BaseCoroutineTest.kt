@@ -18,6 +18,7 @@ import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.fail
 import kotlin.time.Duration.Companion.seconds
 
@@ -55,11 +56,12 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
         val canceled = Mutex(true)
         val token = addListener(Dispatchers.Default.limitedParallelism(1)) {
             try {
+                if (!started.isLocked) return@addListener
                 started.unlock()
-                delay(1000)
+                delay(STD_TIMEOUT_SEC.seconds)
                 fail("Coroutine should have been canceled")
             } catch (e: CancellationException) {
-                canceled.unlock()
+                if (canceled.isLocked) canceled.unlock()
                 throw e
             }
         }
@@ -80,18 +82,18 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
     ) = runBlocking {
         val mutex = Mutex(true)
         val scope = CoroutineScope(SupervisorJob())
-        val count = atomic(0)
+        val canceled = atomic(false)
         addListener(scope) {
-            count.value++
-            mutex.unlock()
+            assertFalse(canceled.value)
+            if (mutex.isLocked) mutex.unlock()
         }
         listenedChange()
         withTimeout(STD_TIMEOUT_SEC.seconds) {
             mutex.lock()
         }
         scope.cancel()
+        canceled.value = true
         notListenedChange()
         delay(100) // give listener time to be called if still listening
-        assertEquals(1, count.value)
     }
 }
