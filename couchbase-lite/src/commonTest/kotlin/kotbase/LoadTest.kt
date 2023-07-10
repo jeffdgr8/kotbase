@@ -175,7 +175,6 @@ class LoadTest : BaseDbTest() {
         for (i in 0 until revisions) {
             doc.setValue("count", i)
             baseTestDb.save(doc)
-            PlatformUtils.gc()
         }
     }
 
