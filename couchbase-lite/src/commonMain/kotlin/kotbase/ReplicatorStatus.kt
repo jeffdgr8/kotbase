@@ -15,5 +15,8 @@ public expect class ReplicatorStatus {
      */
     public val progress: ReplicatorProgress
 
+    /**
+     * The current error if there is an error occurred.
+     */
     public val error: CouchbaseLiteException?
 }
