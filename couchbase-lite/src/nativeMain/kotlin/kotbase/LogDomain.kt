@@ -30,7 +30,7 @@ public actual enum class LogDomain {
             kCBLLogDomainReplicator -> REPLICATOR
             kCBLLogDomainNetwork -> NETWORK
             kCBLLogDomainListener -> LISTENER
-            else -> error("Unexpected CBLLogDomain")
+            else -> error("Unexpected CBLLogDomain ($logDomain)")
         }
     }
 }

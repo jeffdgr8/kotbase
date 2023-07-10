@@ -19,7 +19,7 @@ public actual enum class ConcurrencyControl {
         internal fun from(value: CBLConcurrencyControl): ConcurrencyControl = when (value) {
             kCBLConcurrencyControlLastWriteWins -> LAST_WRITE_WINS
             kCBLConcurrencyControlFailOnConflict -> FAIL_ON_CONFLICT
-            else -> error("Unexpected CBLConcurrencyControl")
+            else -> error("Unexpected CBLConcurrencyControl ($value)")
         }
     }
 }

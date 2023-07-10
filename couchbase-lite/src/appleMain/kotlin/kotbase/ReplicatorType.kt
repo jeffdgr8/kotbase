@@ -23,7 +23,7 @@ public actual enum class ReplicatorType {
             kCBLReplicatorTypePushAndPull -> PUSH_AND_PULL
             kCBLReplicatorTypePush -> PUSH
             kCBLReplicatorTypePull -> PULL
-            else -> error("Unexpected CBLReplicatorType")
+            else -> error("Unexpected CBLReplicatorType ($replicatorType)")
         }
     }
 }

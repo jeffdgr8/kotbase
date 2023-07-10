@@ -19,7 +19,7 @@ public actual enum class ProtocolType {
         internal fun from(protocolType: CBLProtocolType): ProtocolType = when (protocolType) {
             kCBLProtocolTypeMessageStream -> MESSAGE_STREAM
             kCBLProtocolTypeByteStream -> BYTE_STREAM
-            else -> error("Unexpected CBLProtocolType")
+            else -> error("Unexpected CBLProtocolType ($protocolType)")
         }
     }
 }

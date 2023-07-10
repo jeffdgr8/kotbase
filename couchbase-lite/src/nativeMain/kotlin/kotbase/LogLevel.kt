@@ -30,7 +30,7 @@ public actual enum class LogLevel {
             kCBLLogWarning -> WARNING
             kCBLLogError -> ERROR
             kCBLLogNone -> NONE
-            else -> error("Unexpected CBLLogLevel")
+            else -> error("Unexpected CBLLogLevel ($logLevel)")
         }
     }
 }

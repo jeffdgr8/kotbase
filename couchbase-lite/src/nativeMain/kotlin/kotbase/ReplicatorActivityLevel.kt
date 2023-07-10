@@ -28,7 +28,7 @@ public actual enum class ReplicatorActivityLevel {
                 kCBLReplicatorConnecting -> CONNECTING
                 kCBLReplicatorIdle -> IDLE
                 kCBLReplicatorBusy -> BUSY
-                else -> error("Unexpected CBLReplicatorActivityLevel")
+                else -> error("Unexpected CBLReplicatorActivityLevel ($activityLevel)")
             }
     }
 }
