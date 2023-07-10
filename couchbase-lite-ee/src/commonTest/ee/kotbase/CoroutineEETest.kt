@@ -1,5 +1,7 @@
 package kotbase
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
@@ -10,12 +12,14 @@ class CoroutineEETest : BaseCoroutineTest() {
 
     private fun runWithReplicator(test: (Replicator) -> Unit) {
         val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, false)
+        val config = makeConfig(target, ReplicatorType.PUSH, true)
         val replicator = testReplicator(config)
         val stopped = Mutex(true)
-        replicator.addChangeListener {
-            if (it.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
-                stopped.unlock()
+        @OptIn(ExperimentalCoroutinesApi::class)
+        replicator.addChangeListener(Dispatchers.Default.limitedParallelism(1)) {
+            when (it.status.activityLevel) {
+                ReplicatorActivityLevel.STOPPED -> if (stopped.isLocked) stopped.unlock()
+                else -> if (!stopped.isLocked) stopped.lock()
             }
         }
         test(replicator)

@@ -17,4 +17,6 @@ internal constructor(
         @Suppress("UNCHECKED_CAST")
         (actual.documents as List<CBLReplicatedDocument>).map { ReplicatedDocument(it) }
     }
+
+    override fun toString(): String = "DocumentReplication{#${documents.size} @$replicator}"
 }
