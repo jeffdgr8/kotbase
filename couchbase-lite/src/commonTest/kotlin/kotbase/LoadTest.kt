@@ -268,6 +268,7 @@ class LoadTest : BaseDbTest() {
     }
 
     private fun timeTest(testName: String, maxTimeMs: Long, test: () -> Unit) {
+        PlatformUtils.gc()
         val t0 = Clock.System.now()
         test()
         val elapsedTime = Clock.System.now() - t0

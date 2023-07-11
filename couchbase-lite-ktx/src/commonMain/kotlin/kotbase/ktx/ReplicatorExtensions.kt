@@ -21,7 +21,7 @@
  * - Resolve explicitApiWarning() requirements
  */
 
-package kotbase.molo17
+package kotbase.ktx
 
 import kotbase.DocumentReplication
 import kotbase.Replicator

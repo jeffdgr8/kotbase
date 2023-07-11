@@ -4,7 +4,7 @@
 
 @file:Suppress("USELESS_IS_CHECK", "IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST", "NOTHING_TO_OVERRIDE", "ABSTRACT_CLASS_MEMBER_NOT_IMPLEMENTED")
 
-package kotbase.paging3
+package kotbase.paging
 
 import app.cash.paging.PagingSource
 import app.cash.paging.PagingSourceLoadParams
@@ -22,8 +22,8 @@ import kotbase.Query
 import kotbase.Select
 import kotbase.ktx.countResult
 import kotbase.ktx.selectCount
-import kotbase.molo17.from
-import kotbase.molo17.toObjects
+import kotbase.ktx.from
+import kotbase.ktx.toObjects
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext

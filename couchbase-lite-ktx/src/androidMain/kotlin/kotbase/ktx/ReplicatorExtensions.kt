@@ -23,7 +23,7 @@
 
 @file:JvmName("ReplicatorExtensionsJvm") // https://youtrack.jetbrains.com/issue/KT-21186
 
-package kotbase.molo17
+package kotbase.ktx
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver

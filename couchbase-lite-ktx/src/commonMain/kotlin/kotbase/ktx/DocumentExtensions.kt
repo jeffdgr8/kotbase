@@ -22,7 +22,7 @@
  * - Implement MutableDictionaryInterface explicitly (not part of KMP API)
  */
 
-package kotbase.molo17
+package kotbase.ktx
 
 import kotbase.*
 import kotbase.Array

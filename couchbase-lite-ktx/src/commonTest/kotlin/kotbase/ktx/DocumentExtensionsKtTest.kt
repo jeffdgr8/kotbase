@@ -20,7 +20,7 @@
  * - Use kotbase package
  */
 
-package kotbase.molo17
+package kotbase.ktx
 
 import kotbase.ext.nowMillis
 import kotlinx.datetime.Clock

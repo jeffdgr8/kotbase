@@ -24,7 +24,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE", "unused", "KotlinRedundantDiagnosticSuppress")
 
-package kotbase.molo17
+package kotbase.ktx
 
 import kotbase.*
 import kotlinx.datetime.Instant

@@ -21,9 +21,14 @@
  * - Adapt for Kotlin/Common
  */
 
-package kotbase.molo17
+package kotbase.ktx
 
-import kotbase.*
+import kotbase.BaseDbTest
+import kotbase.DataSource
+import kotbase.Expression
+import kotbase.Ordering
+import kotbase.QueryBuilder
+import kotbase.SelectResult
 import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.test.assertEquals

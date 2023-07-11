@@ -2,7 +2,7 @@
  * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonTest/kotlin/app/cash/sqldelight/paging3/WithPagingDataDiffer.kt
  */
 
-package kotbase.paging3
+package kotbase.paging
 
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.recyclerview.widget.DiffUtil

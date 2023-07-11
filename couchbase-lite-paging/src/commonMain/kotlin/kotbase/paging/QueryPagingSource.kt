@@ -4,7 +4,7 @@
 
 @file:Suppress("FunctionName")
 
-package kotbase.paging3
+package kotbase.paging
 
 import app.cash.paging.PagingSource
 import kotbase.Database
@@ -16,7 +16,7 @@ import kotbase.OrderBy
 import kotbase.Query
 import kotbase.Select
 import kotbase.Where
-import kotbase.molo17.limit
+import kotbase.ktx.limit
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 

@@ -1,9 +1,12 @@
 package kotbase.ktx
 
-import kotbase.*
+import kotbase.BaseDbTest
+import kotbase.DataSource
+import kotbase.Expression
 import kotbase.Function
-import kotbase.molo17.all
-import kotbase.molo17.from
+import kotbase.Meta
+import kotbase.QueryBuilder
+import kotbase.SelectResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -4,7 +4,7 @@
 
 @file:Suppress("CAST_NEVER_SUCCEEDS", "TYPE_MISMATCH", "UNRESOLVED_REFERENCE")
 
-package kotbase.paging3
+package kotbase.paging
 
 import androidx.recyclerview.widget.DiffUtil
 import app.cash.paging.LoadType

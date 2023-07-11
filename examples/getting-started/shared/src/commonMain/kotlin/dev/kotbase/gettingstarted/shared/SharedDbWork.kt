@@ -3,9 +3,9 @@ package dev.kotbase.gettingstarted.shared
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
 import kotbase.*
 import kotbase.ktx.select
-import kotbase.molo17.all
-import kotbase.molo17.from
-import kotbase.molo17.where
+import kotbase.ktx.all
+import kotbase.ktx.from
+import kotbase.ktx.where
 import kotlinx.coroutines.flow.Flow
 
 class SharedDbWork {

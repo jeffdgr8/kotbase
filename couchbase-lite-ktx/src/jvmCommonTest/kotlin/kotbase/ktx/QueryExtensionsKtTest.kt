@@ -21,10 +21,18 @@
  * - Switch from Mockito to MockK for better Kotlin+Android support (can't mock Kotlin/Native yet)
  */
 
-package kotbase.molo17
+package kotbase.ktx
 
-import io.mockk.*
-import kotbase.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.verify
+import kotbase.ListenerToken
+import kotbase.Query
+import kotbase.QueryChange
+import kotbase.QueryChangeListener
+import kotbase.ResultSet
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
