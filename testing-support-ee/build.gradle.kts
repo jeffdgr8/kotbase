@@ -28,4 +28,4 @@ kotlin {
     }
 }
 
-android.namespace = "kotbase.testingsupport"
+android.namespace = "dev.kotbase.testingsupport"

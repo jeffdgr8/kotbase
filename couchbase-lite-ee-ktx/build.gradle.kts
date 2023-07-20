@@ -54,4 +54,4 @@ kotlin {
     }
 }
 
-android.namespace = "kotbase.ktx"
+android.namespace = "dev.kotbase.ktx"

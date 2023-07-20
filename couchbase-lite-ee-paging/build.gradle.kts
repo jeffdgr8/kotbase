@@ -46,4 +46,4 @@ kotlin {
     }
 }
 
-android.namespace = "kotbase.paging"
+android.namespace = "dev.kotbase.paging"

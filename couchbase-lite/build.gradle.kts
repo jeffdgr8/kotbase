@@ -82,7 +82,7 @@ kotlin {
     }
 }
 
-android.namespace = "kotbase"
+android.namespace = "dev.kotbase"
 
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
