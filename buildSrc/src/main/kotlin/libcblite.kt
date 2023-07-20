@@ -26,7 +26,7 @@ fun KotlinMultiplatformExtension.linkLibcblite(fromProject: Project = project) {
                     binaries.getTest(DEBUG).linkerOpts("-L$libraryPath", "-lcblite", "-rpath", libraryPath)
                 }
                 Family.MINGW -> {
-                    binaries.getTest(NativeBuildType.DEBUG).linkTaskProvider.configure {
+                    binaries.getTest(DEBUG).linkTaskProvider.configure {
                         doLast {
                             val version = libs.versions.couchbase.lite.c.get()
                             val outputDir = outputFile.get().parentFile

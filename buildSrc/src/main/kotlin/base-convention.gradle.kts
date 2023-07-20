@@ -41,7 +41,7 @@ kotlin {
                 binaryOptions["sourceInfoType"] = "libbacktrace"
             }
         }
-        binaries.getTest(NativeBuildType.DEBUG).linkTaskProvider.configure {
+        binaries.getTest(DEBUG).linkTaskProvider.configure {
             doLast {
                 val outputDir = outputFile.get().parentFile
                 projectDir.resolve("src/commonTest/resources").listFiles()?.forEach { file ->
