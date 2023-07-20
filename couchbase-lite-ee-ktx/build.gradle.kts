@@ -36,7 +36,7 @@ kotlin {
                 implementation(projects.testingSupportEe)
             }
         }
-        jvmTest {
+        jvmCommonTest {
             dependencies {
                 implementation(libs.mockk)
             }
