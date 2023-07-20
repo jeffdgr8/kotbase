@@ -9,6 +9,7 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/Kotbase_Paging.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '9.0'
+    spec.osx.deployment_target = '10.11'
     spec.dependency 'CouchbaseLite', '3.0.12'
                 
     spec.pod_target_xcconfig = {

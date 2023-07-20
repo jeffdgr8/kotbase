@@ -12,7 +12,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://mobile.maven.couchbase.com/maven2/dev/")
-        mavenLocal()
     }
 }
 

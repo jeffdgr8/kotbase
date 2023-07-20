@@ -1,16 +1,9 @@
 plugins {
+    `multiplatform-convention`
     `library-convention`
 }
 
 kotlin {
-    androidTarget()
-    jvm()
-    iosArm64()
-    iosSimulatorArm64()
-    iosX64()
-    linuxX64()
-    mingwX64()
-
     cocoapods {
         name = "Kotbase-Paging"
         homepage = "https://github.com/jeffdgr8/kotbase"
@@ -18,6 +11,7 @@ kotlin {
         license = "Apache License, Version 2.0"
         summary = "Couchbase Lite for Kotlin Multiplatform AndroidX Paging Extensions"
         ios.deploymentTarget = "9.0"
+        osx.deploymentTarget = "10.11"
         framework {
             baseName = this@cocoapods.name.replace('-', '_')
             isStatic = false
