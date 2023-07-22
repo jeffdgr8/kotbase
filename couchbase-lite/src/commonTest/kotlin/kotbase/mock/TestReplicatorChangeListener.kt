@@ -4,10 +4,9 @@ import kotbase.ReplicatorActivityLevel
 import kotbase.ReplicatorChange
 import kotbase.ReplicatorChangeListener
 import kotbase.internal.utils.Report
+import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration
 
 class TestReplicatorChangeListener : ReplicatorChangeListener {
@@ -16,16 +15,8 @@ class TestReplicatorChangeListener : ReplicatorChangeListener {
 
     var error: Throwable? by atomic(null)
 
-    suspend fun awaitCompletion(timeout: Duration): Boolean {
-        return try {
-            withTimeout(timeout) {
-                mutex.lock()
-                true
-            }
-        } catch (e: TimeoutCancellationException) {
-            false
-        }
-    }
+    suspend fun awaitCompletion(timeout: Duration): Boolean =
+        mutex.lockWithTimeout(timeout)
 
     override fun invoke(change: ReplicatorChange) {
         val status = change.status

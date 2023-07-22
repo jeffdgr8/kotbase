@@ -1,11 +1,11 @@
 package kotbase
 
 import kotbase.test.IgnoreNative
+import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
@@ -474,9 +474,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             }
         }
 
-        withTimeout(5.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(5.seconds))
 
         replicator.removeChangeListener(docReplicationToken)
         baseTestDb.removeChangeListener(docChangeToken)
@@ -840,9 +838,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
 
         replicator.start()
-        withTimeout(5.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(5.seconds))
         replicator.removeChangeListener(token)
     }
 
@@ -880,9 +876,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
 
         replicator.start()
-        withTimeout(5.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(5.seconds))
         replicator.removeChangeListener(token)
     }
 
@@ -912,9 +906,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             }
         }
         replicator.start()
-        withTimeout(5.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(5.seconds))
 
         assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.code)
         replicator.removeChangeListener(token)
@@ -1016,9 +1008,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
 
         replicator.start()
-        withTimeout(5.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(5.seconds))
 
         assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.code)
         replicator.removeChangeListener(token)
@@ -1764,9 +1754,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         config.conflictResolver = resolver
         run(config)
 
-        withTimeout(5.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(5.seconds))
 
         // make sure, first doc starts resolution but finishes last.
         // in between second doc starts and finishes it.

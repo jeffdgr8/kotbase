@@ -1,5 +1,6 @@
 package kotbase
 
+import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -51,9 +52,7 @@ class FlowTest : BaseReplicatorTest() {
                 }
             }
 
-            withTimeout(1.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(1.seconds))
             collector.cancel()
         }
 
@@ -97,9 +96,7 @@ class FlowTest : BaseReplicatorTest() {
                 saveDocInBaseTestDb(docA)
             }
 
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
             collector.cancel()
         }
 
@@ -148,9 +145,7 @@ class FlowTest : BaseReplicatorTest() {
                 saveDocInBaseTestDb(mDocA)
             }
 
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
             collector.cancel()
         }
 
@@ -194,9 +189,7 @@ class FlowTest : BaseReplicatorTest() {
                 baseTestDb.delete(docA)
             }
 
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
             collector.cancel()
         }
 
@@ -244,9 +237,7 @@ class FlowTest : BaseReplicatorTest() {
                 baseTestDb.save(mDoc)
             }
 
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
             collector.cancel()
         }
 

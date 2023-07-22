@@ -1,11 +1,12 @@
 package kotbase
 
+import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 class CoroutineEETest : BaseCoroutineTest() {
@@ -25,9 +26,7 @@ class CoroutineEETest : BaseCoroutineTest() {
         test(replicator)
         replicator.stop()
         runBlocking {
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                stopped.lock()
-            }
+            assertTrue(stopped.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         }
     }
 

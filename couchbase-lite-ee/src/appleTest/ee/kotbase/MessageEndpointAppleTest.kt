@@ -5,10 +5,10 @@ import kotbase.ext.toByteArray
 import kotbase.ext.toNSData
 import kotbase.ext.wrapError
 import kotbase.internal.utils.TestUtils.assertThrows
+import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import platform.Foundation.*
 import platform.MultipeerConnectivity.*
 import platform.darwin.NSObject
@@ -81,10 +81,8 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         browser!!.startBrowsingForPeers()
 
         // cool down period(disconnected to next connected state), is taking around 4-10secs
-        withTimeout(30.seconds) {
-            clientConnected!!.lock()
-            serverConnected!!.lock()
-        }
+        assertTrue(clientConnected!!.lockWithTimeout(30.seconds))
+        assertTrue(serverConnected!!.lockWithTimeout(30.seconds))
     }
 
     fun run(config: ReplicatorConfiguration, expectedError: Int? = null) = runBlocking {
@@ -109,9 +107,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         listener!!.accept(
             MultipeerConnection(serverSession!!, clientPeer!!, this@MessageEndpointAppleTest)
         )
-        withTimeout(10.seconds) {
-            x1.lock()
-        }
+        assertTrue(x1.lockWithTimeout(10.seconds))
 
         val x3 = Mutex(true)
         val repl = Replicator(config)
@@ -133,16 +129,12 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         }
 
         repl.start()
-        withTimeout(10.seconds) {
-            x3.lock()
-        }
+        assertTrue(x3.lockWithTimeout(10.seconds))
         repl.stop()
         repl.removeChangeListener(token2)
 
         listener!!.closeAll()
-        withTimeout(10.seconds) {
-            x2.lock()
-        }
+        assertTrue(x2.lockWithTimeout(10.seconds))
         listener!!.removeChangeListener(token1)
     }
 

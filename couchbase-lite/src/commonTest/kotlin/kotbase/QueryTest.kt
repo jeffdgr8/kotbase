@@ -5,13 +5,12 @@ package kotbase
 import com.couchbase.lite.asJSON
 import kotbase.internal.utils.Report
 import kotbase.internal.utils.paddedString
+import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -1493,9 +1492,7 @@ class QueryTest : BaseQueryTest() {
                 }
             }
             // wait till listener is called
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                latch.await()
-            }
+            assertTrue(latch.await(LONG_TIMEOUT_SEC.seconds))
         } finally {
             query.removeChangeListener(token)
         }
@@ -1972,9 +1969,7 @@ class QueryTest : BaseQueryTest() {
             mutex1.unlock()
         }
         try {
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex1.lock()
-            }
+            assertTrue(mutex1.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
             baseTestDb.delete()
         } finally {
             query.removeChangeListener(token)
@@ -1992,9 +1987,7 @@ class QueryTest : BaseQueryTest() {
             mutex.unlock()
         }
         try {
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
             baseTestDb.close()
         } finally {
             query.removeChangeListener(token)
@@ -2624,12 +2617,8 @@ class QueryTest : BaseQueryTest() {
                 mutexAdd.unlock()
             }
 
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutexAdd.lock()
-            }
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutexAdd.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
+            assertTrue(mutex.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
         } finally {
             query.removeChangeListener(token)
         }
@@ -2668,17 +2657,13 @@ class QueryTest : BaseQueryTest() {
         }
 
         try {
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex1.lock()
-            }
+            assertTrue(mutex1.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
 
             doc = baseTestDb.getDocument("doc1")!!.toMutable()
             doc.setInt("number1", 15)
             baseTestDb.save(doc)
 
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex2.lock()
-            }
+            assertTrue(mutex2.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         } finally {
             query.removeChangeListener(token)
         }
@@ -3063,11 +3048,7 @@ class QueryTest : BaseQueryTest() {
 
             // Wait 5 seconds
             // The latch should not pop, because the listener should be called only once
-            assertFailsWith<TimeoutCancellationException> {
-                withTimeout(5.seconds) {
-                    latch.await()
-                }
-            }
+            assertFalse(latch.await(5.seconds))
             assertEquals(1, latch.getCount())
         } finally {
             query.removeChangeListener(token)

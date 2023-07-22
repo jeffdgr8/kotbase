@@ -36,7 +36,6 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(projects.testingSupport)
-                implementation(libs.kotlinx.atomicfu)
             }
         }
     }

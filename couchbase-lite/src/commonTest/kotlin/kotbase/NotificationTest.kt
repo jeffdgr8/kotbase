@@ -1,17 +1,12 @@
 package kotbase
 
 import com.couchbase.lite.copy
+import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.assertFailsWith
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -43,9 +38,7 @@ class NotificationTest : BaseDbTest() {
             saveDocInBaseTestDb(doc)
         }
 
-        withTimeout(STD_TIMEOUT_SEC.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
     }
 
     @Test
@@ -66,9 +59,7 @@ class NotificationTest : BaseDbTest() {
         try {
             saveDocInBaseTestDb(mDocB)
             saveDocInBaseTestDb(mDocA)
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         } finally {
             // TODO: 3.1 API
             //token.remove()
@@ -101,9 +92,7 @@ class NotificationTest : BaseDbTest() {
             mDocA = docA.toMutable()
             mDocA.setValue("thewronganswer", 18)
             saveDocInBaseTestDb(mDocA)
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         } finally {
             // TODO: 3.1 API
             //token.remove()
@@ -131,9 +120,7 @@ class NotificationTest : BaseDbTest() {
         try {
             baseTestDb.delete(docB)
             baseTestDb.delete(docA)
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         } finally {
             // TODO: 3.1 API
             //token.remove()
@@ -177,12 +164,8 @@ class NotificationTest : BaseDbTest() {
                 }
             }
 
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutexDB.lock()
-            }
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutexDoc.lock()
-            }
+            assertTrue(mutexDB.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
+            assertTrue(mutexDoc.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         } finally {
             // TODO: 3.1 API
             //token?.remove()
@@ -219,9 +202,7 @@ class NotificationTest : BaseDbTest() {
             saveDocInBaseTestDb(doc1)
 
             // Let's only wait for 0.5 seconds:
-            withTimeout(500.milliseconds) {
-                latch.await()
-            }
+            assertTrue(latch.await(500.milliseconds))
         } finally {
             // TODO: 3.1 API
             //token1.remove()
@@ -261,9 +242,7 @@ class NotificationTest : BaseDbTest() {
             savedDoc1 = saveDocInBaseTestDb(doc1)
 
             // Let's only wait for 0.5 seconds:
-            withTimeout(500.milliseconds) {
-                latch1.await()
-            }
+            assertTrue(latch1.await(500.milliseconds))
 
             // Remove change listener:
             // TODO: 3.1 API
@@ -275,11 +254,7 @@ class NotificationTest : BaseDbTest() {
             doc1.setValue("name", "Scotty")
             saveDocInBaseTestDb(doc1)
 
-            assertFailsWith<TimeoutCancellationException> {
-                withTimeout(500.milliseconds) {
-                    latch2.await()
-                }
-            }
+            assertFalse(latch2.await(500.milliseconds))
             assertEquals(1, latch2.getCount())
         } finally {
             // TODO: 3.1 API
@@ -322,17 +297,13 @@ class NotificationTest : BaseDbTest() {
 //            mutex1.unlock()
 //        }
 //        dbListener(DatabaseChange(baseTestDb.getDefaultCollection(), emptyList()))
-//        withTimeout(STD_TIMEOUT_MS.milliseconds) {
-//            mutex1.lock()
-//        }
+//        assertTrue(mutex1.lockWithTimeout(STD_TIMEOUT_MS.milliseconds))
 //        val mutex2 = Mutex(true)
 //        val colListener = { change: CollectionChange ->
 //            mutex2.unlock()
 //        }
 //        colListener(CollectionChange(baseTestDb.getDefaultCollection(), emptyList()))
-//        withTimeout(STD_TIMEOUT_MS.milliseconds) {
-//            mutex2.lock()
-//        }
+//        assertTrue(mutex2.lockWithTimeout(STD_TIMEOUT_MS.milliseconds))
 //
 //        val latch3 = CountDownLatch(2)
 //        var t1: ListenerToken? = null
@@ -346,9 +317,7 @@ class NotificationTest : BaseDbTest() {
 //            }
 //            assertEquals(2, baseTestDb.getDefaultCollection().getCollectionListenerCount())
 //            createDocsInDb(1000, 1, baseTestDb)
-//            withTimeout(STD_TIMEOUT_MS.milliseconds) {
-//                latch3.await()
-//            }
+//            assertTrue(latch3.await(STD_TIMEOUT_MS.milliseconds))
 //        } finally {
 //            t1?.remove()
 //            t2?.remove()
@@ -365,9 +334,7 @@ class NotificationTest : BaseDbTest() {
 //            }
 //            assertEquals(2, baseTestDb.getDefaultCollection().getCollectionListenerCount())
 //            createDocsInDb(2000, 1, baseTestDb)
-//            withTimeout(STD_TIMEOUT_MS.milliseconds) {
-//                latch4.await()
-//            }
+//            assertTrue(latch4.await(STD_TIMEOUT_MS.milliseconds))
 //        } finally {
 //            t3?.remove()
 //            t4?.remove()

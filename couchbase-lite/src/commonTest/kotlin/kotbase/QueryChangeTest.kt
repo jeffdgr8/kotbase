@@ -1,12 +1,13 @@
 package kotbase
 
+import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 class QueryChangeTest : BaseQueryTest() {
@@ -41,9 +42,7 @@ class QueryChangeTest : BaseQueryTest() {
 
         synchronized(lock) { token[0] = query.addChangeListener(listener) }
 
-        withTimeout(STD_TIMEOUT_SEC.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
 
         synchronized(lock) { assertNull(token[0]) }
     }

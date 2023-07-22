@@ -1,9 +1,10 @@
 package kotbase
 
+import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 class ReplicatorOfflineTest : BaseReplicatorTest() {
@@ -27,12 +28,8 @@ class ReplicatorOfflineTest : BaseReplicatorTest() {
             }
         }
         repl.start(false)
-        withTimeout(LONG_TIMEOUT_SEC.seconds) {
-            offline.lock()
-        }
-        withTimeout(LONG_TIMEOUT_SEC.seconds) {
-            stopped.lock()
-        }
+        assertTrue(offline.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
+        assertTrue(stopped.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
         repl.removeChangeListener(token)
     }
 
@@ -47,9 +44,7 @@ class ReplicatorOfflineTest : BaseReplicatorTest() {
             }
         }
         repl.start(false)
-        withTimeout(LONG_TIMEOUT_SEC.seconds) {
-            stopped.lock()
-        }
+        assertTrue(stopped.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
         repl.removeChangeListener(token)
     }
 }

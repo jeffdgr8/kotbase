@@ -1,5 +1,6 @@
 package kotbase
 
+import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,11 +15,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlin.test.fail
 import kotlin.time.Duration.Companion.seconds
 
@@ -37,9 +38,7 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
             if (mutex.isLocked) mutex.unlock()
         }
         change()
-        withTimeout(STD_TIMEOUT_SEC.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
     }
 
     private suspend fun checkContext(context: CoroutineContext) {
@@ -66,13 +65,9 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
             }
         }
         change()
-        withTimeout(STD_TIMEOUT_SEC.seconds) {
-            started.lock()
-        }
+        assertTrue(started.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         removeListener(token)
-        withTimeout(STD_TIMEOUT_SEC.seconds) {
-            canceled.lock()
-        }
+        assertTrue(canceled.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
     }
 
     protected fun testCoroutineScopeListenerRemoved(
@@ -88,9 +83,7 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
             if (mutex.isLocked) mutex.unlock()
         }
         listenedChange()
-        withTimeout(STD_TIMEOUT_SEC.seconds) {
-            mutex.lock()
-        }
+        assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         scope.cancel()
         canceled.value = true
         notListenedChange()

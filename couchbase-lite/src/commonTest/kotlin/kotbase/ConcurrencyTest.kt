@@ -2,6 +2,7 @@ package kotbase
 
 import kotbase.internal.utils.Report
 import kotbase.internal.utils.paddedString
+import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
@@ -160,12 +161,8 @@ class ConcurrencyTest : BaseDbTest() {
             assertTrue(updateDocs(docIDs, kNRounds, tag))
         }
 
-        withTimeout(TIMEOUT.seconds) {
-            mutex1.lock()
-        }
-        withTimeout(TIMEOUT.seconds) {
-            mutex2.lock()
-        }
+        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
+        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
         checkForFailure()
 
         verifyByTagName(tag, kNDocs)
@@ -207,12 +204,8 @@ class ConcurrencyTest : BaseDbTest() {
             }
         }
 
-        withTimeout(TIMEOUT.seconds) {
-            mutex1.lock()
-        }
-        withTimeout(TIMEOUT.seconds) {
-            mutex2.lock()
-        }
+        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
+        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
         checkForFailure()
 
         assertEquals(0, baseTestDb.count)
@@ -253,12 +246,8 @@ class ConcurrencyTest : BaseDbTest() {
             }
         }
 
-        withTimeout(TIMEOUT.seconds) {
-            mutex1.lock()
-        }
-        withTimeout(TIMEOUT.seconds) {
-            mutex2.lock()
-        }
+        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
+        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
         checkForFailure()
 
         assertEquals(0, baseTestDb.count)
@@ -288,12 +277,8 @@ class ConcurrencyTest : BaseDbTest() {
             }
         }
 
-        withTimeout(TIMEOUT.seconds) {
-            mutex1.lock()
-        }
-        withTimeout(TIMEOUT.seconds) {
-            mutex2.lock()
-        }
+        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
+        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
         checkForFailure()
     }
 
@@ -323,12 +308,8 @@ class ConcurrencyTest : BaseDbTest() {
             }
         }
 
-        withTimeout(TIMEOUT.seconds) {
-            mutex1.lock()
-        }
-        withTimeout(TIMEOUT.seconds) {
-            mutex2.lock()
-        }
+        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
+        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
         checkForFailure()
     }
 
@@ -356,12 +337,8 @@ class ConcurrencyTest : BaseDbTest() {
             }
         }
 
-        withTimeout(TIMEOUT.seconds) {
-            mutex1.lock()
-        }
-        withTimeout(TIMEOUT.seconds) {
-            mutex2.lock()
-        }
+        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
+        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
         checkForFailure()
     }
 
@@ -395,12 +372,8 @@ class ConcurrencyTest : BaseDbTest() {
             }
         }
 
-        withTimeout(TIMEOUT.seconds) {
-            mutex1.lock()
-        }
-        withTimeout(TIMEOUT.seconds) {
-            mutex2.lock()
-        }
+        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
+        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
         checkForFailure()
     }
 
@@ -420,12 +393,8 @@ class ConcurrencyTest : BaseDbTest() {
             }
         }
 
-        withTimeout(TIMEOUT.seconds) {
-            mutex1.lock()
-        }
-        withTimeout(TIMEOUT.seconds) {
-            mutex2.lock()
-        }
+        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
+        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
         checkForFailure()
     }
 
@@ -444,12 +413,8 @@ class ConcurrencyTest : BaseDbTest() {
                 }
             }
 
-            withTimeout(TIMEOUT.seconds) {
-                mutex1.lock()
-            }
-            withTimeout(TIMEOUT.seconds) {
-                mutex2.lock()
-            }
+            assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
+            assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
             checkForFailure()
         } finally {
             baseTestDb.removeChangeListener(token)
@@ -605,13 +570,7 @@ class ConcurrencyTest : BaseDbTest() {
 
             // wait
             for (i in 0 until nCoroutines) {
-                try {
-                    withTimeout(waitSec.seconds) {
-                        mutexes[i]!!.lock()
-                    }
-                } catch (e: CancellationException) {
-                    fail()
-                }
+                assertTrue(mutexes[i]!!.lockWithTimeout(waitSec.seconds))
             }
 
             checkForFailure()

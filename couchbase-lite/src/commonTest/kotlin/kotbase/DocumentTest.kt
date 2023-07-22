@@ -10,9 +10,9 @@ import kotbase.ext.toStringMillis
 import kotbase.internal.utils.StringUtils
 import kotbase.internal.utils.TestUtils.assertThrowsCBL
 import kotbase.test.assertIntEquals
+import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -1743,9 +1743,7 @@ class DocumentTest : BaseDbTest() {
         }
         try {
             baseTestDb.setDocumentExpiration("doc1", Clock.System.now() + 100.milliseconds)
-            withTimeout(STD_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         } finally {
             // TODO: 3.1 API
             //token.remove()

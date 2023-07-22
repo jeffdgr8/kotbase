@@ -1,14 +1,10 @@
 package kotbase
 
+import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
-import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -30,9 +26,7 @@ class LiveQueryTest : BaseDbTest() {
             mutex.unlock()
         }
         try {
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutex.lock()
-            }
+            assertTrue(mutex.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
         } finally {
             query.removeChangeListener(token)
         }
@@ -64,34 +58,22 @@ class LiveQueryTest : BaseDbTest() {
 
             lateinit var token2: ListenerToken
             // listener 1 gets notified after observer subscribed
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutex1[0].lock()
-            }
+            assertTrue(mutex1[0].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
             try {
                 token2 = query.addChangeListener {
                     mutex2[atmCount[1].getAndIncrement()].unlock()
                 }
                 // listener 2 should get notified
-                withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                    mutex2[0].lock()
-                }
+                assertTrue(mutex2[0].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
 
                 // creation of the second listener should not trigger first listener callback
-                assertFailsWith<TimeoutCancellationException> {
-                    withTimeout(APPROXIMATE_CORE_DELAY_MS.milliseconds) {
-                        mutex1[1].lock()
-                    }
-                }
+                assertFalse(mutex1[1].lockWithTimeout(APPROXIMATE_CORE_DELAY_MS.milliseconds))
 
                 createDocNumbered(11)
 
                 // introducing change in database should trigger both listener callbacks
-                withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                    mutex1[1].lock()
-                }
-                withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                    mutex2[1].lock()
-                }
+                assertTrue(mutex1[1].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
+                assertTrue(mutex2[1].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
             } finally {
                 query.removeChangeListener(token2)
             }
@@ -116,14 +98,10 @@ class LiveQueryTest : BaseDbTest() {
         }
         try {
             createDocNumbered(10)
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutexes[0].lock()
-            }
+            assertTrue(mutexes[0].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
 
             createDocNumbered(11)
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutexes[1].lock()
-            }
+            assertTrue(mutexes[1].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
         } finally {
             query.removeChangeListener(token)
         }
@@ -171,12 +149,8 @@ class LiveQueryTest : BaseDbTest() {
 
             // both listeners get notified after doc-11 is created in database
             // rs iterates through the correct value
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutex1.lock()
-            }
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutex2.lock()
-            }
+            assertTrue(mutex1.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
+            assertTrue(mutex2.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
         } finally {
             query.removeChangeListener(token)
             query.removeChangeListener(token1)
@@ -217,26 +191,18 @@ class LiveQueryTest : BaseDbTest() {
             }
         }
         try {
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutex[0].lock()
-            }
+            assertTrue(mutex[0].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
 
             params = Parameters()
             params.setInt("VALUE", 1)
             query.parameters = params
 
             // VALUE changes to 1, query now gets a new rs for doc 1 and 2
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutex[1].lock()
-            }
+            assertTrue(mutex[1].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
 
             // This doc does not meet the condition of the query, thus query should not get notified
             createDocNumbered(0)
-            assertFailsWith<TimeoutCancellationException> {
-                withTimeout(APPROXIMATE_CORE_DELAY_MS.milliseconds) {
-                    mutex[2].lock()
-                }
-            }
+            assertFalse(mutex[2].lockWithTimeout(APPROXIMATE_CORE_DELAY_MS.milliseconds))
         } finally {
             query.removeChangeListener(token)
         }
@@ -262,9 +228,7 @@ class LiveQueryTest : BaseDbTest() {
 
         try {
             // this update should happen nearly instantaneously
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutexHolder.value.lock()
-            }
+            assertTrue(mutexHolder.value.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
             assertEquals(1, resultsHolder.value.size)
 
             // adding this document will trigger the query but since it does not meet the query
@@ -272,18 +236,12 @@ class LiveQueryTest : BaseDbTest() {
             // Wait for 2 full update intervals and a little bit more.
             mutexHolder.value = Mutex(true)
             createDocNumbered(0)
-            assertFailsWith<TimeoutCancellationException> {
-                withTimeout(APPROXIMATE_CORE_DELAY_MS.milliseconds) {
-                    mutexHolder.value.lock()
-                }
-            }
+            assertFalse(mutexHolder.value.lockWithTimeout(APPROXIMATE_CORE_DELAY_MS.milliseconds))
 
             // adding this document should cause a call to the listener in not much more than an update interval
             mutexHolder.value = Mutex(true)
             createDocNumbered(11)
-            withTimeout(LONG_TIMEOUT_SEC.seconds) {
-                mutexHolder.value.lock()
-            }
+            assertTrue(mutexHolder.value.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
             assertEquals(2, resultsHolder.value.size)
         } finally {
             query.removeChangeListener(token)

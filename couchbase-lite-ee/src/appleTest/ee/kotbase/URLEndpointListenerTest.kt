@@ -5,13 +5,13 @@ import kotbase.ext.toByteArray
 import kotbase.ext.toSecCertificate
 import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.TestUtils.assertThrowsCBL
+import kotbase.test.lockWithTimeout
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.withTimeout
 import okio.buffer
 import okio.use
 import platform.CoreFoundation.CFStringRefVar
@@ -95,10 +95,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         repl1.start()
         repl2.start()
-        withTimeout(5.seconds) {
-            mutex1.lock()
-            mutex2.lock()
-        }
+        assertTrue(mutex1.lockWithTimeout(5.seconds))
+        assertTrue(mutex2.lockWithTimeout(5.seconds))
 
         // pushAndPull might cause race, so only checking push
         if (type == ReplicatorType.PUSH) {
@@ -169,10 +167,9 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val token2 = repl2.addChangeListener(changeListener)
         repl1.start()
         repl2.start()
-        withTimeout(10.seconds) { // TODO: FIXME
-            idleMutex1.lock()
-            idleMutex2.lock()
-        }
+        // TODO: FIXME
+        assertTrue(idleMutex1.lockWithTimeout(10.seconds))
+        assertTrue(idleMutex2.lockWithTimeout(10.seconds))
 
         if (isDeleteDBs) {
             db2.delete()
@@ -182,10 +179,9 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             otherDB.close()
         }
 
-        withTimeout(10.seconds) { // TODO: FIXME
-            stopMutex1.lock()
-            stopMutex2.lock()
-        }
+        // TODO: FIXME
+        assertTrue(stopMutex1.lockWithTimeout(10.seconds))
+        assertTrue(stopMutex2.lockWithTimeout(10.seconds))
         repl1.removeChangeListener(token1)
         repl2.removeChangeListener(token2)
         stopListener()
@@ -227,9 +223,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             }
         }
         repl1.start()
-        withTimeout(5.seconds) {
-            idleMutex.lock()
-        }
+        assertTrue(idleMutex.lockWithTimeout(5.seconds))
 
         if (isDeleteDB) {
             otherDB.delete()
@@ -237,9 +231,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             otherDB.close()
         }
 
-        withTimeout(5.seconds) {
-            stopMutex.lock()
-        }
+        assertTrue(stopMutex.lockWithTimeout(5.seconds))
 
         // cleanup
         repl1.removeChangeListener(token1)
@@ -644,10 +636,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         }
 
         repl.start()
-        withTimeout(5.seconds) {
-            pullFilterBusy.lock()
-            replicatorStop.lock()
-        }
+        assertTrue(pullFilterBusy.lockWithTimeout(5.seconds))
+        assertTrue(replicatorStop.lockWithTimeout(5.seconds))
         repl.removeChangeListener(token)
 
         assertEquals(1, maxConnectionCount)
@@ -733,10 +723,9 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         repl1.start()
         repl2.start()
-        withTimeout(10.seconds) { // TODO: FIXME
-            mutex1.lock()
-            mutex2.lock()
-        }
+        // TODO: FIXME
+        assertTrue(mutex1.lockWithTimeout(10.seconds))
+        assertTrue(mutex2.lockWithTimeout(10.seconds))
 
         assertEquals(3, otherDB.count)
         assertEquals(3, baseTestDb.count)
@@ -880,9 +869,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         repl.start()
 
-        withTimeout(5.seconds) {
-            x1.lock()
-        }
+        assertTrue(x1.lockWithTimeout(5.seconds))
         var receivedServerCertData = repl.serverCertificates?.get(0)
         assertNotNull(receivedServerCertData)
         var receivedServerCert = receivedServerCertData.toSecCertificate()
@@ -890,9 +877,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         repl.stop()
 
-        withTimeout(5.seconds) {
-            x2.lock()
-        }
+        assertTrue(x2.lockWithTimeout(5.seconds))
         receivedServerCertData = repl.serverCertificates?.get(0)
         assertNotNull(receivedServerCertData)
         receivedServerCert = receivedServerCertData.toSecCertificate()
@@ -923,9 +908,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         repl.start()
 
-        withTimeout(5.seconds) {
-            x1.lock()
-        }
+        assertTrue(x1.lockWithTimeout(5.seconds))
         var receivedServerCertData = repl.serverCertificates?.get(0)
         assertNotNull(receivedServerCertData)
         var receivedServerCert = receivedServerCertData.toSecCertificate()
@@ -952,9 +935,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         repl.start()
 
-        withTimeout(5.seconds) {
-            x1.lock()
-        }
+        assertTrue(x1.lockWithTimeout(5.seconds))
         receivedServerCertData = repl.serverCertificates?.get(0)
         assertNotNull(receivedServerCertData)
         receivedServerCert = receivedServerCertData.toSecCertificate()
@@ -962,9 +943,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         repl.stop()
 
-        withTimeout(5.seconds) {
-            x2.lock()
-        }
+        assertTrue(x2.lockWithTimeout(5.seconds))
         receivedServerCertData = repl.serverCertificates?.get(0)
         assertNotNull(receivedServerCertData)
         receivedServerCert = receivedServerCertData.toSecCertificate()
@@ -992,16 +971,12 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         repl.start()
 
-        withTimeout(5.seconds) {
-            x1.lock()
-        }
+        assertTrue(x1.lockWithTimeout(5.seconds))
         assertNull(repl.serverCertificates)
 
         repl.stop()
 
-        withTimeout(5.seconds) {
-            x2.lock()
-        }
+        assertTrue(x2.lockWithTimeout(5.seconds))
         assertNull(repl.serverCertificates)
 
         stopListener()
@@ -1133,17 +1108,13 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         repl.start()
 
         // Wait until idle then stop the listener:
-        withTimeout(5.seconds) {
-            x1.lock()
-        }
+        assertTrue(x1.lockWithTimeout(5.seconds))
 
         // Stop listen:
         stopListener()
 
         // Wait for the replicator to be stopped:
-        withTimeout(5.seconds) {
-            x2.lock()
-        }
+        assertTrue(x2.lockWithTimeout(5.seconds))
 
         // Check error:
         assertEquals(CBLErrorWebSocketGoingAway.toInt(), repl.status.error!!.code)
