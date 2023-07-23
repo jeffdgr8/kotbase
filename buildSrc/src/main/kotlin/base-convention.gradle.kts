@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.konan.target.Family
 import rules.applyCouchbaseLiteRule
 
@@ -11,8 +12,6 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(8)
-
     sourceSets.configureEach {
         languageSettings {
             optIn("kotlin.ExperimentalStdlibApi")
@@ -52,6 +51,12 @@ kotlin {
     }
 }
 
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 android {
     compileSdk = 33
     defaultConfig {
@@ -61,8 +66,6 @@ android {
     // required by coroutines 1.7.0 to avoid error:
     // 6 files found with path 'META-INF/LICENSE.md'.
     packagingOptions.resources.pickFirsts += "META-INF/LICENSE*"
-    // required until AGP 8.1.0-alpha09+
-    // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

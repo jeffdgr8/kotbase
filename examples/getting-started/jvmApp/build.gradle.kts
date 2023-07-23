@@ -8,10 +8,6 @@ dependencies {
     implementation(compose.desktop.currentOs)
 }
 
-kotlin {
-    jvmToolchain(8)
-}
-
 compose.desktop {
     application {
         mainClass = "MainKt"

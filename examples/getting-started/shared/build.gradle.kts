@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -8,8 +9,6 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(8)
-
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     targetHierarchy.default()
 
@@ -48,6 +47,12 @@ kotlin {
         configureEach {
             languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
         }
+    }
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
