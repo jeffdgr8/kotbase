@@ -40,8 +40,6 @@ kotlin {
         commonMain {
             dependencies {
                 api(libs.kotbase)
-                implementation(libs.kotlinx.coroutines)
-                implementation(libs.kotlinx.datetime)
             }
         }
         configureEach {
@@ -57,7 +55,7 @@ tasks.withType<KotlinCompile> {
 }
 
 android {
-    namespace = "dev.kotbase.gettingstarted"
+    namespace = "dev.kotbase.gettingstarted.shared"
     compileSdk = 33
     defaultConfig {
         minSdk = 24

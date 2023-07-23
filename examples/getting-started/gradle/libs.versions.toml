@@ -10,8 +10,6 @@ couchbase-lite-c = "3.0.12"
 kmp-native-coroutines = "1.0.0-ALPHA-7"
 kotbase = "3.0.12-1.0.0-SNAPSHOT"
 kotlin = "1.8.20"
-kotlinx-coroutines = "1.7.1"
-kotlinx-datetime = "0.4.0"
 ksp = "1.8.20-1.0.11"
 
 [plugins]
@@ -31,5 +29,3 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx
 androidx-lifecycle-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-ktx" }
 androidx-material = { module = "com.google.android.material:material", version.ref = "androidx-material" }
 kotbase = { module = "dev.kotbase:couchbase-lite-ktx", version.ref = "kotbase" }
-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
