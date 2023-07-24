@@ -1,6 +1,7 @@
 plugins {
     id(libs.plugins.dokka.get().pluginId)
     id(libs.plugins.kotlinx.kover.get().pluginId)
+    alias(libs.plugins.kotlinx.binary.compatibility.validator)
 }
 
 allprojects {
@@ -17,6 +18,10 @@ tasks.register<Delete>("cleanApiDocs") {
 }
 tasks.dokkaHtmlMultiModule {
     outputDirectory.set(apiDocsDir)
+}
+
+apiValidation {
+    ignoredProjects += listOf("testing-support", "testing-support-ee")
 }
 
 tasks.register<Delete>("clean") {

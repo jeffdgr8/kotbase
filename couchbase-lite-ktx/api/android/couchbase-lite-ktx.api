@@ -1,0 +1,234 @@
+public final class dev/kotbase/ktx/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class kotbase/ktx/DatabaseExtKt {
+	public static final fun documentFlow (Lkotbase/Database;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class kotbase/ktx/DocumentBuilder {
+	public fun <init> ()V
+	public final fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
+	public final fun getDictionary (Ljava/lang/String;)Lkotbase/MutableDictionary;
+	public final fun remove (Ljava/lang/String;)Lkotbase/MutableDocument;
+	public final fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDocument;
+	public final fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDocument;
+	public final fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDocument;
+	public final fun setData (Ljava/util/Map;)Lkotbase/MutableDocument;
+	public final fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDocument;
+	public final fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDocument;
+	public final fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDocument;
+	public final fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDocument;
+	public final fun setInt (Ljava/lang/String;I)Lkotbase/MutableDocument;
+	public final fun setJSON (Ljava/lang/String;)Lkotbase/MutableDocument;
+	public final fun setLong (Ljava/lang/String;J)Lkotbase/MutableDocument;
+	public final fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDocument;
+	public final fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDocument;
+	public final fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDocument;
+	public final fun to (Ljava/lang/String;Ljava/lang/Object;)V
+}
+
+public final class kotbase/ktx/DocumentExtensionsKt {
+	public static final fun MutableDocument (Lkotlin/jvm/functions/Function1;)Lkotbase/MutableDocument;
+}
+
+public final class kotbase/ktx/ExpressionExtKt {
+	public static final fun between (Lkotbase/Expression;Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public static final fun contains (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun notContains (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+}
+
+public final class kotbase/ktx/IndexBuilderExtKt {
+	public static final fun fullTextIndex ([Ljava/lang/String;)Lkotbase/FullTextIndex;
+	public static final fun valueIndex ([Ljava/lang/String;)Lkotbase/ValueIndex;
+}
+
+public final class kotbase/ktx/OrderByBuilder {
+	public fun <init> ()V
+	public final fun ascending (Ljava/lang/String;)V
+	public final fun ascending (Lkotbase/Expression;)V
+	public final fun descending (Ljava/lang/String;)V
+	public final fun descending (Lkotbase/Expression;)V
+	public final fun orderings ()[Lkotbase/Ordering;
+}
+
+public final class kotbase/ktx/QueryBuilderExtKt {
+	public static final fun select (Lkotbase/Expression;)Lkotbase/Select;
+	public static final fun select (Lkotbase/Expression;[Ljava/lang/String;)Lkotbase/Select;
+	public static final fun select (Lkotbase/Expression;[Lkotbase/SelectResult;)Lkotbase/Select;
+	public static final fun selectCount ()Lkotbase/Select;
+}
+
+public final class kotbase/ktx/QueryBuilderExtensionsKt {
+	public static final fun all ()Lkotbase/SelectResult$From;
+	public static final fun and (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
+	public static final fun equalTo (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun equalTo (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun equalTo (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun equalTo (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun equalTo (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun equalTo (Lkotbase/Expression;Ljava/util/List;)Lkotbase/Expression;
+	public static final fun equalTo (Lkotbase/Expression;Ljava/util/Map;)Lkotbase/Expression;
+	public static final fun equalTo (Lkotbase/Expression;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public static final fun equalTo (Lkotbase/Expression;Z)Lkotbase/Expression;
+	public static final fun from (Lkotbase/Select;Lkotbase/Database;)Lkotbase/From;
+	public static final fun greaterThan (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun greaterThan (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun greaterThan (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun greaterThan (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun greaterThan (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun greaterThan (Lkotbase/Expression;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public static final fun greaterThan (Lkotbase/Expression;Z)Lkotbase/Expression;
+	public static final fun greaterThanOrEqualTo (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun greaterThanOrEqualTo (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun greaterThanOrEqualTo (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun greaterThanOrEqualTo (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun greaterThanOrEqualTo (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun greaterThanOrEqualTo (Lkotbase/Expression;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public static final fun greaterThanOrEqualTo (Lkotbase/Expression;Z)Lkotbase/Expression;
+	public static final fun lessThan (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun lessThan (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun lessThan (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun lessThan (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun lessThan (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun lessThan (Lkotbase/Expression;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public static final fun lessThan (Lkotbase/Expression;Z)Lkotbase/Expression;
+	public static final fun lessThanOrEqualTo (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun lessThanOrEqualTo (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun lessThanOrEqualTo (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun lessThanOrEqualTo (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun lessThanOrEqualTo (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun lessThanOrEqualTo (Lkotbase/Expression;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public static final fun lessThanOrEqualTo (Lkotbase/Expression;Z)Lkotbase/Expression;
+	public static final fun like (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun like (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun like (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun like (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun like (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun like (Lkotbase/Expression;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public static final fun like (Lkotbase/Expression;Z)Lkotbase/Expression;
+	public static final fun limit (Lkotbase/From;ILjava/lang/Integer;)Lkotbase/Limit;
+	public static final fun limit (Lkotbase/GroupBy;ILjava/lang/Integer;)Lkotbase/Limit;
+	public static final fun limit (Lkotbase/Having;ILjava/lang/Integer;)Lkotbase/Limit;
+	public static final fun limit (Lkotbase/Joins;ILjava/lang/Integer;)Lkotbase/Limit;
+	public static final fun limit (Lkotbase/OrderBy;ILjava/lang/Integer;)Lkotbase/Limit;
+	public static final fun limit (Lkotbase/Where;ILjava/lang/Integer;)Lkotbase/Limit;
+	public static synthetic fun limit$default (Lkotbase/From;ILjava/lang/Integer;ILjava/lang/Object;)Lkotbase/Limit;
+	public static synthetic fun limit$default (Lkotbase/GroupBy;ILjava/lang/Integer;ILjava/lang/Object;)Lkotbase/Limit;
+	public static synthetic fun limit$default (Lkotbase/Having;ILjava/lang/Integer;ILjava/lang/Object;)Lkotbase/Limit;
+	public static synthetic fun limit$default (Lkotbase/Joins;ILjava/lang/Integer;ILjava/lang/Object;)Lkotbase/Limit;
+	public static synthetic fun limit$default (Lkotbase/OrderBy;ILjava/lang/Integer;ILjava/lang/Object;)Lkotbase/Limit;
+	public static synthetic fun limit$default (Lkotbase/Where;ILjava/lang/Integer;ILjava/lang/Object;)Lkotbase/Limit;
+	public static final fun not (Lkotbase/Expression;)Lkotbase/Expression;
+	public static final fun notEqualTo (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun notEqualTo (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun notEqualTo (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun notEqualTo (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun notEqualTo (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun notEqualTo (Lkotbase/Expression;Ljava/util/List;)Lkotbase/Expression;
+	public static final fun notEqualTo (Lkotbase/Expression;Ljava/util/Map;)Lkotbase/Expression;
+	public static final fun notEqualTo (Lkotbase/Expression;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public static final fun notEqualTo (Lkotbase/Expression;Z)Lkotbase/Expression;
+	public static final fun or (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
+	public static final fun orderBy (Lkotbase/From;Lkotlin/jvm/functions/Function1;)Lkotbase/OrderBy;
+	public static final fun orderBy (Lkotbase/GroupBy;Lkotlin/jvm/functions/Function1;)Lkotbase/OrderBy;
+	public static final fun orderBy (Lkotbase/Having;Lkotlin/jvm/functions/Function1;)Lkotbase/OrderBy;
+	public static final fun orderBy (Lkotbase/Joins;Lkotlin/jvm/functions/Function1;)Lkotbase/OrderBy;
+	public static final fun orderBy (Lkotbase/Where;Lkotlin/jvm/functions/Function1;)Lkotbase/OrderBy;
+	public static final fun property (Ljava/lang/String;)Lkotbase/PropertyExpression;
+	public static final fun select ([Ljava/lang/String;)Lkotbase/Select;
+	public static final fun select ([Lkotbase/SelectResult;)Lkotbase/Select;
+	public static final fun where (Lkotbase/From;Lkotlin/jvm/functions/Function1;)Lkotbase/Where;
+	public static final fun where (Lkotbase/Joins;Lkotlin/jvm/functions/Function1;)Lkotbase/Where;
+}
+
+public final class kotbase/ktx/QueryExtensionsKt {
+	public static final fun asFlow (Lkotbase/Query;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun asObjectsFlow (Lkotbase/Query;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun mapToObjects (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class kotbase/ktx/ReplicatorExtensionsJvm {
+	public static final fun bindToLifecycle (Lkotbase/Replicator;Landroidx/lifecycle/Lifecycle;)V
+}
+
+public final class kotbase/ktx/ReplicatorExtensionsKt {
+	public static final fun changesFlow (Lkotbase/Replicator;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun documentReplicationFlow (Lkotbase/Replicator;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class kotbase/ktx/ResultSetExtKt {
+	public static final fun countResult (Lkotbase/ResultSet;)J
+}
+
+public final class kotbase/ktx/ResultSetExtensionsKt {
+	public static final fun toObjects (Lkotbase/ResultSet;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+}
+
+public final class kotbase/ktx/WhereBuilder {
+	public fun <init> ()V
+	public final fun equalTo (Ljava/lang/String;D)Lkotbase/Expression;
+	public final fun equalTo (Ljava/lang/String;F)Lkotbase/Expression;
+	public final fun equalTo (Ljava/lang/String;I)Lkotbase/Expression;
+	public final fun equalTo (Ljava/lang/String;J)Lkotbase/Expression;
+	public final fun equalTo (Ljava/lang/String;Ljava/lang/String;)Lkotbase/Expression;
+	public final fun equalTo (Ljava/lang/String;Ljava/util/List;)Lkotbase/Expression;
+	public final fun equalTo (Ljava/lang/String;Ljava/util/Map;)Lkotbase/Expression;
+	public final fun equalTo (Ljava/lang/String;Lkotbase/Expression;)Lkotbase/Expression;
+	public final fun equalTo (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public final fun equalTo (Ljava/lang/String;Z)Lkotbase/Expression;
+	public final fun greaterThan (Ljava/lang/String;D)Lkotbase/Expression;
+	public final fun greaterThan (Ljava/lang/String;F)Lkotbase/Expression;
+	public final fun greaterThan (Ljava/lang/String;I)Lkotbase/Expression;
+	public final fun greaterThan (Ljava/lang/String;J)Lkotbase/Expression;
+	public final fun greaterThan (Ljava/lang/String;Ljava/lang/String;)Lkotbase/Expression;
+	public final fun greaterThan (Ljava/lang/String;Lkotbase/Expression;)Lkotbase/Expression;
+	public final fun greaterThan (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public final fun greaterThan (Ljava/lang/String;Z)Lkotbase/Expression;
+	public final fun greaterThanOrEqualTo (Ljava/lang/String;D)Lkotbase/Expression;
+	public final fun greaterThanOrEqualTo (Ljava/lang/String;F)Lkotbase/Expression;
+	public final fun greaterThanOrEqualTo (Ljava/lang/String;I)Lkotbase/Expression;
+	public final fun greaterThanOrEqualTo (Ljava/lang/String;J)Lkotbase/Expression;
+	public final fun greaterThanOrEqualTo (Ljava/lang/String;Ljava/lang/String;)Lkotbase/Expression;
+	public final fun greaterThanOrEqualTo (Ljava/lang/String;Lkotbase/Expression;)Lkotbase/Expression;
+	public final fun greaterThanOrEqualTo (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public final fun greaterThanOrEqualTo (Ljava/lang/String;Z)Lkotbase/Expression;
+	public final fun lessThan (Ljava/lang/String;D)Lkotbase/Expression;
+	public final fun lessThan (Ljava/lang/String;F)Lkotbase/Expression;
+	public final fun lessThan (Ljava/lang/String;I)Lkotbase/Expression;
+	public final fun lessThan (Ljava/lang/String;J)Lkotbase/Expression;
+	public final fun lessThan (Ljava/lang/String;Ljava/lang/String;)Lkotbase/Expression;
+	public final fun lessThan (Ljava/lang/String;Lkotbase/Expression;)Lkotbase/Expression;
+	public final fun lessThan (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public final fun lessThan (Ljava/lang/String;Z)Lkotbase/Expression;
+	public final fun lessThanOrEqualTo (Ljava/lang/String;D)Lkotbase/Expression;
+	public final fun lessThanOrEqualTo (Ljava/lang/String;F)Lkotbase/Expression;
+	public final fun lessThanOrEqualTo (Ljava/lang/String;I)Lkotbase/Expression;
+	public final fun lessThanOrEqualTo (Ljava/lang/String;J)Lkotbase/Expression;
+	public final fun lessThanOrEqualTo (Ljava/lang/String;Ljava/lang/String;)Lkotbase/Expression;
+	public final fun lessThanOrEqualTo (Ljava/lang/String;Lkotbase/Expression;)Lkotbase/Expression;
+	public final fun lessThanOrEqualTo (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public final fun lessThanOrEqualTo (Ljava/lang/String;Z)Lkotbase/Expression;
+	public final fun like (Ljava/lang/String;D)Lkotbase/Expression;
+	public final fun like (Ljava/lang/String;F)Lkotbase/Expression;
+	public final fun like (Ljava/lang/String;I)Lkotbase/Expression;
+	public final fun like (Ljava/lang/String;J)Lkotbase/Expression;
+	public final fun like (Ljava/lang/String;Ljava/lang/String;)Lkotbase/Expression;
+	public final fun like (Ljava/lang/String;Lkotbase/Expression;)Lkotbase/Expression;
+	public final fun like (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public final fun like (Ljava/lang/String;Z)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;D)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;F)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;I)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;J)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;Ljava/lang/String;)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;Ljava/util/List;)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;Ljava/util/Map;)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;Lkotbase/Expression;)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public final fun notEqualTo (Ljava/lang/String;Z)Lkotbase/Expression;
+}
+
