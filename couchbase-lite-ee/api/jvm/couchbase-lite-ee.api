@@ -243,9 +243,9 @@ public final class kotbase/ConsoleLogger : kotbase/base/DelegatedClass, kotbase/
 
 public final class kotbase/CouchbaseLite {
 	public static final field INSTANCE Lkotbase/CouchbaseLite;
+	public final fun init ()V
 	public final fun init (Z)V
 	public final fun init (ZLjava/io/File;Ljava/io/File;)V
-	public static synthetic fun init$default (Lkotbase/CouchbaseLite;ZILjava/lang/Object;)V
 }
 
 public final class kotbase/CouchbaseLiteExceptionKt {

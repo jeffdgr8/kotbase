@@ -18,10 +18,27 @@ public actual object CouchbaseLite {
      * and will throw an `IllegalStateException` if it is not.
      * Use `init(boolean, File, File)` to specify alternative root and scratch directories.
      *
+     * @throws IllegalStateException on initialization failure
+     */
+    public fun init() {
+        if (initCalled.getAndSet(true)) return
+        resetInit()
+        CBLCouchbaseLite.init()
+    }
+
+    /**
+     * Initialize CouchbaseLite library. Unlike the Couchbase Lite Java SDK,
+     * this method is optional to call before using CouchbaseLite. The no-parameter
+     * `CouchbaseLite.init()` will be called automatically by default.
+     *
+     * This method expects the current directory to be writeable
+     * and will throw an `IllegalStateException` if it is not.
+     * Use `init(boolean, File, File)` to specify alternative root and scratch directories.
+     *
      * @param debug true if debugging
      * @throws IllegalStateException on initialization failure
      */
-    public fun init(debug: Boolean = false) {
+    public fun init(debug: Boolean) {
         if (initCalled.getAndSet(true)) return
         resetInit()
         CBLCouchbaseLite.init(debug)
