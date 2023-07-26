@@ -12,7 +12,7 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     targetHierarchy.default()
 
-    android()
+    androidTarget()
     jvm()
     iosArm64 {
         binaries.framework {
@@ -43,7 +43,10 @@ kotlin {
             }
         }
         configureEach {
-            languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
+            languageSettings {
+                optIn("kotlin.experimental.ExperimentalObjCName")
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            }
         }
     }
 }
