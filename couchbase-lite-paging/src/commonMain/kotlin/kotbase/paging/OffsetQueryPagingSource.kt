@@ -73,6 +73,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             .getAndListenForResults()
         val data = results.toObjects(mapper)
         val nextPosToLoad = offset + data.size
+        @Suppress("USELESS_CAST", "KotlinRedundantDiagnosticSuppress")
         when {
             invalid -> PagingSourceLoadResultInvalid<Int, RowType>()
             else -> PagingSourceLoadResultPage(
