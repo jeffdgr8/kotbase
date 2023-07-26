@@ -7,18 +7,7 @@
 package kotbase.paging
 
 import androidx.recyclerview.widget.DiffUtil
-import app.cash.paging.LoadType
-import app.cash.paging.Pager
-import app.cash.paging.PagingConfig
-import app.cash.paging.PagingSource
-import app.cash.paging.PagingSourceLoadParams
-import app.cash.paging.PagingSourceLoadParamsAppend
-import app.cash.paging.PagingSourceLoadParamsPrepend
-import app.cash.paging.PagingSourceLoadParamsRefresh
-import app.cash.paging.PagingSourceLoadResult
-import app.cash.paging.PagingSourceLoadResultInvalid
-import app.cash.paging.PagingSourceLoadResultPage
-import app.cash.paging.PagingState
+import app.cash.paging.*
 import kotbase.BaseDbTest
 import kotbase.Meta
 import kotbase.MutableDocument
@@ -28,14 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.test.Test
-import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertIs
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 @ExperimentalCoroutinesApi
 class OffsetQueryPagingSourceTest : BaseDbTest() {

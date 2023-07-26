@@ -6,23 +6,11 @@
 
 package kotbase.paging
 
-import app.cash.paging.PagingSource
-import app.cash.paging.PagingSourceLoadParams
-import app.cash.paging.PagingSourceLoadParamsAppend
-import app.cash.paging.PagingSourceLoadParamsPrepend
-import app.cash.paging.PagingSourceLoadParamsRefresh
-import app.cash.paging.PagingSourceLoadResult
-import app.cash.paging.PagingSourceLoadResultInvalid
-import app.cash.paging.PagingSourceLoadResultPage
-import app.cash.paging.PagingState
-import kotbase.Database
-import kotbase.From
-import kotbase.ListenerToken
-import kotbase.Query
-import kotbase.Select
+import app.cash.paging.*
+import kotbase.*
 import kotbase.ktx.countResult
-import kotbase.ktx.selectCount
 import kotbase.ktx.from
+import kotbase.ktx.selectCount
 import kotbase.ktx.toObjects
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -79,25 +67,12 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             is PagingSourceLoadParamsRefresh<*> -> if (key >= count) maxOf(0, count - params.loadSize) else key
             else -> error("Unknown PagingSourceLoadParams ${params::class}")
         }
-        val query = select.from(database)
+        val results = select.from(database)
             .queryProvider()
             .limit(limit, offset)
-            .also { currentQuery = it }
-        val results = suspendCancellableCoroutine { continuation ->
-            listenerToken = query.addChangeListener(context) {
-                if (continuation.isActive) {
-                    when (val results = it.results) {
-                        null -> continuation.resumeWithException(it.error ?: IllegalStateException("No query results or error"))
-                        else -> continuation.resume(results)
-                    }
-                } else {
-                    invalidate()
-                }
-            }
-        }
+            .getAndListenForResults()
         val data = results.toObjects(mapper)
         val nextPosToLoad = offset + data.size
-        @Suppress("USELESS_CAST", "KotlinRedundantDiagnosticSuppress")
         when {
             invalid -> PagingSourceLoadResultInvalid<Int, RowType>()
             else -> PagingSourceLoadResultPage(
@@ -108,6 +83,22 @@ internal class OffsetQueryPagingSource<RowType : Any>(
                 itemsAfter = maxOf(0, count - nextPosToLoad),
             )
         } as PagingSourceLoadResult<Int, RowType>
+    }
+
+    private suspend fun Query.getAndListenForResults(): ResultSet {
+        currentQuery = this
+        return suspendCancellableCoroutine { continuation ->
+            listenerToken = addChangeListener(context) {
+                if (continuation.isActive) {
+                    when (val results = it.results) {
+                        null -> continuation.resumeWithException(it.error ?: IllegalStateException("No query results or error"))
+                        else -> continuation.resume(results)
+                    }
+                } else {
+                    invalidate()
+                }
+            }
+        }
     }
 
     override fun getRefreshKey(state: PagingState<Int, RowType>): Int? =
