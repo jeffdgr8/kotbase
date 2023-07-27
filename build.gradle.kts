@@ -22,6 +22,7 @@ tasks.dokkaHtmlMultiModule {
 
 apiValidation {
     ignoredProjects += listOf("testing-support", "testing-support-ee")
+    ignoredClasses += "dev.kotbase.BuildConfig"
 }
 
 tasks.register<Delete>("clean") {
@@ -30,7 +31,6 @@ tasks.register<Delete>("clean") {
 }
 
 // Workaround to avoid potential configuration error. Should be fixed and can be removed in Kotlin 1.9.20.
-// > Task :lib:podspec FAILED
 // Execution failed for task ':lib:podspec'.
 // > Could not create task ':wrapper'.
 //    > java.util.ConcurrentModificationException (no error message)
