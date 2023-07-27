@@ -24,27 +24,6 @@ public fun Database.documentChangeFlow(documentId: String): Flow<DocumentChange>
     awaitClose { removeChangeListener(token) }
 }
 
-// TODO: 3.1 APIs
-///**
-// * A Flow of Collection changes. DatabaseChange should be replaced with CollectionChange once the implementation is ready
-// *
-// * @see Collection.addChangeListener
-// */
-//public fun Collection.collectionChangeFlow(): Flow<CollectionChange> = callbackFlow {
-//    val token = addChangeListener(CollectionChangeListener { trySend(it) })
-//    awaitClose { token.remove() }
-//}
-//
-///**
-// * A Flow of document changes
-// *
-// * @see Collection.addDocumentChangeListener
-// */
-//public fun Collection.documentChangeFlow(documentId: String): Flow<DocumentChange> = callbackFlow {
-//    val token = addDocumentChangeListener(documentId, executor) { trySend(it) }
-//    awaitClose { token.remove() }
-//}
-
 /**
  * A Flow of replicator state changes.
  *
