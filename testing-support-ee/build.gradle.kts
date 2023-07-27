@@ -4,7 +4,15 @@ plugins {
 }
 
 kotlin {
-    cocoapods { noPodspec() }
+    cocoapods {
+        ios.deploymentTarget = "9.0"
+        osx.deploymentTarget = "10.11"
+        pod("CouchbaseLite-Enterprise") {
+            version = libs.versions.couchbase.lite.objc.get()
+            linkOnly = true
+        }
+    }
+
     sourceSets {
         commonMain {
             dependencies {
