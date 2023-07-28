@@ -8,8 +8,7 @@ import kotlinx.datetime.toKotlinInstant
 import kotlin.reflect.safeCast
 
 public actual open class Dictionary
-internal constructor(actual: CBLDictionary) :
-    DelegatedClass<CBLDictionary>(actual), Iterable<String> {
+internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actual), Iterable<String> {
 
     protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
 

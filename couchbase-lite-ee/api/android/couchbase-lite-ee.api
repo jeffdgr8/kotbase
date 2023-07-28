@@ -647,7 +647,6 @@ public final class kotbase/Having : kotbase/base/DelegatedClass, kotbase/Query {
 }
 
 public abstract class kotbase/Index : kotbase/base/DelegatedClass {
-	public fun <init> (Lcom/couchbase/lite/Index;)V
 }
 
 public final class kotbase/IndexBuilder {

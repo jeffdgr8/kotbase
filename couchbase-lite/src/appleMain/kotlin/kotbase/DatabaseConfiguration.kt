@@ -4,8 +4,7 @@ import cocoapods.CouchbaseLite.CBLDatabaseConfiguration
 import kotbase.base.DelegatedClass
 
 public actual class DatabaseConfiguration
-internal constructor(actual: CBLDatabaseConfiguration) :
-    DelegatedClass<CBLDatabaseConfiguration>(actual) {
+internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatabaseConfiguration>(actual) {
 
     public actual constructor(config: DatabaseConfiguration?) : this(
         CBLDatabaseConfiguration(config?.actual)

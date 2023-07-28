@@ -6,8 +6,7 @@ import platform.Foundation.NSLocaleLanguageCode
 import platform.Foundation.currentLocale
 
 public actual class FullTextIndexConfiguration
-internal constructor(override var actual: CBLFullTextIndexConfiguration) :
-    IndexConfiguration(actual) {
+internal constructor(override var actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
 
     public actual constructor(vararg expressions: String) : this(
         CBLFullTextIndexConfiguration(

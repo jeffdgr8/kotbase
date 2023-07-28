@@ -5,8 +5,7 @@ import kotbase.base.DelegatedClass
 import kotlinx.cinterop.convert
 
 public actual class LogFileConfiguration
-internal constructor(actual: CBLLogFileConfiguration) :
-    DelegatedClass<CBLLogFileConfiguration>(actual) {
+internal constructor(actual: CBLLogFileConfiguration) : DelegatedClass<CBLLogFileConfiguration>(actual) {
 
     public actual constructor(directory: String) : this(CBLLogFileConfiguration(directory))
 

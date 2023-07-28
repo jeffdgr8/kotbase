@@ -8,8 +8,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 
 public actual class Result
-internal constructor(actual: CBLQueryResult) :
-    DelegatedClass<CBLQueryResult>(actual), Iterable<String> {
+internal constructor(actual: CBLQueryResult) : DelegatedClass<CBLQueryResult>(actual), Iterable<String> {
 
     public actual val count: Int
         get() = actual.count().toInt()

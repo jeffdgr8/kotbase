@@ -18,8 +18,7 @@ import platform.objc.objc_sync_exit
 import kotlin.coroutines.CoroutineContext
 
 public actual class Database
-internal constructor(actual: CBLDatabase) :
-    DelegatedClass<CBLDatabase>(actual) {
+internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) {
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String) : this(

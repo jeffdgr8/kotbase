@@ -5,8 +5,7 @@ import cocoapods.CouchbaseLite.CBLQuerySortOrder
 import kotbase.base.DelegatedClass
 
 public actual abstract class Ordering
-private constructor(actual: CBLQueryOrdering) :
-    DelegatedClass<CBLQueryOrdering>(actual) {
+private constructor(actual: CBLQueryOrdering) : DelegatedClass<CBLQueryOrdering>(actual) {
 
     public actual class SortOrder
     internal constructor(override val actual: CBLQuerySortOrder) : Ordering(actual) {

@@ -4,8 +4,7 @@ import cocoapods.CouchbaseLite.CBLLog
 import kotbase.base.DelegatedClass
 
 public actual class Log
-internal constructor(actual: CBLLog) :
-    DelegatedClass<CBLLog>(actual) {
+internal constructor(actual: CBLLog) : DelegatedClass<CBLLog>(actual) {
 
     public actual val console: ConsoleLogger by lazy {
         ConsoleLogger(actual.console)

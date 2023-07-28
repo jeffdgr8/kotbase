@@ -5,8 +5,7 @@ import kotbase.base.DelegatedClass
 import kotbase.ext.toCouchbaseLiteException
 
 public actual class ReplicatorStatus
-internal constructor(actual: CBLReplicatorStatus) :
-    DelegatedClass<CBLReplicatorStatus>(actual) {
+internal constructor(actual: CBLReplicatorStatus) : DelegatedClass<CBLReplicatorStatus>(actual) {
 
     public actual val activityLevel: ReplicatorActivityLevel by lazy {
         ReplicatorActivityLevel.from(actual.activity)

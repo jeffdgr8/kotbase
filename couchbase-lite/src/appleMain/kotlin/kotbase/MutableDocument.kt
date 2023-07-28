@@ -8,8 +8,7 @@ import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 
 public actual class MutableDocument
-internal constructor(override val actual: CBLMutableDocument) :
-    Document(actual) {
+internal constructor(override val actual: CBLMutableDocument) : Document(actual) {
 
     public actual constructor() : this(CBLMutableDocument())
 

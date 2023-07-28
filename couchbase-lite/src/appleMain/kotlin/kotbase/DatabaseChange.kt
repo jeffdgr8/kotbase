@@ -4,8 +4,7 @@ import cocoapods.CouchbaseLite.CBLDatabaseChange
 import kotbase.base.DelegatedClass
 
 public actual class DatabaseChange
-internal constructor(actual: CBLDatabaseChange) :
-    DelegatedClass<CBLDatabaseChange>(actual) {
+internal constructor(actual: CBLDatabaseChange) : DelegatedClass<CBLDatabaseChange>(actual) {
 
     public actual val database: Database by lazy {
         Database(actual.database!!)

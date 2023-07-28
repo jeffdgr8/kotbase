@@ -9,8 +9,7 @@ import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 
 public actual open class Expression
-internal constructor(actual: CBLQueryExpression) :
-    DelegatedClass<CBLQueryExpression>(actual) {
+internal constructor(actual: CBLQueryExpression) : DelegatedClass<CBLQueryExpression>(actual) {
 
     public actual companion object {
 

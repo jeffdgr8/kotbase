@@ -8,8 +8,7 @@ import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 
 public actual class Parameters
-internal constructor(actual: CBLQueryParameters) :
-    DelegatedClass<CBLQueryParameters>(actual) {
+internal constructor(actual: CBLQueryParameters) : DelegatedClass<CBLQueryParameters>(actual) {
 
     public actual constructor(parameters: Parameters?) : this(
         CBLQueryParameters(parameters?.actual)

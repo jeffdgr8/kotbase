@@ -3,8 +3,8 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLConsoleLogger
 import kotbase.base.DelegatedClass
 
-public actual class ConsoleLogger internal constructor(override val actual: CBLConsoleLogger) :
-    DelegatedClass<CBLConsoleLogger>(actual), Logger {
+public actual class ConsoleLogger
+internal constructor(override val actual: CBLConsoleLogger) : DelegatedClass<CBLConsoleLogger>(actual), Logger {
 
     public actual var domains: Set<LogDomain>
         get() = actual.domains.toLogDomain()

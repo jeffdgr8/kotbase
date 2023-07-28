@@ -6,8 +6,7 @@ import cocoapods.CouchbaseLite.CBLQueryJoin
 import kotbase.base.DelegatedClass
 
 public actual open class Join
-private constructor(actual: CBLQueryJoin) :
-    DelegatedClass<CBLQueryJoin>(actual) {
+private constructor(actual: CBLQueryJoin) : DelegatedClass<CBLQueryJoin>(actual) {
 
     public actual class On
     internal constructor(

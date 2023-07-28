@@ -4,8 +4,7 @@ import cocoapods.CouchbaseLite.CBLQuerySelectResult
 import kotbase.base.DelegatedClass
 
 public actual open class SelectResult
-private constructor(actual: CBLQuerySelectResult) :
-    DelegatedClass<CBLQuerySelectResult>(actual) {
+private constructor(actual: CBLQuerySelectResult) : DelegatedClass<CBLQuerySelectResult>(actual) {
 
     public actual class From
     internal constructor(private val all: (String?) -> CBLQuerySelectResult) :

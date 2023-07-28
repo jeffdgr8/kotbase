@@ -4,8 +4,7 @@ import cocoapods.CouchbaseLite.CBLFileLogger
 import kotbase.base.DelegatedClass
 
 public actual class FileLogger
-internal constructor(override val actual: CBLFileLogger) :
-    DelegatedClass<CBLFileLogger>(actual), Logger {
+internal constructor(override val actual: CBLFileLogger) : DelegatedClass<CBLFileLogger>(actual), Logger {
 
     public actual var config: LogFileConfiguration? = null
         get() = field ?: actual.config?.asReadOnlyLogFileConfiguration()

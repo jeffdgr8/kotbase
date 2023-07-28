@@ -4,8 +4,7 @@ import cocoapods.CouchbaseLite.CBLValueIndexItem
 import kotbase.base.DelegatedClass
 
 public actual class ValueIndexItem
-private constructor(actual: CBLValueIndexItem) :
-    DelegatedClass<CBLValueIndexItem>(actual) {
+private constructor(actual: CBLValueIndexItem) : DelegatedClass<CBLValueIndexItem>(actual) {
 
     public actual companion object {
 

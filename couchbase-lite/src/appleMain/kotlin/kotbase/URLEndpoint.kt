@@ -5,8 +5,7 @@ import kotbase.base.DelegatedClass
 import platform.Foundation.NSURL
 
 public actual class URLEndpoint
-internal constructor(override val actual: CBLURLEndpoint) :
-    DelegatedClass<CBLURLEndpoint>(actual), Endpoint {
+internal constructor(override val actual: CBLURLEndpoint) : DelegatedClass<CBLURLEndpoint>(actual), Endpoint {
 
     public actual constructor(url: String) : this(CBLURLEndpoint(validate(url)))
 

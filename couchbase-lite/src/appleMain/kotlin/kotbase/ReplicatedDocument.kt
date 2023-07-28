@@ -5,8 +5,7 @@ import kotbase.base.DelegatedClass
 import kotbase.ext.toCouchbaseLiteException
 
 public actual class ReplicatedDocument
-internal constructor(actual: CBLReplicatedDocument) :
-    DelegatedClass<CBLReplicatedDocument>(actual) {
+internal constructor(actual: CBLReplicatedDocument) : DelegatedClass<CBLReplicatedDocument>(actual) {
 
     public actual val id: String
         get() = actual.id
