@@ -19,10 +19,26 @@ protected constructor(
     internal constructor(parent: Dictionary, key: String) :
             this(parent, key, null)
 
+    internal constructor(parent: Result, key: String) :
+            this(parent, key, null)
+
     internal constructor(parent: Array, index: Int) :
             this(parent, null, index)
 
+    internal constructor(parent: Result, index: Int) :
+            this(parent, null, index)
+
     internal constructor() : this(null, null, null)
+
+    private fun <R> Result.select(keyAction: Result.(key: String) -> R, indexAction: Result.(index: Int) -> R): R {
+        return if (key != null) {
+            keyAction(key)
+        } else if (index != null) {
+            indexAction(index)
+        } else {
+            error("Either key or index should not be null")
+        }
+    }
 
     /**
      * Gets the fragment value. The value types are Blob, Array, Dictionary, Number,
@@ -33,6 +49,11 @@ protected constructor(
             is Document -> parent.getValue(key!!)
             is Dictionary -> parent.getValue(key!!)
             is Array -> parent.getValue(index!!)
+            is Result -> parent.select({
+                getValue(it)
+            }, {
+                getValue(it)
+            })
             else -> null
         }
 
@@ -44,6 +65,11 @@ protected constructor(
             is Document -> parent.getString(key!!)
             is Dictionary -> parent.getString(key!!)
             is Array -> parent.getString(index!!)
+            is Result -> parent.select({
+                getString(it)
+            }, {
+                getString(it)
+            })
             else -> null
         }
 
@@ -56,6 +82,11 @@ protected constructor(
             is Document -> parent.getNumber(key!!)
             is Dictionary -> parent.getNumber(key!!)
             is Array -> parent.getNumber(index!!)
+            is Result -> parent.select({
+                getNumber(it)
+            }, {
+                getNumber(it)
+            })
             else -> null
         }
 
@@ -68,6 +99,11 @@ protected constructor(
             is Document -> parent.getInt(key!!)
             is Dictionary -> parent.getInt(key!!)
             is Array -> parent.getInt(index!!)
+            is Result -> parent.select({
+                getInt(it)
+            }, {
+                getInt(it)
+            })
             else -> 0
         }
 
@@ -80,6 +116,11 @@ protected constructor(
             is Document -> parent.getLong(key!!)
             is Dictionary -> parent.getLong(key!!)
             is Array -> parent.getLong(index!!)
+            is Result -> parent.select({
+                getLong(it)
+            }, {
+                getLong(it)
+            })
             else -> 0
         }
 
@@ -92,6 +133,11 @@ protected constructor(
             is Document -> parent.getFloat(key!!)
             is Dictionary -> parent.getFloat(key!!)
             is Array -> parent.getFloat(index!!)
+            is Result -> parent.select({
+                getFloat(it)
+            }, {
+                getFloat(it)
+            })
             else -> 0F
         }
 
@@ -104,6 +150,11 @@ protected constructor(
             is Document -> parent.getDouble(key!!)
             is Dictionary -> parent.getDouble(key!!)
             is Array -> parent.getDouble(index!!)
+            is Result -> parent.select({
+                getDouble(it)
+            }, {
+                getDouble(it)
+            })
             else -> 0.0
         }
 
@@ -116,6 +167,11 @@ protected constructor(
             is Document -> parent.getBoolean(key!!)
             is Dictionary -> parent.getBoolean(key!!)
             is Array -> parent.getBoolean(index!!)
+            is Result -> parent.select({
+                getBoolean(it)
+            }, {
+                getBoolean(it)
+            })
             else -> false
         }
 
@@ -127,6 +183,11 @@ protected constructor(
             is Document -> parent.getBlob(key!!)
             is Dictionary -> parent.getBlob(key!!)
             is Array -> parent.getBlob(index!!)
+            is Result -> parent.select({
+                getBlob(it)
+            }, {
+                getBlob(it)
+            })
             else -> null
         }
 
@@ -142,6 +203,11 @@ protected constructor(
             is Document -> parent.getDate(key!!)
             is Dictionary -> parent.getDate(key!!)
             is Array -> parent.getDate(index!!)
+            is Result -> parent.select({
+                getDate(it)
+            }, {
+                getDate(it)
+            })
             else -> null
         }
 
@@ -154,6 +220,11 @@ protected constructor(
             is Document -> parent.getArray(key!!)
             is Dictionary -> parent.getArray(key!!)
             is Array -> parent.getArray(index!!)
+            is Result -> parent.select({
+                getArray(it)
+            }, {
+                getArray(it)
+            })
             else -> null
         }
 
@@ -166,6 +237,11 @@ protected constructor(
             is Document -> parent.getDictionary(key!!)
             is Dictionary -> parent.getDictionary(key!!)
             is Array -> parent.getDictionary(index!!)
+            is Result -> parent.select({
+                getDictionary(it)
+            }, {
+                getDictionary(it)
+            })
             else -> null
         }
 
@@ -186,6 +262,11 @@ protected constructor(
             is Document -> parent.getValue(key!!)
             is Dictionary -> parent.getValue(key!!)
             is Array -> parent.getValue(this.index!!)
+            is Result -> parent.select({
+                getValue(it)
+            }, {
+                getValue(it)
+            })
             else -> null
         }
         return if (parent is Array && index in 0 until parent.count) {
@@ -205,6 +286,11 @@ protected constructor(
             is Document -> parent.getValue(this.key!!)
             is Dictionary -> parent.getValue(this.key!!)
             is Array -> parent.getValue(index!!)
+            is Result -> parent.select({
+                getValue(it)
+            }, {
+                getValue(it)
+            })
             else -> null
         }
         return if (parent is Dictionary) {

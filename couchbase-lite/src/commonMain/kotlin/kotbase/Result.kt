@@ -255,3 +255,26 @@ public expect class Result : Iterable<String> {
      */
     override fun iterator(): Iterator<String>
 }
+
+/**
+ * Subscript access to a Fragment object of the projecting result
+ * value at the given index.
+ *
+ * @param index The select result index.
+ */
+public operator fun Result.get(index: Int): Fragment {
+    return if (index in 0 until count) {
+        Fragment(this, index)
+    } else {
+        Fragment()
+    }
+}
+
+/**
+ * Subscript access to a Fragment object of the projecting result
+ * value for the given key.
+ *
+ * @param key The select result key.
+ */
+public operator fun Result.get(key: String): Fragment =
+    Fragment(this, key)
