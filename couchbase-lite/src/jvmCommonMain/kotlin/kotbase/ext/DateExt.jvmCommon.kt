@@ -1,5 +1,3 @@
-@file:JvmName("DateExtJvm") // https://youtrack.jetbrains.com/issue/KT-21186
-
 package kotbase.ext
 
 import kotlinx.datetime.Instant

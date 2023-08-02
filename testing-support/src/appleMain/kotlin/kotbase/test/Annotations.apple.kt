@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package kotbase.test
 
 actual typealias BeforeClass = kotlin.test.BeforeClass

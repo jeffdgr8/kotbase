@@ -56,8 +56,7 @@ actual object FileUtils {
     actual fun read(path: String): ByteArray =
         File(path).readBytes()
 
-    actual val separatorChar: Char
-        get() = File.separatorChar
+    actual val separatorChar: Char = File.separatorChar
 
     private fun deleteContents(fileOrDirectory: File?): Boolean {
         if (fileOrDirectory == null || !fileOrDirectory.isDirectory) {
