@@ -22,7 +22,7 @@ exceptions:
   deserve addressing.
 * Some deprecated APIs are omitted.
 * While not available in the Java SDK, as Java doesn't support operator overloading, `Fragment` subscript APIs for
-  `Database`, `Document`, `Array`, and `Dictionary` are available in Kotbase, similar to [Swift](
+  `Database`, `Document`, `Array`, `Dictionary`, and `Result` are available in Kotbase, similar to [Swift](
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
