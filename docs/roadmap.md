@@ -3,8 +3,6 @@ hide:
   - toc
 ---
 
-# Roadmap
-
 * [ ] Documentation website ([kotbase.dev](https://kotbase.dev/))
 * [ ] Public release
 * [ ] Sample apps

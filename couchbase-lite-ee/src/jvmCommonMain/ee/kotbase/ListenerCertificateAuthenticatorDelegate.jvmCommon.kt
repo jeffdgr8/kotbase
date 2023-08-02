@@ -1,5 +1,3 @@
-@file:JvmName("ListenerCertificateAuthenticatorDelegateJvm") // https://youtrack.jetbrains.com/issue/KT-21186
-
 package kotbase
 
 import com.couchbase.lite.ListenerCertificateAuthenticatorDelegate as CBLListenerCertificateAuthenticatorDelegate

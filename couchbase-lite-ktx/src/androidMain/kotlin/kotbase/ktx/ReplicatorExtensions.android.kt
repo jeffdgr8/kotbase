@@ -21,8 +21,6 @@
  * - Resolve explicitApiWarning() requirements
  */
 
-@file:JvmName("ReplicatorExtensionsJvm") // https://youtrack.jetbrains.com/issue/KT-21186
-
 package kotbase.ktx
 
 import androidx.lifecycle.Lifecycle

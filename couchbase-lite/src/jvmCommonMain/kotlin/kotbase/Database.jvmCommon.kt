@@ -1,5 +1,3 @@
-@file:JvmName("DatabaseJvm") // https://youtrack.jetbrains.com/issue/KT-21186
-
 package kotbase
 
 import com.couchbase.lite.UnitOfWork

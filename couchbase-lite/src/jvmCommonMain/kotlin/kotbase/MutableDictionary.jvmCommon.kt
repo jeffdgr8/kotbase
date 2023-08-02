@@ -1,5 +1,3 @@
-@file:JvmName("MutableDictionaryJvm") // https://youtrack.jetbrains.com/issue/KT-21186
-
 package kotbase
 
 import kotbase.ext.toDate
