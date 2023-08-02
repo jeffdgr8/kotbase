@@ -18,7 +18,7 @@ internal constructor(override val actual: CBLURLEndpoint) : DelegatedClass<CBLUR
         private const val SCHEME_TLS = "wss"
 
         private fun validate(url: String): NSURL {
-            val nsUrl = NSURL.URLWithString(url)!!
+            val nsUrl = NSURL.URLWithString(url) ?: throw IllegalArgumentException("Invalid URLEndpoint url ($url)")
 
             val scheme = nsUrl.scheme
             if (!((SCHEME_STD == scheme) || (SCHEME_TLS == scheme))) {
