@@ -1,10 +1,7 @@
-@file:JvmName("DateExtTesting") // https://youtrack.jetbrains.com/issue/KT-21186
-
 package kotbase.ext
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlin.jvm.JvmName
 
 /**
  * Returns the [Instant] corresponding to the current time,
