@@ -47,11 +47,9 @@ kotbase.base
 kotbase.internal
 module:couchbase-lite-ee-ktx
 kotbase.ktx
-kotbase.molo17
 module:couchbase-lite-ee-paging
-kotbase.paging3
+kotbase.paging
 module:couchbase-lite-ktx
 kotbase.ktx
-kotbase.molo17
 module:couchbase-lite-paging
-kotbase.paging3
+kotbase.paging
