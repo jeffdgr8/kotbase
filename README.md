@@ -55,7 +55,7 @@ code can be as straightforward as changing the import package from `com.couchbas
 exceptions:
 
 * Java callback functional interfaces are implemented as Kotlin function types.
-* `File` path APIs are represented as strings.
+* `File` and `URL` APIs are represented as strings.
 * `Date` APIs use [KotlinX Date/Time's `Instant`](
 https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/).
 * `Blob` `InputStream` APIs use [Okio's `Source`](https://square.github.io/okio/3.x/okio/okio/okio/-source/index.html).
