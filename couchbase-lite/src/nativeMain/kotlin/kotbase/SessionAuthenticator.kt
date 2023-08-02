@@ -8,7 +8,6 @@ import libcblite.CBLAuth_Free
 import kotlin.native.internal.createCleaner
 
 public actual class SessionAuthenticator
-@Suppress("CanBeParameter")
 actual constructor(
     public actual val sessionID: String,
     cookieName: String?

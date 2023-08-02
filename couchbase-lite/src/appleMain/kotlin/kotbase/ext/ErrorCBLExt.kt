@@ -16,8 +16,7 @@ internal fun NSError.toCouchbaseLiteException(): CouchbaseLiteException =
     )
 
 @Throws(CouchbaseLiteException::class)
-internal fun <R> wrapCBLError(action: (error: CPointer<ObjCObjectVar<NSError?>>) -> R): R {
-    return wrapError(NSError::toCouchbaseLiteException) { error ->
+internal fun <R> wrapCBLError(action: (error: CPointer<ObjCObjectVar<NSError?>>) -> R): R =
+    wrapError(NSError::toCouchbaseLiteException) { error ->
         action(error)
     }
-}

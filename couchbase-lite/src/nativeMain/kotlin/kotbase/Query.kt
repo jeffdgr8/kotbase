@@ -116,7 +116,6 @@ internal abstract class AbstractQuery : Query {
     }
 }
 
-@Suppress("MemberVisibilityCanBePrivate")
 internal data class QueryState(
     val select: List<SelectResult>,
     val distinct: Boolean = false,

@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.kpm.external.ExternalVariantApi
 import org.jetbrains.kotlin.gradle.kpm.external.project
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
@@ -81,24 +80,6 @@ private val KonanTarget.libcbliteLib: String
         }
         Family.MINGW -> "lib"
         else -> error("Unhandled native OS: $os")
-    }
-
-private val String.isWindows: Boolean
-    get() = startsWith("mingw")
-
-private val String.os: String
-    get() = when {
-        startsWith("linux") -> "linux"
-        startsWith("mingw") -> "windows"
-        else -> error("Unhandled native OS: $this")
-    }
-
-private val String.arch: String
-    get() = when {
-        endsWith("X64") -> "x86_64"
-        endsWith("Arm64") -> "arm64"
-        endsWith("Arm32") -> "armhf"
-        else -> error("Unhandled native architecture: $this")
     }
 
 private fun libcblitePath(os: String, arch: String, version: String): String =

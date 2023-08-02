@@ -35,7 +35,7 @@ class LogTest : BaseDbTest() {
 //        override fun toString() = "$level/$domain: $message"
 //    }
 
-    private class LogTestLogger constructor(private val prefix: String?) : Logger {
+    private class LogTestLogger(private val prefix: String?) : Logger {
         private val lineCounts = mutableMapOf<LogLevel, Int>()
         private val content = StringBuilder()
         val lineCount: Int
