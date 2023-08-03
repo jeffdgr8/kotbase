@@ -1,6 +1,5 @@
 package dev.kotbase.gettingstarted.shared
 
-import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
 import kotlinx.coroutines.flow.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -9,7 +8,6 @@ import kotlinx.datetime.toLocalDateTime
 object Log {
 
     private val _output = MutableStateFlow("")
-    @NativeCoroutines
     val output = _output.asStateFlow()
 
     fun i(tag: String, msg: String) {

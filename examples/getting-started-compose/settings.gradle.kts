@@ -1,16 +1,14 @@
-rootProject.name = "getting-started"
+rootProject.name = "getting-started-compose"
 
 include(":androidApp")
-include(":jvmApp")
-include(":nativeApp")
+include(":desktopApp")
 include(":shared")
 
 pluginManagement {
     repositories {
-        google()
         gradlePluginPortal()
-        mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google()
     }
 }
 
@@ -19,6 +17,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         mavenLocal()
     }
 }

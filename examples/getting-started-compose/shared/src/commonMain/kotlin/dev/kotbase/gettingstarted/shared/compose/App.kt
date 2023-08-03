@@ -1,7 +1,11 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
+package dev.kotbase.gettingstarted.shared.compose
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -10,19 +14,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.singleWindowApplication
 import dev.kotbase.gettingstarted.shared.Log
 import dev.kotbase.gettingstarted.shared.SharedDbWork
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.awt.Dimension
-
-fun main() = singleWindowApplication(title = "Kotbase") {
-    window.minimumSize = Dimension(400, 200)
-    MaterialTheme {
-        App()
-    }
-}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -88,32 +83,21 @@ fun LogView() {
                 .horizontalScroll(horizontalScroll)
                 .padding(8.dp)
         )
-        VerticalScrollbar(
-            modifier = Modifier.align(Alignment.CenterEnd)
-                .fillMaxHeight()
-                .padding(bottom = 8.dp),
-            adapter = rememberScrollbarAdapter(verticalScroll)
-        )
-        HorizontalScrollbar(
-            modifier = Modifier.align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .padding(end = 8.dp),
-            adapter = rememberScrollbarAdapter(horizontalScroll)
-        )
+        Scrollbars(verticalScroll, horizontalScroll)
     }
 }
 
-@Preview
 @Composable
-fun AppPreview() {
-    App()
-}
+expect fun BoxScope.Scrollbars(
+    verticalScroll: ScrollState,
+    horizontalScroll: ScrollState
+)
 
-private const val TAG = "JVM_APP"
+private const val TAG = "COMPOSE_UI"
 
 private suspend fun databaseWork(inputValue: String, replicate: Boolean) {
     SharedDbWork().run {
-        createDb("jvmApp-db")
+        createDb("composeApp-db")
         val docId = createDoc()
         Log.i(TAG, "Created document :: $docId")
         retrieveDoc(docId)
