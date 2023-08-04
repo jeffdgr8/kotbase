@@ -1,8 +1,8 @@
 rootProject.name = "getting-started"
 
 include(":androidApp")
-include(":jvmApp")
-include(":nativeApp")
+include(":desktopApp")
+include(":cliApp")
 include(":shared")
 
 pluginManagement {

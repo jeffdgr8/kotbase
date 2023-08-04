@@ -14,7 +14,7 @@ private const val TAG = "NATIVE_APP"
 
 private suspend fun databaseWork(inputValue: String, replicate: Boolean) {
     SharedDbWork().run {
-        createDb("nativeApp-db")
+        createDb("cliApp-db")
         val docId = createDoc()
         Log.i(TAG, "Created document :: $docId")
         retrieveDoc(docId)

@@ -109,11 +109,11 @@ fun AppPreview() {
     App()
 }
 
-private const val TAG = "JVM_APP"
+private const val TAG = "DESKTOP_APP"
 
 private suspend fun databaseWork(inputValue: String, replicate: Boolean) {
     SharedDbWork().run {
-        createDb("jvmApp-db")
+        createDb("desktopApp-db")
         val docId = createDoc()
         Log.i(TAG, "Created document :: $docId")
         retrieveDoc(docId)
