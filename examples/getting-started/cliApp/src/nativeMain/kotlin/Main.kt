@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
     }
 }
 
-private const val TAG = "NATIVE_APP"
+private const val TAG = "CLI_APP"
 
 private suspend fun databaseWork(inputValue: String, replicate: Boolean) {
     SharedDbWork().run {
