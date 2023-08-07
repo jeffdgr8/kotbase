@@ -1,3 +1,5 @@
+Build and run a starter app using Kotbase
+
 ## Introduction
 
 The Getting Started app is a very basic Kotlin Multiplatform app that demonstrates using Kotbase in a shared Kotlin
