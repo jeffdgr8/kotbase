@@ -13,7 +13,7 @@ import platform.Security.SecCertificateCreateWithData
 import platform.Security.SecCertificateRef
 import platform.posix.memcpy
 
-internal fun ByteArray.toNSData(): NSData {
+public fun ByteArray.toNSData(): NSData {
     return if (isNotEmpty()) {
         usePinned {
             NSData.create(bytes = it.addressOf(0), length = size.convert())
@@ -23,7 +23,7 @@ internal fun ByteArray.toNSData(): NSData {
     }
 }
 
-internal fun NSData.toByteArray(): ByteArray {
+public fun NSData.toByteArray(): ByteArray {
     return ByteArray(length.toInt()).apply {
         if (isNotEmpty()) {
             memcpy(refTo(0), bytes, length)
@@ -31,7 +31,7 @@ internal fun NSData.toByteArray(): ByteArray {
     }
 }
 
-internal fun ByteArray.toCFData(): CFDataRef {
+public fun ByteArray.toCFData(): CFDataRef {
     return CFDataCreate(
         null,
         asUByteArray().refTo(0),
@@ -39,7 +39,7 @@ internal fun ByteArray.toCFData(): CFDataRef {
     )!!
 }
 
-internal fun CFDataRef.toByteArray(): ByteArray {
+public fun CFDataRef.toByteArray(): ByteArray {
     val length = CFDataGetLength(this)
     return UByteArray(length.toInt()).apply {
         val range = CFRangeMake(0, length)
@@ -47,8 +47,8 @@ internal fun CFDataRef.toByteArray(): ByteArray {
     }.asByteArray()
 }
 
-internal fun ByteArray.toSecCertificate(): SecCertificateRef =
+public fun ByteArray.toSecCertificate(): SecCertificateRef =
     SecCertificateCreateWithData(kCFAllocatorDefault, toCFData())!!
 
-internal fun SecCertificateRef.toByteArray(): ByteArray =
+public fun SecCertificateRef.toByteArray(): ByteArray =
     SecCertificateCopyData(this)!!.toByteArray()
