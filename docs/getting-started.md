@@ -9,6 +9,27 @@ You can access the [`getting-started`](https://github.com/jeffdgr8/kotbase/tree/
 [`getting-started-compose`](https://github.com/jeffdgr8/kotbase/tree/main/examples/getting-started-compose) projects in
 the git repository under examples.
 
+!!! abstract "Quick Steps"
+
+    1. Get the project and open it in Android Studio
+    2. Build it
+    3. Run any of the platform apps
+    4. Enter some input and press "Run database work"  
+       The log output, in the app's UI or console panel, will show output similar to that in [Figure 1](#figure-1)
+    4. That’s it.
+
+```title="<span id='figure-1'>Figure 1: Example app output</span>"
+08-06 23:34:10.332 I/SHARED_KOTLIN: Database created: desktopApp-db
+08-06 23:34:10.347 I/DESKTOP_APP: Created document :: 6ee12f44-d619-4c06-a52d-14ffaa6e5bee
+08-06 23:34:10.350 I/SHARED_KOTLIN: Retrieved document:
+08-06 23:34:10.350 I/SHARED_KOTLIN: Document ID :: 6ee12f44-d619-4c06-a52d-14ffaa6e5bee
+08-06 23:34:10.350 I/SHARED_KOTLIN: Learning :: Kotlin
+08-06 23:34:10.353 I/DESKTOP_APP: Updated document :: 6ee12f44-d619-4c06-a52d-14ffaa6e5bee
+08-06 23:34:10.369 I/SHARED_KOTLIN: Number of rows :: 1
+08-06 23:34:10.371 I/SHARED_KOTLIN: Document ID :: 6ee12f44-d619-4c06-a52d-14ffaa6e5bee
+08-06 23:34:10.372 I/SHARED_KOTLIN: Document :: {"language":"Kotlin","version":2.0,"platform":"JVM 17.0.7","input":"Hello, Kotbase!"}
+```
+
 ## Getting Started App
 
 The Getting Started app [shows examples](

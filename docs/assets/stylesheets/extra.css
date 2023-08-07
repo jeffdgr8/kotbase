@@ -1,0 +1,14 @@
+.md-typeset .admonition.important,
+.md-typeset details.important {
+    border-color: rgb(179, 108, 219);
+}
+.md-typeset .important > .admonition-title,
+.md-typeset .important > summary {
+    background-color: rgba(179, 108, 219, 0.1);
+}
+.md-typeset .important > .admonition-title::before,
+.md-typeset .important > summary::before {
+    background-color: rgb(179, 108, 219);
+    -webkit-mask-image: var(--md-admonition-icon--important);
+    mask-image: var(--md-admonition-icon--important);
+}

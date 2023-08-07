@@ -31,6 +31,7 @@ theme:
   icon:
     admonition:
       link: material/link
+      important: material/lightbulb-on
   features:
     - content.code.copy
     - content.tabs.link
@@ -44,6 +45,7 @@ theme:
     - toc.follow
 extra_css:
   - assets/stylesheets/permalink.css
+  - assets/stylesheets/extra.css
 markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
@@ -94,4 +96,5 @@ nav:
     - Build and Run: getting-started.md
   - Documentation:
     - Databases: databases.md
+    - Pre-built Database: prebuilt-database.md
   - API Reference: api/index.html

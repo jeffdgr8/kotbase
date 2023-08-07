@@ -59,7 +59,7 @@ database.
 
 ## Database Encryption
 
-!!! important "This is an Enterprise Edition feature."
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
 
 Kotbase includes the ability to encrypt Couchbase Lite databases. This allows mobile applications to secure the data at
 rest, when it is being stored on the device. The algorithm used to encrypt the database is 256-bit AES.
@@ -147,8 +147,7 @@ This is a resource intensive operation and is not performed automatically. It sh
 `cblite` is a command-line tool for inspecting and querying Couchbase Lite databases.
 
 You can download and build it from the couchbaselabs [GitHub repository](
-https://github.com/couchbaselabs/couchbase-mobile-tools/blob/master/README.cblite.md). Note that the cblite tool is not
-supported by the [Couchbase Support Policy](https://www.couchbase.com/support-policy).
+https://github.com/couchbaselabs/couchbase-mobile-tools/blob/master/README.cblite.md).
 
 ## Troubleshooting
 
