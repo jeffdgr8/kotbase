@@ -91,4 +91,5 @@ nav:
   - Getting Started:
     - Installation: installation.md
     - Supported Platforms: platforms.md
+    - Build and Run: getting-started.md
   - API Reference: api/index.html
