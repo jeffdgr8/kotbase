@@ -6,6 +6,7 @@ import kotbase.ktx.all
 import kotbase.ktx.from
 import kotbase.ktx.where
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 class SharedDbWork {
 
@@ -53,8 +54,10 @@ class SharedDbWork {
     // Create a query to fetch documents with language == Kotlin.
     @OptIn(ExperimentalStdlibApi::class)
     fun queryDocs() {
+        val database = database ?: return
+
         var query: Query = QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(database!!))
+            .from(DataSource.database(database))
             .where(Expression.property("language").equalTo(Expression.string("Kotlin")))
         query.execute().use { rs ->
             Log.i(TAG, "Number of rows :: ${rs.allResults().size}")
@@ -62,7 +65,7 @@ class SharedDbWork {
 
         // KTX API
         query = select(Meta.id, all())
-            .from(database!!)
+            .from(database)
             .where {
                 "language" equalTo "Kotlin"
             }
@@ -78,6 +81,8 @@ class SharedDbWork {
     // Create a replicator to push and pull changes to and from the cloud.
     // Be sure to hold a reference to the Replicator to prevent it from being GCed
     fun replicate(): Flow<ReplicatorChange> {
+        val database = database ?: return emptyFlow()
+
         val repl = Replicator(
             ReplicatorConfigurationFactory.create(
                 target = URLEndpoint("ws://localhost:4984/getting-started-db"),
