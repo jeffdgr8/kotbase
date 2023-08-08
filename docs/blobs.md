@@ -71,6 +71,6 @@ If you view a sync’ed blob document in Couchbase Server Admin Console, you wil
 1](#figure-1), which shows the document with its generated `_attachments` dictionary, including the `digest`.
 
 <figure markdown id='figure-1'>
-  ![Figure 1](assets/images/attach-replicated.png)
+  ![Figure 1](assets/images/attach-replicated.png){ loading=lazy }
   <figcaption>Figure 1. Sample Blob Document</figcaption>
 </figure>

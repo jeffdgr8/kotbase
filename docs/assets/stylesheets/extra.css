@@ -12,3 +12,7 @@
     -webkit-mask-image: var(--md-admonition-icon--important);
     mask-image: var(--md-admonition-icon--important);
 }
+
+.md-grid {
+    max-width: 1440px;
+}

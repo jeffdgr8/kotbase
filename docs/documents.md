@@ -633,11 +633,13 @@ https://github.com/Kotlin/kotlinx.serialization).
 
     val hotels = mutableListOf<Hotel>()
 
-    val listQuery = QueryBuilder.select(
-        SelectResult.expression(Meta.id),
-        SelectResult.property("type"),
-        SelectResult.property("name")
-    ).from(DataSource.database(database))
+    val listQuery = QueryBuilder
+        .select(
+            SelectResult.expression(Meta.id),
+            SelectResult.property("type"),
+            SelectResult.property("name")
+        )
+        .from(DataSource.database(database))
 
     listQuery.execute().use { rs ->
         rs.forEach {

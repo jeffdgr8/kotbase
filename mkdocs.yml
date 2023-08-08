@@ -88,8 +88,8 @@ nav:
     - Kotbase: index.md
     - Differences from Couchbase Lite Java SDK: differences.md
     - Extensions:
-        - KTX: ktx.md
-        - Paging: paging.md
+      - KTX: ktx.md
+      - Paging: paging.md
     - Roadmap: roadmap.md
     - Community: community.md
     - License: license.md
@@ -102,4 +102,6 @@ nav:
     - Pre-built Database: prebuilt-database.md
     - Documents: documents.md
     - Blobs: blobs.md
+    - Query:
+      - QueryBuilder: query-builder.md
   - API Reference: api
