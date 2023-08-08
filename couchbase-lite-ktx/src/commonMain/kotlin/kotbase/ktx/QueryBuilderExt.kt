@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
-
 package kotbase.ktx
 
 import kotbase.*
@@ -7,12 +5,17 @@ import kotbase.Function
 
 /**
  * Commonly used for `select(Meta.id)`
- * to get only a document's ID.
+ * to get a document's ID, or other metadata or expressions.
  *
  * `SELECT Meta().id`
  */
-public inline fun select(expression: Expression): Select =
-    QueryBuilder.select(SelectResult.expression(expression))
+public fun select(expression: Expression, vararg expressions: Expression): Select {
+    val results = arrayOf(
+        SelectResult.expression(expression),
+        *expressions.map(SelectResult::expression).toTypedArray()
+    )
+    return QueryBuilder.select(*results)
+}
 
 /**
  * Commonly used for `select(Meta.id, "foo", "bar")`
@@ -20,11 +23,12 @@ public inline fun select(expression: Expression): Select =
  *
  * `SELECT Meta().id, foo, bar`
  */
-public inline fun select(expression: Expression, vararg properties: String): Select {
-    val results = buildList {
-        add(SelectResult.expression(expression))
-        addAll(properties.map(SelectResult::property))
-    }.toTypedArray()
+public fun select(expression: Expression, property: String, vararg properties: String): Select {
+    val results = arrayOf(
+        SelectResult.expression(expression),
+        SelectResult.property(property),
+        *properties.map(SelectResult::property).toTypedArray()
+    )
     return QueryBuilder.select(*results)
 }
 
@@ -34,18 +38,28 @@ public inline fun select(expression: Expression, vararg properties: String): Sel
  *
  * `SELECT Meta().id, *`
  */
-public inline fun select(expression: Expression, vararg results: SelectResult): Select {
-    val allResults = buildList {
-        add(SelectResult.expression(expression))
-        addAll(results)
-    }.toTypedArray()
+public fun select(expression: Expression, result: SelectResult, vararg results: SelectResult): Select {
+    val allResults = arrayOf(
+        SelectResult.expression(expression),
+        result,
+        *results
+    )
     return QueryBuilder.select(*allResults)
 }
 
 /**
  * `SELECT COUNT(*)`
  *
+ * @param alias optional alias for count
+ *
  * @see countResult
  */
-public inline fun selectCount(): Select =
-    QueryBuilder.select(SelectResult.expression(Function.count(Expression.string("*"))))
+public fun selectCount(alias: String = ""): Select {
+    val selectResult = SelectResult.expression(Function.count(Expression.string("*")))
+    val selectAs = if (alias.isNotBlank()) {
+        selectResult.`as`(alias)
+    } else {
+        selectResult
+    }
+    return QueryBuilder.select(selectAs)
+}
