@@ -40,10 +40,12 @@ $dokka.location:kotbase/URLEndpoint/actual/#/PointingToDeclaration/couchbase-li
 module:couchbase-lite
 kotbase
 kotbase.base
+kotbase.ext
 kotbase.internal
 module:couchbase-lite-ee
 kotbase
 kotbase.base
+kotbase.ext
 kotbase.internal
 module:couchbase-lite-ee-ktx
 kotbase.ktx
