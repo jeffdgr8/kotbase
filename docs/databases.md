@@ -9,7 +9,7 @@ You can create a new database and-or open an existing database, using the [`Data
 Things to watch for include:
 
 * If the named database does not exist in the specified, or default, location then a new one is created
-* The database is created in a default location unless you specify a directory for it — see: [`DatabaseConfiguration`](
+* The database is created in a default location unless you specify a directory for it — see [`DatabaseConfiguration`](
   ../api/couchbase-lite-ee/kotbase/-database-configuration/) and [`DatabaseConfiguration.setDirectory()`](
   ../api/couchbase-lite-ee/kotbase/-database-configuration/set-directory.html)
 
@@ -43,7 +43,7 @@ See also [Finding a Database File](#finding-a-database-file).
 You are advised to incorporate the closing of all open databases into your application workflow.
 
 Closing a database is simple, just use [`Database.close()`](../api/couchbase-lite-ee/kotbase/-database/close.html) —
-see: [Example 2](#example-2). This also closes active replications, listeners and-or live queries connected to the
+see [Example 2](#example-2). This also closes active replications, listeners and-or live queries connected to the
 database.
 
 !!! note
@@ -152,10 +152,10 @@ https://github.com/couchbaselabs/couchbase-mobile-tools/blob/master/README.cblit
 ## Troubleshooting
 
 You should use console logs as your first source of diagnostic information. If the information in the default logging
-level is insufficient you can focus it on database errors and generate more verbose messages — see:
-[Example 6](#example-6).
+level is insufficient you can focus it on database errors and generate more verbose messages — see [Example
+6](#example-6).
 
-For more on using Couchbase logs — see: [Using Logs](troubleshooting-logs).
+For more on using Couchbase logs — see [Using Logs](troubleshooting-logs.md).
 
 !!! example "<span id='example-6'>Example 6. Increase Level of Database Log Messages</span>"
 

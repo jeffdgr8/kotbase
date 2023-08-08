@@ -163,7 +163,7 @@ https://www.jetbrains.com/lp/compose-multiplatform/).
     
         Open `iosApp/iosApp.xcworkspace` and run the `iosApp` scheme.
 
-??? warning "Open iosApp.xcworkspace"
+!!! important
 
     Be sure to open `iosApp.xcworkspace` and not `iosApp.xcodeproj`. The `iosApp` uses [CocoaPods](
     https://cocoapods.org/) and the [CocoaPods Gradle plugin](https://kotlinlang.org/docs/native-cocoapods.html) to add

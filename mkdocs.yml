@@ -67,11 +67,13 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
   - toc:
       permalink: ""
+  - footnotes
 plugins:
   - search
   - macros
 extra:
   version: 3.0.12-1.0.0
+  version_objc: 3.0.12
   generator: false
   social:
     - icon: simple/github
@@ -97,4 +99,5 @@ nav:
   - Documentation:
     - Databases: databases.md
     - Pre-built Database: prebuilt-database.md
-  - API Reference: api/index.html
+    - Documents: documents.md
+  - API Reference: api

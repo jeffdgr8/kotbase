@@ -20,10 +20,13 @@ incorporation into the app, updating the database.
 
 !!! abstract "To use a prebuilt database:"
 
-    1. Create a new Couchbase Lite database with the required dataset — see [Creating Pre-built database](#creating-pre-built-database)
-    2. Incorporate the pre-built database with your app bundle as an asset/resource — see [Bundle a Database with an Application](#bundle-a-database-with-an-application)
+    1. Create a new Couchbase Lite database with the required dataset — see [Creating Pre-built
+       database](#creating-pre-built-database)
+    2. Incorporate the pre-built database with your app bundle as an asset/resource — see [Bundle a Database with an
+       Application](#bundle-a-database-with-an-application)
     3. Adjust the start-up logic of your app to check for the presence of the required database.  
-       If the database doesn’t already exist, create one using the bundled pre-built database. Initiate a sync to update the data — see [Using Pre-built Database on App Launch](#using-pre-built-database-on-app-launch)
+       If the database doesn’t already exist, create one using the bundled pre-built database. Initiate a sync to update
+       the data — see [Using Pre-built Database on App Launch](#using-pre-built-database-on-app-launch)
 
 ## Creating Pre-built database
 
@@ -54,14 +57,15 @@ These steps should form part of your build and release process:
         Don’t, for instance, create a pre-built database against a staging Sync Gateway server and use it within a
         production app that syncs against a production Sync Gateway.
 
-    You can use the cblite tool (`cblite cp`) for this — see: [cblite cp (export, import, push, pull)](
+    You can use the cblite tool (`cblite cp`) for this — see [cblite cp (export, import, push, pull)](
     https://github.com/couchbaselabs/couchbase-mobile-tools/blob/master/Documentation.md#cp-aka-export-import-push-pull)
     | [cblite on GitHub](https://github.com/couchbaselabs/couchbase-mobile-tools/blob/master/README.cblite.md)
 
     **Alternatively** …
 
-    * You can write a simple CBL app to just initiate the required pull sync — see: [Remote Sync Gateway](replication)
-    * A third party community Java app is available. It provides a UI to create a local Couchbase Lite database and pull data from a Sync Gateway database — see: [CouchbaseLite Tester](https://github.com/Infosys/CouchbaseLiteTester)
+    * You can write a simple CBL app to just initiate the required pull sync — see [Remote Sync Gateway](replication.md)
+    * A third party community Java app is available. It provides a UI to create a local Couchbase Lite database and pull
+      data from a Sync Gateway database — see [CouchbaseLite Tester](https://github.com/Infosys/CouchbaseLiteTester).
 
 3. Create the **same** indexes the app will use (wait for the replication to finish before doing this).
 
@@ -110,8 +114,8 @@ During the application start-up logic, check if database exists in the required 
         **Do not copy the database using any other method**
     
         **Otherwise:** Each copy of the app will invalidate the other apps' [checkpoints](
-        https://docs.couchbase.com/couchbase-lite/current/java/refer-glossary.html#checkpoint) because a new UUID was not
-        generated.
+        https://docs.couchbase.com/couchbase-lite/current/java/refer-glossary.html#checkpoint) because a new UUID was
+        not generated.
 
 3. Open the database; you can now start querying the data and using it.
 4. Start a pull replication, to sync any changes.
@@ -133,7 +137,9 @@ During the application start-up logic, check if database exists in the required 
 
     !!! note
 
-        Start your normal application logic immediately, unless it is essential to have the absolute up-to-date data set to begin. That way the user is not kept hanging around watching a progress indicator. They can begin interacting with your app whilst any out-of-data data is being updated.
+        Start your normal application logic immediately, unless it is essential to have the absolute up-to-date data set
+        to begin. That way the user is not kept hanging around watching a progress indicator. They can begin interacting
+        with your app whilst any out-of-data data is being updated.
 
 !!! example "<span id='example-1'>Example 1. Copy database using API</span>"
 

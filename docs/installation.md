@@ -35,7 +35,7 @@ Couchbase Maven repository.
 
 === "Enterprise Edition"
 
-    ```kotlin
+    ```kotlin title="build.gradle.kts"
     repositories {
         mavenCentral()
         maven("https://mobile.maven.couchbase.com/maven2/dev/")
@@ -44,7 +44,7 @@ Couchbase Maven repository.
 
 === "Community Edition"
 
-    ```kotlin
+    ```kotlin title="build.gradle.kts"
     repositories {
         mavenCentral()
     }

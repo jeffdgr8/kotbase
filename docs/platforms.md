@@ -74,7 +74,7 @@ dependency. Use `linkOnly = true` to link the dependency without generating Kotl
         kotlin {
             cocoapods {
                 ...
-                pod("CouchbaseLite-Enterprise", version = "3.0.2", linkOnly = true)
+                pod("CouchbaseLite-Enterprise", version = "{{ version_objc }}", linkOnly = true)
             }
         }
         ```
@@ -90,7 +90,7 @@ dependency. Use `linkOnly = true` to link the dependency without generating Kotl
         kotlin {
             cocoapods {
                 ...
-                pod("CouchbaseLite", version = "3.0.2", linkOnly = true)
+                pod("CouchbaseLite", version = "{{ version_objc }}", linkOnly = true)
             }
         }
         ```
