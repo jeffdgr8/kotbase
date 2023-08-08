@@ -61,7 +61,7 @@ constructor(contentType: String, content: ByteArray) {
     public val contentStream: Source?
 
     /**
-     * The type of of the content this blob contains.  By convention this is a MIME type.
+     * The type of the content this blob contains. By convention this is a MIME type.
      */
     public val contentType: String
 

@@ -68,6 +68,7 @@ markdown_extensions:
   - toc:
       permalink: ""
   - footnotes
+  - md_in_html
 plugins:
   - search
   - macros
@@ -100,4 +101,5 @@ nav:
     - Databases: databases.md
     - Pre-built Database: prebuilt-database.md
     - Documents: documents.md
+    - Blobs: blobs.md
   - API Reference: api
