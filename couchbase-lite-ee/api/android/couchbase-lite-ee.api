@@ -328,13 +328,13 @@ public final class kotbase/DatabaseConfiguration : kotbase/base/DelegatedClass {
 	public final fun setDirectory (Ljava/lang/String;)V
 }
 
-public final class kotbase/DatabaseConfigurationJvm {
-	public static final fun getEncryptionKey (Lkotbase/DatabaseConfiguration;)Lcom/couchbase/lite/EncryptionKey;
-	public static final fun setEncryptionKey (Lkotbase/DatabaseConfiguration;Lcom/couchbase/lite/EncryptionKey;)V
-}
-
 public final class kotbase/DatabaseConfigurationKt {
 	public static final fun setEncryptionKey (Lkotbase/DatabaseConfiguration;Lcom/couchbase/lite/EncryptionKey;)Lkotbase/DatabaseConfiguration;
+}
+
+public final class kotbase/DatabaseConfiguration_jvmCommonKt {
+	public static final fun getEncryptionKey (Lkotbase/DatabaseConfiguration;)Lcom/couchbase/lite/EncryptionKey;
+	public static final fun setEncryptionKey (Lkotbase/DatabaseConfiguration;Lcom/couchbase/lite/EncryptionKey;)V
 }
 
 public final class kotbase/DatabaseEEJvm {
@@ -610,7 +610,7 @@ public final class kotbase/Function {
 	public final fun upper (Lkotbase/Expression;)Lkotbase/Expression;
 }
 
-public final class kotbase/FunctionKt {
+public final class kotbase/Function_jvmCommonKt {
 	public static final fun cosineDistance (Lkotbase/Function;Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
 	public static final fun euclideanDistance (Lkotbase/Function;Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
 	public static final fun prediction (Lkotbase/Function;Ljava/lang/String;Lkotbase/Expression;)Lkotbase/PredictionFunction;
@@ -655,7 +655,7 @@ public final class kotbase/IndexBuilder {
 	public final fun valueIndex ([Lkotbase/ValueIndexItem;)Lkotbase/ValueIndex;
 }
 
-public final class kotbase/IndexBuilderKt {
+public final class kotbase/IndexBuilder_jvmCommonKt {
 	public static final fun predictiveIndex (Lkotbase/IndexBuilder;Ljava/lang/String;Lkotbase/Expression;Ljava/util/List;)Lkotbase/PredictiveIndex;
 	public static synthetic fun predictiveIndex$default (Lkotbase/IndexBuilder;Ljava/lang/String;Lkotbase/Expression;Ljava/util/List;ILjava/lang/Object;)Lkotbase/PredictiveIndex;
 }
@@ -1196,13 +1196,13 @@ public final class kotbase/ReplicatorConfiguration : kotbase/base/DelegatedClass
 public final class kotbase/ReplicatorConfiguration$Companion {
 }
 
-public final class kotbase/ReplicatorConfigurationEE {
-	public static final fun setAcceptOnlySelfSignedServerCertificate (Lkotbase/ReplicatorConfiguration;Z)Lkotbase/ReplicatorConfiguration;
-}
-
 public final class kotbase/ReplicatorConfigurationEEJvm {
 	public static final fun isAcceptOnlySelfSignedServerCertificate (Lkotbase/ReplicatorConfiguration;)Z
 	public static final fun setAcceptOnlySelfSignedServerCertificate (Lkotbase/ReplicatorConfiguration;Z)V
+}
+
+public final class kotbase/ReplicatorConfigurationEEKt {
+	public static final fun setAcceptOnlySelfSignedServerCertificate (Lkotbase/ReplicatorConfiguration;Z)Lkotbase/ReplicatorConfiguration;
 }
 
 public final class kotbase/ReplicatorConfigurationKt {
@@ -1268,6 +1268,11 @@ public final class kotbase/Result : kotbase/base/DelegatedClass, java/lang/Itera
 	public final fun toJSON ()Ljava/lang/String;
 	public final fun toList ()Ljava/util/List;
 	public final fun toMap ()Ljava/util/Map;
+}
+
+public final class kotbase/ResultKt {
+	public static final fun get (Lkotbase/Result;I)Lkotbase/Fragment;
+	public static final fun get (Lkotbase/Result;Ljava/lang/String;)Lkotbase/Fragment;
 }
 
 public final class kotbase/ResultSet : kotbase/base/DelegatedClass, java/lang/AutoCloseable, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {

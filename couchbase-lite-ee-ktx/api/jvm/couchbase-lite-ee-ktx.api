@@ -49,10 +49,11 @@ public final class kotbase/ktx/OrderByBuilder {
 }
 
 public final class kotbase/ktx/QueryBuilderExtKt {
-	public static final fun select (Lkotbase/Expression;)Lkotbase/Select;
-	public static final fun select (Lkotbase/Expression;[Ljava/lang/String;)Lkotbase/Select;
-	public static final fun select (Lkotbase/Expression;[Lkotbase/SelectResult;)Lkotbase/Select;
-	public static final fun selectCount ()Lkotbase/Select;
+	public static final fun select (Lkotbase/Expression;Ljava/lang/String;[Ljava/lang/String;)Lkotbase/Select;
+	public static final fun select (Lkotbase/Expression;Lkotbase/SelectResult;[Lkotbase/SelectResult;)Lkotbase/Select;
+	public static final fun select (Lkotbase/Expression;[Lkotbase/Expression;)Lkotbase/Select;
+	public static final fun selectCount (Ljava/lang/String;)Lkotbase/Select;
+	public static synthetic fun selectCount$default (Ljava/lang/String;ILjava/lang/Object;)Lkotbase/Select;
 }
 
 public final class kotbase/ktx/QueryBuilderExtensionsKt {

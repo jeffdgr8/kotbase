@@ -1110,6 +1110,11 @@ public final class kotbase/Result : kotbase/base/DelegatedClass, java/lang/Itera
 	public final fun toMap ()Ljava/util/Map;
 }
 
+public final class kotbase/ResultKt {
+	public static final fun get (Lkotbase/Result;I)Lkotbase/Fragment;
+	public static final fun get (Lkotbase/Result;Ljava/lang/String;)Lkotbase/Fragment;
+}
+
 public final class kotbase/ResultSet : kotbase/base/DelegatedClass, java/lang/AutoCloseable, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
 	public final fun allResults ()Ljava/util/List;
 	public fun close ()V

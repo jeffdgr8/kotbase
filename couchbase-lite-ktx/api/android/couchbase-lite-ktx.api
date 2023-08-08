@@ -49,10 +49,11 @@ public final class kotbase/ktx/OrderByBuilder {
 }
 
 public final class kotbase/ktx/QueryBuilderExtKt {
-	public static final fun select (Lkotbase/Expression;)Lkotbase/Select;
-	public static final fun select (Lkotbase/Expression;[Ljava/lang/String;)Lkotbase/Select;
-	public static final fun select (Lkotbase/Expression;[Lkotbase/SelectResult;)Lkotbase/Select;
-	public static final fun selectCount ()Lkotbase/Select;
+	public static final fun select (Lkotbase/Expression;Ljava/lang/String;[Ljava/lang/String;)Lkotbase/Select;
+	public static final fun select (Lkotbase/Expression;Lkotbase/SelectResult;[Lkotbase/SelectResult;)Lkotbase/Select;
+	public static final fun select (Lkotbase/Expression;[Lkotbase/Expression;)Lkotbase/Select;
+	public static final fun selectCount (Ljava/lang/String;)Lkotbase/Select;
+	public static synthetic fun selectCount$default (Ljava/lang/String;ILjava/lang/Object;)Lkotbase/Select;
 }
 
 public final class kotbase/ktx/QueryBuilderExtensionsKt {
@@ -144,13 +145,13 @@ public final class kotbase/ktx/QueryExtensionsKt {
 	public static final fun mapToObjects (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 }
 
-public final class kotbase/ktx/ReplicatorExtensionsJvm {
-	public static final fun bindToLifecycle (Lkotbase/Replicator;Landroidx/lifecycle/Lifecycle;)V
-}
-
 public final class kotbase/ktx/ReplicatorExtensionsKt {
 	public static final fun changesFlow (Lkotbase/Replicator;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun documentReplicationFlow (Lkotbase/Replicator;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class kotbase/ktx/ReplicatorExtensions_androidKt {
+	public static final fun bindToLifecycle (Lkotbase/Replicator;Landroidx/lifecycle/Lifecycle;)V
 }
 
 public final class kotbase/ktx/ResultSetExtKt {
