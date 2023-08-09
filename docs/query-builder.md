@@ -27,7 +27,7 @@ https://docs.couchbase.com/server/current/learn/data/n1ql-versus-sql.html).
 
 **Query Components**
 
-| Component	                                | Description                                                                                                            |
+| Component                                 | Description                                                                                                            |
 |:------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------|
 | [SELECT statement](#select-statement)     | The document properties that will be returned in the result set                                                        |
 | FROM                                      | The data source to query the documents from - the collection of the database.                                          |

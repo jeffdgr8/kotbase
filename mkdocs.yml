@@ -104,4 +104,5 @@ nav:
     - Blobs: blobs.md
     - Query:
       - QueryBuilder: query-builder.md
+      - SQL++ Query Strings: n1ql-query-strings.md
   - API Reference: api
