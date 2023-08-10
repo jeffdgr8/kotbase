@@ -105,4 +105,5 @@ nav:
     - Query:
       - QueryBuilder: query-builder.md
       - SQL++ Query Strings: n1ql-query-strings.md
+      - SQL++ Server Differences: n1ql-server-differences.md
   - API Reference: api
