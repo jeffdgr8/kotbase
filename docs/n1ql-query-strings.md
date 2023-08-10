@@ -1,4 +1,4 @@
-How to use SQL++ query strings to build effective queries with Kotbase
+_How to use SQL++ query strings to build effective queries with Kotbase_
 
 !!! note
 

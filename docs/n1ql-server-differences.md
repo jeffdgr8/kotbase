@@ -1,4 +1,4 @@
-Differences between Couchbase Server SQL++ and Couchbase Lite SQL++
+_Differences between Couchbase Server SQL++ and Couchbase Lite SQL++_
 
 !!! important
 

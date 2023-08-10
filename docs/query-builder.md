@@ -1,4 +1,4 @@
-How to use `QueryBuilder` to build effective queries with Kotbase
+_How to use `QueryBuilder` to build effective queries with Kotbase_
 
 !!! note
 

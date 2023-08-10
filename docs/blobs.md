@@ -1,4 +1,4 @@
-Couchbase Lite database data model concepts — blobs
+_Couchbase Lite database data model concepts — blobs_
 
 ## Introduction
 
