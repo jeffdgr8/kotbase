@@ -402,7 +402,7 @@ and prints the `verified_account` property when a change is detected.
 
 ### Using Kotlin Flows
 
-Kotbase users can also take advantage of `Flows` to monitor for changes.
+Kotlin users can also take advantage of `Flow`s to monitor for changes.
 
 The following methods show how to watch for document changes in a given database or for changes to a specific document.
 
