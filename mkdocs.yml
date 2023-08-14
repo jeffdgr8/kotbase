@@ -109,4 +109,5 @@ nav:
       - SQL++ QueryBuilder Differences: n1ql-query-builder-differences.md
       - Query Result Sets: query-result-sets.md
       - Live Queries: live-queries.md
+      - Query Troubleshooting: query-troubleshooting.md
   - API Reference: api

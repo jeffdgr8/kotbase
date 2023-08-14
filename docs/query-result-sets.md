@@ -188,7 +188,7 @@ Access the retrieved properties by converting each row into a dictionary — as 
     ```kotlin
     query.execute().use { rs ->
         rs.allResults().forEach {
-            log("Hotel name -> ${it.getString("name")}, in ${it.getString("country")}")
+            println("Hotel name -> ${it.getString("name")}, in ${it.getString("country")}")
         }
     }
     ```
