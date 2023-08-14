@@ -164,7 +164,7 @@ filtering capabilities.
 
 ### Comparison Operators
 
-The [`Expression` Comparators](../api/couchbase-lite-ee/kotbase/-expression/) can be used in the `WHERE` statement to
+The [`Expression` Comparators](/api/couchbase-lite-ee/kotbase/-expression/) can be used in the `WHERE` statement to
 specify on which property to match documents. In the example below, we use the `equalTo` operator to query documents
 where the `type` property equals "hotel".
 
@@ -204,12 +204,12 @@ where the `type` property equals "hotel".
 
 ### Collection Operators
 
-[`ArrayFunction` Collection Operators](../api/couchbase-lite-ee/kotbase/-array-function/) are useful to check if a given
+[`ArrayFunction` Collection Operators](/api/couchbase-lite-ee/kotbase/-array-function/) are useful to check if a given
 value is present in an array.
 
 #### CONTAINS Operator
 
-The following example uses the [`ArrayFunction`](../api/couchbase-lite-ee/kotbase/-array-function/) to find documents
+The following example uses the [`ArrayFunction`](/api/couchbase-lite-ee/kotbase/-array-function/) to find documents
 where the `public_likes` array property contains a value equal to "Armani Langworth".
 
 ```json
@@ -274,7 +274,7 @@ query.execute().use { rs ->
 
 #### String Matching
 
-The [`like()`](../api/couchbase-lite-ee/kotbase/-expression/like.html) operator can be used for string matching — see
+The [`like()`](/api/couchbase-lite-ee/kotbase/-expression/like.html) operator can be used for string matching — see
 [Example 7](#example-7).
 
 !!! note
@@ -647,7 +647,7 @@ criteria — see [Example 15](#example-15).
 !!! example "<span id='example-15'>Example 15. Query selecting All Properties</span>"
 
     ```kotlin
-    val listQuery = QueryBuilder.select(SelectResult.all())
+    val query = QueryBuilder.select(SelectResult.all())
         .from(DataSource.database(database))
     ```
 
@@ -697,17 +697,17 @@ shown in [Example 17](#example-17).
 
     ```kotlin
     val hotels = mutableMapOf<String, Hotel>()
-    listQuery.execute().use { rs ->
+    query.execute().use { rs ->
         rs.allResults().forEach {
             // get the k-v pairs from the 'hotel' key's value into a dictionary
-            val thisDocsProps = it.getDictionary(0) 
-            val thisDocsId = thisDocsProps!!.getString("id")
-            val thisDocsName = thisDocsProps.getString("name")
-            val thisDocsType = thisDocsProps.getString("type")
-            val thisDocsCity = thisDocsProps.getString("city")
+            val docProps = it.getDictionary(0) 
+            val docId = docProps!!.getString("id")
+            val docName = docProps.getString("name")
+            val docType = docProps.getString("type")
+            val docCity = docProps.getString("city")
     
             // Alternatively, access results value dictionary directly
-            val id = it.getDictionary(0)?.getString("id").toString() 
+            val id = it.getDictionary(0)?.getString("id")!!
             hotels[id] = Hotel(
                 id,
                 it.getDictionary(0)?.getString("type"),
@@ -891,7 +891,7 @@ feature, to return a defined number of results starting from a given offset — 
     ```kotlin
     val thisOffset = 0
     val thisLimit = 20
-    val listQuery = QueryBuilder
+    val query = QueryBuilder
         .select(SelectResult.all())
         .from(DataSource.database(database))
         .limit(
@@ -911,7 +911,7 @@ feature, to return a defined number of results starting from a given offset — 
 
 Kotbase provides a convenience API to convert query results to JSON strings.
 
-Use [`Result.toJSON()`](../api/couchbase-lite-ee/kotbase/-result/to-j-s-o-n.html) to transform your result into a JSON
+Use [`Result.toJSON()`](/api/couchbase-lite-ee/kotbase/-result/to-j-s-o-n.html) to transform your result into a JSON
 string, which can easily be serialized or used as required in your application. See [Example 28](#example-28) for a
 working example using [KotlinX Serialization](https://github.com/Kotlin/kotlinx.serialization).
 
@@ -924,7 +924,7 @@ working example using [KotlinX Serialization](https://github.com/Kotlin/kotlinx.
 
     val hotels = mutableListOf<Hotel>()
 
-    val listQuery = QueryBuilder
+    val query = QueryBuilder
         .select(
             SelectResult.expression(Meta.id),
             SelectResult.property("type"),
@@ -932,7 +932,7 @@ working example using [KotlinX Serialization](https://github.com/Kotlin/kotlinx.
         )
         .from(DataSource.database(database))
 
-    listQuery.execute().use { rs ->
+    query.execute().use { rs ->
         rs.forEach {
 
             // Get result as JSON string

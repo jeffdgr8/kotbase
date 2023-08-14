@@ -85,7 +85,7 @@ server on launch.
 !!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
 
 If you are using an encrypted database, [`Database.copy()`](
-../api/couchbase-lite-ee/kotbase/-database/-companion/copy.html) does not change the encryption key. The encryption key
+/api/couchbase-lite-ee/kotbase/-database/-companion/copy.html) does not change the encryption key. The encryption key
 specified in the config when opening the database is the encryption key used for both the original database and copied
 database.
 
@@ -93,9 +93,9 @@ If you copied an un-encrypted database and want to apply encryption to the copy,
 the encryption key applied to the copy:
 
 1. Provide the original encryption-key (if any) in the database copy’s configuration using
-   [`DatabaseConfiguration.setEncryptionKey()`](../api/couchbase-lite-ee/kotbase/set-encryption-key.html).
+   [`DatabaseConfiguration.setEncryptionKey()`](/api/couchbase-lite-ee/kotbase/set-encryption-key.html).
 2. Open the database copy.
-3. Use [`Database.changeEncryptionKey()`](../api/couchbase-lite-ee/kotbase/change-encryption-key.html) on the database
+3. Use [`Database.changeEncryptionKey()`](/api/couchbase-lite-ee/kotbase/change-encryption-key.html) on the database
    copy to set the required encryption key.  
    NOTE: To remove encryption on the copy, provide a null encryption-key.
 
@@ -106,7 +106,7 @@ During the application start-up logic, check if database exists in the required 
 1. Locate the pre-packaged database (for example, in the assets or other resource folder).
 2. Copy the pre-packaged database to the required location.
 
-    Use the API’s [`Database.copy()`](../api/couchbase-lite-ee/kotbase/-database/-companion/copy.html) method — see:
+    Use the API’s [`Database.copy()`](/api/couchbase-lite-ee/kotbase/-database/-companion/copy.html) method — see:
     [Example 1](#example-1); this ensures that a UUID is generated for each copy.
 
     !!! important

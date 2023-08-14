@@ -107,4 +107,5 @@ nav:
       - SQL++ Query Strings: n1ql-query-strings.md
       - SQL++ Server Differences: n1ql-server-differences.md
       - SQL++ QueryBuilder Differences: n1ql-query-builder-differences.md
+      - Query Result Sets: query-result-sets.md
   - API Reference: api

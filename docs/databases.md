@@ -3,15 +3,15 @@ _Working with Kotbase databases_
 ## Create or Open Database
 
 You can create a new database and-or open an existing database, using the [`Database`](
-../api/couchbase-lite-ee/kotbase/-database/) class. Just pass in a database name and optionally a
-[`DatabaseConfiguration`](../api/couchbase-lite-ee/kotbase/-database-configuration/) — see [Example 1](#example-1).
+/api/couchbase-lite-ee/kotbase/-database/) class. Just pass in a database name and optionally a [`DatabaseConfiguration`
+](/api/couchbase-lite-ee/kotbase/-database-configuration/) — see [Example 1](#example-1).
 
 Things to watch for include:
 
 * If the named database does not exist in the specified, or default, location then a new one is created
 * The database is created in a default location unless you specify a directory for it — see [`DatabaseConfiguration`](
-  ../api/couchbase-lite-ee/kotbase/-database-configuration/) and [`DatabaseConfiguration.setDirectory()`](
-  ../api/couchbase-lite-ee/kotbase/-database-configuration/set-directory.html)
+  /api/couchbase-lite-ee/kotbase/-database-configuration/) and [`DatabaseConfiguration.setDirectory()`](
+  /api/couchbase-lite-ee/kotbase/-database-configuration/set-directory.html)
 
 !!! tip
 
@@ -42,9 +42,8 @@ See also [Finding a Database File](#finding-a-database-file).
 
 You are advised to incorporate the closing of all open databases into your application workflow.
 
-Closing a database is simple, just use [`Database.close()`](../api/couchbase-lite-ee/kotbase/-database/close.html) —
-see [Example 2](#example-2). This also closes active replications, listeners and-or live queries connected to the
-database.
+Closing a database is simple, just use [`Database.close()`](/api/couchbase-lite-ee/kotbase/-database/close.html) — see
+[Example 2](#example-2). This also closes active replications, listeners and-or live queries connected to the database.
 
 !!! note
 
@@ -67,7 +66,7 @@ rest, when it is being stored on the device. The algorithm used to encrypt the d
 ### Enabling
 
 To enable encryption, use [`DatabaseConfiguration.setEncryptionKey()`](
-../api/couchbase-lite-ee/kotbase/set-encryption-key.html) to set the encryption key of your choice. Provide this
+/api/couchbase-lite-ee/kotbase/set-encryption-key.html) to set the encryption key of your choice. Provide this
 encryption key every time the database is opened — see [Example 3](#example-3).
 
 !!! example "<span id='example-3'>Example 3. Configure Database Encryption</span>"
@@ -97,13 +96,13 @@ only by Kotbase on Android or the Couchbase Lite Android SDK.
 ### Changing
 
 To change an existing encryption key, open the database using its existing encryption-key and use
-[`Database.changeEncryptionKey()`](../api/couchbase-lite-ee/kotbase/change-encryption-key.html) to set the required new
+[`Database.changeEncryptionKey()`](/api/couchbase-lite-ee/kotbase/change-encryption-key.html) to set the required new
 encryption-key value.
 
 ### Removing
 
 To remove encryption, open the database using its existing encryption-key and use [`Database.changeEncryptionKey()`](
-../api/couchbase-lite-ee/kotbase/change-encryption-key.html) with a null value as the encryption key.
+/api/couchbase-lite-ee/kotbase/change-encryption-key.html) with a null value as the encryption key.
 
 ## Finding a Database File
 
@@ -136,8 +135,8 @@ The `adb pull` command can be used to pull a specific database to your host mach
 From time to time it may be necessary to perform certain maintenance activities on your database, for example to compact the database file, removing unused documents and blobs no longer referenced by any documents.
 
 Couchbase Lite’s API provides the [`Database.performMaintenance()`](
-../api/couchbase-lite-ee/kotbase/-database/perform-maintenance.html) method. The available maintenance operations,
-including compact are as shown in the enum [`MaintenanceType`](../api/couchbase-lite-ee/kotbase/-maintenance-type/) to
+/api/couchbase-lite-ee/kotbase/-database/perform-maintenance.html) method. The available maintenance operations,
+including compact are as shown in the enum [`MaintenanceType`](/api/couchbase-lite-ee/kotbase/-maintenance-type/) to
 accomplish this.
 
 This is a resource intensive operation and is not performed automatically. It should be run on-demand using the API. If in doubt, consult Couchbase support.
