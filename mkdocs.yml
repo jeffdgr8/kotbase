@@ -112,4 +112,6 @@ nav:
       - Query Troubleshooting: query-troubleshooting.md
     - Full Text Search: full-text-search.md
     - Indexing: indexing.md
+    - Data Sync:
+      - Intra-device Sync: intra-device-sync.md
   - API Reference: api
