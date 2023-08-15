@@ -111,4 +111,5 @@ nav:
       - Live Queries: live-queries.md
       - Query Troubleshooting: query-troubleshooting.md
     - Full Text Search: full-text-search.md
+    - Indexing: indexing.md
   - API Reference: api
