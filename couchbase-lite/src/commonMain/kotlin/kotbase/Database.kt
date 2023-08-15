@@ -330,7 +330,7 @@ public expect class Database {
     public fun createQuery(query: String): Query
 
     /**
-     * Get a list of the names of indices on the default collection.
+     * Get a list of the names of indices on the database.
      *
      * @return the list of index names
      * @throws CouchbaseLiteException on failure
@@ -339,7 +339,7 @@ public expect class Database {
     public fun getIndexes(): List<String>
 
     /**
-     * Add an index to the default collection.
+     * Add an index to the database.
      *
      * @param name  index name
      * @param index index description
@@ -349,7 +349,7 @@ public expect class Database {
     public fun createIndex(name: String, index: Index)
 
     /**
-     * Add an index to the default collection.
+     * Add an index to the database.
      *
      * @param name   index name
      * @param config index configuration
@@ -359,7 +359,7 @@ public expect class Database {
     public fun createIndex(name: String, config: IndexConfiguration)
 
     /**
-     * Delete the named index from the default collection.
+     * Delete the named index from the database.
      *
      * @param name name of the index to delete
      * @throws CouchbaseLiteException on failure
