@@ -49,6 +49,7 @@ public val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
  * @param maxAttemptWaitTime max time between retry attempts (exponential backoff).
  * @param heartbeat heartbeat interval, in seconds.
  * @param enableAutoPurge auto-purge enabled.
+ * @param acceptParentDomainCookies Advanced: accept cookies for parent domains.
  *
  * @see ReplicatorConfiguration
  */
@@ -68,30 +69,28 @@ public fun ReplicatorConfiguration?.create(
     maxAttempts: Int? = null,
     maxAttemptWaitTime: Int? = null,
     heartbeat: Int? = null,
-    enableAutoPurge: Boolean? = null
+    enableAutoPurge: Boolean? = null,
+    acceptParentDomainCookies: Boolean? = null
 ): ReplicatorConfiguration {
-    val replicatorConfiguration = if (this != null) {
-        ReplicatorConfiguration(this)
-    } else {
-        ReplicatorConfiguration(
-            database ?: error("Must specify a database"),
-            target ?: error("Must specify a target")
-        )
-    }
-    return replicatorConfiguration.apply {
-        type?.let { this.type = it }
-        continuous?.let { this.isContinuous = it }
-        authenticator?.let { this.authenticator = it }
-        headers?.let { this.headers = it }
-        pinnedServerCertificate?.let { this.pinnedServerCertificate = it }
-        channels?.let { this.channels = it }
-        documentIDs?.let { this.documentIDs = it }
-        pushFilter?.let { this.pushFilter = it }
-        pullFilter?.let { this.pullFilter = it }
-        conflictResolver?.let { this.conflictResolver = it }
-        maxAttempts?.let { this.maxAttempts = it }
-        maxAttemptWaitTime?.let { this.maxAttemptWaitTime = it }
-        heartbeat?.let { this.heartbeat = it }
-        enableAutoPurge?.let { this.isAutoPurgeEnabled = it }
+    val orig = this
+    return ReplicatorConfiguration(
+        database ?: this?.database ?: error("Must specify a database"),
+        target ?: this?.target ?: error("Must specify a target")
+    ).apply {
+        (type ?: orig?.type)?.let { this.type = it }
+        (continuous ?: orig?.isContinuous)?.let { this.isContinuous = it }
+        this.authenticator = authenticator ?: orig?.authenticator
+        this.headers = headers ?: orig?.headers
+        (acceptParentDomainCookies ?: orig?.isAcceptParentDomainCookies)?.let { this.isAcceptParentDomainCookies = it }
+        this.pinnedServerCertificate = pinnedServerCertificate ?: orig?.pinnedServerCertificate
+        this.channels = channels ?: orig?.channels
+        this.documentIDs = documentIDs ?: orig?.documentIDs
+        this.pushFilter = pushFilter ?: orig?.pushFilter
+        this.pullFilter = pullFilter ?: orig?.pullFilter
+        this.conflictResolver = conflictResolver ?: orig?.conflictResolver
+        (maxAttempts ?: orig?.maxAttempts)?.let { this.maxAttempts = it }
+        (maxAttemptWaitTime ?: orig?.maxAttemptWaitTime)?.let { this.maxAttemptWaitTime = it }
+        (heartbeat ?: orig?.heartbeat)?.let { this.heartbeat = it }
+        (enableAutoPurge ?: orig?.isAutoPurgeEnabled)?.let { this.isAutoPurgeEnabled = it }
     }
 }

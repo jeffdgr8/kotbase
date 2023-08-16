@@ -63,6 +63,11 @@ private constructor(
         return this
     }
 
+    public actual fun setAcceptParentDomainCookies(acceptParentCookies: Boolean): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.isAcceptParentDomainCookies = acceptParentCookies
+        return this
+    }
+
     public actual fun setPinnedServerCertificate(pinnedCert: ByteArray?): ReplicatorConfiguration {
         this@ReplicatorConfiguration.pinnedServerCertificate = pinnedCert
         return this
@@ -140,6 +145,12 @@ private constructor(
         get() = actual.headers as Map<String, String>?
         set(value) {
             actual.headers = value as Map<Any?, *>
+        }
+
+    public actual var isAcceptParentDomainCookies: Boolean
+        get() = actual.acceptParentDomainCookies
+        set(value) {
+            actual.acceptParentDomainCookies = value
         }
 
     public actual var pinnedServerCertificate: ByteArray?

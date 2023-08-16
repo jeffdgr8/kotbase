@@ -3,7 +3,7 @@ package kotbase
 import com.couchbase.lite.generation
 
 /**
- * Replicator configuration.
+ * Configuration for a Replicator
  */
 public expect class ReplicatorConfiguration {
 
@@ -33,7 +33,7 @@ public expect class ReplicatorConfiguration {
     public fun setChannels(channels: List<String>?): ReplicatorConfiguration
 
     /**
-     * Sets the the conflict resolver.
+     * Sets the conflict resolver.
      *
      * @param conflictResolver A conflict resolver.
      * @return this.
@@ -67,6 +67,18 @@ public expect class ReplicatorConfiguration {
      * @return this.
      */
     public fun setHeaders(headers: Map<String, String>?): ReplicatorConfiguration
+
+    /**
+     * The option to remove a restriction that does not allow a replicator to accept cookies
+     * from a remote host unless the cookie domain exactly matches the domain of the sender.
+     * For instance, when the option is set to false (the default), and the remote host, “bar.foo.com”,
+     * sends a cookie for the domain “.foo.com”, the replicator will reject it. If the option
+     * is set true, however, the replicator will accept it. This is, in general, dangerous:
+     * a host might, for instance, set a cookie for the domain ".com". It is safe only when
+     * the replicator is connecting only to known hosts.
+     * The default value of this option is false: parent-domain cookies are not accepted
+     */
+    public fun setAcceptParentDomainCookies(acceptParentCookies: Boolean): ReplicatorConfiguration
 
     /**
      * Sets the target server's SSL certificate.
@@ -179,6 +191,18 @@ public expect class ReplicatorConfiguration {
      * Return Extra HTTP headers to send in all requests to the remote target.
      */
     public var headers: Map<String, String>?
+
+    /**
+     * The option to remove a restriction that does not allow a replicator to accept cookies
+     * from a remote host unless the cookie domain exactly matches the domain of the sender.
+     * For instance, when the option is set to false (the default), and the remote host, “bar.foo.com”,
+     * sends a cookie for the domain “.foo.com”, the replicator will reject it. If the option
+     * is set true, however, the replicator will accept it. This is, in general, dangerous:
+     * a host might, for instance, set a cookie for the domain ".com". It is safe only when
+     * the replicator is connecting only to known hosts.
+     * The default value of this option is false: parent-domain cookies are not accepted
+     */
+    public var isAcceptParentDomainCookies: Boolean
 
     /**
      * Return the remote target's SSL certificate.

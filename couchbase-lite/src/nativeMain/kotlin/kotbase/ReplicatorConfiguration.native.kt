@@ -43,6 +43,7 @@ public actual class ReplicatorConfiguration actual constructor(
         isContinuous = config.isContinuous
         documentIDs = config.documentIDs
         headers = config.headers
+        isAcceptParentDomainCookies = config.isAcceptParentDomainCookies
         pinnedServerCertificate = config.pinnedServerCertificate
         pullFilter = config.pullFilter
         pushFilter = config.pushFilter
@@ -80,6 +81,11 @@ public actual class ReplicatorConfiguration actual constructor(
 
     public actual fun setHeaders(headers: Map<String, String>?): ReplicatorConfiguration {
         this.headers = headers
+        return this
+    }
+
+    public actual fun setAcceptParentDomainCookies(acceptParentCookies: Boolean): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.isAcceptParentDomainCookies = acceptParentCookies
         return this
     }
 
@@ -134,6 +140,8 @@ public actual class ReplicatorConfiguration actual constructor(
     public actual var documentIDs: List<String>? = null
 
     public actual var headers: Map<String, String>? = null
+
+    public actual var isAcceptParentDomainCookies: Boolean = false
 
     public actual var pinnedServerCertificate: ByteArray? = null
 
@@ -195,6 +203,7 @@ internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration)
     val isContinuous: Boolean = config.isContinuous
     val documentIDs: List<String>? = config.documentIDs
     val headers: Map<String, String>? = config.headers
+    val isAcceptParentDomainCookies: Boolean = config.isAcceptParentDomainCookies
     val pinnedServerCertificate: ByteArray? = config.pinnedServerCertificate
     val pullFilter: ReplicationFilter? = config.pullFilter
     val pushFilter: ReplicationFilter? = config.pushFilter
@@ -206,6 +215,7 @@ internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration)
 
     val actual: CPointer<CBLReplicatorConfiguration> =
         memory.arena.alloc<CBLReplicatorConfiguration>().also {
+            it.acceptParentDomainCookies = config.isAcceptParentDomainCookies
             it.authenticator = config.authenticator?.actual
             it.channels = config.channels?.toFLArray()?.retain()
             it.conflictResolver = nativeConflictResolver()
