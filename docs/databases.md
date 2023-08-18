@@ -1,4 +1,4 @@
-_Working with Kotbase databases_
+_Working with Couchbase Lite databases_
 
 ## Create or Open Database
 

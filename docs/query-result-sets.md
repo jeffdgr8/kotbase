@@ -2,7 +2,7 @@ _How to use Couchbase Lite Query’s Result Sets_
 
 ## Query Execution
 
-The execution of a Kotbase database query returns an array of results, a result set.
+The execution of a Couchbase Lite database query returns an array of results, a result set.
 
 Each row of the result set represents the data returned from a document that met the conditions defined by the `WHERE`
 statement of your query. The composition of each row is determined by the `SelectResult` expressions provided in the

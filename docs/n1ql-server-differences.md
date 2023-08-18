@@ -21,7 +21,7 @@ In some instances, if required, you can force SQL++ for Mobile to work in the sa
 |       LEFT OUTER NEST        | SELECT * FROM user u<br>LEFT OUTER NEST orders orders<br>ON KEYS ARRAY s.order_id FOR s IN u.order_history END;                                                                | NEST/UNNEST not supported                                                                                                                                                                                 |
 |            ARRAY             | ARRAY i FOR i IN [1, 2] END                                                                                                                                                    | (SELECT VALUE i FROM [1, 2] AS i)                                                                                                                                                                         |
 |         ARRAY FIRST          | ARRAY FIRST arr                                                                                                                                                                | arr[0]                                                                                                                                                                                                    |
-|       LIMIT l OFFSET o       | Allows OFFSET without LIMIT                                                                                                                                                    | Allows OFFSET without LIMIT                                                                                                                                                                               |
+|       LIMIT l OFFSET o       | _Does not_ allow OFFSET without LIMIT                                                                                                                                          | Allows OFFSET without LIMIT                                                                                                                                                                               |
 | UNION, INTERSECT, and EXCEPT | All three are supported (with ALL and DISTINCT variants)                                                                                                                       | Not supported                                                                                                                                                                                             |
 |          OUTER JOIN          | Both LEFT and RIGHT OUTER JOIN supported                                                                                                                                       | Only LEFT OUTER JOIN supported (and necessary for query expressability)                                                                                                                                   |
 |   <, <=, =, etc. operators   | Can compare either complex values or scalar values                                                                                                                             | Only scalar values may be compared                                                                                                                                                                        |
@@ -53,7 +53,7 @@ where the Couchbase Server behavior differs.
 <table>
 <thead>
 <tr>
-<th style="text-align: center; vertical-align: bottom" rowspan="2">Operand<br>a</th>
+<th style="text-align: center; vertical-align: bottom;" rowspan="2">Operand<br>a</th>
 <th style="text-align: center;" colspan="3">SQL++ for Mobile</th>
 <th style="text-align: center;" colspan="3">SQL++ for Server</th>
 </tr>
@@ -101,7 +101,7 @@ where the Couchbase Server behavior differs.
 <td style="text-align: center;">-</td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top" rowspan="4" style="height: auto;"><code>FALSE</code></td>
+<td style="text-align: center;" rowspan="4"><code>FALSE</code></td>
 <td style="text-align: center;"><code>TRUE</code></td>
 <td style="text-align: center;"><code>FALSE</code></td>
 <td style="text-align: center;"><code>TRUE</code></td>
@@ -134,7 +134,7 @@ where the Couchbase Server behavior differs.
 <td style="text-align: center;">-</td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top" rowspan="4" style="height: auto;"><code>NULL</code></td>
+<td style="text-align: center;" rowspan="4"><code>NULL</code></td>
 <td style="text-align: center;"><code>TRUE</code></td>
 <td style="text-align: center;"><code>FALSE</code></td>
 <td style="text-align: center;"><code>TRUE</code></td>
@@ -167,7 +167,7 @@ where the Couchbase Server behavior differs.
 <td style="text-align: center;"><code><strong>NULL</strong></code></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top" rowspan="4" style="height: auto;"><code>MISSING</code></td>
+<td style="text-align: center;" rowspan="4"><code>MISSING</code></td>
 <td style="text-align: center;"><code>TRUE</code></td>
 <td style="text-align: center;"><code>MISSING</code></td>
 <td style="text-align: center;"><code>TRUE</code></td>

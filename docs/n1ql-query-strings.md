@@ -11,7 +11,7 @@ Developers using Kotbase can provide SQL++ query strings using the SQL++ Query A
 the form shown in [Example 2](#example-2).
 
 The structure and semantics of the query format are based on that of Couchbase Server’s SQL++ query language — see
-[SQL++ Reference Guide](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/index.html) and [SQL++
+[SQL++ Reference Guide](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/) and [SQL++
 Data Model](https://docs.couchbase.com/server/current/learn/data/n1ql-versus-sql.html).
 
 ## Running

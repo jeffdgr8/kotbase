@@ -1,4 +1,4 @@
-How to use the Kotbase `Query` API’s `explain()` method to examine a query
+_How to use the Couchbase Lite `Query` API’s `explain()` method to examine a query_
 
 ## Query Explain
 

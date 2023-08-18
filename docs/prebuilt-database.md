@@ -1,5 +1,5 @@
-_How to include a snapshot of a pre-built database in your Kotbase app package to shorten initial sync time and reduce
-bandwidth use_
+_How to include a snapshot of a pre-built database in your Couchbase Lite app package to shorten initial sync time and
+reduce bandwidth use_
 
 ## Overview
 

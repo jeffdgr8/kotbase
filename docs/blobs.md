@@ -2,7 +2,7 @@ _Couchbase Lite database data model concepts — blobs_
 
 ## Introduction
 
-Kotbase uses blobs to store the contents of images, other media files and similar format files as binary objects.
+Couchbase Lite uses blobs to store the contents of images, other media files and similar format files as binary objects.
 
 The blob itself is not stored in the document. It is held in a separate content-addressable store indexed from the
 document and retrieved only on-demand.
