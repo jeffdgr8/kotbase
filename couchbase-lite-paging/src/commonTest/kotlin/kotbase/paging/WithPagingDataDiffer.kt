@@ -37,7 +37,7 @@ suspend fun <T : Any> PagingData<T>.withPagingDataDiffer(
         pagingDataDiffer.submitData(this@withPagingDataDiffer)
     }
     // TODO: figure out better way to await database load completion
-    delay(100)
+    delay(200)
     block(pagingDataDiffer)
     job.cancel()
 }
