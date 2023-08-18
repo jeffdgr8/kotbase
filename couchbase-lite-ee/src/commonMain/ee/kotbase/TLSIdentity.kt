@@ -13,12 +13,16 @@ import kotlinx.datetime.Instant
  */
 public expect class TLSIdentity {
 
+    public val certs: List<ByteArray>
+
+    public val expiration: Instant
+
     public companion object {
 
         /**
          * Get a TLSIdentity backed by the information for the passed alias.
          *
-         * @param alias the keystore alias for the identities entry.
+         * @param alias the keystore alias for the identity's entry.
          * @return the identity
          * @throws CouchbaseLiteException on failure to get identity
          */
@@ -27,7 +31,7 @@ public expect class TLSIdentity {
 
         /**
          * Create self-signed certificate and private key, store them in the canonical keystore,
-         * and return a identity backed by the new entry.
+         * and return an identity backed by the new entry.
          * The identity will be stored in the secure storage using the specified alias
          * and can be recovered using that alias, after this method returns.
          *
@@ -45,5 +49,13 @@ public expect class TLSIdentity {
             expiration: Instant?,
             alias: String
         ): TLSIdentity
+
+        /**
+         * Delete the identity in the keystore with the given alias.
+         *
+         * @throws CouchbaseLiteException on failure to delete identity
+         */
+        @Throws(CouchbaseLiteException::class)
+        public fun deleteIdentity(alias: String)
     }
 }

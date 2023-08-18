@@ -3,9 +3,9 @@ Pod::Spec.new do |spec|
     spec.version                  = '3.0.12-1.0.0-SNAPSHOT'
     spec.homepage                 = 'https://github.com/jeffdgr8/kotbase'
     spec.source                   = { :http=> ''}
-    spec.authors                  = 'Couchbase, Jeff Lockhart'
+    spec.authors                  = 'Jeff Lockhart, Couchbase'
     spec.license                  = 'Apache License, Version 2.0'
-    spec.summary                  = 'Couchbase Lite for Kotlin Multiplatform'
+    spec.summary                  = 'Couchbase Lite Community Edition for Kotlin Multiplatform'
     spec.vendored_frameworks      = 'build/cocoapods/framework/Kotbase.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '9.0'

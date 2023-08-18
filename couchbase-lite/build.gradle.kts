@@ -11,13 +11,10 @@ kotlin {
     cocoapods {
         name = "Kotbase"
         homepage = "https://github.com/jeffdgr8/kotbase"
-        // TODO: this isn't working
-        //  https://youtrack.jetbrains.com/issue/KT-53362
-        //  https://github.com/JetBrains/kotlin/pull/4909
         source = "{ :git => 'https://github.com/jeffdgr8/kotbase.git', :tag => $version }"
-        authors = "Couchbase, Jeff Lockhart"
+        authors = "Jeff Lockhart, Couchbase"
         license = "Apache License, Version 2.0"
-        summary = "Couchbase Lite for Kotlin Multiplatform"
+        summary = "Couchbase Lite Community Edition for Kotlin Multiplatform"
         ios.deploymentTarget = "9.0"
         osx.deploymentTarget = "10.11"
         framework {
@@ -26,8 +23,6 @@ kotlin {
         }
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
-            // use local build
-            //source = path("$rootDir/../couchbase-lite-ios")
             // Workaround for 'CBLQueryMeta' is going to be declared twice
             // https://youtrack.jetbrains.com/issue/KT-41709
             extraOpts = listOf("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")

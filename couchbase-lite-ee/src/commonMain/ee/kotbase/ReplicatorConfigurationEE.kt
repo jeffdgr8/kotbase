@@ -24,5 +24,3 @@ public fun ReplicatorConfiguration.setAcceptOnlySelfSignedServerCertificate(
  * Whether the replicator will accept any and only self-signed server certificates.
  */
 public expect var ReplicatorConfiguration.isAcceptOnlySelfSignedServerCertificate: Boolean
-
-// TODO: provide update EE KTX creator function

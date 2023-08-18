@@ -11,8 +11,9 @@ kotlin {
     cocoapods {
         name = "Kotbase-Enterprise"
         homepage = "https://github.com/jeffdgr8/kotbase"
-        authors = "Couchbase, Jeff Lockhart"
-        license = "Custom, Apache License, Version 2.0"
+        source = "{ :git => 'https://github.com/jeffdgr8/kotbase.git', :tag => $version }"
+        authors = "Jeff Lockhart, Couchbase"
+        license = "Apache License, Version 2.0, Custom"
         summary = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform"
         ios.deploymentTarget = "9.0"
         osx.deploymentTarget = "10.11"

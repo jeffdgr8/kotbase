@@ -210,11 +210,24 @@ public final class kotbase/CommonFlowsKt {
 	public static final fun replicatorChangesFlow (Lkotbase/Replicator;)Lkotlinx/coroutines/flow/Flow;
 }
 
+public final class kotbase/ConfigurationFactoriesEEKt {
+	public static final fun create (Lkotbase/DatabaseConfiguration;Ljava/lang/String;Lcom/couchbase/lite/EncryptionKey;)Lkotbase/DatabaseConfiguration;
+	public static final fun create (Lkotbase/MessageEndpointListenerConfiguration;Lkotbase/Database;Lcom/couchbase/lite/ProtocolType;)Lkotbase/MessageEndpointListenerConfiguration;
+	public static final fun create (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lkotbase/ReplicatorConfiguration;
+	public static final fun create (Lkotbase/URLEndpointListenerConfiguration;Lkotbase/Database;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Lkotbase/TLSIdentity;Lkotbase/ListenerAuthenticator;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lkotbase/URLEndpointListenerConfiguration;
+	public static synthetic fun create$default (Lkotbase/DatabaseConfiguration;Ljava/lang/String;Lcom/couchbase/lite/EncryptionKey;ILjava/lang/Object;)Lkotbase/DatabaseConfiguration;
+	public static synthetic fun create$default (Lkotbase/MessageEndpointListenerConfiguration;Lkotbase/Database;Lcom/couchbase/lite/ProtocolType;ILjava/lang/Object;)Lkotbase/MessageEndpointListenerConfiguration;
+	public static synthetic fun create$default (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/ReplicatorConfiguration;
+	public static synthetic fun create$default (Lkotbase/URLEndpointListenerConfiguration;Lkotbase/Database;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Lkotbase/TLSIdentity;Lkotbase/ListenerAuthenticator;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/URLEndpointListenerConfiguration;
+	public static final fun getMessageEndpointListenerConfigurationFactory ()Lkotbase/MessageEndpointListenerConfiguration;
+	public static final fun getURLEndpointListenerConfigurationFactory ()Lkotbase/URLEndpointListenerConfiguration;
+}
+
 public final class kotbase/ConfigurationFactoriesKt {
 	public static final fun create (Lkotbase/DatabaseConfiguration;Ljava/lang/String;)Lkotbase/DatabaseConfiguration;
-	public static final fun create (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;)Lkotbase/ReplicatorConfiguration;
+	public static final fun create (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lkotbase/ReplicatorConfiguration;
 	public static synthetic fun create$default (Lkotbase/DatabaseConfiguration;Ljava/lang/String;ILjava/lang/Object;)Lkotbase/DatabaseConfiguration;
-	public static synthetic fun create$default (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/ReplicatorConfiguration;
+	public static synthetic fun create$default (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/ReplicatorConfiguration;
 	public static final fun getDatabaseConfigurationFactory ()Lkotbase/DatabaseConfiguration;
 	public static final fun getReplicatorConfigurationFactory ()Lkotbase/ReplicatorConfiguration;
 }
@@ -486,6 +499,10 @@ public final class kotbase/FileLogger : kotbase/base/DelegatedClass, kotbase/Log
 	public fun log (Lcom/couchbase/lite/LogLevel;Lkotbase/LogDomain;Ljava/lang/String;)V
 	public final fun setConfig (Lkotbase/LogFileConfiguration;)V
 	public fun setLevel (Lcom/couchbase/lite/LogLevel;)V
+}
+
+public final class kotbase/FlowsKt {
+	public static final fun messageEndpointChangeFlow (Lkotbase/MessageEndpointListener;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public class kotbase/Fragment {
@@ -1156,8 +1173,11 @@ public final class kotbase/ReplicatorConfiguration : kotbase/base/DelegatedClass
 	public final fun getPushFilter ()Lkotlin/jvm/functions/Function2;
 	public final fun getTarget ()Lkotbase/Endpoint;
 	public final fun getType ()Lkotbase/ReplicatorType;
+	public final fun isAcceptParentDomainCookies ()Z
 	public final fun isAutoPurgeEnabled ()Z
 	public final fun isContinuous ()Z
+	public final fun setAcceptParentDomainCookies (Z)Lkotbase/ReplicatorConfiguration;
+	public final fun setAcceptParentDomainCookies (Z)V
 	public final fun setAuthenticator (Lkotbase/Authenticator;)Lkotbase/ReplicatorConfiguration;
 	public final fun setAuthenticator (Lkotbase/Authenticator;)V
 	public final fun setAutoPurgeEnabled (Z)Lkotbase/ReplicatorConfiguration;
@@ -1323,11 +1343,14 @@ public final class kotbase/SessionAuthenticator : kotbase/Authenticator {
 
 public final class kotbase/TLSIdentity : kotbase/base/DelegatedClass {
 	public static final field Companion Lkotbase/TLSIdentity$Companion;
+	public final fun getCerts ()Ljava/util/List;
+	public final fun getExpiration ()Lkotlinx/datetime/Instant;
 }
 
 public final class kotbase/TLSIdentity$Companion {
 	public final fun createIdentity (ZLjava/util/Map;Lkotlinx/datetime/Instant;Ljava/lang/String;)Lkotbase/TLSIdentity;
 	public final fun createIdentity (ZLjava/util/Map;Lkotlinx/datetime/Instant;Ljava/security/KeyStore;Ljava/lang/String;[C)Lkotbase/TLSIdentity;
+	public final fun deleteIdentity (Ljava/lang/String;)V
 	public final fun getIdentity (Ljava/lang/String;)Lkotbase/TLSIdentity;
 	public final fun getIdentity (Ljava/security/KeyStore;Ljava/lang/String;[C)Lkotbase/TLSIdentity;
 	public final fun useKeyStore (Ljava/security/KeyStore;[C)V
@@ -1426,5 +1449,13 @@ public abstract class kotbase/base/DelegatedClass {
 	public fun getActual ()Ljava/lang/Object;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class kotbase/ext/CertificateExtKt {
+	public static final fun toByteArray (Ljava/security/cert/Certificate;)[B
+	public static final fun toCertificate ([BLjava/security/cert/CertificateFactory;)Ljava/security/cert/Certificate;
+	public static synthetic fun toCertificate$default ([BLjava/security/cert/CertificateFactory;ILjava/lang/Object;)Ljava/security/cert/Certificate;
+	public static final fun toCertificates (Ljava/util/List;Ljava/security/cert/CertificateFactory;)Ljava/util/List;
+	public static synthetic fun toCertificates$default (Ljava/util/List;Ljava/security/cert/CertificateFactory;ILjava/lang/Object;)Ljava/util/List;
 }
 

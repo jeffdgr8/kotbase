@@ -1,6 +1,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.kCBLCertAttrCommonName
+import kotbase.ext.toSecCertificate
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
@@ -102,13 +103,13 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
         return TLSIdentity.createIdentity(false, attrs, null, label)
     }
 
-    protected fun checkCertificateEqual(cert1: SecCertificateRef, cert2: SecCertificateRef) {
+    protected fun checkCertificateEqual(cert1: ByteArray, cert2: ByteArray) {
         memScoped {
             val cn1 = alloc<CFStringRefVar>()
-            assertEquals(errSecSuccess, SecCertificateCopyCommonName(cert1, cn1.ptr))
+            assertEquals(errSecSuccess, SecCertificateCopyCommonName(cert1.toSecCertificate(), cn1.ptr))
 
             val cn2 = alloc<CFStringRefVar>()
-            assertEquals(errSecSuccess, SecCertificateCopyCommonName(cert2, cn2.ptr))
+            assertEquals(errSecSuccess, SecCertificateCopyCommonName(cert2.toSecCertificate(), cn2.ptr))
 
             assertEquals(cn1.value!!, cn2.value!!)
         }

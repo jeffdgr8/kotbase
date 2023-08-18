@@ -2,6 +2,7 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLTLSIdentity
 import kotbase.base.DelegatedClass
+import kotbase.ext.toByteArray
 import kotbase.ext.toNSData
 import kotbase.ext.wrapCBLError
 import kotlinx.datetime.Instant
@@ -14,10 +15,10 @@ public actual class TLSIdentity
 internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(actual) {
 
     @Suppress("UNCHECKED_CAST")
-    public val certs: List<SecCertificateRef>
-        get() = actual.certs as List<SecCertificateRef>
+    public actual val certs: List<ByteArray>
+        get() = (actual.certs as List<SecCertificateRef>).map { it.toByteArray() }
 
-    public val expiration: Instant
+    public actual val expiration: Instant
         get() = actual.expiration.toKotlinInstant()
 
     public actual companion object {
@@ -70,7 +71,7 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
         }
 
         /**
-         * Imports and creates a identity from the given PKCS12 Data. The
+         * Imports and creates an identity from the given PKCS12 Data. The
          * imported identity will be stored in the Keychain with the given alias.
          */
         @Throws(CouchbaseLiteException::class)
@@ -89,11 +90,8 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
             }!!.asTLSIdentity()
         }
 
-        /**
-         * Delete the identity in the Keychain with the given alias.
-         */
         @Throws(CouchbaseLiteException::class)
-        public fun deleteIdentity(alias: String) {
+        public actual fun deleteIdentity(alias: String) {
             wrapCBLError { error ->
                 CBLTLSIdentity.deleteIdentityWithLabel(alias, error)
             }

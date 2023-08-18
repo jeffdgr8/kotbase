@@ -1,7 +1,6 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.*
-import kotbase.ext.toByteArray
 import kotbase.ext.toSecCertificate
 import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.TestUtils.assertThrowsCBL
@@ -28,7 +27,7 @@ import kotlin.time.Duration.Companion.seconds
 // CouchbaseLiteException{CouchbaseLite,22,'Couldn't add a certificate to the Keychain (SecItemAdd returned -25299)'}
 // or
 // kotlin.NullPointerException
-// TODO: identities are not cleaned up in keychain in URLEndpointListenerBaseTest
+// TODO: identities are not cleaned up in keychain in URLEndpointListenerBaseTest (should be in finally {} block)
 @Ignore
 class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
@@ -72,14 +71,14 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             listener.localURLEndpoint,
             false,
             type,
-            listener.tlsIdentity!!.certs[0].toByteArray()
+            listener.tlsIdentity!!.certs[0]
         )
         val repl2 = createReplicator(
             db2,
             listener.localURLEndpoint,
             false,
             type,
-            listener.tlsIdentity?.certs?.get(0)?.toByteArray()
+            listener.tlsIdentity?.certs?.get(0)
         )
         val changeListener = { change: ReplicatorChange ->
             if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
@@ -143,7 +142,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val repl2 = createReplicator(
             db2,
             listener!!.localURLEndpoint,
-            serverCert = listener!!.tlsIdentity?.certs?.get(0)?.toByteArray()
+            serverCert = listener!!.tlsIdentity?.certs?.get(0)
         )
 
         val changeListener = { change: ReplicatorChange ->
@@ -210,7 +209,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val repl1 = createReplicator(
             otherDB,
             listener1.localURLEndpoint,
-            serverCert = listener1.tlsIdentity?.certs?.get(0)?.toByteArray()
+            serverCert = listener1.tlsIdentity?.certs?.get(0)
         )
         val token1 = repl1.addChangeListener { change ->
             if (change.status.activityLevel == ReplicatorActivityLevel.IDLE
@@ -322,7 +321,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         // anonymous identity
         run(
             listener.localURLEndpoint,
-            serverCert = listener.tlsIdentity?.certs?.get(0)?.toByteArray()
+            serverCert = listener.tlsIdentity?.certs?.get(0)
         )
 
         // Different pinned cert
@@ -335,7 +334,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         )
         run(
             listener.localURLEndpoint,
-            serverCert = tlsID.certs[0].toByteArray(),
+            serverCert = tlsID.certs[0],
             expectedError = CBLErrorTLSCertUnknownRoot.toInt()
         )
         TLSIdentity.deleteIdentity("dummy")
@@ -365,7 +364,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         run(
             listener.localURLEndpoint,
-            serverCert = listener.tlsIdentity?.certs?.get(0)?.toByteArray()
+            serverCert = listener.tlsIdentity?.certs?.get(0)
         )
 
         // Different pinned cert
@@ -378,7 +377,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         )
         run(
             listener.localURLEndpoint,
-            serverCert = tlsID.certs[0].toByteArray(),
+            serverCert = tlsID.certs[0],
             expectedError = CBLErrorTLSCertUnknownRoot.toInt()
         )
         TLSIdentity.deleteIdentity("dummy")
@@ -484,7 +483,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // Replicator:
         val auth = ClientCertificateAuthenticator(createTLSIdentity(false)!!)
-        val serverCert = listener.tlsIdentity?.certs?.get(0)?.toByteArray()
+        val serverCert = listener.tlsIdentity?.certs?.get(0)
         run(listener.localURLEndpoint, auth = auth, serverCert = serverCert)
 
         // Cleanup:
@@ -507,7 +506,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // Replicator:
         val auth = ClientCertificateAuthenticator(createTLSIdentity(false)!!)
-        val serverCert = listener.tlsIdentity?.certs?.get(0)?.toByteArray()
+        val serverCert = listener.tlsIdentity?.certs?.get(0)
         run(
             listener.localURLEndpoint,
             auth = auth,
@@ -548,7 +547,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // Replicator:
         val auth = ClientCertificateAuthenticator(identity)
-        val serverCert = listener.tlsIdentity?.certs?.get(0)?.toByteArray()
+        val serverCert = listener.tlsIdentity?.certs?.get(0)
 
         try {
             run(listener.localURLEndpoint, auth = auth, serverCert = serverCert)
@@ -576,7 +575,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // Replicator:
         val auth = ClientCertificateAuthenticator(createTLSIdentity(false)!!)
-        val serverCert = listener.tlsIdentity?.certs?.get(0)?.toByteArray()
+        val serverCert = listener.tlsIdentity?.certs?.get(0)
 
         try {
             run(
@@ -663,7 +662,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         createSingleDocInBaseTestDb("doc-1")
         run(
             listener1.localURLEndpoint,
-            serverCert = listener1.tlsIdentity?.certs?.get(0)?.toByteArray()
+            serverCert = listener1.tlsIdentity?.certs?.get(0)
         )
 
         // since listener1 and listener2 are using same certificates, one listener only needs stop.
@@ -698,7 +697,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val repl2 = createReplicator(
             db2,
             listener!!.localURLEndpoint,
-            serverCert = listener!!.tlsIdentity?.certs?.get(0)?.toByteArray()
+            serverCert = listener!!.tlsIdentity?.certs?.get(0)
         )
 
         val changeListener = { change: ReplicatorChange ->
@@ -773,7 +772,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             // separate replicator instance
             val target = URLEndpoint(url)
             val rConfig = ReplicatorConfiguration(db, target)
-            rConfig.pinnedServerCertificate = listener?.tlsIdentity?.certs?.get(0)?.toByteArray()
+            rConfig.pinnedServerCertificate = listener?.tlsIdentity?.certs?.get(0)
             run(rConfig)
 
             // remove the db
@@ -840,7 +839,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         run(
             listener!!.localURLEndpoint,
-            serverCert = listener!!.tlsIdentity?.certs?.get(0)?.toByteArray(),
+            serverCert = listener!!.tlsIdentity?.certs?.get(0),
             expectedError = CBLErrorHTTPForbidden.toInt()
         )
     }
@@ -855,7 +854,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val listener = startListener()
 
         val serverCert = listener.tlsIdentity!!.certs[0]
-        val serverCertData = serverCert.toByteArray()
+        val serverCertData = serverCert
         val repl = createReplicator(otherDB, listener.localURLEndpoint, serverCert = serverCertData)
         repl.addChangeListener { change ->
             val activity = change.status.activityLevel
@@ -870,17 +869,15 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         repl.start()
 
         assertTrue(x1.lockWithTimeout(5.seconds))
-        var receivedServerCertData = repl.serverCertificates?.get(0)
-        assertNotNull(receivedServerCertData)
-        var receivedServerCert = receivedServerCertData.toSecCertificate()
+        var receivedServerCert = repl.serverCertificates?.get(0)
+        assertNotNull(receivedServerCert)
         checkCertificateEqual(serverCert, receivedServerCert)
 
         repl.stop()
 
         assertTrue(x2.lockWithTimeout(5.seconds))
-        receivedServerCertData = repl.serverCertificates?.get(0)
-        assertNotNull(receivedServerCertData)
-        receivedServerCert = receivedServerCertData.toSecCertificate()
+        receivedServerCert = repl.serverCertificates?.get(0)
+        assertNotNull(receivedServerCert)
         checkCertificateEqual(serverCert, receivedServerCert)
 
         stopListener()
@@ -909,9 +906,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         repl.start()
 
         assertTrue(x1.lockWithTimeout(5.seconds))
-        var receivedServerCertData = repl.serverCertificates?.get(0)
-        assertNotNull(receivedServerCertData)
-        var receivedServerCert = receivedServerCertData.toSecCertificate()
+        var receivedServerCert = repl.serverCertificates?.get(0)
+        assertNotNull(receivedServerCert)
         checkCertificateEqual(serverCert, receivedServerCert)
 
         // Use the receivedServerCert to pin:
@@ -921,7 +917,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         repl = createReplicator(
             otherDB,
             listener.localURLEndpoint,
-            serverCert = serverCert.toByteArray()
+            serverCert = serverCert
         )
         repl.addChangeListener { change ->
             val activity = change.status.activityLevel
@@ -936,17 +932,15 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         repl.start()
 
         assertTrue(x1.lockWithTimeout(5.seconds))
-        receivedServerCertData = repl.serverCertificates?.get(0)
-        assertNotNull(receivedServerCertData)
-        receivedServerCert = receivedServerCertData.toSecCertificate()
+        receivedServerCert = repl.serverCertificates?.get(0)
+        assertNotNull(receivedServerCert)
         checkCertificateEqual(serverCert, receivedServerCert)
 
         repl.stop()
 
         assertTrue(x2.lockWithTimeout(5.seconds))
-        receivedServerCertData = repl.serverCertificates?.get(0)
-        assertNotNull(receivedServerCertData)
-        receivedServerCert = receivedServerCertData.toSecCertificate()
+        receivedServerCert = repl.serverCertificates?.get(0)
+        assertNotNull(receivedServerCert)
         checkCertificateEqual(serverCert, receivedServerCert)
 
         stopListener()
@@ -1038,7 +1032,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // Replicator - Success:
         try {
-            val serverCert = listener.tlsIdentity?.certs?.get(0)?.toByteArray()
+            val serverCert = listener.tlsIdentity?.certs?.get(0)
             run(
                 listener.localURLEndpoint,
                 acceptSelfSignedOnly = false,
@@ -1078,7 +1072,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertEquals(0, otherDB.count)
         run(
             listener!!.localURLEndpoint,
-            serverCert = listener!!.tlsIdentity?.certs?.get(0)?.toByteArray()
+            serverCert = listener!!.tlsIdentity?.certs?.get(0)
         )
         assertEquals(1, otherDB.count)
 
@@ -1139,7 +1133,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         // Replicator - No Authenticator:
         run(
             listener!!.localURLEndpoint,
-            serverCert = listener!!.tlsIdentity?.certs?.get(0)?.toByteArray(),
+            serverCert = listener!!.tlsIdentity?.certs?.get(0),
             expectedError = CBLErrorHTTPAuthRequired.toInt()
         )
 
@@ -1147,7 +1141,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         run(
             listener!!.localURLEndpoint,
             auth = BasicAuthenticator("daneil", "123".toCharArray()),
-            serverCert = listener!!.tlsIdentity?.certs?.get(0)?.toByteArray(),
+            serverCert = listener!!.tlsIdentity?.certs?.get(0),
             expectedError = CBLErrorHTTPAuthRequired.toInt()
         )
 
@@ -1155,7 +1149,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         run(
             listener!!.localURLEndpoint,
             auth = BasicAuthenticator("daniel", "132".toCharArray()),
-            serverCert = listener!!.tlsIdentity?.certs?.get(0)?.toByteArray(),
+            serverCert = listener!!.tlsIdentity?.certs?.get(0),
             expectedError = CBLErrorHTTPAuthRequired.toInt()
         )
 
@@ -1163,7 +1157,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         run(
             listener!!.localURLEndpoint,
             auth = ClientCertificateAuthenticator(createTLSIdentity(false)!!),
-            serverCert = listener!!.tlsIdentity?.certs?.get(0)?.toByteArray(),
+            serverCert = listener!!.tlsIdentity?.certs?.get(0),
             expectedError = CBLErrorHTTPAuthRequired.toInt()
         )
 
@@ -1174,7 +1168,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         run(
             listener!!.localURLEndpoint,
             auth = BasicAuthenticator("daniel", "123".toCharArray()),
-            serverCert = listener!!.tlsIdentity?.certs?.get(0)?.toByteArray()
+            serverCert = listener!!.tlsIdentity?.certs?.get(0)
         )
     }
 
@@ -1201,13 +1195,13 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         // pinning root cert should be successful
         run(
             listener!!.localURLEndpoint,
-            serverCert = identity.certs[1].toByteArray()
+            serverCert = identity.certs[1]
         )
 
         // pinning leaf cert should be successful
         run(
             listener!!.localURLEndpoint,
-            serverCert = identity.certs[0].toByteArray()
+            serverCert = identity.certs[0]
         )
 
         stopListener(listener!!)
@@ -1265,7 +1259,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             run(
                 listener.localURLEndpoint,
                 acceptSelfSignedOnly = true,
-                serverCert = dummyTLSIdentity?.certs?.get(0)?.toByteArray(),
+                serverCert = dummyTLSIdentity?.certs?.get(0),
                 expectedError = CBLErrorTLSCertUnknownRoot.toInt()
             )
         } catch (e: Exception) {
@@ -1276,7 +1270,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         try {
             run(
                 listener.localURLEndpoint,
-                serverCert = listener.tlsIdentity?.certs?.get(0)?.toByteArray()
+                serverCert = listener.tlsIdentity?.certs?.get(0)
             )
         } catch (e: Exception) {
             // ignore
