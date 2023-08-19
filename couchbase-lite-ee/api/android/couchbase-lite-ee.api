@@ -1358,6 +1358,25 @@ public final class kotbase/TLSIdentity$Companion {
 	public final fun getIdentity (Ljava/lang/String;)Lkotbase/TLSIdentity;
 }
 
+public final class kotbase/TLSIdentityKt {
+	public static final fun getCERT_ATTRIBUTE_COMMON_NAME (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_COUNTRY (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_EMAIL_ADDRESS (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_GIVEN_NAME (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_HOSTNAME (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_IP_ADDRESS (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_LOCALITY (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_ORGANIZATION (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_ORGANIZATION_UNIT (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_POSTAL_ADDRESS (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_POSTAL_CODE (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_PSEUDONYM (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_REGISTERED_ID (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_STATE_OR_PROVINCE (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_SURNAME (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+	public static final fun getCERT_ATTRIBUTE_URL (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
+}
+
 public final class kotbase/URLEndpoint : kotbase/base/DelegatedClass, kotbase/Endpoint {
 	public fun <init> (Ljava/lang/String;)V
 	public synthetic fun getActual ()Lcom/couchbase/lite/Endpoint;
