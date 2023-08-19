@@ -51,9 +51,9 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
 
         /**
          * Get an identity with a SecIdentity object. Any intermediate or root certificates
-         * required to identify the certificate but not present in the system wide set of
+         * required to identify the certificate but not present in the system-wide set of
          * trusted anchor certificates need to be specified in the optional certs parameter.
-         * In addition, the specified SecIdenetity object is required to be present in the
+         * In addition, the specified SecIdentity object is required to be present in the
          * KeyChain, otherwise an exception will be thrown.
          */
         @Throws(CouchbaseLiteException::class)

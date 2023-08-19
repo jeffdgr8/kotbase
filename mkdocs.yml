@@ -117,4 +117,5 @@ nav:
       - Remote Sync Gateway: remote-sync-gateway.md
       - Peer-to-Peer:
         - Peer-to-Peer Sync: peer-to-peer-sync.md
+        - Passive Peer: passive-peer.md
   - API Reference: api

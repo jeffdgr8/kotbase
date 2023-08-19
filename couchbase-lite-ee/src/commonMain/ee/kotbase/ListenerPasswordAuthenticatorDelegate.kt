@@ -1,7 +1,7 @@
 package kotbase
 
 /**
- * Functional Interface for an Authenticator that uses an authentication strategy based on a user name and password.
+ * Functional Interface for an Authenticator that uses an authentication strategy based on a username and password.
  * Pass implementations of this interface to the [ListenerPasswordAuthenticator] to realize
  * specific authentication strategies.
  *
@@ -11,5 +11,4 @@ package kotbase
  * @param password client supplied password
  * @return true when the client is authorized.
  */
-public typealias ListenerPasswordAuthenticatorDelegate =
-            (username: String, password: CharArray) -> Boolean
+public typealias ListenerPasswordAuthenticatorDelegate = (username: String, password: CharArray) -> Boolean

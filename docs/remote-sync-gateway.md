@@ -859,6 +859,25 @@ The returned `ReplicatorStatus` structure comprises:
 
 #### Replication Status and App Life Cycle
 
+##### iOS
+
+The following diagram describes the status changes when the application starts a replication, and when the application
+is being backgrounded or foregrounded by the OS. It applies to iOS only.
+
+![iOS Replicator States](assets/images/ios-replicator-states.png){ loading=lazy }
+
+Additionally, on iOS, an app already in the background may be terminated. In this case, the `Database` and `Replicator`
+instances will be `null` when the app returns to the foreground. Therefore, as preventive measure, it is recommended to
+do a `null` check when the app enters the foreground, and to re-initialize the database and replicator if any of those
+are null.
+
+On other platforms, Couchbase Lite doesn’t react to OS backgrounding or foregrounding events and replication(s) will
+continue running as long as the remote system does not terminate the connection and the app does not terminate. It is
+generally recommended to stop replications before going into the background otherwise socket connections may be closed
+by the OS and this may interfere with the replication process.
+
+##### Other Platforms
+
 Couchbase Lite replications will continue running until the app terminates, unless the remote system, or the
 application, terminates the connection.
 

@@ -21,8 +21,8 @@ public object KeyStoreUtils {
      * NOTE:
      * The key data including the private key data will be in memory, temporarily, during the import operation!
      * Android 9 (API 28) or higher has an alternative method that will import keys more securely.
-     * Check the documentation here:
-     * [](https://developer.android.com/training/articles/keystore#ImportingEncryptedKeys)
+     * Check the documentation
+     * [here](https://developer.android.com/training/articles/keystore#ImportingEncryptedKeys)
      * for more info.
      *
      * @param storeType     KeyStore type, eg: "PKCS12"

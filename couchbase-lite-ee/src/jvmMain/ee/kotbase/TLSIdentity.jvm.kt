@@ -21,21 +21,27 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
     public actual companion object {
 
         private var keyStore: KeyStore? = null
-        private var password: CharArray? = null
+        private var keyPassword: CharArray? = null
 
         private fun keyStore(): KeyStore =
             requireNotNull(keyStore) { "Initialize JVM KeyStore with TLSIdentity.useKeyStore()" }
 
-        public fun useKeyStore(keyStore: KeyStore, password: CharArray? = null) {
+        /**
+         * Register a KeyStore and key password to use in common APIs.
+         *
+         * @param keyStore KeyStore to use
+         * @param keyPassword optional key password to use
+         */
+        public fun useKeyStore(keyStore: KeyStore, keyPassword: CharArray? = null) {
             this.keyStore = keyStore
-            this.password = password
+            this.keyPassword = keyPassword
         }
 
         @Throws(CouchbaseLiteException::class)
         public actual fun getIdentity(alias: String): TLSIdentity? = CBLTLSIdentity.getIdentity(
             keyStore(),
             alias,
-            password
+            keyPassword
         )?.asTLSIdentity()
 
         @Throws(CouchbaseLiteException::class)
@@ -50,20 +56,44 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
             expiration?.toDate(),
             keyStore(),
             alias,
-            password
+            keyPassword
         ).asTLSIdentity()
 
+        /**
+         * Get a TLSIdentity object from the give KeyStore, key alias, and key password.
+         * The KeyStore must contain the private key along with the certificate chain at
+         * the given key alias and password, otherwise null will be returned.
+         *
+         * @param keyStore    KeyStore
+         * @param alias       key alias
+         * @param keyPassword key password if available
+         * @return A TLSIdentity object.
+         * @throws CouchbaseLiteException on error
+         */
         @Throws(CouchbaseLiteException::class)
         public fun getIdentity(
             keyStore: KeyStore,
             alias: String,
-            password: CharArray?
+            keyPassword: CharArray?
         ): TLSIdentity? = CBLTLSIdentity.getIdentity(
             keyStore,
             alias,
-            password
+            keyPassword
         )?.asTLSIdentity()
 
+        /**
+         * Create a self-signed certificate TLSIdentity object. The generated private key
+         * will be stored in the KeyStore along with its self-signed certificate.
+         *
+         * @param isServer    The flag indicating that the certificate is for server or client.
+         * @param attributes  The certificate attributes.
+         * @param expiration  The certificate expiration date.
+         * @param keyStore    The KeyStore object for storing the generated private key and certificate.
+         * @param alias       The key alias for storing the generated private key and certificate.
+         * @param keyPassword The password to protect the private key entry in the KeyStore.
+         * @return A TLSIdentity object.
+         * @throws CouchbaseLiteException on failure
+         */
         @Throws(CouchbaseLiteException::class)
         public fun createIdentity(
             isServer: Boolean,
@@ -71,14 +101,14 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
             expiration: Instant?,
             keyStore: KeyStore,
             alias: String,
-            password: CharArray?
+            keyPassword: CharArray?
         ): TLSIdentity = CBLTLSIdentity.createIdentity(
             isServer,
             attributes,
             expiration?.toDate(),
             keyStore,
             alias,
-            password
+            keyPassword
         ).asTLSIdentity()
 
         public actual fun deleteIdentity(alias: String) {
