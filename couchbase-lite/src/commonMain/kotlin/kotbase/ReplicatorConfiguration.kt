@@ -266,6 +266,9 @@ public expect class ReplicatorConfiguration {
 public val ReplicatorConfiguration.Companion.DISABLE_HEARTBEAT: Int
     get() = 2147483
 
+/**
+ * The default conflict resolver used by the replicator.
+ */
 public val ReplicatorConfiguration.Companion.DEFAULT_CONFLICT_RESOLVER: ConflictResolver
     get() = defaultConflictResolver
 
@@ -278,7 +281,7 @@ private val defaultConflictResolver: ConflictResolver by lazy {
 
         // if one of the docs is newer, return it
         val localGen = localDoc.generation
-        val remoteGen: Long = remoteDoc.generation
+        val remoteGen = remoteDoc.generation
         if (localGen > remoteGen) {
             return@cr localDoc
         } else if (localGen < remoteGen) {

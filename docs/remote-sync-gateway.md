@@ -300,10 +300,10 @@ to verify server-supplied TLS server certificates.
         acceptOnlySelfSignedServerCertificate = false,
         ```
 
-        This is the default. Only certificate chains with roots signed by a trusted CA are allowed. Self signed
+        This is the default. Only certificate chains with roots signed by a trusted CA are allowed. Self-signed
         certificates are not allowed.
     
-    === "Self Signed Cert"
+    === "Self-Signed Cert"
 
         Set the client to expect and accept only self-signed certificates.
 
@@ -313,7 +313,7 @@ to verify server-supplied TLS server certificates.
         acceptOnlySelfSignedServerCertificate = true,
         ```
 
-        Set this to `true` to accept any self signed cert. Any certificates that are not self-signed are rejected.
+        Set this to `true` to accept any self-signed cert. Any certificates that are not self-signed are rejected.
     
     === "Pinned Certificate"
 
@@ -321,8 +321,8 @@ to verify server-supplied TLS server certificates.
 
         ```kotlin
         // Use the pinned certificate from the byte array (cert)
-        pinnedServerCertificate =
-        TLSIdentity.getIdentity("Our Corporate Id")?.certs?.firstOrNull()
+        pinnedServerCertificate = TLSIdentity.getIdentity("Our Corporate Id")
+            ?.certs?.firstOrNull()
             ?: throw IllegalStateException("Cannot find corporate id"),
         ```
 
@@ -762,7 +762,7 @@ The default `false` is shown above for completeness only; it is unlikely you wou
 ](#monitor-document-changes) | [Documents Pending Push](#documents-pending-push)
 
 You can monitor a replication’s status by using a combination of [Change Listeners](#change-listeners) and the
-`replication.status.activityLevel` property — see [`activityLevel`](
+`replicator.status.activityLevel` property — see [`activityLevel`](
 /api/couchbase-lite-ee/kotbase/-replicator-status/activity-level.html). This enables you to know, for example, when the
 replication is actively transferring data and when it has stopped.
 
@@ -869,7 +869,7 @@ is being backgrounded or foregrounded by the OS. It applies to iOS only.
 Additionally, on iOS, an app already in the background may be terminated. In this case, the `Database` and `Replicator`
 instances will be `null` when the app returns to the foreground. Therefore, as preventive measure, it is recommended to
 do a `null` check when the app enters the foreground, and to re-initialize the database and replicator if any of those
-are null.
+are `null`.
 
 On other platforms, Couchbase Lite doesn’t react to OS backgrounding or foregrounding events and replication(s) will
 continue running as long as the remote system does not terminate the connection and the app does not terminate. It is
@@ -884,8 +884,8 @@ application, terminates the connection.
 !!! note
 
     Recall that the Android OS may kill an application without warning. You should explicitly stop replication processes
-    when they are no longer useful (for example, when they are `IDLE`) to avoid socket connections being closed by the
-    OS, which may interfere with the replication process.
+    when they are no longer useful (for example, when the app is in the background and the replication is `IDLE`) to
+    avoid socket connections being closed by the OS, which may interfere with the replication process.
 
 ### Monitor Document Changes
 

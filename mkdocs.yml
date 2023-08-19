@@ -118,4 +118,5 @@ nav:
       - Peer-to-Peer:
         - Peer-to-Peer Sync: peer-to-peer-sync.md
         - Passive Peer: passive-peer.md
+        - Active Peer: active-peer.md
   - API Reference: api
