@@ -35,7 +35,6 @@ theme:
   features:
     - content.code.copy
     - content.tabs.link
-    - navigation.expand
     - navigation.footer
     - navigation.instant
     - navigation.tabs
@@ -120,4 +119,5 @@ nav:
         - Passive Peer: passive-peer.md
         - Active Peer: active-peer.md
         - Integrate Custom Listener: integrate-custom-listener.md
+    - Handling Data Conflicts: handling-data-conflicts.md
   - API Reference: api
