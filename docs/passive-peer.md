@@ -29,6 +29,8 @@ _How to set up a listener to accept a replicator connection and sync using peer-
 
 ## Introduction
 
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
+
 This content provides code and configuration examples covering the implementation of [Peer-to-Peer Sync](
 https://docs.couchbase.com/couchbase-lite/current/android/refer-glossary.html#peer-to-peer-sync) over WebSockets.
 Specifically, it covers the implementation of a [Passive Peer](

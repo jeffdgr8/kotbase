@@ -21,6 +21,8 @@ _How to set up a replicator to connect with a listener and replicate changes usi
 
 ## Introduction
 
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
+
 This content provides sample code and configuration examples covering the implementation of Peer-to-Peer Sync over
 WebSockets. Specifically it covers the implementation of an Active Peer.
 
