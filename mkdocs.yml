@@ -120,6 +120,5 @@ nav:
         - Active Peer: active-peer.md
         - Integrate Custom Listener: integrate-custom-listener.md
     - Handling Data Conflicts: handling-data-conflicts.md
-    - Troubleshooting:
-      - Using Logs: using-logs.md
+    - Using Logs: using-logs.md
   - API Reference: api

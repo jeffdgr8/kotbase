@@ -1151,7 +1151,7 @@ activity related to replication with Sync Gateway — see [Example 20](#example-
     Database.log.console.level = LogLevel.DEBUG
     ```
 
-For more on troubleshooting with logs, see [Using Logs](troubleshooting-using-logs.md).
+For more on troubleshooting with logs, see [Using Logs](using-logs.md).
 
 ### Authentication Errors
 
