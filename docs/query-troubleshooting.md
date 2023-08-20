@@ -22,8 +22,8 @@ embed the call inside your app (see [Example 1](#example-1)), or use it interact
     println(query.explain())
     ```
 
-    1. Construct your query as normal
-    2. Call the query’s explain method; all output is sent to the application’s console log.
+1. Construct your query as normal
+2. Call the query’s explain method; all output is sent to the application’s console log.
 
 !!! example "<span id='example-2'>Example 2. Using Query Explain in cblite</span>"
 
@@ -35,9 +35,9 @@ embed the call inside your app (see [Example 1](#example-1)), or use it interact
     (cblite) query --explain {"GROUP_BY":[[".country"]],"ORDER_BY":[[".country"],[".name"]],"WHAT":[[".domains"]]} 
     ```
 
-    1. Within a terminal session open your database with `cblite` and enter your query
-    2. Here the query is entered as a N1QL-query using `select`
-    3. Here the query is entered as a JSON-string using `query`
+1. Within a terminal session open your database with `cblite` and enter your query
+2. Here the query is entered as a N1QL-query using `select`
+3. Here the query is entered as a JSON-string using `query`
 
 ### Output
 
@@ -80,12 +80,12 @@ purposes. For more on SQLite’s Explain Query Plan — see [SQLite Explain Quer
     52|0|0| USE TEMP B-TREE FOR ORDER BY
     ```
 
-    1. **Retrieval method** — This line shows the retrieval method being used for the query; here a sequential read of
-       the database. Something you may well be looking to optimize — see [Retrieval Method](#retrieval-method) for more.
-    2. **Grouping method** — This line shows that the `Group By` clause used in the query requires the data to be sorted
-       and that a b-tree will be used for temporary storage — see [Order and Group](#order-and-group).
-    3. **Ordering method** — This line shows that the `Order By` clause used in the query requires the data to be sorted
-       and that a b-tree will be used for temporary storage — see [Order and Group](#order-and-group).
+1. **Retrieval method** — This line shows the retrieval method being used for the query; here a sequential read of the
+   database. Something you may well be looking to optimize — see [Retrieval Method](#retrieval-method) for more.
+2. **Grouping method** — This line shows that the `Group By` clause used in the query requires the data to be sorted and
+   that a b-tree will be used for temporary storage — see [Order and Group](#order-and-group).
+3. **Ordering method** — This line shows that the `Order By` clause used in the query requires the data to be sorted and
+   that a b-tree will be used for temporary storage — see [Order and Group](#order-and-group).
 
 ### Retrieval Method
 

@@ -132,11 +132,11 @@ This behavior is inline with that of Couchbase Server SQL++ — see example in [
     SELECT DISTINCT address.city
     ```
 
-    1. Use the `*` wildcard to select all properties.
-    2. Select all properties from the `db` data source. Give the object an alias name of `data`.
-    3. Select a pair of properties.
-    4. Select a specific property from the db data source.
-    5. Select the property item `city` from its parent property `address`.
+1. Use the `*` wildcard to select all properties.
+2. Select all properties from the `db` data source. Give the object an alias name of `data`.
+3. Select a pair of properties.
+4. Select a specific property from the db data source.
+5. Select the property item `city` from its parent property `address`.
 
 See [Query Result Sets](result-sets.md) for more on processing query results.
 
@@ -373,8 +373,8 @@ represents the number of results ignored before the query begins returning resul
     SELECT name FROM db  LIMIT 10 OFFSET 10
     ```
 
-    1. Ignore first 10 results
-    2. Ignore first 10 results then return the next 10 results
+1. Ignore first 10 results
+2. Ignore first 10 results then return the next 10 results
 
 ## Expressions
 
@@ -1225,5 +1225,5 @@ To specify substitutable parameters within your query string prefix the name wit
     return query.execute().allResults()
     ```
 
-    1. Define a parameter placeholder `$type`
-    2. Set the value of the `$type` parameter
+1. Define a parameter placeholder `$type`
+2. Set the value of the `$type` parameter

@@ -173,9 +173,9 @@ is constrained.
 
 !!! example "Example 5. Enable delta sync"
 
-```kotlin
-enableDeltaSync = false,
-```
+    ```kotlin
+    enableDeltaSync = false,
+    ```
 
 Delta sync replication is not enabled by default. Use [`URLEndpointListenerConfiguration`](
 /api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/)'s [`isDeltaSyncEnabled`](
