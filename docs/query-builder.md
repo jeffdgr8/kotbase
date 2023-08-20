@@ -724,8 +724,8 @@ shown in [Example 17](#example-17).
 
 #### Query
 
-Here we use `SelectResult.property("<property-name>")` to specify the document properties we
-want our query to return — see [Example 18](#example-18).
+Here we use `SelectResult.property("<property-name>")` to specify the document properties we want our query to return —
+see [Example 18](#example-18).
 
 !!! example "<span id='example-18'>Example 18. Query selecting Specific Properties</span>"
 
