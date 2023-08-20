@@ -5,6 +5,7 @@ import okio.Source
 import okio.buffer
 import okio.source
 import java.io.File
+import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import com.couchbase.lite.Blob as CBLBlob
@@ -18,7 +19,7 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
         CBLBlob(contentType, stream.buffer().inputStream())
     )
 
-    @Throws(CouchbaseLiteException::class)
+    @Throws(IOException::class)
     public actual constructor(contentType: String, fileURL: String) : this(CBLBlob(contentType, fileURL.toFileUrl()))
 
     public actual val content: ByteArray?

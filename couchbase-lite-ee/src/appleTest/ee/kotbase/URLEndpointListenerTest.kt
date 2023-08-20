@@ -854,8 +854,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val listener = startListener()
 
         val serverCert = listener.tlsIdentity!!.certs[0]
-        val serverCertData = serverCert
-        val repl = createReplicator(otherDB, listener.localURLEndpoint, serverCert = serverCertData)
+        val repl = createReplicator(otherDB, listener.localURLEndpoint, serverCert = serverCert)
         repl.addChangeListener { change ->
             val activity = change.status.activityLevel
             if (activity == ReplicatorActivityLevel.IDLE) {
