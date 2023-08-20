@@ -47,10 +47,14 @@ kotbase
 kotbase.base
 kotbase.ext
 kotbase.internal
+module:couchbase-lite-ee-kermit
+kotbase.kemit
 module:couchbase-lite-ee-ktx
 kotbase.ktx
 module:couchbase-lite-ee-paging
 kotbase.paging
+module:couchbase-lite-kermit
+kotbase.kemit
 module:couchbase-lite-ktx
 kotbase.ktx
 module:couchbase-lite-paging

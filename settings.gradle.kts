@@ -3,6 +3,7 @@ rootProject.name = "kotbase"
 include(":couchbase-lite", ":couchbase-lite-ee")
 include(":couchbase-lite-ktx", ":couchbase-lite-ee-ktx")
 include(":couchbase-lite-paging", ":couchbase-lite-ee-paging")
+include(":couchbase-lite-kermit", ":couchbase-lite-ee-kermit")
 include(":testing-support", ":testing-support-ee")
 
 pluginManagement {

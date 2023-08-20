@@ -110,6 +110,29 @@ implementation("dev.kotbase:couchbase-lite-ktx:3.0.12-1.0.0")
 implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.12-1.0.0")
 ```
 
+### Kotbase Kermit
+
+Kotbase Kermit is a Couchbase Lite custom logger which logs to [Kermit](https://github.com/touchlab/Kermit). Kermit can
+direct its logs to any number of log outputs, including the console.
+
+#### Installation
+
+**build.gradle.kts**
+```kotlin
+// Community Edition
+implementation("dev.kotbase:couchbase-lite-kermit:3.0.12-1.0.0")
+// or Enterprise Edition
+implementation("dev.kotbase:couchbase-lite-ee-kermit:3.0.12-1.0.0")
+```
+
+#### Usage
+
+```kotlin
+// Disable default console logs and log to Kermit
+Database.log.console.level = LogLevel.NONE
+Database.log.custom = KermitCouchbaseLiteLogger(kermit)
+```
+
 ### Kotbase Paging
 
 The paging extensions are built on Cash App's [Multiplatform Paging](https://github.com/cashapp/multiplatform-paging),

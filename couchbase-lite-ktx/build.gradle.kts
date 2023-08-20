@@ -18,8 +18,6 @@ kotlin {
         }
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
-            // use local build
-            //source = path("$rootDir/../couchbase-lite-ios")
             linkOnly = true
         }
     }

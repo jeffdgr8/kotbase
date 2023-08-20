@@ -5,16 +5,17 @@ plugins {
 
 kotlin {
     cocoapods {
-        name = "Kotbase-Paging"
+        name = "Kotbase-Kermit"
         homepage = "https://github.com/jeffdgr8/kotbase"
         authors = "Couchbase, Jeff Lockhart"
         license = "Apache License, Version 2.0"
-        summary = "Couchbase Lite for Kotlin Multiplatform AndroidX Paging Extensions"
+        summary = "Couchbase Lite for Kotlin Multiplatform Kermit Logger"
         ios.deploymentTarget = "9.0"
         osx.deploymentTarget = "10.11"
         framework {
             baseName = this@cocoapods.name.replace('-', '_')
             isStatic = false
+            export(libs.kermit.simple)
         }
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
@@ -28,15 +29,15 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.couchbaseLiteKtx)
-                api(libs.paging)
+                api(libs.kermit)
             }
         }
-        commonTest {
+        appleMain {
             dependencies {
-                implementation(projects.testingSupport)
+                api(libs.kermit.simple)
             }
         }
     }
 }
 
-android.namespace = "dev.kotbase.paging"
+android.namespace = "dev.kotbase.kermit"
