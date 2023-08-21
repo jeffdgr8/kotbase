@@ -5,8 +5,10 @@ import kotbase.internal.DbContext
 import kotlinx.cinterop.CPointer
 import libcblite.CBLResultSet_Next
 import libcblite.CBLResultSet_Release
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
+@OptIn(ExperimentalStdlibApi::class)
 public actual class ResultSet
 internal constructor(
     public val actual: CPointer<CBLResultSet>,
@@ -18,6 +20,7 @@ internal constructor(
         val actual = this@ResultSet.actual
     }
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         if (!it.closeCalled) {

@@ -13,14 +13,10 @@ plugins {
 kotlin {
     sourceSets.configureEach {
         languageSettings {
-            optIn("kotlin.ExperimentalStdlibApi")
-            optIn("kotlin.ExperimentalUnsignedTypes")
-
             if (!name.startsWith("common") &&
                 !name.startsWith("jvm") &&
                 !name.startsWith("android")
             ) {
-                optIn("kotlin.experimental.ExperimentalNativeApi")
                 optIn("kotlinx.cinterop.BetaInteropApi")
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
             }

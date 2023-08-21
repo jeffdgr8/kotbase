@@ -67,7 +67,11 @@ internal constructor(
         )
     }
 
-    public actual fun addChangeListener(context: CoroutineContext, listener: ReplicatorChangeSuspendListener): ListenerToken {
+    @OptIn(ExperimentalStdlibApi::class)
+    public actual fun addChangeListener(
+        context: CoroutineContext,
+        listener: ReplicatorChangeSuspendListener
+    ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListenerWithQueue(
             context[CoroutineDispatcher]?.asDispatchQueue(),
@@ -76,6 +80,7 @@ internal constructor(
         return SuspendListenerToken(scope, DelegatedListenerToken(token))
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(scope: CoroutineScope, listener: ReplicatorChangeSuspendListener) {
         val token = actual.addChangeListenerWithQueue(
             scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
@@ -92,6 +97,7 @@ internal constructor(
         )
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentReplicationListener(
         context: CoroutineContext,
         listener: DocumentReplicationSuspendListener
@@ -104,6 +110,7 @@ internal constructor(
         return SuspendListenerToken(scope, DelegatedListenerToken(token))
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentReplicationListener(scope: CoroutineScope, listener: DocumentReplicationSuspendListener) {
         val token = actual.addDocumentReplicationListenerWithQueue(
             scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),

@@ -8,7 +8,8 @@ import okio.Path
 import platform.posix.free
 import platform.posix.strdup
 import platform.posix.strlen
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class DatabaseConfiguration
 public actual constructor(config: DatabaseConfiguration?) {
@@ -23,6 +24,7 @@ public actual constructor(config: DatabaseConfiguration?) {
         val actual = this@DatabaseConfiguration.actual
     }
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         free(it.actual.pointed.directory.buf)

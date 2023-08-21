@@ -7,7 +7,8 @@ import kotbase.util.identityHashCodeHex
 import kotlinx.cinterop.CPointer
 import kotlinx.datetime.Instant
 import libcblite.*
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 import kotlin.reflect.safeCast
 
 public actual open class Document
@@ -28,6 +29,7 @@ internal constructor(
 
     public open val actual: CPointer<CBLDocument> = actual
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         CBLDocument_Release(it.actual)

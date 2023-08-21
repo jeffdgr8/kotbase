@@ -16,7 +16,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import libcblite.*
 import kotlin.coroutines.CoroutineContext
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class Replicator
 private constructor(
@@ -24,6 +25,7 @@ private constructor(
     private val immutableConfig: ImmutableReplicatorConfiguration
 ) {
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLReplicator_Release(it)
@@ -86,7 +88,10 @@ private constructor(
         return addNativeChangeListener(holder)
     }
 
-    public actual fun addChangeListener(context: CoroutineContext, listener: ReplicatorChangeSuspendListener): ListenerToken {
+    public actual fun addChangeListener(
+        context: CoroutineContext,
+        listener: ReplicatorChangeSuspendListener
+    ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val holder = ReplicatorChangeSuspendListenerHolder(listener, this, scope)
         val token = addNativeChangeListener(holder)
@@ -146,7 +151,10 @@ private constructor(
         return SuspendListenerToken(scope, token)
     }
 
-    public actual fun addDocumentReplicationListener(scope: CoroutineScope, listener: DocumentReplicationSuspendListener) {
+    public actual fun addDocumentReplicationListener(
+        scope: CoroutineScope,
+        listener: DocumentReplicationSuspendListener
+    ) {
         val holder = DocumentReplicationSuspendListenerHolder(listener, this, scope)
         val token = addNativeDocumentReplicationListener(holder)
         scope.coroutineContext[Job]?.invokeOnCompletion {

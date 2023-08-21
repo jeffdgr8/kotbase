@@ -6,7 +6,8 @@ import kotbase.internal.fleece.toKString
 import kotbase.util.to
 import kotlinx.cinterop.*
 import libcblite.*
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class ReplicatorConfiguration actual constructor(
     public actual val database: Database,
@@ -181,6 +182,7 @@ internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration)
         return this
     }
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         with(it) {

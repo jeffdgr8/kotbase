@@ -4,6 +4,7 @@ import cocoapods.CouchbaseLite.CBLQueryResult
 import cocoapods.CouchbaseLite.CBLQueryResultSet
 import kotbase.base.DelegatedClass
 
+@OptIn(ExperimentalStdlibApi::class)
 public actual class ResultSet
 internal constructor(actual: CBLQueryResultSet) :
     DelegatedClass<CBLQueryResultSet>(actual), Iterable<Result>, AutoCloseable {

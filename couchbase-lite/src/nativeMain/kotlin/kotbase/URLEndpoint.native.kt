@@ -6,7 +6,8 @@ import kotbase.internal.wrapCBLError
 import kotlinx.cinterop.CPointer
 import libcblite.CBLEndpoint_CreateWithURL
 import libcblite.CBLEndpoint_Free
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class URLEndpoint
 internal constructor(
@@ -14,6 +15,7 @@ internal constructor(
     public actual val url: String
 ) : Endpoint {
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLEndpoint_Free(it)

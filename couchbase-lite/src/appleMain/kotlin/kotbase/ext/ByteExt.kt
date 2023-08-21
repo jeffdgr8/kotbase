@@ -6,14 +6,14 @@ import kotlinx.cinterop.refTo
 import kotlinx.cinterop.usePinned
 import platform.CoreFoundation.*
 import platform.Foundation.NSData
-import platform.Foundation.create
 import platform.Foundation.data
+import platform.Foundation.dataWithBytes
 import platform.posix.memcpy
 
 public fun ByteArray.toNSData(): NSData {
     return if (isNotEmpty()) {
         usePinned {
-            NSData.create(bytes = it.addressOf(0), length = size.convert())
+            NSData.dataWithBytes(it.addressOf(0), length = size.convert())
         }
     } else {
         NSData.data()

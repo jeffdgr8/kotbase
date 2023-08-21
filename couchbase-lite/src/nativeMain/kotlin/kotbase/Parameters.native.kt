@@ -3,7 +3,8 @@ package kotbase
 import kotbase.internal.fleece.*
 import kotlinx.datetime.Instant
 import libcblite.*
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class Parameters
 internal constructor(
@@ -15,6 +16,7 @@ internal constructor(
         FLDict_Retain(actual)
     }
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         FLDict_Release(it)

@@ -224,6 +224,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         )
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken {
         return mustBeOpen {
             val scope = CoroutineScope(SupervisorJob() + context)
@@ -235,6 +236,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         mustBeOpen {
             val token = actual.addChangeListenerWithQueue(
@@ -265,6 +267,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         )
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentChangeListener(
         id: String,
         context: CoroutineContext,
@@ -281,6 +284,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentChangeListener(
         id: String,
         scope: CoroutineScope,

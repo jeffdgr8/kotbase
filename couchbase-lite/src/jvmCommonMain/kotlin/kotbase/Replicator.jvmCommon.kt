@@ -60,7 +60,11 @@ internal constructor(
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken =
         actual.addChangeListener(listener.convert(this))
 
-    public actual fun addChangeListener(context: CoroutineContext, listener: ReplicatorChangeSuspendListener): ListenerToken {
+    @OptIn(ExperimentalStdlibApi::class)
+    public actual fun addChangeListener(
+        context: CoroutineContext,
+        listener: ReplicatorChangeSuspendListener
+    ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListener(
             context[CoroutineDispatcher]?.asExecutor(),
@@ -69,6 +73,7 @@ internal constructor(
         return SuspendListenerToken(scope, token)
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(scope: CoroutineScope, listener: ReplicatorChangeSuspendListener) {
         val token = actual.addChangeListener(
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
@@ -82,6 +87,7 @@ internal constructor(
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken =
         actual.addDocumentReplicationListener(listener.convert(this))
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentReplicationListener(
         context: CoroutineContext,
         listener: DocumentReplicationSuspendListener
@@ -94,7 +100,11 @@ internal constructor(
         return SuspendListenerToken(scope, token)
     }
 
-    public actual fun addDocumentReplicationListener(scope: CoroutineScope, listener: DocumentReplicationSuspendListener) {
+    @OptIn(ExperimentalStdlibApi::class)
+    public actual fun addDocumentReplicationListener(
+        scope: CoroutineScope,
+        listener: DocumentReplicationSuspendListener
+    ) {
         val token = actual.addDocumentReplicationListener(
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
             listener.convert(this, scope)

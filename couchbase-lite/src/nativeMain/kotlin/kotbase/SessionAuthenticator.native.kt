@@ -5,7 +5,8 @@ import kotbase.internal.fleece.toFLString
 import kotlinx.cinterop.CPointer
 import libcblite.CBLAuth_CreateSession
 import libcblite.CBLAuth_Free
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class SessionAuthenticator
 actual constructor(
@@ -19,6 +20,7 @@ actual constructor(
             (cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME).toFLString()
         )!!
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLAuth_Free(it)

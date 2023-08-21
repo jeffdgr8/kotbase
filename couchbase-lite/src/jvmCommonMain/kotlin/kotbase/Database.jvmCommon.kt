@@ -132,6 +132,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken =
         actual.addChangeListener(listener.convert())
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(
         context: CoroutineContext,
         listener: DatabaseChangeSuspendListener
@@ -141,6 +142,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         return SuspendListenerToken(scope, token)
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         val token = actual.addChangeListener(
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
@@ -163,6 +165,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken =
         actual.addDocumentChangeListener(id, listener.convert())
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentChangeListener(
         id: String,
         context: CoroutineContext,
@@ -177,6 +180,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         return SuspendListenerToken(scope, token)
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentChangeListener(
         id: String,
         scope: CoroutineScope,

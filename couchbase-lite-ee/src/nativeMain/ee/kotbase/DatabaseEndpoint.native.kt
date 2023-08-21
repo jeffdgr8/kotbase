@@ -4,7 +4,8 @@ import cnames.structs.CBLEndpoint
 import kotlinx.cinterop.CPointer
 import libcblite.CBLEndpoint_CreateWithLocalDB
 import libcblite.CBLEndpoint_Free
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class DatabaseEndpoint
 internal constructor(
@@ -12,6 +13,7 @@ internal constructor(
     public actual val database: Database
 ) : Endpoint {
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLEndpoint_Free(it)

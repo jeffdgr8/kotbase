@@ -10,7 +10,8 @@ import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
 import libcblite.*
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class Result
 private constructor(
@@ -39,6 +40,7 @@ private constructor(
         FLDict_Retain(dict)
     }
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         CBLQuery_Release(it.query)

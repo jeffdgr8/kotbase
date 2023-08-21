@@ -15,7 +15,8 @@ import platform.posix.EINVAL
 import platform.posix.R_OK
 import platform.posix.access
 import platform.posix.errno
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 private const val MIME_UNKNOWN = "application/octet-stream"
 
@@ -34,6 +35,7 @@ private constructor(
         var actual: CPointer<CBLBlob>? = actual
     }
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         CBLBlob_Release(it.actual)
@@ -241,6 +243,7 @@ private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : So
         val actual = this@BlobReadStreamSource.actual
     }
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         if (!it.closeCalled) {
@@ -300,6 +303,7 @@ private fun String.toFileSource(): Source {
     return fs.source(path)
 }
 
+@OptIn(ExperimentalNativeApi::class)
 private fun String.toFilePath(): Path {
     val match = """^(?:([a-zA-Z][a-zA-Z0-9+.-]*):)?.+$""".toRegex()
         .matchEntire(this)

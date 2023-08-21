@@ -41,6 +41,7 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
         assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     private suspend fun checkContext(context: CoroutineContext) {
         assertEquals(context[CoroutineDispatcher], coroutineContext[CoroutineDispatcher])
         assertEquals(context[CoroutineName], coroutineContext[CoroutineName])

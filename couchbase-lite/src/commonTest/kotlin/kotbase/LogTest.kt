@@ -12,6 +12,7 @@ import kotbase.test.AfterClass
 import kotlin.jvm.JvmStatic
 import kotlin.test.*
 
+@OptIn(ExperimentalStdlibApi::class)
 class LogTest : BaseDbTest() {
 
 //    private class SingleLineLogger(private val prefix: String?) : Logger {

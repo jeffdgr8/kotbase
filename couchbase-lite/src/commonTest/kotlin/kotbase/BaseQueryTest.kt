@@ -2,6 +2,7 @@ package kotbase
 
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalStdlibApi::class)
 abstract class BaseQueryTest : BaseDbTest() {
 
     fun interface QueryResult {

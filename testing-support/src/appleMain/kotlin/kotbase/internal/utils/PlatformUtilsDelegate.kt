@@ -4,10 +4,12 @@ import okio.FileSystem
 import okio.Path.Companion.toPath
 import okio.Source
 import platform.Foundation.NSBundle
-import kotlin.native.internal.GC
+import kotlin.native.runtime.GC
+import kotlin.native.runtime.NativeRuntimeApi
 
 actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
 
+    @OptIn(NativeRuntimeApi::class)
     override fun gc() {
         GC.collect()
     }

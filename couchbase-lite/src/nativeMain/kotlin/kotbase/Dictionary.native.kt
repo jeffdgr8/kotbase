@@ -5,7 +5,8 @@ import kotbase.internal.fleece.*
 import kotlinx.cinterop.reinterpret
 import kotlinx.datetime.Instant
 import libcblite.*
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 import kotlin.reflect.safeCast
 
 public actual open class Dictionary
@@ -31,6 +32,7 @@ internal constructor(
             }
         }
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         FLDict_Release(it)

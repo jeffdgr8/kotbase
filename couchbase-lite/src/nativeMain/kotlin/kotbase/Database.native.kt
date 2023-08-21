@@ -17,7 +17,8 @@ import kotlinx.coroutines.*
 import kotlinx.datetime.Instant
 import libcblite.*
 import kotlin.coroutines.CoroutineContext
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class Database
 internal constructor(
@@ -25,6 +26,7 @@ internal constructor(
     private val _config: DatabaseConfiguration
 ) {
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
         CBLDatabase_Release(it)
@@ -435,7 +437,10 @@ internal constructor(
         }
     }
 
-    private fun addNativeDocumentChangeListener(id: String, holder: DocumentChangeListenerHolder): DelegatedListenerToken {
+    private fun addNativeDocumentChangeListener(
+        id: String,
+        holder: DocumentChangeListenerHolder
+    ): DelegatedListenerToken {
         val (index, stableRef) = addListener(documentChangeListeners, holder)
         return DelegatedListenerToken(
             CBLDatabase_AddDocumentChangeListener(

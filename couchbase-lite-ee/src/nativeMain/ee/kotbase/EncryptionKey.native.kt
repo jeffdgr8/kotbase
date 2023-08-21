@@ -7,13 +7,15 @@ import libcblite.CBLEncryptionKey_FromPassword
 import libcblite.kCBLEncryptionAES256
 import libcblite.kCBLEncryptionKeySizeAES256
 import platform.posix.memcpy
-import kotlin.native.internal.createCleaner
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class EncryptionKey
 internal constructor(actual: CPointer<CBLEncryptionKey>? = null) {
 
     private val arena = Arena()
 
+    @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(arena) {
         it.clear()

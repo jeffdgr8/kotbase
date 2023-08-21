@@ -11,6 +11,7 @@ import kotlin.test.*
 // baseTestDb is managed by the superclass
 // If a test opens a new database it guarantee that it is deleted.
 // If a test opens a copy of the baseTestDb, it must close (but NOT delete)
+@OptIn(ExperimentalStdlibApi::class)
 class DatabaseTest : BaseDbTest() {
 
     //---------------------------------------------
