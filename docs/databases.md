@@ -130,6 +130,11 @@ The `adb pull` command can be used to pull a specific database to your host mach
     $ adb pull /data/data/{APPLICATION_ID}/files/{DATABASE_NAME}.cblite2 .
     ```
 
+### iOS
+
+When the application is running on the iOS simulator, you can locate the application’s sandbox directory using the
+[OpenSim](https://github.com/luosheng/OpenSim) utility.
+
 ## Database Maintenance
 
 From time to time it may be necessary to perform certain maintenance activities on your database, for example to compact the database file, removing unused documents and blobs no longer referenced by any documents.

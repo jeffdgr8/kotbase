@@ -1,4 +1,4 @@
-Build and run a starter app using Kotbase
+_Build and run a starter app using Kotbase_
 
 ## Introduction
 
@@ -18,7 +18,9 @@ the git repository under examples.
        The log output, in the app's UI or console panel, will show output similar to that in [Figure 1](#figure-1)
     4. That’s it.
 
-```title="<span id='figure-1'>Figure 1: Example app output</span>"
+<span id='figure-1'>**Figure 1: Example app output**</span>
+
+```
 08-06 23:34:10.332 I/SHARED_KOTLIN: Database created: desktopApp-db
 08-06 23:34:10.347 I/DESKTOP_APP: Created document :: 6ee12f44-d619-4c06-a52d-14ffaa6e5bee
 08-06 23:34:10.350 I/SHARED_KOTLIN: Retrieved document:
@@ -36,7 +38,7 @@ The Getting Started app [shows examples](
 https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt)
 of the essential Couchbase Lite CRUD operations, including:
 
-* Create database
+* Create a database
 * Create a document
 * Retrieve a document
 * Update a document

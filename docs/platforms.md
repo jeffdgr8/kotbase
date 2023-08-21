@@ -15,9 +15,9 @@ Kotbase will pull in the correct Couchbase Lite Java dependencies via Gradle.
 
 An application that enables ProGuard minification must ensure that certain pieces of Couchbase Lite library code are not changed.
 
-??? note "Near-minimal rule set that retains the needed code"
+??? example "Near-minimal rule set that retains the needed code"
 
-    ```
+    ```title="proguard-rules.pro"
     -keep class com.couchbase.lite.ConnectionStatus { <init>(...); }
     -keep class com.couchbase.lite.LiteCoreException { static <methods>; }
     -keep class com.couchbase.lite.internal.replicator.CBLTrustManager {

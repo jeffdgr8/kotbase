@@ -5,7 +5,7 @@ hide:
 
 Kotbase's API aligns with the [Java](https://docs.couchbase.com/couchbase-lite/current/java/quickstart.html) and
 [Android KTX](https://docs.couchbase.com/couchbase-lite/current/android/quickstart.html) SDKs. Migrating existing Kotlin
-code can be as straightforward as changing the import package from `com.couchbase.lite` to `kotbase`, with a few
+code can be as straightforward as changing the import package from `com.couchbase.lite` to `kotbase`, with some
 exceptions:
 
 * Java callback functional interfaces are implemented as Kotlin function types.
@@ -26,7 +26,7 @@ exceptions:
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
-??? example "Subscript API"
+??? example "Subscript API examples"
 
     ```kotlin
     val db = Database("db")
