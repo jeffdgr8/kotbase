@@ -113,8 +113,8 @@ nav:
     - Full Text Search: full-text-search.md
     - Indexing: indexing.md
     - Data Sync:
-      - Intra-device Sync: intra-device-sync.md
       - Remote Sync Gateway: remote-sync-gateway.md
+      - Intra-device Sync: intra-device-sync.md
       - Peer-to-Peer:
         - Peer-to-Peer Sync: peer-to-peer-sync.md
         - Passive Peer: passive-peer.md

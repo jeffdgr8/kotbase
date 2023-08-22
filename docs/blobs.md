@@ -52,14 +52,14 @@ use _avatar_ as the property key and a jpeg file as the blob data.
     val bytes = doc?.getBlob("avatar")?.content
     ```
 
-    * Prepare a document to use for the example.
-    * Create the blob using the retrieved image and set `image/jpg` as the blob MIME type.
-    * Add the blob to a document, using `avatar` as the property key.
-    * Saving the document generates a random access key for each blob stored in `digest` a SHA-1 encrypted property —
-      see [Figure 1](#figure-1).
-    * Use the `avatar` key to retrieve the blob object later. Note, this is the identity of the blob assigned by us; the
-      replication auto-generates a blob for attachments and assigns its own name to it (for example, `blob_1`) — see
-      [Figure 1](#figure-1). The `digest` key will be the same as generated when we saved the blob document.
+1. Prepare a document to use for the example.
+2. Create the blob using the retrieved image and set `image/jpg` as the blob MIME type.
+3. Add the blob to a document, using `avatar` as the property key.
+4. Saving the document generates a random access key for each blob stored in `digest` a SHA-1 encrypted property — see
+   [Figure 1](#figure-1).
+5. Use the `avatar` key to retrieve the blob object later. Note, this is the identity of the blob assigned by us; the
+   replication auto-generates a blob for attachments and assigns its own name to it (for example, `blob_1`) — see
+   [Figure 1](#figure-1). The `digest` key will be the same as generated when we saved the blob document.
 
 ## Syncing
 

@@ -220,52 +220,56 @@ where the `public_likes` array property contains a value equal to "Armani Langwo
 }
 ```
 
-```kotlin
-val query = QueryBuilder
-    .select(
-        SelectResult.expression(Meta.id),
-        SelectResult.property("name"),
-        SelectResult.property("public_likes")
-    )
-    .from(DataSource.database(database))
-    .where(
-        Expression.property("type").equalTo(Expression.string("hotel"))
-            .and(
-                ArrayFunction.contains(
-                    Expression.property("public_likes"),
-                    Expression.string("Armani Langworth")
+!!! example "Example 7. Using the CONTAINS operator"
+
+    ```kotlin
+    val query = QueryBuilder
+        .select(
+            SelectResult.expression(Meta.id),
+            SelectResult.property("name"),
+            SelectResult.property("public_likes")
+        )
+        .from(DataSource.database(database))
+        .where(
+            Expression.property("type").equalTo(Expression.string("hotel"))
+                .and(
+                    ArrayFunction.contains(
+                        Expression.property("public_likes"),
+                        Expression.string("Armani Langworth")
+                    )
                 )
-            )
-    )
-query.execute().use { rs ->
-    rs.forEach {
-        println("public_likes -> ${it.getArray("public_likes")?.toList()}")
+        )
+    query.execute().use { rs ->
+        rs.forEach {
+            println("public_likes -> ${it.getArray("public_likes")?.toList()}")
+        }
     }
-}
-```
+    ```
 
 #### IN Operator
 
 The `IN` operator is useful when you need to explicitly list out the values to test against. The following example looks
 for documents whose `first`, `last`, or `username` property value equals "Armani".
 
-```kotlin
-val query = QueryBuilder.select(SelectResult.all())
-    .from(DataSource.database(database))
-    .where(
-        Expression.string("Armani").`in`(
-            Expression.property("first"),
-            Expression.property("last"),
-            Expression.property("username")
-        )
-    )
+!!! example "Example 8. Using the IN operator"
 
-query.execute().use { rs ->
-    rs.forEach {
-        println("public_likes -> ${it.toMap()}")
+    ```kotlin
+    val query = QueryBuilder.select(SelectResult.all())
+        .from(DataSource.database(database))
+        .where(
+            Expression.string("Armani").`in`(
+                Expression.property("first"),
+                Expression.property("last"),
+                Expression.property("username")
+            )
+        )
+    
+    query.execute().use { rs ->
+        rs.forEach {
+            println("public_likes -> ${it.toMap()}")
+        }
     }
-}
-```
+    ```
 
 ### Like Operator
 
@@ -275,7 +279,7 @@ query.execute().use { rs ->
 #### String Matching
 
 The [`like()`](/api/couchbase-lite-ee/kotbase/-expression/like.html) operator can be used for string matching — see
-[Example 7](#example-7).
+[Example 9](#example-9).
 
 !!! note
 
@@ -286,7 +290,7 @@ The [`like()`](/api/couchbase-lite-ee/kotbase/-expression/like.html) operator ca
 This query returns `landmark` type documents where the `name` matches the string "Royal Engineers Museum", regardless of
 how it is capitalized (so, it selects "royal engineers museum", "ROYAL ENGINEERS MUSEUM" and so on).
 
-!!! example "<span id='example-7'>Example 7. Like with case-insensitive matching</span>"
+!!! example "<span id='example-9'>Example 9. Like with case-insensitive matching</span>"
 
     ```kotlin
     val query = QueryBuilder
@@ -317,14 +321,14 @@ how it is capitalized (so, it selects "royal engineers museum", "ROYAL ENGINEERS
 We can use `%` sign within a `like` expression to do a wildcard match against zero or more characters. Using wildcards
 allows you to have some fuzziness in your search string.
 
-In [Example 8](#example-8) below, we are looking for documents of `type` "landmark" where the name property matches any
+In [Example 10](#example-10) below, we are looking for documents of `type` "landmark" where the name property matches any
 string that begins with "eng" followed by zero or more characters, the letter "e", followed by zero or more characters.
-Once again, we are using `Function.lower()` to make the search case insensitive.
+Once again, we are using `Function.lower()` to make the search case-insensitive.
 
 So the query returns "landmark" documents with names such as "Engineers", "engine", "english egg" and "England Eagle".
 Notice that the matches may span word boundaries.
 
-!!! example "<span id='example-8'>Example 8. Wildcard Matches</span>"
+!!! example "<span id='example-10'>Example 10. Wildcard Matches</span>"
 
     ```kotlin
     val query = QueryBuilder
@@ -352,11 +356,11 @@ Notice that the matches may span word boundaries.
 
 We can use an `_` sign within a `like` expression to do a wildcard match against a single character.
 
-In [Example 9](#example-9) below, we are looking for documents of type "landmark" where the `name` property matches any
+In [Example 11](#example-11) below, we are looking for documents of type "landmark" where the `name` property matches any
 string that begins with "eng" followed by exactly 4 wildcard characters and ending in the letter "r". The query returns
 "landmark" type documents with names such as "Engineer", "engineer" and so on.
 
-!!! example "<span id='example-9'>Example 9. Wildcard Character Matching</span>"
+!!! example "<span id='example-11'>Example 11. Wildcard Character Matching</span>"
 
     ```kotlin
     val query = QueryBuilder
@@ -383,13 +387,13 @@ string that begins with "eng" followed by exactly 4 wildcard characters and endi
 ### Regex Operator
 
 Similar to the wildcards in `like` expressions, `regex` based pattern matching allow you to introduce an element of
-fuzziness in your search string — see the code shown in [Example 10](#example-10).
+fuzziness in your search string — see the code shown in [Example 12](#example-12).
 
 !!! note
 
     The regex operator is case sensitive, use `upper` or `lower` functions to mitigate this if required.
 
-!!! example "<span id='example-10'>Example 10. Using Regular Expressions</span>"
+!!! example "<span id='example-12'>Example 12. Using Regular Expressions</span>"
 
     This example returns documents with a `type` of "landmark" and a `name` property that matches any string that begins
     with "eng" and ends in the letter "e".
@@ -425,9 +429,9 @@ fuzziness in your search string — see the code shown in [Example 10](#example-
 
 ### Deleted Document
 
-You can query documents that have been deleted (tombstones) as shown in [Example 11](#example-11).
+You can query documents that have been deleted (tombstones) as shown in [Example 13](#example-13).
 
-!!! example "<span id='example-11'>Example 11. Query to select Deleted Documents</span>"
+!!! example "<span id='example-13'>Example 13. Query to select Deleted Documents</span>"
 
     This example shows how to query deleted documents in the database. It returns is an array of key-value pairs.
 
@@ -442,10 +446,10 @@ You can query documents that have been deleted (tombstones) as shown in [Example
 ## JOIN statement
 
 The `JOIN` clause enables you to select data from multiple documents that have been linked by criteria specified in the
-`JOIN` statement. For example to combine airline details with route details, linked by the airline id — see [Example
-12](#example-12).
+`JOIN` statement. For example to combine airline details with route details, linked by the airline id — see [Example 14
+](#example-14).
 
-!!! example "<span id='example-12'>Example 12. Using JOIN to Combine Document Details</span>"
+!!! example "<span id='example-14'>Example 14. Using JOIN to Combine Document Details</span>"
 
     This example JOINS the document of `type` "route" with documents of `type` "airline" using the document ID (`_id`)
     on the _airline_ document and `airlineid` on the _route_ document.
@@ -502,7 +506,7 @@ country and timezone.
 }
 ```
 
-!!! example "<span id='example-13'>Example 13. Query using GroupBy</span>"
+!!! example "<span id='example-15'>Example 15. Query using GroupBy</span>"
 
     This example shows a query that selects all airports with an altitude above 300ft. The output (a count, $1) is
     grouped by country, within timezone.
@@ -536,7 +540,7 @@ country and timezone.
     }
     ```
 
-The query shown in [Example 13](#example-13) generates the following output:
+The query shown in [Example 15](#example-15) generates the following output:
 
 > There are 138 airports on the Europe/Paris timezone located in France and above 300 ft  
 > There are 29 airports on the Europe/London timezone located in United Kingdom and above 300 ft  
@@ -546,9 +550,9 @@ The query shown in [Example 13](#example-13) generates the following output:
 
 ## ORDER BY statement
 
-It is possible to sort the results of a query based on a given expression result — see [Example 14](#example-14).
+It is possible to sort the results of a query based on a given expression result — see [Example 16](#example-16).
 
-!!! example "<span id='example-14'>Example 14. Query using OrderBy</span>"
+!!! example "<span id='example-16'>Example 16. Query using OrderBy</span>"
 
     This example shows a query that returns documents of `type` equal to "hotel" sorted in ascending order by the value
     of the `title` property.
@@ -571,7 +575,7 @@ It is possible to sort the results of a query based on a given expression result
     }
     ```
 
-The query shown in [Example 14](#example-14) generates the following output:
+The query shown in [Example 16](#example-16) generates the following output:
 
 > Aberdyfi  
 > Achiltibuie  
@@ -642,9 +646,9 @@ The execution of a Kotbase database query typically returns an array of results,
 #### Query
 
 The `Select` statement for this type of query, returns all document properties for each document matching the query
-criteria — see [Example 15](#example-15).
+criteria — see [Example 17](#example-17).
 
-!!! example "<span id='example-15'>Example 15. Query selecting All Properties</span>"
+!!! example "<span id='example-17'>Example 17. Query selecting All Properties</span>"
 
     ```kotlin
     val query = QueryBuilder.select(SelectResult.all())
@@ -657,9 +661,9 @@ The result set returned by queries using `SelectResult.all()` is an array of dic
 matching the query criteria.
 
 For each result object, the key is the database name and the value is a dictionary representing each document property
-as a key-value pair — see [Example 16](#example-16).
+as a key-value pair — see [Example 18](#example-18).
 
-!!! example "<span id='example-16'>Example 16. Format of Result Set (All Properties)</span>"
+!!! example "<span id='example-18'>Example 18. Format of Result Set (All Properties)</span>"
 
     ```json
     [
@@ -691,9 +695,9 @@ as a key-value pair — see [Example 16](#example-16).
 #### Result Set Access
 
 In this case access the retrieved document properties by converting each row’s value, in turn, to a dictionary — as
-shown in [Example 17](#example-17).
+shown in [Example 19](#example-19).
 
-!!! example "<span id='example-17'>Example 17. Using Document Properties (All)</span>"
+!!! example "<span id='example-19'>Example 19. Using Document Properties (All)</span>"
 
     ```kotlin
     val hotels = mutableMapOf<String, Hotel>()
@@ -725,9 +729,9 @@ shown in [Example 17](#example-17).
 #### Query
 
 Here we use `SelectResult.property("<property-name>")` to specify the document properties we want our query to return —
-see [Example 18](#example-18).
+see [Example 20](#example-20).
 
-!!! example "<span id='example-18'>Example 18. Query selecting Specific Properties</span>"
+!!! example "<span id='example-20'>Example 20. Query selecting Specific Properties</span>"
 
     ```kotlin
     val query = QueryBuilder
@@ -744,9 +748,9 @@ see [Example 18](#example-18).
 The result set returned when selecting only specific document properties is an array of dictionary objects — one for
 each document matching the query criteria.
 
-Each result object comprises a key-value pair for each selected document property — see [Example 19](#example-19).
+Each result object comprises a key-value pair for each selected document property — see [Example 21](#example-21).
 
-!!! example "<span id='example-19'>Example 19. Format of Result Set (Specific Properties)</span>"
+!!! example "<span id='example-21'>Example 21. Format of Result Set (Specific Properties)</span>"
 
     ```json
     [
@@ -765,9 +769,9 @@ Each result object comprises a key-value pair for each selected document propert
 
 #### Result Set Access
 
-Access the retrieved properties by converting each row into a dictionary — as shown in [Example 20](#example-20).
+Access the retrieved properties by converting each row into a dictionary — as shown in [Example 22](#example-22).
 
-!!! example "<span id='example-20'>Example 20. Using Returned Document Properties (Specific Properties)</span>"
+!!! example "<span id='example-22'>Example 22. Using Returned Document Properties (Specific Properties)</span>"
 
     ```kotlin
     query.execute().use { rs ->
@@ -782,9 +786,9 @@ Access the retrieved properties by converting each row into a dictionary — as 
 #### Query
 
 You would typically use this type of query if retrieval of document properties directly would consume excessive amounts
-of memory and-or processing time — see [Example 21](#example-21).
+of memory and-or processing time — see [Example 23](#example-23).
 
-!!! example "<span id='example-21'>Example 21. Query selecting only Doc ID</span>"
+!!! example "<span id='example-23'>Example 23. Query selecting only Doc ID</span>"
 
     ```kotlin
     val query = QueryBuilder
@@ -798,27 +802,27 @@ of memory and-or processing time — see [Example 21](#example-21).
 
 The result set returned by queries using a `SelectResult` expression of the form `SelectResult.expression(Meta.id)` is
 an array of dictionary objects — one for each document matching the query criteria. Each result object has `id` as the
-key and the ID value as its value — see [Example 22](#example-22).
+key and the ID value as its value — see [Example 24](#example-24).
 
-!!! example "<span id='example-22'>Example 22. Format of Result Set (Doc ID only)</span>"
+!!! example "<span id='example-24'>Example 24. Format of Result Set (Doc ID only)</span>"
 
-```json
-[
-  {
-    "id": "hotel123"
-  },
-  {
-    "id": "hotel456"
-  }
-]
-```
+    ```json
+    [
+      {
+        "id": "hotel123"
+      },
+      {
+        "id": "hotel456"
+      }
+    ]
+    ```
 
 #### Result Set Access
 
 In this case, access the required document’s properties by unpacking the `id` and using it to get the document from the
-database — see [Example 23](#example-23).
+database — see [Example 25](#example-25).
 
-!!! example "<span id='example-23'>Example 23. Using Returned Document Properties (Document ID)</span>"
+!!! example "<span id='example-25'>Example 25. Using Returned Document Properties (Document ID)</span>"
 
     ```kotlin
     query.execute().use { rs ->
@@ -837,7 +841,7 @@ database — see [Example 23](#example-23).
 
 #### Query
 
-!!! example "<span id='example-24'>Example 24. Query selecting a Count-only</span>"
+!!! example "<span id='example-26'>Example 26. Query selecting a Count-only</span>"
 
     ```kotlin
     val query = QueryBuilder
@@ -852,10 +856,10 @@ database — see [Example 23](#example-23).
 #### Result Set Format
 
 The result set returned by a count such as `Select.expression(Function.count(Expression.all)))` is a key-value pair. The
-key is the count name, as defined using `SelectResult.as()` — see [Example 25](#example-25) for the format and [Example
-24](#example-24) for the query.
+key is the count name, as defined using `SelectResult.as()` — see [Example 27](#example-27) for the format and [Example
+26](#example-26) for the query.
 
-!!! example "<span id='example-25'>Example 25. Format of Result Set (Count)</span>"
+!!! example "<span id='example-27'>Example 27. Format of Result Set (Count)</span>"
 
     ```json
     {
@@ -867,9 +871,9 @@ key is the count name, as defined using `SelectResult.as()` — see [Example 25]
 
 #### Result Set Access
 
-Access the count using its alias name (`mycount` in this example) — see [Example 26](#example-26).
+Access the count using its alias name (`mycount` in this example) — see [Example 28](#example-28).
 
-!!! example "<span id='example-26'>Example 26. Using Returned Document Properties (Count)</span>"
+!!! example "<span id='example-28'>Example 28. Using Returned Document Properties (Count)</span>"
 
     ```kotlin
     query.execute().use { rs ->
@@ -884,9 +888,9 @@ Access the count using its alias name (`mycount` in this example) — see [Examp
 ### Handling Pagination
 
 One way to handle pagination in high-volume queries is to retrieve the results in batches. Use the limit and offset
-feature, to return a defined number of results starting from a given offset — see [Example 27](#example-27).
+feature, to return a defined number of results starting from a given offset — see [Example 29](#example-29).
 
-!!! example "<span id='example-27'>Example 27. Query Pagination</span>"
+!!! example "<span id='example-29'>Example 29. Query Pagination</span>"
 
     ```kotlin
     val thisOffset = 0
@@ -912,10 +916,10 @@ feature, to return a defined number of results starting from a given offset — 
 Kotbase provides a convenience API to convert query results to JSON strings.
 
 Use [`Result.toJSON()`](/api/couchbase-lite-ee/kotbase/-result/to-j-s-o-n.html) to transform your result into a JSON
-string, which can easily be serialized or used as required in your application. See [Example 28](#example-28) for a
+string, which can easily be serialized or used as required in your application. See [Example 30](#example-30) for a
 working example using [KotlinX Serialization](https://github.com/Kotlin/kotlinx.serialization).
 
-!!! example "<span id='example-28'>Example 28. Using JSON Results</span>"
+!!! example "<span id='example-30'>Example 30. Using JSON Results</span>"
 
     ```kotlin
     // Uses kotlinx-serialization JSON processor
@@ -997,9 +1001,9 @@ To run a predictive query with a model as the one shown above, you must implemen
 ### Integrate the Model
 
 To integrate a model with Couchbase Lite, you must implement the `PredictiveModel` interface which has only one function
-called `predict()` — see [Example 29](#example-29).
+called `predict()` — see [Example 31](#example-31).
 
-!!! example "<span id='example-29'>Example 29. Integrating a predictive model</span>"
+!!! example "<span id='example-31'>Example 31. Integrating a predictive model</span>"
 
     ```kotlin
     // tensorFlowModel is a fake implementation
@@ -1026,7 +1030,7 @@ called `predict()` — see [Example 29](#example-29).
 To register the model you must create a new instance and pass it to the `Database.prediction.registerModel()` static
 method.
 
-!!! example "Example 30. Registering a predictive model"
+!!! example "Example 32. Registering a predictive model"
 
     ```kotlin
     Database.prediction.registerModel("ImageClassifier", ImageClassifierModel)
@@ -1048,7 +1052,7 @@ There are two types of indexes for predictive queries:
 The code below creates a value index from the "label" value of the prediction result. When documents are added or
 updated, the index will call the prediction function to update the label value in the index.
 
-!!! example "Example 31. Creating a value index"
+!!! example "Example 33. Creating a value index"
 
     ```kotlin
     database.createIndex(
@@ -1062,7 +1066,7 @@ updated, the index will call the prediction function to update the label value i
 Predictive Index is a new index type used for predictive query. It differs from the value index in that it caches the
 predictive results and creates a value index from that cache when the predictive results values are specified.
 
-!!! example "Example 33. Creating a predictive index"
+!!! example "Example 34. Creating a predictive index"
 
     Here we create a predictive index from the `label` value of the prediction result.
 
@@ -1078,7 +1082,7 @@ predictive results and creates a value index from that cache when the predictive
 
 The code below creates a query that calls the prediction function to return the "label" value for the first 10 results in the database.
 
-!!! example "Example 34. Creating a value index"
+!!! example "Example 35. Creating a value index"
 
     ```kotlin
     val prediction: PredictionFunction = Function.prediction(
@@ -1109,7 +1113,7 @@ The code below creates a query that calls the prediction function to return the 
 
 To deregister the model you must call the `Database.prediction.unregisterModel()` static method.
 
-!!! example "Example 35. Deregister a value index"
+!!! example "Example 36. Deregister a value index"
 
     ```kotlin
     Database.prediction.unregisterModel("ImageClassifier")
