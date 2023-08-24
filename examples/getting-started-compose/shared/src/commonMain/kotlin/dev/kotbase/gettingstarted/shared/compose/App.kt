@@ -95,8 +95,10 @@ expect fun BoxScope.Scrollbars(
 
 private const val TAG = "COMPOSE_UI"
 
+private val sharedDbWork = SharedDbWork()
+
 private suspend fun databaseWork(inputValue: String, replicate: Boolean) {
-    SharedDbWork().run {
+    sharedDbWork.run {
         createDb("composeApp-db")
         val docId = createDoc()
         Log.i(TAG, "Created document :: $docId")

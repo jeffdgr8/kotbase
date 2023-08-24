@@ -83,18 +83,19 @@ struct ContentView_Previews: PreviewProvider {
 
 private let tag = "IOS_APP"
 
+private let sharedDbWork = SharedDbWork()
+
 private func databaseWork(inputValue: String, replicate: Bool) async {
-    let helper = SharedDbWork()
-    helper.createDb(dbName: "iosApp-db")
-    let docId = helper.createDoc()
+    sharedDbWork.createDb(dbName: "iosApp-db")
+    let docId = sharedDbWork.createDoc()
     Log().i(tag: tag, msg: "Created document :: \(docId)")
-    helper.retrieveDoc(docId: docId)
-    helper.updateDoc(docId: docId, inputValue: inputValue)
+    sharedDbWork.retrieveDoc(docId: docId)
+    sharedDbWork.updateDoc(docId: docId, inputValue: inputValue)
     Log().i(tag: tag, msg: "Updated document :: \(docId)")
-    helper.queryDocs()
+    sharedDbWork.queryDocs()
     if replicate {
         do {
-            for try await change in asyncSequence(for: helper.replicate()) {
+            for try await change in asyncSequence(for: sharedDbWork.replicate()) {
                 Log().i(tag: tag, msg: "Replicator Change :: \(change)")
             }
         } catch {

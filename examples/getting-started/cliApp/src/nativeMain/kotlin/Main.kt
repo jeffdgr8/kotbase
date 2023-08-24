@@ -12,8 +12,10 @@ fun main(args: Array<String>) {
 
 private const val TAG = "CLI_APP"
 
+private val sharedDbWork = SharedDbWork()
+
 private suspend fun databaseWork(inputValue: String, replicate: Boolean) {
-    SharedDbWork().run {
+    sharedDbWork.run {
         createDb("cliApp-db")
         val docId = createDoc()
         Log.i(TAG, "Created document :: $docId")

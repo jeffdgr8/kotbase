@@ -190,6 +190,10 @@ https://www.jetbrains.com/lp/compose-multiplatform/).
 Using the apps with Sync Gateway and Couchbase Server obviously requires you have, or install, working versions of both.
 See also — [Install Sync Gateway](https://docs.couchbase.com/sync-gateway/current/get-started-install.html)
 
+Once you have Sync Gateway configured, update the `ReplicatorConfiguration` [in the app](
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L89)
+with the server's URL endpoint and authentication credentials.
+
 ## Kotlin Multiplatform Tips
 
 ### Calling Platform-specific APIs
