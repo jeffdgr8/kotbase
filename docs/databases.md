@@ -159,7 +159,7 @@ You should use console logs as your first source of diagnostic information. If t
 level is insufficient you can focus it on database errors and generate more verbose messages — see [Example
 6](#example-6).
 
-For more on using Couchbase logs — see [Using Logs](troubleshooting-logs.md).
+For more on using Couchbase logs — see [Using Logs](using-logs.md).
 
 !!! example "<span id='example-6'>Example 6. Increase Level of Database Log Messages</span>"
 

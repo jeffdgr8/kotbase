@@ -8,7 +8,7 @@ _How to use `QueryBuilder` to build effective queries with Kotbase_
 ## Introduction
 
 Kotbase provides two ways to build and run database queries; the `QueryBuilder` API described in this topic and [SQL++
-for Mobile](sql++-for-mobile.md).
+for Mobile](n1ql-query-strings.md).
 
 Database queries defined with the `QueryBuilder` API use the query statement format shown in [Example 1](#example-1).
 The structure and semantics of the query format are based on Couchbase’s [SQL++ query language](

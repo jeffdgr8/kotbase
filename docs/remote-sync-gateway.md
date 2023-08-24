@@ -674,7 +674,7 @@ https://docs.couchbase.com/sync-gateway/current/configuration-schema-database.ht
 configuration [`databases.$db.delta_sync.enabled`](https://docs.couchbase.com/sync-gateway/current/configuration-properties-legacy.html#databases-this_db-delta_sync-enabled).
 
 [Intra-Device](intra-device-sync.md) replications automatically **disable** delta sync, whilst [Peer-to-Peer](
-peer-to-peer.md) replications automatically **enable** delta sync.
+peer-to-peer-sync.md) replications automatically **enable** delta sync.
 
 ## Initialize
 

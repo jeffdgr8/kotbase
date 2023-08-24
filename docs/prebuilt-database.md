@@ -63,7 +63,8 @@ These steps should form part of your build and release process:
 
     **Alternatively** …
 
-    * You can write a simple CBL app to just initiate the required pull sync — see [Remote Sync Gateway](replication.md)
+    * You can write a simple CBL app to just initiate the required pull sync — see [Remote Sync Gateway](
+      remote-sync-gateway.md)
     * A third party community Java app is available. It provides a UI to create a local Couchbase Lite database and pull
       data from a Sync Gateway database — see [CouchbaseLite Tester](https://github.com/Infosys/CouchbaseLiteTester).
 

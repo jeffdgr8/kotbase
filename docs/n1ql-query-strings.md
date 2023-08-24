@@ -16,7 +16,7 @@ Data Model](https://docs.couchbase.com/server/current/learn/data/n1ql-versus-sql
 
 ## Running
 
-The database can create a query object with the SQL++ string. See [Query Result Sets](result-sets.md) for how to work
+The database can create a query object with the SQL++ string. See [Query Result Sets](query-result-sets.md) for how to work
 with result sets.
 
 !!! example "Example 1. Running a SQL++ Query"
@@ -138,7 +138,7 @@ This behavior is inline with that of Couchbase Server SQL++ — see example in [
 4. Select a specific property from the db data source.
 5. Select the property item `city` from its parent property `address`.
 
-See [Query Result Sets](result-sets.md) for more on processing query results.
+See [Query Result Sets](query-result-sets.md) for more on processing query results.
 
 ## FROM
 
