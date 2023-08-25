@@ -6,11 +6,11 @@ kermit = "2.0.0-RC5"
 mockk = "1.13.3" # 1.13.4 breaks QueryExtensionKtTest on Android https://github.com/mockk/mockk/issues/1035
 
 [plugins]
-android-library = { id = "com.android.library", version = "8.0.2" }
+android-library = { id = "com.android.library", version = "8.1.1" }
 dokka = { id = "org.jetbrains.dokka", version = "1.8.20" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.0" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.10" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.13.2" }
-kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.2" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.3" }
 
 [libraries]
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.6.1" }
@@ -26,11 +26,11 @@ kermit-simple = { module = "co.touchlab:kermit-simple", version.ref = "kermit" }
 korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.9" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
-kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.21.0" }
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.22.0" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.0" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.5.1" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.6.0" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
-okio = { module = "com.squareup.okio:okio", version = "3.4.0" }
+okio = { module = "com.squareup.okio:okio", version = "3.5.0" }
 paging = { module = "app.cash.paging:paging-common", version = "3.1.1-0.3.1" }

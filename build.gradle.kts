@@ -27,7 +27,7 @@ apiValidation {
 
 tasks.register<Delete>("clean") {
     group = "build"
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
 
 // Workaround to avoid potential configuration error. Should be fixed and can be removed in Kotlin 1.9.20.
