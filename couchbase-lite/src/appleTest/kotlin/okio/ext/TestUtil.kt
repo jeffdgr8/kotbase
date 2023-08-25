@@ -4,16 +4,63 @@
 
 package okio.ext
 
-import kotlinx.cinterop.allocArrayOf
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.*
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withTimeout
 import okio.Buffer
-import platform.Foundation.NSData
-import platform.Foundation.create
+import platform.Foundation.*
 import kotlin.test.assertTrue
+import kotlin.test.fail
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
-fun ByteArray.toNSData(): NSData = memScoped {
-    NSData.create(bytes = allocArrayOf(this@toNSData), length = size.convert())
+internal fun ByteArray.toNSData() = if (isNotEmpty()) {
+    usePinned {
+        NSData.create(bytes = it.addressOf(0), length = size.convert())
+    }
+} else {
+    NSData.data()
+}
+
+fun startRunLoop(name: String = "run-loop"): NSRunLoop {
+    val created = Mutex(true)
+    lateinit var runLoop: NSRunLoop
+    val thread = NSThread {
+        runLoop = NSRunLoop.currentRunLoop
+        runLoop.addPort(NSMachPort.port(), NSDefaultRunLoopMode)
+        created.unlock()
+        runLoop.run()
+    }
+    thread.name = name
+    thread.start()
+    runBlocking {
+        created.lockWithTimeout()
+    }
+    return runLoop
+}
+
+suspend fun Mutex.lockWithTimeout(timeout: Duration = 5.seconds) {
+    class MutexSource : Throwable()
+    val source = MutexSource()
+    try {
+        withTimeout(timeout) { lock() }
+    } catch (e: TimeoutCancellationException) {
+        fail("Mutex never unlocked", source)
+    }
+}
+
+fun NSStreamEvent.asString(): String {
+    return when (this) {
+        NSStreamEventNone -> "NSStreamEventNone"
+        NSStreamEventOpenCompleted -> "NSStreamEventOpenCompleted"
+        NSStreamEventHasBytesAvailable -> "NSStreamEventHasBytesAvailable"
+        NSStreamEventHasSpaceAvailable -> "NSStreamEventHasSpaceAvailable"
+        NSStreamEventErrorOccurred -> "NSStreamEventErrorOccurred"
+        NSStreamEventEndEncountered -> "NSStreamEventEndEncountered"
+        else -> "Unknown event $this"
+    }
 }
 
 fun assertNoEmptySegments(buffer: Buffer) {

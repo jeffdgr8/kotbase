@@ -16,105 +16,168 @@
 
 // TODO: workaround until these extensions are merged and released in Okio
 //  https://github.com/square/okio/pull/1123
-@file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER", "INVISIBLE_SETTER")
+@file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
 
 package okio.ext
 
-import kotlinx.cinterop.*
-import okio.*
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.CPointerVar
+import kotlinx.cinterop.convert
+import okio.Buffer
+import okio.BufferedSource
+import okio.RealBufferedSource
 import platform.Foundation.*
 import platform.darwin.NSInteger
 import platform.darwin.NSUInteger
 import platform.darwin.NSUIntegerVar
-import platform.posix.memcpy
 import platform.posix.uint8_tVar
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.WeakReference
 
 /** Returns an input stream that reads from this source. */
 internal fun BufferedSource.inputStream(): NSInputStream = BufferedSourceInputStream(this)
 
-@OptIn(UnsafeNumber::class)
+@OptIn(ExperimentalNativeApi::class)
 private class BufferedSourceInputStream(
-    private val bufferedSource: BufferedSource,
-) : NSInputStream(NSData()) {
+  private val source: BufferedSource,
+) : NSInputStream(NSData()), NSStreamDelegateProtocol {
 
-    private var error: NSError? = null
-    private var pinnedBuffer: Pinned<ByteArray>? = null
+  private val isClosed: () -> Boolean = when (source) {
+    is RealBufferedSource -> source::closed
+    is Buffer -> {
+      { false }
+    }
+  }
 
-    override fun streamError(): NSError? = error
-
-    override fun open() {
-        // no-op
+  private var status = NSStreamStatusNotOpen
+  private var error: NSError? = null
+    set(value) {
+      status = NSStreamStatusError
+      field = value
+      source.close()
     }
 
-    override fun read(buffer: CPointer<uint8_tVar>?, maxLength: NSUInteger): NSInteger {
-        try {
-            if (bufferedSource is RealBufferedSource) {
-                if (bufferedSource.closed) throw IOException("closed")
-                if (bufferedSource.exhausted()) return 0
-            }
+  override fun streamStatus() = if (status != NSStreamStatusError && isClosed()) NSStreamStatusClosed else status
 
-            val toRead = minOf(maxLength.toInt(), bufferedSource.buffer.size).toInt()
-            return bufferedSource.buffer.readNative(buffer, toRead).convert()
-        } catch (e: Exception) {
-            error = e.toNSError()
-            return -1
+  override fun streamError() = error
+
+  override fun open() {
+    if (status == NSStreamStatusNotOpen) {
+      status = NSStreamStatusOpening
+      status = NSStreamStatusOpen
+      postEvent(NSStreamEventOpenCompleted)
+      checkBytes()
+    }
+  }
+
+  override fun close() {
+    if (status == NSStreamStatusError || status == NSStreamStatusNotOpen) return
+    status = NSStreamStatusClosed
+    runLoop = null
+    runLoopModes = listOf()
+    source.close()
+  }
+
+  override fun read(buffer: CPointer<uint8_tVar>?, maxLength: NSUInteger): NSInteger {
+    if (streamStatus != NSStreamStatusOpen && streamStatus != NSStreamStatusAtEnd || buffer == null) return -1
+    status = NSStreamStatusReading
+    try {
+      if (source.exhausted()) {
+        status = NSStreamStatusAtEnd
+        return 0
+      }
+      val toRead = minOf(maxLength.toLong(), source.buffer.size, Int.MAX_VALUE.toLong()).toInt()
+      val read = source.buffer.read(buffer, toRead).convert<NSInteger>()
+      status = NSStreamStatusOpen
+      checkBytes()
+      return read
+    } catch (e: Exception) {
+      error = e.toNSError()
+      postEvent(NSStreamEventErrorOccurred)
+      return -1
+    }
+  }
+
+  override fun getBuffer(buffer: CPointer<CPointerVar<uint8_tVar>>?, length: CPointer<NSUIntegerVar>?) = false
+
+  override fun hasBytesAvailable() = !isFinished
+
+  private val isFinished
+    get() = when (streamStatus) {
+      NSStreamStatusClosed, NSStreamStatusError -> true
+      else -> false
+    }
+
+  override fun propertyForKey(key: NSStreamPropertyKey): Any? = null
+
+  override fun setProperty(property: Any?, forKey: NSStreamPropertyKey) = false
+
+  // WeakReference as delegate should not be retained
+  // https://developer.apple.com/documentation/foundation/nsstream/1418423-delegate
+  private var _delegate: WeakReference<NSStreamDelegateProtocol>? = null
+  private var runLoop: NSRunLoop? = null
+  private var runLoopModes = listOf<NSRunLoopMode>()
+
+  private fun postEvent(event: NSStreamEvent) {
+    val runLoop = runLoop ?: return
+    runLoop.performInModes(runLoopModes) {
+      if (runLoop == this.runLoop) {
+        delegateOrSelf.stream(this, event)
+      }
+    }
+  }
+
+  private fun checkBytes() {
+    val runLoop = runLoop ?: return
+    runLoop.performInModes(runLoopModes) {
+      if (runLoop != this.runLoop || isFinished) return@performInModes
+      val event = try {
+        if (source.exhausted()) {
+          status = NSStreamStatusAtEnd
+          NSStreamEventEndEncountered
+        } else {
+          NSStreamEventHasBytesAvailable
         }
+      } catch (e: Exception) {
+        error = e.toNSError()
+        NSStreamEventErrorOccurred
+      }
+      delegateOrSelf.stream(this, event)
     }
+  }
 
-    override fun getBuffer(
-        buffer: CPointer<CPointerVar<uint8_tVar>>?,
-        length: CPointer<NSUIntegerVar>?,
-    ): Boolean {
-        if (bufferedSource.buffer.size > 0) {
-            bufferedSource.buffer.head?.let { s ->
-                pinnedBuffer?.unpin()
-                s.data.pin().let {
-                    pinnedBuffer = it
-                    buffer?.pointed?.value = it.addressOf(s.pos).reinterpret()
-                    length?.pointed?.value = (s.limit - s.pos).convert()
-                    return true
-                }
-            }
-        }
-        return false
+  override fun delegate() = _delegate?.value
+
+  private val delegateOrSelf get() = delegate ?: this
+
+  override fun setDelegate(delegate: NSStreamDelegateProtocol?) {
+    _delegate = delegate?.let { WeakReference(it) }
+  }
+
+  override fun stream(aStream: NSStream, handleEvent: NSStreamEvent) {
+    // no-op
+  }
+
+  override fun scheduleInRunLoop(aRunLoop: NSRunLoop, forMode: NSRunLoopMode) {
+    if (runLoop == null) {
+      runLoop = aRunLoop
     }
-
-    override fun hasBytesAvailable(): Boolean = bufferedSource.buffer.size > 0
-
-    override fun close() {
-        pinnedBuffer?.unpin()
-        pinnedBuffer = null
-        bufferedSource.close()
+    if (runLoop == aRunLoop) {
+      runLoopModes += forMode
     }
-
-    override fun description(): String = "$bufferedSource.inputStream()"
-
-    private fun Exception.toNSError(): NSError {
-        return NSError(
-            "Kotlin",
-            0,
-            mapOf(
-                NSLocalizedDescriptionKey to message,
-                NSUnderlyingErrorKey to this,
-            ),
-        )
+    if (status == NSStreamStatusOpen) {
+      checkBytes()
     }
+  }
 
-    private fun Buffer.readNative(sink: CPointer<uint8_tVar>?, maxLength: Int): Int {
-        val s = head ?: return 0
-        val toCopy = minOf(maxLength, s.limit - s.pos)
-        s.data.usePinned {
-            memcpy(sink, it.addressOf(s.pos), toCopy.convert())
-        }
-
-        s.pos += toCopy
-        size -= toCopy.toLong()
-
-        if (s.pos == s.limit) {
-            head = s.pop()
-            SegmentPool.recycle(s)
-        }
-
-        return toCopy
+  override fun removeFromRunLoop(aRunLoop: NSRunLoop, forMode: NSRunLoopMode) {
+    if (aRunLoop == runLoop) {
+      runLoopModes -= forMode
+      if (runLoopModes.isEmpty()) {
+        runLoop = null
+      }
     }
+  }
+
+  override fun description(): String = "$source.inputStream()"
 }
