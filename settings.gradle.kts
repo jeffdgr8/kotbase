@@ -11,6 +11,7 @@ pluginManagement {
         google()
         gradlePluginPortal()
         mavenCentral()
+        maven("https://repo.sellmair.io/")
     }
 }
 
@@ -19,6 +20,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://mobile.maven.couchbase.com/maven2/dev/")
+        maven("https://repo.sellmair.io/")
     }
 }
 

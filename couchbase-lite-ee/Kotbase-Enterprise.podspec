@@ -12,6 +12,17 @@ Pod::Spec.new do |spec|
     spec.osx.deployment_target = '10.11'
     spec.dependency 'CouchbaseLite-Enterprise', '3.0.12'
                 
+    if !Dir.exist?('build/cocoapods/framework/Kotbase_Enterprise.framework') || Dir.empty?('build/cocoapods/framework/Kotbase_Enterprise.framework')
+        raise "
+
+        Kotlin framework 'Kotbase_Enterprise' doesn't exist yet, so a proper Xcode project can't be generated.
+        'pod install' should be executed after running ':generateDummyFramework' Gradle task:
+
+            ./gradlew :couchbase-lite-ee:generateDummyFramework
+
+        Alternatively, proper pod installation is performed during Gradle sync in the IDE (if Podfile location is set)"
+    end
+                
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':couchbase-lite-ee',
         'PRODUCT_MODULE_NAME' => 'Kotbase_Enterprise',

@@ -1,7 +1,7 @@
 import org.jetbrains.dokka.gradle.AbstractDokkaTask
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.KotlinTargetHierarchy.SourceSetTree
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import java.net.URL
 
 plugins {
@@ -18,8 +18,8 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     androidTarget {
         publishLibraryVariants("release")
-        instrumentedTestVariant.sourceSetTree.set(SourceSetTree.test)
-        unitTestVariant.sourceSetTree.set(SourceSetTree.unitTest)
+        instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+        unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.unitTest)
     }
 }
 

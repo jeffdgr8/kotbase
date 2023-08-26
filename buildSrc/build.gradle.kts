@@ -5,6 +5,7 @@ plugins {
 repositories {
     google()
     mavenCentral()
+    maven("https://repo.sellmair.io/")
 }
 
 dependencies {

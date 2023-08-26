@@ -92,7 +92,7 @@ android.namespace = "dev.kotbase"
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
-        val defFile = file("src/nativeInterop/cinterop/podCouchbaseLite.def")
-        outputFile.appendText(defFile.readText())
+        val cblDefFile = file("src/nativeInterop/cinterop/podCouchbaseLite.def")
+        defFile.get().asFile.appendText(cblDefFile.readText())
     }
 }
