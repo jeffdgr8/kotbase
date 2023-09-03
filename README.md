@@ -165,8 +165,7 @@ implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.12-1.0.0")
 
 * The Kotlin 1.9.0 IDE plugin introduced a false positive `ModuleVersionResolveException` caused by
   `NoMatchingConfigurationSelectionException` during Gradle sync, which can be [safely ignored](
-  https://youtrack.jetbrains.com/issue/KT-59020#focus=Comments-27-7411306.0-0). In Kotlin 1.9.10, this error began
-  failing the Gradle sync entirely, which again can be ignored. This will be fixed in Kotlin 1.9.20.
+  https://youtrack.jetbrains.com/issue/KT-59020#focus=Comments-27-7411306.0-0). This will be fixed in Kotlin 1.9.20.
 * When building the project on Linux, be sure to install the libicu dependency.
 * When checking out the git repo on Windows, enable [developer mode](
   https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development) and symbolic links in

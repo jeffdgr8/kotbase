@@ -6,7 +6,7 @@ kermit = "2.0.0-RC5"
 mockk = "1.13.3" # 1.13.4 breaks QueryExtensionKtTest on Android https://github.com/mockk/mockk/issues/1035
 
 [plugins]
-android-library = { id = "com.android.library", version = "8.1.1" }
+android-library = { id = "com.android.library", version = "8.0.2" }
 dokka = { id = "org.jetbrains.dokka", version = "1.8.20" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.10" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.13.2" }

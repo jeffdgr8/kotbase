@@ -11,10 +11,12 @@ import platform.Foundation.NSUserDefaults
 import platform.Security.SecCertificateCopyCommonName
 import platform.Security.SecCertificateRef
 import platform.Security.errSecSuccess
+import kotlin.experimental.ExperimentalNativeApi
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalNativeApi::class)
 open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
 
     val wsPort = 4984

@@ -5,6 +5,7 @@ import kotbase.Document
 import kotlinx.cinterop.*
 import libcblite.C4Document
 import libcblite.kDocExists
+import kotlin.experimental.ExperimentalNativeApi
 
 internal actual val Document.content: Dictionary
     get() = Dictionary(properties, dbContext)
@@ -14,6 +15,7 @@ internal actual fun Document.exists(): Boolean {
     return (c4Doc.pointed.flags and kDocExists) != 0u
 }
 
+@OptIn(ExperimentalNativeApi::class)
 internal val Document.c4Doc: CPointer<C4Document>?
     get() {
         // TODO: have Couchbase add private API CBLDocument_Exists, similar to CBLDocument_Generation
