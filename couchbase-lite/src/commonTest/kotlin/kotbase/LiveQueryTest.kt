@@ -50,11 +50,12 @@ class LiveQueryTest : BaseDbTest() {
         val mutex1 = arrayOf(Mutex(true), Mutex(true))
         val mutex2 = arrayOf(Mutex(true), Mutex(true))
 
-        val atmCount = arrayOf(atomic(0), atomic(0))
+        val atmCount1 = atomic(0)
+        val atmCount2 = atomic(0)
 
         try {
             token1 = query.addChangeListener {
-                mutex1[atmCount[0].getAndIncrement()].unlock()
+                mutex1[atmCount1.getAndIncrement()].unlock()
             }
 
             lateinit var token2: ListenerToken
@@ -62,7 +63,7 @@ class LiveQueryTest : BaseDbTest() {
             assertTrue(mutex1[0].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
             try {
                 token2 = query.addChangeListener {
-                    mutex2[atmCount[1].getAndIncrement()].unlock()
+                    mutex2[atmCount2.getAndIncrement()].unlock()
                 }
                 // listener 2 should get notified
                 assertTrue(mutex2[0].lockWithTimeout(LONG_TIMEOUT_SEC.seconds))

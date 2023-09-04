@@ -40,8 +40,8 @@ public open class TestBase {
      * and run such tests only on JVM and K/N.
      */
     public val isBoundByJsTestTimeout = false
-    private var actionIndex = atomic(0)
-    private var finished = atomic(false)
+    private val actionIndex = atomic(0)
+    private val finished = atomic(false)
     private var error: Throwable? = null
 
     /**

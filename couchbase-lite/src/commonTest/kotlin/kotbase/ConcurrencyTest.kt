@@ -21,7 +21,7 @@ class ConcurrencyTest : BaseDbTest() {
         fun verify(n: Int, result: T)
     }
 
-    private var testFailure = atomic<AssertionError?>(null)
+    private val testFailure = atomic<AssertionError?>(null)
 
     @BeforeTest
     fun setUpConcurrencyTest() {
