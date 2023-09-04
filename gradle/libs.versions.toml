@@ -7,7 +7,7 @@ mockk = "1.13.3" # 1.13.4 breaks QueryExtensionKtTest on Android https://github.
 
 [plugins]
 android-library = { id = "com.android.library", version = "8.0.2" }
-dokka = { id = "org.jetbrains.dokka", version = "1.8.20" }
+dokka = { id = "org.jetbrains.dokka", version = "1.9.0" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.10" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.13.2" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.3" }
@@ -23,12 +23,12 @@ couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", versi
 couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kermit-simple = { module = "co.touchlab:kermit-simple", version.ref = "kermit" }
-korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.9" }
+korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.10" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.22.0" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.0" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.1" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.6.0" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
