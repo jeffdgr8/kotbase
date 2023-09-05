@@ -454,7 +454,6 @@ public final class kotbase/FileLogger : kotbase/base/DelegatedClass, kotbase/Log
 }
 
 public class kotbase/Fragment {
-	protected fun <init> (Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Integer;)V
 	public fun get (I)Lkotbase/Fragment;
 	public fun get (Ljava/lang/String;)Lkotbase/Fragment;
 	public fun getArray ()Lkotbase/Array;
@@ -512,7 +511,6 @@ public final class kotbase/FullTextIndex : kotbase/Index {
 public final class kotbase/FullTextIndexConfiguration : kotbase/IndexConfiguration {
 	public fun <init> ([Ljava/lang/String;)V
 	public fun getActual ()Lcom/couchbase/lite/FullTextIndexConfiguration;
-	public synthetic fun getActual ()Lcom/couchbase/lite/IndexConfiguration;
 	public synthetic fun getActual ()Ljava/lang/Object;
 	public final fun getLanguage ()Ljava/lang/String;
 	public final fun ignoreAccents (Z)Lkotbase/FullTextIndexConfiguration;
@@ -614,8 +612,6 @@ public final class kotbase/IndexBuilder {
 }
 
 public class kotbase/IndexConfiguration : kotbase/base/DelegatedClass {
-	public fun getActual ()Lcom/couchbase/lite/IndexConfiguration;
-	public synthetic fun getActual ()Ljava/lang/Object;
 	public final fun getExpressions ()Ljava/util/List;
 }
 
@@ -1184,9 +1180,6 @@ public final class kotbase/ValueIndex : kotbase/Index {
 
 public final class kotbase/ValueIndexConfiguration : kotbase/IndexConfiguration {
 	public fun <init> ([Ljava/lang/String;)V
-	public synthetic fun getActual ()Lcom/couchbase/lite/IndexConfiguration;
-	public fun getActual ()Lcom/couchbase/lite/ValueIndexConfiguration;
-	public synthetic fun getActual ()Ljava/lang/Object;
 }
 
 public final class kotbase/ValueIndexItem : kotbase/base/DelegatedClass {
