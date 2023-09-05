@@ -37,4 +37,6 @@ public expect class ResultSet : Iterable<Result>, AutoCloseable {
      * @return an iterator over the elements in this list in proper sequence
      */
     override fun iterator(): Iterator<Result>
+
+    override fun close()
 }

@@ -140,6 +140,8 @@ public expect open class Array : Iterable<Any?> {
     public fun toList(): List<Any?>
 
     public fun toJSON(): String
+
+    public override operator fun iterator(): Iterator<Any?>
 }
 
 /**

@@ -3,6 +3,8 @@ package kotbase
 import kotbase.base.DelegatedClass
 import com.couchbase.lite.Collation as CBLCollation
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Collation
 private constructor(actual: CBLCollation) : DelegatedClass<CBLCollation>(actual) {
 

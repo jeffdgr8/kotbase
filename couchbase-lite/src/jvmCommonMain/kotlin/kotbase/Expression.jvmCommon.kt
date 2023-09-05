@@ -6,6 +6,8 @@ import kotbase.ext.toDate
 import kotlinx.datetime.Instant
 import com.couchbase.lite.Expression as CBLExpression
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Expression
 internal constructor(actual: CBLExpression) : DelegatedClass<CBLExpression>(actual) {
 

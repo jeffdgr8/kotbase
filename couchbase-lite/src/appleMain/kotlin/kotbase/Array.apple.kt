@@ -7,6 +7,8 @@ import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Array
 internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Iterable<Any?> {
 
@@ -82,7 +84,7 @@ internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Itera
     public actual open fun toJSON(): String =
         actual.toJSON()
 
-    override operator fun iterator(): Iterator<Any?> =
+    actual override operator fun iterator(): Iterator<Any?> =
         ArrayIterator(count)
 
     private inner class ArrayIterator(private val count: Int) : Iterator<Any?> {

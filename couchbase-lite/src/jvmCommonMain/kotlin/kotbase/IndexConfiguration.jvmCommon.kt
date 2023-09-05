@@ -3,6 +3,8 @@ package kotbase
 import kotbase.base.DelegatedClass
 import com.couchbase.lite.IndexConfiguration as CBLIndexConfiguration
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class IndexConfiguration
 internal constructor(actual: CBLIndexConfiguration) : DelegatedClass<CBLIndexConfiguration>(actual) {
 

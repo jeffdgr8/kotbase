@@ -17,6 +17,8 @@ public expect class FileLogger : Logger {
      */
     override var level: LogLevel
 
+    override fun log(level: LogLevel, domain: LogDomain, message: String)
+
     /**
      * The configuration currently in use by the file logger.
      * Note that once a configuration has been installed in a logger,

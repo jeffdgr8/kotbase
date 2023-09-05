@@ -21,7 +21,7 @@ public actual class ConsoleLogger internal constructor() : Logger {
             CBLLog_SetConsoleLevel(value.actual)
         }
 
-    override fun log(level: LogLevel, domain: LogDomain, message: String) {
+    actual override fun log(level: LogLevel, domain: LogDomain, message: String) {
         if (level < this.level || !domains.contains(domain)) return
         println(formatLog(level, domain.name, message))
     }

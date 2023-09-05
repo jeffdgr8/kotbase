@@ -11,6 +11,8 @@ public expect class ConsoleLogger : Logger {
      */
     override var level: LogLevel
 
+    override fun log(level: LogLevel, domain: LogDomain, message: String)
+
     /**
      * The domains that will be considered for writing to the console log.
      */

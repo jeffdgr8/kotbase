@@ -3,6 +3,8 @@ package kotbase
 import kotbase.base.DelegatedClass
 import com.couchbase.lite.SelectResult as CBLSelectResult
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class SelectResult
 private constructor(actual: CBLSelectResult) : DelegatedClass<CBLSelectResult>(actual) {
 

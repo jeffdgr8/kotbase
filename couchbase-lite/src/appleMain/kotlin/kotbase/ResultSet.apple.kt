@@ -19,7 +19,7 @@ internal constructor(actual: CBLQueryResultSet) :
     actual override fun iterator(): Iterator<Result> =
         allResults().iterator()
 
-    override fun close() {
+    actual override fun close() {
         // no close() in Objective-C SDK
         // https://github.com/couchbase/couchbase-lite-ios/blob/b1eca5996b06564e65ae1c0a1a8bb55db28f37f5/Objective-C/CBLQueryResultSet.mm#L47
     }

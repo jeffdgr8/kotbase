@@ -18,7 +18,7 @@ internal constructor(override val actual: CBLFileLogger) : DelegatedClass<CBLFil
             actual.level = value
         }
 
-    override fun log(level: LogLevel, domain: LogDomain, message: String) {
+    actual override fun log(level: LogLevel, domain: LogDomain, message: String) {
         actual.log(level, domain.actual, message)
     }
 }

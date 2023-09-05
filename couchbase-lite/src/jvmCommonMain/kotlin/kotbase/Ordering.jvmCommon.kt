@@ -3,6 +3,8 @@ package kotbase
 import kotbase.base.DelegatedClass
 import com.couchbase.lite.Ordering as CBLOrdering
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual abstract class Ordering
 private constructor(actual: CBLOrdering) : DelegatedClass<CBLOrdering>(actual) {
 

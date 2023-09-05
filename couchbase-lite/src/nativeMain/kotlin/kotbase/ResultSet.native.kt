@@ -46,7 +46,7 @@ internal constructor(
     actual override fun iterator(): Iterator<Result> =
         allResults().iterator()
 
-    override fun close() {
+    actual override fun close() {
         memory.closeCalled = true
         CBLResultSet_Release(actual)
     }

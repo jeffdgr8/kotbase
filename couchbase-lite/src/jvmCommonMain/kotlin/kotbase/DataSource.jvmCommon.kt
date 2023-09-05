@@ -3,6 +3,8 @@ package kotbase
 import kotbase.base.DelegatedClass
 import com.couchbase.lite.DataSource as CBLDataSource
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class DataSource
 private constructor(actual: CBLDataSource) : DelegatedClass<CBLDataSource>(actual) {
 

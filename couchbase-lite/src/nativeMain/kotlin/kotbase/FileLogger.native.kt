@@ -31,7 +31,7 @@ public actual class FileLogger internal constructor() : Logger {
             }
         }
 
-    override fun log(level: LogLevel, domain: LogDomain, message: String) {
+    actual override fun log(level: LogLevel, domain: LogDomain, message: String) {
         memScoped {
             CBL_LogMessage(domain.actual, level.actual, message.toFLString(this))
         }

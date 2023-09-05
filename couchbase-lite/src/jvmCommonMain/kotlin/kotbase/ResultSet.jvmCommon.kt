@@ -27,7 +27,7 @@ internal constructor(actual: CBLResultSet) : DelegatedClass<CBLResultSet>(actual
             Result(iter.next())
     }
 
-    override fun close() {
+    actual override fun close() {
         actual.close()
     }
 }

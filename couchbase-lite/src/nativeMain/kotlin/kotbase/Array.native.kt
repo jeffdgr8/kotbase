@@ -9,6 +9,8 @@ import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 import kotlin.reflect.safeCast
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Array
 internal constructor(
     actual: FLArray,
@@ -108,7 +110,7 @@ internal constructor(
     public actual open fun toJSON(): String =
         FLValue_ToJSON(actual.reinterpret()).toKString()!!
 
-    override operator fun iterator(): Iterator<Any?> =
+    actual override operator fun iterator(): Iterator<Any?> =
         ArrayIterator(count)
 
     private inner class ArrayIterator(private val count: Int) : Iterator<Any?> {

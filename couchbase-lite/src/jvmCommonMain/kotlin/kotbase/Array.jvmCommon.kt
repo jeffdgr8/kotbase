@@ -5,6 +5,8 @@ import kotbase.ext.toKotlinInstant
 import kotlinx.datetime.Instant
 import com.couchbase.lite.Array as CBLArray
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Array
 internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Iterable<Any?> {
 
@@ -56,7 +58,7 @@ internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Itera
     public actual fun toJSON(): String =
         actual.toJSON()
 
-    override operator fun iterator(): Iterator<Any?> = object : Iterator<Any?> {
+    actual override operator fun iterator(): Iterator<Any?> = object : Iterator<Any?> {
 
         private val itr = actual.iterator()
 

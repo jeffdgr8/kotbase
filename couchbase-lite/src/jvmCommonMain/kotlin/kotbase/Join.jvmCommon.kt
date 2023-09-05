@@ -3,6 +3,8 @@ package kotbase
 import kotbase.base.DelegatedClass
 import com.couchbase.lite.Join as CBLJoin
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Join
 private constructor(actual: CBLJoin) : DelegatedClass<CBLJoin>(actual) {
 

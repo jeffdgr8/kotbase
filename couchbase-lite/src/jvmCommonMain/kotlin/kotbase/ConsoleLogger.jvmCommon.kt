@@ -23,7 +23,7 @@ internal constructor(override val actual: CBLConsoleLogger) : DelegatedClass<CBL
             actual.level = value
         }
 
-    override fun log(level: LogLevel, domain: LogDomain, message: String) {
+    actual override fun log(level: LogLevel, domain: LogDomain, message: String) {
         actual.log(level, domain.actual, message)
     }
 }
