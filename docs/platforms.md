@@ -127,18 +127,13 @@ Kotbase, e.g. libcblite {{ version_short }}.x for Kotbase {{ version }}.
 Linux also [requires](https://github.com/couchbase/couchbase-lite-core#linux) libz, libicu, and libpthread, which may or
 may not be installed on your system.
 
-|     Distro      | Version |       x64        | ARM32 | ARM64 |
-|:---------------:|:-------:|:----------------:|:-----:|:-----:|
-|     Debian      |   9+    | :material-check: |   *   |   *   |
-| Raspberry Pi OS |   10+   |                  |   *   |   *   |
-|    Raspbian     |   9+    |                  |   *   |       |
-|     Ubuntu      | 20.04+  | :material-check: |   *   |   *   |
+|     Distro      | Version |       x64        | ARM64 |
+|:---------------:|:-------:|:----------------:|:-----:|
+|     Debian      |   9+    | :material-check: |   *   |
+| Raspberry Pi OS |   10+   |                  |   *   |
+|     Ubuntu      | 20.04+  | :material-check: |   *   |
 
-*Support for Linux ARM targets is technically possible, only inhibited by the fact that most Kotlin dependencies are not
-published for these targets. See related issues in [kotlinx-atomicfu](
-https://github.com/Kotlin/kotlinx.atomicfu/pull/193), [kotlinx-datetime](
-https://github.com/Kotlin/kotlinx-datetime/issues/75), [kotlinx-coroutines](
-https://github.com/Kotlin/kotlinx.coroutines/issues/855), and [Okio](https://github.com/square/okio/issues/1006).
+*Coming soon
 
 ### Windows
 
