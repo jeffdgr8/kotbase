@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 
 public actual open class Expression {
 
-    internal class ValueExpression(private val value: Any?) : Expression() {
+    private class ValueExpression(private val value: Any?) : Expression() {
 
         init {
             verifySupportedType(value)
@@ -54,7 +54,7 @@ public actual open class Expression {
         }
     }
 
-    internal class AggregateExpression(val expressions: List<Expression>) : Expression() {
+    private class AggregateExpression(val expressions: List<Expression>) : Expression() {
 
         public override fun asJSON(): Any {
             return buildList {
@@ -66,7 +66,7 @@ public actual open class Expression {
         }
     }
 
-    internal class BinaryExpression(
+    private class BinaryExpression(
         private val lhs: Expression,
         private val rhs: Expression,
         private val type: OpType
@@ -127,7 +127,7 @@ public actual open class Expression {
         }
     }
 
-    internal class CompoundExpression(
+    private class CompoundExpression(
         private val subexpressions: List<Expression>,
         private val type: OpType
     ) : Expression() {
@@ -150,7 +150,7 @@ public actual open class Expression {
         }
     }
 
-    internal class UnaryExpression(
+    private class UnaryExpression(
         private val operand: Expression,
         private val type: OpType
     ) : Expression() {
@@ -192,13 +192,13 @@ public actual open class Expression {
         }
     }
 
-    internal class ParameterExpression(val name: String) : Expression() {
+    private class ParameterExpression(val name: String) : Expression() {
 
         public override fun asJSON(): Any =
             listOf("$$name")
     }
 
-    internal class CollationExpression(
+    private class CollationExpression(
         private val operand: Expression,
         private val collation: Collation
     ) : Expression() {

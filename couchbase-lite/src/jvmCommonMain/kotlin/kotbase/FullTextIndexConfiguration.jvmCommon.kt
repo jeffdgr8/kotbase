@@ -3,7 +3,7 @@ package kotbase
 import com.couchbase.lite.FullTextIndexConfiguration as CBLFullTextIndexConfiguration
 
 public actual class FullTextIndexConfiguration
-internal constructor(override val actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
+private constructor(override val actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
 
     public actual constructor(vararg expressions: String) : this(CBLFullTextIndexConfiguration(*expressions))
 

@@ -1,7 +1,7 @@
 package kotbase
 
 public actual open class DataSource
-internal constructor(
+private constructor(
     internal val source: Database,
     private val alias: String? = null
 ) {

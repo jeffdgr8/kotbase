@@ -1,7 +1,7 @@
 package kotbase
 
 public actual open class Collation
-internal constructor(private val isUnicode: Boolean) {
+private constructor(private val isUnicode: Boolean) {
 
     protected var locale: String? = null
     protected var ignAccents: Boolean = false

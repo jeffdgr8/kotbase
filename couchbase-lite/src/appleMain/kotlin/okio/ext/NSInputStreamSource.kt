@@ -40,7 +40,7 @@ import platform.posix.uint8_tVar
 internal fun NSInputStream.source(): Source = NSInputStreamSource(this)
 
 @OptIn(UnsafeNumber::class)
-private open class NSInputStreamSource(
+private class NSInputStreamSource(
     private val input: NSInputStream,
 ) : Source {
 

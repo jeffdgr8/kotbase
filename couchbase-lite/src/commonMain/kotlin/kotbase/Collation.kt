@@ -5,7 +5,7 @@ package kotbase
  * The COLLATE expression can be used in the WHERE clause when comparing two strings or in the
  * ORDER BY clause when specifying how the order of the query results. CouchbaseLite provides
  * two types of the Collation, ASCII and Unicode. Without specifying the COLLATE expression
- * Couchbase Lite will use the ASCII with case sensitive collation by default.
+ * Couchbase Lite will use the ASCII with case-sensitive collation by default.
  */
 public expect open class Collation {
 

@@ -7,7 +7,7 @@ import kotlinx.datetime.Instant
  * by either key or index to the nested values which are wrapped by Fragment objects.
  */
 public open class Fragment
-protected constructor(
+internal constructor(
     protected val parent: Any?,
     protected val key: String?,
     protected val index: Int?
