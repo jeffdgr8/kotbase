@@ -167,9 +167,10 @@ https://www.jetbrains.com/lp/compose-multiplatform/).
 
 !!! important
 
-    Be sure to open `iosApp.xcworkspace` and not `iosApp.xcodeproj`. The `iosApp` uses [CocoaPods](
-    https://cocoapods.org/) and the [CocoaPods Gradle plugin](https://kotlinlang.org/docs/native-cocoapods.html) to add
-    the `shared` library dependency. The `.xcworkspace` includes the CocoaPods dependencies.
+    Be sure to open `iosApp.xcworkspace` and not `iosApp.xcodeproj`. The `getting-started-compose` `iosApp` uses
+    [CocoaPods](https://cocoapods.org/) and the [CocoaPods Gradle plugin](
+    https://kotlinlang.org/docs/native-cocoapods.html) to add the `shared` library dependency. The `.xcworkspace`
+    includes the CocoaPods dependencies.
 
 !!! note
 
