@@ -25,11 +25,11 @@ tasks.withType<KotlinCompile> {
 
 android {
     namespace = "dev.kotbase.gettingstarted.compose"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "dev.kotbase.gettingstarted.compose"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
@@ -37,4 +37,5 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    packagingOptions.resources.pickFirsts += "META-INF/**"
 }

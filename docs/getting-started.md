@@ -171,6 +171,17 @@ https://www.jetbrains.com/lp/compose-multiplatform/).
     https://cocoapods.org/) and the [CocoaPods Gradle plugin](https://kotlinlang.org/docs/native-cocoapods.html) to add
     the `shared` library dependency. The `.xcworkspace` includes the CocoaPods dependencies.
 
+!!! note
+
+    Compose Multiplatform [no longer requires CocoaPods](
+    https://blog.jetbrains.com/kotlin/2023/08/compose-multiplatform-1-5-0-release/) for copying resources since version
+    1.5.0. However, the `getting-started-compose` example still [uses CocoaPods for linking the Couchbase Lite
+    framework](
+    https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started-compose/shared/build.gradle.kts#L34-L37).
+    See the [`getting-started`](
+    https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/build.gradle.kts#L17-L33) version for
+    an example of how to link the Couchbase Lite framework without using CocoaPods.
+
 ### JVM Desktop App :fontawesome-brands-java:
 
 ??? info "Run"

@@ -61,7 +61,7 @@ android {
     }
     // required by coroutines 1.7.0+ to avoid errors:
     // 6 files found with path 'META-INF/LICENSE.md'.
-    packagingOptions.resources.pickFirsts += setOf("META-INF/LICENSE*", "META-INF/versions/9/previous-compilation-data.bin")
+    packagingOptions.resources.pickFirsts += "META-INF/**"
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

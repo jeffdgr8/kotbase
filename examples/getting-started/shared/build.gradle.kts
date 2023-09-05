@@ -44,8 +44,13 @@ kotlin {
         }
         configureEach {
             languageSettings {
-                optIn("kotlin.experimental.ExperimentalObjCName")
-                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                if (!name.startsWith("common") &&
+                    !name.startsWith("jvm") &&
+                    !name.startsWith("android")
+                ) {
+                    optIn("kotlin.experimental.ExperimentalObjCName")
+                    optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                }
             }
         }
     }

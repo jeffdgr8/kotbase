@@ -33,29 +33,34 @@ fun App() {
     var job by remember { mutableStateOf<Job?>(null) }
     Column(Modifier.fillMaxWidth()) {
         FlowRow(
-            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             TextField(
                 value = inputValue,
                 modifier = Modifier.width(IntrinsicSize.Min)
-                    .weight(1f),
+                    .weight(1f)
+                    .align(Alignment.CenterVertically),
                 label = {
                     Text("Doc update input value")
                 }, onValueChange = {
                     inputValue = it
                 }
             )
-            Button(onClick = {
-                job?.cancel()
-                job = scope.launch {
-                    databaseWork(inputValue, replicate)
+            Button(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                onClick = {
+                    job?.cancel()
+                    job = scope.launch {
+                        databaseWork(inputValue, replicate)
+                    }
                 }
-            }) {
+            ) {
                 Text("Run database work")
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.align(Alignment.CenterVertically),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text("Replicate")
                 Checkbox(replicate, onCheckedChange = {
                     replicate = !replicate
