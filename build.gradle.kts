@@ -22,7 +22,12 @@ tasks.dokkaHtmlMultiModule {
 
 apiValidation {
     ignoredProjects += listOf("testing-support", "testing-support-ee")
-    ignoredClasses += listOf("dev.kotbase.BuildConfig", "dev.kotbase.ktx.BuildConfig", "dev.kotbase.paging.BuildConfig")
+    ignoredClasses += listOf(
+        "dev.kotbase.BuildConfig",
+        "dev.kotbase.ktx.BuildConfig",
+        "dev.kotbase.paging.BuildConfig",
+        "dev.kotbase.kermit.BuildConfig"
+    )
 }
 
 tasks.register<Delete>("clean") {
