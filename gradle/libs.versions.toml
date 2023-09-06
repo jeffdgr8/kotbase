@@ -13,7 +13,7 @@ kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-co
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.3" }
 
 [libraries]
-androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.6.1" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.6.2" }
 androidx-startup = { module = "androidx.startup:startup-runtime", version = "1.1.1" }
 androidx-test-core-ktx = { module = "androidx.test:core-ktx", version = "1.5.0" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.5.2" }

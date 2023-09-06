@@ -7,8 +7,8 @@ plugins {
 allprojects {
     group = property("GROUP") as String
     val cblVersion = rootProject.libs.versions.couchbase.lite.java.get()
-    val kmpVersion = property("VERSION") as String
-    version = "$cblVersion-$kmpVersion"
+    val kotbaseVersion = property("VERSION") as String
+    version = "$cblVersion-$kotbaseVersion"
 }
 
 val apiDocsDir = projectDir.resolve("docs/api")
