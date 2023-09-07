@@ -42,7 +42,7 @@ class FlowTest : BaseReplicatorTest() {
 
             launch(Dispatchers.Default) {
                 // Hate this: wait until the collector starts
-                delay(30L)
+                delay(50)
 
                 // make 10 db changes
                 for (i in 0..9) {
@@ -90,7 +90,7 @@ class FlowTest : BaseReplicatorTest() {
 
             launch(Dispatchers.Default) {
                 // Hate this: wait until the collector starts
-                delay(30L)
+                delay(50)
 
                 saveDocInBaseTestDb(docB)
                 saveDocInBaseTestDb(docA)
@@ -134,7 +134,7 @@ class FlowTest : BaseReplicatorTest() {
 
             launch(Dispatchers.Default) {
                 // Hate this: wait until the collector starts
-                delay(30L)
+                delay(50)
 
                 mDocB = docB.toMutable()
                 mDocB.setValue("thewronganswer", 42)
@@ -183,7 +183,7 @@ class FlowTest : BaseReplicatorTest() {
 
             launch(Dispatchers.Default) {
                 // Hate this: wait until the collector starts
-                delay(30L)
+                delay(50)
 
                 baseTestDb.delete(docB)
                 baseTestDb.delete(docA)
@@ -232,7 +232,7 @@ class FlowTest : BaseReplicatorTest() {
 
             launch(Dispatchers.Default) {
                 // Hate this: wait until the collector starts
-                delay(30L)
+                delay(50)
 
                 baseTestDb.save(mDoc)
             }
