@@ -1,5 +1,7 @@
 package kotbase
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class DataSource
 private constructor(
     internal val source: Database,

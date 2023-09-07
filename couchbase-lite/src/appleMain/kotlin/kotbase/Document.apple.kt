@@ -7,6 +7,8 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlin.reflect.safeCast
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Document
 internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual), Iterable<String> {
 

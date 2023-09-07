@@ -11,7 +11,7 @@ pluginManagement {
         google()
         gradlePluginPortal()
         mavenCentral()
-        maven("https://repo.sellmair.io/")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
     }
 }
 
@@ -20,7 +20,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://mobile.maven.couchbase.com/maven2/dev/")
-        maven("https://repo.sellmair.io/")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
     }
 }
 

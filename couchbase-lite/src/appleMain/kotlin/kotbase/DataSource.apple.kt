@@ -4,6 +4,8 @@ import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.CBLQueryDataSource
 import kotbase.base.DelegatedClass
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class DataSource
 private constructor(actual: CBLQueryDataSource) : DelegatedClass<CBLQueryDataSource>(actual) {
 

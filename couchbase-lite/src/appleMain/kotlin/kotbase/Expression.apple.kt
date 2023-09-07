@@ -8,6 +8,8 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Expression
 internal constructor(actual: CBLQueryExpression) : DelegatedClass<CBLQueryExpression>(actual) {
 

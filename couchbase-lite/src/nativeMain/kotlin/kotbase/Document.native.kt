@@ -11,6 +11,8 @@ import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 import kotlin.reflect.safeCast
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Document
 internal constructor(
     actual: CPointer<CBLDocument>,

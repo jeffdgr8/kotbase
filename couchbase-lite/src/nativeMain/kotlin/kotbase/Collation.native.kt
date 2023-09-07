@@ -1,5 +1,7 @@
 package kotbase
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Collation
 private constructor(private val isUnicode: Boolean) {
 

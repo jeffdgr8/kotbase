@@ -9,6 +9,8 @@ import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 import kotlin.reflect.safeCast
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Dictionary
 internal constructor(
     actual: FLDict,

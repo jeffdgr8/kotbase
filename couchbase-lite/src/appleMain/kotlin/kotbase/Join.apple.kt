@@ -5,6 +5,8 @@ import cocoapods.CouchbaseLite.CBLQueryExpression
 import cocoapods.CouchbaseLite.CBLQueryJoin
 import kotbase.base.DelegatedClass
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Join
 private constructor(actual: CBLQueryJoin) : DelegatedClass<CBLQueryJoin>(actual) {
 

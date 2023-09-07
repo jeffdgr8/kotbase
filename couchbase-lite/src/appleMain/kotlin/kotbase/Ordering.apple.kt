@@ -4,6 +4,8 @@ import cocoapods.CouchbaseLite.CBLQueryOrdering
 import cocoapods.CouchbaseLite.CBLQuerySortOrder
 import kotbase.base.DelegatedClass
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual abstract class Ordering
 private constructor(actual: CBLQueryOrdering) : DelegatedClass<CBLQueryOrdering>(actual) {
 

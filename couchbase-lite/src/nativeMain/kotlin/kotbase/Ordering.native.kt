@@ -1,5 +1,7 @@
 package kotbase
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual abstract class Ordering
 private constructor(internal val expression: Expression) {
 

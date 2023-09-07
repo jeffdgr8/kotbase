@@ -3,6 +3,8 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLIndexConfiguration
 import kotbase.base.DelegatedClass
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class IndexConfiguration
 internal constructor(override val actual: CBLIndexConfiguration) : DelegatedClass<CBLIndexConfiguration>(actual) {
 

@@ -7,6 +7,8 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlin.reflect.safeCast
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Dictionary
 internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actual), Iterable<String> {
 

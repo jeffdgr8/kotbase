@@ -1,5 +1,7 @@
 package kotbase
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class SelectResult
 private constructor(
     protected open val expression: Expression,

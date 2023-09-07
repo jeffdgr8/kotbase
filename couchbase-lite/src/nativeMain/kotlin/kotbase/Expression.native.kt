@@ -3,6 +3,8 @@ package kotbase
 import kotbase.ext.toStringMillis
 import kotlinx.datetime.Instant
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Expression {
 
     private class ValueExpression(private val value: Any?) : Expression() {

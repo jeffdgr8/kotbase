@@ -5,7 +5,7 @@ plugins {
 repositories {
     google()
     mavenCentral()
-    maven("https://repo.sellmair.io/")
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
 }
 
 dependencies {

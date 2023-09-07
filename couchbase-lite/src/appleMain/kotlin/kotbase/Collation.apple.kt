@@ -3,6 +3,8 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLQueryCollation
 import kotbase.base.DelegatedClass
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Collation
 private constructor(actual: CBLQueryCollation) :
     DelegatedClass<CBLQueryCollation>(actual) {

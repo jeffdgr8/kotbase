@@ -1,5 +1,7 @@
 package kotbase
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class Join
 private constructor(
     internal val type: Type,

@@ -3,6 +3,8 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLQuerySelectResult
 import kotbase.base.DelegatedClass
 
+@OptIn(ExperimentalMultiplatform::class)
+@AllowDifferentMembersInActual
 public actual open class SelectResult
 private constructor(actual: CBLQuerySelectResult) : DelegatedClass<CBLQuerySelectResult>(actual) {
 
