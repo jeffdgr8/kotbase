@@ -343,16 +343,6 @@ internal constructor(
         incrementAfter(index, unsavedBlobs)
     }
 
-    private fun <T : Any> incrementAfter(index: Int, collection: MutableMap<Int, T>) {
-        for (key in collection.keys.sortedDescending()) {
-            if (key >= index) {
-                collection[key + 1] = collection.remove(key)!!
-            } else {
-                break
-            }
-        }
-    }
-
     public actual fun insertValue(index: Int, value: Any?): MutableArray {
         insertAt(index)
         setValue(index, value)
@@ -463,12 +453,6 @@ internal constructor(
     private fun checkSelf(value: FLMutableArray) {
         if (value === actual) {
             throw IllegalArgumentException("Arrays cannot ba added to themselves")
-        }
-    }
-
-    private fun checkInsertIndex(index: Int) {
-        if (index < 0 || index > count) {
-            throw IndexOutOfBoundsException("Array index $index is out of range")
         }
     }
 }

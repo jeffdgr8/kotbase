@@ -12,7 +12,9 @@ internal actual class ArrayPlatformState(
 public actual open class Array
 internal constructor(actual: CBLArray) : Iterable<Any?> {
 
-    internal actual val platformState: ArrayPlatformState = ArrayPlatformState(actual)
+    internal actual val platformState = ArrayPlatformState(actual)
+
+    internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
 
     internal actual open var dbContext: DbContext?
         get() = null
@@ -24,8 +26,11 @@ internal constructor(actual: CBLArray) : Iterable<Any?> {
     public actual val count: Int
         get() = actual.count()
 
-    public actual fun getValue(index: Int): Any? =
-        actual.getValue(index)?.delegateIfNecessary()
+    public actual fun getValue(index: Int): Any? {
+        return collectionMap[index]
+            ?: actual.getValue(index)?.delegateIfNecessary()
+                ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
+    }
 
     public actual fun getString(index: Int): String? =
         actual.getString(index)
@@ -54,11 +59,17 @@ internal constructor(actual: CBLArray) : Iterable<Any?> {
     public actual fun getDate(index: Int): Instant? =
         actual.getDate(index)?.toKotlinInstant()
 
-    public actual open fun getArray(index: Int): Array? =
-        actual.getArray(index)?.asArray()
+    public actual open fun getArray(index: Int): Array? {
+        return getInternalCollection(index)
+            ?: actual.getArray(index)?.asArray()
+                ?.also { collectionMap[index] = it }
+    }
 
-    public actual open fun getDictionary(index: Int): Dictionary? =
-        actual.getDictionary(index)?.asDictionary()
+    public actual open fun getDictionary(index: Int): Dictionary? {
+        return getInternalCollection(index)
+            ?: actual.getDictionary(index)?.asDictionary()
+                ?.also { collectionMap[index] = it }
+    }
 
     public actual fun toList(): List<Any?> =
         actual.toList().delegateIfNecessary()
@@ -75,11 +86,14 @@ internal constructor(actual: CBLArray) : Iterable<Any?> {
         override fun next(): Any? = itr.next()?.delegateIfNecessary()
     }
 
-    override fun equals(other: Any?): Boolean = actual == (other as? Array)?.actual
+    override fun equals(other: Any?): Boolean =
+        actual == (other as? Array)?.actual
 
-    override fun hashCode(): Int = actual.hashCode()
+    override fun hashCode(): Int =
+        actual.hashCode()
 
-    override fun toString(): String = actual.toString()
+    override fun toString(): String =
+        actual.toString()
 }
 
 internal val Array.actual: CBLArray

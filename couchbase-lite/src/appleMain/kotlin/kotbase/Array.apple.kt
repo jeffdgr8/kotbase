@@ -16,6 +16,8 @@ internal constructor(actual: CBLArray) : Iterable<Any?> {
 
     internal actual val platformState: ArrayPlatformState = ArrayPlatformState(actual)
 
+    internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
+
     internal actual open var dbContext: DbContext?
         get() = null
         set(_) {}
@@ -28,7 +30,9 @@ internal constructor(actual: CBLArray) : Iterable<Any?> {
 
     public actual fun getValue(index: Int): Any? {
         checkIndex(index)
-        return actual.valueAtIndex(index.convert())?.delegateIfNecessary()
+        return collectionMap[index]
+            ?: actual.valueAtIndex(index.convert())?.delegateIfNecessary()
+                ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
     }
 
     public actual fun getString(index: Int): String? {
@@ -78,12 +82,16 @@ internal constructor(actual: CBLArray) : Iterable<Any?> {
 
     public actual open fun getArray(index: Int): Array? {
         checkIndex(index)
-        return actual.arrayAtIndex(index.convert())?.asArray()
+        return getInternalCollection(index)
+            ?: actual.arrayAtIndex(index.convert())?.asArray()
+                ?.also { collectionMap[index] = it }
     }
 
     public actual open fun getDictionary(index: Int): Dictionary? {
         checkIndex(index)
-        return actual.dictionaryAtIndex(index.convert())?.asDictionary()
+        return getInternalCollection(index)
+            ?: actual.dictionaryAtIndex(index.convert())?.asDictionary()
+                ?.also { collectionMap[index] = it }
     }
 
     public actual fun toList(): List<Any?> =
@@ -104,11 +112,14 @@ internal constructor(actual: CBLArray) : Iterable<Any?> {
         override fun next(): Any? = getValue(index++)
     }
 
-    override fun equals(other: Any?): Boolean = actual.isEqual((other as? Array)?.actual)
+    override fun equals(other: Any?): Boolean =
+        actual.isEqual((other as? Array)?.actual)
 
-    override fun hashCode(): Int = actual.hash.toInt()
+    override fun hashCode(): Int =
+        actual.hash.toInt()
 
-    override fun toString(): String = actual.description ?: super.toString()
+    override fun toString(): String =
+        actual.description ?: super.toString()
 }
 
 internal val Array.actual: CBLArray

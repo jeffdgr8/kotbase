@@ -2,6 +2,7 @@ package kotbase
 
 import kotbase.internal.DbContext
 import kotlinx.datetime.Instant
+import kotlin.reflect.safeCast
 
 internal expect class ArrayPlatformState
 
@@ -11,6 +12,8 @@ internal expect class ArrayPlatformState
 public expect open class Array : Iterable<Any?> {
 
     internal val platformState: ArrayPlatformState
+
+    internal val collectionMap: MutableMap<Int, Any>
 
     internal open var dbContext: DbContext?
 
@@ -168,5 +171,24 @@ public operator fun Array.get(index: Int): Fragment {
 internal fun Array.checkIndex(index: Int) {
     if (index < 0 || index >= count) {
         throw IndexOutOfBoundsException("Array index $index is out of range")
+    }
+}
+
+internal fun Array.checkInsertIndex(index: Int) {
+    if (index < 0 || index > count) {
+        throw IndexOutOfBoundsException("Array index $index is out of range")
+    }
+}
+
+internal inline fun <reified T : Any> Array.getInternalCollection(index: Int): T? =
+    T::class.safeCast(collectionMap[index])
+
+internal fun <T : Any> Array.incrementAfter(index: Int, collection: MutableMap<Int, T>) {
+    for (key in collection.keys.sortedDescending()) {
+        if (key >= index) {
+            collection[key + 1] = collection.remove(key)!!
+        } else {
+            break
+        }
     }
 }

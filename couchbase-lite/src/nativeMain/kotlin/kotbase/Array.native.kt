@@ -11,9 +11,7 @@ import kotlin.reflect.safeCast
 
 internal actual class ArrayPlatformState(
     internal val actual: FLArray
-) {
-    internal val collectionMap: MutableMap<Int, Any> = mutableMapOf()
-}
+)
 
 public actual open class Array
 internal constructor(
@@ -26,6 +24,8 @@ internal constructor(
     }
 
     internal actual val platformState: ArrayPlatformState = ArrayPlatformState(actual)
+
+    internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
 
     internal actual open var dbContext: DbContext? = dbContext
         set(value) {
@@ -141,12 +141,6 @@ internal constructor(
 
 internal val Array.actual: FLArray
     get() = platformState.actual
-
-internal val Array.collectionMap: MutableMap<Int, Any>
-    get() = platformState.collectionMap
-
-internal inline fun <reified T : Any> Array.getInternalCollection(index: Int): T? =
-    T::class.safeCast(platformState.collectionMap[index])
 
 internal fun Array.getFLValue(index: Int): FLValue? {
     checkIndex(index)
