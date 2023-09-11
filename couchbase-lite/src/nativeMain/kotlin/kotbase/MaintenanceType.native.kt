@@ -9,7 +9,7 @@ public actual enum class MaintenanceType {
     OPTIMIZE,
     FULL_OPTIMIZE;
 
-    public val actual: CBLMaintenanceType
+    internal val actual: CBLMaintenanceType
         get() = when (this) {
             REINDEX -> kCBLMaintenanceTypeReindex
             COMPACT -> kCBLMaintenanceTypeCompact

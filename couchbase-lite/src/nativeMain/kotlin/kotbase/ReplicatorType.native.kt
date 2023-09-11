@@ -11,7 +11,7 @@ public actual enum class ReplicatorType {
     PUSH,
     PULL;
 
-    public val actual: CBLReplicatorType
+    internal val actual: CBLReplicatorType
         get() = when (this) {
             PUSH_AND_PULL -> kCBLReplicatorTypePushAndPull
             PUSH -> kCBLReplicatorTypePush

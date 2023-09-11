@@ -7,7 +7,7 @@ internal constructor(override val actual: D) : AbstractDelegatedClass<D>()
 
 public abstract class AbstractDelegatedClass<D : NSObject> {
 
-    public abstract val actual: D
+    internal abstract val actual: D
 
     override fun equals(other: Any?): Boolean =
         actual.isEqual((other as? AbstractDelegatedClass<*>)?.actual)

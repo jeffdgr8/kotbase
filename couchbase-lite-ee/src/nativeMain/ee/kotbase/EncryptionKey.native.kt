@@ -21,7 +21,7 @@ internal constructor(actual: CPointer<CBLEncryptionKey>? = null) {
         it.clear()
     }
 
-    public val actual: CPointer<CBLEncryptionKey> =
+    internal val actual: CPointer<CBLEncryptionKey> =
         actual ?: arena.alloc<CBLEncryptionKey>().apply {
             algorithm = kCBLEncryptionAES256
         }.ptr

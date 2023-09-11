@@ -10,7 +10,7 @@ import libcblite.*
 
 public actual class MutableArray
 internal constructor(
-    override val actual: FLMutableArray,
+    internal val actual: FLMutableArray,
     dbContext: DbContext? = null
 ) : Array(actual, dbContext) {
 

@@ -22,7 +22,7 @@ import kotlin.native.ref.createCleaner
 
 public actual class Database
 internal constructor(
-    public val actual: CPointer<CBLDatabase>,
+    internal val actual: CPointer<CBLDatabase>,
     private val _config: DatabaseConfiguration
 ) {
 

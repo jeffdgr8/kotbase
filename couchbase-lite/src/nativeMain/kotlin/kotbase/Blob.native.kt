@@ -80,7 +80,7 @@ private constructor(
         fileURL.toFileSource()
     )
 
-    public val actual: CPointer<CBLBlob>?
+    internal val actual: CPointer<CBLBlob>?
         get() = memory.actual
 
     private var dbContext: DbContext? = dbContext

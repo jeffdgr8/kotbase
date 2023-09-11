@@ -8,7 +8,7 @@ import kotlin.native.ref.createCleaner
 
 public actual class Parameters
 internal constructor(
-    public val actual: FLDict,
+    internal val actual: FLDict,
     private val readonly: Boolean
 ) {
 

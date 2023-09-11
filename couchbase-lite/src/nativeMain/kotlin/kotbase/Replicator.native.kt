@@ -21,7 +21,7 @@ import kotlin.native.ref.createCleaner
 
 public actual class Replicator
 private constructor(
-    public val actual: CPointer<CBLReplicator>,
+    internal val actual: CPointer<CBLReplicator>,
     private val immutableConfig: ImmutableReplicatorConfiguration
 ) {
 

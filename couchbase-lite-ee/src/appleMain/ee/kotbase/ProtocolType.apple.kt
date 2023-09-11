@@ -8,7 +8,7 @@ public actual enum class ProtocolType {
     MESSAGE_STREAM,
     BYTE_STREAM;
 
-    public val actual: CBLProtocolType
+    internal val actual: CBLProtocolType
         get() = when (this) {
             MESSAGE_STREAM -> kCBLProtocolTypeMessageStream
             BYTE_STREAM -> kCBLProtocolTypeByteStream

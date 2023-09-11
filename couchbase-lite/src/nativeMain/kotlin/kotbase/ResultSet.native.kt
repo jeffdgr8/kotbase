@@ -11,7 +11,7 @@ import kotlin.native.ref.createCleaner
 @OptIn(ExperimentalStdlibApi::class)
 public actual class ResultSet
 internal constructor(
-    public val actual: CPointer<CBLResultSet>,
+    internal val actual: CPointer<CBLResultSet>,
     private val dbContext: DbContext? = null
 ) : Iterable<Result>, AutoCloseable {
 
