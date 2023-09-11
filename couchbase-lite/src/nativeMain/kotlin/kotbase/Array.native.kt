@@ -9,8 +9,12 @@ import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 import kotlin.reflect.safeCast
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
+internal actual class ArrayPlatformState(
+    internal val actual: FLArray
+) {
+    internal val collectionMap: MutableMap<Int, Any> = mutableMapOf()
+}
+
 public actual open class Array
 internal constructor(
     actual: FLArray,
@@ -21,9 +25,9 @@ internal constructor(
         FLArray_Retain(actual)
     }
 
-    public open val actual: FLArray = actual
+    internal actual val platformState: ArrayPlatformState = ArrayPlatformState(actual)
 
-    internal open var dbContext: DbContext? = dbContext
+    internal actual open var dbContext: DbContext? = dbContext
         set(value) {
             field = value
             collectionMap.forEach {
@@ -40,11 +44,6 @@ internal constructor(
         FLArray_Release(it)
     }
 
-    protected val collectionMap: MutableMap<Int, Any> = mutableMapOf()
-
-    protected inline fun <reified T : Any> getInternalCollection(index: Int): T? =
-        T::class.safeCast(collectionMap[index])
-
     public actual fun toMutable(): MutableArray =
         MutableArray(
             FLArray_MutableCopy(actual, kFLDeepCopy)!!,
@@ -53,11 +52,6 @@ internal constructor(
 
     public actual val count: Int
         get() = FLArray_Count(actual).toInt()
-
-    protected fun getFLValue(index: Int): FLValue? {
-        checkIndex(index)
-        return actual.getValue(index)
-    }
 
     public actual open fun getValue(index: Int): Any? {
         return collectionMap[index]
@@ -122,12 +116,6 @@ internal constructor(
         override fun next(): Any? = getValue(index++)
     }
 
-    protected fun checkIndex(index: Int) {
-        if (index < 0 || index >= count) {
-            throw IndexOutOfBoundsException("Array index $index is out of range")
-        }
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Array) return false
@@ -149,4 +137,18 @@ internal constructor(
         }
         return result
     }
+}
+
+internal val Array.actual: FLArray
+    get() = platformState.actual
+
+internal val Array.collectionMap: MutableMap<Int, Any>
+    get() = platformState.collectionMap
+
+internal inline fun <reified T : Any> Array.getInternalCollection(index: Int): T? =
+    T::class.safeCast(platformState.collectionMap[index])
+
+internal fun Array.getFLValue(index: Int): FLValue? {
+    checkIndex(index)
+    return actual.getValue(index)
 }

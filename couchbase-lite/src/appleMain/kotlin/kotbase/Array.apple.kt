@@ -1,16 +1,24 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLArray
-import kotbase.base.DelegatedClass
 import kotbase.ext.asNumber
+import kotbase.internal.DbContext
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
+internal actual class ArrayPlatformState(
+    internal val actual: CBLArray
+)
+
 public actual open class Array
-internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Iterable<Any?> {
+internal constructor(actual: CBLArray) : Iterable<Any?> {
+
+    internal actual val platformState: ArrayPlatformState = ArrayPlatformState(actual)
+
+    internal actual open var dbContext: DbContext?
+        get() = null
+        set(_) {}
 
     public actual fun toMutable(): MutableArray =
         MutableArray(actual.toMutable())
@@ -96,12 +104,14 @@ internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Itera
         override fun next(): Any? = getValue(index++)
     }
 
-    // Throw IndexOutOfBoundException, avoid Objective-C NSRangeException
-    protected fun checkIndex(index: Int) {
-        if (index < 0 || index >= count) {
-            throw IndexOutOfBoundsException("Array index $index is out of range")
-        }
-    }
+    override fun equals(other: Any?): Boolean = actual.isEqual((other as? Array)?.actual)
+
+    override fun hashCode(): Int = actual.hash.toInt()
+
+    override fun toString(): String = actual.description ?: super.toString()
 }
+
+internal val Array.actual: CBLArray
+    get() = platformState.actual
 
 internal fun CBLArray.asArray() = Array(this)

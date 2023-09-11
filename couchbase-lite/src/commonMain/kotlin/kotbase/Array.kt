@@ -1,11 +1,18 @@
 package kotbase
 
+import kotbase.internal.DbContext
 import kotlinx.datetime.Instant
+
+internal expect class ArrayPlatformState
 
 /**
  * Array provides readonly access to array data.
  */
 public expect open class Array : Iterable<Any?> {
+
+    internal val platformState: ArrayPlatformState
+
+    internal open var dbContext: DbContext?
 
     /**
      * Return a mutable copy of the array
@@ -155,5 +162,11 @@ public operator fun Array.get(index: Int): Fragment {
         Fragment(this, index)
     } else {
         Fragment()
+    }
+}
+
+internal fun Array.checkIndex(index: Int) {
+    if (index < 0 || index >= count) {
+        throw IndexOutOfBoundsException("Array index $index is out of range")
     }
 }

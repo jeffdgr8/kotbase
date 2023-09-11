@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 import com.couchbase.lite.MutableArray as CBLMutableArray
 
 public actual class MutableArray
-internal constructor(override val actual: CBLMutableArray) : Array(actual) {
+internal constructor(internal val actual: CBLMutableArray) : Array(actual) {
 
     public actual constructor() : this(CBLMutableArray())
 

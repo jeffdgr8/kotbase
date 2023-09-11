@@ -1,14 +1,22 @@
 package kotbase
 
-import kotbase.base.DelegatedClass
 import kotbase.ext.toKotlinInstant
+import kotbase.internal.DbContext
 import kotlinx.datetime.Instant
 import com.couchbase.lite.Array as CBLArray
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
+internal actual class ArrayPlatformState(
+    internal val actual: CBLArray
+)
+
 public actual open class Array
-internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Iterable<Any?> {
+internal constructor(actual: CBLArray) : Iterable<Any?> {
+
+    internal actual val platformState: ArrayPlatformState = ArrayPlatformState(actual)
+
+    internal actual open var dbContext: DbContext?
+        get() = null
+        set(_) {}
 
     public actual fun toMutable(): MutableArray =
         MutableArray(actual.toMutable())
@@ -66,6 +74,15 @@ internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Itera
 
         override fun next(): Any? = itr.next()?.delegateIfNecessary()
     }
+
+    override fun equals(other: Any?): Boolean = actual == (other as? Array)?.actual
+
+    override fun hashCode(): Int = actual.hashCode()
+
+    override fun toString(): String = actual.toString()
 }
+
+internal val Array.actual: CBLArray
+    get() = platformState.actual
 
 internal fun CBLArray.asArray() = Array(this)
