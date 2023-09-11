@@ -21,6 +21,9 @@ kotlin {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
             }
         }
+        compilerOptions {
+            freeCompilerArgs.add("-Xexpect-actual-classes")
+        }
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {
@@ -47,10 +50,7 @@ kotlin {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs += "-Xjvm-default=all"
-    }
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 android {
