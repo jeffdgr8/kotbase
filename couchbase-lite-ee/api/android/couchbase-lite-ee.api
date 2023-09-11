@@ -1,4 +1,5 @@
-public class kotbase/Array : kotbase/base/DelegatedClass, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+public class kotbase/Array : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getArray (I)Lkotbase/Array;
 	public final fun getBlob (I)Lkotbase/Blob;
 	public final fun getBoolean (I)Z
@@ -12,10 +13,12 @@ public class kotbase/Array : kotbase/base/DelegatedClass, java/lang/Iterable, ko
 	public final fun getNumber (I)Ljava/lang/Number;
 	public final fun getString (I)Ljava/lang/String;
 	public final fun getValue (I)Ljava/lang/Object;
+	public fun hashCode ()I
 	public fun iterator ()Ljava/util/Iterator;
 	public final fun toJSON ()Ljava/lang/String;
 	public final fun toList ()Ljava/util/List;
 	public final fun toMutable ()Lkotbase/MutableArray;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/ArrayExpression {
@@ -162,7 +165,7 @@ public final class kotbase/ClientCertificateAuthenticator : kotbase/base/Delegat
 	public fun <init> (Lkotbase/TLSIdentity;)V
 	public synthetic fun getActual ()Lcom/couchbase/lite/Authenticator;
 	public fun getActual ()Lcom/couchbase/lite/ClientCertificateAuthenticator;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getIdentity ()Lkotbase/TLSIdentity;
 }
 
@@ -172,8 +175,7 @@ public class kotbase/Collation : kotbase/base/DelegatedClass {
 }
 
 public final class kotbase/Collation$ASCII : kotbase/Collation {
-	public fun getActual ()Lcom/couchbase/lite/Collation$ASCII;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun setIgnoreCase (Z)Lkotbase/Collation$ASCII;
 }
 
@@ -183,8 +185,7 @@ public final class kotbase/Collation$Companion {
 }
 
 public final class kotbase/Collation$Unicode : kotbase/Collation {
-	public fun getActual ()Lcom/couchbase/lite/Collation$Unicode;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun setIgnoreAccents (Z)Lkotbase/Collation$Unicode;
 	public final fun setIgnoreCase (Z)Lkotbase/Collation$Unicode;
 	public final fun setLocale (Ljava/lang/String;)Lkotbase/Collation$Unicode;
@@ -244,8 +245,7 @@ public final class kotbase/ConnectionStatus : kotbase/base/DelegatedClass {
 }
 
 public final class kotbase/ConsoleLogger : kotbase/base/DelegatedClass, kotbase/Logger {
-	public fun getActual ()Lcom/couchbase/lite/ConsoleLogger;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getDomains ()Ljava/util/Set;
 	public fun getLevel ()Lcom/couchbase/lite/LogLevel;
 	public fun log (Lcom/couchbase/lite/LogLevel;Lkotbase/LogDomain;Ljava/lang/String;)V
@@ -274,8 +274,7 @@ public class kotbase/DataSource : kotbase/base/DelegatedClass {
 
 public final class kotbase/DataSource$As : kotbase/DataSource {
 	public final fun as (Ljava/lang/String;)Lkotbase/DataSource;
-	public fun getActual ()Lcom/couchbase/lite/DataSource$As;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/DataSource$Companion {
@@ -359,7 +358,7 @@ public final class kotbase/DatabaseEndpoint : kotbase/base/DelegatedClass, kotba
 	public fun <init> (Lkotbase/Database;)V
 	public fun getActual ()Lcom/couchbase/lite/DatabaseEndpoint;
 	public synthetic fun getActual ()Lcom/couchbase/lite/Endpoint;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getDatabase ()Lkotbase/Database;
 }
 
@@ -492,8 +491,7 @@ public final class kotbase/Expression$Companion {
 }
 
 public final class kotbase/FileLogger : kotbase/base/DelegatedClass, kotbase/Logger {
-	public fun getActual ()Lcom/couchbase/lite/FileLogger;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getConfig ()Lkotbase/LogFileConfiguration;
 	public fun getLevel ()Lcom/couchbase/lite/LogLevel;
 	public fun log (Lcom/couchbase/lite/LogLevel;Lkotbase/LogDomain;Ljava/lang/String;)V
@@ -550,8 +548,7 @@ public final class kotbase/FullTextFunction {
 }
 
 public final class kotbase/FullTextIndex : kotbase/Index {
-	public fun getActual ()Lcom/couchbase/lite/FullTextIndex;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getLanguage ()Ljava/lang/String;
 	public final fun ignoreAccents (Z)Lkotbase/FullTextIndex;
 	public final fun isIgnoringAccents ()Z
@@ -562,8 +559,7 @@ public final class kotbase/FullTextIndex : kotbase/Index {
 
 public final class kotbase/FullTextIndexConfiguration : kotbase/IndexConfiguration {
 	public fun <init> ([Ljava/lang/String;)V
-	public fun getActual ()Lcom/couchbase/lite/FullTextIndexConfiguration;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getLanguage ()Ljava/lang/String;
 	public final fun ignoreAccents (Z)Lkotbase/FullTextIndexConfiguration;
 	public final fun isIgnoringAccents ()Z
@@ -693,8 +689,7 @@ public final class kotbase/Join$Companion {
 }
 
 public final class kotbase/Join$On : kotbase/Join {
-	public fun getActual ()Lcom/couchbase/lite/Join$On;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun on (Lkotbase/Expression;)Lkotbase/Join;
 }
 
@@ -738,14 +733,14 @@ public final class kotbase/ListenerCertificateAuthenticator : kotbase/base/Deleg
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun getActual ()Lcom/couchbase/lite/ListenerAuthenticator;
 	public fun getActual ()Lcom/couchbase/lite/ListenerCertificateAuthenticator;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/ListenerPasswordAuthenticator : kotbase/base/DelegatedClass, kotbase/ListenerAuthenticator {
 	public fun <init> (Lkotlin/jvm/functions/Function2;)V
 	public synthetic fun getActual ()Lcom/couchbase/lite/ListenerAuthenticator;
 	public fun getActual ()Lcom/couchbase/lite/ListenerPasswordAuthenticator;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/Log : kotbase/base/DelegatedClass {
@@ -762,7 +757,6 @@ public final class kotbase/LogDomain : java/lang/Enum {
 	public static final field NETWORK Lkotbase/LogDomain;
 	public static final field QUERY Lkotbase/LogDomain;
 	public static final field REPLICATOR Lkotbase/LogDomain;
-	public final fun getActual ()Lcom/couchbase/lite/LogDomain;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lkotbase/LogDomain;
 	public static fun values ()[Lkotbase/LogDomain;
@@ -806,7 +800,7 @@ public final class kotbase/MessageEndpoint : kotbase/base/DelegatedClass, kotbas
 	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Lcom/couchbase/lite/ProtocolType;Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun getActual ()Lcom/couchbase/lite/Endpoint;
 	public fun getActual ()Lcom/couchbase/lite/MessageEndpoint;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getDelegate ()Lkotlin/jvm/functions/Function1;
 	public final fun getProtocolType ()Lcom/couchbase/lite/ProtocolType;
 	public final fun getTarget ()Ljava/lang/Object;
@@ -858,8 +852,7 @@ public final class kotbase/Meta {
 
 public final class kotbase/MetaExpression : kotbase/Expression {
 	public final fun from (Ljava/lang/String;)Lkotbase/Expression;
-	public fun getActual ()Lcom/couchbase/lite/MetaExpression;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/MutableArray : kotbase/Array {
@@ -878,8 +871,6 @@ public final class kotbase/MutableArray : kotbase/Array {
 	public final fun addNumber (Ljava/lang/Number;)Lkotbase/MutableArray;
 	public final fun addString (Ljava/lang/String;)Lkotbase/MutableArray;
 	public final fun addValue (Ljava/lang/Object;)Lkotbase/MutableArray;
-	public fun getActual ()Lcom/couchbase/lite/MutableArray;
-	public synthetic fun getActual ()Ljava/lang/Object;
 	public synthetic fun getArray (I)Lkotbase/Array;
 	public fun getArray (I)Lkotbase/MutableArray;
 	public synthetic fun getDictionary (I)Lkotbase/Dictionary;
@@ -921,8 +912,7 @@ public final class kotbase/MutableDictionary : kotbase/Dictionary {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/util/Map;)V
-	public fun getActual ()Lcom/couchbase/lite/MutableDictionary;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public synthetic fun getArray (Ljava/lang/String;)Lkotbase/Array;
 	public fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
 	public synthetic fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
@@ -954,8 +944,7 @@ public final class kotbase/MutableDocument : kotbase/Document {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/util/Map;)V
 	public fun <init> (Ljava/util/Map;)V
-	public fun getActual ()Lcom/couchbase/lite/MutableDocument;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public synthetic fun getArray (Ljava/lang/String;)Lkotbase/Array;
 	public fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
 	public synthetic fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
@@ -1041,8 +1030,7 @@ public final class kotbase/Ordering$Companion {
 public final class kotbase/Ordering$SortOrder : kotbase/Ordering {
 	public final fun ascending ()Lkotbase/Ordering;
 	public final fun descending ()Lkotbase/Ordering;
-	public fun getActual ()Lcom/couchbase/lite/Ordering$SortOrder;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/Parameters : kotbase/base/DelegatedClass {
@@ -1071,8 +1059,7 @@ public final class kotbase/Prediction : kotbase/base/DelegatedClass {
 
 public final class kotbase/PredictionFunction : kotbase/Expression {
 	public fun <init> (Lcom/couchbase/lite/PredictionFunction;)V
-	public fun getActual ()Lcom/couchbase/lite/PredictionFunction;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun propertyPath (Ljava/lang/String;)Lkotbase/Expression;
 }
 
@@ -1086,8 +1073,7 @@ public abstract interface class kotbase/PredictiveModel {
 
 public final class kotbase/PropertyExpression : kotbase/Expression {
 	public final fun from (Ljava/lang/String;)Lkotbase/Expression;
-	public fun getActual ()Lcom/couchbase/lite/PropertyExpression;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public abstract interface class kotbase/Query {
@@ -1145,7 +1131,6 @@ public final class kotbase/ReplicatorActivityLevel : java/lang/Enum {
 	public static final field IDLE Lkotbase/ReplicatorActivityLevel;
 	public static final field OFFLINE Lkotbase/ReplicatorActivityLevel;
 	public static final field STOPPED Lkotbase/ReplicatorActivityLevel;
-	public final fun getActual ()Lcom/couchbase/lite/ReplicatorActivityLevel;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lkotbase/ReplicatorActivityLevel;
 	public static fun values ()[Lkotbase/ReplicatorActivityLevel;
@@ -1246,7 +1231,6 @@ public final class kotbase/ReplicatorType : java/lang/Enum {
 	public static final field PULL Lkotbase/ReplicatorType;
 	public static final field PUSH Lkotbase/ReplicatorType;
 	public static final field PUSH_AND_PULL Lkotbase/ReplicatorType;
-	public final fun getActual ()Lcom/couchbase/lite/ReplicatorType;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lkotbase/ReplicatorType;
 	public static fun values ()[Lkotbase/ReplicatorType;
@@ -1317,8 +1301,7 @@ public class kotbase/SelectResult : kotbase/base/DelegatedClass {
 
 public final class kotbase/SelectResult$As : kotbase/SelectResult {
 	public final fun as (Ljava/lang/String;)Lkotbase/SelectResult$As;
-	public fun getActual ()Lcom/couchbase/lite/SelectResult$As;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/SelectResult$Companion {
@@ -1329,8 +1312,7 @@ public final class kotbase/SelectResult$Companion {
 
 public final class kotbase/SelectResult$From : kotbase/SelectResult {
 	public final fun from (Ljava/lang/String;)Lkotbase/SelectResult;
-	public fun getActual ()Lcom/couchbase/lite/SelectResult$From;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/SessionAuthenticator : kotbase/Authenticator {
@@ -1377,7 +1359,7 @@ public final class kotbase/URLEndpoint : kotbase/base/DelegatedClass, kotbase/En
 	public fun <init> (Ljava/lang/String;)V
 	public synthetic fun getActual ()Lcom/couchbase/lite/Endpoint;
 	public fun getActual ()Lcom/couchbase/lite/URLEndpoint;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getUrl ()Ljava/lang/String;
 }
 
@@ -1419,8 +1401,7 @@ public final class kotbase/URLEndpointListenerConfigurationKt {
 }
 
 public final class kotbase/ValueIndex : kotbase/Index {
-	public fun getActual ()Lcom/couchbase/lite/ValueIndex;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/ValueIndexConfiguration : kotbase/IndexConfiguration {
@@ -1438,8 +1419,7 @@ public final class kotbase/ValueIndexItem$Companion {
 }
 
 public final class kotbase/VariableExpression : kotbase/Expression {
-	public fun getActual ()Lcom/couchbase/lite/VariableExpression;
-	public synthetic fun getActual ()Ljava/lang/Object;
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/Where : kotbase/base/DelegatedClass, kotbase/Query {
@@ -1459,7 +1439,6 @@ public final class kotbase/Where : kotbase/base/DelegatedClass, kotbase/Query {
 
 public abstract class kotbase/base/DelegatedClass {
 	public fun equals (Ljava/lang/Object;)Z
-	public fun getActual ()Ljava/lang/Object;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
