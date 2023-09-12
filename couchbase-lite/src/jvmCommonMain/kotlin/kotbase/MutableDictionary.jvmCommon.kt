@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 import com.couchbase.lite.MutableDictionary as CBLMutableDictionary
 
 public actual class MutableDictionary
-internal constructor(override val actual: CBLMutableDictionary) : Dictionary(actual) {
+internal constructor(internal val actual: CBLMutableDictionary) : Dictionary(actual) {
 
     public actual constructor() : this(CBLMutableDictionary())
 
@@ -85,7 +85,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         } else {
             actual.setBlob(key, value.actual)
         }
-        //setBlob(key, value?.actual)
+        //actual.setBlob(key, value?.actual)
         collectionMap.remove(key)
         return this
     }
@@ -98,7 +98,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         } else {
             actual.setDate(key, value.toDate())
         }
-        //setDate(key, value?.toDate())
+        //actual.setDate(key, value?.toDate())
         collectionMap.remove(key)
         return this
     }
@@ -113,7 +113,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
             actual.setArray(key, value.actual)
             collectionMap[key] = value
         }
-        //setArray(key, value?.actual)
+        //actual.setArray(key, value?.actual)
         return this
     }
 
@@ -127,7 +127,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
             actual.setDictionary(key, value.actual)
             collectionMap[key] = value
         }
-        //setDictionary(key, value?.actual)
+        //actual.setDictionary(key, value?.actual)
         return this
     }
 

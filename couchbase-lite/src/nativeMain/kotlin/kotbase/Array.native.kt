@@ -7,7 +7,6 @@ import kotlinx.datetime.Instant
 import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
-import kotlin.reflect.safeCast
 
 internal actual class ArrayPlatformState(
     internal val actual: FLArray
@@ -136,6 +135,23 @@ internal constructor(
             result = 31 * result + (o?.hashCode() ?: 0)
         }
         return result
+    }
+
+    override fun toString(): String {
+        return buildString {
+            append("Array{(")
+            append(if (this@Array is MutableArray) '+' else '.')
+            //append(if (isMutated) '!' else '.')
+            append(')')
+            val n = count
+            for (i in 0 until n) {
+                if (i > 0) {
+                    append(',')
+                }
+                append(getValue(i))
+            }
+            append('}')
+        }
     }
 }
 

@@ -1,20 +1,24 @@
 package kotbase
 
-import kotbase.base.DelegatedClass
 import kotbase.ext.toKotlinInstant
+import kotbase.internal.DbContext
 import kotlinx.datetime.Instant
-import kotlin.reflect.safeCast
 import com.couchbase.lite.Dictionary as CBLDictionary
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
+internal actual class DictionaryPlatformState(
+    internal val actual: CBLDictionary
+)
+
 public actual open class Dictionary
-internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actual), Iterable<String> {
+internal constructor(actual: CBLDictionary) : Iterable<String> {
 
-    protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
+    internal actual val platformState = DictionaryPlatformState(actual)
 
-    protected inline fun <reified T : Any> getInternalCollection(key: String): T? =
-        T::class.safeCast(collectionMap[key])
+    internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
+
+    internal actual open var dbContext: DbContext?
+        get() = null
+        set(_) {}
 
     public actual fun toMutable(): MutableDictionary =
         MutableDictionary(actual.toMutable())
@@ -81,6 +85,18 @@ internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actu
 
     override fun iterator(): Iterator<String> =
         actual.iterator()
+
+    override fun equals(other: Any?): Boolean =
+        actual == (other as? Dictionary)?.actual
+
+    override fun hashCode(): Int =
+        actual.hashCode()
+
+    override fun toString(): String =
+        actual.toString()
 }
+
+internal val Dictionary.actual: CBLDictionary
+    get() = platformState.actual
 
 internal fun CBLDictionary.asDictionary() = Dictionary(this)

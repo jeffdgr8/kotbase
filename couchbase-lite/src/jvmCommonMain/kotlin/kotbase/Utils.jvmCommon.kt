@@ -32,6 +32,7 @@ internal fun <K> Map<K, Any?>.delegateIfNecessary(): Map<K, Any?> =
 internal fun Any.actualIfDelegated(): Any = when (this) {
     is DelegatedClass<*> -> actual
     is Array -> actual
+    is Dictionary -> actual
     is Instant -> toDate()
     is List<*> -> actualIfDelegated()
     is Map<*, *> -> actualIfDelegated()

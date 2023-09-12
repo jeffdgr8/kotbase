@@ -1,11 +1,21 @@
 package kotbase
 
+import kotbase.internal.DbContext
 import kotlinx.datetime.Instant
+import kotlin.reflect.safeCast
+
+internal expect class DictionaryPlatformState
 
 /**
  * Dictionary provides readonly access to dictionary data.
  */
 public expect open class Dictionary : Iterable<String> {
+
+    internal val platformState: DictionaryPlatformState
+
+    internal val collectionMap: MutableMap<String, Any>
+
+    internal open var dbContext: DbContext?
 
     /**
      * Return a mutable copy of the dictionary
@@ -167,3 +177,6 @@ public expect open class Dictionary : Iterable<String> {
  */
 public operator fun Dictionary.get(key: String): Fragment =
     Fragment(this, key)
+
+internal inline fun <reified T : Any> Dictionary.getInternalCollection(key: String): T? =
+    T::class.safeCast(collectionMap[key])

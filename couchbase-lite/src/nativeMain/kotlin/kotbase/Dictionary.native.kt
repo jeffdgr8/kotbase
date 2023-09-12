@@ -7,10 +7,11 @@ import kotlinx.datetime.Instant
 import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
-import kotlin.reflect.safeCast
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
+internal actual class DictionaryPlatformState(
+    internal val actual: FLDict
+)
+
 public actual open class Dictionary
 internal constructor(
     actual: FLDict,
@@ -21,9 +22,11 @@ internal constructor(
         FLDict_Retain(actual)
     }
 
-    public open val actual: FLDict = actual
+    internal actual val platformState = DictionaryPlatformState(actual)
 
-    internal open var dbContext: DbContext? = dbContext
+    internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
+
+    internal actual open var dbContext: DbContext? = dbContext
         set(value) {
             field = value
             collectionMap.forEach {
@@ -40,11 +43,6 @@ internal constructor(
         FLDict_Release(it)
     }
 
-    protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
-
-    protected inline fun <reified T : Any> getInternalCollection(key: String): T? =
-        T::class.safeCast(collectionMap[key])
-
     public actual fun toMutable(): MutableDictionary {
         return MutableDictionary(
             FLDict_MutableCopy(actual, kFLDeepCopy)!!,
@@ -57,9 +55,6 @@ internal constructor(
 
     public actual val keys: List<String>
         get() = actual.keys()
-
-    protected fun getFLValue(key: String): FLValue? =
-        actual.getValue(key)
 
     public actual open fun getValue(key: String): Any? {
         return collectionMap[key]
@@ -142,22 +137,28 @@ internal constructor(
         return result
     }
 
-    protected open val isMutable: Boolean = false
-
     override fun toString(): String {
-        val buf = StringBuilder("Dictionary{(")
-            .append(if (isMutable) '+' else '.')
-            //.append(if (isMutated) '!' else '.')
-            .append(')')
-        var first = true
-        for (key in keys) {
-            if (first) {
-                first = false
-            } else {
-                buf.append(',')
+        return buildString {
+            append("Dictionary{(")
+            append(if (this@Dictionary is MutableDictionary) '+' else '.')
+            //append(if (isMutated) '!' else '.')
+            append(')')
+            var first = true
+            for (key in keys) {
+                if (first) {
+                    first = false
+                } else {
+                    append(',')
+                }
+                append(key).append("=>").append(getValue(key))
             }
-            buf.append(key).append("=>").append(getValue(key))
+            append('}')
         }
-        return buf.append('}').toString()
     }
 }
+
+internal val Dictionary.actual: FLDict
+    get() = platformState.actual
+
+internal fun Dictionary.getFLValue(key: String): FLValue? =
+    actual.getValue(key)

@@ -8,7 +8,7 @@ import libcblite.*
 
 public actual class MutableDictionary
 internal constructor(
-    override val actual: FLMutableDict,
+    internal val actual: FLMutableDict,
     dbContext: DbContext? = null
 ) : Dictionary(actual, dbContext) {
 
@@ -217,6 +217,4 @@ internal constructor(
     override fun toJSON(): String {
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
     }
-
-    override val isMutable: Boolean = true
 }
