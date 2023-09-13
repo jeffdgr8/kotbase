@@ -4,29 +4,22 @@ import cnames.structs.CBLAuthenticator
 import kotbase.internal.fleece.toFLString
 import kotlinx.cinterop.CPointer
 import libcblite.CBLAuth_CreateSession
-import libcblite.CBLAuth_Free
-import kotlin.experimental.ExperimentalNativeApi
-import kotlin.native.ref.createCleaner
 
 public actual class SessionAuthenticator
-actual constructor(
+private constructor(
     public actual val sessionID: String,
-    cookieName: String?
-) : Authenticator {
+    public actual val cookieName: String,
+    actual: CPointer<CBLAuthenticator>
+) : Authenticator(actual) {
 
-    override val actual: CPointer<CBLAuthenticator> =
+    public actual constructor(sessionID: String, cookieName: String?) : this(
+        sessionID,
+        cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME,
         CBLAuth_CreateSession(
             sessionID.toFLString(),
             (cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME).toFLString()
         )!!
-
-    @OptIn(ExperimentalNativeApi::class)
-    @Suppress("unused")
-    private val cleaner = createCleaner(actual) {
-        CBLAuth_Free(it)
-    }
-
-    public actual val cookieName: String = cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME
+    )
 
     private companion object {
         private const val DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME = "SyncGatewaySession"

@@ -1,6 +1,11 @@
 package kotbase
 
+internal expect class AuthenticatorPlatformState
+
 /**
  * Authenticator is an opaque interface.
  */
-public expect interface Authenticator
+public expect sealed class Authenticator {
+
+    internal val platformState: AuthenticatorPlatformState
+}
