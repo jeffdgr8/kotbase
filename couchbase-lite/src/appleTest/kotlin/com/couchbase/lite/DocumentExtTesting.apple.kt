@@ -5,6 +5,7 @@ import cocoapods.CouchbaseLite.kDocExists
 import kotbase.Dictionary
 import kotbase.Document
 import kotbase.MutableDictionary
+import kotbase.actual
 import kotlinx.cinterop.pointed
 
 @Suppress("UNCHECKED_CAST")

@@ -1,11 +1,18 @@
 package kotbase
 
 import kotlinx.datetime.Instant
+import kotlin.reflect.safeCast
+
+internal expect class DocumentPlatformState
 
 /**
  * Readonly version of the Document.
  */
 public expect open class Document : Iterable<String> {
+
+    internal val platformState: DocumentPlatformState
+
+    internal val collectionMap: MutableMap<String, Any>
 
     /**
      * The document's ID.
@@ -202,3 +209,6 @@ public expect open class Document : Iterable<String> {
  */
 public operator fun Document.get(key: String): Fragment =
     Fragment(this, key)
+
+internal inline fun <reified T : Any> Document.getInternalCollection(key: String): T? =
+    T::class.safeCast(collectionMap[key])

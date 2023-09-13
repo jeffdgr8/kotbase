@@ -1,7 +1,8 @@
 package com.couchbase.lite
 
-import kotbase.Dictionary
-import kotbase.Document
+import kotbase.*
+import kotbase.dbContext
+import kotbase.properties
 import kotlinx.cinterop.*
 import libcblite.C4Document
 import libcblite.kDocExists

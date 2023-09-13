@@ -9,60 +9,38 @@ import kotlinx.datetime.Instant
 import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
-import kotlin.reflect.safeCast
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
+internal actual class DocumentPlatformState(
+    internal val actual: CPointer<CBLDocument>,
+    database: Database?
+) {
+
+    internal val dbContext = DbContext(database)
+
+    internal fun willSave(db: Database) {
+        dbContext.willSave(db)
+    }
+}
+
 public actual open class Document
 internal constructor(
     actual: CPointer<CBLDocument>,
     database: Database?
 ) : Iterable<String> {
 
-    private val memory = object {
-        val actual: CPointer<CBLDocument> = actual
-        var properties: FLDict = CBLDocument_Properties(actual)!!
-    }
+    internal actual val platformState = DocumentPlatformState(actual, database)
+
+    internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
     init {
         CBLDocument_Retain(actual)
-        FLDict_Retain(memory.properties)
     }
-
-    public open val actual: CPointer<CBLDocument> = actual
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
-    private val cleaner = createCleaner(memory) {
+    private val cleaner = createCleaner(platformState) {
         CBLDocument_Release(it.actual)
-        FLDict_Release(it.properties)
     }
-
-    internal var database: Database?
-        get() = dbContext.database
-        set(value) {
-            dbContext.database = value
-        }
-
-    internal val dbContext: DbContext = DbContext(database)
-
-    internal fun willSave(db: Database) {
-        dbContext.willSave(db)
-    }
-
-    internal open var properties: FLDict = CBLDocument_Properties(actual)!!
-        set(value) {
-            FLDict_Release(field)
-            field = value
-            CBLDocument_SetProperties(actual, value)
-            FLDict_Retain(value)
-            memory.properties = value
-        }
-
-    protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
-
-    protected inline fun <reified T : Any> getInternalCollection(key: String): T? =
-        T::class.safeCast(collectionMap[key])
 
     public actual val id: String
         get() = CBLDocument_ID(actual).toKString()!!
@@ -81,9 +59,6 @@ internal constructor(
 
     public actual val keys: List<String>
         get() = properties.keys()
-
-    protected fun getFLValue(key: String): FLValue? =
-        properties.getValue(key)
 
     public actual open fun getValue(key: String): Any? {
         return collectionMap[key]
@@ -174,12 +149,10 @@ internal constructor(
         return result
     }
 
-    protected open val isMutable: Boolean = false
-
     override fun toString(): String {
         val buf = StringBuilder("Document{").append(identityHashCodeHex())
             .append(id).append('@').append(revisionID)
-            .append('(').append(if (isMutable) '+' else '.')
+            .append('(').append(if (this is MutableDocument) '+' else '.')
         //    .append(if (isDeleted) '?' else '.').append("):")
         var first = true
         for (key in keys) {
@@ -192,6 +165,28 @@ internal constructor(
         }
         return buf.append('}').toString()
     }
+}
+
+internal val Document.actual: CPointer<CBLDocument>
+    get() = platformState.actual
+
+internal val Document.properties: FLDict
+    get() = CBLDocument_Properties(actual)!!
+
+internal val Document.dbContext: DbContext
+    get() = platformState.dbContext
+
+internal var Document.database: Database?
+    get() = dbContext.database
+    set(value) {
+        dbContext.database = value
+    }
+
+internal fun Document.getFLValue(key: String): FLValue? =
+    properties.getValue(key)
+
+internal fun Document.willSave(db: Database) {
+    platformState.willSave(db)
 }
 
 internal fun CPointer<CBLDocument>.asDocument(database: Database?) =

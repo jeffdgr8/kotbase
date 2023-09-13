@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 import com.couchbase.lite.MutableDocument as CBLMutableDocument
 
 public actual class MutableDocument
-internal constructor(override val actual: CBLMutableDocument) : Document(actual) {
+internal constructor(actual: CBLMutableDocument) : Document(actual) {
 
     public actual constructor() : this(CBLMutableDocument())
 
@@ -136,3 +136,6 @@ internal constructor(override val actual: CBLMutableDocument) : Document(actual)
                 ?.also { collectionMap[key] = it }
     }
 }
+
+internal val MutableDocument.actual: CBLMutableDocument
+    get() = platformState.actual as CBLMutableDocument

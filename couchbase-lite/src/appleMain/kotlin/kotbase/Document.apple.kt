@@ -1,21 +1,20 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLDocument
-import kotbase.base.DelegatedClass
 import kotbase.ext.asNumber
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
-import kotlin.reflect.safeCast
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
+internal actual class DocumentPlatformState(
+    internal val actual: CBLDocument
+)
+
 public actual open class Document
-internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual), Iterable<String> {
+internal constructor(actual: CBLDocument) : Iterable<String> {
 
-    protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
+    internal actual val platformState = DocumentPlatformState(actual)
 
-    protected inline fun <reified T : Any> getInternalCollection(key: String): T? =
-        T::class.safeCast(collectionMap[key])
+    internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
     public actual val id: String
         get() = actual.id
@@ -95,6 +94,18 @@ internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual),
     @Suppress("UNCHECKED_CAST")
     actual override operator fun iterator(): Iterator<String> =
         (actual.keys as List<String>).iterator()
+
+    override fun equals(other: Any?): Boolean =
+        actual.isEqual((other as? Document)?.actual)
+
+    override fun hashCode(): Int =
+        actual.hash.toInt()
+
+    override fun toString(): String =
+        actual.description ?: super.toString()
 }
+
+internal val Document.actual: CBLDocument
+    get() = platformState.actual
 
 internal fun CBLDocument.asDocument() = Document(this)

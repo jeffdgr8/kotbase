@@ -8,7 +8,7 @@ import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 
 public actual class MutableDocument
-internal constructor(override val actual: CBLMutableDocument) : Document(actual) {
+internal constructor(actual: CBLMutableDocument) : Document(actual) {
 
     public actual constructor() : this(CBLMutableDocument())
 
@@ -170,3 +170,6 @@ internal constructor(override val actual: CBLMutableDocument) : Document(actual)
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
     }
 }
+
+internal val MutableDocument.actual: CBLMutableDocument
+    get() = platformState.actual as CBLMutableDocument

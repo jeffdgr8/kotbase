@@ -1,20 +1,19 @@
 package kotbase
 
-import kotbase.base.DelegatedClass
 import kotbase.ext.toKotlinInstant
 import kotlinx.datetime.Instant
-import kotlin.reflect.safeCast
 import com.couchbase.lite.Document as CBLDocument
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
+internal actual class DocumentPlatformState(
+    internal val actual: CBLDocument
+)
+
 public actual open class Document
-internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual), Iterable<String> {
+internal constructor(actual: CBLDocument) : Iterable<String> {
 
-    protected val collectionMap: MutableMap<String, Any> = mutableMapOf()
+    internal actual val platformState = DocumentPlatformState(actual)
 
-    protected inline fun <reified T : Any> getInternalCollection(key: String): T? =
-        T::class.safeCast(collectionMap[key])
+    internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
     public actual val id: String
         get() = actual.id
@@ -90,6 +89,18 @@ internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual),
 
     actual override operator fun iterator(): Iterator<String> =
         actual.iterator()
+
+    override fun equals(other: Any?): Boolean =
+        actual == (other as? Document)?.actual
+
+    override fun hashCode(): Int =
+        actual.hashCode()
+
+    override fun toString(): String =
+        actual.toString()
 }
+
+internal val Document.actual: CBLDocument
+    get() = platformState.actual
 
 internal fun CBLDocument.asDocument() = Document(this)
