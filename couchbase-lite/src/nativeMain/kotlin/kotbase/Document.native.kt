@@ -15,6 +15,14 @@ internal actual class DocumentPlatformState(
     database: Database?
 ) {
 
+    var properties: FLDict = CBLDocument_Properties(actual)!!
+        set(value) {
+            FLDict_Release(field)
+            field = value
+            CBLDocument_SetProperties(actual, value)
+            FLDict_Retain(value)
+        }
+
     internal val dbContext = DbContext(database)
 
     internal fun willSave(db: Database) {
@@ -34,12 +42,14 @@ internal constructor(
 
     init {
         CBLDocument_Retain(actual)
+        FLDict_Retain(platformState.properties)
     }
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(platformState) {
         CBLDocument_Release(it.actual)
+        FLDict_Release(it.properties)
     }
 
     public actual val id: String
@@ -171,7 +181,7 @@ internal val Document.actual: CPointer<CBLDocument>
     get() = platformState.actual
 
 internal val Document.properties: FLDict
-    get() = CBLDocument_Properties(actual)!!
+    get() = platformState.properties
 
 internal val Document.dbContext: DbContext
     get() = platformState.dbContext

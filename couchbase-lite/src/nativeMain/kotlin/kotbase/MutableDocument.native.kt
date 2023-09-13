@@ -65,7 +65,7 @@ internal constructor(
     }
 
     public actual fun setData(data: Map<String, Any?>): MutableDocument {
-        CBLDocument_SetProperties(actual, MutableDictionary(data).actual)
+        properties = MutableDictionary(data).actual
         unsavedBlobs.clear()
         return this
     }
@@ -80,6 +80,7 @@ internal constructor(
                     CBLDocument_SetJSON(actual, json.toFLString(this), error)
                 }
             }
+            properties = CBLDocument_MutableProperties(actual)!!
             unsavedBlobs.clear()
         } catch (e: CouchbaseLiteException) {
             if (e.code == CBLError.Code.INVALID_QUERY) {
@@ -218,5 +219,8 @@ internal constructor(
     }
 }
 
-internal val MutableDocument.properties: FLMutableDict
-    get() = CBLDocument_MutableProperties(actual)!!
+internal var MutableDocument.properties: FLMutableDict
+    get() = platformState.properties
+    set(value) {
+        platformState.properties = value
+    }
