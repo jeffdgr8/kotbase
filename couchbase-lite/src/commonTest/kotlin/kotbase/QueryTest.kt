@@ -1899,6 +1899,8 @@ class QueryTest : BaseQueryTest() {
         )
 
         for (i in collations.indices) {
+            // TODO: JSON formatting is not identical between platforms and null locale uses system default on iOS
+            //  https://forums.couchbase.com/t/unicode-collation-locale-null-or-device-locale/34103
             println("expected[$i] = ${expected[i]}")
             println("collations[$i] = ${collations[i].asJSON()}")
             //assertEquals(expected[i], collations[i].asJSON())
