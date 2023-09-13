@@ -10,7 +10,7 @@ import libcblite.*
 
 public actual class MutableArray
 internal constructor(
-    internal val actual: FLMutableArray,
+    actual: FLMutableArray,
     dbContext: DbContext? = null
 ) : Array(actual, dbContext) {
 
@@ -456,3 +456,6 @@ internal constructor(
         }
     }
 }
+
+internal val MutableArray.actual: FLMutableArray
+    get() = platformState.actual

@@ -4,7 +4,7 @@ import cocoapods.CouchbaseLite.CBLClientCertificateAuthenticator
 
 public actual class ClientCertificateAuthenticator
 private constructor(
-    internal val actual: CBLClientCertificateAuthenticator,
+    actual: CBLClientCertificateAuthenticator,
     public actual val identity: TLSIdentity
 ) : Authenticator(actual) {
 
@@ -13,3 +13,6 @@ private constructor(
         identity
     )
 }
+
+internal val ClientCertificateAuthenticator.actual: CBLClientCertificateAuthenticator
+    get() = platformState.actual as CBLClientCertificateAuthenticator

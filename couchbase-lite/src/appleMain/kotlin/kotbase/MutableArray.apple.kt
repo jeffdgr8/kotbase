@@ -8,7 +8,7 @@ import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 
 public actual class MutableArray
-internal constructor(internal val actual: CBLMutableArray) : Array(actual) {
+internal constructor(actual: CBLMutableArray) : Array(actual) {
 
     public actual constructor() : this(CBLMutableArray())
 
@@ -359,5 +359,8 @@ internal constructor(internal val actual: CBLMutableArray) : Array(actual) {
         }
     }
 }
+
+internal val MutableArray.actual: CBLMutableArray
+    get() = platformState.actual as CBLMutableArray
 
 internal fun CBLMutableArray.asMutableArray() = MutableArray(this)

@@ -4,7 +4,7 @@ import cocoapods.CouchbaseLite.CBLBasicAuthenticator
 
 public actual class BasicAuthenticator
 internal constructor(
-    internal val actual: CBLBasicAuthenticator
+    actual: CBLBasicAuthenticator
 ) : Authenticator(actual) {
 
     public actual constructor(username: String, password: CharArray) : this(
@@ -17,3 +17,6 @@ internal constructor(
     public actual val passwordChars: CharArray
         get() = actual.password.toCharArray()
 }
+
+internal val BasicAuthenticator.actual: CBLBasicAuthenticator
+    get() = platformState.actual as CBLBasicAuthenticator

@@ -8,7 +8,7 @@ import libcblite.*
 
 public actual class MutableDictionary
 internal constructor(
-    internal val actual: FLMutableDict,
+    actual: FLMutableDict,
     dbContext: DbContext? = null
 ) : Dictionary(actual, dbContext) {
 
@@ -218,3 +218,6 @@ internal constructor(
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
     }
 }
+
+internal val MutableDictionary.actual: FLMutableDict
+    get() = platformState.actual

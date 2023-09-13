@@ -4,7 +4,7 @@ import cocoapods.CouchbaseLite.CBLSessionAuthenticator
 
 public actual class SessionAuthenticator
 internal constructor(
-    internal val actual: CBLSessionAuthenticator
+    actual: CBLSessionAuthenticator
 ) : Authenticator(actual) {
 
     public actual constructor(sessionID: String, cookieName: String?) : this(
@@ -17,3 +17,6 @@ internal constructor(
     public actual val cookieName: String
         get() = actual.cookieName
 }
+
+internal val SessionAuthenticator.actual: CBLSessionAuthenticator
+    get() = platformState.actual as CBLSessionAuthenticator

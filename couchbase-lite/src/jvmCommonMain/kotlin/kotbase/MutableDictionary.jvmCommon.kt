@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 import com.couchbase.lite.MutableDictionary as CBLMutableDictionary
 
 public actual class MutableDictionary
-internal constructor(internal val actual: CBLMutableDictionary) : Dictionary(actual) {
+internal constructor(actual: CBLMutableDictionary) : Dictionary(actual) {
 
     public actual constructor() : this(CBLMutableDictionary())
 
@@ -149,6 +149,9 @@ internal constructor(internal val actual: CBLMutableDictionary) : Dictionary(act
                 ?.also { collectionMap[key] = it }
     }
 }
+
+internal val MutableDictionary.actual: CBLMutableDictionary
+    get() = platformState.actual as CBLMutableDictionary
 
 internal fun CBLMutableDictionary.asMutableDictionary() =
     MutableDictionary(this)
