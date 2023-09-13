@@ -2,6 +2,7 @@ package kotbase.internal
 
 import kotbase.MutableArray
 import kotbase.MutableDictionary
+import kotbase.actual
 import kotbase.internal.fleece.toFLString
 import kotbase.internal.fleece.toKString
 import kotbase.internal.fleece.toObject

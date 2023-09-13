@@ -1,13 +1,11 @@
 package kotbase
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
-public actual open class Collation
-private constructor(private val isUnicode: Boolean) {
-
-    protected var locale: String? = null
-    protected var ignAccents: Boolean = false
-    protected var ignCase: Boolean = false
+internal actual class CollationPlatformState(
+    private val isUnicode: Boolean,
+    internal var locale: String? = null,
+    internal var ignAccents: Boolean = false,
+    internal var ignCase: Boolean = false
+) {
 
     internal fun asJSON(): Map<String, Any?> {
         return mapOf(
@@ -17,11 +15,17 @@ private constructor(private val isUnicode: Boolean) {
             "DIAC" to !ignAccents
         )
     }
+}
+
+public actual sealed class Collation
+private constructor(isUnicode: Boolean) {
+
+    internal actual val platformState = CollationPlatformState(isUnicode)
 
     public actual class ASCII : Collation(false) {
 
         public actual fun setIgnoreCase(ignCase: Boolean): ASCII {
-            this.ignCase = ignCase
+            platformState.ignCase = ignCase
             return this
         }
     }
@@ -29,17 +33,17 @@ private constructor(private val isUnicode: Boolean) {
     public actual class Unicode : Collation(true) {
 
         public actual fun setLocale(locale: String?): Unicode {
-            this.locale = locale
+            platformState.locale = locale
             return this
         }
 
         public actual fun setIgnoreAccents(ignAccents: Boolean): Unicode {
-            this.ignAccents = ignAccents
+            platformState.ignAccents = ignAccents
             return this
         }
 
         public actual fun setIgnoreCase(ignCase: Boolean): Unicode {
-            this.ignCase = ignCase
+            platformState.ignCase = ignCase
             return this
         }
     }
@@ -51,3 +55,5 @@ private constructor(private val isUnicode: Boolean) {
         public actual fun unicode(): Unicode = Unicode()
     }
 }
+
+internal fun Collation.asJSON() = platformState.asJSON()

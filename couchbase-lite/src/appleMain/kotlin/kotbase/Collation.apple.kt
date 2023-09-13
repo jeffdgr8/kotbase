@@ -1,18 +1,19 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLQueryCollation
-import kotbase.base.DelegatedClass
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
-public actual open class Collation
-private constructor(actual: CBLQueryCollation) :
-    DelegatedClass<CBLQueryCollation>(actual) {
+internal actual class CollationPlatformState(
+    internal var actual: CBLQueryCollation
+)
+
+public actual sealed class Collation
+private constructor(actual: CBLQueryCollation) {
+
+    internal actual val platformState = CollationPlatformState(actual)
 
     public actual class ASCII
     internal constructor(
-        override var actual: CBLQueryCollation =
-            CBLQueryCollation.asciiWithIgnoreCase(false)
+        actual: CBLQueryCollation = CBLQueryCollation.asciiWithIgnoreCase(false)
     ) : Collation(actual) {
 
         public actual fun setIgnoreCase(ignCase: Boolean): ASCII {
@@ -23,8 +24,8 @@ private constructor(actual: CBLQueryCollation) :
 
     public actual class Unicode
     internal constructor(
-        override var actual: CBLQueryCollation =
-            CBLQueryCollation.unicodeWithLocale(null, ignoreCase = false, ignoreAccents = false)
+        actual: CBLQueryCollation = CBLQueryCollation
+            .unicodeWithLocale(null, ignoreCase = false, ignoreAccents = false)
     ) : Collation(actual) {
 
         private var locale: String? = null
@@ -50,6 +51,15 @@ private constructor(actual: CBLQueryCollation) :
         }
     }
 
+    override fun equals(other: Any?): Boolean =
+        actual.isEqual((other as? Collation)?.actual)
+
+    override fun hashCode(): Int =
+        actual.hash.toInt()
+
+    override fun toString(): String =
+        actual.description ?: super.toString()
+
     public actual companion object {
 
         public actual fun ascii(): ASCII = ASCII()
@@ -57,3 +67,9 @@ private constructor(actual: CBLQueryCollation) :
         public actual fun unicode(): Unicode = Unicode()
     }
 }
+
+internal var Collation.actual: CBLQueryCollation
+    get() = platformState.actual
+    set(value) {
+        platformState.actual = value
+    }

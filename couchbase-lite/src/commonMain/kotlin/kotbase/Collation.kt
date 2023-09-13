@@ -1,5 +1,7 @@
 package kotbase
 
+internal expect class CollationPlatformState
+
 /**
  * Collation defines how strings are compared and is used when creating a COLLATE expression.
  * The COLLATE expression can be used in the WHERE clause when comparing two strings or in the
@@ -7,7 +9,9 @@ package kotbase
  * two types of the Collation, ASCII and Unicode. Without specifying the COLLATE expression
  * Couchbase Lite will use the ASCII with case-sensitive collation by default.
  */
-public expect open class Collation {
+public expect sealed class Collation {
+
+    internal val platformState: CollationPlatformState
 
     /**
      * ASCII collation compares two strings by using binary comparison.
