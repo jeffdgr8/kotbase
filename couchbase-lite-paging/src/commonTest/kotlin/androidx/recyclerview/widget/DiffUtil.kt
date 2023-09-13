@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+@file:Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "LiftReturnOrAssignment", "KDocUnresolvedReference",
+    "RedundantSemicolon", "RedundantExplicitType", "unused", "NAME_SHADOWING", "KotlinRedundantDiagnosticSuppress",
+    "UNUSED_VALUE", "RemoveExplicitTypeArguments", "ReplaceGetOrSet", "ObjectLiteralToLambda",
+    "ReplaceNegatedIsEmptyWithIsNotEmpty", "JoinDeclarationAndAssignment", "MemberVisibilityCanBePrivate",
+    "MayBeConstant"
+)
+
 package androidx.recyclerview.widget
 
 import kotlin.math.abs

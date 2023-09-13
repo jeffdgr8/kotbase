@@ -656,19 +656,19 @@ private fun createLoadParam(loadType: LoadType, key: Int?): PagingSourceLoadPara
         key = key,
         loadSize = CONFIG.initialLoadSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
-    ) as PagingSourceLoadParams<Int>
+    )
 
     LoadType.APPEND -> PagingSourceLoadParamsAppend(
         key = key ?: -1,
         loadSize = CONFIG.pageSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
-    ) as PagingSourceLoadParams<Int>
+    )
 
     LoadType.PREPEND -> PagingSourceLoadParamsPrepend(
         key = key ?: -1,
         loadSize = CONFIG.pageSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
-    ) as PagingSourceLoadParams<Int>
+    )
 
     else -> error("Unknown PagingSourceLoadParams ${loadType::class}")
 }

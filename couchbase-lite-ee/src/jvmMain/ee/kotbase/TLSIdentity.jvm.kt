@@ -111,6 +111,7 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
             keyPassword
         ).asTLSIdentity()
 
+        @Throws(CouchbaseLiteException::class)
         public actual fun deleteIdentity(alias: String) {
             deleteTLSIdentity(keyStore(), alias)
         }
