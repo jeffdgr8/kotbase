@@ -80,3 +80,16 @@ dependencies {
         applyCouchbaseLiteRule("com.couchbase.lite:couchbase-lite-java-ee", "com.couchbase.lite:couchbase-lite-android-ee")
     }
 }
+
+// work around native compiler and linker warnings in tests
+// https://youtrack.jetbrains.com/issue/KT-51110
+// (leave off by default, enable to avoid warnings)
+/*
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.jetbrains.kotlinx" && requested.name == "kotlinx-serialization-core") {
+            val libs = the<org.gradle.accessors.dm.LibrariesForLibs>()
+            useVersion(libs.versions.kotlinx.serialization.get())
+        }
+    }
+}//*/

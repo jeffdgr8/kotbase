@@ -3,6 +3,7 @@ couchbase-lite-java = "3.0.12"
 couchbase-lite-objc = "3.0.12"
 couchbase-lite-c = "3.0.12"
 kermit = "2.0.0-RC5"
+kotlinx-serialization = "1.6.0"
 mockk = "1.13.3" # 1.13.4 breaks QueryExtensionKtTest on Android https://github.com/mockk/mockk/issues/1035
 
 [plugins]
@@ -30,7 +31,7 @@ kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.22.
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.1" }
 kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version = "0.3.0" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.6.0" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 okio = { module = "com.squareup.okio:okio", version = "3.5.0" }
