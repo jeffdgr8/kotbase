@@ -29,6 +29,7 @@ kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.22.0" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.1" }
+kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version = "0.3.0" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.6.0" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }

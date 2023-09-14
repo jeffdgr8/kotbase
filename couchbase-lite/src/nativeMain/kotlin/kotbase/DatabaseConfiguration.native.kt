@@ -2,9 +2,10 @@ package kotbase
 
 import kotbase.internal.fleece.toKString
 import kotlinx.cinterop.*
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemPathSeparator
 import libcblite.CBLDatabaseConfiguration
 import libcblite.CBLDatabaseConfiguration_Default
-import okio.Path
 import platform.posix.free
 import platform.posix.strdup
 import platform.posix.strlen
@@ -57,7 +58,7 @@ public actual constructor(config: DatabaseConfiguration?) {
 
     private val defaultDirectory: String
         get() = CBLDatabaseConfiguration_Default().useContents {
-            directory.toKString()!!.dropLastWhile { it == Path.DIRECTORY_SEPARATOR.first() }
+            directory.toKString()!!.dropLastWhile { it == SystemPathSeparator }
         }
 
     internal var readonly: Boolean = false

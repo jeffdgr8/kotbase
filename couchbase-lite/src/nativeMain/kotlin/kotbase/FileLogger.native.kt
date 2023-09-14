@@ -3,10 +3,10 @@ package kotbase
 import kotbase.internal.fleece.toFLString
 import kotbase.internal.wrapCBLError
 import kotlinx.cinterop.memScoped
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import libcblite.CBLLog_SetFileConfig
 import libcblite.CBL_LogMessage
-import okio.FileSystem
-import okio.Path.Companion.toPath
 
 public actual class FileLogger internal constructor() : Logger {
 
@@ -14,7 +14,7 @@ public actual class FileLogger internal constructor() : Logger {
         set(value) {
             field = value
             if (value != null) {
-                FileSystem.SYSTEM.createDirectories(value.directory.toPath(), false)
+                SystemFileSystem.createDirectories(Path(value.directory), false)
             }
             val actual = value?.getActual(level) ?: LogFileConfiguration.getNullActual()
             wrapCBLError { error ->

@@ -5,9 +5,8 @@ import korlibs.io.file.std.openAsZip
 import korlibs.io.stream.AsyncStream
 import korlibs.io.stream.openAsync
 import kotlinx.coroutines.runBlocking
-import okio.Source
-import okio.buffer
-import okio.use
+import kotlinx.io.Source
+import kotlinx.io.readByteArray
 
 actual object ZipUtils {
 
@@ -20,8 +19,9 @@ actual object ZipUtils {
     }
 }
 
+@OptIn(ExperimentalStdlibApi::class)
 fun Source.asyncStream(): AsyncStream = use { source ->
-    source.buffer().use { buffer ->
-        buffer.readByteArray().openAsync()
+    source.use { input ->
+        input.readByteArray().openAsync()
     }
 }

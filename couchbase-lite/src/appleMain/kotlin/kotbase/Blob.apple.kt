@@ -6,12 +6,12 @@ import kotbase.base.DelegatedClass
 import kotbase.ext.toByteArray
 import kotbase.ext.toNSData
 import kotbase.ext.wrapCBLError
-import okio.FileNotFoundException
-import okio.IOException
-import okio.Source
-import okio.buffer
-import okio.ext.inputStream
-import okio.ext.source
+import kotlinx.io.IOException
+import kotlinx.io.Source
+import kotlinx.io.asNSInputStream
+import kotlinx.io.asSource
+import kotlinx.io.buffered
+import kotlinx.io.files.FileNotFoundException
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.valueForKey
@@ -24,7 +24,7 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
     )
 
     public actual constructor(contentType: String, stream: Source) : this(
-        CBLBlob(contentType, stream.buffer().inputStream())
+        CBLBlob(contentType, stream.asNSInputStream())
     )
 
     @Throws(IOException::class)
@@ -52,7 +52,7 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
         }
 
     public actual val contentStream: Source?
-        get() = actual.contentStream?.source()
+        get() = actual.contentStream?.asSource()?.buffered()
 
     public actual val contentType: String
         get() = actual.contentType!!

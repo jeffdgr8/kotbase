@@ -15,7 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import okio.IOException
+import kotlinx.io.IOException
 import kotlin.jvm.JvmStatic
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

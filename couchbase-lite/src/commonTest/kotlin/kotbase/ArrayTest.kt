@@ -3,10 +3,10 @@ package kotbase
 import kotbase.ext.toStringMillis
 import kotbase.test.assertIntContentEquals
 import kotlinx.datetime.Instant
+import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
-import okio.IOException
 import kotlin.test.*
 
 class ArrayTest : BaseDbTest() {

@@ -1,11 +1,12 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
-import okio.Source
-import okio.buffer
-import okio.source
+import kotlinx.io.IOException
+import kotlinx.io.Source
+import kotlinx.io.asInputStream
+import kotlinx.io.asSource
+import kotlinx.io.buffered
 import java.io.File
-import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import com.couchbase.lite.Blob as CBLBlob
@@ -16,7 +17,7 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
     public actual constructor(contentType: String, content: ByteArray) : this(CBLBlob(contentType, content))
 
     public actual constructor(contentType: String, stream: Source) : this(
-        CBLBlob(contentType, stream.buffer().inputStream())
+        CBLBlob(contentType, stream.asInputStream())
     )
 
     @Throws(IOException::class)
@@ -26,7 +27,7 @@ internal constructor(actual: CBLBlob) : DelegatedClass<CBLBlob>(actual) {
         get() = actual.content
 
     public actual val contentStream: Source?
-        get() = actual.contentStream?.source()
+        get() = actual.contentStream?.asSource()?.buffered()
 
     public actual val contentType: String
         get() = actual.contentType

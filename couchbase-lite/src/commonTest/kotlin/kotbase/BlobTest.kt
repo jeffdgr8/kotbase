@@ -7,15 +7,14 @@ import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.StringUtils
 import kotbase.internal.utils.TestUtils.assertThrows
 import kotbase.test.IgnoreApple
+import kotlinx.io.Buffer
+import kotlinx.io.readByteArray
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import okio.Buffer
-import okio.buffer
-import okio.use
 import kotlin.test.*
 
-
 // There are other blob tests in test suites...
+@OptIn(ExperimentalStdlibApi::class)
 class BlobTest : BaseDbTest() {
 
     private lateinit var localBlobContent: String
@@ -108,7 +107,7 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testBlobContentBytes() {
         val blobContent = PlatformUtils.getAsset("attachment.png")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         val blob = Blob("image/png", blobContent)
@@ -142,11 +141,11 @@ class BlobTest : BaseDbTest() {
         assertNotNull(savedBlob)
 
         val blobContent = PlatformUtils.getAsset("attachment.png")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         val buff = savedBlob.contentStream!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         assertEquals(blobContent.size, buff.size)
@@ -161,7 +160,7 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testGetContent6MBFile() {
         val bytes = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         val blob = Blob("application/json", bytes)
@@ -179,7 +178,7 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testGetNonCachedContent6MBFile() {
         val bytes = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         val blob = Blob("application/json", bytes)
@@ -202,7 +201,7 @@ class BlobTest : BaseDbTest() {
             val path = "$tmpDir/attachment.png"
 
             val blob = PlatformUtils.getAsset("attachment.png")!!.use { input ->
-                val bytes = input.buffer().readByteArray()
+                val bytes = input.readByteArray()
                 FileUtils.write(bytes, path)
                 Blob(contentType, path)
             }
@@ -222,31 +221,31 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testBlobReadByte() {
         val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         val buffer = Buffer()
-        Blob("application/json", data).contentStream!!.read(buffer, 1)
+        Blob("application/json", data).contentStream!!.readAtMostTo(buffer, 1)
         assertEquals(data[0], buffer[0])
     }
 
     @Test
     fun testBlobReadByteArray() {
         val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
-        val blobContent = Blob("application/json", data).contentStream!!.buffer().readByteArray()
+        val blobContent = Blob("application/json", data).contentStream!!.readByteArray()
         assertContentEquals(data, blobContent)
     }
 
     @Test
     fun testBlobReadSkip() {
         val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
-        val blobStream = Blob("application/json", data).contentStream!!.buffer()
+        val blobStream = Blob("application/json", data).contentStream!!
         blobStream.skip(17)
         assertEquals(blobStream.readByte(), data[17])
     }
@@ -254,7 +253,7 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testReadBlobStream() {
         val bytes = PlatformUtils.getAsset("attachment.png")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         val blob = Blob("image/png", bytes)
@@ -267,7 +266,7 @@ class BlobTest : BaseDbTest() {
         assertEquals("image/png", savedBlob.contentType)
 
         savedBlob.contentStream!!.use { input ->
-            val readBytes = input.buffer().readByteArray()
+            val readBytes = input.readByteArray()
             assertContentEquals(bytes, readBytes)
         }
     }
@@ -437,7 +436,7 @@ class BlobTest : BaseDbTest() {
         saveDocInBaseTestDb(mDoc)
 
         val blobStream = baseTestDb.getDocument("blobDoc")!!
-            .getBlob("blob")!!.contentStream!!.buffer()
+            .getBlob("blob")!!.contentStream!!
 
         assertEquals(255.toByte(), blobStream.readByte())
         assertEquals(255.toByte(), blobStream.readByte())

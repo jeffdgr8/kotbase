@@ -1,6 +1,6 @@
 package kotbase.internal.utils
 
-import okio.Source
+import kotlinx.io.Source
 
 expect object ZipUtils {
 

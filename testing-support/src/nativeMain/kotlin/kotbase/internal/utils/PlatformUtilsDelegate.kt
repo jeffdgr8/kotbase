@@ -1,8 +1,9 @@
 package kotbase.internal.utils
 
-import okio.FileSystem
-import okio.Path.Companion.toPath
-import okio.Source
+import kotlinx.io.Source
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.runtime.GC
 import kotlin.native.runtime.NativeRuntimeApi
@@ -21,7 +22,7 @@ actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
             OsFamily.WINDOWS -> "mingw"
             else -> error("Unsupported platform: ${Platform.osFamily}")
         } + Platform.cpuArchitecture.name.lowercase().replaceFirstChar(Char::titlecase)
-        val path = "build/bin/$target/debugTest/$asset".toPath()
-        return FileSystem.SYSTEM.source(path)
+        val path = Path("build/bin/$target/debugTest/$asset")
+        return SystemFileSystem.source(path).buffered()
     }
 }

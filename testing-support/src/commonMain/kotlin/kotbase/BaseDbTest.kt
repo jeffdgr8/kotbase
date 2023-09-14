@@ -6,12 +6,12 @@ import com.couchbase.lite.isOpen
 import com.couchbase.lite.withDbLock
 import kotbase.internal.utils.*
 import kotlinx.datetime.Instant
+import kotlinx.io.IOException
+import kotlinx.io.readLine
 import kotlinx.serialization.json.*
-import okio.IOException
-import okio.buffer
-import okio.use
 import kotlin.test.*
 
+@OptIn(ExperimentalStdlibApi::class)
 abstract class BaseDbTest : BaseTest() {
 
     fun interface DocValidator {
@@ -141,17 +141,15 @@ abstract class BaseDbTest : BaseTest() {
     // file is one JSON object per line
     protected fun loadJSONResource(name: String) {
         PlatformUtils.getAsset(name)?.use { fileSource ->
-            fileSource.buffer().use { bufferedFileSource ->
-                var n = 1
-                while (true) {
-                    val line = bufferedFileSource.readUtf8Line() ?: break
-                    if (line.isBlank()) continue
+            var n = 1
+            while (true) {
+                val line = fileSource.readLine() ?: break
+                if (line.isBlank()) continue
 
-                    val doc = MutableDocument("doc-${n++.paddedString(3)}")
-                    doc.setData(JSONUtils.fromJSON(Json.parseToJsonElement(line).jsonObject))
+                val doc = MutableDocument("doc-${n++.paddedString(3)}")
+                doc.setData(JSONUtils.fromJSON(Json.parseToJsonElement(line).jsonObject))
 
-                    saveDocInBaseTestDb(doc)
-                }
+                saveDocInBaseTestDb(doc)
             }
         }
     }
@@ -159,12 +157,10 @@ abstract class BaseDbTest : BaseTest() {
     protected fun readJSONResource(name: String): String {
         val buf = StringBuilder()
         PlatformUtils.getAsset(name)?.use { fileSource ->
-            fileSource.buffer().use { bufferedFileSource ->
-                while (true) {
-                    val line = bufferedFileSource.readUtf8Line() ?: break
-                    if (line.isNotBlank()) {
-                        buf.append(line)
-                    }
+            while (true) {
+                val line = fileSource.readLine() ?: break
+                if (line.isNotBlank()) {
+                    buf.append(line)
                 }
             }
         }

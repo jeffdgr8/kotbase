@@ -21,6 +21,7 @@ kotlin {
                 api(libs.kotlin.test.junit)
                 api(libs.kotlinx.serialization.json)
                 api(libs.kotlinx.atomicfu)
+                api(libs.okio)
             }
         }
         androidMain {

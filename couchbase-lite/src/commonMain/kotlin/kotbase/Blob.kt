@@ -1,7 +1,7 @@
 package kotbase
 
-import okio.IOException
-import okio.Source
+import kotlinx.io.IOException
+import kotlinx.io.Source
 
 /**
  * A Couchbase Lite Blob.

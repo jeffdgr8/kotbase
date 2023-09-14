@@ -1,23 +1,27 @@
 package kotbase.internal.utils
 
 import kotbase.LogDomain
-import okio.FileSystem
-import okio.IOException
-import okio.Path
-import okio.Path.Companion.DIRECTORY_SEPARATOR
+import kotlinx.io.IOException
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.files.SystemPathSeparator
+import kotlinx.io.readByteArray
 import okio.Path.Companion.toPath
 
+@OptIn(ExperimentalStdlibApi::class)
 actual object FileUtils {
 
     actual fun dirExists(dir: String): Boolean {
-        val path = dir.toPath()
-        val fs = FileSystem.SYSTEM
-        return fs.exists(path) && fs.metadata(path).isDirectory
+        val path = Path(dir)
+        val fs = SystemFileSystem
+        return fs.exists(path) && fs.metadataOrNull(path)?.isDirectory ?: false
     }
 
     actual fun listFiles(dir: String): List<String> {
+        // TODO: use kotlinx-io when list API is available
         try {
-            return FileSystem.SYSTEM.list(dir.toPath())
+            return okio.FileSystem.SYSTEM.list(dir.toPath())
                 .map { it.toString() }
         } catch (e: Exception) {
             throw IOException(e.message, e)
@@ -27,21 +31,24 @@ actual object FileUtils {
     actual fun getCanonicalPath(path: String): String =
         path.toPath().canonicalPath
 
-    private val Path.canonicalPath: String
-        get() = FileSystem.SYSTEM.canonicalize(this).toString()
+    // TODO: canonicalize with kotlinx-io when API available
+    private val okio.Path.canonicalPath: String
+        get() = okio.FileSystem.SYSTEM.canonicalize(this).toString()
 
-    actual fun verifyDir(dirPath: String): String =
-        verifyDir(dirPath.toPath())
+    actual fun verifyDir(dirPath: String): String {
+        //verifyDir(Path(dirPath))
+        val dir = Path(dirPath)
 
-    private fun verifyDir(dir: Path): String {
+    //private fun verifyDir(dir: Path): String {
         if (!dirExists(dir.toString())) {
             try {
-                FileSystem.SYSTEM.createDirectories(dir, true)
+                SystemFileSystem.createDirectories(dir, true)
             } catch (e: Exception) {
                 throw IllegalStateException("Cannot create or access directory at $dir", e)
             }
         }
-        return dir.canonicalPath
+        //return dir.canonicalPath
+        return getCanonicalPath(dirPath)
     }
 
     actual fun eraseFileOrDir(fileOrDirectory: String): Boolean =
@@ -63,29 +70,29 @@ actual object FileUtils {
     }
 
     actual fun write(bytes: ByteArray, path: String) {
-        FileSystem.SYSTEM.write(path.toPath(), false) {
-            write(bytes)
+        SystemFileSystem.sink(Path(path)).buffered().use {
+            it.write(bytes)
         }
     }
 
     actual fun read(path: String): ByteArray {
-        return FileSystem.SYSTEM.read(path.toPath()) {
-            readByteArray()
+        return SystemFileSystem.source(Path(path)).buffered().use {
+            it.readByteArray()
         }
     }
 
     actual val separatorChar: Char
-        get() = DIRECTORY_SEPARATOR.first()
+        get() = SystemPathSeparator
 
     private fun deleteRecursive(fileOrDirectory: String): Boolean =
         !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)
 
     private fun exists(file: String): Boolean =
-        FileSystem.SYSTEM.exists(file.toPath())
+        SystemFileSystem.exists(Path(file))
 
     private fun delete(file: String): Boolean {
         return try {
-            FileSystem.SYSTEM.delete(file.toPath(), true)
+            SystemFileSystem.delete(Path(file), true)
             true
         } catch (e: Exception) {
             false

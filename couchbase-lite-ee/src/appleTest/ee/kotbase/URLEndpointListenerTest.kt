@@ -11,8 +11,7 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import okio.buffer
-import okio.use
+import kotlinx.io.readByteArray
 import platform.CoreFoundation.CFStringRefVar
 import platform.Foundation.CFBridgingRelease
 import platform.Security.SecCertificateCopyCommonName
@@ -29,6 +28,7 @@ import kotlin.time.Duration.Companion.seconds
 // kotlin.NullPointerException
 // TODO: identities are not cleaned up in keychain in URLEndpointListenerBaseTest (should be in finally {} block)
 @Ignore
+@OptIn(ExperimentalStdlibApi::class)
 class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
     // Reusable helper methods
@@ -51,7 +51,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // For keeping the replication long enough to validate connection status, we will use blob
         val imageData = PlatformUtils.getAsset("image.jpg")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         // DB#1
@@ -525,7 +525,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // Root Cert:
         val rootCert = PlatformUtils.getAsset("identity/client-ca.der")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         // Listener:
@@ -537,7 +537,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // Create client identity:
         val clientCertData = PlatformUtils.getAsset("identity/client.p12")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
         val identity = TLSIdentity.importIdentity(
             clientCertData,
@@ -566,7 +566,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // Root Cert:
         val rootCert = PlatformUtils.getAsset("identity/client-ca.der")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
 
         // Listener:
@@ -1050,7 +1050,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val data = PlatformUtils.getAsset("identity/certs.p12")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
         val identity = TLSIdentity.importIdentity(data, "123".toCharArray(), serverCertLabel)
         assertEquals(2, identity.certs.size)
@@ -1177,7 +1177,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         TLSIdentity.deleteIdentity(serverCertLabel)
         val data = PlatformUtils.getAsset("identity/certs.p12")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
         val identity = TLSIdentity.importIdentity(data, "123".toCharArray(), serverCertLabel)
         assertEquals(2, identity.certs.size)
@@ -1214,7 +1214,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val data = PlatformUtils.getAsset("identity/certs.p12")!!.use { input ->
-            input.buffer().readByteArray()
+            input.readByteArray()
         }
         val identity = TLSIdentity.importIdentity(data, "123".toCharArray(), serverCertLabel)
         assertEquals(2, identity.certs.size)

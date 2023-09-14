@@ -14,11 +14,9 @@ import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Clock
+import kotlinx.io.Buffer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import okio.Buffer
-import okio.buffer
-import okio.use
 import kotlin.math.absoluteValue
 import kotlin.test.*
 import kotlin.time.Duration.Companion.days
@@ -26,6 +24,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
+@OptIn(ExperimentalStdlibApi::class)
 class DocumentTest : BaseDbTest() {
 
     @Test
@@ -1952,7 +1951,7 @@ class DocumentTest : BaseDbTest() {
         data.contentStream.use { input ->
             assertNotNull(input)
             val buffer = ByteArray(content.size + 37)
-            val bytesRead = input.buffer().read(buffer)
+            val bytesRead = input.readAtMostTo(buffer)
             assertEquals(content.size, bytesRead)
         }
     }
@@ -1975,7 +1974,7 @@ class DocumentTest : BaseDbTest() {
         data.contentStream.use { input ->
             assertNotNull(input)
             val buffer = ByteArray(37)
-            val bytesRead = input.buffer().read(buffer)
+            val bytesRead = input.readAtMostTo(buffer)
             assertEquals(-1, bytesRead)
         }
     }
@@ -1984,7 +1983,8 @@ class DocumentTest : BaseDbTest() {
     fun testBlobWithEmptyStream() {
         var doc = MutableDocument("doc1")
         val content = "".encodeToByteArray()
-        Buffer().write(content).use { stream ->
+        Buffer().use { stream ->
+            stream.write(content)
             val data = Blob("text/plain", stream)
             assertNotNull(data)
             doc.setValue("data", data)
@@ -1998,7 +1998,7 @@ class DocumentTest : BaseDbTest() {
         data.contentStream.use { input ->
             assertNotNull(input)
             val buffer = ByteArray(37)
-            val bytesRead = input.buffer().read(buffer)
+            val bytesRead = input.readAtMostTo(buffer)
             assertEquals(-1, bytesRead)
         }
     }
@@ -2018,7 +2018,7 @@ class DocumentTest : BaseDbTest() {
             data.contentStream.use { input ->
                 assertNotNull(input)
                 val buffer = ByteArray(content.size + 37)
-                val bytesRead = input.buffer().read(buffer)
+                val bytesRead = input.readAtMostTo(buffer)
                 assertEquals(content.size, bytesRead)
             }
         }
@@ -2032,7 +2032,7 @@ class DocumentTest : BaseDbTest() {
             data.contentStream.use { input ->
                 assertNotNull(input)
                 val buffer = ByteArray(content.size + 37)
-                val bytesRead = input.buffer().read(buffer)
+                val bytesRead = input.readAtMostTo(buffer)
                 assertEquals(content.size, bytesRead)
             }
         }

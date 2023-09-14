@@ -1,8 +1,9 @@
 package kotbase.internal.utils
 
-import okio.FileSystem
-import okio.Path.Companion.toPath
-import okio.Source
+import kotlinx.io.Source
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import platform.Foundation.NSBundle
 import kotlin.native.runtime.GC
 import kotlin.native.runtime.NativeRuntimeApi
@@ -21,6 +22,6 @@ actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
         val path = NSBundle.mainBundle
             .pathForResource(name, type)
             ?: return null
-        return FileSystem.SYSTEM.source(path.toPath())
+        return SystemFileSystem.source(Path(path)).buffered()
     }
 }

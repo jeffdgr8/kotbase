@@ -8,9 +8,16 @@ import kotbase.internal.fleece.*
 import kotbase.internal.wrapCBLError
 import kotbase.util.identityHashCodeHex
 import kotlinx.cinterop.*
+import kotlinx.io.Buffer
+import kotlinx.io.IOException
+import kotlinx.io.RawSource
+import kotlinx.io.Source
+import kotlinx.io.buffered
+import kotlinx.io.files.FileNotFoundException
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.readByteArray
 import libcblite.*
-import okio.*
-import okio.Path.Companion.toPath
 import platform.posix.EINVAL
 import platform.posix.R_OK
 import platform.posix.access
@@ -98,11 +105,12 @@ private constructor(
 
     private var blobContent: ByteArray? = null
 
+    @OptIn(ExperimentalStdlibApi::class)
     public actual val content: ByteArray?
         get() {
             if (blobContent == null) {
                 if (blobContentStream != null) {
-                    blobContentStream!!.buffer().use {
+                    blobContentStream!!.use {
                         blobContent = it.readByteArray()
                     }
                     blobContentStream = null
@@ -131,7 +139,7 @@ private constructor(
             }
             actual ?: return null
             return wrapCBLError { error ->
-                CBLBlob_OpenContentStream(actual, error)?.source()
+                CBLBlob_OpenContentStream(actual, error)?.asSource()?.buffered()
             }
         }
 
@@ -233,10 +241,10 @@ private constructor(
 
 internal fun CPointer<CBLBlob>.asBlob(ctxt: DbContext?) = Blob(this, ctxt)
 
-private fun CPointer<CBLBlobReadStream>.source(): Source =
+private fun CPointer<CBLBlobReadStream>.asSource(): RawSource =
     BlobReadStreamSource(this)
 
-private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : Source {
+private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : RawSource {
 
     private val memory = object {
         var closeCalled = false
@@ -256,7 +264,7 @@ private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : So
         CBLBlobReader_Close(actual)
     }
 
-    override fun read(sink: Buffer, byteCount: Long): Long {
+    override fun readAtMostTo(sink: Buffer, byteCount: Long): Long {
         if (byteCount == 0L) return 0L
         require(byteCount >= 0L) { "byteCount < 0: $byteCount" }
         val bytes = ByteArray(byteCount.toInt())
@@ -268,10 +276,9 @@ private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : So
         sink.write(bytes, 0, bytesRead)
         return bytesRead.toLong()
     }
-
-    override fun timeout(): Timeout = Timeout.NONE
 }
 
+@OptIn(ExperimentalStdlibApi::class)
 private fun Source.blobWriteStream(db: Database): CPointer<CBLBlobWriteStream> {
     val writer = wrapCBLError { error ->
         CBLBlobWriter_Create(db.actual, error)!!
@@ -279,9 +286,9 @@ private fun Source.blobWriteStream(db: Database): CPointer<CBLBlobWriteStream> {
     try {
         val bufferSize = 8 * 1024
         val buffer = ByteArray(bufferSize)
-        buffer().use { source ->
+        use { source ->
             while (!source.exhausted()) {
-                val read = source.read(buffer)
+                val read = source.readAtMostTo(buffer)
                 wrapCBLError { error ->
                     CBLBlobWriter_Write(writer, buffer.refTo(0), read.convert(), error)
                 }
@@ -296,11 +303,11 @@ private fun Source.blobWriteStream(db: Database): CPointer<CBLBlobWriteStream> {
 
 private fun String.toFileSource(): Source {
     val path = toFilePath()
-    val fs = FileSystem.SYSTEM
+    val fs = SystemFileSystem
     if (!fs.exists(path)) {
         throw FileNotFoundException("$this: open failed: ENOENT (No such file or directory)")
     }
-    return fs.source(path)
+    return fs.source(path).buffered()
 }
 
 @OptIn(ExperimentalNativeApi::class)
@@ -318,5 +325,5 @@ private fun String.toFilePath(): Path {
     if (access(this, R_OK) == -1 && errno == EINVAL) {
         throw IllegalArgumentException("$this must be a valid file path.")
     }
-    return toPath()
+    return Path(this)
 }

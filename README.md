@@ -57,9 +57,10 @@ exceptions:
 
 * Java callback functional interfaces are implemented as Kotlin function types.
 * `File` and `URL` APIs are represented as strings.
-* `Date` APIs use [KotlinX Date/Time's `Instant`](
+* `Date` APIs use [kotlinx-datetime's `Instant`](
 https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/).
-* `Blob` `InputStream` APIs use [Okio's `Source`](https://square.github.io/okio/3.x/okio/okio/okio/-source/).
+* `Blob` `InputStream` APIs use [kotlinx-io's `Source`](
+  https://fzhinkin.github.io/kotlinx-io-dokka-docs-preview/kotlinx-io-core/kotlinx.io/-source/).
 * `Executor` APIs use Kotlin's `CoroutineContext`.
 * Certificate APIs are available as raw `ByteArray`s or in platform-specific code.
 * There's no need to explicitly call `CouchbaseLite.init()`. Initialization functions can still be called with custom

@@ -48,7 +48,7 @@ kotlin {
             dependencies {
                 api(libs.kotlinx.coroutines.core)
                 api(libs.kotlinx.datetime)
-                api(libs.okio)
+                api(libs.kotlinx.io)
                 implementation(libs.kotlinx.atomicfu)
             }
         }

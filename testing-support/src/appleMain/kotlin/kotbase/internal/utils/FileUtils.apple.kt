@@ -8,7 +8,7 @@ import kotbase.ext.toException
 import kotbase.ext.toNSData
 import kotbase.ext.wrapError
 import kotlinx.cinterop.*
-import okio.IOException
+import kotlinx.io.IOException
 import platform.Foundation.*
 
 actual object FileUtils {
