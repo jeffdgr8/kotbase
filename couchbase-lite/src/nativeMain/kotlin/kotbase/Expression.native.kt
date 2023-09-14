@@ -3,9 +3,15 @@ package kotbase
 import kotbase.ext.toStringMillis
 import kotlinx.datetime.Instant
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
-public actual open class Expression {
+internal actual class ExpressionPlatformState
+
+public actual sealed class Expression {
+
+    internal actual val platformState = ExpressionPlatformState()
+
+    internal actual open fun asJSON(): Any? {
+        throw IllegalStateException("Should be overridden in subclass ${this::class}")
+    }
 
     private class ValueExpression(private val value: Any?) : Expression() {
 
@@ -13,7 +19,7 @@ public actual open class Expression {
             verifySupportedType(value)
         }
 
-        public override fun asJSON(): Any? =
+        override fun asJSON(): Any? =
             asJSON(value)
 
         @Suppress("UNCHECKED_CAST")
@@ -58,7 +64,7 @@ public actual open class Expression {
 
     private class AggregateExpression(val expressions: List<Expression>) : Expression() {
 
-        public override fun asJSON(): Any {
+        override fun asJSON(): Any {
             return buildList {
                 add("[]")
                 expressions.forEach {
@@ -94,7 +100,7 @@ public actual open class Expression {
             RegexLike
         }
 
-        public override fun asJSON(): Any {
+        override fun asJSON(): Any {
             return buildList {
                 when (type) {
                     OpType.Add -> add("+")
@@ -138,7 +144,7 @@ public actual open class Expression {
             And, Or, Not
         }
 
-        public override fun asJSON(): Any {
+        override fun asJSON(): Any {
             return buildList {
                 when (type) {
                     OpType.And -> add("AND")
@@ -161,7 +167,7 @@ public actual open class Expression {
             Missing, NotMissing, NotNull, Null, Valued
         }
 
-        public override fun asJSON(): Any {
+        override fun asJSON(): Any {
             val opd = operand.asJSON()
             return buildList {
                 when (type) {
@@ -196,7 +202,7 @@ public actual open class Expression {
 
     private class ParameterExpression(val name: String) : Expression() {
 
-        public override fun asJSON(): Any =
+        override fun asJSON(): Any =
             listOf("$$name")
     }
 
@@ -205,7 +211,7 @@ public actual open class Expression {
         private val collation: Collation
     ) : Expression() {
 
-        public override fun asJSON(): Any {
+        override fun asJSON(): Any {
             return listOf(
                 "COLLATE",
                 collation.asJSON(),
@@ -219,7 +225,7 @@ public actual open class Expression {
         private val params: List<Expression>
     ) : Expression() {
 
-        public override fun asJSON(): Any {
+        override fun asJSON(): Any {
             return buildList {
                 add(func)
                 params.forEach {
@@ -353,8 +359,4 @@ public actual open class Expression {
 
     override fun toString(): String =
         "${this::class.simpleName} {@${hashCode().toString(16)},json=" + asJSON() + "}"
-
-    internal open fun asJSON(): Any? {
-        throw IllegalStateException("Should be overridden in subclass ${this::class}")
-    }
 }

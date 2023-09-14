@@ -14,7 +14,7 @@ internal constructor(
         val satisfiesExpression: Expression
     ) : Expression() {
 
-        public override fun asJSON(): Any {
+        override fun asJSON(): Any {
             return buildList {
                 when (type) {
                     ArrayExpression.QuantifiesType.ANY -> add("ANY")

@@ -11,5 +11,5 @@ internal constructor(
 ) {
 
     public actual fun satisfies(expression: Expression): Expression =
-        Expression(function(variable, inExpression, expression.actual))
+        DelegatedExpression(function(variable, inExpression, expression.actual))
 }

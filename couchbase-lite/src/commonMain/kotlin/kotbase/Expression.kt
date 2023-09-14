@@ -2,10 +2,16 @@ package kotbase
 
 import kotlinx.datetime.Instant
 
+internal expect class ExpressionPlatformState
+
 /**
  * The expression used in constructing a query.
  */
-public expect open class Expression {
+public expect sealed class Expression {
+
+    internal val platformState: ExpressionPlatformState
+
+    internal open fun asJSON(): Any?
 
     public companion object {
 

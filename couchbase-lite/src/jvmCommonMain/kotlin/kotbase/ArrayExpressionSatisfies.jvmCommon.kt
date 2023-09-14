@@ -7,5 +7,5 @@ public actual class ArrayExpressionSatisfies
 internal constructor(actual: CBLArrayExpressionSatisfies) : DelegatedClass<CBLArrayExpressionSatisfies>(actual) {
 
     public actual fun satisfies(expression: Expression): Expression =
-        Expression(actual.satisfies(expression.actual))
+        DelegatedExpression(actual.satisfies(expression.actual))
 }
