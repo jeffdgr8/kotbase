@@ -47,14 +47,15 @@ public final class kotbase/ArrayKt {
 	public static final fun get (Lkotbase/Array;I)Lkotbase/Fragment;
 }
 
-public abstract interface class kotbase/Authenticator {
-	public abstract fun getActual ()Lcom/couchbase/lite/Authenticator;
+public abstract class kotbase/Authenticator {
+	public synthetic fun <init> (Lcom/couchbase/lite/Authenticator;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/BasicAuthenticator : kotbase/Authenticator {
 	public fun <init> (Ljava/lang/String;[C)V
-	public synthetic fun getActual ()Lcom/couchbase/lite/Authenticator;
-	public fun getActual ()Lcom/couchbase/lite/BasicAuthenticator;
 	public final fun getPasswordChars ()[C
 	public final fun getUsername ()Ljava/lang/String;
 }
@@ -161,21 +162,20 @@ public final class kotbase/CBLError$Domain {
 	public static final field SQLITE Ljava/lang/String;
 }
 
-public final class kotbase/ClientCertificateAuthenticator : kotbase/base/DelegatedClass, kotbase/Authenticator {
+public final class kotbase/ClientCertificateAuthenticator : kotbase/Authenticator {
 	public fun <init> (Lkotbase/TLSIdentity;)V
-	public synthetic fun getActual ()Lcom/couchbase/lite/Authenticator;
-	public fun getActual ()Lcom/couchbase/lite/ClientCertificateAuthenticator;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getIdentity ()Lkotbase/TLSIdentity;
 }
 
-public class kotbase/Collation : kotbase/base/DelegatedClass {
+public abstract class kotbase/Collation {
 	public static final field Companion Lkotbase/Collation$Companion;
 	public synthetic fun <init> (Lcom/couchbase/lite/Collation;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/Collation$ASCII : kotbase/Collation {
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun setIgnoreCase (Z)Lkotbase/Collation$ASCII;
 }
 
@@ -185,7 +185,6 @@ public final class kotbase/Collation$Companion {
 }
 
 public final class kotbase/Collation$Unicode : kotbase/Collation {
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun setIgnoreAccents (Z)Lkotbase/Collation$Unicode;
 	public final fun setIgnoreCase (Z)Lkotbase/Collation$Unicode;
 	public final fun setLocale (Ljava/lang/String;)Lkotbase/Collation$Unicode;
@@ -366,12 +365,12 @@ public final class kotbase/DatabaseKt {
 	public static final fun get (Lkotbase/Database;Ljava/lang/String;)Lkotbase/DocumentFragment;
 }
 
-public class kotbase/Dictionary : kotbase/base/DelegatedClass, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+public class kotbase/Dictionary : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
 	public final fun contains (Ljava/lang/String;)Z
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getArray (Ljava/lang/String;)Lkotbase/Array;
 	public final fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
 	public final fun getBoolean (Ljava/lang/String;)Z
-	protected final fun getCollectionMap ()Ljava/util/Map;
 	public final fun getCount ()I
 	public final fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
 	public fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
@@ -383,22 +382,24 @@ public class kotbase/Dictionary : kotbase/base/DelegatedClass, java/lang/Iterabl
 	public final fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
 	public final fun getString (Ljava/lang/String;)Ljava/lang/String;
 	public fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public fun hashCode ()I
 	public fun iterator ()Ljava/util/Iterator;
 	public final fun toJSON ()Ljava/lang/String;
 	public final fun toMap ()Ljava/util/Map;
 	public final fun toMutable ()Lkotbase/MutableDictionary;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/DictionaryKt {
 	public static final fun get (Lkotbase/Dictionary;Ljava/lang/String;)Lkotbase/Fragment;
 }
 
-public class kotbase/Document : kotbase/base/DelegatedClass, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+public class kotbase/Document : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
 	public final fun contains (Ljava/lang/String;)Z
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getArray (Ljava/lang/String;)Lkotbase/Array;
 	public final fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
 	public final fun getBoolean (Ljava/lang/String;)Z
-	protected final fun getCollectionMap ()Ljava/util/Map;
 	public final fun getCount ()I
 	public final fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
 	public fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
@@ -413,10 +414,12 @@ public class kotbase/Document : kotbase/base/DelegatedClass, java/lang/Iterable,
 	public final fun getSequence ()J
 	public final fun getString (Ljava/lang/String;)Ljava/lang/String;
 	public final fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public fun hashCode ()I
 	public fun iterator ()Ljava/util/Iterator;
 	public final fun toJSON ()Ljava/lang/String;
 	public final fun toMap ()Ljava/util/Map;
 	public fun toMutable ()Lkotbase/MutableDocument;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/DocumentChange : kotbase/base/DelegatedClass {
@@ -445,16 +448,19 @@ public abstract interface class kotbase/Endpoint {
 	public abstract fun getActual ()Lcom/couchbase/lite/Endpoint;
 }
 
-public class kotbase/Expression : kotbase/base/DelegatedClass {
+public abstract class kotbase/Expression {
 	public static final field Companion Lkotbase/Expression$Companion;
+	public synthetic fun <init> (Lcom/couchbase/lite/Expression;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun add (Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun and (Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun between (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun collate (Lkotbase/Collation;)Lkotbase/Expression;
 	public final fun divide (Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun equalTo (Lkotbase/Expression;)Lkotbase/Expression;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun greaterThan (Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun greaterThanOrEqualTo (Lkotbase/Expression;)Lkotbase/Expression;
+	public fun hashCode ()I
 	public final fun in ([Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun is (Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun isNot (Lkotbase/Expression;)Lkotbase/Expression;
@@ -469,6 +475,7 @@ public class kotbase/Expression : kotbase/base/DelegatedClass {
 	public final fun or (Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun regex (Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun subtract (Lkotbase/Expression;)Lkotbase/Expression;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/Expression$Companion {
@@ -852,7 +859,6 @@ public final class kotbase/Meta {
 
 public final class kotbase/MetaExpression : kotbase/Expression {
 	public final fun from (Ljava/lang/String;)Lkotbase/Expression;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/MutableArray : kotbase/Array {
@@ -912,7 +918,6 @@ public final class kotbase/MutableDictionary : kotbase/Dictionary {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/util/Map;)V
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public synthetic fun getArray (Ljava/lang/String;)Lkotbase/Array;
 	public fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
 	public synthetic fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
@@ -944,7 +949,6 @@ public final class kotbase/MutableDocument : kotbase/Document {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/util/Map;)V
 	public fun <init> (Ljava/util/Map;)V
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public synthetic fun getArray (Ljava/lang/String;)Lkotbase/Array;
 	public fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
 	public synthetic fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
@@ -1059,7 +1063,6 @@ public final class kotbase/Prediction : kotbase/base/DelegatedClass {
 
 public final class kotbase/PredictionFunction : kotbase/Expression {
 	public fun <init> (Lcom/couchbase/lite/PredictionFunction;)V
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun propertyPath (Ljava/lang/String;)Lkotbase/Expression;
 }
 
@@ -1073,7 +1076,6 @@ public abstract interface class kotbase/PredictiveModel {
 
 public final class kotbase/PropertyExpression : kotbase/Expression {
 	public final fun from (Ljava/lang/String;)Lkotbase/Expression;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public abstract interface class kotbase/Query {
@@ -1318,8 +1320,6 @@ public final class kotbase/SelectResult$From : kotbase/SelectResult {
 public final class kotbase/SessionAuthenticator : kotbase/Authenticator {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun getActual ()Lcom/couchbase/lite/Authenticator;
-	public fun getActual ()Lcom/couchbase/lite/SessionAuthenticator;
 	public final fun getCookieName ()Ljava/lang/String;
 	public final fun getSessionID ()Ljava/lang/String;
 }
@@ -1419,7 +1419,6 @@ public final class kotbase/ValueIndexItem$Companion {
 }
 
 public final class kotbase/VariableExpression : kotbase/Expression {
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/Where : kotbase/base/DelegatedClass, kotbase/Query {
