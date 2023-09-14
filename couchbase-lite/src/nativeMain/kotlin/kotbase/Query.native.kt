@@ -78,8 +78,8 @@ internal abstract class AbstractQuery : Query {
                 val change = {
                     try {
                         val resultSet = wrapCBLError { error ->
-                            CBLQuery_CopyCurrentResults(cblQuery, token, error)!!.asResultSet()
-                        }
+                            CBLQuery_CopyCurrentResults(cblQuery, token, error)
+                        }!!.asResultSet()
                         QueryChange(query, resultSet, null)
                     } catch (e: CouchbaseLiteException) {
                         QueryChange(query, null, e)

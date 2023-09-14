@@ -11,9 +11,9 @@ import kotlin.native.ref.createCleaner
 
 public actual class URLEndpoint
 internal constructor(
-    override val actual: CPointer<CBLEndpoint>,
+    actual: CPointer<CBLEndpoint>,
     public actual val url: String
-) : Endpoint {
+) : Endpoint(actual) {
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
@@ -24,8 +24,8 @@ internal constructor(
     public actual constructor(url: String) : this(
         try {
             wrapCBLError { error ->
-                CBLEndpoint_CreateWithURL(url.toFLString(), error)!!
-            }
+                CBLEndpoint_CreateWithURL(url.toFLString(), error)
+            }!!
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException(e.message, e)
         },

@@ -1,21 +1,12 @@
 package kotbase
 
-import cnames.structs.CBLEndpoint
-import kotlinx.cinterop.CPointer
-
 public actual class MessageEndpoint
 actual constructor(
     uid: String,
     target: Any?,
     protocolType: ProtocolType,
     delegate: MessageEndpointDelegate
-) : Endpoint {
-
-    init {
-        messageEndpointUnsupported()
-    }
-
-    override val actual: CPointer<CBLEndpoint>
+) : Endpoint(messageEndpointUnsupported()) {
 
     public actual val uid: String
 

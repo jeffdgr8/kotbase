@@ -1,13 +1,12 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLMessageEndpoint
-import kotbase.base.DelegatedClass
 
 public actual class MessageEndpoint
 internal constructor(
-    override val actual: CBLMessageEndpoint,
+    actual: CBLMessageEndpoint,
     public actual val delegate: MessageEndpointDelegate
-) : DelegatedClass<CBLMessageEndpoint>(actual), Endpoint {
+) : Endpoint(actual) {
 
     public actual constructor(
         uid: String,
@@ -28,3 +27,6 @@ internal constructor(
     public actual val protocolType: ProtocolType
         get() = ProtocolType.from(actual.protocolType)
 }
+
+internal val MessageEndpoint.actual: CBLMessageEndpoint
+    get() = platformState.actual as CBLMessageEndpoint

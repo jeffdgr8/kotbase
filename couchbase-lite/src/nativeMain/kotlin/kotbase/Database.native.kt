@@ -41,8 +41,8 @@ internal constructor(
     public actual constructor(name: String, config: DatabaseConfiguration) : this(
         try {
             wrapCBLError { error ->
-                CBLDatabase_Open(name.toFLString(), config.actual, error)!!
-            }
+                CBLDatabase_Open(name.toFLString(), config.actual, error)
+            }!!
         } catch (e: CouchbaseLiteException) {
             if (e.code == CBLError.Code.INVALID_PARAMETER && e.domain == CBLError.Domain.CBLITE) {
                 throw IllegalArgumentException("Invalid parameter", e)

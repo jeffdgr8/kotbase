@@ -281,8 +281,8 @@ private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : Ra
 @OptIn(ExperimentalStdlibApi::class)
 private fun Source.blobWriteStream(db: Database): CPointer<CBLBlobWriteStream> {
     val writer = wrapCBLError { error ->
-        CBLBlobWriter_Create(db.actual, error)!!
-    }
+        CBLBlobWriter_Create(db.actual, error)
+    }!!
     try {
         val bufferSize = 8 * 1024
         val buffer = ByteArray(bufferSize)

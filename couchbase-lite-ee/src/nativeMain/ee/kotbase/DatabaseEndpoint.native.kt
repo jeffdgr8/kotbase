@@ -9,9 +9,9 @@ import kotlin.native.ref.createCleaner
 
 public actual class DatabaseEndpoint
 internal constructor(
-    override val actual: CPointer<CBLEndpoint>,
+    actual: CPointer<CBLEndpoint>,
     public actual val database: Database
-) : Endpoint {
+) : Endpoint(actual) {
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")

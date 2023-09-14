@@ -1,11 +1,10 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLURLEndpoint
-import kotbase.base.DelegatedClass
 import platform.Foundation.NSURL
 
 public actual class URLEndpoint
-internal constructor(override val actual: CBLURLEndpoint) : DelegatedClass<CBLURLEndpoint>(actual), Endpoint {
+internal constructor(actual: CBLURLEndpoint) : Endpoint(actual) {
 
     public actual constructor(url: String) : this(CBLURLEndpoint(validate(url)))
 
@@ -33,3 +32,6 @@ internal constructor(override val actual: CBLURLEndpoint) : DelegatedClass<CBLUR
         }
     }
 }
+
+internal val URLEndpoint.actual: CBLURLEndpoint
+    get() = platformState.actual as CBLURLEndpoint

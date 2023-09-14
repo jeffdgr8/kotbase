@@ -1,6 +1,11 @@
 package kotbase
 
+internal expect class EndpointPlatformState
+
 /**
- * Replication target endpoint interface
+ * Replication target endpoint
  */
-public expect interface Endpoint
+public expect sealed class Endpoint {
+
+    internal val platformState: EndpointPlatformState
+}

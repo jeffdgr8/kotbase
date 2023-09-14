@@ -36,8 +36,8 @@ private constructor(
 
     private constructor(config: ImmutableReplicatorConfiguration) : this(
         wrapCBLError { error ->
-            CBLReplicator_Create(config.actual, error)!!
-        },
+            CBLReplicator_Create(config.actual, error)
+        }!!,
         config
     )
 
