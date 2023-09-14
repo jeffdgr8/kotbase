@@ -1,21 +1,34 @@
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotlin.Array
 import com.couchbase.lite.Join as CBLJoin
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
+internal actual class JoinPlatformState(
+    internal val actual: CBLJoin
+)
+
 public actual open class Join
-private constructor(actual: CBLJoin) : DelegatedClass<CBLJoin>(actual) {
+private constructor(actual: CBLJoin) {
+
+    internal actual val platformState = JoinPlatformState(actual)
 
     public actual class On
-    internal constructor(override val actual: CBLJoin.On) : Join(actual) {
+    internal constructor(actual: CBLJoin.On) : Join(actual) {
 
         public actual fun on(expression: Expression): Join {
             actual.on(expression.actual)
             return this
         }
     }
+
+    override fun equals(other: Any?): Boolean =
+        actual == (other as? Join)?.actual
+
+    override fun hashCode(): Int =
+        actual.hashCode()
+
+    override fun toString(): String =
+        actual.toString()
 
     public actual companion object {
 
@@ -35,3 +48,12 @@ private constructor(actual: CBLJoin) : DelegatedClass<CBLJoin>(actual) {
             Join(CBLJoin.crossJoin(datasource.actual))
     }
 }
+
+internal val Join.actual: CBLJoin
+    get() = platformState.actual
+
+internal val Join.On.actual: CBLJoin.On
+    get() = platformState.actual as CBLJoin.On
+
+internal fun Array<out Join>.actuals(): Array<CBLJoin> =
+    map { it.actual }.toTypedArray()

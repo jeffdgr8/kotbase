@@ -1,9 +1,13 @@
 package kotbase
 
+internal expect class JoinPlatformState
+
 /**
  * A Join component representing a single JOIN clause in the query statement.
  */
 public expect open class Join {
+
+    internal val platformState: JoinPlatformState
 
     /**
      * Component used for specifying join on conditions.
