@@ -1,5 +1,8 @@
 package kotbase
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
-public actual interface ListenerAuthenticator
+internal class ListenerAuthenticatorPlatformState
+
+public actual sealed class ListenerAuthenticator {
+
+    internal actual val platformState = ListenerAuthenticatorPlatformState()
+}
