@@ -2,20 +2,34 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.CBLQueryDataSource
-import kotbase.base.DelegatedClass
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
-public actual open class DataSource
-private constructor(actual: CBLQueryDataSource) : DelegatedClass<CBLQueryDataSource>(actual) {
+internal actual class DataSourcePlatformState(
+    internal val actual: CBLQueryDataSource
+)
+
+public actual sealed class DataSource
+private constructor(actual: CBLQueryDataSource) {
+
+    internal actual val platformState = DataSourcePlatformState(actual)
+
+    private class DelegatedDataSource(actual: CBLQueryDataSource) : DataSource(actual)
 
     public actual class As
     internal constructor(private val database: CBLDatabase) :
         DataSource(CBLQueryDataSource.database(database)) {
 
         public actual fun `as`(alias: String): DataSource =
-            DataSource(CBLQueryDataSource.database(database, alias))
+            DelegatedDataSource(CBLQueryDataSource.database(database, alias))
     }
+
+    override fun equals(other: Any?): Boolean =
+        actual.isEqual((other as? DataSource)?.actual)
+
+    override fun hashCode(): Int =
+        actual.hash.toInt()
+
+    override fun toString(): String =
+        actual.description ?: super.toString()
 
     public actual companion object {
 
@@ -23,3 +37,6 @@ private constructor(actual: CBLQueryDataSource) : DelegatedClass<CBLQueryDataSou
             As(database.actual)
     }
 }
+
+internal val DataSource.actual: CBLQueryDataSource
+    get() = platformState.actual

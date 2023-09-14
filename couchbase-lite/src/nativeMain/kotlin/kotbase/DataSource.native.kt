@@ -1,26 +1,34 @@
 package kotbase
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
-public actual open class DataSource
-private constructor(
+internal actual class DataSourcePlatformState(
     internal val source: Database,
-    private val alias: String? = null
+    private val alias: String?
 ) {
-
-    public actual class As
-    internal constructor(database: Database) :
-        DataSource(database) {
-
-        public actual fun `as`(alias: String): DataSource =
-            DataSource(source, alias)
-    }
 
     private fun getColumnName(): String =
         alias ?: source.name
 
     internal fun asJSON(): Map<String, Any?> =
         mapOf("AS" to getColumnName())
+}
+
+public actual sealed class DataSource
+private constructor(
+    source: Database,
+    alias: String? = null
+) {
+
+    internal actual val platformState = DataSourcePlatformState(source, alias)
+
+    private class DelegatedDataSource(source: Database, alias: String?) : DataSource(source, alias)
+
+    public actual class As
+    internal constructor(database: Database) :
+        DataSource(database) {
+
+        public actual fun `as`(alias: String): DataSource =
+            DelegatedDataSource(source, alias)
+    }
 
     public actual companion object {
 
@@ -28,3 +36,9 @@ private constructor(
             As(database)
     }
 }
+
+internal val DataSource.source: Database
+    get() = platformState.source
+
+internal fun DataSource.asJSON(): Map<String, Any?> =
+    platformState.asJSON()

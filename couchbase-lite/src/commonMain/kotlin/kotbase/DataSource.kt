@@ -1,9 +1,13 @@
 package kotbase
 
+internal expect class DataSourcePlatformState
+
 /**
  * A query data source, used for specifying the source of data for a query.
  */
-public expect open class DataSource {
+public expect sealed class DataSource {
+
+    internal val platformState: DataSourcePlatformState
 
     /**
      * Database as a data source for query.
