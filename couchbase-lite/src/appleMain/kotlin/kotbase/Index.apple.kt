@@ -13,7 +13,7 @@ public actual sealed class Index(actual: CBLIndex) {
     internal actual val platformState: IndexPlatformState? = IndexPlatformState(actual)
 
     override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? AbstractDelegatedClass<*>)?.actual)
+        actual.isEqual((other as? Index)?.actual)
 
     override fun hashCode(): Int =
         actual.hash.toInt()

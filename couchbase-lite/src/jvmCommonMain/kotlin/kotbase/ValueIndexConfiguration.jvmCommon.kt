@@ -7,3 +7,6 @@ private constructor(actual: CBLValueIndexConfiguration) : IndexConfiguration(act
 
     public actual constructor(vararg expressions: String) : this(CBLValueIndexConfiguration(*expressions))
 }
+
+internal val ValueIndexConfiguration.actual: CBLValueIndexConfiguration
+    get() = platformState!!.actual as CBLValueIndexConfiguration

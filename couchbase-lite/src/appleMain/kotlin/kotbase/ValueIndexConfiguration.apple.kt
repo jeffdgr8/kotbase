@@ -9,3 +9,5 @@ private constructor(actual: CBLValueIndexConfiguration) : IndexConfiguration(act
         CBLValueIndexConfiguration(expressions.toList())
     )
 }
+internal val ValueIndexConfiguration.actual: CBLValueIndexConfiguration
+    get() = platformState!!.actual as CBLValueIndexConfiguration
