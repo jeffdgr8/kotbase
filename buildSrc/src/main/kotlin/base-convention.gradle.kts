@@ -12,6 +12,11 @@ plugins {
 }
 
 kotlin {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     sourceSets.configureEach {
         languageSettings {
             if (!name.startsWith("common") &&
@@ -21,10 +26,6 @@ kotlin {
                 optIn("kotlinx.cinterop.BetaInteropApi")
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
             }
-        }
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            freeCompilerArgs.add("-Xexpect-actual-classes")
         }
     }
 
