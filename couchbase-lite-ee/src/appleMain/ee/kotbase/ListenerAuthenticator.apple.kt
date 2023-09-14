@@ -8,7 +8,7 @@ internal actual class ListenerAuthenticatorPlatformState(
 
 public actual sealed class ListenerAuthenticator(actual: CBLListenerAuthenticatorProtocol) {
 
-    internal actual val platformState = ListenerAuthenticatorPlatformState(actual)
+    internal actual val platformState: ListenerAuthenticatorPlatformState? = ListenerAuthenticatorPlatformState(actual)
 
     override fun equals(other: Any?): Boolean =
         actual.isEqual((other as? ListenerAuthenticator)?.actual)
@@ -21,4 +21,4 @@ public actual sealed class ListenerAuthenticator(actual: CBLListenerAuthenticato
 }
 
 internal val ListenerAuthenticator.actual: CBLListenerAuthenticatorProtocol
-    get() = platformState.actual
+    get() = platformState!!.actual

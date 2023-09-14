@@ -1,8 +1,8 @@
 package kotbase
 
-internal class ListenerAuthenticatorPlatformState
+internal actual class ListenerAuthenticatorPlatformState
 
 public actual sealed class ListenerAuthenticator {
 
-    internal actual val platformState = ListenerAuthenticatorPlatformState()
+    internal actual val platformState: ListenerAuthenticatorPlatformState? = null
 }

@@ -4,7 +4,7 @@ import java.util.*
 import com.couchbase.lite.FullTextIndex as CBLFullTextIndex
 
 public actual class FullTextIndex
-internal constructor(override val actual: CBLFullTextIndex) : Index(actual) {
+internal constructor(actual: CBLFullTextIndex) : Index(actual) {
 
     public actual fun setLanguage(language: String?): FullTextIndex {
         actual.setLanguage(language)
@@ -30,3 +30,6 @@ internal constructor(override val actual: CBLFullTextIndex) : Index(actual) {
             actual.ignoreAccents(value)
         }
 }
+
+internal val FullTextIndex.actual: CBLFullTextIndex
+    get() = platformState!!.actual as CBLFullTextIndex

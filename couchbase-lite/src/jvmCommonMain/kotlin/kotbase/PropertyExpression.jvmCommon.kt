@@ -10,4 +10,4 @@ internal constructor(actual: CBLPropertyExpression) : Expression(actual) {
 }
 
 internal val PropertyExpression.actual: CBLPropertyExpression
-    get() = platformState.actual as CBLPropertyExpression
+    get() = platformState!!.actual as CBLPropertyExpression

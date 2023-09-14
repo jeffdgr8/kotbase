@@ -9,5 +9,5 @@ internal expect class ListenerAuthenticatorPlatformState
  */
 public expect sealed class ListenerAuthenticator {
 
-    internal val platformState: ListenerAuthenticatorPlatformState
+    internal val platformState: ListenerAuthenticatorPlatformState?
 }

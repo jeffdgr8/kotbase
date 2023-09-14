@@ -6,4 +6,4 @@ public actual class VariableExpression
 internal constructor(actual: CBLVariableExpression) : Expression(actual)
 
 internal val VariableExpression.actual: CBLVariableExpression
-    get() = platformState.actual as CBLVariableExpression
+    get() = platformState!!.actual as CBLVariableExpression

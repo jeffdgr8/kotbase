@@ -11,4 +11,4 @@ internal constructor(actual: CBLListenerPasswordAuthenticator) : ListenerAuthent
 }
 
 internal val ListenerPasswordAuthenticator.actual: CBLListenerPasswordAuthenticator
-    get() = platformState.actual as CBLListenerPasswordAuthenticator
+    get() = platformState!!.actual as CBLListenerPasswordAuthenticator

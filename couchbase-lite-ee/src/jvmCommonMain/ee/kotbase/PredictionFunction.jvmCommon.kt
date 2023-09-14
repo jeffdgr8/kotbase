@@ -9,4 +9,4 @@ public actual class PredictionFunction(actual: CBLPredictionFunction) : Expressi
 }
 
 internal val PredictionFunction.actual: CBLPredictionFunction
-    get() = platformState.actual as CBLPredictionFunction
+    get() = platformState!!.actual as CBLPredictionFunction

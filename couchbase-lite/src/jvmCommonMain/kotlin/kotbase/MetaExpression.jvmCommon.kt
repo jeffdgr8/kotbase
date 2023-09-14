@@ -10,4 +10,4 @@ internal constructor(actual: CBLMetaExpression) : Expression(actual) {
 }
 
 internal val MetaExpression.actual: CBLMetaExpression
-    get() = platformState.actual as CBLMetaExpression
+    get() = platformState!!.actual as CBLMetaExpression

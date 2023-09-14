@@ -12,7 +12,7 @@ internal actual class ExpressionPlatformState(
 
 public actual sealed class Expression(actual: CBLExpression) {
 
-    internal actual val platformState = ExpressionPlatformState(actual)
+    internal actual val platformState: ExpressionPlatformState? = ExpressionPlatformState(actual)
 
     internal actual open fun asJSON(): Any? = actual.asJSON()
 
@@ -146,7 +146,7 @@ public actual sealed class Expression(actual: CBLExpression) {
 internal class DelegatedExpression(actual: CBLExpression) : Expression(actual)
 
 internal val Expression.actual: CBLExpression
-    get() = platformState.actual
+    get() = platformState!!.actual
 
 internal fun Array<out Expression>.actuals(): Array<CBLExpression> =
     map { it.actual }.toTypedArray()

@@ -9,7 +9,7 @@ internal expect class ExpressionPlatformState
  */
 public expect sealed class Expression {
 
-    internal val platformState: ExpressionPlatformState
+    internal val platformState: ExpressionPlatformState?
 
     internal open fun asJSON(): Any?
 

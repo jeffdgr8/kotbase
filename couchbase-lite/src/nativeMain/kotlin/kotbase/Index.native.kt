@@ -1,5 +1,8 @@
 package kotbase
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
-public actual abstract class Index
+internal actual class IndexPlatformState
+
+public actual sealed class Index {
+
+    internal actual val platformState: IndexPlatformState? = null
+}

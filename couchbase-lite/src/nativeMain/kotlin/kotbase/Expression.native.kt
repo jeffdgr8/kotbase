@@ -7,7 +7,7 @@ internal actual class ExpressionPlatformState
 
 public actual sealed class Expression {
 
-    internal actual val platformState = ExpressionPlatformState()
+    internal actual val platformState: ExpressionPlatformState? = null
 
     internal actual open fun asJSON(): Any? {
         throw IllegalStateException("Should be overridden in subclass ${this::class}")
