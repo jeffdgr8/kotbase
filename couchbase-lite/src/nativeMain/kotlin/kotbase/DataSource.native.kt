@@ -20,14 +20,13 @@ private constructor(
 
     internal actual val platformState = DataSourcePlatformState(source, alias)
 
-    private class DelegatedDataSource(source: Database, alias: String?) : DataSource(source, alias)
+    private class DataSourceImpl(source: Database, alias: String?) : DataSource(source, alias)
 
     public actual class As
-    internal constructor(database: Database) :
-        DataSource(database) {
+    internal constructor(database: Database) : DataSource(database) {
 
         public actual fun `as`(alias: String): DataSource =
-            DelegatedDataSource(source, alias)
+            DataSourceImpl(source, alias)
     }
 
     public actual companion object {

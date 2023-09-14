@@ -6,7 +6,7 @@ public actual class MetaExpression
 internal constructor(actual: CBLMetaExpression) : Expression(actual) {
 
     public actual fun from(fromAlias: String): Expression =
-        DelegatedExpression(actual.from(fromAlias))
+        ExpressionImpl(actual.from(fromAlias))
 }
 
 internal val MetaExpression.actual: CBLMetaExpression

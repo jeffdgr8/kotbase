@@ -1,7 +1,5 @@
 package kotbase
 
-import kotbase.base.actuals
-
 public actual object QueryBuilder {
 
     public actual fun select(vararg results: SelectResult): Select =

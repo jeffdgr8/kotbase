@@ -12,14 +12,13 @@ private constructor(actual: CBLQueryDataSource) {
 
     internal actual val platformState = DataSourcePlatformState(actual)
 
-    private class DelegatedDataSource(actual: CBLQueryDataSource) : DataSource(actual)
+    private class DataSourceImpl(actual: CBLQueryDataSource) : DataSource(actual)
 
     public actual class As
-    internal constructor(private val database: CBLDatabase) :
-        DataSource(CBLQueryDataSource.database(database)) {
+    internal constructor(private val database: CBLDatabase) : DataSource(CBLQueryDataSource.database(database)) {
 
         public actual fun `as`(alias: String): DataSource =
-            DelegatedDataSource(CBLQueryDataSource.database(database, alias))
+            DataSourceImpl(CBLQueryDataSource.database(database, alias))
     }
 
     override fun equals(other: Any?): Boolean =

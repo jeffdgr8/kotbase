@@ -2,18 +2,25 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLQuerySelectResult
 import kotbase.base.DelegatedClass
+import platform.darwin.NSObject
+import kotlin.Array
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
-public actual open class SelectResult
-private constructor(actual: CBLQuerySelectResult) : DelegatedClass<CBLQuerySelectResult>(actual) {
+internal actual class SelectResultPlatformState(
+    internal val actual: CBLQuerySelectResult
+)
+
+public actual sealed class SelectResult
+private constructor(actual: CBLQuerySelectResult) {
+
+    internal actual val platformState = SelectResultPlatformState(actual)
+
+    private class SelectResultImpl(actual: CBLQuerySelectResult) : SelectResult(actual)
 
     public actual class From
-    internal constructor(private val all: (String?) -> CBLQuerySelectResult) :
-        SelectResult(all(null)) {
+    internal constructor(private val all: (String?) -> CBLQuerySelectResult) : SelectResult(all(null)) {
 
         public actual fun from(alias: String): SelectResult =
-            SelectResult(all(alias))
+            SelectResultImpl(all(alias))
     }
 
     public actual class As
@@ -37,6 +44,15 @@ private constructor(actual: CBLQuerySelectResult) : DelegatedClass<CBLQuerySelec
         }
     }
 
+    override fun equals(other: Any?): Boolean =
+        actual.isEqual((other as? SelectResult)?.actual)
+
+    override fun hashCode(): Int =
+        actual.hash.toInt()
+
+    override fun toString(): String =
+        actual.description ?: super.toString()
+
     public actual companion object {
 
         public actual fun property(property: String): As =
@@ -49,3 +65,9 @@ private constructor(actual: CBLQuerySelectResult) : DelegatedClass<CBLQuerySelec
             From(CBLQuerySelectResult.Companion::allFrom)
     }
 }
+
+internal val SelectResult.actual: CBLQuerySelectResult
+    get() = platformState.actual
+
+internal fun Array<out SelectResult>.actuals(): List<CBLQuerySelectResult> =
+    map { it.actual }

@@ -19,37 +19,37 @@ public actual sealed class Expression(actual: CBLExpression) {
     public actual companion object {
 
         public actual fun value(value: Any?): Expression =
-            DelegatedExpression(CBLExpression.value(value?.actualIfDelegated()))
+            ExpressionImpl(CBLExpression.value(value?.actualIfDelegated()))
 
         public actual fun string(value: String?): Expression =
-            DelegatedExpression(CBLExpression.string(value))
+            ExpressionImpl(CBLExpression.string(value))
 
         public actual fun number(value: Number?): Expression =
-            DelegatedExpression(CBLExpression.number(value))
+            ExpressionImpl(CBLExpression.number(value))
 
         public actual fun intValue(value: Int): Expression =
-            DelegatedExpression(CBLExpression.intValue(value))
+            ExpressionImpl(CBLExpression.intValue(value))
 
         public actual fun longValue(value: Long): Expression =
-            DelegatedExpression(CBLExpression.longValue(value))
+            ExpressionImpl(CBLExpression.longValue(value))
 
         public actual fun floatValue(value: Float): Expression =
-            DelegatedExpression(CBLExpression.floatValue(value))
+            ExpressionImpl(CBLExpression.floatValue(value))
 
         public actual fun doubleValue(value: Double): Expression =
-            DelegatedExpression(CBLExpression.doubleValue(value))
+            ExpressionImpl(CBLExpression.doubleValue(value))
 
         public actual fun booleanValue(value: Boolean): Expression =
-            DelegatedExpression(CBLExpression.booleanValue(value))
+            ExpressionImpl(CBLExpression.booleanValue(value))
 
         public actual fun date(value: Instant?): Expression =
-            DelegatedExpression(CBLExpression.date(value?.toDate()))
+            ExpressionImpl(CBLExpression.date(value?.toDate()))
 
         public actual fun map(value: Map<String, Any?>?): Expression =
-            DelegatedExpression(CBLExpression.map(value?.actualIfDelegated()))
+            ExpressionImpl(CBLExpression.map(value?.actualIfDelegated()))
 
         public actual fun list(value: List<Any?>?): Expression =
-            DelegatedExpression(CBLExpression.list(value?.actualIfDelegated()))
+            ExpressionImpl(CBLExpression.list(value?.actualIfDelegated()))
 
         public actual fun all(): PropertyExpression =
             PropertyExpression(CBLExpression.all())
@@ -58,80 +58,80 @@ public actual sealed class Expression(actual: CBLExpression) {
             PropertyExpression(CBLExpression.property(property))
 
         public actual fun parameter(name: String): Expression =
-            DelegatedExpression(CBLExpression.parameter(name))
+            ExpressionImpl(CBLExpression.parameter(name))
 
         public actual fun negated(expression: Expression): Expression =
-            DelegatedExpression(CBLExpression.negated(expression.actual))
+            ExpressionImpl(CBLExpression.negated(expression.actual))
 
         public actual fun not(expression: Expression): Expression =
-            DelegatedExpression(CBLExpression.not(expression.actual))
+            ExpressionImpl(CBLExpression.not(expression.actual))
     }
 
     public actual fun multiply(expression: Expression): Expression =
-        DelegatedExpression(actual.multiply(expression.actual))
+        ExpressionImpl(actual.multiply(expression.actual))
 
     public actual fun divide(expression: Expression): Expression =
-        DelegatedExpression(actual.divide(expression.actual))
+        ExpressionImpl(actual.divide(expression.actual))
 
     public actual fun modulo(expression: Expression): Expression =
-        DelegatedExpression(actual.modulo(expression.actual))
+        ExpressionImpl(actual.modulo(expression.actual))
 
     public actual fun add(expression: Expression): Expression =
-        DelegatedExpression(actual.add(expression.actual))
+        ExpressionImpl(actual.add(expression.actual))
 
     public actual fun subtract(expression: Expression): Expression =
-        DelegatedExpression(actual.subtract(expression.actual))
+        ExpressionImpl(actual.subtract(expression.actual))
 
     public actual fun lessThan(expression: Expression): Expression =
-        DelegatedExpression(actual.lessThan(expression.actual))
+        ExpressionImpl(actual.lessThan(expression.actual))
 
     public actual fun lessThanOrEqualTo(expression: Expression): Expression =
-        DelegatedExpression(actual.lessThanOrEqualTo(expression.actual))
+        ExpressionImpl(actual.lessThanOrEqualTo(expression.actual))
 
     public actual fun greaterThan(expression: Expression): Expression =
-        DelegatedExpression(actual.greaterThan(expression.actual))
+        ExpressionImpl(actual.greaterThan(expression.actual))
 
     public actual fun greaterThanOrEqualTo(expression: Expression): Expression =
-        DelegatedExpression(actual.greaterThanOrEqualTo(expression.actual))
+        ExpressionImpl(actual.greaterThanOrEqualTo(expression.actual))
 
     public actual fun equalTo(expression: Expression): Expression =
-        DelegatedExpression(actual.equalTo(expression.actual))
+        ExpressionImpl(actual.equalTo(expression.actual))
 
     public actual fun notEqualTo(expression: Expression): Expression =
-        DelegatedExpression(actual.notEqualTo(expression.actual))
+        ExpressionImpl(actual.notEqualTo(expression.actual))
 
     public actual fun and(expression: Expression): Expression =
-        DelegatedExpression(actual.and(expression.actual))
+        ExpressionImpl(actual.and(expression.actual))
 
     public actual fun or(expression: Expression): Expression =
-        DelegatedExpression(actual.or(expression.actual))
+        ExpressionImpl(actual.or(expression.actual))
 
     public actual fun like(expression: Expression): Expression =
-        DelegatedExpression(actual.like(expression.actual))
+        ExpressionImpl(actual.like(expression.actual))
 
     public actual fun regex(expression: Expression): Expression =
-        DelegatedExpression(actual.regex(expression.actual))
+        ExpressionImpl(actual.regex(expression.actual))
 
     public actual fun `is`(expression: Expression): Expression =
-        DelegatedExpression(actual.`is`(expression.actual))
+        ExpressionImpl(actual.`is`(expression.actual))
 
     public actual fun isNot(expression: Expression): Expression =
-        DelegatedExpression(actual.isNot(expression.actual))
+        ExpressionImpl(actual.isNot(expression.actual))
 
     public actual fun between(expression1: Expression, expression2: Expression): Expression =
-        DelegatedExpression(actual.between(expression1.actual, expression2.actual))
+        ExpressionImpl(actual.between(expression1.actual, expression2.actual))
 
     public actual fun isValued(): Expression =
-        DelegatedExpression(actual.isValued)
+        ExpressionImpl(actual.isValued)
 
     public actual fun isNotValued(): Expression =
-        DelegatedExpression(actual.isNotValued)
+        ExpressionImpl(actual.isNotValued)
 
     public actual fun collate(collation: Collation): Expression =
-        DelegatedExpression(actual.collate(collation.actual))
+        ExpressionImpl(actual.collate(collation.actual))
 
     public actual fun `in`(vararg expressions: Expression): Expression =
-        DelegatedExpression(actual.`in`(*expressions.actuals()))
+        ExpressionImpl(actual.`in`(*expressions.actuals()))
 
     override fun equals(other: Any?): Boolean =
         actual == (other as? Expression)?.actual
@@ -143,7 +143,7 @@ public actual sealed class Expression(actual: CBLExpression) {
         actual.toString()
 }
 
-internal class DelegatedExpression(actual: CBLExpression) : Expression(actual)
+internal class ExpressionImpl(actual: CBLExpression) : Expression(actual)
 
 internal val Expression.actual: CBLExpression
     get() = platformState!!.actual

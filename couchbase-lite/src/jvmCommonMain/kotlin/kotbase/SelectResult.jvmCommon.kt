@@ -1,16 +1,20 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
+import kotlin.Array
 import com.couchbase.lite.SelectResult as CBLSelectResult
 
-@OptIn(ExperimentalMultiplatform::class)
-@AllowDifferentMembersInActual
-public actual open class SelectResult
-private constructor(actual: CBLSelectResult) : DelegatedClass<CBLSelectResult>(actual) {
+internal actual class SelectResultPlatformState(
+    internal val actual: CBLSelectResult
+)
+
+public actual sealed class SelectResult
+private constructor(actual: CBLSelectResult) {
+
+    internal actual val platformState = SelectResultPlatformState(actual)
 
     public actual class From
-    internal constructor(override val actual: CBLSelectResult.From) :
-        SelectResult(actual) {
+    internal constructor(actual: CBLSelectResult.From) : SelectResult(actual) {
 
         public actual fun from(alias: String): SelectResult {
             actual.from(alias)
@@ -19,14 +23,22 @@ private constructor(actual: CBLSelectResult) : DelegatedClass<CBLSelectResult>(a
     }
 
     public actual class As
-    internal constructor(override val actual: CBLSelectResult.As) :
-        SelectResult(actual) {
+    internal constructor(actual: CBLSelectResult.As) : SelectResult(actual) {
 
         public actual fun `as`(alias: String): As {
             actual.`as`(alias)
             return this
         }
     }
+
+    override fun equals(other: Any?): Boolean =
+        actual == (other as? SelectResult)?.actual
+
+    override fun hashCode(): Int =
+        actual.hashCode()
+
+    override fun toString(): String =
+        actual.toString()
 
     public actual companion object {
 
@@ -40,3 +52,15 @@ private constructor(actual: CBLSelectResult) : DelegatedClass<CBLSelectResult>(a
             From(CBLSelectResult.all())
     }
 }
+
+internal val SelectResult.actual: CBLSelectResult
+    get() = platformState.actual
+
+internal val SelectResult.From.actual: CBLSelectResult.From
+    get() = platformState.actual as CBLSelectResult.From
+
+internal val SelectResult.As.actual: CBLSelectResult.As
+    get() = platformState.actual as CBLSelectResult.As
+
+internal fun Array<out SelectResult>.actuals(): Array<CBLSelectResult> =
+    map { it.actual }.toTypedArray()

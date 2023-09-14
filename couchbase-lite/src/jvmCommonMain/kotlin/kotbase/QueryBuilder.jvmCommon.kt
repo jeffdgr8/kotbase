@@ -1,6 +1,5 @@
 package kotbase
 
-import kotbase.base.actuals
 import com.couchbase.lite.QueryBuilder as CBLQueryBuilder
 
 public actual object QueryBuilder {

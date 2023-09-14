@@ -1,9 +1,13 @@
 package kotbase
 
+internal expect class SelectResultPlatformState
+
 /**
  * SelectResult represents a single return value of the query statement.
  */
-public expect open class SelectResult {
+public expect sealed class SelectResult {
+
+    internal val platformState: SelectResultPlatformState
 
     /**
      * SelectResult.From is a SelectResult that you can specify the data source alias name.
