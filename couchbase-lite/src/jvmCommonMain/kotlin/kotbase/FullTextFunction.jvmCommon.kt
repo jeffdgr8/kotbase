@@ -5,8 +5,8 @@ import com.couchbase.lite.FullTextFunction as CBLFullTextFunction
 public actual object FullTextFunction {
 
     public actual fun match(indexName: String, text: String): Expression =
-        ExpressionImpl(CBLFullTextFunction.match(indexName, text))
+        Expression(CBLFullTextFunction.match(indexName, text))
 
     public actual fun rank(indexName: String): Expression =
-        ExpressionImpl(CBLFullTextFunction.rank(indexName))
+        Expression(CBLFullTextFunction.rank(indexName))
 }

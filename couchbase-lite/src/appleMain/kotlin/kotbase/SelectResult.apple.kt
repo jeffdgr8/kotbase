@@ -1,26 +1,22 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLQuerySelectResult
-import kotbase.base.DelegatedClass
-import platform.darwin.NSObject
 import kotlin.Array
 
 internal actual class SelectResultPlatformState(
     internal val actual: CBLQuerySelectResult
 )
 
-public actual sealed class SelectResult
+public actual open class SelectResult
 private constructor(actual: CBLQuerySelectResult) {
 
     internal actual val platformState = SelectResultPlatformState(actual)
-
-    private class SelectResultImpl(actual: CBLQuerySelectResult) : SelectResult(actual)
 
     public actual class From
     internal constructor(private val all: (String?) -> CBLQuerySelectResult) : SelectResult(all(null)) {
 
         public actual fun from(alias: String): SelectResult =
-            SelectResultImpl(all(alias))
+            SelectResult(all(alias))
     }
 
     public actual class As

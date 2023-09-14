@@ -12,7 +12,7 @@ internal actual class DataSourcePlatformState(
         mapOf("AS" to getColumnName())
 }
 
-public actual sealed class DataSource
+public actual open class DataSource
 private constructor(
     source: Database,
     alias: String? = null
@@ -20,13 +20,11 @@ private constructor(
 
     internal actual val platformState = DataSourcePlatformState(source, alias)
 
-    private class DataSourceImpl(source: Database, alias: String?) : DataSource(source, alias)
-
     public actual class As
     internal constructor(database: Database) : DataSource(database) {
 
         public actual fun `as`(alias: String): DataSource =
-            DataSourceImpl(source, alias)
+            DataSource(source, alias)
     }
 
     public actual companion object {

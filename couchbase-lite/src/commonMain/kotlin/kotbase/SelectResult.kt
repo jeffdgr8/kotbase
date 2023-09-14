@@ -5,7 +5,7 @@ internal expect class SelectResultPlatformState
 /**
  * SelectResult represents a single return value of the query statement.
  */
-public expect sealed class SelectResult {
+public expect open class SelectResult {
 
     internal val platformState: SelectResultPlatformState
 

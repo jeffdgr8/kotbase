@@ -7,7 +7,7 @@ internal expect class ExpressionPlatformState
 /**
  * The expression used in constructing a query.
  */
-public expect sealed class Expression {
+public expect open class Expression {
 
     internal val platformState: ExpressionPlatformState?
 

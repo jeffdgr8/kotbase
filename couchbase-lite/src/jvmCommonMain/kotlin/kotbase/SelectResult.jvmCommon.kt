@@ -1,6 +1,5 @@
 package kotbase
 
-import kotbase.base.DelegatedClass
 import kotlin.Array
 import com.couchbase.lite.SelectResult as CBLSelectResult
 
@@ -8,7 +7,7 @@ internal actual class SelectResultPlatformState(
     internal val actual: CBLSelectResult
 )
 
-public actual sealed class SelectResult
+public actual open class SelectResult
 private constructor(actual: CBLSelectResult) {
 
     internal actual val platformState = SelectResultPlatformState(actual)

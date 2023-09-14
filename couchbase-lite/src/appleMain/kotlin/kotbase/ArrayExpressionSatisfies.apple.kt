@@ -11,5 +11,5 @@ internal constructor(
 ) {
 
     public actual fun satisfies(expression: Expression): Expression =
-        ExpressionImpl(function(variable, inExpression, expression.actual))
+        Expression(function(variable, inExpression, expression.actual))
 }

@@ -17,7 +17,7 @@ internal actual class SelectResultPlatformState(
     }
 }
 
-public actual sealed class SelectResult
+public actual open class SelectResult
 private constructor(
     expression: Expression,
     alias: String? = null
@@ -25,13 +25,11 @@ private constructor(
 
     internal actual val platformState = SelectResultPlatformState(expression, alias)
 
-    private class SelectResultImpl(expression: Expression) : SelectResult(expression)
-
     public actual class From
     internal constructor(expression: PropertyExpression) : SelectResult(expression) {
 
         public actual fun from(alias: String): SelectResult =
-            SelectResultImpl(expression.from(alias))
+            SelectResult(expression.from(alias))
     }
 
     public actual class As

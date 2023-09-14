@@ -5,122 +5,122 @@ import com.couchbase.lite.Function as CBLFunction
 public actual object Function {
 
     public actual fun avg(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.avg(operand.actual))
+        Expression(CBLFunction.avg(operand.actual))
 
     public actual fun count(operand: Expression?): Expression =
-        ExpressionImpl(CBLFunction.count(operand?.actual))
+        Expression(CBLFunction.count(operand?.actual))
 
     public actual fun min(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.min(operand.actual))
+        Expression(CBLFunction.min(operand.actual))
 
     public actual fun max(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.max(operand.actual))
+        Expression(CBLFunction.max(operand.actual))
 
     public actual fun sum(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.sum(operand.actual))
+        Expression(CBLFunction.sum(operand.actual))
 
     public actual fun abs(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.abs(operand.actual))
+        Expression(CBLFunction.abs(operand.actual))
 
     public actual fun acos(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.acos(operand.actual))
+        Expression(CBLFunction.acos(operand.actual))
 
     public actual fun asin(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.asin(operand.actual))
+        Expression(CBLFunction.asin(operand.actual))
 
     public actual fun atan(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.atan(operand.actual))
+        Expression(CBLFunction.atan(operand.actual))
 
     public actual fun atan2(y: Expression, x: Expression): Expression =
-        ExpressionImpl(CBLFunction.atan2(y.actual, x.actual))
+        Expression(CBLFunction.atan2(y.actual, x.actual))
 
     public actual fun ceil(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.ceil(operand.actual))
+        Expression(CBLFunction.ceil(operand.actual))
 
     public actual fun cos(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.cos(operand.actual))
+        Expression(CBLFunction.cos(operand.actual))
 
     public actual fun degrees(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.degrees(operand.actual))
+        Expression(CBLFunction.degrees(operand.actual))
 
     public actual fun e(): Expression =
-        ExpressionImpl(CBLFunction.e())
+        Expression(CBLFunction.e())
 
     public actual fun exp(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.exp(operand.actual))
+        Expression(CBLFunction.exp(operand.actual))
 
     public actual fun floor(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.floor(operand.actual))
+        Expression(CBLFunction.floor(operand.actual))
 
     public actual fun ln(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.ln(operand.actual))
+        Expression(CBLFunction.ln(operand.actual))
 
     public actual fun log(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.log(operand.actual))
+        Expression(CBLFunction.log(operand.actual))
 
     public actual fun pi(): Expression =
-        ExpressionImpl(CBLFunction.pi())
+        Expression(CBLFunction.pi())
 
     public actual fun power(base: Expression, exp: Expression): Expression =
-        ExpressionImpl(CBLFunction.power(base.actual, exp.actual))
+        Expression(CBLFunction.power(base.actual, exp.actual))
 
     public actual fun radians(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.radians(operand.actual))
+        Expression(CBLFunction.radians(operand.actual))
 
     public actual fun round(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.round(operand.actual))
+        Expression(CBLFunction.round(operand.actual))
 
     public actual fun round(operand: Expression, digits: Expression): Expression =
-        ExpressionImpl(CBLFunction.round(operand.actual, digits.actual))
+        Expression(CBLFunction.round(operand.actual, digits.actual))
 
     public actual fun sign(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.sign(operand.actual))
+        Expression(CBLFunction.sign(operand.actual))
 
     public actual fun sin(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.sin(operand.actual))
+        Expression(CBLFunction.sin(operand.actual))
 
     public actual fun sqrt(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.sqrt(operand.actual))
+        Expression(CBLFunction.sqrt(operand.actual))
 
     public actual fun tan(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.tan(operand.actual))
+        Expression(CBLFunction.tan(operand.actual))
 
     public actual fun trunc(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.trunc(operand.actual))
+        Expression(CBLFunction.trunc(operand.actual))
 
     public actual fun trunc(operand: Expression, digits: Expression): Expression =
-        ExpressionImpl(CBLFunction.trunc(operand.actual, digits.actual))
+        Expression(CBLFunction.trunc(operand.actual, digits.actual))
 
     public actual fun contains(operand: Expression, substring: Expression): Expression =
-        ExpressionImpl(CBLFunction.contains(operand.actual, substring.actual))
+        Expression(CBLFunction.contains(operand.actual, substring.actual))
 
     public actual fun length(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.length(operand.actual))
+        Expression(CBLFunction.length(operand.actual))
 
     public actual fun lower(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.lower(operand.actual))
+        Expression(CBLFunction.lower(operand.actual))
 
     public actual fun ltrim(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.ltrim(operand.actual))
+        Expression(CBLFunction.ltrim(operand.actual))
 
     public actual fun rtrim(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.rtrim(operand.actual))
+        Expression(CBLFunction.rtrim(operand.actual))
 
     public actual fun trim(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.trim(operand.actual))
+        Expression(CBLFunction.trim(operand.actual))
 
     public actual fun upper(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.upper(operand.actual))
+        Expression(CBLFunction.upper(operand.actual))
 
     public actual fun millisToString(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.millisToString(operand.actual))
+        Expression(CBLFunction.millisToString(operand.actual))
 
     public actual fun millisToUTC(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.millisToUTC(operand.actual))
+        Expression(CBLFunction.millisToUTC(operand.actual))
 
     public actual fun stringToMillis(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.stringToMillis(operand.actual))
+        Expression(CBLFunction.stringToMillis(operand.actual))
 
     public actual fun stringToUTC(operand: Expression): Expression =
-        ExpressionImpl(CBLFunction.stringToUTC(operand.actual))
+        Expression(CBLFunction.stringToUTC(operand.actual))
 }

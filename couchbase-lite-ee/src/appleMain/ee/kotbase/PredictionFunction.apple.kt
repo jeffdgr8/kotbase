@@ -7,7 +7,7 @@ public actual class PredictionFunction(
 ) : Expression(actual) {
 
     public actual fun propertyPath(path: String): Expression =
-        ExpressionImpl(actual.property(path))
+        Expression(actual.property(path))
 }
 
 // TODO: casting the existing property fails with:

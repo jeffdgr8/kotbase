@@ -6,7 +6,7 @@ public actual class PropertyExpression
 internal constructor(actual: CBLPropertyExpression) : Expression(actual) {
 
     public actual fun from(fromAlias: String): Expression =
-        ExpressionImpl(actual.from(fromAlias))
+        Expression(actual.from(fromAlias))
 }
 
 internal val PropertyExpression.actual: CBLPropertyExpression

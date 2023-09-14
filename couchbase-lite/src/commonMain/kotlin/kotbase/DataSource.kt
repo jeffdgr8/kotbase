@@ -5,7 +5,7 @@ internal expect class DataSourcePlatformState
 /**
  * A query data source, used for specifying the source of data for a query.
  */
-public expect sealed class DataSource {
+public expect open class DataSource {
 
     internal val platformState: DataSourcePlatformState
 

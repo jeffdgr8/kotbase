@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 
 internal actual class ExpressionPlatformState
 
-public actual sealed class Expression {
+public actual open class Expression {
 
     internal actual val platformState: ExpressionPlatformState? = null
 

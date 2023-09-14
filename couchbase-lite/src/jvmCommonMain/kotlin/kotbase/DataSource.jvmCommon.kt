@@ -6,7 +6,7 @@ internal actual class DataSourcePlatformState(
     internal val actual: CBLDataSource
 )
 
-public actual sealed class DataSource
+public actual open class DataSource
 private constructor(actual: CBLDataSource) {
 
     internal actual val platformState = DataSourcePlatformState(actual)

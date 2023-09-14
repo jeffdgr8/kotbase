@@ -7,18 +7,16 @@ internal actual class DataSourcePlatformState(
     internal val actual: CBLQueryDataSource
 )
 
-public actual sealed class DataSource
+public actual open class DataSource
 private constructor(actual: CBLQueryDataSource) {
 
     internal actual val platformState = DataSourcePlatformState(actual)
-
-    private class DataSourceImpl(actual: CBLQueryDataSource) : DataSource(actual)
 
     public actual class As
     internal constructor(private val database: CBLDatabase) : DataSource(CBLQueryDataSource.database(database)) {
 
         public actual fun `as`(alias: String): DataSource =
-            DataSourceImpl(CBLQueryDataSource.database(database, alias))
+            DataSource(CBLQueryDataSource.database(database, alias))
     }
 
     override fun equals(other: Any?): Boolean =
