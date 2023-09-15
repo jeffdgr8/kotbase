@@ -1,7 +1,6 @@
 package kotbase.internal.utils
 
-import com.couchbase.lite.LogDomain
-import com.couchbase.lite.internal.support.Log
+import kotbase.LogDomain
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -66,7 +65,7 @@ actual object FileUtils {
         var succeeded = true
         for (file in contents) {
             if (!deleteRecursive(file)) {
-                Log.i(LogDomain.DATABASE, "Failed deleting file: $file")
+                println("${LogDomain.DATABASE} Failed deleting file: $file")
                 succeeded = false
             }
         }
