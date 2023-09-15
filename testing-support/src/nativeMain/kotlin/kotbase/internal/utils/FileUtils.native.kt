@@ -8,6 +8,7 @@ import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.files.SystemPathSeparator
 import kotlinx.io.readByteArray
 import okio.Path.Companion.toPath
+import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalStdlibApi::class)
 actual object FileUtils {
@@ -81,8 +82,14 @@ actual object FileUtils {
         }
     }
 
+    @OptIn(ExperimentalNativeApi::class)
     actual val separatorChar: Char
-        get() = SystemPathSeparator
+        // workaround https://github.com/Kotlin/kotlinx-io/issues/221
+        get() = if (Platform.osFamily == OsFamily.WINDOWS) {
+            '\\'
+        } else {
+            SystemPathSeparator
+        }
 
     private fun deleteRecursive(fileOrDirectory: String): Boolean =
         !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)
