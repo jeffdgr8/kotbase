@@ -168,7 +168,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Run the replicator again:
         run(replicator)
 
-        // Should not getting a new document replication event:
+        // Should not be getting a new document replication event:
         assertEquals(3, docs.size)
     }
 

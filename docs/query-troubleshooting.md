@@ -137,7 +137,7 @@ along with your queries.
 The query optimizer converts your query into a parse tree that groups zero or more and-connected clauses together (as
 dictated by your where conditionals) for effective query engine processing.
 
-Ideally a query will be be able to satisfy its requirements entirely by either directly accessing the index or searching
+Ideally a query will be able to satisfy its requirements entirely by either directly accessing the index or searching
 sequential index rows. Less good is if the query must scan the whole index; although the compact nature of most indexes
 means this is still much faster than the alternative of scanning the entire database with no help from the indexes at
 all.
@@ -149,15 +149,15 @@ a primary key equality.
 
 You may have noticed that sometimes a query runs faster on a second run, or after re-opening the database, or after
 deleting and recreating an index. This typically happens when SQL Query Optimizer has gathered sufficient stats to
-recognize a means of optimizing a sub-optimal query.
+recognize a means of optimizing a suboptimal query.
 
-If only those stats were available from the start. In fact they are gathered after certain events, such as:
+If only those stats were available from the start. In fact, they are gathered after certain events, such as:
 
 * Following index creation
 * On a database close
 * When running a database compact
 
-So, if your analysis of the [Query Explain output](#output) indicates a sub-optimal query and your rewrites fail to
+So, if your analysis of the [Query Explain output](#output) indicates a suboptimal query and your rewrites fail to
 sufficiently optimize it, consider compacting the database. Then re-generate the Query Explain and note any improvements
 in optimization. They may not, in themselves, resolve the issue entirely; but they can provide a useful guide toward
 further optimizing changes you could make.

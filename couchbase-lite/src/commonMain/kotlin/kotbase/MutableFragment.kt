@@ -52,7 +52,7 @@ internal constructor(
         }
 
     /**
-     * Gets the value as number or sets the number value to the fragment object.
+     * Gets the value as a number or sets the number value to the fragment object.
      */
     override var number: Number?
         get() = super.number

@@ -9,7 +9,6 @@ import kotlinx.cinterop.value
 import platform.CoreFoundation.CFStringRefVar
 import platform.Foundation.NSUserDefaults
 import platform.Security.SecCertificateCopyCommonName
-import platform.Security.SecCertificateRef
 import platform.Security.errSecSuccess
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.test.AfterTest
@@ -119,7 +118,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
 
     // Replicator helper methods
 
-    /// - Note: default value for continuous is true! Thats is common in this test suite
+    /// - Note: default value for continuous is true! That is common in this test suite
     protected fun createReplicator(
         db: Database,
         target: Endpoint,

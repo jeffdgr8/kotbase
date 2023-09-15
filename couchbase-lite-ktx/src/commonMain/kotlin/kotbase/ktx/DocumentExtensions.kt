@@ -61,8 +61,8 @@ public class DocumentBuilder internal constructor(
     }
 
     /**
-     * Get a property's value as a Array, which is a mapping object of an array value.
-     * Returns null if the property doesn't exists, or its value is not an array.
+     * Get a property's value as an Array, which is a mapping object of an array value.
+     * Returns null if the property doesn't exist, or its value is not an array.
      *
      * @param key the key.
      * @return the Array object.
@@ -71,8 +71,8 @@ public class DocumentBuilder internal constructor(
         document.getArray(key)
 
     /**
-     * Get a property's value as a Dictionary, which is a mapping object of an dictionary value.
-     * Returns null if the property doesn't exists, or its value is not an dictionary.
+     * Get a property's value as a Dictionary, which is a mapping object of a dictionary value.
+     * Returns null if the property doesn't exist, or its value is not a dictionary.
      *
      * @param key the key.
      * @return the Dictionary object or null if the key doesn't exist.
@@ -90,7 +90,7 @@ public class DocumentBuilder internal constructor(
         document.remove(key)
 
     /**
-     * Set a integer value for the given key
+     * Set an integer value for the given key
      *
      * @param key   the key.
      * @param value the integer value.

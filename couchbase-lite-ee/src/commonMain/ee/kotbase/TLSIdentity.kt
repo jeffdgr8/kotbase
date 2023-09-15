@@ -60,19 +60,19 @@ public expect class TLSIdentity {
     }
 }
 
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_COMMON_NAME: String get() = "CN";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_PSEUDONYM: String get() = "pseudonym";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_GIVEN_NAME: String get() = "GN";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_SURNAME: String get() = "SN";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_ORGANIZATION: String get() = "O";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_ORGANIZATION_UNIT: String get() = "OU";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_POSTAL_ADDRESS: String get() = "postalAddress";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_LOCALITY: String get() = "locality";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_POSTAL_CODE: String get() = "postalCode";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_STATE_OR_PROVINCE: String get() = "ST";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_COUNTRY: String get() = "C";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_EMAIL_ADDRESS: String get() = "rfc822Name";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_HOSTNAME: String get() = "dNSName";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_URL: String get() = "uniformResourceIdentifier";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_IP_ADDRESS: String get() = "iPAddress";
-public val TLSIdentity.Companion.CERT_ATTRIBUTE_REGISTERED_ID: String get() = "registeredID";
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_COMMON_NAME: String get() = "CN"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_PSEUDONYM: String get() = "pseudonym"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_GIVEN_NAME: String get() = "GN"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_SURNAME: String get() = "SN"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_ORGANIZATION: String get() = "O"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_ORGANIZATION_UNIT: String get() = "OU"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_POSTAL_ADDRESS: String get() = "postalAddress"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_LOCALITY: String get() = "locality"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_POSTAL_CODE: String get() = "postalCode"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_STATE_OR_PROVINCE: String get() = "ST"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_COUNTRY: String get() = "C"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_EMAIL_ADDRESS: String get() = "rfc822Name"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_HOSTNAME: String get() = "dNSName"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_URL: String get() = "uniformResourceIdentifier"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_IP_ADDRESS: String get() = "iPAddress"
+public val TLSIdentity.Companion.CERT_ATTRIBUTE_REGISTERED_ID: String get() = "registeredID"

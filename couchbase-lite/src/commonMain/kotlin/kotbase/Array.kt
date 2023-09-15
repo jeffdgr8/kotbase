@@ -66,7 +66,7 @@ public expect open class Array : Iterable<Any?> {
     public fun getInt(index: Int): Int
 
     /**
-     * Gets value at the given index as an long.
+     * Gets value at the given index as a long.
      * Floating point values will be rounded. The value `true` is returned as 1, `false` as 0.
      * Returns 0 if the value doesn't exist or does not have a numeric value.
      *
@@ -76,7 +76,7 @@ public expect open class Array : Iterable<Any?> {
     public fun getLong(index: Int): Long
 
     /**
-     * Gets value at the given index as an float.
+     * Gets value at the given index as a float.
      * Integers will be converted to float. The value `true` is returned as 1.0, `false` as 0.0.
      * Returns 0.0 if the value doesn't exist or does not have a numeric value.
      *
@@ -86,7 +86,7 @@ public expect open class Array : Iterable<Any?> {
     public fun getFloat(index: Int): Float
 
     /**
-     * Gets value at the given index as an double.
+     * Gets value at the given index as a double.
      * Integers will be converted to double. The value `true` is returned as 1.0, `false` as 0.0.
      * Returns 0.0 if the property doesn't exist or does not have a numeric value.
      *
@@ -126,7 +126,7 @@ public expect open class Array : Iterable<Any?> {
     public fun getDate(index: Int): Instant?
 
     /**
-     * Gets a Array at the given index. Return null if the value is not an array.
+     * Gets an Array at the given index. Return null if the value is not an array.
      *
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the Array object.
@@ -134,7 +134,7 @@ public expect open class Array : Iterable<Any?> {
     public open fun getArray(index: Int): Array?
 
     /**
-     * Gets a Dictionary at the given index. Return null if the value is not an dictionary.
+     * Gets a Dictionary at the given index. Return null if the value is not a dictionary.
      *
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the Dictionary object.
@@ -142,7 +142,7 @@ public expect open class Array : Iterable<Any?> {
     public open fun getDictionary(index: Int): Dictionary?
 
     /**
-     * Gets content of the current object as an List. The values contained in the returned
+     * Gets content of the current object as a List. The values contained in the returned
      * List object are all JSON based values.
      *
      * @return the List object representing the content of the current object in the JSON format.
@@ -183,6 +183,7 @@ internal fun Array.checkInsertIndex(index: Int) {
 internal inline fun <reified T : Any> Array.getInternalCollection(index: Int): T? =
     T::class.safeCast(collectionMap[index])
 
+@Suppress("UnusedReceiverParameter")
 internal fun <T : Any> Array.incrementAfter(index: Int, collection: MutableMap<Int, T>) {
     for (key in collection.keys.sortedDescending()) {
         if (key >= index) {

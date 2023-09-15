@@ -20,8 +20,7 @@ public actual enum class LogDomain {
 
     public actual companion object {
 
-        public actual val ALL_DOMAINS: Set<LogDomain> =
-            values().toSet()
+        public actual val ALL_DOMAINS: Set<LogDomain> = entries.toSet()
 
         internal fun from(logDomain: CBLLogDomain): LogDomain = when (logDomain) {
             kCBLLogDomainDatabase -> DATABASE

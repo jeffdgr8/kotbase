@@ -21,13 +21,13 @@ public expect fun Function.prediction(model: String, input: Expression): Predict
 /**
  * **ENTERPRISE EDITION API**
  *
- * Creates a function that returns the euclidean distance between the two input vectors.
+ * Creates a function that returns the Euclidean distance between the two input vectors.
  * The result is a non-negative floating-point number. The expression1 and expression2 must be
  * arrays of numbers, and must be the same length.
  *
  * @param expression1 The expression evaluated to an arrays of numbers.
  * @param expression2 The expression evaluated to an arrays of numbers.
- * @return The euclidean distance between two given input vectors.
+ * @return The Euclidean distance between two given input vectors.
  */
 public expect fun Function.euclideanDistance(
     expression1: Expression,
@@ -37,7 +37,7 @@ public expect fun Function.euclideanDistance(
 /**
  * **ENTERPRISE EDITION API**
  *
- * Creates a function that returns the squared euclidean distance between the two input vectors.
+ * Creates a function that returns the squared Euclidean distance between the two input vectors.
  * The result is a non-negative floating-point number. The expression1 and expression2 must be
  * arrays of numbers, and must be the same length.
  *

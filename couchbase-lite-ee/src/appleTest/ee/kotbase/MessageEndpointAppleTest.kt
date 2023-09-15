@@ -326,7 +326,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     }
 
     @Test
-    fun testPushDocContinous() {
+    fun testPushDocContinuous() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
         baseTestDb.save(doc1)
@@ -345,7 +345,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     }
 
     @Test
-    fun testPullDocContinous() {
+    fun testPullDocContinuous() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
         baseTestDb.save(doc1)
@@ -364,7 +364,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     }
 
     @Test
-    fun testPushPullDocContinous() {
+    fun testPushPullDocContinuous() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
         baseTestDb.save(doc1)

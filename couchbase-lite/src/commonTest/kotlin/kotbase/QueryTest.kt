@@ -1365,14 +1365,14 @@ class QueryTest : BaseQueryTest() {
             CollationTest("", "a", false, bothSensitive),
             CollationTest("a", "a", true, bothSensitive),
 
-            // Case sensitive: lowercase come first by unicode rules:
+            // Case-sensitive: lowercase come first by unicode rules:
             CollationTest("a", "A", false, bothSensitive),
             CollationTest("abc", "abc", true, bothSensitive),
             CollationTest("Aaa", "abc", false, bothSensitive),
             CollationTest("abc", "abC", false, bothSensitive),
             CollationTest("AB", "abc", false, bothSensitive),
 
-            // Case insensitive:
+            // Case-insensitive:
             CollationTest("ABCDEF", "ZYXWVU", false, accentSensitive),
             CollationTest("ABCDEF", "Z", false, accentSensitive),
 

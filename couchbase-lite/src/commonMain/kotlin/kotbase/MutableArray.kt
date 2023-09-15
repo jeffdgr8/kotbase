@@ -62,7 +62,7 @@ public expect class MutableArray : Array {
     public fun setValue(index: Int, value: Any?): MutableArray
 
     /**
-     * Sets an String object at the given index.
+     * Sets a String object at the given index.
      *
      * @param index the index. This value must not exceed the bounds of the array.
      * @param value the String object
@@ -143,7 +143,7 @@ public expect class MutableArray : Array {
     public fun setDate(index: Int, value: Instant?): MutableArray
 
     /**
-     * Sets a Array object at the given index.
+     * Sets an Array object at the given index.
      *
      * @param index the index. This value must not exceed the bounds of the array.
      * @param value the Array object
@@ -373,7 +373,7 @@ public expect class MutableArray : Array {
     public fun remove(index: Int): MutableArray
 
     /**
-     * Gets a Array at the given index. Return null if the value is not an array.
+     * Gets an Array at the given index. Return null if the value is not an array.
      *
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the Array object.
@@ -381,7 +381,7 @@ public expect class MutableArray : Array {
     override fun getArray(index: Int): MutableArray?
 
     /**
-     * Gets a Dictionary at the given index. Return null if the value is not an dictionary.
+     * Gets a Dictionary at the given index. Return null if the value is not a dictionary.
      *
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the Dictionary object.

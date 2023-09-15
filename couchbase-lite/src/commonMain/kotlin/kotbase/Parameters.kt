@@ -16,7 +16,7 @@ public expect class Parameters(parameters: Parameters? = null) {
     public fun getValue(name: String): Any?
 
     /**
-     * Set an String value to the query parameter referenced by the given name. A query parameter
+     * Set a String value to the query parameter referenced by the given name. A query parameter
      * is defined by using the Expression's parameter(String name) function.
      *
      * @param name  The parameter name.
@@ -26,7 +26,7 @@ public expect class Parameters(parameters: Parameters? = null) {
     public fun setString(name: String, value: String?): Parameters
 
     /**
-     * Set an Number value to the query parameter referenced by the given name. A query parameter
+     * Set a Number value to the query parameter referenced by the given name. A query parameter
      * is defined by using the Expression's parameter(String name) function.
      *
      * @param name  The parameter name.
@@ -46,7 +46,7 @@ public expect class Parameters(parameters: Parameters? = null) {
     public fun setInt(name: String, value: Int): Parameters
 
     /**
-     * Set an long value to the query parameter referenced by the given name. A query parameter
+     * Set a long value to the query parameter referenced by the given name. A query parameter
      * is defined by using the Expression's parameter(String name) function.
      *
      * @param name  The parameter name.

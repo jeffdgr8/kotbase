@@ -1,4 +1,4 @@
-_Couchbase Lite database peer-to-peer sync — integrate a custom built listener_
+_Couchbase Lite database peer-to-peer sync — integrate a custom-built listener_
 
 ## Overview
 

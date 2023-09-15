@@ -1,5 +1,3 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package kotbase
 
 import kotbase.internal.utils.Report

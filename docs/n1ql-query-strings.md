@@ -384,7 +384,7 @@ Expressions](#any-and-every-expressions) | [Parameter Expressions](#parameter-ex
 Expressions](#parenthesis-expressions)
 
 Expressions are references to identifiers that resolve to values. Categories of expression comprise the elements covered
-in this section (see above), together with [Operators](#operators) and [Functions](#functions], which are covered in
+in this section (see above), together with [Operators](#operators) and [Functions](#functions), which are covered in
 their own sections.
 
 ### Literals
@@ -549,7 +549,7 @@ alias names, property names, parameter names, function names, and FTS index name
 ```
 
 The identifier allows a-z, A-Z, 0-9, _ (underscore), and $ character.  
-The identifier is case sensitive.
+The identifier is case-sensitive.
 
 !!! tip
 

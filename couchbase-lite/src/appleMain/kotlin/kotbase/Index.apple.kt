@@ -1,8 +1,6 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLIndex
-import kotbase.base.AbstractDelegatedClass
-import kotbase.base.DelegatedClass
 
 internal actual class IndexPlatformState(
     internal val actual: CBLIndex

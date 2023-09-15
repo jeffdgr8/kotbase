@@ -85,9 +85,9 @@ configuration process.
 
 1. Identify the local database to be used — see [Initialize the Listener Configuration
    ](#initialize-the-listener-configuration)
-2. Optionally, choose a port to use. By default the system will automatically assign a port — to override this, see [Set
-   Port and Network Interface](#set-port-and-network-interface)
-3. Optionally, choose a network interface to use. By default the system will listen on all network interfaces — to
+2. Optionally, choose a port to use. By default, the system will automatically assign a port — to override this, see
+   [Set Port and Network Interface](#set-port-and-network-interface)
+3. Optionally, choose a network interface to use. By default, the system will listen on all network interfaces — to
    override this see [Set Port and Network Interface](#set-port-and-network-interface)
 4. Optionally, choose to sync only changes. The default is not to enable delta-sync — see [Delta Sync](#delta-sync)
 5. Set server security. TLS is always enabled instantly, so you can usually omit this line. But you _can_, optionally,

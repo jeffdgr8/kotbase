@@ -9,7 +9,7 @@ public expect class GroupBy : Query {
 
     /**
      * Creates and chain a Having object for filtering the aggregated values
-     * from the the GROUP BY clause.
+     * from the GROUP BY clause.
      *
      * @param expression The expression
      * @return The Having object that represents the HAVING clause of the query.

@@ -2,7 +2,7 @@ package kotbase
 
 /**
  * A class that describes the file configuration for the [FileLogger] class.
- * These options must be set atomically so they won't take effect unless a new
+ * These options must be set atomically, so they won't take effect unless a new
  * configuration object is set on the logger.  Attempting to modify an in-use
  * configuration object will result in an exception being thrown.
  */

@@ -13,7 +13,7 @@ public expect class ReplicatorConfiguration {
 
     /**
      * Sets the authenticator to authenticate with a remote target server.
-     * Currently there are two types of the authenticators,
+     * Currently, there are two types of the authenticators,
      * BasicAuthenticator and SessionAuthenticator, supported.
      *
      * @param authenticator The authenticator.

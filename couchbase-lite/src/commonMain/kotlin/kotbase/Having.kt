@@ -2,7 +2,7 @@ package kotbase
 
 /**
  * Having represents a HAVING clause of the query statement used for filtering the aggregated values
- * from the the GROUP BY clause.
+ * from the GROUP BY clause.
  */
 public expect class Having : Query {
 

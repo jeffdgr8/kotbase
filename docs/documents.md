@@ -465,7 +465,7 @@ synced, or when used exclusively in peer-to-peer sync.
     "_id", :"_rev" and "_sequence" are reserved keywords and must not be used as top-level attributes — see [Example 
     11](#example-11).
 
-Users are cautioned that any attempt to sync such documents to Sync Gateway will result in an error. To be future proof,
+Users are cautioned that any attempt to sync such documents to Sync Gateway will result in an error. To be future-proof,
 you are advised to avoid creating such documents. Use of these attributes for user-level data may result in undefined
 system behavior.
 
@@ -497,7 +497,7 @@ The `toJSON()` typed-accessor means you can easily work with JSON data, native a
 Convert an `Array` to and from JSON using the [`toJSON()`](/api/couchbase-lite-ee/kotbase/-array/to-j-s-o-n.html) and
 [`toList()`](/api/couchbase-lite-ee/kotbase/-array/to-list.html) methods — see [Example 12](#example-12).
 
-Additionally you can:
+Additionally, you can:
 
 * Initialize a `MutableArray` using data supplied as a JSON string. This is done using the
   [`MutableArray(json: String)`](/api/couchbase-lite-ee/kotbase/-mutable-array/-mutable-array.html) constructor — see
@@ -561,7 +561,7 @@ Convert a `Dictionary` to and from JSON using the [`toJSON()`](
 /api/couchbase-lite-ee/kotbase/-dictionary/to-j-s-o-n.html) and [`toMap()`](
 /api/couchbase-lite-ee/kotbase/-dictionary/to-map.html) methods — see [Example 14](#example-14).
 
-Additionally you can:
+Additionally, you can:
 
 * Initialize a `MutableDictionary` using data supplied as a JSON string. This is done using the
   [`MutableDictionary(json: String)`](/api/couchbase-lite-ee/kotbase/-mutable-dictionary/-mutable-dictionary.html)
@@ -587,7 +587,7 @@ Convert a `Document` to and from JSON strings using the [`toJSON()`](
 /api/couchbase-lite-ee/kotbase/-document/to-j-s-o-n.html) and [`toMap()`](
 /api/couchbase-lite-ee/kotbase/-document/to-map.html) methods — see [Example 15](#example-15).
 
-Additionally you can:
+Additionally, you can:
 
 * Initialize a `MutableDocument` using data supplied as a JSON string. This is done using the
   [`MutableDocument(id: String?, json: String)`](

@@ -1,7 +1,6 @@
 @file:Suppress(
     "NO_EXPLICIT_VISIBILITY_IN_API_MODE_WARNING",
-    "NO_EXPLICIT_RETURN_TYPE_IN_API_MODE_WARNING",
-    "MemberVisibilityCanBePrivate"
+    "NO_EXPLICIT_RETURN_TYPE_IN_API_MODE_WARNING"
 )
 
 package kotbase

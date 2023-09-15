@@ -122,7 +122,7 @@ public expect class Result : Iterable<String> {
     public val keys: List<String>
 
     /**
-     * The result value for the given key as a Object
+     * The result value for the given key as an Object
      * Returns null if the key doesn't exist.
      *
      * @param key The select result key.
@@ -149,7 +149,7 @@ public expect class Result : Iterable<String> {
     public fun getNumber(key: String): Number?
 
     /**
-     * The projecting result value for the given key  as a integer value
+     * The projecting result value for the given key  as an integer value
      * Returns 0 if the key doesn't exist.
      *
      * @param key The select result key.

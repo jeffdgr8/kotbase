@@ -8,7 +8,7 @@ public expect class ReplicatedDocument {
     public val id: String
 
     /**
-     * The current status flag of the document. eg. deleted, access removed
+     * The current status flag of the document. e.g. deleted, access removed
      */
     public val flags: Set<DocumentFlag>
 

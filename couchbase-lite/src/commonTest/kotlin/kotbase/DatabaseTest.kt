@@ -9,7 +9,7 @@ import kotlin.test.*
 
 // The rules in this test are:
 // baseTestDb is managed by the superclass
-// If a test opens a new database it guarantee that it is deleted.
+// If a test opens a new database it guarantees that it is deleted.
 // If a test opens a copy of the baseTestDb, it must close (but NOT delete)
 @OptIn(ExperimentalStdlibApi::class)
 class DatabaseTest : BaseDbTest() {
@@ -1414,7 +1414,7 @@ class DatabaseTest : BaseDbTest() {
         assertEquals(expected, doc1a.toMap())
         assertEquals(2, doc1a.sequence)
 
-        // Modify doc1b and delete, result to conflict when delete:
+        // Modify doc1b and delete, result to conflict when deleted:
         doc1b.setString("lastName", "Lion")
         if (cc === ConcurrencyControl.LAST_WRITE_WINS) {
             assertTrue(baseTestDb.delete(doc1b, cc))

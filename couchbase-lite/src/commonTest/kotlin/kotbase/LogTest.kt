@@ -42,7 +42,7 @@ class LogTest : BaseDbTest() {
         val lineCount: Int
             get() {
                 var total = 0
-                for (level in LogLevel.values()) {
+                for (level in LogLevel.entries) {
                     total += getLineCount(level)
                 }
                 return total

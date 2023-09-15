@@ -50,7 +50,7 @@ public actual object CouchbaseLite {
      * `CouchbaseLite.init()` will be called automatically by default.
      *
      * This method allows specifying a default root directory for database files,
-     * and the scratch directory used for temporary files (the native library, etc).
+     * and the scratch directory used for temporary files (the native library, etc.).
      * Both directories must be writable by this process.
      *
      * @param debug      true if debugging

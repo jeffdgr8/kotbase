@@ -1,7 +1,6 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
-import kotbase.base.actuals
 import com.couchbase.lite.Where as CBLWhere
 
 public actual class Where

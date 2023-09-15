@@ -16,7 +16,7 @@ public expect object IndexBuilder {
     public fun valueIndex(vararg items: ValueIndexItem): ValueIndex
 
     /**
-     * Create a full-text search index with the given index item and options. Typically the index item is
+     * Create a full-text search index with the given index item and options. Typically, the index item is
      * the property that is used to perform the match operation against with.
      *
      * @param items The index items.

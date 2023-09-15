@@ -1,7 +1,6 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
-import kotbase.base.actuals
 import com.couchbase.lite.Having as CBLHaving
 
 public actual class Having

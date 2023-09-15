@@ -83,10 +83,10 @@ public expect class URLEndpointListenerConfiguration {
     public var isDeltaSyncEnabled: Boolean
 }
 
-@Suppress("unused")
+@Suppress("UnusedReceiverParameter")
 public val URLEndpointListenerConfiguration.MIN_PORT: Int
     get() = 0
 
-@Suppress("unused")
+@Suppress("UnusedReceiverParameter")
 public val URLEndpointListenerConfiguration.MAX_PORT: Int
     get() = 65535

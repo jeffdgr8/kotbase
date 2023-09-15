@@ -116,7 +116,7 @@ public expect object Function {
     public fun cos(operand: Expression): Expression
 
     /**
-     * Creates a DEGREES(expr) function that returns the degrees value of the given radiants
+     * Creates a DEGREES(expr) function that returns the degrees value of the given radians
      * value expression.
      *
      * @param operand The expression.
@@ -125,7 +125,7 @@ public expect object Function {
     public fun degrees(operand: Expression): Expression
 
     /**
-     * Creates a E() function that return the value of the mathematical constant 'e'.
+     * Creates an E() function that return the value of the mathematical constant 'e'.
      *
      * @return The E() constant function.
      */
@@ -150,7 +150,7 @@ public expect object Function {
     public fun floor(operand: Expression): Expression
 
     /**
-     * Creates a LN(expr) function that returns the natural log of the given numeric expression.
+     * Creates an LN(expr) function that returns the natural log of the given numeric expression.
      *
      * @param operand The expression.
      * @return The LN(expr) function.
@@ -264,7 +264,7 @@ public expect object Function {
 
     /**
      * Creates a CONTAINS(expr, substr) function that evaluates whether the given string
-     * expression conatins the given substring expression or not.
+     * expression contains the given substring expression or not.
      *
      * @param operand   The string expression.
      * @param substring The substring expression.

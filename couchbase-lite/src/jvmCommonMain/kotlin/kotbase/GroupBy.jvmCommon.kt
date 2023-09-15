@@ -1,7 +1,6 @@
 package kotbase
 
 import kotbase.base.DelegatedClass
-import kotbase.base.actuals
 import com.couchbase.lite.GroupBy as CBLGroupBy
 
 public actual class GroupBy

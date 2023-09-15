@@ -95,7 +95,7 @@ public expect open class Document : Iterable<String> {
     public fun getInt(key: String): Int
 
     /**
-     * Gets a property's value as an long.
+     * Gets a property's value as a long.
      * Floating point values will be rounded. The value `true` is returned as 1, `false` as 0.
      * Returns 0 if the value doesn't exist or does not have a numeric value.
      *
@@ -105,7 +105,7 @@ public expect open class Document : Iterable<String> {
     public fun getLong(key: String): Long
 
     /**
-     * Gets a property's value as an float.
+     * Gets a property's value as a float.
      * Integers will be converted to float. The value `true` is returned as 1.0, `false` as 0.0.
      * Returns 0.0 if the value doesn't exist or does not have a numeric value.
      *
@@ -115,7 +115,7 @@ public expect open class Document : Iterable<String> {
     public fun getFloat(key: String): Float
 
     /**
-     * Gets a property's value as an double.
+     * Gets a property's value as a double.
      * Integers will be converted to double. The value `true` is returned as 1.0, `false` as 0.0.
      * Returns 0.0 if the property doesn't exist or does not have a numeric value.
      *
@@ -156,8 +156,8 @@ public expect open class Document : Iterable<String> {
     public fun getDate(key: String): Instant?
 
     /**
-     * Get a property's value as a Array, which is a mapping object of an array value.
-     * Returns null if the property doesn't exists, or its value is not an Array.
+     * Get a property's value as an Array, which is a mapping object of an array value.
+     * Returns null if the property doesn't exist, or its value is not an Array.
      *
      * @param key the key
      * @return The Array object or null.
@@ -167,7 +167,7 @@ public expect open class Document : Iterable<String> {
     /**
      * Get a property's value as a Dictionary, which is a mapping object of
      * a Dictionary value.
-     * Returns null if the property doesn't exists, or its value is not a Dictionary.
+     * Returns null if the property doesn't exist, or its value is not a Dictionary.
      *
      * @param key the key
      * @return The Dictionary object or null.
@@ -175,7 +175,7 @@ public expect open class Document : Iterable<String> {
     public open fun getDictionary(key: String): Dictionary?
 
     /**
-     * Gets content of the current object as an Map. The values contained in the returned
+     * Gets content of the current object as a Map. The values contained in the returned
      * Map object are all JSON based values.
      *
      * @return the Map object representing the content of the current object in the JSON format.

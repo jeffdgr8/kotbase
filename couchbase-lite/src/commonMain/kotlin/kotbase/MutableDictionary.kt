@@ -169,8 +169,8 @@ public expect class MutableDictionary : Dictionary {
     public fun remove(key: String): MutableDictionary
 
     /**
-     * Get a property's value as a Array, which is a mapping object of an array value.
-     * Returns null if the property doesn't exists, or its value is not an array.
+     * Get a property's value as an Array, which is a mapping object of an array value.
+     * Returns null if the property doesn't exist, or its value is not an array.
      *
      * @param key the key.
      * @return the Array object.
@@ -178,8 +178,8 @@ public expect class MutableDictionary : Dictionary {
     override fun getArray(key: String): MutableArray?
 
     /**
-     * Get a property's value as a Dictionary, which is a mapping object of an dictionary value.
-     * Returns null if the property doesn't exists, or its value is not an dictionary.
+     * Get a property's value as a Dictionary, which is a mapping object of a dictionary value.
+     * Returns null if the property doesn't exist, or its value is not a dictionary.
      *
      * @param key the key.
      * @return the Dictionary object or null if the key doesn't exist.

@@ -880,7 +880,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         baseTestDb.deleteIndex("SumIndex")
 
         // Note: when having only one index, SQLite optimizer doesn't utilize the index
-        //       when using OR expr. Hence explicitly test each index with two queries:
+        //       when using OR expr. Hence, explicitly test each index with two queries:
         aggregateModel.reset()
         q = QueryBuilder
             .select(SelectResult.property("numbers"))

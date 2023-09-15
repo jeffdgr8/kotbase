@@ -118,7 +118,6 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
     }
 }
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 internal actual val TLSIdentity.actual: CBLTLSIdentity
     get() = actual
 

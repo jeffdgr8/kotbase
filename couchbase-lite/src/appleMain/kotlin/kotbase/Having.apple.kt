@@ -3,7 +3,6 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLQuery
 import cocoapods.CouchbaseLite.CBLQueryLimit
 import kotbase.base.AbstractDelegatedClass
-import kotbase.base.actuals
 
 public actual class Having
 internal constructor(private val state: QueryState) : AbstractDelegatedClass<CBLQuery>(), Query by state {

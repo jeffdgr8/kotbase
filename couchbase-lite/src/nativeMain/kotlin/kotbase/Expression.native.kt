@@ -80,7 +80,7 @@ public actual open class Expression {
         private val type: OpType
     ) : Expression() {
 
-        internal enum class OpType {
+        enum class OpType {
             Add,
             Between,
             Divide,
@@ -140,7 +140,7 @@ public actual open class Expression {
         private val type: OpType
     ) : Expression() {
 
-        internal enum class OpType {
+        enum class OpType {
             And, Or, Not
         }
 
@@ -163,7 +163,7 @@ public actual open class Expression {
         private val type: OpType
     ) : Expression() {
 
-        internal enum class OpType {
+        enum class OpType {
             Missing, NotMissing, NotNull, Null, Valued
         }
 
