@@ -1,7 +1,7 @@
 package kotbase.ext
 
 import kotlinx.datetime.Instant
-import org.junit.Test
+import kotlin.test.Test
 import java.util.*
 import kotlin.test.assertEquals
 

@@ -1,6 +1,6 @@
 package kotbase
 
-import org.junit.Test
+import kotlin.test.Test
 
 class AutoInitTest {
 
