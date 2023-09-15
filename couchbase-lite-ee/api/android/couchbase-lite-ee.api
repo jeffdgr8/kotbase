@@ -63,10 +63,10 @@ public final class kotbase/BasicAuthenticator : kotbase/Authenticator {
 public final class kotbase/Blob : kotbase/base/DelegatedClass {
 	public static final field Companion Lkotbase/Blob$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public fun <init> (Ljava/lang/String;Lokio/Source;)V
+	public fun <init> (Ljava/lang/String;Lkotlinx/io/Source;)V
 	public fun <init> (Ljava/lang/String;[B)V
 	public final fun getContent ()[B
-	public final fun getContentStream ()Lokio/Source;
+	public final fun getContentStream ()Lkotlinx/io/Source;
 	public final fun getContentType ()Ljava/lang/String;
 	public final fun getDigest ()Ljava/lang/String;
 	public final fun getLength ()J
@@ -266,14 +266,16 @@ public final class kotbase/CouchbaseLiteExceptionKt {
 	public static final fun getInfo (Lcom/couchbase/lite/CouchbaseLiteException;)Ljava/util/Map;
 }
 
-public class kotbase/DataSource : kotbase/base/DelegatedClass {
+public class kotbase/DataSource {
 	public static final field Companion Lkotbase/DataSource$Companion;
 	public synthetic fun <init> (Lcom/couchbase/lite/DataSource;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/DataSource$As : kotbase/DataSource {
 	public final fun as (Ljava/lang/String;)Lkotbase/DataSource;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/DataSource$Companion {
@@ -353,11 +355,8 @@ public final class kotbase/DatabaseEEJvm {
 	public static final fun getPrediction (Lkotbase/Database$Companion;)Lkotbase/Prediction;
 }
 
-public final class kotbase/DatabaseEndpoint : kotbase/base/DelegatedClass, kotbase/Endpoint {
+public final class kotbase/DatabaseEndpoint : kotbase/Endpoint {
 	public fun <init> (Lkotbase/Database;)V
-	public fun getActual ()Lcom/couchbase/lite/DatabaseEndpoint;
-	public synthetic fun getActual ()Lcom/couchbase/lite/Endpoint;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getDatabase ()Lkotbase/Database;
 }
 
@@ -444,13 +443,16 @@ public final class kotbase/DocumentReplication : kotbase/base/DelegatedClass {
 	public final fun isPush ()Z
 }
 
-public abstract interface class kotbase/Endpoint {
-	public abstract fun getActual ()Lcom/couchbase/lite/Endpoint;
+public abstract class kotbase/Endpoint {
+	public synthetic fun <init> (Lcom/couchbase/lite/Endpoint;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class kotbase/Expression {
+public class kotbase/Expression {
 	public static final field Companion Lkotbase/Expression$Companion;
-	public synthetic fun <init> (Lcom/couchbase/lite/Expression;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/couchbase/lite/Expression;)V
 	public final fun add (Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun and (Lkotbase/Expression;)Lkotbase/Expression;
 	public final fun between (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
@@ -555,7 +557,6 @@ public final class kotbase/FullTextFunction {
 }
 
 public final class kotbase/FullTextIndex : kotbase/Index {
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getLanguage ()Ljava/lang/String;
 	public final fun ignoreAccents (Z)Lkotbase/FullTextIndex;
 	public final fun isIgnoringAccents ()Z
@@ -566,7 +567,6 @@ public final class kotbase/FullTextIndex : kotbase/Index {
 
 public final class kotbase/FullTextIndexConfiguration : kotbase/IndexConfiguration {
 	public fun <init> ([Ljava/lang/String;)V
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getLanguage ()Ljava/lang/String;
 	public final fun ignoreAccents (Z)Lkotbase/FullTextIndexConfiguration;
 	public final fun isIgnoringAccents ()Z
@@ -664,7 +664,11 @@ public final class kotbase/Having : kotbase/base/DelegatedClass, kotbase/Query {
 	public fun setParameters (Lkotbase/Parameters;)V
 }
 
-public abstract class kotbase/Index : kotbase/base/DelegatedClass {
+public abstract class kotbase/Index {
+	public synthetic fun <init> (Lcom/couchbase/lite/Index;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/IndexBuilder {
@@ -678,13 +682,20 @@ public final class kotbase/IndexBuilder_jvmCommonKt {
 	public static synthetic fun predictiveIndex$default (Lkotbase/IndexBuilder;Ljava/lang/String;Lkotbase/Expression;Ljava/util/List;ILjava/lang/Object;)Lkotbase/PredictiveIndex;
 }
 
-public class kotbase/IndexConfiguration : kotbase/base/DelegatedClass {
+public abstract class kotbase/IndexConfiguration {
+	public synthetic fun <init> (Lcom/couchbase/lite/IndexConfiguration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getExpressions ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
-public class kotbase/Join : kotbase/base/DelegatedClass {
+public class kotbase/Join {
 	public static final field Companion Lkotbase/Join$Companion;
 	public synthetic fun <init> (Lcom/couchbase/lite/Join;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/Join$Companion {
@@ -696,7 +707,6 @@ public final class kotbase/Join$Companion {
 }
 
 public final class kotbase/Join$On : kotbase/Join {
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun on (Lkotbase/Expression;)Lkotbase/Join;
 }
 
@@ -731,23 +741,20 @@ public final class kotbase/Limit : kotbase/base/DelegatedClass, kotbase/Query {
 	public fun setParameters (Lkotbase/Parameters;)V
 }
 
-public abstract interface class kotbase/ListenerAuthenticator {
-	public abstract fun getActual ()Lcom/couchbase/lite/ListenerAuthenticator;
+public abstract class kotbase/ListenerAuthenticator {
+	public synthetic fun <init> (Lcom/couchbase/lite/ListenerAuthenticator;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
-public final class kotbase/ListenerCertificateAuthenticator : kotbase/base/DelegatedClass, kotbase/ListenerAuthenticator {
+public final class kotbase/ListenerCertificateAuthenticator : kotbase/ListenerAuthenticator {
 	public fun <init> (Ljava/util/List;)V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun getActual ()Lcom/couchbase/lite/ListenerAuthenticator;
-	public fun getActual ()Lcom/couchbase/lite/ListenerCertificateAuthenticator;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
-public final class kotbase/ListenerPasswordAuthenticator : kotbase/base/DelegatedClass, kotbase/ListenerAuthenticator {
+public final class kotbase/ListenerPasswordAuthenticator : kotbase/ListenerAuthenticator {
 	public fun <init> (Lkotlin/jvm/functions/Function2;)V
-	public synthetic fun getActual ()Lcom/couchbase/lite/ListenerAuthenticator;
-	public fun getActual ()Lcom/couchbase/lite/ListenerPasswordAuthenticator;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/Log : kotbase/base/DelegatedClass {
@@ -803,11 +810,8 @@ public final class kotbase/Message$Companion {
 	public final fun fromData ([B)Lkotbase/Message;
 }
 
-public final class kotbase/MessageEndpoint : kotbase/base/DelegatedClass, kotbase/Endpoint {
+public final class kotbase/MessageEndpoint : kotbase/Endpoint {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Lcom/couchbase/lite/ProtocolType;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun getActual ()Lcom/couchbase/lite/Endpoint;
-	public fun getActual ()Lcom/couchbase/lite/MessageEndpoint;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getDelegate ()Lkotlin/jvm/functions/Function1;
 	public final fun getProtocolType ()Lcom/couchbase/lite/ProtocolType;
 	public final fun getTarget ()Ljava/lang/Object;
@@ -1021,9 +1025,12 @@ public final class kotbase/OrderBy : kotbase/base/DelegatedClass, kotbase/Query 
 	public fun setParameters (Lkotbase/Parameters;)V
 }
 
-public abstract class kotbase/Ordering : kotbase/base/DelegatedClass {
+public abstract class kotbase/Ordering {
 	public static final field Companion Lkotbase/Ordering$Companion;
 	public synthetic fun <init> (Lcom/couchbase/lite/Ordering;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/Ordering$Companion {
@@ -1034,7 +1041,6 @@ public final class kotbase/Ordering$Companion {
 public final class kotbase/Ordering$SortOrder : kotbase/Ordering {
 	public final fun ascending ()Lkotbase/Ordering;
 	public final fun descending ()Lkotbase/Ordering;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/Parameters : kotbase/base/DelegatedClass {
@@ -1296,14 +1302,16 @@ public final class kotbase/Select : kotbase/base/DelegatedClass, kotbase/Query {
 	public fun setParameters (Lkotbase/Parameters;)V
 }
 
-public class kotbase/SelectResult : kotbase/base/DelegatedClass {
+public class kotbase/SelectResult {
 	public static final field Companion Lkotbase/SelectResult$Companion;
 	public synthetic fun <init> (Lcom/couchbase/lite/SelectResult;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class kotbase/SelectResult$As : kotbase/SelectResult {
 	public final fun as (Ljava/lang/String;)Lkotbase/SelectResult$As;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/SelectResult$Companion {
@@ -1314,7 +1322,6 @@ public final class kotbase/SelectResult$Companion {
 
 public final class kotbase/SelectResult$From : kotbase/SelectResult {
 	public final fun from (Ljava/lang/String;)Lkotbase/SelectResult;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/SessionAuthenticator : kotbase/Authenticator {
@@ -1355,11 +1362,8 @@ public final class kotbase/TLSIdentityKt {
 	public static final fun getCERT_ATTRIBUTE_URL (Lkotbase/TLSIdentity$Companion;)Ljava/lang/String;
 }
 
-public final class kotbase/URLEndpoint : kotbase/base/DelegatedClass, kotbase/Endpoint {
+public final class kotbase/URLEndpoint : kotbase/Endpoint {
 	public fun <init> (Ljava/lang/String;)V
-	public synthetic fun getActual ()Lcom/couchbase/lite/Endpoint;
-	public fun getActual ()Lcom/couchbase/lite/URLEndpoint;
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getUrl ()Ljava/lang/String;
 }
 
@@ -1401,7 +1405,6 @@ public final class kotbase/URLEndpointListenerConfigurationKt {
 }
 
 public final class kotbase/ValueIndex : kotbase/Index {
-	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
 
 public final class kotbase/ValueIndexConfiguration : kotbase/IndexConfiguration {
