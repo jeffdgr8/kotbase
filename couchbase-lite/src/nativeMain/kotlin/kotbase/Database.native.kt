@@ -525,6 +525,7 @@ internal constructor(
         wrapCBLError { error ->
             mustBeOpen {
                 memScoped {
+                    @Suppress("REDUNDANT_ELSE_IN_WHEN", "KotlinRedundantDiagnosticSuppress")
                     when (index) {
                         is ValueIndex -> CBLDatabase_CreateValueIndex(
                             actual,
@@ -538,7 +539,7 @@ internal constructor(
                             index.getActual(),
                             error
                         )
-                        else -> error("Unknown Index type ${index::class}")
+                        else -> error("Unhandled Index type ${index::class}")
                     }
                 }
             }
@@ -563,7 +564,6 @@ internal constructor(
                             config.getActual(),
                             error
                         )
-                        else -> error("Unknown IndexConfiguration type ${config::class}")
                     }
                 }
             }
