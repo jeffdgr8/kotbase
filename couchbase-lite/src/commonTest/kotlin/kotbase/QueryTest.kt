@@ -1485,7 +1485,7 @@ class QueryTest : BaseQueryTest() {
         val token = query.addChangeListener(listener)
         try {
             // create one doc
-            executeAsync(700) {
+            executeAsync(800) {
                 try {
                     createNumberedDocInBaseTestDb(-1, 100)
                 } catch (e: CouchbaseLiteException) {

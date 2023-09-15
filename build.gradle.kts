@@ -34,10 +34,3 @@ tasks.register<Delete>("clean") {
     group = "build"
     delete(rootProject.layout.buildDirectory)
 }
-
-// Workaround to avoid potential configuration error. Should be fixed and can be removed in Kotlin 1.9.20.
-// Execution failed for task ':lib:podspec'.
-// > Could not create task ':wrapper'.
-//    > java.util.ConcurrentModificationException (no error message)
-// https://kotlinlang.slack.com/archives/C3PQML5NU/p1685525274855969?thread_ts=1685426418.942459&cid=C3PQML5NU
-tasks.getByName("wrapper")
