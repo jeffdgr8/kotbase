@@ -1,11 +1,13 @@
 package kotbase.ext
 
-import okio.ByteString.Companion.decodeBase64
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
 class CertificateExtTest {
 
+    @OptIn(ExperimentalEncodingApi::class)
     @Test
     fun testCertificate() {
         val certString = """
@@ -23,7 +25,7 @@ class CertificateExtTest {
             VGnrtSOmLChgcn6r5OKmHbq8yzcWwlO20+8UZaDXAXwx1/y6DZ2yx8BinAGDNo65
             q0+V3Wv6fCIURn61Vpw=
             """.trimIndent().replace("\n", "")
-        val certBinary = certString.decodeBase64()!!.toByteArray()
+        val certBinary = Base64.decode(certString)
 
         val cert = certBinary.toCertificate()
         val byteArray = cert.toByteArray()
