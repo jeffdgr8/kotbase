@@ -1,4 +1,3 @@
-import org.jetbrains.dokka.gradle.AbstractDokkaTask
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -49,14 +48,4 @@ val javadocJar = tasks.register<Jar>("javadocJar") {
 
 publishing.publications.withType<MavenPublication>().configureEach {
     artifact(javadocJar)
-}
-
-// Workaround for https://github.com/Kotlin/dokka/issues/2977.
-tasks.withType<AbstractDokkaTask>().configureEach {
-    val className = "org.jetbrains.kotlin.gradle.targets.native.internal.CInteropMetadataDependencyTransformationTask"
-    @Suppress("UNCHECKED_CAST")
-    val taskClass = Class.forName(className) as Class<Task>
-    parent?.subprojects?.forEach {
-        dependsOn(it.tasks.withType(taskClass))
-    }
 }

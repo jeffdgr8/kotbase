@@ -1,24 +1,26 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:kotbase.base/DelegatedClass///PointingToDeclaration/couchbase-lite-ee/kotbase.base/[jvm-common]-delegated-class/index.html
-$dokka.location:kotbase.base/DelegatedClass/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase.base/[jvm-common]-delegated-class/actual.html
 $dokka.location:kotbase.base/DelegatedClass/equals/#kotlin.Any?/PointingToDeclaration/couchbase-lite-ee/kotbase.base/[jvm-common]-delegated-class/equals.html
 $dokka.location:kotbase.base/DelegatedClass/hashCode/#/PointingToDeclaration/couchbase-lite-ee/kotbase.base/[jvm-common]-delegated-class/hash-code.html
 $dokka.location:kotbase.base/DelegatedClass/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase.base/[jvm-common]-delegated-class/to-string.html
-$dokka.location:kotbase/Array/iterator/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-array/[native]iterator.html
-$dokka.location:kotbase/Authenticator/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-authenticator/[native]actual.html
-$dokka.location:kotbase/BasicAuthenticator/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-basic-authenticator/[native]actual.html
-$dokka.location:kotbase/ClientCertificateAuthenticator/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-client-certificate-authenticator/[native]actual.html
+$dokka.location:kotbase/Array/equals/#kotlin.Any?/PointingToDeclaration/couchbase-lite-ee/kotbase/-array/[native]equals.html
+$dokka.location:kotbase/Array/hashCode/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-array/[native]hash-code.html
+$dokka.location:kotbase/Array/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-array/[native]to-string.html
 $dokka.location:kotbase/ConcurrencyControl/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-concurrency-control/[native]entries.html
 $dokka.location:kotbase/ConcurrencyControl/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-concurrency-control/[native]value-of.html
 $dokka.location:kotbase/ConcurrencyControl/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-concurrency-control/[native]values.html
-$dokka.location:kotbase/DatabaseEndpoint/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-database-endpoint/[native]actual.html
+$dokka.location:kotbase/Dictionary/equals/#kotlin.Any?/PointingToDeclaration/couchbase-lite-ee/kotbase/-dictionary/[native]equals.html
+$dokka.location:kotbase/Dictionary/hashCode/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-dictionary/[native]hash-code.html
 $dokka.location:kotbase/Dictionary/iterator/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-dictionary/[native]iterator.html
+$dokka.location:kotbase/Dictionary/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-dictionary/[native]to-string.html
+$dokka.location:kotbase/Document/equals/#kotlin.Any?/PointingToDeclaration/couchbase-lite-ee/kotbase/-document/[native]equals.html
+$dokka.location:kotbase/Document/hashCode/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-document/[native]hash-code.html
+$dokka.location:kotbase/Document/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-document/[native]to-string.html
 $dokka.location:kotbase/DocumentFlag/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-document-flag/[native]entries.html
 $dokka.location:kotbase/DocumentFlag/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-document-flag/[native]value-of.html
 $dokka.location:kotbase/DocumentFlag/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-document-flag/[native]values.html
-$dokka.location:kotbase/Endpoint/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-endpoint/[native]actual.html
-$dokka.location:kotbase/LogDomain/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-domain/[native]actual.html
+$dokka.location:kotbase/Expression/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-expression/[native]to-string.html
 $dokka.location:kotbase/LogDomain/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-domain/[native]entries.html
 $dokka.location:kotbase/LogDomain/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-domain/[native]value-of.html
 $dokka.location:kotbase/LogDomain/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-domain/[native]values.html
@@ -28,23 +30,15 @@ $dokka.location:kotbase/LogLevel/values/#/PointingToDeclaration/couchbase-lite-
 $dokka.location:kotbase/MaintenanceType/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-maintenance-type/[native]entries.html
 $dokka.location:kotbase/MaintenanceType/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-maintenance-type/[native]value-of.html
 $dokka.location:kotbase/MaintenanceType/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-maintenance-type/[native]values.html
-$dokka.location:kotbase/MessageEndpoint/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-message-endpoint/[native]actual.html
-$dokka.location:kotbase/MutableArray/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-mutable-array/[native]actual.html
-$dokka.location:kotbase/MutableDictionary/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-mutable-dictionary/[native]actual.html
 $dokka.location:kotbase/ProtocolType/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-protocol-type/[native]entries.html
 $dokka.location:kotbase/ProtocolType/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-protocol-type/[native]value-of.html
 $dokka.location:kotbase/ProtocolType/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-protocol-type/[native]values.html
-$dokka.location:kotbase/ReplicatorActivityLevel/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-activity-level/[native]actual.html
 $dokka.location:kotbase/ReplicatorActivityLevel/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-activity-level/[native]entries.html
 $dokka.location:kotbase/ReplicatorActivityLevel/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-activity-level/[native]value-of.html
 $dokka.location:kotbase/ReplicatorActivityLevel/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-activity-level/[native]values.html
-$dokka.location:kotbase/ReplicatorType/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[native]actual.html
 $dokka.location:kotbase/ReplicatorType/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[native]entries.html
 $dokka.location:kotbase/ReplicatorType/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[native]value-of.html
 $dokka.location:kotbase/ReplicatorType/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[native]values.html
-$dokka.location:kotbase/ResultSet/close/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-result-set/[native]close.html
-$dokka.location:kotbase/SessionAuthenticator/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-session-authenticator/[native]actual.html
-$dokka.location:kotbase/URLEndpoint/actual/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-u-r-l-endpoint/[native]actual.html
 module:couchbase-lite
 kotbase
 kotbase.base
