@@ -78,7 +78,7 @@ extra:
   social:
     - icon: simple/github
       link: https://github.com/jeffdgr8
-    - icon: simple/twitter
+    - icon: simple/x
       link: https://twitter.com/jeffdgr8
     - icon: simple/linkedin
       link: https://linkedin.com/in/lockhartjeff/
@@ -122,4 +122,4 @@ nav:
         - Integrate Custom Listener: integrate-custom-listener.md
     - Handling Data Conflicts: handling-data-conflicts.md
     - Using Logs: using-logs.md
-  - API Reference: api
+  - API Reference: api" target="_blank
