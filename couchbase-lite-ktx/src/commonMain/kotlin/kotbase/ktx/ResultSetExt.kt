@@ -20,6 +20,51 @@ package kotbase.ktx
 import kotbase.ResultSet
 
 /**
+ * Maps the [ResultSet] to a [List] of objects that are created
+ * using the given [factory] lambda.
+ *
+ * Example of usage with kotlinx-serialization:
+ *
+ * ```
+ * @Serializable
+ * class User(
+ *   val name: String,
+ *   val surname: String,
+ *   val age: Int
+ * )
+ *
+ * val users: List<User> = query.execute().toObjects { json: String ->
+ *     Json.decodeFromString<User>(json)
+ * }
+ * ```
+ *
+ * @param factory lambda used for creating an object instance
+ * @return a [List] of objects of type [T]
+ */
+public inline fun <T : Any> ResultSet.toObjects(factory: (String) -> T?): List<T> =
+    mapNotNull { result ->
+        result.run {
+
+            // If the query was written using the `SelectResult.all()` expression,
+            // then the `Result` contains N dictionary entries. Each entry is
+            // identified by a key which is the database name from which the data
+            // has been read.
+            //
+            // --> `getDictionary(0)?.toJSON()`
+            // For the scope of this utility method, we provide access to only the first
+            // dictionary since it will cover most of the cases.
+            //
+            // --> `?: toJSON()`
+            // If the first dictionary is `null`, then the query was written using the
+            // projections for each Document key. We can then use the `Result` object as a
+            // JSON String.
+
+            if (count > 0) getDictionary(0)?.toJSON() ?: toJSON()
+            else null
+        }?.let(factory)
+    }
+
+/**
  * Read count result from [selectCount].
  */
 public inline fun ResultSet.countResult(): Long =

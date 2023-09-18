@@ -74,7 +74,7 @@ public fun <T : Any> Flow<QueryChange>.mapToObjects(
 // Private functions
 ///////////////////////////////////////////////////////////////////////////
 
-private fun Query.asQueryFlow(): Flow<QueryChange> =
+internal fun Query.asQueryFlow(): Flow<QueryChange> =
     queryChangeFlow().onEach { change ->
         change.error?.let { throw it }
     }
