@@ -37,7 +37,7 @@ internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatab
     private companion object {
 
         init {
-            CouchbaseLite.internalInit()
+            internalInit()
         }
     }
 }

@@ -15,10 +15,4 @@
  */
 package kotbase
 
-/**
- * CouchbaseLite Utility
- */
-public expect object CouchbaseLite {
-
-    internal fun internalInit()
-}
+internal expect fun internalInit()

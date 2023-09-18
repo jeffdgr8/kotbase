@@ -46,7 +46,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
     public actual companion object {
 
         init {
-            CouchbaseLite.internalInit()
+            internalInit()
         }
 
         public actual val log: Log by lazy { Log(CBLDatabase.log) }

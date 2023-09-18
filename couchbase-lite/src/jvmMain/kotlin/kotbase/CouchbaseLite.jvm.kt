@@ -16,13 +16,17 @@
 package kotbase
 
 import com.couchbase.lite.internal.CouchbaseLiteInternal
+import kotbase.CouchbaseLite.init
 import kotlinx.atomicfu.atomic
 import java.io.File
 import com.couchbase.lite.CouchbaseLite as CBLCouchbaseLite
 
-public actual object CouchbaseLite {
+private val initCalled = atomic(false)
 
-    private val initCalled = atomic(false)
+/**
+ * CouchbaseLite Utility
+ */
+public object CouchbaseLite {
 
     /**
      * Initialize CouchbaseLite library. Unlike the Couchbase Lite Java SDK,
@@ -86,14 +90,14 @@ public actual object CouchbaseLite {
         @Suppress("VisibleForTests")
         CouchbaseLiteInternal.reset(false)
     }
+}
 
-    /**
-     * Default init that will guarantee to initialize native Couchbase Lite library
-     * from [Database] and [DatabaseConfiguration] static initializers.
-     * Doesn't set [initCalled] to allow a manual [init] call to succeed.
-     */
-    internal actual fun internalInit() {
-        if (initCalled.value) return
-        CBLCouchbaseLite.init()
-    }
+/**
+ * Default init that will guarantee to initialize native Couchbase Lite library
+ * from [Database] and [DatabaseConfiguration] static initializers.
+ * Doesn't set [initCalled] to allow a manual [init] call to succeed.
+ */
+internal actual fun internalInit() {
+    if (initCalled.value) return
+    CBLCouchbaseLite.init()
 }
