@@ -169,7 +169,7 @@ class DatabaseEncryptionTest : BaseDbTest() {
         seekrit!!.inBatch {
             for (i in 0..99) {
                 val doc = MutableDocument(mapOf("seq" to i))
-                seekrit!!.save(doc)
+                save(doc)
             }
         }
 

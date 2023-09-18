@@ -624,7 +624,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
     private fun insertItems(items: List<TestItem> = ITEMS_LIST) {
         baseTestDb.inBatch {
             items.forEach {
-                baseTestDb.save(MutableDocument(it.id.toString()))
+                save(MutableDocument(it.id.toString()))
             }
         }
     }
@@ -640,8 +640,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         var deleted = 0
         baseTestDb.inBatch {
             for (id in range) {
-                baseTestDb.getDocument(id.toString())?.let { doc ->
-                    baseTestDb.delete(doc)
+                getDocument(id.toString())?.let { doc ->
+                    delete(doc)
                     deleted++
                 }
             }

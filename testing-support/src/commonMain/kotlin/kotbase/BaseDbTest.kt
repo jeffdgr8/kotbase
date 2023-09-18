@@ -74,7 +74,7 @@ abstract class BaseDbTest : BaseTest() {
                 val doc = MutableDocument("doc-$i")
                 doc.setNumber("count", i)
                 doc.setString("inverse", "minus-$i")
-                db.save(doc)
+                save(doc)
             }
         }
     }

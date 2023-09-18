@@ -40,7 +40,7 @@ abstract class BaseQueryTest : BaseDbTest() {
         baseTestDb.inBatch {
             for (i in from..to) {
                 numbers.add(
-                    baseTestDb.getDocument(createNumberedDocInBaseTestDb(i, to))!!.toMap()
+                    getDocument(createNumberedDocInBaseTestDb(i, to))!!.toMap()
                 )
             }
         }

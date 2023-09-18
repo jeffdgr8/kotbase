@@ -319,10 +319,10 @@ class DatabaseTest : BaseDbTest() {
         baseTestDb.inBatch {
             for (i in 0 until nDocs) {
                 val docID = "doc_${i.paddedString(3)}"
-                val doc = baseTestDb.getDocument(docID)!!
-                baseTestDb.delete(doc)
-                assertNull(baseTestDb.getDocument(docID))
-                assertEquals(9L - i, baseTestDb.count)
+                val doc = getDocument(docID)!!
+                delete(doc)
+                assertNull(getDocument(docID))
+                assertEquals(9L - i, count)
             }
         }
         assertEquals(0, baseTestDb.count)
@@ -447,9 +447,9 @@ class DatabaseTest : BaseDbTest() {
         baseTestDb.inBatch {
             for (i in 0 until nDocs) {
                 val docID = "doc_${i.paddedString(3)}"
-                val doc = baseTestDb.getDocument(docID)!!
+                val doc = getDocument(docID)!!
                 purgeDocAndVerify(doc)
-                assertEquals(9L - i, baseTestDb.count)
+                assertEquals(9L - i, count)
             }
         }
 
@@ -574,11 +574,11 @@ class DatabaseTest : BaseDbTest() {
     @Test
     fun testCloseInInBatch() {
         baseTestDb.inBatch {
-            // delete db
+            // can't close a db in a transaction
             TestUtils.assertThrowsCBL(
                 CBLError.Domain.CBLITE,
                 CBLError.Code.TRANSACTION_NOT_CLOSED
-            ) { baseTestDb.close() }
+            ) { close() }
         }
     }
 
@@ -683,12 +683,13 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testDeleteInInBatch() {
+        val path = baseTestDb.path!!
+        assertTrue(FileUtils.dirExists(path))
         baseTestDb.inBatch {
-            // delete db
             TestUtils.assertThrowsCBL(
                 CBLError.Domain.CBLITE,
                 CBLError.Code.TRANSACTION_NOT_CLOSED
-            ) { baseTestDb.close() }
+            ) { delete() }
         }
     }
 
@@ -841,7 +842,7 @@ class DatabaseTest : BaseDbTest() {
         // Update each doc 25 times:
         baseTestDb.inBatch {
             for (docID in docIDs) {
-                var savedDoc = baseTestDb.getDocument(docID)!!
+                var savedDoc = getDocument(docID)!!
                 for (i in 0 until nUpdates) {
                     val doc = savedDoc.toMutable()
                     doc.setValue("number", i)
@@ -1107,7 +1108,6 @@ class DatabaseTest : BaseDbTest() {
             database2 = Database(dbName, config)
 
             // insert documents
-            val db = database2
             database2.inBatch {
                 // just create 100 documents
                 for (i in 0 until 100) {
@@ -1119,7 +1119,7 @@ class DatabaseTest : BaseDbTest() {
                         doc.setInt("item_$j", j)
                     }
 
-                    db.save(doc)
+                    save(doc)
                 }
             }
 
