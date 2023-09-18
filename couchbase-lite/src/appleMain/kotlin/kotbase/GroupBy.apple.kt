@@ -20,7 +20,10 @@ import cocoapods.CouchbaseLite.CBLQueryLimit
 import kotbase.base.AbstractDelegatedClass
 
 public actual class GroupBy
-internal constructor(private val state: QueryState) : AbstractDelegatedClass<CBLQuery>(), Query by state {
+internal constructor(private val state: QueryState) :
+    AbstractDelegatedClass<CBLQuery>(),
+    Query by state,
+    LimitRouter {
 
     public actual fun having(expression: Expression): Having {
         return Having(state.copy(having = expression.actual))
@@ -30,11 +33,11 @@ internal constructor(private val state: QueryState) : AbstractDelegatedClass<CBL
         return OrderBy(state.copy(orderBy = orderings.actuals()))
     }
 
-    public actual fun limit(limit: Expression): Limit {
+    public actual override fun limit(limit: Expression): Limit {
         return Limit(state.copy(limit = CBLQueryLimit.limit(limit.actual)))
     }
 
-    public actual fun limit(limit: Expression, offset: Expression?): Limit {
+    public actual override fun limit(limit: Expression, offset: Expression?): Limit {
         return Limit(state.copy(limit = CBLQueryLimit.limit(limit.actual, offset?.actual)))
     }
 

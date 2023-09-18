@@ -24,10 +24,7 @@ package kotbase.paging
 
 import app.cash.paging.*
 import kotbase.*
-import kotbase.ktx.countResult
-import kotbase.ktx.from
-import kotbase.ktx.selectCount
-import kotbase.ktx.toObjects
+import kotbase.ktx.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -37,12 +34,15 @@ import kotlin.coroutines.resumeWithException
 internal class OffsetQueryPagingSource<RowType : Any>(
     private val select: Select,
     private val database: Database,
-    private val queryProvider: From.() -> LimitQueryProvider,
-    private val mapper: (Map<String, Any?>) -> RowType,
-    private val context: CoroutineContext
+    private val queryProvider: From.() -> LimitRouter,
+    private val context: CoroutineContext,
+    private val mapMapper: ((Map<String, Any?>) -> RowType)? = null,
+    private val jsonStringMapper: ((String) -> RowType)? = null,
 ) : PagingSource<Int, RowType>() {
 
     init {
+        require(mapMapper != null || jsonStringMapper != null) { "At least one mapper must be not null" }
+
         registerInvalidatedCallback {
             cancelCurrentQueryListener()
         }
@@ -60,6 +60,14 @@ internal class OffsetQueryPagingSource<RowType : Any>(
     }
 
     override val jumpingSupported get() = true
+
+    private fun ResultSet.toObjects(): List<RowType> {
+        return if (mapMapper != null) {
+            toObjects(mapMapper)
+        } else {
+            toObjects(jsonStringMapper!!)
+        }
+    }
 
     override suspend fun load(
         params: PagingSourceLoadParams<Int>
@@ -87,7 +95,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             .queryProvider()
             .limit(limit, offset)
             .getAndListenForResults()
-        val data = results.toObjects(mapper)
+        val data = results.toObjects()
         val nextPosToLoad = offset + data.size
         @Suppress("USELESS_CAST", "KotlinRedundantDiagnosticSuppress")
         when {
@@ -120,8 +128,4 @@ internal class OffsetQueryPagingSource<RowType : Any>(
 
     override fun getRefreshKey(state: PagingState<Int, RowType>): Int? =
         state.anchorPosition?.let { maxOf(0, it - (state.config.initialLoadSize / 2)) }
-}
-
-internal interface LimitQueryProvider : Query {
-    fun limit(limit: Int, offset: Int): Query
 }

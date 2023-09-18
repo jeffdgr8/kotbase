@@ -19,7 +19,10 @@ import kotbase.base.DelegatedClass
 import com.couchbase.lite.From as CBLFrom
 
 public actual class From
-internal constructor(actual: CBLFrom) : DelegatedClass<CBLFrom>(actual), Query by DelegatedQuery(actual) {
+internal constructor(actual: CBLFrom) :
+    DelegatedClass<CBLFrom>(actual),
+    Query by DelegatedQuery(actual),
+    LimitRouter {
 
     public actual fun join(vararg joins: Join): Joins =
         Joins(actual.join(*joins.actuals()))
@@ -33,9 +36,9 @@ internal constructor(actual: CBLFrom) : DelegatedClass<CBLFrom>(actual), Query b
     public actual fun orderBy(vararg orderings: Ordering): OrderBy =
         OrderBy(actual.orderBy(*orderings.actuals()))
 
-    public actual fun limit(limit: Expression): Limit =
+    public actual override fun limit(limit: Expression): Limit =
         Limit(actual.limit(limit.actual))
 
-    public actual fun limit(limit: Expression, offset: Expression?): Limit =
+    public actual override fun limit(limit: Expression, offset: Expression?): Limit =
         Limit(actual.limit(limit.actual, offset?.actual))
 }

@@ -16,13 +16,15 @@
 package kotbase
 
 public actual class OrderBy
-internal constructor(private val state: QueryState) : Query by state {
+internal constructor(private val state: QueryState) :
+    Query by state,
+    LimitRouter {
 
-    public actual fun limit(limit: Expression): Limit {
+    public actual override fun limit(limit: Expression): Limit {
         return Limit(state.copy(limit = limit))
     }
 
-    public actual fun limit(limit: Expression, offset: Expression?): Limit {
+    public actual override fun limit(limit: Expression, offset: Expression?): Limit {
         return Limit(state.copy(limit = limit, offset = offset))
     }
 }

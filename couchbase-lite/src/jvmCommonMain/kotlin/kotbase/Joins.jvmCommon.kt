@@ -19,7 +19,10 @@ import kotbase.base.DelegatedClass
 import com.couchbase.lite.Joins as CBLJoins
 
 public actual class Joins
-internal constructor(actual: CBLJoins) : DelegatedClass<CBLJoins>(actual), Query by DelegatedQuery(actual) {
+internal constructor(actual: CBLJoins) :
+    DelegatedClass<CBLJoins>(actual),
+    Query by DelegatedQuery(actual),
+    LimitRouter {
 
     public actual fun where(expression: Expression): Where =
         Where(actual.where(expression.actual))
@@ -27,9 +30,9 @@ internal constructor(actual: CBLJoins) : DelegatedClass<CBLJoins>(actual), Query
     public actual fun orderBy(vararg orderings: Ordering): OrderBy =
         OrderBy(actual.orderBy(*orderings.actuals()))
 
-    public actual fun limit(limit: Expression): Limit =
+    public actual override fun limit(limit: Expression): Limit =
         Limit(actual.limit(limit.actual))
 
-    public actual fun limit(limit: Expression, offset: Expression?): Limit =
+    public actual override fun limit(limit: Expression, offset: Expression?): Limit =
         Limit(actual.limit(limit.actual, offset?.actual))
 }

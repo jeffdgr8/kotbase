@@ -16,7 +16,9 @@
 package kotbase
 
 public actual class Where
-internal constructor(private val state: QueryState) : Query by state {
+internal constructor(private val state: QueryState) :
+    Query by state,
+    LimitRouter {
 
     public actual fun groupBy(vararg expressions: Expression): GroupBy {
         return GroupBy(state.copy(groupBy = expressions.toList()))
@@ -26,11 +28,11 @@ internal constructor(private val state: QueryState) : Query by state {
         return OrderBy(state.copy(orderBy = orderings.toList()))
     }
 
-    public actual fun limit(limit: Expression): Limit {
+    public actual override fun limit(limit: Expression): Limit {
         return Limit(state.copy(limit = limit))
     }
 
-    public actual fun limit(limit: Expression, offset: Expression?): Limit {
+    public actual override fun limit(limit: Expression, offset: Expression?): Limit {
         return Limit(state.copy(limit = limit, offset = offset))
     }
 }

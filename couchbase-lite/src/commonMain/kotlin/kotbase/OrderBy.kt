@@ -19,22 +19,9 @@ package kotbase
  * An OrderBy represents an ORDER BY clause of the query for specifying properties or expressions
  * that the result rows should be sorted by.
  */
-public expect class OrderBy : Query {
+public expect class OrderBy : Query, LimitRouter {
 
-    /**
-     * Creates and chains a Limit object to limit the number query results.
-     *
-     * @param limit The limit expression.
-     * @return The Limit object that represents the LIMIT clause of the query.
-     */
-    public fun limit(limit: Expression): Limit
+    public override fun limit(limit: Expression): Limit
 
-    /**
-     * Creates and chains a Limit object to skip the returned results for the given offset
-     *
-     * @param limit  The limit expression.
-     * @param offset The offset expression.
-     * @return The Limit object that represents the LIMIT clause of the query.
-     */
-    public fun limit(limit: Expression, offset: Expression?): Limit
+    public override fun limit(limit: Expression, offset: Expression?): Limit
 }

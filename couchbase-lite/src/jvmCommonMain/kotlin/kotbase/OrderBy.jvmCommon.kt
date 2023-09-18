@@ -19,11 +19,14 @@ import kotbase.base.DelegatedClass
 import com.couchbase.lite.OrderBy as CBLOrderBy
 
 public actual class OrderBy
-internal constructor(actual: CBLOrderBy) : DelegatedClass<CBLOrderBy>(actual), Query by DelegatedQuery(actual) {
+internal constructor(actual: CBLOrderBy) :
+    DelegatedClass<CBLOrderBy>(actual),
+    Query by DelegatedQuery(actual),
+    LimitRouter {
 
-    public actual fun limit(limit: Expression): Limit =
+    public actual override fun limit(limit: Expression): Limit =
         Limit(actual.limit(limit.actual))
 
-    public actual fun limit(limit: Expression, offset: Expression?): Limit =
+    public actual override fun limit(limit: Expression, offset: Expression?): Limit =
         Limit(actual.limit(limit.actual, offset?.actual))
 }

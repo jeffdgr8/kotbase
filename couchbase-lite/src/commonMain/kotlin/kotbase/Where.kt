@@ -18,7 +18,7 @@ package kotbase
 /**
  * A Where represents the WHERE clause of the query for filtering the query result.
  */
-public expect class Where : Query {
+public expect class Where : Query, LimitRouter {
 
     /**
      * Create and chain a GROUP BY component to group the query result.
@@ -36,21 +36,7 @@ public expect class Where : Query {
      */
     public fun orderBy(vararg orderings: Ordering): OrderBy
 
-    /**
-     * Create and chain a LIMIT component to limit the number query results.
-     *
-     * @param limit The limit Expression object
-     * @return The Limit object.
-     */
-    public fun limit(limit: Expression): Limit
+    public override fun limit(limit: Expression): Limit
 
-    /**
-     * Create and chain a LIMIT component to skip the returned results for the given offset
-     * position and to limit the number of results to not more than the given limit value.
-     *
-     * @param limit  The limit Expression object
-     * @param offset The offset Expression object
-     * @return The Limit object.
-     */
-    public fun limit(limit: Expression, offset: Expression?): Limit
+    public override fun limit(limit: Expression, offset: Expression?): Limit
 }

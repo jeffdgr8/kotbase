@@ -46,12 +46,7 @@ public inline fun Where.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy = o
 public inline fun GroupBy.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy = orderBy(*OrderByBuilder().apply(builder).orderings())
 public inline fun Having.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy = orderBy(*OrderByBuilder().apply(builder).orderings())
 
-public inline fun From.limit(count: Int, offset: Int? = null): Limit = limit(Expression.intValue(count), offset?.let(Expression::intValue))
-public inline fun Joins.limit(count: Int, offset: Int? = null): Limit = limit(Expression.intValue(count), offset?.let(Expression::intValue))
-public inline fun Where.limit(count: Int, offset: Int? = null): Limit = limit(Expression.intValue(count), offset?.let(Expression::intValue))
-public inline fun GroupBy.limit(count: Int, offset: Int? = null): Limit = limit(Expression.intValue(count), offset?.let(Expression::intValue))
-public inline fun Having.limit(count: Int, offset: Int? = null): Limit = limit(Expression.intValue(count), offset?.let(Expression::intValue))
-public inline fun OrderBy.limit(count: Int, offset: Int? = null): Limit = limit(Expression.intValue(count), offset?.let(Expression::intValue))
+public inline fun LimitRouter.limit(count: Int, offset: Int? = null): Limit = limit(Expression.intValue(count), offset?.let(Expression::intValue))
 
 public inline fun not(expression: Expression): Expression = Expression.not(expression)
 public inline fun property(name: String): PropertyExpression = Expression.property(name)
