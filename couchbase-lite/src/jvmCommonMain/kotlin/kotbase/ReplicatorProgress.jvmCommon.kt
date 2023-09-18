@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import com.couchbase.lite.ReplicatorProgress as CBLReplicatorProgress
 
 public actual class ReplicatorProgress

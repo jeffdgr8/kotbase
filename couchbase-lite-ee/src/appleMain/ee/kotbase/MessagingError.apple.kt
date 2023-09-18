@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLMessagingError
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.toNSError
 
 public actual class MessagingError

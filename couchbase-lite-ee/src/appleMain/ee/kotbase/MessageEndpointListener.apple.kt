@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLMessageEndpointListener
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.asDispatchQueue
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

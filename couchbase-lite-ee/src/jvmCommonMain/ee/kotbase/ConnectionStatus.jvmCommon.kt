@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import com.couchbase.lite.ConnectionStatus as CBLConnectionStatus
 
 public actual class ConnectionStatus

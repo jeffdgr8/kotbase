@@ -18,7 +18,7 @@ package com.couchbase.lite
 import kotbase.Blob
 import kotbase.Database
 import kotbase.asBlob
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import com.couchbase.lite.internal.core.C4Document as CBLC4Document
 
 internal actual val Database.dbPath: String?

@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLReplicator
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.asDispatchQueue
 import kotbase.ext.toByteArray
 import kotbase.ext.wrapCBLError

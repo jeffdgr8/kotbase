@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLQueryResult
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.asNumber
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant

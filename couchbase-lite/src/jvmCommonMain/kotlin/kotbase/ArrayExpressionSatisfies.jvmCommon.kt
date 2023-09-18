@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import com.couchbase.lite.ArrayExpressionSatisfies as CBLArrayExpressionSatisfies
 
 public actual class ArrayExpressionSatisfies

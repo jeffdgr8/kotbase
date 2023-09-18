@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLConsoleLogger
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class ConsoleLogger
 internal constructor(override val actual: CBLConsoleLogger) : DelegatedClass<CBLConsoleLogger>(actual), Logger {

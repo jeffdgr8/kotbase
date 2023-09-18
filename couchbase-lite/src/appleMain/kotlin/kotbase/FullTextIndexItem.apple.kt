@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLFullTextIndexItem
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class FullTextIndexItem
 private constructor(actual: CBLFullTextIndexItem) : DelegatedClass<CBLFullTextIndexItem>(actual) {

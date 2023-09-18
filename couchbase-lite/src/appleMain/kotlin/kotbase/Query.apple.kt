@@ -23,7 +23,7 @@ import cocoapods.CouchbaseLite.CBLQueryJoin
 import cocoapods.CouchbaseLite.CBLQueryLimit
 import cocoapods.CouchbaseLite.CBLQueryOrdering
 import cocoapods.CouchbaseLite.CBLQuerySelectResult
-import kotbase.base.AbstractDelegatedClass
+import kotbase.internal.AbstractDelegatedClass
 import kotbase.ext.asDispatchQueue
 import kotbase.ext.wrapCBLError
 import kotlinx.coroutines.CoroutineDispatcher

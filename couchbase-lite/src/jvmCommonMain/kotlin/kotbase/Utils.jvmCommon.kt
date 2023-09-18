@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.toDate
 import kotbase.ext.toKotlinInstant
 import kotlinx.datetime.Instant

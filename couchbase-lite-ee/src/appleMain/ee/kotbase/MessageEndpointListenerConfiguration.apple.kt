@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLMessageEndpointListenerConfiguration
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class MessageEndpointListenerConfiguration
 internal constructor(

@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLURLEndpointListenerConfiguration
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class URLEndpointListenerConfiguration
 private constructor(

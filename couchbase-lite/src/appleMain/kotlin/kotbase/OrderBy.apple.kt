@@ -17,7 +17,7 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLQuery
 import cocoapods.CouchbaseLite.CBLQueryLimit
-import kotbase.base.AbstractDelegatedClass
+import kotbase.internal.AbstractDelegatedClass
 
 public actual class OrderBy
 internal constructor(private val state: QueryState) :

@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLReplicatorChange
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class ReplicatorChange
 internal constructor(

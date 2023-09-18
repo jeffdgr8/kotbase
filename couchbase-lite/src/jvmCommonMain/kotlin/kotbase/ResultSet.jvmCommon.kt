@@ -17,7 +17,7 @@
 
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import com.couchbase.lite.Result as CBLResult
 import com.couchbase.lite.ResultSet as CBLResultSet
 

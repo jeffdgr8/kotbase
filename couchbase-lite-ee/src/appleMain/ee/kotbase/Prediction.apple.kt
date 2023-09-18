@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLPrediction
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class Prediction(actual: CBLPrediction) : DelegatedClass<CBLPrediction>(actual) {
 

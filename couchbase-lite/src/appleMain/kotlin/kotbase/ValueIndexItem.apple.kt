@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLValueIndexItem
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class ValueIndexItem
 private constructor(actual: CBLValueIndexItem) : DelegatedClass<CBLValueIndexItem>(actual) {

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import com.couchbase.lite.Prediction as CBLPrediction
 
 public actual class Prediction(actual: CBLPrediction) : DelegatedClass<CBLPrediction>(actual) {

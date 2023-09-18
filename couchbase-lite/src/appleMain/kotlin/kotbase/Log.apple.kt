@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLLog
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class Log
 internal constructor(actual: CBLLog) : DelegatedClass<CBLLog>(actual) {

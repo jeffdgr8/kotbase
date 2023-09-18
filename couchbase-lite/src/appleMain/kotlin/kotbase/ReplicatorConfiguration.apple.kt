@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLReplicatorConfiguration
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.toByteArray
 import kotbase.ext.toSecCertificate
 import kotlinx.cinterop.convert

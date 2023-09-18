@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLDatabaseChange
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class DatabaseChange
 internal constructor(actual: CBLDatabaseChange) : DelegatedClass<CBLDatabaseChange>(actual) {

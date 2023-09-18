@@ -17,7 +17,7 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLQueryResult
 import cocoapods.CouchbaseLite.CBLQueryResultSet
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 @OptIn(ExperimentalStdlibApi::class)
 public actual class ResultSet

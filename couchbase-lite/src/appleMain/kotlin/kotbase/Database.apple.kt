@@ -17,7 +17,7 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.isClosed
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.asDispatchQueue
 import kotbase.ext.wrapCBLError
 import kotlinx.coroutines.CoroutineDispatcher

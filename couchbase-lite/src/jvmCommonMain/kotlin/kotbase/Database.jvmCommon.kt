@@ -17,7 +17,7 @@ package kotbase
 
 import com.couchbase.lite.UnitOfWork
 import com.couchbase.lite.internal.CouchbaseLiteInternal
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.toDate
 import kotbase.ext.toFile
 import kotbase.ext.toKotlinInstant

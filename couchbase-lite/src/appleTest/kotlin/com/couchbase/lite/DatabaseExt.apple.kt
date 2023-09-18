@@ -20,7 +20,7 @@ import kotbase.BaseTest.Companion.DB_EXTENSION
 import kotbase.Blob
 import kotbase.Database
 import kotbase.asBlob
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.wrapCBLError
 
 internal actual val Database.dbPath: String?

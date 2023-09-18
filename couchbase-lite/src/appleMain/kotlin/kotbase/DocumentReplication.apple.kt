@@ -17,7 +17,7 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLDocumentReplication
 import cocoapods.CouchbaseLite.CBLReplicatedDocument
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class DocumentReplication
 internal constructor(

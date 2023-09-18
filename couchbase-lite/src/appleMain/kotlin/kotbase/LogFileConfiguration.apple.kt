@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLLogFileConfiguration
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
 
 public actual class LogFileConfiguration

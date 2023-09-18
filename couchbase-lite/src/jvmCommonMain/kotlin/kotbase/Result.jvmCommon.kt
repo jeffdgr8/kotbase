@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.toKotlinInstant
 import kotlinx.datetime.Instant
 import com.couchbase.lite.Result as CBLResult

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import java.util.*
 import com.couchbase.lite.ConsoleLogger as CBLConsoleLogger
 

@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLIndexBuilder
-import kotbase.base.actuals
+import kotbase.internal.actuals
 
 public actual object IndexBuilder {
 

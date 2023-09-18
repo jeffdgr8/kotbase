@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import com.couchbase.lite.ValueIndexItem as CBLValueIndexItem
 
 public actual class ValueIndexItem

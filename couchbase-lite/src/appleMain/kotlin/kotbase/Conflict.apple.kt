@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLConflict
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class Conflict
 internal constructor(actual: CBLConflict) :

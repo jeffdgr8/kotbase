@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLQuery
-import kotbase.base.AbstractDelegatedClass
+import kotbase.internal.AbstractDelegatedClass
 
 public actual class Select
 internal constructor(private val state: QueryState) :

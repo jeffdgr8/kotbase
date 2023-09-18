@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLURLEndpointListener
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.wrapCBLError
 import kotlinx.cinterop.useContents
 import platform.Foundation.NSURL

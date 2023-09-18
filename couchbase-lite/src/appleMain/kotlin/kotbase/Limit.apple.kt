@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLQuery
-import kotbase.base.AbstractDelegatedClass
+import kotbase.internal.AbstractDelegatedClass
 
 public actual class Limit
 internal constructor(private val state: QueryState) : AbstractDelegatedClass<CBLQuery>(), Query by state {

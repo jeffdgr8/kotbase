@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import com.couchbase.lite.URLEndpointListenerConfiguration as CBLURLEndpointListenerConfiguration
 
 public actual class URLEndpointListenerConfiguration

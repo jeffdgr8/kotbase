@@ -16,7 +16,7 @@
 package kotbase
 
 import com.couchbase.lite.testReplicator
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

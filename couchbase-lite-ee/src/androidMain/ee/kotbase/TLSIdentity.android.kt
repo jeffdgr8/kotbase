@@ -16,7 +16,7 @@
 package kotbase
 
 import com.couchbase.lite.deleteTLSIdentity
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.toByteArray
 import kotbase.ext.toDate
 import kotbase.ext.toKotlinInstant

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.actuals
+import kotbase.internal.actuals
 import com.couchbase.lite.IndexBuilder as CBLIndexBuilder
 
 public actual object IndexBuilder {

@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLTLSIdentity
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotbase.ext.toByteArray
 import kotbase.ext.toNSData
 import kotbase.ext.wrapCBLError

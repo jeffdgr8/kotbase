@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLMessageEndpointListenerChange
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class MessageEndpointListenerChange
 internal constructor(actual: CBLMessageEndpointListenerChange) :

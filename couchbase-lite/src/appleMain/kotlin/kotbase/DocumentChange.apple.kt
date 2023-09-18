@@ -16,7 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLDocumentChange
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 
 public actual class DocumentChange
 internal constructor(actual: CBLDocumentChange) : DelegatedClass<CBLDocumentChange>(actual) {

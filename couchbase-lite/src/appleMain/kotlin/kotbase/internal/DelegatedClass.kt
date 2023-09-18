@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kotbase.base
+package kotbase.internal
 
-public abstract class DelegatedClass<D : Any>
-internal constructor(internal open val actual: D) {
+import platform.darwin.NSObject
+
+public abstract class DelegatedClass<D : NSObject>
+internal constructor(override val actual: D) : AbstractDelegatedClass<D>()
+
+public abstract class AbstractDelegatedClass<D : NSObject> {
+
+    internal abstract val actual: D
 
     override fun equals(other: Any?): Boolean =
-        actual == (other as? DelegatedClass<*>)?.actual
+        actual.isEqual((other as? AbstractDelegatedClass<*>)?.actual)
 
     override fun hashCode(): Int =
-        actual.hashCode()
+        actual.hash.toInt()
 
     override fun toString(): String =
-        actual.toString()
+        actual.description ?: super.toString()
 }
 
-internal inline fun <reified D : Any> Array<out DelegatedClass<D>>.actuals(): Array<D> =
-    map { it.actual }.toTypedArray()
+internal inline fun <reified D : NSObject> Array<out DelegatedClass<D>>.actuals(): List<D> =
+    map { it.actual }

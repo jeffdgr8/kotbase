@@ -13,44 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kotbase.base
+package kotbase.internal
 
-import kotlinx.cinterop.convert
-import platform.darwin.NSObject
-import platform.darwin.NSUInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DelegatedClassTest {
 
-    private class MyNSObject(val value: Int) : NSObject() {
+    private class MyObject(val value: Int) {
 
-        override fun isEqual(`object`: Any?): Boolean {
-            if (`object` === this) {
+        override fun equals(other: Any?): Boolean {
+            if (other === this) {
                 return true
             }
-            if (`object` is MyNSObject && `object`.value == value) {
+            if (other is MyObject && other.value == value) {
                 return true
             }
             return false
         }
 
-        override fun hash(): NSUInteger {
-            return value.convert()
+        override fun hashCode(): Int {
+            return value
         }
 
-        override fun description(): String {
+        override fun toString(): String {
             return "My value is $value"
         }
     }
 
-    private class MyDelegatedObject(actual: MyNSObject) : DelegatedClass<MyNSObject>(actual)
+    private class MyDelegatedObject(actual: MyObject) : DelegatedClass<MyObject>(actual)
 
     @Test
     fun test_equals() {
-        val obj1 = MyNSObject(42)
+        val obj1 = MyObject(42)
         val delegate1 = MyDelegatedObject(obj1)
-        val obj2 = MyNSObject(42)
+        val obj2 = MyObject(42)
         val delegate2 = MyDelegatedObject(obj2)
         assertEquals(obj1, obj2, "objects should be equal")
         assertEquals(obj2, obj1, "objects should be transitively equal")
@@ -60,15 +57,15 @@ class DelegatedClassTest {
 
     @Test
     fun test_hashCode() {
-        val obj = MyNSObject(42)
+        val obj = MyObject(42)
         val delegate = MyDelegatedObject(obj)
-        assertEquals(obj.hash, delegate.hashCode().convert())
+        assertEquals(obj.hashCode(), delegate.hashCode())
     }
 
     @Test
     fun test_toString() {
-        val obj = MyNSObject(42)
+        val obj = MyObject(42)
         val delegate = MyDelegatedObject(obj)
-        assertEquals(obj.description, delegate.toString())
+        assertEquals(obj.toString(), delegate.toString())
     }
 }

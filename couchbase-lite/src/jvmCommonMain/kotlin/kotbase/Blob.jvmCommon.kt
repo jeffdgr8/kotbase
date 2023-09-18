@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.base.DelegatedClass
+import kotbase.internal.DelegatedClass
 import kotlinx.io.IOException
 import kotlinx.io.Source
 import kotlinx.io.asInputStream
