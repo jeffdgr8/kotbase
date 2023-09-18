@@ -22,12 +22,14 @@ public actual class Where
 internal constructor(actual: CBLWhere) :
     DelegatedClass<CBLWhere>(actual),
     Query by DelegatedQuery(actual),
+    GroupByRouter,
+    OrderByRouter,
     LimitRouter {
 
-    public actual fun groupBy(vararg expressions: Expression): GroupBy =
+    public actual override fun groupBy(vararg expressions: Expression): GroupBy =
         GroupBy(actual.groupBy(*expressions.actuals()))
 
-    public actual fun orderBy(vararg orderings: Ordering): OrderBy =
+    public actual override fun orderBy(vararg orderings: Ordering): OrderBy =
         OrderBy(actual.orderBy(*orderings.actuals()))
 
     public actual override fun limit(limit: Expression): Limit =

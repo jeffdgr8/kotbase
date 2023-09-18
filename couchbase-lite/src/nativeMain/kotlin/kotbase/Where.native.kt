@@ -18,13 +18,15 @@ package kotbase
 public actual class Where
 internal constructor(private val state: QueryState) :
     Query by state,
+    GroupByRouter,
+    OrderByRouter,
     LimitRouter {
 
-    public actual fun groupBy(vararg expressions: Expression): GroupBy {
+    public actual override fun groupBy(vararg expressions: Expression): GroupBy {
         return GroupBy(state.copy(groupBy = expressions.toList()))
     }
 
-    public actual fun orderBy(vararg orderings: Ordering): OrderBy {
+    public actual override fun orderBy(vararg orderings: Ordering): OrderBy {
         return OrderBy(state.copy(orderBy = orderings.toList()))
     }
 

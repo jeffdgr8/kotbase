@@ -18,39 +18,15 @@ package kotbase
 /**
  * A From represents a FROM clause for specifying the data source of the query.
  */
-public expect class From : Query, LimitRouter {
+public expect class From : Query, JoinRouter, WhereRouter, GroupByRouter, OrderByRouter, LimitRouter {
 
-    /**
-     * Creates and chains a Joins object for specifying the JOIN clause of the query.
-     *
-     * @param joins The Join objects.
-     * @return The Joins object that represents the JOIN clause of the query.
-     */
-    public fun join(vararg joins: Join): Joins
+    public override fun join(vararg joins: Join): Joins
 
-    /**
-     * Create and chain a WHERE component for specifying the WHERE clause of the query.
-     *
-     * @param expression the WHERE clause expression.
-     * @return the WHERE component.
-     */
-    public fun where(expression: Expression): Where
+    public override fun where(expression: Expression): Where
 
-    /**
-     * Creates and chains a GroupBy object to group the query result.
-     *
-     * @param expressions The group by expression.
-     * @return The GroupBy object that represents the GROUP BY clause of the query.
-     */
-    public fun groupBy(vararg expressions: Expression): GroupBy
+    public override fun groupBy(vararg expressions: Expression): GroupBy
 
-    /**
-     * Create and chain an ORDER BY component for specifying the ORDER BY clause of the query.
-     *
-     * @param orderings an array of the ORDER BY expressions.
-     * @return the ORDER BY component.
-     */
-    public fun orderBy(vararg orderings: Ordering): OrderBy
+    public override fun orderBy(vararg orderings: Ordering): OrderBy
 
     public override fun limit(limit: Expression): Limit
 

@@ -19,7 +19,7 @@
  * Modified by Jeff Lockhart
  * - Use kotbase package
  * - Resolve explicitApiWarning() requirements
- * - Add support for additional Query subclasses
+ * - Use router interfaces to add support for all Query subclasses
  */
 
 @file:Suppress("NOTHING_TO_INLINE", "unused", "KotlinRedundantDiagnosticSuppress")
@@ -35,16 +35,11 @@ public inline fun select(vararg keys: String): Select = QueryBuilder.select(*key
 
 public inline fun all(): SelectResult.From = SelectResult.all()
 
-public inline infix fun Select.from(database: Database): From = from(DataSource.database(database))
+public inline infix fun FromRouter.from(database: Database): From = from(DataSource.database(database))
 
-public inline infix fun From.where(builder: WhereBuilder.() -> Expression): Where = where(WhereBuilder().builder())
-public inline infix fun Joins.where(builder: WhereBuilder.() -> Expression): Where = where(WhereBuilder().builder())
+public inline infix fun WhereRouter.where(builder: WhereBuilder.() -> Expression): Where = where(WhereBuilder().builder())
 
-public inline fun From.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy = orderBy(*OrderByBuilder().apply(builder).orderings())
-public inline fun Joins.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy = orderBy(*OrderByBuilder().apply(builder).orderings())
-public inline fun Where.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy = orderBy(*OrderByBuilder().apply(builder).orderings())
-public inline fun GroupBy.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy = orderBy(*OrderByBuilder().apply(builder).orderings())
-public inline fun Having.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy = orderBy(*OrderByBuilder().apply(builder).orderings())
+public inline fun OrderByRouter.orderBy(builder: OrderByBuilder.() -> Unit): OrderBy = orderBy(*OrderByBuilder().apply(builder).orderings())
 
 public inline fun LimitRouter.limit(count: Int, offset: Int? = null): Limit = limit(Expression.intValue(count), offset?.let(Expression::intValue))
 

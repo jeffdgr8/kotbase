@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2023 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package kotbase
 
-/**
- * Having represents a HAVING clause of the query statement used for filtering the aggregated values
- * from the GROUP BY clause.
- */
-public expect class Having : Query, OrderByRouter, LimitRouter {
+public interface HavingRouter : Query {
 
-    public override fun orderBy(vararg orderings: Ordering): OrderBy
-
-    public override fun limit(limit: Expression): Limit
-
-    public override fun limit(limit: Expression, offset: Expression?): Limit
+    /**
+     * Create and chain a Having object for filtering the aggregated values
+     * from the GROUP BY clause.
+     *
+     * @param expression The expression
+     * @return The Having object that represents the HAVING clause of the query.
+     */
+    public fun having(expression: Expression): Having
 }

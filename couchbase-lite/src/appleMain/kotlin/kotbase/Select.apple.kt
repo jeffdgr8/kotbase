@@ -19,9 +19,12 @@ import cocoapods.CouchbaseLite.CBLQuery
 import kotbase.base.AbstractDelegatedClass
 
 public actual class Select
-internal constructor(private val state: QueryState) : AbstractDelegatedClass<CBLQuery>(), Query by state {
+internal constructor(private val state: QueryState) :
+    AbstractDelegatedClass<CBLQuery>(),
+    Query by state,
+    FromRouter {
 
-    public actual fun from(dataSource: DataSource): From {
+    public actual override fun from(dataSource: DataSource): From {
         return From(state.copy(from = dataSource.actual))
     }
 

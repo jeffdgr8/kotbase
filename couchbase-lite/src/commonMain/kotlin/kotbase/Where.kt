@@ -18,23 +18,11 @@ package kotbase
 /**
  * A Where represents the WHERE clause of the query for filtering the query result.
  */
-public expect class Where : Query, LimitRouter {
+public expect class Where : Query, GroupByRouter, OrderByRouter, LimitRouter {
 
-    /**
-     * Create and chain a GROUP BY component to group the query result.
-     *
-     * @param expressions The expression objects.
-     * @return The GroupBy object.
-     */
-    public fun groupBy(vararg expressions: Expression): GroupBy
+    public override fun groupBy(vararg expressions: Expression): GroupBy
 
-    /**
-     * Create and chain an ORDER BY component for specifying the ORDER BY clause of the query.
-     *
-     * @param orderings an array of the ORDER BY expressions.
-     * @return the ORDER BY component.
-     */
-    public fun orderBy(vararg orderings: Ordering): OrderBy
+    public override fun orderBy(vararg orderings: Ordering): OrderBy
 
     public override fun limit(limit: Expression): Limit
 

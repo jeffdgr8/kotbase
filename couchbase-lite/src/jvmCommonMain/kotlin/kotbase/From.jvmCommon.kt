@@ -22,18 +22,22 @@ public actual class From
 internal constructor(actual: CBLFrom) :
     DelegatedClass<CBLFrom>(actual),
     Query by DelegatedQuery(actual),
+    JoinRouter,
+    WhereRouter,
+    GroupByRouter,
+    OrderByRouter,
     LimitRouter {
 
-    public actual fun join(vararg joins: Join): Joins =
+    public actual override fun join(vararg joins: Join): Joins =
         Joins(actual.join(*joins.actuals()))
 
-    public actual fun where(expression: Expression): Where =
+    public actual override fun where(expression: Expression): Where =
         Where(actual.where(expression.actual))
 
-    public actual fun groupBy(vararg expressions: Expression): GroupBy =
+    public actual override fun groupBy(vararg expressions: Expression): GroupBy =
         GroupBy(actual.groupBy(*expressions.actuals()))
 
-    public actual fun orderBy(vararg orderings: Ordering): OrderBy =
+    public actual override fun orderBy(vararg orderings: Ordering): OrderBy =
         OrderBy(actual.orderBy(*orderings.actuals()))
 
     public actual override fun limit(limit: Expression): Limit =

@@ -20,24 +20,11 @@ package kotbase
  * The GROUP BY clause is normally used with aggregate functions (AVG, COUNT, MAX, MIN, SUM)
  * to aggregate the group of the values.
  */
-public expect class GroupBy : Query, LimitRouter {
+public expect class GroupBy : Query, HavingRouter, OrderByRouter, LimitRouter {
 
-    /**
-     * Creates and chain a Having object for filtering the aggregated values
-     * from the GROUP BY clause.
-     *
-     * @param expression The expression
-     * @return The Having object that represents the HAVING clause of the query.
-     */
-    public fun having(expression: Expression): Having
+    public override fun having(expression: Expression): Having
 
-    /**
-     * Create and chain an ORDER BY component for specifying the ORDER BY clause of the query.
-     *
-     * @param orderings an array of the ORDER BY expressions.
-     * @return the ORDER BY component.
-     */
-    public fun orderBy(vararg orderings: Ordering): OrderBy
+    public override fun orderBy(vararg orderings: Ordering): OrderBy
 
     public override fun limit(limit: Expression): Limit
 

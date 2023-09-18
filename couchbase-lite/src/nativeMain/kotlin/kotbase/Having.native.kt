@@ -18,9 +18,10 @@ package kotbase
 public actual class Having
 internal constructor(private val state: QueryState) :
     Query by state,
+    OrderByRouter,
     LimitRouter {
 
-    public actual fun orderBy(vararg orderings: Ordering): OrderBy {
+    public actual override fun orderBy(vararg orderings: Ordering): OrderBy {
         return OrderBy(state.copy(orderBy = orderings.toList()))
     }
 

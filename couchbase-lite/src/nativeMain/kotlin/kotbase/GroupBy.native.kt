@@ -17,13 +17,16 @@ package kotbase
 
 public actual class GroupBy
 internal constructor(private val state: QueryState) :
-    Query by state, LimitRouter {
+    Query by state,
+    HavingRouter,
+    OrderByRouter,
+    LimitRouter {
 
-    public actual fun having(expression: Expression): Having {
+    public actual override fun having(expression: Expression): Having {
         return Having(state.copy(having = expression))
     }
 
-    public actual fun orderBy(vararg orderings: Ordering): OrderBy {
+    public actual override fun orderBy(vararg orderings: Ordering): OrderBy {
         return OrderBy(state.copy(orderBy = orderings.toList()))
     }
 

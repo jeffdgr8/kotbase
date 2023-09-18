@@ -22,9 +22,10 @@ public actual class Having
 internal constructor(actual: CBLHaving) :
     DelegatedClass<CBLHaving>(actual),
     Query by DelegatedQuery(actual),
+    OrderByRouter,
     LimitRouter {
 
-    public actual fun orderBy(vararg orderings: Ordering): OrderBy =
+    public actual override fun orderBy(vararg orderings: Ordering): OrderBy =
         OrderBy(actual.orderBy(*orderings.actuals()))
 
     public actual override fun limit(limit: Expression): Limit =

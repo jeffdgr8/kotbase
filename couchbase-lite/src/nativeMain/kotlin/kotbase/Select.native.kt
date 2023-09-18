@@ -16,9 +16,11 @@
 package kotbase
 
 public actual class Select
-internal constructor(private val state: QueryState) : Query by state {
+internal constructor(private val state: QueryState) :
+    Query by state,
+    FromRouter {
 
-    public actual fun from(dataSource: DataSource): From {
+    public actual override fun from(dataSource: DataSource): From {
         return From(state.copy(from = dataSource))
     }
 }

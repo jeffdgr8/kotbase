@@ -22,12 +22,14 @@ public actual class Joins
 internal constructor(actual: CBLJoins) :
     DelegatedClass<CBLJoins>(actual),
     Query by DelegatedQuery(actual),
+    WhereRouter,
+    OrderByRouter,
     LimitRouter {
 
-    public actual fun where(expression: Expression): Where =
+    public actual override fun where(expression: Expression): Where =
         Where(actual.where(expression.actual))
 
-    public actual fun orderBy(vararg orderings: Ordering): OrderBy =
+    public actual override fun orderBy(vararg orderings: Ordering): OrderBy =
         OrderBy(actual.orderBy(*orderings.actuals()))
 
     public actual override fun limit(limit: Expression): Limit =
