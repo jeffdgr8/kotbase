@@ -28,6 +28,7 @@ import kotbase.From
 import kotbase.LimitRouter
 import kotbase.Select
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmName
 
 /**
  * Create a [PagingSource] that pages through all results from the `database`.
@@ -76,6 +77,7 @@ public fun <RowType : Any> QueryPagingSource(
  * @param database database to query
  * @param mapper mapping function from JSON query results to objects
  */
+@JvmName("QueryPagingSourceString")
 public fun <RowType : Any> QueryPagingSource(
     context: CoroutineContext,
     select: Select,
@@ -107,6 +109,7 @@ public fun <RowType : Any> QueryPagingSource(
  * @param mapper mapping function from JSON query results to objects
  * @param queryProvider query provider function
  */
+@JvmName("QueryPagingSourceWithQuery")
 public fun <RowType : Any> QueryPagingSource(
     context: CoroutineContext,
     select: Select,
@@ -139,6 +142,7 @@ public fun <RowType : Any> QueryPagingSource(
  * @param mapper mapping function from JSON query results to objects
  * @param queryProvider query provider function
  */
+@JvmName("QueryPagingSourceStringWithQuery")
 public fun <RowType : Any> QueryPagingSource(
     context: CoroutineContext,
     select: Select,
