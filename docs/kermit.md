@@ -3,8 +3,8 @@ hide:
   - toc
 ---
 
-Kotbase Kermit is a Couchbase Lite custom logger which logs to [Kermit](https://github.com/touchlab/Kermit). Kermit can
-direct its logs to any number of log outputs, including the console.
+Kotbase Kermit is a Couchbase Lite custom logger which logs to [Kermit](https://kermit.touchlab.co/). Kermit can direct
+its logs to any number of log outputs, including the console.
 
 ## Installation
 

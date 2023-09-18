@@ -374,7 +374,7 @@ persists a few documents in batch.
                 setValue("name", "user $i")
                 setBoolean("admin", false)
             }
-            database.save(doc)
+            save(doc)
             println("saved user document: ${doc.getString("name")}")
         }
     }
@@ -619,7 +619,7 @@ Additionally, you can:
 
 Convert a query `Result` to a JSON string using its [`toJSON()`](
 /api/couchbase-lite-ee/kotbase/-result/to-j-s-o-n.html) accessor method. The JSON string can easily be serialized or
-used as required in your application. See [Example 16](#example-16) for a working example using [KotlinX Serialization](
+used as required in your application. See [Example 16](#example-16) for a working example using [kotlinx-serialization](
 https://github.com/Kotlin/kotlinx.serialization).
 
 !!! example "<span id='example-16'>Example 16. Using JSON Results</span>"

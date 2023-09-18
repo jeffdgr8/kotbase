@@ -24,6 +24,8 @@ kotlin {
 
 tasks.withType<AbstractDokkaLeafTask>().configureEach {
     dokkaSourceSets.configureEach {
+        includes.from("README.md")
+
         sourceLink {
             localDirectory.set(projectDir.resolve("src"))
             remoteUrl.set(URL("https://github.com/jeffdgr8/kotbase/tree/main/${project.name}/src"))

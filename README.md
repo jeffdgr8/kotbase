@@ -11,6 +11,8 @@ https://kotlinlang.slack.com/messages/couchbase/)
 
 **Kot**lin Multiplatform library for Couch**base** Lite
 
+_**Initial public release coming soon!**_
+
 ## Introduction
 
 Kotbase pairs [Kotlin Multiplatform](https://kotlinlang.org/lp/multiplatform/) with [Couchbase Lite](
@@ -36,17 +38,39 @@ Windows ([via C SDK](https://github.com/couchbase/couchbase-lite-C)).
 
 ## Installation
 
-**build.gradle.kts**
+Add either the Community or Enterprise Edition dependency in the **commonMain** source set dependencies of your
+shared module's **build.gradle.kts**:
+
 ```kotlin
-kotlin.sourceSets.commonMain {
-    dependencies {
-        // Community Edition
-        implementation("dev.kotbase:couchbase-lite:3.0.12-1.0.0")
-        // or Enterprise Edition
-        implementation("dev.kotbase:couchbase-lite-ee:3.0.12-1.0.0")
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                // Community Edition
+                implementation("dev.kotbase:couchbase-lite:3.0.12-1.0.0")
+                // or Enterprise Edition
+                implementation("dev.kotbase:couchbase-lite-ee:3.0.12-1.0.0")
+            }
+        }
     }
 }
 ```
+
+Kotbase is published to Maven Central. The Couchbase Lite Enterprise Edition dependency additionally requires the
+Couchbase Maven repository.
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven("https://mobile.maven.couchbase.com/maven2/dev/")
+}
+```
+
+## Documentation
+
+Kotbase documentation can be found at [kotbase.dev](https://kotbase.dev/), including [getting started examples](
+https://kotbase.dev/getting-started/), [detailed usage docs](https://kotbase.dev/databases/), and [API reference](
+https://kotbase.dev/api/).
 
 ## Differences from Couchbase Lite Java SDK
 
@@ -98,12 +122,11 @@ Kotbase includes some convenient extensions on top of Couchbase Lite's official 
 
 ### Kotbase KTX
 
-The KTX extensions include the excellent [Kotlin extensions by MOLO17](https://github.com/MOLO17/couchbase-lite-kotlin),
+The [KTX extensions](couchbase-lite-ktx/README.md) include the excellent [Kotlin extensions by MOLO17](https://github.com/MOLO17/couchbase-lite-kotlin),
 as well as other convenience functions for composing queries, observing change `Flow`s, and creating indexes.
 
 #### Installation
 
-**build.gradle.kts**
 ```kotlin
 // Community Edition
 implementation("dev.kotbase:couchbase-lite-ktx:3.0.12-1.0.0")
@@ -113,12 +136,11 @@ implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.12-1.0.0")
 
 ### Kotbase Kermit
 
-Kotbase Kermit is a Couchbase Lite custom logger which logs to [Kermit](https://github.com/touchlab/Kermit). Kermit can
-direct its logs to any number of log outputs, including the console.
+[Kotbase Kermit](couchbase-lite-kermit/README.md) is a Couchbase Lite custom logger which logs to [Kermit](
+https://kermit.touchlab.co/). Kermit can direct its logs to any number of log outputs, including the console.
 
 #### Installation
 
-**build.gradle.kts**
 ```kotlin
 // Community Edition
 implementation("dev.kotbase:couchbase-lite-kermit:3.0.12-1.0.0")
@@ -126,25 +148,16 @@ implementation("dev.kotbase:couchbase-lite-kermit:3.0.12-1.0.0")
 implementation("dev.kotbase:couchbase-lite-ee-kermit:3.0.12-1.0.0")
 ```
 
-#### Usage
-
-```kotlin
-// Disable default console logs and log to Kermit
-Database.log.console.level = LogLevel.NONE
-Database.log.custom = KermitCouchbaseLiteLogger(kermit)
-```
-
 ### Kotbase Paging
 
-The paging extensions are built on Cash App's [Multiplatform Paging](https://github.com/cashapp/multiplatform-paging),
-Google's [AndroidX Paging](https://developer.android.com/topic/libraries/architecture/paging/v3-overview) with
-multiplatform support. Kotbase Paging provides a [`PagingSource`](
-https://developer.android.com/reference/kotlin/androidx/paging/PagingSource) which performs limit/offset paging queries
-based on a user-supplied database query.
+The [paging extensions](couchbase-lite-paging/README.md) are built on Cash App's [Multiplatform Paging](
+https://github.com/cashapp/multiplatform-paging), Google's [AndroidX Paging](
+https://developer.android.com/topic/libraries/architecture/paging/v3-overview) with multiplatform support. Kotbase
+Paging provides a [`PagingSource`](https://developer.android.com/reference/kotlin/androidx/paging/PagingSource) which
+performs limit/offset paging queries based on a user-supplied database query.
 
 #### Installation
 
-**build.gradle.kts**
 ```kotlin
 // Community Edition
 implementation("dev.kotbase:couchbase-lite-paging:3.0.12-1.0.0")

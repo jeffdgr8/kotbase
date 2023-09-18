@@ -197,7 +197,7 @@ Access the retrieved properties by converting each row into a dictionary — as 
 
 Use [`Result.toJSON()`](/api/couchbase-lite-ee/kotbase/-result/to-j-s-o-n.html) to transform your result into a JSON
 string, which can easily be serialized or used as required in your application. See [Example 7](#example-7) for a
-working example using [KotlinX Serialization](https://github.com/Kotlin/kotlinx.serialization).
+working example using [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization).
 
 !!! example "<span id='example-7'>Example 7. Using JSON Results</span>"
 

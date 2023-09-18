@@ -1,44 +1,27 @@
----
-hide:
-  - toc
----
+# Module couchbase-lite-ee-ktx
+
+## Couchbase Lite Enterprise Edition – Kotlin Extensions
 
 The KTX extensions include the excellent [Kotlin extensions by MOLO17](https://github.com/MOLO17/couchbase-lite-kotlin),
 as well as other convenience functions for composing queries, observing change `Flow`s, and creating indexes.
 
-## Installation
+### Installation
 
-=== "Enterprise Edition"
-
-    ```kotlin title="build.gradle.kts"
-    kotlin {
-        sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite-ee-ktx:{{ version }}")
-                }
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.12-1.0.0")
             }
         }
     }
-    ```
+}
+```
 
-=== "Community Edition"
+### Usage
 
-    ```kotlin title="build.gradle.kts"
-    kotlin {
-        sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite-ktx:{{ version }}")
-                }
-            }
-        }
-    }
-    ```
-
-## Usage
-
-### QueryBuilder extensions
+#### QueryBuilder extensions
 
 The syntax for building a query is more straight-forward thanks to Kotlin's `infix` function support.
 
@@ -79,7 +62,7 @@ val query = selectCount() from database where { "type" equalTo "user" }
 val count = query.execute().countResult()
 ```
 
-### Document builder DSL
+#### Document builder DSL
 
 For creating a `MutableDocument` ready to be saved, you can use a Kotlin builder DSL:
 
@@ -95,13 +78,13 @@ val document = MutableDocument {
 database.save(document)
 ```
 
-### Flow support
+#### Flow support
 
 Supplementing the `Flow` APIs from [Couchbase Lite Android KTX](
 https://docs.couchbase.com/couchbase-lite/current/android/kotlin.html) present in the base **couchbase-lite** modules,
 Kotbase KTX adds some additional useful `Flow` APIs.
 
-#### Query Flow
+##### Query Flow
 
 `Query.asFlow()` builds on top of `Query.queryChangeFlow()` to emit non-null `ResultSet`s and throw any `QueryChange`
 errors.
@@ -116,7 +99,7 @@ select(all())
     }
 ```
 
-#### Document Flow
+##### Document Flow
 
 Unlike `Database.documentChangeFlow()`, which only emits `DocumentChange`s, `Database.documentFlow()` handles the common
 use case of getting the initial document state and observing changes from the database, enabling reactive UI patterns.
@@ -128,9 +111,9 @@ database.documentFlow("userProfile")
     }
 ```
 
-### ResultSet model mapping
+#### ResultSet model mapping
 
-#### Map delegation
+##### Map delegation
 
 Thanks to [`Map` delegation](https://kotlinlang.org/docs/delegated-properties.html#delegating-to-another-property),
 mapping a `ResultSet` to a Kotlin class has never been so easy.
@@ -153,7 +136,7 @@ val users: List<User> = query.execute().toObjects(::User)
 val usersFlow: Flow<List<User>> = query.asObjectsFlow(::User)
 ```
 
-#### JSON deserialization
+##### JSON deserialization
 
 Kotbase KTX also provides extensions for mapping documents from a JSON string to Kotlin class. This works well
 together with a serialization library, like [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization), to
@@ -176,7 +159,7 @@ val usersFlow: Flow<List<User>> = query.asObjectsFlow { json: String ->
 }
 ```
 
-#### Index creation
+##### Index creation
 
 Kotbase KTX provides concise top-level functions for index creation:
 
@@ -185,7 +168,7 @@ database.createIndex("typeNameIndex", valueIndex("type", "name"))
 database.createIndex("overviewFTSIndex", fullTextIndex("overview"))
 ```
 
-#### Replicator extensions
+##### Replicator extensions
 
 For the Android platform, you can bind the `Replicator` `start()` and `stop()` methods to be performed automatically
 when your [`Lifecycle`](https://developer.android.com/jetpack/androidx/releases/lifecycle)-enabled component gets

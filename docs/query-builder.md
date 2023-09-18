@@ -917,7 +917,7 @@ Kotbase provides a convenience API to convert query results to JSON strings.
 
 Use [`Result.toJSON()`](/api/couchbase-lite-ee/kotbase/-result/to-j-s-o-n.html) to transform your result into a JSON
 string, which can easily be serialized or used as required in your application. See [Example 30](#example-30) for a
-working example using [KotlinX Serialization](https://github.com/Kotlin/kotlinx.serialization).
+working example using [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization).
 
 !!! example "<span id='example-30'>Example 30. Using JSON Results</span>"
 
