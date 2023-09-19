@@ -122,4 +122,5 @@ nav:
         - Integrate Custom Listener: integrate-custom-listener.md
     - Handling Data Conflicts: handling-data-conflicts.md
     - Using Logs: using-logs.md
+    - Kotlin Extensions: kotlin-extensions.md
   - API Reference: api" target="_blank

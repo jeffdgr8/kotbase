@@ -160,9 +160,8 @@ When a `null` document is returned by the resolver, the conflict will be resolve
 * When the replicator is stopped, the system will attempt to resolve outstanding and pending conflicts before stopping.
   Hence, apps should expect to see some delay when attempting to stop the replicator depending on the number of
   outstanding documents in the replication queue and the complexity of the resolver function.
-* If there is an exception thrown in the [`ConflictResolver`](
-  /api/couchbase-lite-ee/kotbase/index.html#24893675%2FClasslikes%2F-848713996) function, the exception will be caught
-  and handled:
+* If there is an exception thrown in the [`ConflictResolver`](/api/couchbase-lite-ee/kotbase/-conflict-resolver/)
+  function, the exception will be caught and handled:
     * The conflict to resolve will be skipped. The pending conflicted documents will be resolved when the replicator is
       restarted.
     * The exception will be reported in the warning logs.

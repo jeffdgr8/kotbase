@@ -77,7 +77,7 @@ following arguments:
       Typically, the Communication Framework will handle message assembly and disassembly, so you would use the
       `MESSAGE_STREAM` option in most cases.
 4. `delegate`: The delegate that will implement the [`MessageEndpointDelegate`](
-   /api/couchbase-lite-ee/kotbase/index.html#1493885694%2FClasslikes%2F-848713996) protocol, which is a factory for
+   /api/couchbase-lite-ee/kotbase/-message-endpoint-delegate/) protocol, which is a factory for
    [`MessageEndpointConnection`](/api/couchbase-lite-ee/kotbase/-message-endpoint-connection/).
 
 Then, a [`Replicator`](/api/couchbase-lite-ee/kotbase/-replicator/) is instantiated with the initialized
@@ -98,9 +98,9 @@ this.replicator = repl
 ```
 
 Next, Couchbase Lite will call back the application code through the [`MessageEndpointDelegate`](
-/api/couchbase-lite-ee/kotbase/index.html#1493885694%2FClasslikes%2F-848713996) lambda. When the application receives
-the callback, it must create an instance of [`MessageEndpointConnection`](
-/api/couchbase-lite-ee/kotbase/-message-endpoint-connection/) and return it.
+/api/couchbase-lite-ee/kotbase/-message-endpoint-delegate/) lambda. When the application receives the callback, it must
+create an instance of [`MessageEndpointConnection`](/api/couchbase-lite-ee/kotbase/-message-endpoint-connection/) and
+return it.
 
 ```kotlin
 /* implementation of MessageEndpointDelegate */
