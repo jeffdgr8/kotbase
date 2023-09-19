@@ -33,7 +33,7 @@ import kotlin.jvm.JvmName
 /**
  * Create a [PagingSource] that pages through all results from the `database`.
  *
- * Queries will be executed without join, where, order by, or group by clauses.
+ * Queries will be executed without JOIN, WHERE, ORDER BY, or GROUP BY clauses.
  * Call the version of `QueryPagingSource` that takes a `queryProvider` in order
  * to append these clauses to the paging queries.
  *
