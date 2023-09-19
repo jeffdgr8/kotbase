@@ -18,6 +18,12 @@ kotlin {
 }
 ```
 
+```kotlin
+repositories {
+    mavenCentral()
+}
+```
+
 ### Usage
 
 See detailed usage docs at [kotbase.dev](https://kotbase.dev/).

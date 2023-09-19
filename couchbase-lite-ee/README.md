@@ -18,6 +18,13 @@ kotlin {
 }
 ```
 
+```kotlin
+repositories {
+    mavenCentral()
+    maven("https://mobile.maven.couchbase.com/maven2/dev/")
+}
+```
+
 ### Usage
 
 See detailed usage docs at [kotbase.dev](https://kotbase.dev/).
