@@ -337,8 +337,8 @@ Supported types can [get `Fragment` or `MutableFragment`](/api/couchbase-lite-ee
 index or key. `Fragment` objects represent an arbitrary entry in a key path, themselves supporting subscript access to
 nested values.
 
-Finally, the typed optional value at the end of a key path can be accessed or set with the `Fragment` properties, e.g.
-`array`, `dictionary`, `string`, `int`, `date`, etc.
+Finally, the typed optional value at the end of a key path can be accessed or set with the [`Fragment`](
+/api/couchbase-lite-ee/kotbase/-fragment/) properties, e.g. `array`, `dictionary`, `string`, `int`, `date`, etc.
 
 ```kotlin
 val db = Database("db")
