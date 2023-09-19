@@ -98,23 +98,6 @@ https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-i
 https://docs.couchbase.com/mobile/3.0.12/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
 https://docs.couchbase.com/mobile/3.0.12/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
 https://docs.couchbase.com/mobile/3.0.12/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
-<details>
-<summary>Subscript API examples</summary>
-
-```kotlin
-val db = Database("db")
-val doc = db["doc-id"]         // DocumentFragment
-doc.exists                     // true or false
-doc.document                   // "doc-id" Document from Database
-doc["array"].array             // Array value from "array" key
-doc["array"][0].string         // String value from first Array item
-doc["dict"].dictionary         // Dictionary value from "dict" key
-doc["dict"]["num"].int         // Int value from Dictionary "num" key
-db["milk"]["exp"].date         // Instant value from "exp" key from "milk" Document
-val newDoc = MutableDocument("new-id")
-newDoc["name"].value = "Sally" // set "name" value
-```
-</details>
 
 ## Extension Libraries
 

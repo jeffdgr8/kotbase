@@ -27,6 +27,7 @@ exceptions:
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
   https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
+
 ??? example "Subscript API examples"
 
     ```kotlin

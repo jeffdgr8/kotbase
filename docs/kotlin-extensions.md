@@ -1,3 +1,7 @@
+_Couchbase Lite — Kotlin support_
+
+## Introduction
+
 In addition to implementing the full Couchbase Lite Java SDK API, Kotbase also provides the additional APIs available in
 the [Couchbase Lite Android KTX SDK](https://docs.couchbase.com/couchbase-lite/current/android/kotlin.html), which
 includes a number of Kotlin-specific extensions.
@@ -6,8 +10,14 @@ This includes:
 
 * [Configuration factories](#configuration-factories) for the configuration of important Couchbase Lite objects such as
   _Databases_, _Replicators_, and _Listeners_.
-* [Change Flows](#flows) that monitor key Couchbase Lite objects for change using Kotlin features such as, [coroutines](
+* [Change Flows](#change-flows) that monitor key Couchbase Lite objects for change using Kotlin features such as, [coroutines](
   https://kotlinlang.org/docs/coroutines-guide.html) and [Flows](https://kotlinlang.org/docs/flow.html).
+
+Additionally, while not available in the Java SDK, as Java doesn't support operator overloading, Kotbase adds support
+for [`Fragment` subscript APIs](#fragment-subscripts), similar to Couchbase Lite [Swift](
+https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
+https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
+https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
 
 ## Configuration Factories
 
@@ -181,7 +191,7 @@ values with the passed parameters.
     ): LogFileConfiguration
     ```
 
-## Flows
+## Change Flows
 
 These wrappers use [Flows](https://kotlinlang.org/docs/flow.html) to monitor for changes.
 
@@ -313,3 +323,33 @@ Use [`Query.queryChangeFlow()`](/api/couchbase-lite-ee/kotbase/query-change-flow
         coroutineContext: CoroutineContext? = null
     ): Flow<QueryChange>
     ```
+
+## Fragment Subscripts
+
+Kotbase uses Kotlin's [indexed access operator](
+https://kotlinlang.org/docs/operator-overloading.html#indexed-access-operator) to implement Couchbase Lite's
+[`Fragment`](/api/couchbase-lite-ee/kotbase/-fragment/) subscript APIs for `Database`, `Document`, `Array`,
+`Dictionary`, and `Result`, for concise, type-safe, and null-safe access to arbitrary values in a nested JSON object.
+`MutableDocument`, `MutableArray`, and `MutableDictionary` also support the [`MutableFragment`](
+/api/couchbase-lite-ee/kotbase/-mutable-fragment/) APIs for mutating values.
+
+Supported types can [get `Fragment` or `MutableFragment`](/api/couchbase-lite-ee/kotbase/get.html) objects by either
+index or key. `Fragment` objects represent an arbitrary entry in a key path, themselves supporting subscript access to
+nested values.
+
+Finally, the typed optional value at the end of a key path can be accessed or set with the `Fragment` properties, e.g.
+`array`, `dictionary`, `string`, `int`, `date`, etc.
+
+```kotlin
+val db = Database("db")
+val doc = db["doc-id"]         // DocumentFragment
+doc.exists                     // true or false
+doc.document                   // "doc-id" Document from Database
+doc["array"].array             // Array value from "array" key
+doc["array"][0].string         // String value from first Array item
+doc["dict"].dictionary         // Dictionary value from "dict" key
+doc["dict"]["num"].int         // Int value from Dictionary "num" key
+db["milk"]["exp"].date         // Instant value from "exp" key from "milk" Document
+val newDoc = MutableDocument("new-id")
+newDoc["name"].value = "Sally" // set "name" value
+```
