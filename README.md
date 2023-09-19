@@ -69,7 +69,7 @@ repositories {
 ## Documentation
 
 Kotbase documentation can be found at [kotbase.dev](https://kotbase.dev/), including [getting started examples](
-https://kotbase.dev/getting-started/), [detailed usage docs](https://kotbase.dev/databases/), and [API reference](
+https://kotbase.dev/getting-started/), [usage guide](https://kotbase.dev/databases/), and [API reference](
 https://kotbase.dev/api/).
 
 ## Differences from Couchbase Lite Java SDK

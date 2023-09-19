@@ -26,4 +26,4 @@ repositories {
 
 ### Usage
 
-See detailed usage docs at [kotbase.dev](https://kotbase.dev/).
+See usage guide at [kotbase.dev](https://kotbase.dev/).
