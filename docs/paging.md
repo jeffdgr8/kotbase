@@ -41,11 +41,7 @@ based on a user-supplied database query.
 @Serializable
 data class Hotel(val id: String, val type: String, val name: String)
 
-val select = select(
-    Meta.id,
-    "type",
-    "name"
-)
+val select = select(Meta.id, "type", "name")
 val mapper = { json: String ->
     Json.decodeFromString<Hotel>(json)
 }
