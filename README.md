@@ -93,11 +93,11 @@ https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-i
   through on Apple platforms. [Please report](https://github.com/jeffdgr8/kotbase/issues/new) any occurrences that may
   deserve addressing.
 * Some deprecated APIs are omitted.
-* While not available in the Java SDK, as Java doesn't support operator overloading, `Fragment` subscript APIs for
-`Database`, `Document`, `Array`, `Dictionary`, and `Result` are available in Kotbase, similar to [Swift](
-https://docs.couchbase.com/mobile/3.0.12/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
-https://docs.couchbase.com/mobile/3.0.12/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
-https://docs.couchbase.com/mobile/3.0.12/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
+* While not available in the Java SDK, as Java doesn't support operator overloading, `Fragment` subscript APIs are
+  available in Kotbase, similar to [Swift](
+  https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
+  https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
+  https://docs.couchbase.com/mobile/3.0.2/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
 
 ## Extension Libraries
 
