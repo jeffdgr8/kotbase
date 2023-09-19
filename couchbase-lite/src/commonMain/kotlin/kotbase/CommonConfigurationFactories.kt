@@ -20,7 +20,7 @@ package kotbase
  *
  * Usage:
  *
- *      val fullTextIndexConfig = FullTextIndexConfigurationFactory.create(...)
+ *     val fullTextIndexConfig = FullTextIndexConfigurationFactory.newConfig(...)
  */
 public val FullTextIndexConfigurationFactory: FullTextIndexConfiguration? = null
 
@@ -32,7 +32,7 @@ public val FullTextIndexConfigurationFactory: FullTextIndexConfiguration? = null
  *
  * @see FullTextIndexConfiguration
  */
-public fun FullTextIndexConfiguration?.create(
+public fun FullTextIndexConfiguration?.newConfig(
     vararg expressions: String = emptyArray(),
     language: String? = null,
     ignoreAccents: Boolean? = null
@@ -46,8 +46,8 @@ public fun FullTextIndexConfiguration?.create(
             }
         ) { "Must specify an expression" }
     ).apply {
-        (language ?: this@create?.language)?.let { this.language = it }
-        (ignoreAccents ?: this@create?.isIgnoringAccents)?.let { this.isIgnoringAccents = it }
+        (language ?: this@newConfig?.language)?.let { this.language = it }
+        (ignoreAccents ?: this@newConfig?.isIgnoringAccents)?.let { this.isIgnoringAccents = it }
     }
 }
 
@@ -56,7 +56,7 @@ public fun FullTextIndexConfiguration?.create(
  *
  * Usage:
  *
- *     val valIndexConfig = ValueIndexConfigurationFactory.create(...)
+ *     val valIndexConfig = ValueIndexConfigurationFactory.newConfig(...)
  */
 public val ValueIndexConfigurationFactory: ValueIndexConfiguration? = null
 
@@ -68,7 +68,7 @@ public val ValueIndexConfigurationFactory: ValueIndexConfiguration? = null
  *
  * @see ValueIndexConfiguration
  */
-public fun ValueIndexConfiguration?.create(
+public fun ValueIndexConfiguration?.newConfig(
     vararg expressions: String = emptyArray()
 ): ValueIndexConfiguration {
     return ValueIndexConfiguration(
@@ -87,7 +87,7 @@ public fun ValueIndexConfiguration?.create(
  *
  * Usage:
  *
- *      val logFileConfig = LogFileConfigurationFactory.create(...)
+ *     val logFileConfig = LogFileConfigurationFactory.newConfig(...)
  */
 public val LogFileConfigurationFactory: LogFileConfiguration? = null
 
@@ -102,7 +102,7 @@ public val LogFileConfigurationFactory: LogFileConfiguration? = null
  *
  * @see LogFileConfiguration
  */
-public fun LogFileConfiguration?.create(
+public fun LogFileConfiguration?.newConfig(
     directory: String? = null,
     maxSize: Long? = null,
     maxRotateCount: Int? = null,

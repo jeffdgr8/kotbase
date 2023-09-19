@@ -58,7 +58,7 @@ You should configure and initialize a replicator for each Couchbase Lite databas
     ```kotlin
     val repl = Replicator(
         // initialize the replicator configuration
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint(URI("wss://listener.com:8954")), 
     
@@ -225,7 +225,7 @@ When necessary you can adjust any or all of those configurable values — see [E
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
             //  other config params as required . .
@@ -349,7 +349,7 @@ shows how to initiate a one-shot replication as the user **username** with the p
     ```kotlin
     // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
             authenticator = BasicAuthenticator("username", "password".toCharArray())
@@ -378,7 +378,7 @@ endpoint.
     ```kotlin
     // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
             authenticator = SessionAuthenticator("904ac010862f37c8dd99015a33ab5a3565fd8447")
@@ -400,7 +400,7 @@ done by a proxy server (between Couchbase Lite and Sync Gateway) — see [Exampl
     ```kotlin
     // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
             headers = mapOf("CustomHeaderName" to "Value")
@@ -423,7 +423,7 @@ high-priority documents could be pushed first, or documents in a "draft" state c
 ```kotlin
 // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
 val repl = Replicator(
-    ReplicatorConfigurationFactory.create(
+    ReplicatorConfigurationFactory.newConfig(
         database = database,
         target = URLEndpoint("ws://localhost:4984/mydatabase"),
         pushFilter = { _, flags -> flags.contains(DocumentFlag.DELETED) }
@@ -452,7 +452,7 @@ important security mechanism in a peer-to-peer topology with peers that are not 
 ```kotlin
 // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
 val repl = Replicator(
-    ReplicatorConfigurationFactory.create(
+    ReplicatorConfigurationFactory.newConfig(
         database = database,
         target = URLEndpoint("ws://localhost:4984/mydatabase"),
         pullFilter = { document, _ -> "draft" == document.getString("type") }
@@ -697,7 +697,7 @@ replicator running using [`start()`](/api/couchbase-lite-ee/kotbase/-replicator/
     val repl = Replicator( 
     
         // initialize the replicator configuration
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
     
             target = URLEndpoint("wss://listener.com:8954"),
@@ -956,7 +956,7 @@ methods:
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
             type = ReplicatorType.PUSH
@@ -1117,7 +1117,7 @@ This example loads the certificate from the application sandbox, then converts i
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint("wss://localhost:4984/mydatabase"),
             pinnedServerCertificate = PlatformUtils.getAsset("cert.cer")?.readByteArray()

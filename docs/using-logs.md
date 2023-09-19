@@ -94,7 +94,7 @@ With file based logging you can also use the [`LogFileConfiguration`](
 
     ```kotlin
     Database.log.file.apply {
-        config = LogFileConfigurationFactory.create(
+        config = LogFileConfigurationFactory.newConfig(
             directory = "temp/cbl-logs",
             maxSize = 10240,
             maxRotateCount = 5,

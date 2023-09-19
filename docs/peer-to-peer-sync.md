@@ -126,7 +126,7 @@ You can configure a Peer-to-Peer synchronization with just a short amount of cod
 
     ```kotlin
     val listener = URLEndpointListener(
-        URLEndpointListenerConfigurationFactory.create(
+        URLEndpointListenerConfigurationFactory.newConfig(
             database = database,
             authenticator = ListenerPasswordAuthenticator { user, pwd ->
                 (user == "daniel") && (pwd.concatToString() == "123")
@@ -150,7 +150,7 @@ You can configure a Peer-to-Peer synchronization with just a short amount of cod
     ```kotlin
     val listenerEndpoint = URLEndpoint("wss://10.0.2.2:4984/db") 
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = listenerEndpoint,
             authenticator = BasicAuthenticator("valid.user", "valid.password.string".toCharArray()),

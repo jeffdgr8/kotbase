@@ -53,7 +53,7 @@ You should configure and initialize a replicator for each Couchbase Lite databas
     ```kotlin
     val repl = Replicator(
         // initialize the replicator configuration
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
     
             target = URLEndpoint("wss://listener.com:8954"),
@@ -142,7 +142,7 @@ The constructor provides:
 
     ```kotlin
     // initialize the replicator configuration
-    val config = ReplicatorConfigurationFactory.create(
+    val config = ReplicatorConfigurationFactory.newConfig(
         database = database,
         target = URLEndpoint("wss://10.0.2.2:8954/travel-sample"),
     )
@@ -211,7 +211,7 @@ When necessary you can adjust any or all of those configurable values — see [E
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
             //  other config params as required . .
@@ -358,7 +358,7 @@ starting the replicator running using [`start()`](/api/couchbase-lite-ee/kotbase
     // to prevent the Replicator from being GCed
     val repl = Replicator(
         // initialize the replicator configuration
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
     
             target = URLEndpoint("wss://listener.com:8954"), 
@@ -545,7 +545,7 @@ methods:
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
             type = ReplicatorType.PUSH

@@ -24,11 +24,11 @@ package kotbase
  *
  * @see DatabaseConfiguration
  */
-public fun DatabaseConfiguration?.create(
+public fun DatabaseConfiguration?.newConfig(
     databasePath: String? = null,
     encryptionKey: EncryptionKey? = null
 ): DatabaseConfiguration {
-    return create(
+    return newConfig(
         databasePath = databasePath
     ).apply {
         encryptionKey?.let { setEncryptionKey(it) }
@@ -67,7 +67,7 @@ public fun DatabaseConfiguration?.create(
  *
  * @see ReplicatorConfiguration
  */
-public fun ReplicatorConfiguration?.create(
+public fun ReplicatorConfiguration?.newConfig(
     database: Database? = null,
     target: Endpoint? = null,
     type: ReplicatorType? = null,
@@ -88,7 +88,7 @@ public fun ReplicatorConfiguration?.create(
     acceptParentDomainCookies: Boolean? = null
 ): ReplicatorConfiguration {
     val orig = this
-    return create(
+    return newConfig(
         database = database,
         target = target,
         type = type,
@@ -119,7 +119,8 @@ public fun ReplicatorConfiguration?.create(
  * Configuration factory for new MessageEndpointListenerConfigurations
  *
  * Usage:
- *     val endpointListenerConfig = MessageEndpointListenerConfigurationFactory.create(...)
+ *
+ *     val endpointListenerConfig = MessageEndpointListenerConfigurationFactory.newConfig(...)
  */
 public val MessageEndpointListenerConfigurationFactory: MessageEndpointListenerConfiguration? = null
 
@@ -134,7 +135,7 @@ public val MessageEndpointListenerConfigurationFactory: MessageEndpointListenerC
  *
  * @see MessageEndpointListenerConfiguration
  */
-public fun MessageEndpointListenerConfiguration?.create(
+public fun MessageEndpointListenerConfiguration?.newConfig(
     database: Database? = null,
     protocolType: ProtocolType? = null
 ): MessageEndpointListenerConfiguration = MessageEndpointListenerConfiguration(
@@ -148,7 +149,8 @@ public fun MessageEndpointListenerConfiguration?.create(
  * Configuration factory for new URLEndpointListenerConfigurations
  *
  * Usage:
- *     val endpointListenerConfig = URLEndpointListenerConfigurationFactory.create(...)
+ *
+ *     val endpointListenerConfig = URLEndpointListenerConfigurationFactory.newConfig(...)
  */
 public val URLEndpointListenerConfigurationFactory: URLEndpointListenerConfiguration? = null
 
@@ -169,7 +171,7 @@ public val URLEndpointListenerConfigurationFactory: URLEndpointListenerConfigura
  *
  * @see URLEndpointListenerConfiguration
  */
-public fun URLEndpointListenerConfiguration?.create(
+public fun URLEndpointListenerConfiguration?.newConfig(
     database: Database? = null,
     networkInterface: String? = null,
     port: Int? = null,

@@ -19,7 +19,8 @@ package kotbase
  * Configuration factory for new DatabaseConfigurations
  *
  * Usage:
- *      val dbConfig = DatabaseConfigurationFactory.create(...)
+ *
+ *     val dbConfig = DatabaseConfigurationFactory.newConfig(...)
  */
 public val DatabaseConfigurationFactory: DatabaseConfiguration? = null
 
@@ -31,7 +32,7 @@ public val DatabaseConfigurationFactory: DatabaseConfiguration? = null
  *
  * @see DatabaseConfiguration
  */
-public fun DatabaseConfiguration?.create(databasePath: String? = null): DatabaseConfiguration {
+public fun DatabaseConfiguration?.newConfig(databasePath: String? = null): DatabaseConfiguration {
     return DatabaseConfiguration(this).apply {
         databasePath?.let { setDirectory(it) }
     }
@@ -39,14 +40,19 @@ public fun DatabaseConfiguration?.create(databasePath: String? = null): Database
 
 /**
  * Configuration factory for new ReplicatorConfigurations
+ *
  * Usage:
- *     val replConfig = ReplicatorConfigurationFactory.create(...)
+ *
+ *     val replConfig = ReplicatorConfigurationFactory.newConfig(...)
  */
 public val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
 
 /**
  * Create a ReplicatorConfiguration, overriding the receiver's
  * values with the passed parameters:
+ *
+ * Note: A document that is blocked by a document Id filter will not be auto-purged
+ *       regardless of the setting of the enableAutoPurge property
  *
  * @param database (required) the local database.
  * @param target (required) The max size of the log file in bytes.
@@ -68,7 +74,7 @@ public val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
  *
  * @see ReplicatorConfiguration
  */
-public fun ReplicatorConfiguration?.create(
+public fun ReplicatorConfiguration?.newConfig(
     database: Database? = null,
     target: Endpoint? = null,
     type: ReplicatorType? = null,
@@ -89,8 +95,8 @@ public fun ReplicatorConfiguration?.create(
 ): ReplicatorConfiguration {
     val orig = this
     return ReplicatorConfiguration(
-        database ?: this?.database ?: error("Must specify a database"),
-        target ?: this?.target ?: error("Must specify a target")
+        database ?: this?.database ?: error("A ReplicatorConfiguration must specify a database"),
+        target ?: this?.target ?: error("A ReplicatorConfiguration must specify an endpoint")
     ).apply {
         (type ?: orig?.type)?.let { this.type = it }
         (continuous ?: orig?.isContinuous)?.let { this.isContinuous = it }

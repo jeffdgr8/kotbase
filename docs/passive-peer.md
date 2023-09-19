@@ -58,7 +58,7 @@ configuration process.
 
     ```kotlin
     val listener = URLEndpointListener(
-        URLEndpointListenerConfigurationFactory.create(
+        URLEndpointListenerConfigurationFactory.newConfig(
             database = database,
             port = 55990,
             networkInterface = "wlan0",
@@ -439,7 +439,7 @@ There are two ways to authenticate a client:
     
     // accept only clients signed by the corp cert
     val listener = URLEndpointListener(
-        URLEndpointListenerConfigurationFactory.create(
+        URLEndpointListenerConfigurationFactory.newConfig(
             // get the identity 
             database = database,
             identity = validId,
@@ -512,7 +512,7 @@ running — see [Example 13](#example-13).
     ```kotlin
     // Initialize the listener
     val listener = URLEndpointListener(
-        URLEndpointListenerConfigurationFactory.create(
+        URLEndpointListenerConfigurationFactory.newConfig(
             database = database,
             port = 55990,
             networkInterface = "wlan0",

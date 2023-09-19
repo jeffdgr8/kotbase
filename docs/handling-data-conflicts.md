@@ -185,7 +185,7 @@ the default conflict resolution will be applied.
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
             conflictResolver = { conflict ->

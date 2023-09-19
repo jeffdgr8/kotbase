@@ -12,7 +12,7 @@ different device.
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.create(
+        ReplicatorConfigurationFactory.newConfig(
             database = database1,
             target = DatabaseEndpoint(database2),
             type = ReplicatorType.PULL
