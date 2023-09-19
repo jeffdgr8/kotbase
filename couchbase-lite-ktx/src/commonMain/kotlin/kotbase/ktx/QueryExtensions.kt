@@ -20,6 +20,7 @@
  * - Use kotbase package
  * - Adapt to use queryChangeFlow()
  * - Resolve explicitApiWarning() requirements
+ * - Add optional CoroutineContext parameter
  */
 
 @file:Suppress("NOTHING_TO_INLINE", "KotlinRedundantDiagnosticSuppress")
@@ -33,6 +34,7 @@ import kotbase.queryChangeFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Returns a [Flow] that emits the Query [ResultSet] every time the underlying
@@ -40,7 +42,8 @@ import kotlinx.coroutines.flow.onEach
  *
  * If the query fails, the [Flow] throws an error.
  */
-public fun Query.asFlow(): Flow<ResultSet> = asQueryFlow().mapNotNull { it.results }
+public fun Query.asFlow(coroutineContext: CoroutineContext? = null): Flow<ResultSet> =
+    asQueryFlow(coroutineContext).mapNotNull { it.results }
 
 /**
  * Returns a [Flow] that maps the Query [ResultSet] to instances of a class
@@ -63,8 +66,9 @@ public fun Query.asFlow(): Flow<ResultSet> = asQueryFlow().mapNotNull { it.resul
  * @param factory the lambda used for creating object instances.
  */
 public fun <T : Any> Query.asObjectsFlow(
+    coroutineContext: CoroutineContext? = null,
     factory: (Map<String, Any?>) -> T?
-): Flow<List<T>> = asQueryFlow().mapToObjects(factory)
+): Flow<List<T>> = asQueryFlow(coroutineContext).mapToObjects(factory)
 
 public fun <T : Any> Flow<QueryChange>.mapToObjects(
     factory: (Map<String, Any?>) -> T?
@@ -74,7 +78,7 @@ public fun <T : Any> Flow<QueryChange>.mapToObjects(
 // Private functions
 ///////////////////////////////////////////////////////////////////////////
 
-internal fun Query.asQueryFlow(): Flow<QueryChange> =
-    queryChangeFlow().onEach { change ->
+internal fun Query.asQueryFlow(coroutineContext: CoroutineContext? = null): Flow<QueryChange> =
+    queryChangeFlow(coroutineContext).onEach { change ->
         change.error?.let { throw it }
     }

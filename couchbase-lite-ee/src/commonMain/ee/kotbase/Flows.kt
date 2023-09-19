@@ -18,6 +18,7 @@ package kotbase
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlin.coroutines.CoroutineContext
 
 /**
  * **ENTERPRISE EDITION API**
@@ -26,7 +27,9 @@ import kotlinx.coroutines.flow.callbackFlow
  *
  * @see MessageEndpointListener.addChangeListener
  */
-public fun MessageEndpointListener.messageEndpointChangeFlow(): Flow<MessageEndpointListenerChange> = callbackFlow {
-    val token = addChangeListener(coroutineContext) { trySend(it) }
+public fun MessageEndpointListener.messageEndpointChangeFlow(
+    coroutineContext: CoroutineContext? = null
+): Flow<MessageEndpointListenerChange> = callbackFlow {
+    val token = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
     awaitClose { removeChangeListener(token) }
 }

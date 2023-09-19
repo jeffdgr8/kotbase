@@ -18,14 +18,17 @@ package kotbase
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A Flow of database changes.
  *
  * @see Database.addChangeListener
  */
-public fun Database.databaseChangeFlow(): Flow<DatabaseChange> = callbackFlow {
-    val token = addChangeListener(coroutineContext) { trySend(it) }
+public fun Database.databaseChangeFlow(
+    coroutineContext: CoroutineContext? = null
+): Flow<DatabaseChange> = callbackFlow {
+    val token = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
     awaitClose { removeChangeListener(token) }
 }
 
@@ -34,8 +37,11 @@ public fun Database.databaseChangeFlow(): Flow<DatabaseChange> = callbackFlow {
  *
  * @see Database.addDocumentChangeListener
  */
-public fun Database.documentChangeFlow(documentId: String): Flow<DocumentChange> = callbackFlow {
-    val token = addDocumentChangeListener(documentId, coroutineContext) { trySend(it) }
+public fun Database.documentChangeFlow(
+    documentId: String,
+    coroutineContext: CoroutineContext? = null
+): Flow<DocumentChange> = callbackFlow {
+    val token = addDocumentChangeListener(documentId, coroutineContext ?: this.coroutineContext) { trySend(it) }
     awaitClose { removeChangeListener(token) }
 }
 
@@ -44,8 +50,10 @@ public fun Database.documentChangeFlow(documentId: String): Flow<DocumentChange>
  *
  * @see Replicator.addChangeListener
  */
-public fun Replicator.replicatorChangesFlow(): Flow<ReplicatorChange> = callbackFlow {
-    val token = addChangeListener(coroutineContext) { trySend(it) }
+public fun Replicator.replicatorChangesFlow(
+    coroutineContext: CoroutineContext? = null
+): Flow<ReplicatorChange> = callbackFlow {
+    val token = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
     awaitClose { removeChangeListener(token) }
 }
 
@@ -54,8 +62,10 @@ public fun Replicator.replicatorChangesFlow(): Flow<ReplicatorChange> = callback
  *
  * @see Replicator.addDocumentReplicationListener
  */
-public fun Replicator.documentReplicationFlow(): Flow<DocumentReplication> = callbackFlow {
-    val token = addDocumentReplicationListener(coroutineContext) { trySend(it) }
+public fun Replicator.documentReplicationFlow(
+    coroutineContext: CoroutineContext? = null
+): Flow<DocumentReplication> = callbackFlow {
+    val token = addDocumentReplicationListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
     awaitClose { removeChangeListener(token) }
 }
 
@@ -64,7 +74,7 @@ public fun Replicator.documentReplicationFlow(): Flow<DocumentReplication> = cal
  *
  * @see Query.addChangeListener
  */
-public fun Query.queryChangeFlow(): Flow<QueryChange> = callbackFlow {
-    val token = addChangeListener(coroutineContext) { trySend(it) }
+public fun Query.queryChangeFlow(coroutineContext: CoroutineContext? = null): Flow<QueryChange> = callbackFlow {
+    val token = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
     awaitClose { removeChangeListener(token) }
 }
