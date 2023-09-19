@@ -86,10 +86,6 @@ nav:
   - Overview:
     - Kotbase: index.md
     - Differences from Couchbase Lite Java SDK: differences.md
-    - Extensions:
-      - KTX: ktx.md
-      - Kermit: kermit.md
-      - Paging: paging.md
     - Roadmap: roadmap.md
     - Community: community.md
     - License: license.md
@@ -97,6 +93,10 @@ nav:
     - Installation: installation.md
     - Supported Platforms: platforms.md
     - Build and Run: getting-started.md
+    - Extension Libraries:
+        - KTX: ktx.md
+        - Kermit: kermit.md
+        - Paging: paging.md
   - Documentation:
     - Databases: databases.md
     - Pre-built Database: prebuilt-database.md

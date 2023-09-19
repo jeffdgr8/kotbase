@@ -1,8 +1,3 @@
----
-hide:
-  - toc
----
-
 The KTX extensions include the excellent [Kotlin extensions by MOLO17](https://github.com/MOLO17/couchbase-lite-kotlin),
 as well as other convenience functions for composing queries, observing change `Flow`s, and creating indexes.
 

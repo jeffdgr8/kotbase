@@ -1,8 +1,3 @@
----
-hide:
-  - toc
----
-
 The paging extensions are built on Cash App's [Multiplatform Paging](https://github.com/cashapp/multiplatform-paging),
 Google's [AndroidX Paging](https://developer.android.com/topic/libraries/architecture/paging/v3-overview) with
 multiplatform support. Kotbase Paging provides a [`PagingSource`](
