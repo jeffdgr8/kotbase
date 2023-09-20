@@ -159,7 +159,7 @@ private constructor(
     public actual var headers: Map<String, String>?
         get() = actual.headers as Map<String, String>?
         set(value) {
-            actual.headers = value as Map<Any?, *>
+            actual.headers = value as Map<Any?, *>?
         }
 
     public actual var isAcceptParentDomainCookies: Boolean
