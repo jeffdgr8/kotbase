@@ -82,6 +82,9 @@ extra:
       link: https://twitter.com/jeffdgr8
     - icon: simple/linkedin
       link: https://linkedin.com/in/lockhartjeff/
+  analytics:
+    provider: google
+    property: G-QFS8SG5ZKD
 nav:
   - Overview:
     - Kotbase: index.md
