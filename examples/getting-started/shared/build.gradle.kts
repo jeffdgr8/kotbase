@@ -39,7 +39,12 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(libs.kotbase)
+                val useLocalLib: String by project
+                if (useLocalLib.toBoolean()) {
+                    api(libs.kotbase.get().module.toString())
+                } else {
+                    api(libs.kotbase)
+                }
             }
         }
         configureEach {
@@ -64,7 +69,7 @@ tasks.withType<KotlinCompile> {
 
 android {
     namespace = "dev.kotbase.gettingstarted.shared"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 24
     }

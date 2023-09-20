@@ -8,7 +8,7 @@ androidx-material = "1.9.0"
 compose = "1.5.1"
 couchbase-lite-c = "3.0.12"
 kmp-native-coroutines = "1.0.0-ALPHA-18"
-kotbase = "3.0.12-1.0.0-SNAPSHOT"
+kotbase = "3.0.12-1.0.0"
 kotlin = "1.9.10"
 ksp = "1.9.10-1.0.13"
 

@@ -5,12 +5,15 @@ include(":desktopApp")
 include(":cliApp")
 include(":shared")
 
+if (settings.extra["useLocalLib"]?.toString().toBoolean()) {
+    includeBuild("../..")
+}
+
 pluginManagement {
     repositories {
         google()
         gradlePluginPortal()
         mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -18,7 +21,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        mavenLocal()
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
     }
 }
 
