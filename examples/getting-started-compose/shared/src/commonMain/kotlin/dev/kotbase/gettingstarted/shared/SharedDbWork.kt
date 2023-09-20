@@ -84,7 +84,7 @@ class SharedDbWork {
         val database = database ?: return emptyFlow()
 
         val repl = Replicator(
-            ReplicatorConfigurationFactory.create(
+            ReplicatorConfigurationFactory.newConfig(
                 target = URLEndpoint("ws://localhost:4984/getting-started-db"),
                 database = database,
                 type = ReplicatorType.PUSH_AND_PULL,
