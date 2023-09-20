@@ -1,6 +1,6 @@
 Add the Kotbase dependency to your [Kotlin Multiplatform project](
-https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html) in the `commonMain` source set dependencies of
-your shared module's `build.gradle.kts`:
+https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html) in the **commonMain** source set dependencies of
+your shared module's **build.gradle.kts**:
 
 === "Enterprise Edition"
 

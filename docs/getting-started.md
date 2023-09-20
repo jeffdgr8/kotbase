@@ -238,3 +238,9 @@ https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/sr
 in Kotlin and [`asyncSequence(for:)`](
 https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/iosApp/iosApp/ContentView.swift#L97) in Swift
 code.
+
+## Kotbase Library Source
+
+The apps can get the Kotbase library dependency either from its published Maven artifact or build the library locally from the
+source repository. Set the `useLocalLib` property in **gradle.properties** to `true` to build the library from source, otherwise the published
+artifact from Maven Central will be used.
