@@ -1,5 +1,8 @@
 import dev.kotbase.gettingstarted.shared.Log
 import dev.kotbase.gettingstarted.shared.SharedDbWork
+import kotbase.ReplicatorActivityLevel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>) {
@@ -24,9 +27,12 @@ private suspend fun databaseWork(inputValue: String, replicate: Boolean) {
         Log.i(TAG, "Updated document :: $docId")
         queryDocs()
         if (replicate) {
-            replicate().collect {
-                Log.i(TAG, "Replicator Change :: $it")
-            }
+            replicate()
+                .takeWhile {
+                    Log.i(TAG, "Replicator Change :: $it")
+                    it.status.activityLevel != ReplicatorActivityLevel.STOPPED
+                }
+                .collect()
         }
     }
 }
