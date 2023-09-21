@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `multiplatform-convention`
     `library-convention`
@@ -40,4 +42,14 @@ kotlin {
     }
 }
 
-android.namespace = "dev.kotbase.kermit"
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "17"
+}
+
+android {
+    namespace = "dev.kotbase.kermit"
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
