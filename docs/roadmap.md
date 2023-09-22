@@ -3,7 +3,7 @@ hide:
   - toc
 ---
 
-* [ ] Documentation website ([kotbase.dev](https://kotbase.dev/))
+* [x] Documentation website ([kotbase.dev](https://kotbase.dev/))
 * [ ] Public release
 * [ ] Sample apps
     * [x] [Getting Started](https://github.com/jeffdgr8/kotbase/tree/main/examples/getting-started)

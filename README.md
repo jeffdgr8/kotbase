@@ -150,7 +150,7 @@ implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.12-1.0.0")
 
 ## Roadmap
 
-* [ ] Documentation website ([kotbase.dev](https://kotbase.dev/))
+* [x] Documentation website ([kotbase.dev](https://kotbase.dev/))
 * [ ] Public release
 * [ ] Sample apps
     * [x] [Getting Started](examples/getting-started)
