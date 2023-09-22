@@ -29,7 +29,7 @@ kotlin {
      */
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    targetHierarchy.custom {
+    applyHierarchyTemplate {
         common {
             group("jvmCommon") {
                 withAndroidTarget()
