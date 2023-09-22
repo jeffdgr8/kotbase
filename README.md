@@ -72,12 +72,12 @@ Kotbase documentation can be found at [kotbase.dev](https://kotbase.dev/), inclu
 https://kotbase.dev/getting-started/), [usage guide](https://kotbase.dev/databases/), and [API reference](
 https://kotbase.dev/api/).
 
-## Differences from Couchbase Lite Java SDK
+## Differences from Java SDK
 
-Kotbase's API aligns with the [Java](https://docs.couchbase.com/couchbase-lite/current/java/quickstart.html) and
-[Android KTX](https://docs.couchbase.com/couchbase-lite/current/android/quickstart.html) SDKs. Migrating existing Kotlin
-code can be as straightforward as changing the import package from `com.couchbase.lite` to `kotbase`, with some
-exceptions:
+Kotbase's API aligns with the Couchbase Lite [Java](
+https://docs.couchbase.com/couchbase-lite/current/java/quickstart.html) and [Android KTX](
+https://docs.couchbase.com/couchbase-lite/current/android/quickstart.html) SDKs. Migrating existing Kotlin code can be
+as straightforward as changing the import package from `com.couchbase.lite` to `kotbase`, with some exceptions:
 
 * Java callback functional interfaces are implemented as Kotlin function types.
 * `File`, `URL`, and `URI` APIs are represented as strings.

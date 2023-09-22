@@ -88,7 +88,7 @@ extra:
 nav:
   - Overview:
     - Kotbase: index.md
-    - Differences from Couchbase Lite Java SDK: differences.md
+    - Differences from Java SDK: differences.md
     - Roadmap: roadmap.md
     - Community: community.md
     - License: license.md
