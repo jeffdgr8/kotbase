@@ -3,7 +3,9 @@ couchbase-lite-java = "3.0.12"
 couchbase-lite-objc = "3.0.12"
 couchbase-lite-c = "3.0.12"
 kotlinx-serialization = "1.6.0"
-mockk = "1.13.3" # 1.13.4 breaks QueryExtensionKtTest on Android https://github.com/mockk/mockk/issues/1035
+# 1.13.4 breaks QueryExtensionKtTest on Android https://github.com/mockk/mockk/issues/1035
+# fixed in 1.13.8, but JVM source compatibility needs to be reverted to 1.8 https://github.com/mockk/mockk/pull/1161
+mockk = "1.13.3"
 
 [plugins]
 android-library = { id = "com.android.library", version = "8.1.1" }
