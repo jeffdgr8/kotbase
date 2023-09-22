@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'testing_support_ee'
     spec.version                  = '3.0.12-1.0.0-SNAPSHOT'
-    spec.homepage                 = ''
+    spec.homepage                 = 'https://kotbase.dev/'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = ''

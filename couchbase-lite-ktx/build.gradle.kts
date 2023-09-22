@@ -5,17 +5,9 @@ plugins {
 
 kotlin {
     cocoapods {
-        name = "Kotbase-KTX"
-        homepage = "https://github.com/jeffdgr8/kotbase"
-        authors = "Couchbase, MOLO17, Jeff Lockhart"
+        authors = "Jeff Lockhart, MOLO17, Couchbase"
         license = "Apache License, Version 2.0"
-        summary = "Couchbase Lite for Kotlin Multiplatform Kotlin Extensions"
-        ios.deploymentTarget = "9.0"
-        osx.deploymentTarget = "10.11"
-        framework {
-            baseName = this@cocoapods.name.replace('-', '_')
-            isStatic = false
-        }
+        summary = "Couchbase Lite Community Edition for Kotlin Multiplatform – Kotlin Extensions"
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
             linkOnly = true

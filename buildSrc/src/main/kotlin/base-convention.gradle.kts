@@ -8,10 +8,18 @@ import rules.applyCouchbaseLiteRule
 
 plugins {
     `kotlin-multiplatform`
+    `kotlin-native-cocoapods`
     `android-library`
 }
 
 kotlin {
+    cocoapods {
+        homepage = "https://kotbase.dev/"
+        source = "{ :git => 'https://github.com/jeffdgr8/kotbase.git', :tag => $version }"
+        ios.deploymentTarget = "9.0"
+        osx.deploymentTarget = "10.11"
+    }
+
     sourceSets.configureEach {
         languageSettings {
             if (!name.startsWith("common") &&

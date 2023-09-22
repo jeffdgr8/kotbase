@@ -5,7 +5,6 @@ import java.net.URL
 
 plugins {
     id("base-convention")
-    `kotlin-native-cocoapods`
     org.jetbrains.dokka
     `maven-publish`
     org.jetbrains.kotlinx.kover
