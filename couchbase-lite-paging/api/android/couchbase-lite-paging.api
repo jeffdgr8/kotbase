@@ -1,9 +1,7 @@
 public final class kotbase/paging/QueryPagingSourceKt {
-	public static final fun QueryPagingSource (Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;)Landroidx/paging/PagingSource;
-	public static final fun QueryPagingSourceGroupBy (Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
-	public static final fun QueryPagingSourceHaving (Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
-	public static final fun QueryPagingSourceJoins (Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
-	public static final fun QueryPagingSourceOrderBy (Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
-	public static final fun QueryPagingSourceWhere (Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
+	public static final fun QueryPagingSource (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
+	public static final fun QueryPagingSourceString (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
+	public static final fun QueryPagingSourceStringWithQuery (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
+	public static final fun QueryPagingSourceWithQuery (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
 }
 
