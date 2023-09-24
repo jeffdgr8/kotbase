@@ -3,11 +3,10 @@ plugins {
     `library-convention`
 }
 
+description = "Couchbase Lite Community Edition for Kotlin Multiplatform – AndroidX Paging Extensions"
+
 kotlin {
     cocoapods {
-        authors = "Jeff Lockhart, Couchbase"
-        license = "Apache License, Version 2.0"
-        summary = "Couchbase Lite Community Edition for Kotlin Multiplatform – AndroidX Paging Extensions"
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
             linkOnly = true

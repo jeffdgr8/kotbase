@@ -3,11 +3,10 @@ plugins {
     `library-convention`
 }
 
+description = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform – Kermit Logger"
+
 kotlin {
     cocoapods {
-        authors = "Jeff Lockhart, Couchbase"
-        license = "Apache License, Version 2.0"
-        summary = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform – Kermit Logger"
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
             linkOnly = true

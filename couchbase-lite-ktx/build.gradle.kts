@@ -3,11 +3,10 @@ plugins {
     `library-convention`
 }
 
+description = "Couchbase Lite Community Edition for Kotlin Multiplatform – Kotlin Extensions"
+
 kotlin {
     cocoapods {
-        authors = "Jeff Lockhart, MOLO17, Couchbase"
-        license = "Apache License, Version 2.0"
-        summary = "Couchbase Lite Community Edition for Kotlin Multiplatform – Kotlin Extensions"
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
             linkOnly = true

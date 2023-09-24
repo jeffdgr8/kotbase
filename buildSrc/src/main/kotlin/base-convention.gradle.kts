@@ -13,8 +13,12 @@ plugins {
 
 kotlin {
     cocoapods {
+        version = project.version.toString()
         homepage = "https://kotbase.dev/"
         source = "{ :git => 'https://github.com/jeffdgr8/kotbase.git', :tag => $version }"
+        authors = "Jeff Lockhart"
+        license = "Apache License, Version 2.0"
+        afterEvaluate { summary = description }
         ios.deploymentTarget = "9.0"
         osx.deploymentTarget = "10.11"
     }

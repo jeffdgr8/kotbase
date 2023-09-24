@@ -7,11 +7,10 @@ plugins {
     `library-convention`
 }
 
+description = "Couchbase Lite Community Edition for Kotlin Multiplatform"
+
 kotlin {
     cocoapods {
-        authors = "Jeff Lockhart, Couchbase"
-        license = "Apache License, Version 2.0"
-        summary = "Couchbase Lite Community Edition for Kotlin Multiplatform"
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
             // Workaround for 'CBLQueryMeta' is going to be declared twice
