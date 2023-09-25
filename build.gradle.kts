@@ -13,7 +13,8 @@ allprojects {
 
 val apiDocsDir = projectDir.resolve("docs/api")
 tasks.register<Delete>("cleanApiDocs") {
-    group = "documentation"
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Deletes current API docs from docs site"
     delete(apiDocsDir)
 }
 tasks.dokkaHtmlMultiModule {
@@ -30,8 +31,8 @@ apiValidation {
     )
 }
 
-tasks.register<Delete>("clean") {
-    group = "build"
+tasks.register<Delete>(BasePlugin.CLEAN_TASK_NAME) {
+    group = BasePlugin.BUILD_GROUP
     delete(rootProject.layout.buildDirectory)
 }
 

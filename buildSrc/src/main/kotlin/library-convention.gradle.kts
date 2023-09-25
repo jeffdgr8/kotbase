@@ -42,9 +42,10 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
 }
 
 val javadocJar = tasks.register<Jar>("javadocJar") {
-    dependsOn(tasks.dokkaHtml)
-    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles a Javadoc JAR using Dokka HTML"
     archiveClassifier.set("javadoc")
+    from(tasks.dokkaHtml)
 }
 
 publishing.publications.withType<MavenPublication>().configureEach {
