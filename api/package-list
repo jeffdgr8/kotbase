@@ -1,0 +1,68 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:kotbase.internal/DelegatedClass///PointingToDeclaration/couchbase-lite-ee/kotbase.internal/[jvm-common]-delegated-class/index.html
+$dokka.location:kotbase.internal/DelegatedClass/equals/#kotlin.Any?/PointingToDeclaration/couchbase-lite-ee/kotbase.internal/[jvm-common]-delegated-class/equals.html
+$dokka.location:kotbase.internal/DelegatedClass/hashCode/#/PointingToDeclaration/couchbase-lite-ee/kotbase.internal/[jvm-common]-delegated-class/hash-code.html
+$dokka.location:kotbase.internal/DelegatedClass/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase.internal/[jvm-common]-delegated-class/to-string.html
+$dokka.location:kotbase/Array/equals/#kotlin.Any?/PointingToDeclaration/couchbase-lite-ee/kotbase/-array/[native]equals.html
+$dokka.location:kotbase/Array/hashCode/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-array/[native]hash-code.html
+$dokka.location:kotbase/Array/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-array/[native]to-string.html
+$dokka.location:kotbase/ConcurrencyControl/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-concurrency-control/[native]entries.html
+$dokka.location:kotbase/ConcurrencyControl/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-concurrency-control/[native]value-of.html
+$dokka.location:kotbase/ConcurrencyControl/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-concurrency-control/[native]values.html
+$dokka.location:kotbase/CouchbaseLite///PointingToDeclaration/couchbase-lite-ee/kotbase/[jvm]-couchbase-lite/index.html
+$dokka.location:kotbase/CouchbaseLite/init/#/PointingToDeclaration/couchbase-lite-ee/kotbase/[jvm]-couchbase-lite/init.html
+$dokka.location:kotbase/CouchbaseLite/init/#android.content.Context#kotlin.Boolean#java.io.File#java.io.File/PointingToDeclaration/couchbase-lite-ee/kotbase/[android]-couchbase-lite/init.html
+$dokka.location:kotbase/CouchbaseLite/init/#android.content.Context#kotlin.Boolean/PointingToDeclaration/couchbase-lite-ee/kotbase/[android]-couchbase-lite/init.html
+$dokka.location:kotbase/CouchbaseLite/init/#android.content.Context/PointingToDeclaration/couchbase-lite-ee/kotbase/[android]-couchbase-lite/init.html
+$dokka.location:kotbase/CouchbaseLite/init/#kotlin.Boolean#java.io.File#java.io.File/PointingToDeclaration/couchbase-lite-ee/kotbase/[jvm]-couchbase-lite/init.html
+$dokka.location:kotbase/CouchbaseLite/init/#kotlin.Boolean/PointingToDeclaration/couchbase-lite-ee/kotbase/[jvm]-couchbase-lite/init.html
+$dokka.location:kotbase/Dictionary/equals/#kotlin.Any?/PointingToDeclaration/couchbase-lite-ee/kotbase/-dictionary/[native]equals.html
+$dokka.location:kotbase/Dictionary/hashCode/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-dictionary/[native]hash-code.html
+$dokka.location:kotbase/Dictionary/iterator/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-dictionary/[native]iterator.html
+$dokka.location:kotbase/Dictionary/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-dictionary/[native]to-string.html
+$dokka.location:kotbase/Document/equals/#kotlin.Any?/PointingToDeclaration/couchbase-lite-ee/kotbase/-document/[native]equals.html
+$dokka.location:kotbase/Document/hashCode/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-document/[native]hash-code.html
+$dokka.location:kotbase/Document/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-document/[native]to-string.html
+$dokka.location:kotbase/DocumentFlag/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-document-flag/[native]entries.html
+$dokka.location:kotbase/DocumentFlag/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-document-flag/[native]value-of.html
+$dokka.location:kotbase/DocumentFlag/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-document-flag/[native]values.html
+$dokka.location:kotbase/Expression/toString/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-expression/[native]to-string.html
+$dokka.location:kotbase/LogDomain/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-domain/[native]entries.html
+$dokka.location:kotbase/LogDomain/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-domain/[native]value-of.html
+$dokka.location:kotbase/LogDomain/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-domain/[native]values.html
+$dokka.location:kotbase/LogLevel/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-level/[native]entries.html
+$dokka.location:kotbase/LogLevel/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-level/[native]value-of.html
+$dokka.location:kotbase/LogLevel/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-log-level/[native]values.html
+$dokka.location:kotbase/MaintenanceType/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-maintenance-type/[native]entries.html
+$dokka.location:kotbase/MaintenanceType/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-maintenance-type/[native]value-of.html
+$dokka.location:kotbase/MaintenanceType/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-maintenance-type/[native]values.html
+$dokka.location:kotbase/ProtocolType/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-protocol-type/[native]entries.html
+$dokka.location:kotbase/ProtocolType/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-protocol-type/[native]value-of.html
+$dokka.location:kotbase/ProtocolType/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-protocol-type/[native]values.html
+$dokka.location:kotbase/ReplicatorActivityLevel/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-activity-level/[native]entries.html
+$dokka.location:kotbase/ReplicatorActivityLevel/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-activity-level/[native]value-of.html
+$dokka.location:kotbase/ReplicatorActivityLevel/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-activity-level/[native]values.html
+$dokka.location:kotbase/ReplicatorType/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[native]entries.html
+$dokka.location:kotbase/ReplicatorType/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[native]value-of.html
+$dokka.location:kotbase/ReplicatorType/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[native]values.html
+module:couchbase-lite
+kotbase
+kotbase.ext
+kotbase.internal
+module:couchbase-lite-ee
+kotbase
+kotbase.ext
+kotbase.internal
+module:couchbase-lite-ee-kermit
+kotbase.kemit
+module:couchbase-lite-ee-ktx
+kotbase.ktx
+module:couchbase-lite-ee-paging
+kotbase.paging
+module:couchbase-lite-kermit
+kotbase.kemit
+module:couchbase-lite-ktx
+kotbase.ktx
+module:couchbase-lite-paging
+kotbase.paging

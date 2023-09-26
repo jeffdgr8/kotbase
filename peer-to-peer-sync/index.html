@@ -1,0 +1,2099 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Kotlin Multiplatform library for Couchbase Lite—a lightweight, embedded, syncable, NoSQL database">
+      
+      
+        <meta name="author" content="Jeff Lockhart">
+      
+      
+        <link rel="canonical" href="https://kotbase.dev/peer-to-peer-sync/">
+      
+      
+        <link rel="prev" href="../intra-device-sync/">
+      
+      
+        <link rel="next" href="../passive-peer/">
+      
+      
+      <link rel="icon" href="../assets/images/couchbase-logo.svg">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.2">
+    
+    
+      
+        <title>Peer-to-Peer Sync - Kotbase</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.d451bc0e.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.a5377069.min.css">
+      
+      
+  
+  
+    
+    
+  
+    
+    
+  
+  
+  <style>:root{--md-admonition-icon--link:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8v2m9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1 0 1.71-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5Z"/></svg>');--md-admonition-icon--important:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 6a6 6 0 0 1 6 6c0 2.22-1.21 4.16-3 5.2V19a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-1.8c-1.79-1.04-3-2.98-3-5.2a6 6 0 0 1 6-6m2 15v1a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1h4m6-10h3v2h-3v-2M1 11h3v2H1v-2M13 1v3h-2V1h2M4.92 3.5l2.13 2.14-1.42 1.41L3.5 4.93 4.92 3.5m12.03 2.13 2.12-2.13 1.43 1.43-2.13 2.12-1.42-1.42Z"/></svg>');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=DM+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"DM Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/permalink.css">
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-QFS8SG5ZKD"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-QFS8SG5ZKD",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-QFS8SG5ZKD",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="red">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#introduction" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Kotbase" class="md-header__button md-logo" aria-label="Kotbase" data-md-component="logo">
+      
+  <img src="../assets/images/couchbase-logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kotbase
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Peer-to-Peer Sync
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jeffdgr8/kotbase" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Kotbase
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href=".." class="md-tabs__link">
+          
+  
+  Overview
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../installation/" class="md-tabs__link">
+          
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../databases/" class="md-tabs__link">
+          
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../api" target="_blank" class="md-tabs__link">
+        
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Kotbase" class="md-nav__button md-logo" aria-label="Kotbase" data-md-component="logo">
+      
+  <img src="../assets/images/couchbase-logo.svg" alt="logo">
+
+    </a>
+    Kotbase
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jeffdgr8/kotbase" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Kotbase
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Overview
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kotbase
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../differences/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Differences from Java SDK
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Roadmap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../community/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Community
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../license/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    License
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../platforms/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Supported Platforms
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Build and Run
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Extension Libraries
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Extension Libraries
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ktx/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    KTX
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kermit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kermit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paging/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Paging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../databases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Databases
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prebuilt-database/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pre-built Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Documents
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../blobs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blobs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Query
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Query
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query-builder/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QueryBuilder
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../n1ql-query-strings/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SQL++ Query Strings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../n1ql-server-differences/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SQL++ Server Differences
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../n1ql-query-builder-differences/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SQL++ QueryBuilder Differences
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query-result-sets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Query Result Sets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../live-queries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Live Queries
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query-troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Query Troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../full-text-search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Full Text Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../indexing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Indexing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Data Sync
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            Data Sync
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../remote-sync-gateway/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Remote Sync Gateway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intra-device-sync/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Intra-device Sync
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_8_3" id="__nav_3_8_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Peer-to-Peer
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_8_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_8_3">
+            <span class="md-nav__icon md-icon"></span>
+            Peer-to-Peer
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Peer-to-Peer Sync
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Peer-to-Peer Sync
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    Features
+  </a>
+  
+    <nav class="md-nav" aria-label="Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    Security
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    Error Handling
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#passive-peers" class="md-nav__link">
+    Passive peers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#active-peers" class="md-nav__link">
+    Active peers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delta-sync" class="md-nav__link">
+    Delta Sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conflict-resolution" class="md-nav__link">
+    Conflict Resolution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-setup" class="md-nav__link">
+    Basic Setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-highlights" class="md-nav__link">
+    API Highlights
+  </a>
+  
+    <nav class="md-nav" aria-label="API Highlights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#urlendpointlistener" class="md-nav__link">
+    URLEndpointListener
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#urlendpointlistenerconfiguration" class="md-nav__link">
+    URLEndpointListenerConfiguration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security_1" class="md-nav__link">
+    Security
+  </a>
+  
+    <nav class="md-nav" aria-label="Security">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    Authentication
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-secure-storage" class="md-nav__link">
+    Using Secure Storage
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../passive-peer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Passive Peer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../active-peer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Active Peer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrate-custom-listener/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Integrate Custom Listener
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../handling-data-conflicts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Handling Data Conflicts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../using-logs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using Logs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kotlin-extensions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kotlin Extensions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api" target="_blank" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API Reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    Features
+  </a>
+  
+    <nav class="md-nav" aria-label="Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    Security
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    Error Handling
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#passive-peers" class="md-nav__link">
+    Passive peers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#active-peers" class="md-nav__link">
+    Active peers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delta-sync" class="md-nav__link">
+    Delta Sync
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conflict-resolution" class="md-nav__link">
+    Conflict Resolution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-setup" class="md-nav__link">
+    Basic Setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-highlights" class="md-nav__link">
+    API Highlights
+  </a>
+  
+    <nav class="md-nav" aria-label="API Highlights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#urlendpointlistener" class="md-nav__link">
+    URLEndpointListener
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#urlendpointlistenerconfiguration" class="md-nav__link">
+    URLEndpointListenerConfiguration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security_1" class="md-nav__link">
+    Security
+  </a>
+  
+    <nav class="md-nav" aria-label="Security">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    Authentication
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-secure-storage" class="md-nav__link">
+    Using Secure Storage
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>Peer-to-Peer Sync</h1>
+
+<p><em>Couchbase Lite’s Peer-to-Peer Synchronization enables edge devices to synchronize securely without consuming
+centralized cloud-server resources</em></p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link"></a></h2>
+<div class="admonition important">
+<p class="admonition-title">This is an <a href="https://www.couchbase.com/products/editions">Enterprise Edition</a> feature.</p>
+</div>
+<p>Couchbase Lite’s Peer-to-Peer synchronization solution offers secure storage and bidirectional data synchronization
+between edge devices without needing a centralized cloud-based control point.</p>
+<p>Couchbase Lite’s Peer-to-Peer data synchronization provides:</p>
+<ul>
+<li>Instant WebSocket-based listener for use in Peer-to-Peer applications communicating over IP-based networks</li>
+<li>Simple application development, enabling sync with a short amount of code</li>
+<li>Optimized network bandwidth usage and reduced data transfer costs with Delta Sync support</li>
+<li>Securely sync data with built-in support for Transport Layer Security (TLS) encryption and authentication support</li>
+<li>Document management. Reducing conflicts in concurrent writes with built-in conflict management support</li>
+<li>Built-in network resiliency</li>
+</ul>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link"></a></h2>
+<p>Peer-to-Peer synchronization requires one Peer to act as the Listener to the other Peer’s replicator.</p>
+<p><img alt="Listener Diagram" loading="lazy" src="../assets/images/p2p-listener-diagram.png" /></p>
+<p>Peer-to-Peer synchronization requires one Peer to act as the Listener to the other Peer’s replicator. Therefore, to use
+Peer-to-Peer synchronization in your application, you must configure one Peer to act as a Listener using the Couchbase
+Listener API, the most important of which include <a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener/"><code>URLEndpointListener</code></a> and <a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/"><code>URLEndpointListenerConfiguration</code></a>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 1. Simple workflow</p>
+<ol>
+<li>Configure the listener (<em>passive peer</em>, or <em>server</em>)</li>
+<li>Initialize the listener, which listens for incoming WebSocket connections (on a user-defined, or auto-selected,
+   port)</li>
+<li>Configure a replicator (<em>active peer</em>, or <em>client</em>)</li>
+<li>Use some form of discovery phase, perhaps with a zero-config protocol such as <a href="https://developer.android.com/training/connect-devices-wirelessly/nsd">Network Service Discovery for
+   Android</a> or <a href="https://developer.apple.com/bonjour/">Bonjour for iOS</a>, or use known URL endpoints, to identify a listener</li>
+<li>Point the replicator at the listener</li>
+<li>Initialize the replicator</li>
+<li>Replicator and listener engage in the configured security protocol exchanges to confirm connection</li>
+<li>If connection is confirmed then replication will commence, synchronizing the two data stores</li>
+</ol>
+</div>
+<p>Here you can see configuration involves a <a href="../passive-peer/">Passive Peer</a> and an <a href="../active-peer/">Active Peer</a> and a
+user-friendly listener configuration in <a href="#basic-setup">Basic Setup</a>.</p>
+<p>You can also learn how to implement Peer-to-Peer synchronization by referring to our tutorial — see <a href="https://docs.couchbase.com/tutorials/cbl-p2p-sync-websockets/swift/cbl-p2p-sync-websockets.html">Getting Started
+with Peer-to-Peer Synchronization</a>.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link"></a></h2>
+<p>Couchbase Lite’s Peer-to-Peer synchronization solution provides support for cross-platform synchronization, for example,
+between Android and iOS devices.</p>
+<p>Each listener instance serves one Couchbase Lite database. However, there is no hard limit on the number of listener
+instances you can associate with a database.</p>
+<p>Having a listener on a database still allows you to open replications to the other clients. For example, a listener can
+actively begin replicating to other listeners while listening for connections. These replications can be for the same or
+a different database.</p>
+<p>The listener will automatically select a port to use or a user-specified port. It will also listen on all available
+networks, unless you specify a specific network.</p>
+<h3 id="security">Security<a class="headerlink" href="#security" title="Permanent link"></a></h3>
+<p>Couchbase Lite’s Peer-to-Peer synchronization supports encryption and authentication over TLS with multiple modes,
+including:</p>
+<ul>
+<li>No encryption, for example, clear text.</li>
+<li>CA cert</li>
+<li>Self-signed cert</li>
+<li>Anonymous self-signed — an auto-generated anonymous TLS identity is generated if no identity is specified. This TLS
+  identity provides encryption but <strong>not</strong> authentication.<br />
+  Any self-signed certificates generated by the convenience API are stored in secure storage.</li>
+</ul>
+<p>The replicator (client) can handle certificates pinned by the listener for authentication purposes.</p>
+<p>Support is also provided for basic authentication using username and password credentials. Whilst this can be used in
+clear text mode, developers are strongly advised to use TLS encryption.</p>
+<p>For testing and development purposes, support is provided for the client (active, replicator) to skip verification of
+self-signed certificates; this mode should not be used in production.</p>
+<h3 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link"></a></h3>
+<p>When a listener is stopped, then all connected replicators are notified by a WebSocket error. Your application should
+distinguish between transient and permanent connectivity errors.</p>
+<h4 id="passive-peers">Passive peers<a class="headerlink" href="#passive-peers" title="Permanent link"></a></h4>
+<p>A Passive Peer losing connectivity with an Active Peer will clean up any associated endpoint connections to that peer.
+The Active Peer may attempt to reconnect to the Passive Peer.</p>
+<h4 id="active-peers">Active peers<a class="headerlink" href="#active-peers" title="Permanent link"></a></h4>
+<p>An Active Peer permanently losing connectivity with a Passive Peer will cease replicating.</p>
+<p>An Active Peer temporarily losing connectivity with a passive Peer will use exponential backoff functionality to attempt
+reconnection.</p>
+<h3 id="delta-sync">Delta Sync<a class="headerlink" href="#delta-sync" title="Permanent link"></a></h3>
+<p>Optional delta-sync support is provided but is inactive by default.</p>
+<p>Delta-sync can be enabled on a per-replication basis provided that the databases involved are also configured to permit
+it. Statistics on delta-sync usage are available, including the total number of revisions sent as deltas.</p>
+<h3 id="conflict-resolution">Conflict Resolution<a class="headerlink" href="#conflict-resolution" title="Permanent link"></a></h3>
+<p>Conflict resolution for Peer-to-Peer synchronization works in the same way as it does for Sync Gateway replication, with
+both custom and automatic resolution available.</p>
+<h2 id="basic-setup">Basic Setup<a class="headerlink" href="#basic-setup" title="Permanent link"></a></h2>
+<p>You can configure a Peer-to-Peer synchronization with just a short amount of code as shown here in <a href="#example-2">Example 2
+</a> and <a href="#example-3">Example 3</a>.</p>
+<div class="admonition example">
+<p class="admonition-title"><span id='example-2'>Example 2. Simple Listener</span></p>
+<p>This simple listener configuration will give you a listener ready to participate in an encrypted synchronization
+with a replicator providing a valid username and password.</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">listener</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">URLEndpointListener</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">URLEndpointListenerConfigurationFactory</span><span class="p">.</span><span class="na">newConfig</span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">database</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="n">authenticator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ListenerPasswordAuthenticator</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">pwd</span><span class="w"> </span><span class="o">-&gt;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;daniel&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">pwd</span><span class="p">.</span><span class="na">concatToString</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;123&quot;</span><span class="p">)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">listener</span><span class="p">.</span><span class="na">start</span><span class="p">()</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">this</span><span class="p">.</span><span class="na">listener</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listener</span>
+</span></code></pre></div>
+</div>
+<ol>
+<li>Initialize the listener configuration</li>
+<li>Configure the client authenticator to require basic authentication</li>
+<li>Initialize the listener</li>
+<li>Start the listener</li>
+</ol>
+<div class="admonition example">
+<p class="admonition-title"><span id='example-3'>Example 3. Simple Replicator</span></p>
+<p>This simple replicator configuration will give you an encrypted, bi-directional Peer-to-Peer synchronization with
+automatic conflict resolution.</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">listenerEndpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">URLEndpoint</span><span class="p">(</span><span class="s">&quot;wss://10.0.2.2:4984/db&quot;</span><span class="p">)</span><span class="w"> </span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">repl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Replicator</span><span class="p">(</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">ReplicatorConfigurationFactory</span><span class="p">.</span><span class="na">newConfig</span><span class="p">(</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">database</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="n">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listenerEndpoint</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="n">authenticator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BasicAuthenticator</span><span class="p">(</span><span class="s">&quot;valid.user&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;valid.password.string&quot;</span><span class="p">.</span><span class="na">toCharArray</span><span class="p">()),</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="n">acceptOnlySelfSignedServerCertificate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p">)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">)</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">repl</span><span class="p">.</span><span class="na">start</span><span class="p">()</span><span class="w"> </span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">this</span><span class="p">.</span><span class="na">replicator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">repl</span>
+</span></code></pre></div>
+</div>
+<ol>
+<li>Get the listener’s endpoint. Here we use a known URL, but it could be a URL established dynamically in a discovery
+   phase.</li>
+<li>Initialize the replicator configuration with the database to be synchronized and the listener it is to synchronize
+   with</li>
+<li>Configure the replicator to expect a self-signed certificate from the listener</li>
+<li>Configure the replicator to present basic authentication credentials if the listener prompts for them (client
+   authentication is optional)</li>
+<li>Initialize the replicator</li>
+<li>Start the replicator</li>
+</ol>
+<h2 id="api-highlights">API Highlights<a class="headerlink" href="#api-highlights" title="Permanent link"></a></h2>
+<h3 id="urlendpointlistener">URLEndpointListener<a class="headerlink" href="#urlendpointlistener" title="Permanent link"></a></h3>
+<p>The <a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener/"><code>URLEndpointListener</code></a> is the listener for peer-to-peer
+synchronization. It acts like a passive replicator, in the same way that Sync Gateway does in a 'standard' replication.
+On the client side, the listener’s endpoint is used to point the replicator to the listener.</p>
+<p>Core functionalities of the listener are:</p>
+<ul>
+<li>Users can initialize the class using a <code>URLEndpointListenerConfiguration</code> object.</li>
+<li>The listener can be started, or can be stopped.</li>
+<li>Once the listener is started, a total number of connections or active connections can be checked.</li>
+</ul>
+<h3 id="urlendpointlistenerconfiguration">URLEndpointListenerConfiguration<a class="headerlink" href="#urlendpointlistenerconfiguration" title="Permanent link"></a></h3>
+<p>Use <a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/"><code>URLEndpointListenerConfiguration</code></a> to
+create a configuration object you can then use to initialize the listener.</p>
+<p><a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/port.html"><code>port</code></a></p>
+<p>This is the port that the listener will listen to.</p>
+<p>If the port is zero, the listener will auto-assign an available port to listen on.</p>
+<p>Default value is zero. When the listener is not started, the port zero.</p>
+<p><a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/network-interface.html"><code>networkInterface</code></a></p>
+<p>Use this to select a specific Network Interface to use, in the form of the IP Address or network interface name.</p>
+<p>If the network interface is specified, only that interface wil be used.</p>
+<p>If the network interface is not specified, all available network interfaces will be used.</p>
+<p>The value is null if the listener is not started.</p>
+<p><a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/is-tls-disabled.html"><code>isTlsDisabled</code></a></p>
+<p>You can use <code>URLEndpointListenerConfiguration</code>'s <code>isTlsDisabled</code> property to disable TLS communication if necessary.</p>
+<p>The <code>isTlsDisabled</code> setting must be <code>false</code> when <em>Client Cert Authentication</em> is required.</p>
+<p><em>Basic Authentication</em> can be used with, or without, TLS.</p>
+<p><code>isTlsDisabled</code> works in conjunction with <a href="/api/couchbase-lite-ee/kotbase/-t-l-s-identity/"><code>TLSIdentity</code></a>, to enable
+developers to define the key and certificate to be used.</p>
+<ul>
+<li>If <code>isTlsDisabled</code> is <code>true</code> — TLS communication is disabled and <code>tlsIdentity</code> is ignored.<br />
+  Active peers will use the <code>ws://</code> URL scheme used to connect to the listener.</li>
+<li>If <code>isTlsDisabled</code> is <code>false</code> or not specified — TLS communication is enabled.<br />
+  Active peers will use the <code>wss://</code> URL scheme to connect to the listener.</li>
+</ul>
+<p><a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/tls-identity.html"><code>tlsIdentity</code></a></p>
+<p>Use <code>URLEndpointListenerConfiguration</code>'s <code>tlsIdentity</code> property to configure the TLS Identity used in TLS communication.</p>
+<p>If <a href="/api/couchbase-lite-ee/kotbase/-t-l-s-identity/"><code>TLSIdentity</code></a> is not set, then the listener uses an auto-generated
+anonymous self-signed identity (unless <code>isTlsDisabled = true</code>). Whilst the client cannot use this to authenticate the
+server, it will use it to encrypt communication, giving a more secure option than non-TLS communication.</p>
+<p>The auto-generated anonymous self-signed identity is saved in secure storage for future use to obviate the need to
+re-generate it.</p>
+<p>When the listener is not started, the identity is null. When TLS is disabled, the identity is always null.</p>
+<p><a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/authenticator.html"><code>authenticator</code></a></p>
+<p>Use this to specify the authenticator the listener uses to authenticate the client’s connection request. This should be
+set to one of the following:</p>
+<ul>
+<li><a href="/api/couchbase-lite-ee/kotbase/-listener-password-authenticator/"><code>ListenerPasswordAuthenticator</code></a></li>
+<li><a href="/api/couchbase-lite-ee/kotbase/-listener-certificate-authenticator/"><code>ListenerCertificateAuthenticator</code></a></li>
+<li><code>null</code> — there is no authentication</li>
+</ul>
+<p><a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/is-read-only.html"><code>isReadOnly</code></a></p>
+<p>Use this to allow only pull replication. The default value is <code>false</code>.</p>
+<p><a href="/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/is-delta-sync-enabled.html"><code>isDeltaSyncEnabled</code></a></p>
+<p>The option to enable Delta Sync and replicate only changed data also depends on the delta sync settings at database
+level. The default value is <code>false</code>.</p>
+<h2 id="security_1">Security<a class="headerlink" href="#security_1" title="Permanent link"></a></h2>
+<h3 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link"></a></h3>
+<p>Peer-to-Peer sync supports <a href="/api/couchbase-lite-ee/kotbase/-listener-password-authenticator/">Basic Authentication</a> and
+<a href="/api/couchbase-lite-ee/kotbase/-listener-certificate-authenticator/">TLS Authentication</a>. For anything other than test
+deployments, we strongly encourage the use of TLS. In fact, Peer-to-Peer sync using <code>URLEndpointListener</code> is encrypted
+using TLS by default.</p>
+<p>The authentication mechanism is defined at the endpoint level, meaning that it is independent of the database being
+replicated. For example, you may use basic authentication on one instance and TLS authentication on another when
+replicating multiple database instances.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The minimum supported version of TLS is TLS 1.2.</p>
+</div>
+<p>Peer-to-Peer synchronization using <code>URLEndpointListener</code> supports certificate based authentication of the server and-or
+listener:</p>
+<ul>
+<li>Replicator certificates can be: self-signed, from trusted CA, or anonymous (system generated).</li>
+<li>Listeners certificates may be: self-signed or trusted CA signed.<br><br>
+  Where a TLS certificate is not explicitly specified for the listener, the listener implementation will generate
+  anonymous certificate to use for encryption.</li>
+<li>The <code>URLEndpointListener</code> supports the ability to opt out of TLS encryption communication.<br><br>
+  Active clients replicating with a URLEndpointListener have the option to skip validation of server certificates when
+  the listener is configured with self-signed certificates.<br><br>
+  This option is ignored when dealing with CA certificates.</li>
+</ul>
+<h3 id="using-secure-storage">Using Secure Storage<a class="headerlink" href="#using-secure-storage" title="Permanent link"></a></h3>
+<p>TLS and its associated keys and certificates might require using secure storage to minimize the chances of a security
+breach. The implementation of this storage differs from platform to platform. <a href="#table-1">Table 1</a> summarizes the secure
+storage used to store keys and certificates for each platform.</p>
+<p><span id='table-1'><strong>Table 1. Secure storage details</strong></span></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Platform</th>
+<th style="text-align: center;">Key &amp; Certificate Storage</th>
+<th style="text-align: left;">Notes</th>
+<th style="text-align: left;">Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Android</td>
+<td style="text-align: center;">Android System KeyStore</td>
+<td style="text-align: left;"><ul><li>Android KeyStore was introduced from Android API 18.</li><li>Android KeyStore security has evolved over time to provide more secure support. Please check <a href="https://source.android.com/security/keystore">this document</a> for more info.</li></ul></td>
+<td style="text-align: left;"><a href="https://developer.android.com/training/articles/keystore">link</a></td>
+</tr>
+<tr>
+<td style="text-align: center;">MacOS/iOS</td>
+<td style="text-align: center;">KeyChain</td>
+<td style="text-align: left;">Use <code>kSecAttrLabel</code> of the <code>SecCertificate</code> to store the <code>TLSIdentity</code>’s label</td>
+<td style="text-align: left;"><a href="https://developer.apple.com/documentation/security/keychain_services">link</a></td>
+</tr>
+<tr>
+<td style="text-align: center;">Java</td>
+<td style="text-align: center;">User Specified KeyStore</td>
+<td style="text-align: left;"><ul><li>The KeyStore represents a storage facility for cryptographic keys and certificates. It’s users’ choice to decide whether to persist the KeyStore or not.</li><li>The supported KeyStore types are PKCS12 (Default from Java 9) and JKS (Default on Java 8 and below).</li></ul></td>
+<td style="text-align: left;"><a href="https://docs.oracle.com/javase/7/docs/api/java/security/KeyStore.html">link</a></td>
+</tr>
+</tbody>
+</table>
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../intra-device-sync/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Intra-device Sync">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Intra-device Sync
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../passive-peer/" class="md-footer__link md-footer__link--next" aria-label="Next: Passive Peer">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Passive Peer
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2023 Jeff Lockhart
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jeffdgr8" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/jeffdgr8" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://linkedin.com/in/lockhartjeff/" target="_blank" rel="noopener" title="linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "content.tabs.link", "navigation.footer", "navigation.instant", "navigation.tabs", "navigation.top", "navigation.tracking", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "3.0.12-1.0.0"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.726fbb30.min.js"></script>
+      
+    
+  </body>
+</html>
