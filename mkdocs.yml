@@ -68,6 +68,7 @@ markdown_extensions:
       permalink: ""
   - footnotes
   - md_in_html
+  - pymdownx.tilde
 plugins:
   - search
   - macros
