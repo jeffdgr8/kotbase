@@ -34,5 +34,4 @@ kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version = "0.3.
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
-okio = { module = "com.squareup.okio:okio", version = "3.5.0" }
 paging = { module = "app.cash.paging:paging-common", version = "3.3.0-alpha02-0.4.0" }

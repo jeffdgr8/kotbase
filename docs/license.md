@@ -36,4 +36,3 @@ limitations under the License.
 * [MockK](https://github.com/mockk/mockk/blob/master/LICENSE)
 * [MOLO17 Couchbase Lite Kotlin](https://github.com/MOLO17/couchbase-lite-kotlin/blob/master/LICENSE)
 * [Multiplatform Paging](https://github.com/cashapp/multiplatform-paging/blob/main/LICENSE)
-* [Okio](https://github.com/square/okio/blob/master/LICENSE.txt)

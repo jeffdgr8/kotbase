@@ -127,13 +127,11 @@ Kotbase, e.g. libcblite {{ version_short }}.x for Kotbase {{ version }}.
 Linux also [requires](https://github.com/couchbase/couchbase-lite-core#linux) libz, libicu, and libpthread, which may or
 may not be installed on your system.
 
-|     Distro      | Version |       x64        | ARM64 |
-|:---------------:|:-------:|:----------------:|:-----:|
-|     Debian      |   9+    | :material-check: |   *   |
-| Raspberry Pi OS |   10+   |                  |   *   |
-|     Ubuntu      | 20.04+  | :material-check: |   *   |
-
-*Coming soon
+|     Distro      | Version |       x64        |      ARM64       |
+|:---------------:|:-------:|:----------------:|:----------------:|
+|     Debian      |   9+    | :material-check: | :material-check: |
+| Raspberry Pi OS |   10+   |                  | :material-check: |
+|     Ubuntu      | 20.04+  | :material-check: | :material-check: |
 
 ### Windows
 

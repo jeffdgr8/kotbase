@@ -6,7 +6,7 @@ hide:
 * [x] Documentation website ([kotbase.dev](https://kotbase.dev/))
 * [x] `NSInputStream` interoperability ~~(Okio [#1123](https://github.com/square/okio/pull/1123))~~ (kotlinx-io [#174](
   https://github.com/Kotlin/kotlinx-io/pull/174))
-* [ ] Linux ARM64 support
+* [x] Linux ARM64 support
 * [ ] Public release
 * [ ] Sample apps
     * [x] [Getting Started](https://github.com/jeffdgr8/kotbase/tree/main/examples/getting-started)

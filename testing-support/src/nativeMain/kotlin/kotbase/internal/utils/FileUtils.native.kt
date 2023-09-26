@@ -15,14 +15,17 @@
  */
 package kotbase.internal.utils
 
+import korlibs.io.file.std.localVfs
+import korlibs.io.posix.posixRealpath
 import kotbase.LogDomain
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import kotlinx.io.IOException
 import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.files.SystemPathSeparator
 import kotlinx.io.readByteArray
-import okio.Path.Companion.toPath
 import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalStdlibApi::class)
@@ -37,19 +40,24 @@ actual object FileUtils {
     actual fun listFiles(dir: String): List<String> {
         // TODO: use kotlinx-io when list API is available
         try {
-            return okio.FileSystem.SYSTEM.list(dir.toPath())
-                .map { it.toString() }
+            //return okio.FileSystem.SYSTEM.list(dir.toPath())
+            //    .map { it.toString() }
+            val vfsFile = localVfs(dir)
+            return runBlocking {
+                vfsFile.list().toList().map { it.absolutePath }
+            }
         } catch (e: Exception) {
             throw IOException(e.message, e)
         }
     }
 
-    actual fun getCanonicalPath(path: String): String =
-        path.toPath().canonicalPath
-
     // TODO: canonicalize with kotlinx-io when API available
-    private val okio.Path.canonicalPath: String
-        get() = okio.FileSystem.SYSTEM.canonicalize(this).toString()
+    actual fun getCanonicalPath(path: String): String =
+        //path.toPath().canonicalPath
+        posixRealpath(path).dropLastWhile { it == separatorChar }
+
+    //private val Path.canonicalPath: String
+    //    get() = okio.FileSystem.SYSTEM.canonicalize(this).toString()
 
     actual fun verifyDir(dirPath: String): String {
         //verifyDir(Path(dirPath))
