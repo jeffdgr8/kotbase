@@ -149,7 +149,7 @@ https://www.jetbrains.com/lp/compose-multiplatform/).
         ./gradlew :androidApp:installDebug
         ```
         ```title="Start"
-        adb shell am start -n dev.kotbase.gettingstarted/.MainActivity
+        adb shell am start -n dev.kotbase.gettingstarted.compose/.MainActivity
         ```
 
 ### iOS App :fontawesome-brands-apple:
