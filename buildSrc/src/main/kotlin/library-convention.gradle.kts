@@ -41,10 +41,14 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
     }
 }
 
+val deleteDokkaHtml = tasks.register<Delete>("deleteDokkaHtml") {
+    delete(tasks.dokkaHtml)
+}
 val javadocJar = tasks.register<Jar>("javadocJar") {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles a Javadoc JAR using Dokka HTML"
     archiveClassifier.set("javadoc")
+    dependsOn(deleteDokkaHtml, tasks.dokkaHtml)
     from(tasks.dokkaHtml)
 }
 
