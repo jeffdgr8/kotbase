@@ -224,7 +224,7 @@ https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/sr
 [JVM](
 https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/jvmMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.jvm.kt),
 [Linux](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/linuxX64Main/kotlin/dev/kotbase/gettingstarted/shared/Platform.linuxX64.kt),
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/linuxMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.linux.kt),
 [macOS](
 https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/macosMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.macos.kt),
 and [Windows](
