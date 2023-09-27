@@ -42,4 +42,4 @@ tasks.register<Delete>(BasePlugin.CLEAN_TASK_NAME) {
 //    > Failed to calculate the value of task ':lib:podspec' property 'gradleWrapperPath$kotlin_gradle_plugin_common'.
 //       > java.util.ConcurrentModificationException (no error message)
 // https://kotlinlang.slack.com/archives/C3PQML5NU/p1685525274855969?thread_ts=1685426418.942459&cid=C3PQML5NU
-tasks.getByName("wrapper")
+//tasks.getByName("wrapper")
