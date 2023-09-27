@@ -37,7 +37,8 @@ val queryProvider: From.() -> LimitRouter = {
     where {
         ("type" equalTo "hotel") and
         ("state" equalTo "California")
-    }.orderBy { "name".ascending() }
+    }
+    .orderBy { "name".ascending() }
 }
 
 val pagingSource = QueryPagingSource(
