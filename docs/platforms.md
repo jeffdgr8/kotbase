@@ -97,9 +97,9 @@ dependency. Use `linkOnly = true` to link the dependency without generating Kotl
 
 ### iOS
 
-| Version |       x86        |       x64        |      ARM32       |      ARM64       |
-|:-------:|:----------------:|:----------------:|:----------------:|:----------------:|
-|   10+   | :material-check: | :material-check: | :material-check: | :material-check: |
+| Version |       x64        |      ARM64       |
+|:-------:|:----------------:|:----------------:|
+|   10+   | :material-check: | :material-check: |
 
 ### macOS
 
