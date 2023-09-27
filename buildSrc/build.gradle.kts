@@ -4,6 +4,7 @@ plugins {
 
 repositories {
     google()
+    gradlePluginPortal()
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
 }
@@ -15,6 +16,7 @@ dependencies {
     implementation(plugin(libs.plugins.android.library))
     implementation(plugin(libs.plugins.dokka))
     implementation(plugin(libs.plugins.kotlinx.kover))
+    implementation(plugin(libs.plugins.vanniktech.maven.publish))
 }
 
 fun plugin(provider: Provider<PluginDependency>) = with(provider.get()) {

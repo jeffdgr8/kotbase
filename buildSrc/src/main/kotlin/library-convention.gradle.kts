@@ -1,3 +1,4 @@
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetHierarchy.SourceSetTree
@@ -6,7 +7,7 @@ import java.net.URL
 plugins {
     id("base-convention")
     org.jetbrains.dokka
-    `maven-publish`
+    id("com.vanniktech.maven.publish")
     org.jetbrains.kotlinx.kover
 }
 
@@ -41,52 +42,38 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
     }
 }
 
-val deleteDokkaHtml = tasks.register<Delete>("deleteDokkaHtml") {
-    delete(tasks.dokkaHtml)
-}
-val javadocJar = tasks.register<Jar>("javadocJar") {
-    group = JavaBasePlugin.DOCUMENTATION_GROUP
-    description = "Assembles a Javadoc JAR using Dokka HTML"
-    archiveClassifier.set("javadoc")
-    dependsOn(deleteDokkaHtml, tasks.dokkaHtml)
-    from(tasks.dokkaHtml)
-}
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.S01)
+    signAllPublications()
 
-publishing {
-    publications.withType<MavenPublication>().configureEach {
-        artifact(javadocJar)
+    @Suppress("UnstableApiUsage")
+    pom {
+        name.set(project.name)
+        afterEvaluate { this@pom.description.set(this@afterEvaluate.description) }
+        url.set("https://kotbase.dev/")
 
-        pom {
-            name.set(project.name)
-            afterEvaluate { this@pom.description.set(this@afterEvaluate.description) }
-            url.set("https://kotbase.dev/")
-
-            licenses {
-                license {
-                    name.set("Apache License, Version 2.0")
-                    url.set("https://www.apache.org/licenses/LICENSE-2.0")
-                }
+        licenses {
+            license {
+                name.set("Apache License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0")
             }
+        }
 
-            developers {
-                developer {
-                    name.set("Jeff Lockhart")
-                    email.set("jeff@kotbase.dev")
-                }
+        developers {
+            developer {
+                name.set("Jeff Lockhart")
+                email.set("jeff@kotbase.dev")
             }
+        }
 
-            scm {
-                url.set("https://github.com/jeffdgr8/kotbase")
-                "https://github.com/jeffdgr8/kotbase.git".let {
-                    connection.set(it)
-                    developerConnection.set(it)
-                }
-            }
+        scm {
+            url.set("https://github.com/jeffdgr8/kotbase")
+            connection.set("https://github.com/jeffdgr8/kotbase.git")
+        }
 
-            issueManagement {
-                system.set("GitHub")
-                url.set("https://github.com/jeffdgr8/kotbase/issues")
-            }
+        issueManagement {
+            system.set("GitHub")
+            url.set("https://github.com/jeffdgr8/kotbase/issues")
         }
     }
 }
