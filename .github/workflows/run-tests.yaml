@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Run tests
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  macos-tests:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    name: Run macOS tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Gradle Wrapper Validation
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: 17
+      - name: Run tests
+        run: ./gradlew check
+
+  linux-tests:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    name: Run Linux tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Gradle Wrapper Validation
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: 17
+      - name: Run tests
+        run: ./gradlew check
+
+  windows-tests:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    name: Run Windows tests
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Gradle Wrapper Validation
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: 17
+      - name: Run tests
+        run: ./gradlew check
+
+  android-tests:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    name: Run Android tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Gradle Wrapper Validation
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: 17
+      - name: Run connected tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          script: ./gradlew connectedCheck
