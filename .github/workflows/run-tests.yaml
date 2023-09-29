@@ -47,10 +47,12 @@ jobs:
           java-version: 17
       - name: Install libicu
         run: |
-          sudo apt-get install -y libicu71
           wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2.1_amd64.deb
           sudo dpkg -i libicu66_66.1-2ubuntu2.1_amd64.deb
           rm libicu66_66.1-2ubuntu2.1_amd64.deb
+          wget https://launchpad.net/ubuntu/+source/icu/71.1-2/+build/23579523/+files/libicu71_71.1-2_amd64.deb
+          sudo dpkg -i libicu71_71.1-2_amd64.deb
+          rm libicu71_71.1-2_amd64.deb
       - name: Run tests
         run: ./gradlew check
       - name: Upload test results
@@ -102,6 +104,7 @@ jobs:
         with:
           api-level: 33
           arch: x86_64
+          ram-size: 4096M
           script: ./gradlew connectedCheck --no-parallel
       - name: Upload test results
         uses: actions/upload-artifact@v3
