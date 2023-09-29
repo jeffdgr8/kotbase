@@ -24,6 +24,12 @@ jobs:
           java-version: 17
       - name: Run tests
         run: ./gradlew check
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: macos-test-results.zip
+          path: ./**/build/reports/tests
 
   linux-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
@@ -40,9 +46,15 @@ jobs:
           distribution: zulu
           java-version: 17
       - name: Install libicu
-        run: sudo apt-get install -y libicu66
+        run: sudo apt-get install -y libicu-dev
       - name: Run tests
         run: ./gradlew check
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: linux-test-results.zip
+          path: ./**/build/reports/tests
 
   windows-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
@@ -59,7 +71,13 @@ jobs:
           distribution: zulu
           java-version: 17
       - name: Run tests
-        run: ./gradlew check --no-parallel "-Dorg.gradle.jvmargs=-Xmx3g"
+        run: ./gradlew check --no-daemon --no-parallel "-Dorg.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=500m"
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: windows-test-results.zip
+          path: ./**/build/reports/tests
 
   android-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
@@ -81,3 +99,9 @@ jobs:
           api-level: 33
           arch: x86_64
           script: ./gradlew connectedCheck
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: android-test-results.zip
+          path: ./**/build/reports/tests
