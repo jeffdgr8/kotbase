@@ -45,8 +45,11 @@ jobs:
         with:
           distribution: zulu
           java-version: 17
-      - name: Install libicu
-        run: sudo apt-get install -y libicu-dev
+      - name: Install libicu66
+        run: |
+          wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2.1_amd64.deb
+          sudo dpkg -i libicu66_66.1-2ubuntu2.1_amd64.deb
+          rm libicu66_66.1-2ubuntu2.1_amd64.deb
       - name: Run tests
         run: ./gradlew check
       - name: Upload test results
@@ -71,7 +74,7 @@ jobs:
           distribution: zulu
           java-version: 17
       - name: Run tests
-        run: ./gradlew check --no-daemon --no-parallel "-Dorg.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=500m"
+        run: ./gradlew check --no-daemon --no-parallel "-Dorg.gradle.jvmargs=-Xmx1g -XX:MaxMetaspaceSize=500m"
       - name: Upload test results
         uses: actions/upload-artifact@v3
         if: failure()
