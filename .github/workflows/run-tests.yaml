@@ -39,6 +39,8 @@ jobs:
         with:
           distribution: zulu
           java-version: 17
+      - name: Install libicu
+        run: apt install -y libicu66
       - name: Run tests
         run: ./gradlew check
 
@@ -57,7 +59,7 @@ jobs:
           distribution: zulu
           java-version: 17
       - name: Run tests
-        run: ./gradlew check
+        run: ./gradlew check "-Dorg.gradle.jvmargs=-Xmx3g"
 
   android-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
@@ -77,4 +79,5 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 33
+          target: google_apis
           script: ./gradlew connectedCheck
