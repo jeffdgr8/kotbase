@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: macos-test-results.zip
+          name: macos-test-results
           path: ./**/build/reports/tests
 
   linux-tests:
@@ -45,8 +45,9 @@ jobs:
         with:
           distribution: zulu
           java-version: 17
-      - name: Install libicu66
+      - name: Install libicu
         run: |
+          sudo apt-get install -y libicu71
           wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2.1_amd64.deb
           sudo dpkg -i libicu66_66.1-2ubuntu2.1_amd64.deb
           rm libicu66_66.1-2ubuntu2.1_amd64.deb
@@ -56,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: linux-test-results.zip
+          name: linux-test-results
           path: ./**/build/reports/tests
 
   windows-tests:
@@ -79,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: windows-test-results.zip
+          name: windows-test-results
           path: ./**/build/reports/tests
 
   android-tests:
@@ -101,10 +102,10 @@ jobs:
         with:
           api-level: 33
           arch: x86_64
-          script: ./gradlew connectedCheck
+          script: ./gradlew connectedCheck --no-parallel
       - name: Upload test results
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: android-test-results.zip
-          path: ./**/build/reports/tests
+          name: android-test-results
+          path: ./**/build/reports/androidTests
