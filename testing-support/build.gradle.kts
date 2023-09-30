@@ -11,6 +11,8 @@ kotlin {
         }
     }
 
+    linkLibcblite(projects.couchbaseLite)
+
     sourceSets {
         commonMain {
             dependencies {
