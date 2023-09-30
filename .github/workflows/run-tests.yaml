@@ -104,8 +104,6 @@ jobs:
         with:
           api-level: 33
           arch: x86_64
-          ram-size: 4096M
-          cores: 3
           script: ./gradlew connectedCheck --no-parallel "-Dorg.gradle.jvmargs=-Xmx3g"
       - name: Upload test results
         uses: actions/upload-artifact@v3
