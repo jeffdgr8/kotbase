@@ -19,7 +19,6 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.couchbaseLiteEe)
-                api(libs.kotlinx.coroutines.core)
             }
         }
         commonTest {
