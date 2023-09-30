@@ -2,167 +2,167 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://kotbase.dev/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/active-peer/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/blobs/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/community/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/databases/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/differences/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/documents/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/full-text-search/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/getting-started/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/handling-data-conflicts/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/indexing/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/installation/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/integrate-custom-listener/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/intra-device-sync/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/kermit/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/kotlin-extensions/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/ktx/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/license/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/live-queries/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/n1ql-query-builder-differences/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/n1ql-query-strings/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/n1ql-server-differences/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/paging/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/passive-peer/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/peer-to-peer-sync/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/platforms/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/prebuilt-database/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/query-builder/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/query-result-sets/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/query-troubleshooting/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/remote-sync-gateway/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/roadmap/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://kotbase.dev/using-logs/</loc>
-         <lastmod>2023-09-27</lastmod>
+         <lastmod>2023-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
