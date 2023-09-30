@@ -15,13 +15,13 @@
  */
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package kotbase.kemit
+package kotbase.kermit
 
 import co.touchlab.kermit.Severity
 import kotbase.LogDomain
 import kotbase.LogLevel
 import kotbase.Logger
-import co.touchlab.kermit.Logger as Kermit
+import co.touchlab.kermit.Logger as KermitLogger
 
 /**
  * Couchbase Lite custom Logger that logs to Kermit
@@ -34,7 +34,7 @@ import co.touchlab.kermit.Logger as Kermit
  * ```
  */
 public class KermitCouchbaseLiteLogger(
-    kermit: Kermit,
+    kermit: KermitLogger,
     override val level: LogLevel = LogLevel.WARNING
 ) : Logger {
 

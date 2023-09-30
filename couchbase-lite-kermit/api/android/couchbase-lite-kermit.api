@@ -1,4 +1,4 @@
-public final class kotbase/kemit/KermitCouchbaseLiteLogger : kotbase/Logger {
+public final class kotbase/kermit/KermitCouchbaseLiteLogger : kotbase/Logger {
 	public static final field TAG Ljava/lang/String;
 	public static final field TAG_DATABASE Ljava/lang/String;
 	public static final field TAG_LISTENER Ljava/lang/String;

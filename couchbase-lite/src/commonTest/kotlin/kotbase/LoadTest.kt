@@ -289,6 +289,9 @@ class LoadTest : BaseDbTest() {
         test()
         val elapsedTime = Clock.System.now() - t0
         Report.log("Test $testName time: $elapsedTime")
-        assertTrue(elapsedTime < maxTimeMs.milliseconds)
+        assertTrue(
+            elapsedTime < maxTimeMs.milliseconds,
+            "Load test $testName over time: $elapsedTime > $maxTimeMs"
+        )
     }
 }
