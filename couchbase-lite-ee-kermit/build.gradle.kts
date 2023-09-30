@@ -22,6 +22,11 @@ kotlin {
                 api(libs.kermit)
             }
         }
+        commonTest {
+            dependencies {
+                implementation(projects.testingSupportEe)
+            }
+        }
     }
 }
 

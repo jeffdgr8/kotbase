@@ -57,16 +57,6 @@ public class KermitCouchbaseLiteLogger(
      */
     public fun setDomains(vararg domains: LogDomain) { this.domains = domains.toSet() }
 
-    private val LogLevel.severity: Severity
-        get() = when (this) {
-            // LogLevel.DEBUG is lowest CBL log level and only available in debug builds
-            LogLevel.DEBUG -> Severity.Verbose
-            LogLevel.VERBOSE -> Severity.Debug
-            LogLevel.INFO -> Severity.Info
-            LogLevel.WARNING -> Severity.Warn
-            else -> Severity.Error
-        }
-
     private val LogDomain.tag: String
         get() = when(this) {
             LogDomain.DATABASE -> TAG_DATABASE
@@ -86,3 +76,13 @@ public class KermitCouchbaseLiteLogger(
         const val TAG_LISTENER = "$TAG-LISTENER"
     }
 }
+
+internal val LogLevel.severity: Severity
+    get() = when (this) {
+        // LogLevel.DEBUG is lowest CBL log level and only available in debug builds
+        LogLevel.DEBUG -> Severity.Verbose
+        LogLevel.VERBOSE -> Severity.Debug
+        LogLevel.INFO -> Severity.Info
+        LogLevel.WARNING -> Severity.Warn
+        else -> Severity.Error
+    }
