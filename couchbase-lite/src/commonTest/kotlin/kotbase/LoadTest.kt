@@ -291,7 +291,7 @@ class LoadTest : BaseDbTest() {
         Report.log("Test $testName time: $elapsedTime")
         assertTrue(
             elapsedTime < maxTimeMs.milliseconds,
-            "Load test $testName over time: $elapsedTime > $maxTimeMs"
+            "Load test $testName over time: $elapsedTime > ${maxTimeMs.milliseconds}"
         )
     }
 }

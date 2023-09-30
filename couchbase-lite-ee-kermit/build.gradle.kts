@@ -13,12 +13,12 @@ kotlin {
         }
     }
 
-    linkLibcblite(projects.couchbaseLite)
+    linkLibcblite(projects.couchbaseLiteEe)
 
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.couchbaseLiteKtx)
+                api(projects.couchbaseLiteEeKtx)
                 api(libs.kermit)
             }
         }

@@ -23,7 +23,7 @@ jobs:
           distribution: zulu
           java-version: 17
       - name: Run tests
-        run: ./gradlew check --no-parallel
+        run: ./gradlew check --no-parallel "-Dorg.gradle.jvmargs=-Xmx3g"
       - name: Upload test results
         uses: actions/upload-artifact@v3
         if: failure()
@@ -54,7 +54,7 @@ jobs:
           sudo dpkg -i libicu71_71.1-2_amd64.deb
           rm libicu71_71.1-2_amd64.deb
       - name: Run tests
-        run: ./gradlew check --no-parallel
+        run: ./gradlew check --no-parallel "-Dorg.gradle.jvmargs=-Xmx3g"
       - name: Upload test results
         uses: actions/upload-artifact@v3
         if: failure()
@@ -106,7 +106,7 @@ jobs:
           arch: x86_64
           ram-size: 4096M
           cores: 3
-          script: ./gradlew connectedCheck --no-parallel
+          script: ./gradlew connectedCheck --no-parallel "-Dorg.gradle.jvmargs=-Xmx3g"
       - name: Upload test results
         uses: actions/upload-artifact@v3
         if: failure()
