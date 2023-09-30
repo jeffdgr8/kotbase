@@ -22,7 +22,7 @@ import kotbase.*
 import kotlin.test.*
 
 @OptIn(ExperimentalStdlibApi::class)
-class KermitCouchbaseLiteLoggerTest {
+class KermitCouchbaseLiteLoggerTest : PlatformTest() {
 
     class TestLogWriter(
         private val minSeverity: Severity,
