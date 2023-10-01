@@ -286,7 +286,7 @@ class LoadTest : BaseDbTest() {
     private fun timeTest(testName: String, maxTimeMs: Long, test: () -> Unit) {
         // TODO: temporary, as Android emulator tests on CI run slower
         //  update with device multiplier with 3.1 API changes
-        val maxTimeMs = maxTimeMs * 3
+        val maxTimeMs = maxTimeMs * 4
         PlatformUtils.gc()
         val t0 = Clock.System.now()
         test()
