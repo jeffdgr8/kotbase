@@ -119,9 +119,9 @@ class KermitCouchbaseLiteLoggerTest : BaseTest() {
         logWriter.clearCache()
 
         database.save(MutableDocument("doc-1", """{"foo":"bar","baz":42}"""))
-        logWriter.checkLog(Severity.Debug, CBL_DATABASE, "{DB#", "begin transaction")
-        logWriter.checkLog(Severity.Debug, CBL_DATABASE, "{DB#", "Saved 'doc-1' rev #1-", "as seq 1")
-        logWriter.checkLog(Severity.Debug, CBL_DATABASE, "{DB#", "commit transaction")
+        logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "{DB#", "begin transaction")
+        logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "{DB#", "Saved 'doc-1' rev #1-", "as seq 1")
+        logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "{DB#", "commit transaction")
         logWriter.clearCache()
 
         database.createQuery("""SELECT * FROM _ WHERE foo = "bar"""").execute().use { rs ->
@@ -142,7 +142,7 @@ class KermitCouchbaseLiteLoggerTest : BaseTest() {
 
         database.delete()
         this.database = null
-        logWriter.checkLog(Severity.Debug, CBL_DATABASE, "{DB#", "Closed SQLite database")
+        logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "{DB#", "Closed SQLite database")
         logWriter.checkLog(Severity.Info, CBL_DATABASE, "{DB#", "Closing database")
     }
 

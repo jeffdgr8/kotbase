@@ -33,11 +33,14 @@ import co.touchlab.kermit.Logger as KermitLogger
  * Database.log.custom = KermitCouchbaseLiteLogger(kermit)
  * ```
  *
- * Note Couchbase Lite `LogLevel.VERBOSE` maps to Kermit `Severity.Debug`
- * and will show up in logs prefixed "Debug".
- * `LogLevel.DEBUG` is the lowest Couchbase Lite log level and maps to
- * `Severity.Verbose`, but this level is only logged in debug builds of
- * Couchbase Lite.
+ * Note Couchbase Lite `LogLevel.DEBUG` is lower than
+ * `LogLevel.VERBOSE`, while Kermit `Severity.Verbose` is lower than
+ * `Severity.Debug`. `LogLevel.Verbose` still maps to `Severity.Verbose`
+ * and `LogLevel.DEBUG` to `Severity.Debug` for consistency reading log
+ * prefixes. But these logs will filter differently based on the `level`
+ * filter in this class and Kermit's own `minSeverity` filter. Since
+ * `LogLevel.DEBUG` logs are only logged in debug builds of Couchbase
+ * Lite, this generally isn't an issue.
  */
 public class KermitCouchbaseLiteLogger(
     kermit: KermitLogger,
@@ -86,9 +89,10 @@ public class KermitCouchbaseLiteLogger(
 internal val LogLevel.severity: Severity
     get() = when (this) {
         // LogLevel.DEBUG is lowest CBL log level and only available in debug builds
-        LogLevel.DEBUG -> Severity.Verbose
-        LogLevel.VERBOSE -> Severity.Debug
+        LogLevel.DEBUG -> Severity.Debug
+        LogLevel.VERBOSE -> Severity.Verbose
         LogLevel.INFO -> Severity.Info
         LogLevel.WARNING -> Severity.Warn
-        else -> Severity.Error
+        LogLevel.ERROR -> Severity.Error
+        else -> Severity.Assert
     }
