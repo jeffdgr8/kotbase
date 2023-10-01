@@ -32,6 +32,12 @@ import co.touchlab.kermit.Logger as KermitLogger
  * Database.log.console.level = LogLevel.NONE
  * Database.log.custom = KermitCouchbaseLiteLogger(kermit)
  * ```
+ *
+ * Note Couchbase Lite `LogLevel.VERBOSE` maps to Kermit `Severity.Debug`
+ * and will show up in logs prefixed "Debug".
+ * `LogLevel.DEBUG` is the lowest Couchbase Lite log level and maps to
+ * `Severity.Verbose`, but this level is only logged in debug builds of
+ * Couchbase Lite.
  */
 public class KermitCouchbaseLiteLogger(
     kermit: KermitLogger,

@@ -22,7 +22,7 @@ import kotbase.*
 import kotlin.test.*
 
 @OptIn(ExperimentalStdlibApi::class)
-class KermitCouchbaseLiteLoggerTest : PlatformTest() {
+class KermitCouchbaseLiteLoggerTest : BaseTest() {
 
     class TestLogWriter(
         private val minSeverity: Severity,
@@ -107,7 +107,7 @@ class KermitCouchbaseLiteLoggerTest : PlatformTest() {
             this.domains = domains
         }
 
-        val database = Database("log-test-db")
+        val database = createDb("log-test-db")
         this.database = database
         logWriter.checkLog(
             Severity.Info,
