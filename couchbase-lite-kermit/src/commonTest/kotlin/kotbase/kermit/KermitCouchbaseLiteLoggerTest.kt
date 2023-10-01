@@ -112,7 +112,7 @@ class KermitCouchbaseLiteLoggerTest : BaseTest() {
         logWriter.checkLog(
             Severity.Info,
             CBL_DATABASE,
-            "{DB#", "}==>", "litecore", "SQLiteDataFile", "log-test-db.cblite2", "db.sqlite3"
+            "{DB#", "}==>", "litecore", "SQLiteDataFile", "log-test-db", ".cblite2", "db.sqlite3"
         )
         logWriter.checkLog(Severity.Info, CBL_DATABASE, "{DB#", "Opening database")
         logWriter.checkLog(Severity.Info, CBL_DATABASE, "Instantiated")
