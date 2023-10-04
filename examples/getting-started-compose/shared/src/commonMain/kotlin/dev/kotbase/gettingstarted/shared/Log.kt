@@ -19,7 +19,10 @@ object Log {
     private fun timestamp(): String =
         Clock.System.now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
-            .toString()
+            .toString().let {
+                if (it.length == 19) "$it." else it
+            }
+            .padEnd(23, '0')
             .substring(5, 23)
             .replace('T', ' ')
 }
