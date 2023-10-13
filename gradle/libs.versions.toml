@@ -8,11 +8,11 @@ kotlinx-serialization = "1.6.0"
 mockk = "1.13.3"
 
 [plugins]
-android-library = { id = "com.android.library", version = "8.1.1" }
+android-library = { id = "com.android.library", version = "8.1.2" }
 dokka = { id = "org.jetbrains.dokka", version = "1.9.0" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.10" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.13.2" }
-kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.3" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.4" }
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.25.3" }
 
 [libraries]
@@ -24,7 +24,7 @@ couchbase-lite-android = { module = "com.couchbase.lite:couchbase-lite-android",
 couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-android-ee", version.ref = "couchbase-lite-java" }
 couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", version.ref = "couchbase-lite-java" }
 couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
-kermit = { module = "co.touchlab:kermit", version = "2.0.1" }
+kermit = { module = "co.touchlab:kermit", version = "2.0.2" }
 korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.10" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
