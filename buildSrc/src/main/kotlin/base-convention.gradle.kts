@@ -77,10 +77,6 @@ android {
     }
 }
 
-tasks.withType<KotlinNativeSimulatorTest>().configureEach {
-    device.set("iPhone 14")
-}
-
 dependencies {
     components {
         applyCouchbaseLiteRule("com.couchbase.lite:couchbase-lite-java", "com.couchbase.lite:couchbase-lite-android")
