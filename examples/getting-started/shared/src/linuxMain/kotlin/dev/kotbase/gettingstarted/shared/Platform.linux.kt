@@ -7,10 +7,12 @@ import kotlinx.cinterop.toKString
 import platform.posix.uname
 import platform.posix.utsname
 
-actual class Platform actual constructor() {
-    actual val platform: String = memScoped {
+class LinuxPlatform : Platform {
+    override val name: String = memScoped {
         val utsname = alloc<utsname>()
         uname(utsname.ptr)
         utsname.sysname.toKString() + " " + utsname.release.toKString()
     }
 }
+
+actual fun getPlatform(): Platform = LinuxPlatform()

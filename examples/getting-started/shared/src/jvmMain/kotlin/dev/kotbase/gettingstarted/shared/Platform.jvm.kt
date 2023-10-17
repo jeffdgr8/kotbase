@@ -1,5 +1,7 @@
 package dev.kotbase.gettingstarted.shared
 
-actual class Platform actual constructor() {
-    actual val platform: String = "JVM ${System.getProperty("java.version")}"
+class JvmPlatform : Platform {
+    override val name: String = "JVM ${System.getProperty("java.version")}"
 }
+
+actual fun getPlatform(): Platform = JvmPlatform()

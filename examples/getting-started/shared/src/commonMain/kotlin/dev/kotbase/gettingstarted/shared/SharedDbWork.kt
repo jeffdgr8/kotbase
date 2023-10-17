@@ -13,6 +13,7 @@ class SharedDbWork {
 
     private var database: Database? = null
     private var replicator: Replicator? = null
+    private val platform: Platform = getPlatform()
 
     // Create a database
     fun createDb(dbName: String) {
@@ -26,7 +27,7 @@ class SharedDbWork {
         val mutableDoc = MutableDocument()
             .setFloat("version", 2.0f)
             .setString("language", "Kotlin")
-            .setString("platform", Platform().platform)
+            .setString("platform", platform.name)
         database?.save(mutableDoc)
         return mutableDoc.id
     }
