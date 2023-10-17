@@ -9,3 +9,4 @@ build
 .cxx
 /site
 __pycache__
+*.podspec
