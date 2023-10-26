@@ -42,16 +42,17 @@ private constructor(expressions: List<String>) : IndexConfiguration(expressions)
 
     public actual var isIgnoringAccents: Boolean = false
 
-    internal fun getActual(): CValue<CBLFullTextIndexConfiguration> {
-        val exp = expressions.joinToString(separator = ",")
-        val lang = language
-        return cValue {
-            expressionLanguage = kCBLN1QLLanguage
-            expressions.buf = strdup(exp)
-            expressions.size = strlen(exp)
-            language.buf = lang?.let { strdup(it) }
-            language.size = lang?.let { strlen(it) } ?: 0U
-            ignoreAccents = isIgnoringAccents
+    internal val actual: CValue<CBLFullTextIndexConfiguration>
+        get() {
+            val exp = expressions.joinToString(separator = ",")
+            val lang = language
+            return cValue {
+                expressionLanguage = kCBLN1QLLanguage
+                expressions.buf = strdup(exp)
+                expressions.size = strlen(exp)
+                language.buf = lang?.let { strdup(it) }
+                language.size = lang?.let { strlen(it) } ?: 0U
+                ignoreAccents = isIgnoringAccents
+            }
         }
-    }
 }

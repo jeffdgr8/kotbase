@@ -35,12 +35,13 @@ internal constructor(private val items: List<ValueIndexItem>) : Index() {
         return JsonUtils.toJson(data)
     }
 
-    internal fun getActual(): CValue<CBLValueIndexConfiguration> {
-        val json = getJson()
-        return cValue {
-            expressionLanguage = kCBLJSONLanguage
-            expressions.buf = strdup(json)
-            expressions.size = strlen(json)
+    internal val actual: CValue<CBLValueIndexConfiguration>
+        get() {
+            val json = getJson()
+            return cValue {
+                expressionLanguage = kCBLJSONLanguage
+                expressions.buf = strdup(json)
+                expressions.size = strlen(json)
+            }
         }
-    }
 }

@@ -50,16 +50,17 @@ internal constructor(private val items: List<FullTextIndexItem>) : Index() {
         return JsonUtils.toJson(data)
     }
 
-    internal fun getActual(): CValue<CBLFullTextIndexConfiguration> {
-        val json = getJson()
-        val lang = language
-        return cValue {
-            expressionLanguage = kCBLJSONLanguage
-            expressions.buf = strdup(json)
-            expressions.size = strlen(json)
-            language.buf = lang?.let { strdup(it) }
-            language.size = lang?.let { strlen(it) } ?: 0U
-            ignoreAccents = isIgnoringAccents
+    internal val actual: CValue<CBLFullTextIndexConfiguration>
+        get() {
+            val json = getJson()
+            val lang = language
+            return cValue {
+                expressionLanguage = kCBLJSONLanguage
+                expressions.buf = strdup(json)
+                expressions.size = strlen(json)
+                language.buf = lang?.let { strdup(it) }
+                language.size = lang?.let { strlen(it) } ?: 0U
+                ignoreAccents = isIgnoringAccents
+            }
         }
-    }
 }

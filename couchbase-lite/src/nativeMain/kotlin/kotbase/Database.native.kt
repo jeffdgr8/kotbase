@@ -545,13 +545,13 @@ internal constructor(
                         is ValueIndex -> CBLDatabase_CreateValueIndex(
                             actual,
                             name.toFLString(this),
-                            index.getActual(),
+                            index.actual,
                             error
                         )
                         is FullTextIndex -> CBLDatabase_CreateFullTextIndex(
                             actual,
                             name.toFLString(this),
-                            index.getActual(),
+                            index.actual,
                             error
                         )
                         else -> error("Unhandled Index type ${index::class}")
@@ -570,13 +570,13 @@ internal constructor(
                         is ValueIndexConfiguration -> CBLDatabase_CreateValueIndex(
                             actual,
                             name.toFLString(this),
-                            config.getActual(),
+                            config.actual,
                             error
                         )
                         is FullTextIndexConfiguration -> CBLDatabase_CreateFullTextIndex(
                             actual,
                             name.toFLString(this),
-                            config.getActual(),
+                            config.actual,
                             error
                         )
                     }
