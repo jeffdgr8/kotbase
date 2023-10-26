@@ -17,7 +17,7 @@ package kotbase.internal
 
 import kotbase.*
 
-internal actual class DbContext(var database: Database?) {
+internal class DbContext(var database: Database?) {
 
     // need to avoid calling expensive Blob.hashCode()
     // so using === comparison with List instead of Set

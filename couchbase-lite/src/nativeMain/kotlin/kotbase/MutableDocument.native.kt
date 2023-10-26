@@ -79,9 +79,15 @@ internal constructor(
         unsavedBlobs.clear()
     }
 
+    override var properties: FLMutableDict = CBLDocument_MutableProperties(actual)!!
+        set(value) {
+            super.properties = value
+            field = value
+            unsavedBlobs.clear()
+        }
+
     public actual fun setData(data: Map<String, Any?>): MutableDocument {
         properties = MutableDictionary(data).actual
-        unsavedBlobs.clear()
         return this
     }
 
@@ -96,7 +102,6 @@ internal constructor(
                 }
             }
             properties = CBLDocument_MutableProperties(actual)!!
-            unsavedBlobs.clear()
         } catch (e: CouchbaseLiteException) {
             if (e.code == CBLError.Code.INVALID_QUERY) {
                 throw IllegalArgumentException("Failed parsing JSON", e)
@@ -233,9 +238,3 @@ internal constructor(
         throw IllegalStateException("Mutable objects may not be encoded as JSON")
     }
 }
-
-internal var MutableDocument.properties: FLMutableDict
-    get() = platformState.properties
-    set(value) {
-        platformState.properties = value
-    }

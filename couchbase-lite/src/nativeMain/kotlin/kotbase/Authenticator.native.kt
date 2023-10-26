@@ -21,13 +21,7 @@ import libcblite.CBLAuth_Free
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-internal actual class AuthenticatorPlatformState(
-    internal val actual: CPointer<CBLAuthenticator>
-)
-
-public actual sealed class Authenticator(actual: CPointer<CBLAuthenticator>) {
-
-    internal actual val platformState = AuthenticatorPlatformState(actual)
+public actual sealed class Authenticator(internal val actual: CPointer<CBLAuthenticator>) {
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
@@ -35,6 +29,3 @@ public actual sealed class Authenticator(actual: CPointer<CBLAuthenticator>) {
         CBLAuth_Free(it)
     }
 }
-
-internal val Authenticator.actual: CPointer<CBLAuthenticator>
-    get() = platformState.actual

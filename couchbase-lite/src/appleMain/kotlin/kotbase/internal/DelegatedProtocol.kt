@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2023 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,4 +15,17 @@
  */
 package kotbase.internal
 
-internal actual class DbContext
+import platform.darwin.NSObjectProtocol
+
+public abstract class DelegatedProtocol<D : NSObjectProtocol>
+internal constructor(internal open val actual: D) {
+
+    override fun equals(other: Any?): Boolean =
+        actual.isEqual((other as? AbstractDelegatedClass<*>)?.actual)
+
+    override fun hashCode(): Int =
+        actual.hash.toInt()
+
+    override fun toString(): String =
+        actual.description ?: super.toString()
+}

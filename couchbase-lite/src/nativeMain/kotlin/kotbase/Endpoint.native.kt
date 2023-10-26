@@ -17,15 +17,15 @@ package kotbase
 
 import cnames.structs.CBLEndpoint
 import kotlinx.cinterop.CPointer
+import libcblite.CBLEndpoint_Free
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
-internal actual class EndpointPlatformState(
-    internal val actual: CPointer<CBLEndpoint>
-)
+public actual sealed class Endpoint(internal val actual: CPointer<CBLEndpoint>) {
 
-public actual sealed class Endpoint(actual: CPointer<CBLEndpoint>) {
-
-    internal actual val platformState = EndpointPlatformState(actual)
+    @OptIn(ExperimentalNativeApi::class)
+    @Suppress("unused")
+    private val cleaner = createCleaner(actual) {
+        CBLEndpoint_Free(it)
+    }
 }
-
-internal val Endpoint.actual: CPointer<CBLEndpoint>
-    get() = platformState.actual

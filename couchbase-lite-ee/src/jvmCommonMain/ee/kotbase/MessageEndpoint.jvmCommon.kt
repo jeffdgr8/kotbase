@@ -19,7 +19,7 @@ import com.couchbase.lite.MessageEndpoint as CBLMessageEndpoint
 
 public actual class MessageEndpoint
 internal constructor(
-    actual: CBLMessageEndpoint,
+    override val actual: CBLMessageEndpoint,
     public actual val delegate: MessageEndpointDelegate
 ) : Endpoint(actual) {
 
@@ -42,6 +42,3 @@ internal constructor(
     public actual val protocolType: ProtocolType
         get() = actual.protocolType
 }
-
-internal val MessageEndpoint.actual: CBLMessageEndpoint
-    get() = platformState.actual as CBLMessageEndpoint

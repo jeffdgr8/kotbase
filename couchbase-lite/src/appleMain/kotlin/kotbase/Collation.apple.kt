@@ -16,15 +16,10 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLQueryCollation
-
-internal actual class CollationPlatformState(
-    internal var actual: CBLQueryCollation
-)
+import kotbase.internal.DelegatedClass
 
 public actual sealed class Collation
-private constructor(actual: CBLQueryCollation) {
-
-    internal actual val platformState = CollationPlatformState(actual)
+private constructor(override var actual: CBLQueryCollation) : DelegatedClass<CBLQueryCollation>(actual) {
 
     public actual class ASCII
     internal constructor(
@@ -66,15 +61,6 @@ private constructor(actual: CBLQueryCollation) {
         }
     }
 
-    override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? Collation)?.actual)
-
-    override fun hashCode(): Int =
-        actual.hash.toInt()
-
-    override fun toString(): String =
-        actual.description ?: super.toString()
-
     public actual companion object {
 
         public actual fun ascii(): ASCII = ASCII()
@@ -82,9 +68,3 @@ private constructor(actual: CBLQueryCollation) {
         public actual fun unicode(): Unicode = Unicode()
     }
 }
-
-internal var Collation.actual: CBLQueryCollation
-    get() = platformState.actual
-    set(value) {
-        platformState.actual = value
-    }

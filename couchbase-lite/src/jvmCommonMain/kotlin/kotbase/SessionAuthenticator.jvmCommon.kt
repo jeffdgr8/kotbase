@@ -19,7 +19,7 @@ import com.couchbase.lite.SessionAuthenticator as CBLSessionAuthenticator
 
 public actual class SessionAuthenticator
 internal constructor(
-    actual: CBLSessionAuthenticator
+    override val actual: CBLSessionAuthenticator
 ) : Authenticator(actual) {
 
     public actual constructor(sessionID: String, cookieName: String?) : this(
@@ -32,6 +32,3 @@ internal constructor(
     public actual val cookieName: String
         get() = actual.cookieName!!
 }
-
-internal val SessionAuthenticator.actual: CBLSessionAuthenticator
-    get() = platformState.actual as CBLSessionAuthenticator

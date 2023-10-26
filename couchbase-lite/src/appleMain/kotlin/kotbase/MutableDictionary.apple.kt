@@ -23,7 +23,7 @@ import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 
 public actual class MutableDictionary
-internal constructor(actual: CBLMutableDictionary) : Dictionary(actual) {
+internal constructor(override val actual: CBLMutableDictionary) : Dictionary(actual) {
 
     public actual constructor() : this(CBLMutableDictionary())
 
@@ -178,8 +178,5 @@ internal constructor(actual: CBLMutableDictionary) : Dictionary(actual) {
         }
     }
 }
-
-internal val MutableDictionary.actual: CBLMutableDictionary
-    get() = platformState.actual as CBLMutableDictionary
 
 internal fun CBLMutableDictionary.asMutableDictionary() = MutableDictionary(this)

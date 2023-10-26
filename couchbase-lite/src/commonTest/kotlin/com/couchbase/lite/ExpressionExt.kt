@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2023 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kotbase
+package com.couchbase.lite
 
-import com.couchbase.lite.PropertyExpression as CBLPropertyExpression
+import kotbase.Expression
 
-public actual class PropertyExpression
-internal constructor(override val actual: CBLPropertyExpression) : Expression(actual) {
-
-    public actual fun from(fromAlias: String): Expression =
-        Expression(actual.from(fromAlias))
-}
+expect fun Expression.asJSON(): Any?

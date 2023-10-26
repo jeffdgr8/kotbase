@@ -15,32 +15,26 @@
  */
 package kotbase
 
-internal actual class DataSourcePlatformState(
+public actual open class DataSource
+private constructor(
     internal val source: Database,
-    private val alias: String?
+    protected var alias: String? = null
 ) {
+
+    public actual class As
+    internal constructor(database: Database) : DataSource(database) {
+
+        public actual fun `as`(alias: String): DataSource {
+            this.alias = alias
+            return this
+        }
+    }
 
     private fun getColumnName(): String =
         alias ?: source.name
 
     internal fun asJSON(): Map<String, Any?> =
         mapOf("AS" to getColumnName())
-}
-
-public actual open class DataSource
-private constructor(
-    source: Database,
-    alias: String? = null
-) {
-
-    internal actual val platformState = DataSourcePlatformState(source, alias)
-
-    public actual class As
-    internal constructor(database: Database) : DataSource(database) {
-
-        public actual fun `as`(alias: String): DataSource =
-            DataSource(source, alias)
-    }
 
     public actual companion object {
 
@@ -48,9 +42,3 @@ private constructor(
             As(database)
     }
 }
-
-internal val DataSource.source: Database
-    get() = platformState.source
-
-internal fun DataSource.asJSON(): Map<String, Any?> =
-    platformState.asJSON()

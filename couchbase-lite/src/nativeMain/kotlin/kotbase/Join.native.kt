@@ -15,9 +15,10 @@
  */
 package kotbase
 
-internal actual class JoinPlatformState(
-    internal val type: Join.Type,
-    internal val datasource: DataSource,
+public actual open class Join
+private constructor(
+    internal val type: Type,
+    protected val datasource: DataSource,
     private val on: Expression? = null
 ) {
 
@@ -30,16 +31,6 @@ internal actual class JoinPlatformState(
             putAll(datasource.asJSON())
         }
     }
-}
-
-public actual open class Join
-private constructor(
-    type: Type,
-    datasource: DataSource,
-    on: Expression? = null
-) {
-
-    internal actual val platformState = JoinPlatformState(type, datasource, on)
 
     internal enum class Type(val tag: String) {
         INNER("INNER"),
@@ -75,12 +66,3 @@ private constructor(
             Join(Type.CROSS, datasource)
     }
 }
-
-internal val Join.type: Join.Type
-    get() = platformState.type
-
-internal val Join.datasource: DataSource
-    get() = platformState.datasource
-
-internal fun Join.asJSON(): Map<String, Any?> =
-    platformState.asJSON()

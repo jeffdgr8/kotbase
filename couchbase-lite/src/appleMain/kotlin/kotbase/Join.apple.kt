@@ -18,16 +18,10 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLQueryDataSource
 import cocoapods.CouchbaseLite.CBLQueryExpression
 import cocoapods.CouchbaseLite.CBLQueryJoin
-import kotlin.Array
-
-internal actual class JoinPlatformState(
-    internal val actual: CBLQueryJoin
-)
+import kotbase.internal.DelegatedClass
 
 public actual open class Join
-private constructor(actual: CBLQueryJoin) {
-
-    internal actual val platformState = JoinPlatformState(actual)
+private constructor(actual: CBLQueryJoin) : DelegatedClass<CBLQueryJoin>(actual) {
 
     public actual class On
     internal constructor(
@@ -38,15 +32,6 @@ private constructor(actual: CBLQueryJoin) {
         public actual fun on(expression: Expression): Join =
             Join(join(datasource, expression.actual))
     }
-
-    override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? Join)?.actual)
-
-    override fun hashCode(): Int =
-        actual.hash.toInt()
-
-    override fun toString(): String =
-        actual.description ?: super.toString()
 
     public actual companion object {
 
@@ -66,9 +51,3 @@ private constructor(actual: CBLQueryJoin) {
             Join(CBLQueryJoin.crossJoin(datasource.actual))
     }
 }
-
-internal val Join.actual: CBLQueryJoin
-    get() = platformState.actual
-
-internal fun Array<out Join>.actuals(): List<CBLQueryJoin> =
-    map { it.actual }

@@ -84,12 +84,8 @@ internal constructor(actual: CBLLogFileConfiguration) : DelegatedClass<CBLLogFil
 
     // Objective-C SDK doesn't override these, but Java does and tests expect
     override fun equals(other: Any?): Boolean {
-        if (this === other) {
-            return true
-        }
-        if (other !is LogFileConfiguration) {
-            return false
-        }
+        if (this === other) return true
+        if (other !is LogFileConfiguration) return false
         return maxRotateCount == other.maxRotateCount
                 && directory == other.directory
                 && maxSize == other.maxSize

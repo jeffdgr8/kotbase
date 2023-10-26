@@ -18,14 +18,10 @@ package kotbase
 import kotlinx.datetime.Instant
 import kotlin.reflect.safeCast
 
-internal expect class DocumentPlatformState
-
 /**
  * Readonly version of the Document.
  */
 public expect open class Document : Iterable<String> {
-
-    internal val platformState: DocumentPlatformState
 
     internal val collectionMap: MutableMap<String, Any>
 

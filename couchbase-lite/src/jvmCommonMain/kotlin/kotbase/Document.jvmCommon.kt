@@ -16,17 +16,12 @@
 package kotbase
 
 import kotbase.ext.toKotlinInstant
+import kotbase.internal.DelegatedClass
 import kotlinx.datetime.Instant
 import com.couchbase.lite.Document as CBLDocument
 
-internal actual class DocumentPlatformState(
-    internal val actual: CBLDocument
-)
-
 public actual open class Document
-internal constructor(actual: CBLDocument) : Iterable<String> {
-
-    internal actual val platformState = DocumentPlatformState(actual)
+internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual), Iterable<String> {
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
@@ -104,18 +99,6 @@ internal constructor(actual: CBLDocument) : Iterable<String> {
 
     actual override operator fun iterator(): Iterator<String> =
         actual.iterator()
-
-    override fun equals(other: Any?): Boolean =
-        actual == (other as? Document)?.actual
-
-    override fun hashCode(): Int =
-        actual.hashCode()
-
-    override fun toString(): String =
-        actual.toString()
 }
-
-internal val Document.actual: CBLDocument
-    get() = platformState.actual
 
 internal fun CBLDocument.asDocument() = Document(this)

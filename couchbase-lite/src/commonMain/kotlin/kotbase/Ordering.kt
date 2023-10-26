@@ -15,14 +15,10 @@
  */
 package kotbase
 
-internal expect class OrderingPlatformState
-
 /**
  * An Ordering represents a single ordering component in the query ORDER BY clause.
  */
 public expect sealed class Ordering {
-
-    internal val platformState: OrderingPlatformState
 
     /**
      * SortOrder represents a single ORDER BY entity. You can specify either ascending or

@@ -16,22 +16,15 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLQueryExpression
-import cocoapods.CouchbaseLite.asJSON
+import kotbase.internal.DelegatedClass
+import kotbase.internal.actuals
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
-import kotlin.Array
 
-internal actual class ExpressionPlatformState(
-    internal val actual: CBLQueryExpression
-)
-
-public actual open class Expression(actual: CBLQueryExpression) {
-
-    internal actual val platformState: ExpressionPlatformState? = ExpressionPlatformState(actual)
-
-    internal actual open fun asJSON(): Any? = actual.asJSON()
+public actual open class Expression
+internal constructor(actual: CBLQueryExpression) : DelegatedClass<CBLQueryExpression>(actual) {
 
     public actual companion object {
 
@@ -149,19 +142,4 @@ public actual open class Expression(actual: CBLQueryExpression) {
 
     public actual fun `in`(vararg expressions: Expression): Expression =
         Expression(actual.`in`(expressions.actuals()))
-
-    override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? Expression)?.actual)
-
-    override fun hashCode(): Int =
-        actual.hash.toInt()
-
-    override fun toString(): String =
-        actual.description ?: super.toString()
 }
-
-internal val Expression.actual: CBLQueryExpression
-    get() = platformState!!.actual
-
-internal fun Array<out Expression>.actuals(): List<CBLQueryExpression> =
-    map { it.actual }

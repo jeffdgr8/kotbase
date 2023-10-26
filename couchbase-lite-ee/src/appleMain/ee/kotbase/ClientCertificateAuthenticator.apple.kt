@@ -28,6 +28,3 @@ private constructor(
         identity
     )
 }
-
-internal val ClientCertificateAuthenticator.actual: CBLClientCertificateAuthenticator
-    get() = platformState.actual as CBLClientCertificateAuthenticator

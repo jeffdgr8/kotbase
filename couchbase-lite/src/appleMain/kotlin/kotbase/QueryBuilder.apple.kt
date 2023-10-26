@@ -15,6 +15,8 @@
  */
 package kotbase
 
+import kotbase.internal.actuals
+
 public actual object QueryBuilder {
 
     public actual fun select(vararg results: SelectResult): Select =

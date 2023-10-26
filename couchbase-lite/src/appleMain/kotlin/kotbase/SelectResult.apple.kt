@@ -16,16 +16,10 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLQuerySelectResult
-import kotlin.Array
-
-internal actual class SelectResultPlatformState(
-    internal val actual: CBLQuerySelectResult
-)
+import kotbase.internal.DelegatedClass
 
 public actual open class SelectResult
-private constructor(actual: CBLQuerySelectResult) {
-
-    internal actual val platformState = SelectResultPlatformState(actual)
+private constructor(actual: CBLQuerySelectResult) : DelegatedClass<CBLQuerySelectResult>(actual) {
 
     public actual class From
     internal constructor(private val all: (String?) -> CBLQuerySelectResult) : SelectResult(all(null)) {
@@ -55,15 +49,6 @@ private constructor(actual: CBLQuerySelectResult) {
         }
     }
 
-    override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? SelectResult)?.actual)
-
-    override fun hashCode(): Int =
-        actual.hash.toInt()
-
-    override fun toString(): String =
-        actual.description ?: super.toString()
-
     public actual companion object {
 
         public actual fun property(property: String): As =
@@ -76,9 +61,3 @@ private constructor(actual: CBLQuerySelectResult) {
             From(CBLQuerySelectResult.Companion::allFrom)
     }
 }
-
-internal val SelectResult.actual: CBLQuerySelectResult
-    get() = platformState.actual
-
-internal fun Array<out SelectResult>.actuals(): List<CBLQuerySelectResult> =
-    map { it.actual }

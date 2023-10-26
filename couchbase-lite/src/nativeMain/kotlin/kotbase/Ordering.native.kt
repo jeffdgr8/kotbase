@@ -15,31 +15,15 @@
  */
 package kotbase
 
-internal actual class OrderingPlatformState(
-    private val expression: Expression,
-    internal var isAscending: Boolean = true
-) {
-
-    internal fun asJSON(): Any? {
-        if (isAscending) {
-            return expression.asJSON()
-        }
-
-        return listOf(
-            "DESC",
-            expression.asJSON()
-        )
-    }
-}
-
 public actual sealed class Ordering
-private constructor(expression: Expression) {
+private constructor(protected val expression: Expression) {
 
-    internal actual val platformState = OrderingPlatformState(expression)
+    internal abstract fun asJSON(): Any?
 
     public actual class SortOrder
     internal constructor(
-        expression: Expression
+        expression: Expression,
+        private var isAscending: Boolean = true
     ) : Ordering(expression) {
 
         public actual fun ascending(): Ordering {
@@ -50,6 +34,17 @@ private constructor(expression: Expression) {
         public actual fun descending(): Ordering {
             isAscending = false
             return this
+        }
+
+        override fun asJSON(): Any? {
+            if (isAscending) {
+                return expression.asJSON()
+            }
+
+            return listOf(
+                "DESC",
+                expression.asJSON()
+            )
         }
     }
 
@@ -62,12 +57,3 @@ private constructor(expression: Expression) {
             SortOrder(expression)
     }
 }
-
-internal var Ordering.isAscending: Boolean
-    get() = platformState.isAscending
-    set(value) {
-        platformState.isAscending = value
-    }
-
-internal fun Ordering.asJSON(): Any? =
-    platformState.asJSON()

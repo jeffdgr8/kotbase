@@ -17,17 +17,12 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLDocument
 import kotbase.ext.asNumber
+import kotbase.internal.DelegatedClass
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 
-internal actual class DocumentPlatformState(
-    internal val actual: CBLDocument
-)
-
 public actual open class Document
-internal constructor(actual: CBLDocument) : Iterable<String> {
-
-    internal actual val platformState = DocumentPlatformState(actual)
+internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual), Iterable<String> {
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
@@ -109,18 +104,6 @@ internal constructor(actual: CBLDocument) : Iterable<String> {
     @Suppress("UNCHECKED_CAST")
     actual override operator fun iterator(): Iterator<String> =
         (actual.keys as List<String>).iterator()
-
-    override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? Document)?.actual)
-
-    override fun hashCode(): Int =
-        actual.hash.toInt()
-
-    override fun toString(): String =
-        actual.description ?: super.toString()
 }
-
-internal val Document.actual: CBLDocument
-    get() = platformState.actual
 
 internal fun CBLDocument.asDocument() = Document(this)

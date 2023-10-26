@@ -19,7 +19,7 @@ import com.couchbase.lite.DatabaseEndpoint as CBLDatabaseEndpoint
 
 public actual class DatabaseEndpoint
 internal constructor(
-    actual: CBLDatabaseEndpoint,
+    override val actual: CBLDatabaseEndpoint,
     public actual val database: Database
 ) : Endpoint(actual) {
 
@@ -28,6 +28,3 @@ internal constructor(
         database
     )
 }
-
-internal val DatabaseEndpoint.actual: CBLDatabaseEndpoint
-    get() = platformState.actual as CBLDatabaseEndpoint

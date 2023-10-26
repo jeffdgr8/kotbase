@@ -23,10 +23,6 @@ import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-internal actual class ArrayPlatformState(
-    internal val actual: FLArray
-)
-
 public actual open class Array
 internal constructor(
     actual: FLArray,
@@ -37,11 +33,9 @@ internal constructor(
         FLArray_Retain(actual)
     }
 
-    internal actual val platformState: ArrayPlatformState = ArrayPlatformState(actual)
+    public open val actual: FLArray = actual
 
-    internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
-
-    internal actual open var dbContext: DbContext? = dbContext
+    internal open var dbContext: DbContext? = dbContext
         set(value) {
             field = value
             collectionMap.forEach {
@@ -58,6 +52,8 @@ internal constructor(
         FLArray_Release(it)
     }
 
+    internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
+
     public actual fun toMutable(): MutableArray =
         MutableArray(
             FLArray_MutableCopy(actual, kFLDeepCopy)!!,
@@ -66,6 +62,11 @@ internal constructor(
 
     public actual val count: Int
         get() = FLArray_Count(actual).toInt()
+
+    protected fun getFLValue(index: Int): FLValue? {
+        checkIndex(index)
+        return actual.getValue(index)
+    }
 
     public actual open fun getValue(index: Int): Any? {
         return collectionMap[index]
@@ -168,12 +169,4 @@ internal constructor(
             append('}')
         }
     }
-}
-
-internal val Array.actual: FLArray
-    get() = platformState.actual
-
-internal fun Array.getFLValue(index: Int): FLValue? {
-    checkIndex(index)
-    return actual.getValue(index)
 }

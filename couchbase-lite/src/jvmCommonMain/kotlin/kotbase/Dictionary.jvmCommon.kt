@@ -16,24 +16,14 @@
 package kotbase
 
 import kotbase.ext.toKotlinInstant
-import kotbase.internal.DbContext
+import kotbase.internal.DelegatedClass
 import kotlinx.datetime.Instant
 import com.couchbase.lite.Dictionary as CBLDictionary
 
-internal actual class DictionaryPlatformState(
-    internal val actual: CBLDictionary
-)
-
 public actual open class Dictionary
-internal constructor(actual: CBLDictionary) : Iterable<String> {
-
-    internal actual val platformState = DictionaryPlatformState(actual)
+internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actual), Iterable<String> {
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
-
-    internal actual open var dbContext: DbContext?
-        get() = null
-        set(_) {}
 
     public actual fun toMutable(): MutableDictionary =
         MutableDictionary(actual.toMutable())
@@ -100,18 +90,6 @@ internal constructor(actual: CBLDictionary) : Iterable<String> {
 
     override fun iterator(): Iterator<String> =
         actual.iterator()
-
-    override fun equals(other: Any?): Boolean =
-        actual == (other as? Dictionary)?.actual
-
-    override fun hashCode(): Int =
-        actual.hashCode()
-
-    override fun toString(): String =
-        actual.toString()
 }
-
-internal val Dictionary.actual: CBLDictionary
-    get() = platformState.actual
 
 internal fun CBLDictionary.asDictionary() = Dictionary(this)

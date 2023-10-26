@@ -18,15 +18,7 @@ package kotbase
 import kotbase.ext.toStringMillis
 import kotlinx.datetime.Instant
 
-internal actual class ExpressionPlatformState
-
 public actual open class Expression {
-
-    internal actual val platformState: ExpressionPlatformState? = null
-
-    internal actual open fun asJSON(): Any? {
-        throw IllegalStateException("Should be overridden in subclass ${this::class}")
-    }
 
     private class ValueExpression(private val value: Any?) : Expression() {
 
@@ -374,4 +366,8 @@ public actual open class Expression {
 
     override fun toString(): String =
         "${this::class.simpleName} {@${hashCode().toString(16)},json=" + asJSON() + "}"
+
+    internal open fun asJSON(): Any? {
+        throw IllegalStateException("Should be overridden in subclass ${this::class}")
+    }
 }

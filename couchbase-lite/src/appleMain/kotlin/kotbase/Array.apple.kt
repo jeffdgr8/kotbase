@@ -17,25 +17,15 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLArray
 import kotbase.ext.asNumber
-import kotbase.internal.DbContext
+import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 
-internal actual class ArrayPlatformState(
-    internal val actual: CBLArray
-)
-
 public actual open class Array
-internal constructor(actual: CBLArray) : Iterable<Any?> {
-
-    internal actual val platformState: ArrayPlatformState = ArrayPlatformState(actual)
+internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Iterable<Any?> {
 
     internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
-
-    internal actual open var dbContext: DbContext?
-        get() = null
-        set(_) {}
 
     public actual fun toMutable(): MutableArray =
         MutableArray(actual.toMutable())
@@ -126,18 +116,6 @@ internal constructor(actual: CBLArray) : Iterable<Any?> {
 
         override fun next(): Any? = getValue(index++)
     }
-
-    override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? Array)?.actual)
-
-    override fun hashCode(): Int =
-        actual.hash.toInt()
-
-    override fun toString(): String =
-        actual.description ?: super.toString()
 }
-
-internal val Array.actual: CBLArray
-    get() = platformState.actual
 
 internal fun CBLArray.asArray() = Array(this)

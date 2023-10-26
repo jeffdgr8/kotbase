@@ -15,22 +15,15 @@
  */
 package kotbase
 
-import kotbase.internal.DbContext
 import kotlinx.datetime.Instant
 import kotlin.reflect.safeCast
-
-internal expect class ArrayPlatformState
 
 /**
  * Array provides readonly access to array data.
  */
 public expect open class Array : Iterable<Any?> {
 
-    internal val platformState: ArrayPlatformState
-
     internal val collectionMap: MutableMap<Int, Any>
-
-    internal open var dbContext: DbContext?
 
     /**
      * Return a mutable copy of the array

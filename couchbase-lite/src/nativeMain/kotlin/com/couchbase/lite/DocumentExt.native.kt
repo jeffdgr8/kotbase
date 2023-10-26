@@ -17,7 +17,6 @@ package com.couchbase.lite
 
 import kotbase.Document
 import kotbase.MutableDocument
-import kotbase.actual
 import libcblite.CBLDocument_Generation
 
 internal actual val Document.generation: Long

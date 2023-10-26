@@ -15,19 +15,14 @@
  */
 package kotbase
 
+import kotbase.internal.DelegatedClass
 import com.couchbase.lite.Collation as CBLCollation
 
-internal actual class CollationPlatformState(
-    internal val actual: CBLCollation
-)
-
 public actual sealed class Collation
-private constructor(actual: CBLCollation) {
-
-    internal actual val platformState = CollationPlatformState(actual)
+private constructor(actual: CBLCollation) : DelegatedClass<CBLCollation>(actual) {
 
     public actual class ASCII
-    internal constructor(actual: CBLCollation.ASCII) : Collation(actual) {
+    internal constructor(override val actual: CBLCollation.ASCII) : Collation(actual) {
 
         public actual fun setIgnoreCase(ignCase: Boolean): ASCII {
             actual.setIgnoreCase(ignCase)
@@ -36,7 +31,7 @@ private constructor(actual: CBLCollation) {
     }
 
     public actual class Unicode
-    internal constructor(actual: CBLCollation.Unicode) : Collation(actual) {
+    internal constructor(override val actual: CBLCollation.Unicode) : Collation(actual) {
 
         public actual fun setLocale(locale: String?): Unicode {
             actual.setLocale(locale)
@@ -54,15 +49,6 @@ private constructor(actual: CBLCollation) {
         }
     }
 
-    override fun equals(other: Any?): Boolean =
-        actual == (other as? Collation)?.actual
-
-    override fun hashCode(): Int =
-        actual.hashCode()
-
-    override fun toString(): String =
-        actual.toString()
-
     public actual companion object {
 
         public actual fun ascii(): ASCII =
@@ -72,12 +58,3 @@ private constructor(actual: CBLCollation) {
             Unicode(CBLCollation.unicode())
     }
 }
-
-internal val Collation.actual: CBLCollation
-    get() = platformState.actual
-
-internal val Collation.ASCII.actual: CBLCollation.ASCII
-    get() = platformState.actual as CBLCollation.ASCII
-
-internal val Collation.Unicode.actual: CBLCollation.Unicode
-    get() = platformState.actual as CBLCollation.Unicode

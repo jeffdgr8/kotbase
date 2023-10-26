@@ -23,10 +23,6 @@ import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-internal actual class DictionaryPlatformState(
-    internal val actual: FLDict
-)
-
 public actual open class Dictionary
 internal constructor(
     actual: FLDict,
@@ -37,11 +33,9 @@ internal constructor(
         FLDict_Retain(actual)
     }
 
-    internal actual val platformState = DictionaryPlatformState(actual)
+    internal open val actual: FLDict = actual
 
-    internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
-
-    internal actual open var dbContext: DbContext? = dbContext
+    internal open var dbContext: DbContext? = dbContext
         set(value) {
             field = value
             collectionMap.forEach {
@@ -58,6 +52,8 @@ internal constructor(
         FLDict_Release(it)
     }
 
+    internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
+
     public actual fun toMutable(): MutableDictionary {
         return MutableDictionary(
             FLDict_MutableCopy(actual, kFLDeepCopy)!!,
@@ -70,6 +66,9 @@ internal constructor(
 
     public actual val keys: List<String>
         get() = actual.keys()
+
+    protected fun getFLValue(key: String): FLValue? =
+        actual.getValue(key)
 
     public actual open fun getValue(key: String): Any? {
         return collectionMap[key]
@@ -171,9 +170,3 @@ internal constructor(
         }
     }
 }
-
-internal val Dictionary.actual: FLDict
-    get() = platformState.actual
-
-internal fun Dictionary.getFLValue(key: String): FLValue? =
-    actual.getValue(key)

@@ -19,7 +19,7 @@ import cocoapods.CouchbaseLite.CBLURLEndpoint
 import platform.Foundation.NSURL
 
 public actual class URLEndpoint
-internal constructor(actual: CBLURLEndpoint) : Endpoint(actual) {
+internal constructor(override val actual: CBLURLEndpoint) : Endpoint(actual) {
 
     public actual constructor(url: String) : this(CBLURLEndpoint(validate(url)))
 
@@ -47,6 +47,3 @@ internal constructor(actual: CBLURLEndpoint) : Endpoint(actual) {
         }
     }
 }
-
-internal val URLEndpoint.actual: CBLURLEndpoint
-    get() = platformState.actual as CBLURLEndpoint

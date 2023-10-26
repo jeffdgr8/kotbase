@@ -19,7 +19,7 @@ import cocoapods.CouchbaseLite.CBLListenerCertificateAuthenticator
 import kotbase.ext.toSecCertificate
 
 public actual class ListenerCertificateAuthenticator
-internal constructor(actual: CBLListenerCertificateAuthenticator) : ListenerAuthenticator(actual) {
+internal constructor(override val actual: CBLListenerCertificateAuthenticator) : ListenerAuthenticator(actual) {
 
     public actual constructor(rootCerts: List<ByteArray>) : this(
         CBLListenerCertificateAuthenticator(
@@ -31,6 +31,3 @@ internal constructor(actual: CBLListenerCertificateAuthenticator) : ListenerAuth
         CBLListenerCertificateAuthenticator(delegate.convert())
     )
 }
-
-internal val ListenerCertificateAuthenticator.actual: CBLListenerCertificateAuthenticator
-    get() = platformState!!.actual as CBLListenerCertificateAuthenticator

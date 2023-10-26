@@ -18,7 +18,7 @@ package kotbase
 import com.couchbase.lite.FullTextIndexConfiguration as CBLFullTextIndexConfiguration
 
 public actual class FullTextIndexConfiguration
-private constructor(actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
+private constructor(override val actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
 
     public actual constructor(vararg expressions: String) : this(CBLFullTextIndexConfiguration(*expressions))
 
@@ -44,6 +44,3 @@ private constructor(actual: CBLFullTextIndexConfiguration) : IndexConfiguration(
             actual.ignoreAccents(value)
         }
 }
-
-internal val FullTextIndexConfiguration.actual: CBLFullTextIndexConfiguration
-    get() = platformState!!.actual as CBLFullTextIndexConfiguration

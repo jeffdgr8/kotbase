@@ -18,6 +18,7 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLQuery
 import cocoapods.CouchbaseLite.CBLQueryLimit
 import kotbase.internal.AbstractDelegatedClass
+import kotbase.internal.actuals
 
 public actual class Where
 internal constructor(private val state: QueryState) :

@@ -16,6 +16,7 @@
 package kotbase
 
 import kotbase.internal.DelegatedClass
+import kotbase.internal.actuals
 import com.couchbase.lite.Joins as CBLJoins
 
 public actual class Joins

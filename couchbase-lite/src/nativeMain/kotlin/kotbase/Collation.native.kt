@@ -15,12 +15,12 @@
  */
 package kotbase
 
-internal actual class CollationPlatformState(
-    private val isUnicode: Boolean,
-    internal var locale: String? = null,
-    internal var ignAccents: Boolean = false,
-    internal var ignCase: Boolean = false
-) {
+public actual sealed class Collation
+private constructor(private val isUnicode: Boolean) {
+
+    protected var locale: String? = null
+    protected var ignAccents: Boolean = false
+    protected var ignCase: Boolean = false
 
     internal fun asJSON(): Map<String, Any?> {
         return mapOf(
@@ -30,17 +30,11 @@ internal actual class CollationPlatformState(
             "DIAC" to !ignAccents
         )
     }
-}
-
-public actual sealed class Collation
-private constructor(isUnicode: Boolean) {
-
-    internal actual val platformState = CollationPlatformState(isUnicode)
 
     public actual class ASCII : Collation(false) {
 
         public actual fun setIgnoreCase(ignCase: Boolean): ASCII {
-            platformState.ignCase = ignCase
+            this.ignCase = ignCase
             return this
         }
     }
@@ -48,17 +42,17 @@ private constructor(isUnicode: Boolean) {
     public actual class Unicode : Collation(true) {
 
         public actual fun setLocale(locale: String?): Unicode {
-            platformState.locale = locale
+            this.locale = locale
             return this
         }
 
         public actual fun setIgnoreAccents(ignAccents: Boolean): Unicode {
-            platformState.ignAccents = ignAccents
+            this.ignAccents = ignAccents
             return this
         }
 
         public actual fun setIgnoreCase(ignCase: Boolean): Unicode {
-            platformState.ignCase = ignCase
+            this.ignCase = ignCase
             return this
         }
     }
@@ -70,5 +64,3 @@ private constructor(isUnicode: Boolean) {
         public actual fun unicode(): Unicode = Unicode()
     }
 }
-
-internal fun Collation.asJSON() = platformState.asJSON()

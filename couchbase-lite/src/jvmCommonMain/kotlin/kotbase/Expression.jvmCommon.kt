@@ -15,21 +15,13 @@
  */
 package kotbase
 
-import com.couchbase.lite.asJSON
 import kotbase.ext.toDate
+import kotbase.internal.DelegatedClass
+import kotbase.internal.actuals
 import kotlinx.datetime.Instant
-import kotlin.Array
 import com.couchbase.lite.Expression as CBLExpression
 
-internal actual class ExpressionPlatformState(
-    internal val actual: CBLExpression
-)
-
-public actual open class Expression(actual: CBLExpression) {
-
-    internal actual val platformState: ExpressionPlatformState? = ExpressionPlatformState(actual)
-
-    internal actual open fun asJSON(): Any? = actual.asJSON()
+public actual open class Expression(actual: CBLExpression) : DelegatedClass<CBLExpression>(actual) {
 
     public actual companion object {
 
@@ -147,19 +139,4 @@ public actual open class Expression(actual: CBLExpression) {
 
     public actual fun `in`(vararg expressions: Expression): Expression =
         Expression(actual.`in`(*expressions.actuals()))
-
-    override fun equals(other: Any?): Boolean =
-        actual == (other as? Expression)?.actual
-
-    override fun hashCode(): Int =
-        actual.hashCode()
-
-    override fun toString(): String =
-        actual.toString()
 }
-
-internal val Expression.actual: CBLExpression
-    get() = platformState!!.actual
-
-internal fun Array<out Expression>.actuals(): Array<CBLExpression> =
-    map { it.actual }.toTypedArray()

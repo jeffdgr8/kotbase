@@ -21,7 +21,7 @@ import platform.Foundation.NSLocaleLanguageCode
 import platform.Foundation.currentLocale
 
 public actual class FullTextIndexConfiguration
-private constructor(actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
+private constructor(override var actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
 
     public actual constructor(vararg expressions: String) : this(
         CBLFullTextIndexConfiguration(
@@ -61,9 +61,3 @@ private constructor(actual: CBLFullTextIndexConfiguration) : IndexConfiguration(
             )
         }
 }
-
-internal var FullTextIndexConfiguration.actual: CBLFullTextIndexConfiguration
-    get() = platformState!!.actual as CBLFullTextIndexConfiguration
-    set(value) {
-        platformState!!.actual = value
-    }

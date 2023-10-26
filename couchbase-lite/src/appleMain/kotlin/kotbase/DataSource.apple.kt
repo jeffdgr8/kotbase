@@ -17,31 +17,19 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.CBLQueryDataSource
-
-internal actual class DataSourcePlatformState(
-    internal val actual: CBLQueryDataSource
-)
+import kotbase.internal.DelegatedClass
 
 public actual open class DataSource
-private constructor(actual: CBLQueryDataSource) {
-
-    internal actual val platformState = DataSourcePlatformState(actual)
+private constructor(override var actual: CBLQueryDataSource) : DelegatedClass<CBLQueryDataSource>(actual) {
 
     public actual class As
     internal constructor(private val database: CBLDatabase) : DataSource(CBLQueryDataSource.database(database)) {
 
-        public actual fun `as`(alias: String): DataSource =
-            DataSource(CBLQueryDataSource.database(database, alias))
+        public actual fun `as`(alias: String): DataSource {
+            actual = CBLQueryDataSource.database(database, alias)
+            return this
+        }
     }
-
-    override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? DataSource)?.actual)
-
-    override fun hashCode(): Int =
-        actual.hash.toInt()
-
-    override fun toString(): String =
-        actual.description ?: super.toString()
 
     public actual companion object {
 
@@ -49,6 +37,3 @@ private constructor(actual: CBLQueryDataSource) {
             As(database.actual)
     }
 }
-
-internal val DataSource.actual: CBLQueryDataSource
-    get() = platformState.actual
