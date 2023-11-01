@@ -8,10 +8,6 @@ plugins {
 }
 
 kotlin {
-    // explicitly apply the default hierarchy template to workaround
-    // https://github.com/rickclephas/KMP-NativeCoroutines/issues/143
-    applyDefaultHierarchyTemplate()
-
     androidTarget()
     jvm()
     iosArm64 {
