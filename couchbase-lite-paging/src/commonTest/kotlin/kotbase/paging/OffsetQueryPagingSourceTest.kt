@@ -18,7 +18,7 @@
  * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonTest/kotlin/app/cash/sqldelight/paging3/OffsetQueryPagingSourceTest.kt
  */
 
-@file:Suppress("CAST_NEVER_SUCCEEDS", "TYPE_MISMATCH", "UNRESOLVED_REFERENCE")
+@file:Suppress("CAST_NEVER_SUCCEEDS")
 
 package kotbase.paging
 
@@ -54,7 +54,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         )
         pagingSource.refresh()
 
-        Pager(CONFIG, pagingSourceFactory = { pagingSource })
+        Pager(CONFIG, null) { pagingSource }
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
@@ -415,7 +415,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val result = pagingSource.refresh() as PagingSourceLoadResultPage<Int, TestItem>
         // 15 items loaded, assuming anchorPosition = 14 as the last item loaded
         var refreshKey = pagingSource.getRefreshKey(
-            PagingState<Int, TestItem>(
+            PagingState(
                 pages = listOf(result),
                 anchorPosition = 14,
                 config = CONFIG,
@@ -433,7 +433,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
 
         assertContentEquals(ITEMS_LIST.subList(15, 20), result2.data)
         refreshKey = pagingSource.getRefreshKey(
-            PagingState<Int, TestItem>(
+            PagingState(
                 pages = listOf(result, result2),
                 // 20 items loaded, assume anchorPosition = 19 as the last item loaded
                 anchorPosition = 19,
@@ -475,7 +475,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
 
         // database should only have 40 items left. Refresh key is invalid at this point
         // (greater than item count after deletion)
-        Pager(CONFIG, pagingSourceFactory = { pagingSource2 })
+        Pager(CONFIG, null) { pagingSource2 }
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
@@ -516,7 +516,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         insertItems()
         pagingSource.refresh()
 
-        Pager(CONFIG, pagingSourceFactory = { pagingSource })
+        Pager(CONFIG, null) { pagingSource }
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
@@ -540,7 +540,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
                 as PagingSourceLoadResultPage<Int, TestItem>
 
         // database should only have 70 items left
-        Pager(CONFIG, pagingSourceFactory = { pagingSource2 })
+        Pager(CONFIG, null) { pagingSource2 }
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
@@ -569,7 +569,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         insertItems()
         pagingSource.refresh(key = 30)
 
-        Pager(CONFIG, pagingSourceFactory = { pagingSource })
+        Pager(CONFIG, null) { pagingSource }
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
@@ -592,7 +592,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
                 as PagingSourceLoadResultPage<Int, TestItem>
 
         // database should only have 5 items left
-        Pager(CONFIG, pagingSourceFactory = { pagingSource2 })
+        Pager(CONFIG, null) { pagingSource2 }
             .flow
             .first()
             .withPagingDataDiffer(this, testItemDiffCallback) {
@@ -652,8 +652,11 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
 
 private val CONFIG = PagingConfig(
     pageSize = 5,
+    prefetchDistance = 5,
     enablePlaceholders = true,
     initialLoadSize = 15,
+    maxSize = MAX_SIZE_UNBOUNDED,
+    jumpThreshold = COUNT_UNDEFINED
 )
 
 private val ITEMS_LIST = List(100) { TestItem(id = it.toLong()) }
@@ -672,19 +675,19 @@ private fun createLoadParam(loadType: LoadType, key: Int?): PagingSourceLoadPara
         key = key,
         loadSize = CONFIG.initialLoadSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
-    )
+    ) as PagingSourceLoadParams<Int>
 
     LoadType.APPEND -> PagingSourceLoadParamsAppend(
         key = key ?: -1,
         loadSize = CONFIG.pageSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
-    )
+    ) as PagingSourceLoadParams<Int>
 
     LoadType.PREPEND -> PagingSourceLoadParamsPrepend(
         key = key ?: -1,
         loadSize = CONFIG.pageSize,
         placeholdersEnabled = CONFIG.enablePlaceholders,
-    )
+    ) as PagingSourceLoadParams<Int>
 
     else -> error("Unknown PagingSourceLoadParams ${loadType::class}")
 }
