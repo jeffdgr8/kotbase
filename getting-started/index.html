@@ -466,6 +466,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Change Log
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../community/" class="md-nav__link">
         
   
@@ -1856,7 +1876,7 @@ includes the CocoaPods dependencies.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Compose Multiplatform <a href="https://blog.jetbrains.com/kotlin/2023/08/compose-multiplatform-1-5-0-release/">no longer requires CocoaPods</a> for copying resources since version
-1.5.0. However, the <code>getting-started-compose</code> example still <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started-compose/shared/build.gradle.kts#L34-L37">uses CocoaPods for linking the Couchbase Lite
+1.5.0. However, the <code>getting-started-compose</code> example still <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started-compose/shared/build.gradle.kts#L22-L25">uses CocoaPods for linking the Couchbase Lite
 framework</a>.
 See the <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/build.gradle.kts#L17-L33"><code>getting-started</code></a> version for
 an example of how to link the Couchbase Lite framework without using CocoaPods.</p>
@@ -1879,14 +1899,14 @@ an example of how to link the Couchbase Lite framework without using CocoaPods.<
 <h2 id="sync-gateway-replication">Sync Gateway Replication<a class="headerlink" href="#sync-gateway-replication" title="Permanent link"></a></h2>
 <p>Using the apps with Sync Gateway and Couchbase Server obviously requires you have, or install, working versions of both.
 See also — <a href="https://docs.couchbase.com/sync-gateway/current/get-started-install.html">Install Sync Gateway</a></p>
-<p>Once you have Sync Gateway configured, update the <code>ReplicatorConfiguration</code> <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L89">in the app</a>
+<p>Once you have Sync Gateway configured, update the <code>ReplicatorConfiguration</code> <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L90">in the app</a>
 with the server's URL endpoint and authentication credentials.</p>
 <h2 id="kotlin-multiplatform-tips">Kotlin Multiplatform Tips<a class="headerlink" href="#kotlin-multiplatform-tips" title="Permanent link"></a></h2>
 <h3 id="calling-platform-specific-apis">Calling Platform-specific APIs<a class="headerlink" href="#calling-platform-specific-apis" title="Permanent link"></a></h3>
-<p>The apps utilize the Kotlin Multiplatform <a href="https://kotlinlang.org/docs/multiplatform-connect-to-apis.html"><code>expect</code>/<code>actual</code> feature</a> to populate the created document with <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L29">the platform</a>
+<p>The apps utilize the Kotlin Multiplatform <a href="https://kotlinlang.org/docs/multiplatform-connect-to-apis.html"><code>expect</code>/<code>actual</code> feature</a> to populate the created document with <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L30">the platform</a>
 the app is running on.</p>
-<p>See common <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.kt"><code>expect class Platform</code></a>
-and <code>actual class Platform</code> for <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/androidMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.android.kt">Android</a>,
+<p>See common <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.kt"><code>expect fun getPlatform()</code></a>
+and <code>actual fun getPlatform()</code> for <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/androidMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.android.kt">Android</a>,
 <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/iosMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.ios.kt">iOS</a>,
 <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/jvmMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.jvm.kt">JVM</a>,
 <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/linuxMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.linux.kt">Linux</a>,
@@ -1894,13 +1914,13 @@ and <code>actual class Platform</code> for <a href="https://github.com/jeffdgr8/
 and <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/mingwX64Main/kotlin/dev/kotbase/gettingstarted/shared/Platform.mingwX64.kt">Windows</a>.</p>
 <h3 id="using-coroutines-in-swift">Using Coroutines in Swift<a class="headerlink" href="#using-coroutines-in-swift" title="Permanent link"></a></h3>
 <p>The <code>getting-started</code> app uses <a href="https://github.com/rickclephas/KMP-NativeCoroutines">KMP-NativeCoroutines</a> to consume
-Kotlin <code>Flow</code>s in Swift. See <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L84"><code>@NativeCoroutines</code> annotation</a>
-in Kotlin and <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/iosApp/iosApp/ContentView.swift#L97"><code>asyncSequence(for:)</code></a> in Swift
+Kotlin <code>Flow</code>s in Swift. See <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L85"><code>@NativeCoroutines</code> annotation</a>
+in Kotlin and <a href="https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/iosApp/iosApp/ContentView.swift#L98"><code>asyncSequence(for:)</code></a> in Swift
 code.</p>
 <h2 id="kotbase-library-source">Kotbase Library Source<a class="headerlink" href="#kotbase-library-source" title="Permanent link"></a></h2>
-<p>The apps can get the Kotbase library dependency either from its published Maven artifact or build the library locally from the
-source repository. Set the <code>useLocalLib</code> property in <strong>gradle.properties</strong> to <code>true</code> to build the library from source, otherwise the published
-artifact from Maven Central will be used.</p>
+<p>The apps can get the Kotbase library dependency either from its published Maven artifact or build the library locally
+from the source repository. Set the <code>useLocalLib</code> property in <strong>gradle.properties</strong> to <code>true</code> to build the library from
+source, otherwise the published artifact from Maven Central will be used.</p>
 
 
   
