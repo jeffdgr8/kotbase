@@ -11,8 +11,6 @@ https://kotlinlang.slack.com/messages/couchbase/)
 
 **Kot**lin Multiplatform library for Couch**base** Lite
 
-_**Initial public release coming soon!**_
-
 ## Introduction
 
 Kotbase pairs [Kotlin Multiplatform](https://kotlinlang.org/lp/multiplatform/) with [Couchbase Lite](
@@ -154,7 +152,7 @@ implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.12-1.0.0")
 * [x] `NSInputStream` interoperability ~~(Okio [#1123](https://github.com/square/okio/pull/1123))~~ (kotlinx-io [#174](
   https://github.com/Kotlin/kotlinx-io/pull/174))
 * [x] Linux ARM64 support
-* [ ] Public release
+* [x] Public release
 * [ ] Sample apps
     * [x] [Getting Started](examples/getting-started)
     * [x] [Getting Started Compose Multiplatform](examples/getting-started-compose)
