@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -9,9 +8,6 @@ plugins {
 }
 
 kotlin {
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    targetHierarchy.default()
-
     androidTarget()
     jvm()
     iosArm64 {
@@ -40,12 +36,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                val useLocalLib: String by project
-                if (useLocalLib.toBoolean()) {
-                    api(libs.kotbase.get().module.toString())
-                } else {
-                    api(libs.kotbase)
-                }
+                api(libs.kotbase)
             }
         }
         configureEach {
@@ -63,9 +54,7 @@ kotlin {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 android {

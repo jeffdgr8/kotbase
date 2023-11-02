@@ -9,7 +9,7 @@ plugins {
 kotlin {
     androidTarget()
     sourceSets {
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 implementation(projects.shared)
             }
@@ -18,9 +18,7 @@ kotlin {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+    kotlinOptions.jvmTarget = "11"
 }
 
 android {

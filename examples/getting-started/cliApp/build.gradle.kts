@@ -13,8 +13,8 @@ kotlin {
             val path = "$rootDir/vendor/CouchbaseLite/CouchbaseLite.xcframework/macos-arm64_x86_64"
             linkerOpts = listOf("-F$path", "-framework", "CouchbaseLite", "-rpath", path)
             when (val arch = System.getProperty("os.arch")) {
-                "x86_64" -> macosX64("native")
-                "aarch64" -> macosArm64("native")
+                "x86_64" -> macosX64("nativeHost")
+                "aarch64" -> macosArm64("nativeHost")
                 else -> throw GradleException("Unknown macOS architecture: $arch")
             }
         }
@@ -22,15 +22,15 @@ kotlin {
             val path = "$projectDir/vendor/libcblite/linux/x86_64/libcblite-$cblVersion/lib/x86_64-linux-gnu"
             linkerOpts = listOf("-L$path", "-lcblite", "-rpath", path)
             when (val arch = System.getProperty("os.arch")) {
-                "x86_64" -> linuxX64("native")
-                "aarch64" -> linuxArm64("native")
+                "x86_64" -> linuxX64("nativeHost")
+                "aarch64" -> linuxArm64("nativeHost")
                 else -> throw GradleException("Unknown Linux architecture: $arch")
             }
         }
         isMingwX64 -> {
             val path = "$projectDir/vendor/libcblite/windows/x86_64/libcblite-$cblVersion/lib"
             linkerOpts = listOf("-L$path", "-lcblite")
-            mingwX64("native")
+            mingwX64("nativeHost")
         }
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
@@ -58,7 +58,7 @@ kotlin {
     }
 
     sourceSets {
-        named("nativeMain") {
+        named("nativeHostMain") {
             dependencies {
                 implementation(projects.shared)
             }

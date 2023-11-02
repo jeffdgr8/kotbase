@@ -178,7 +178,7 @@ https://www.jetbrains.com/lp/compose-multiplatform/).
     https://blog.jetbrains.com/kotlin/2023/08/compose-multiplatform-1-5-0-release/) for copying resources since version
     1.5.0. However, the `getting-started-compose` example still [uses CocoaPods for linking the Couchbase Lite
     framework](
-    https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started-compose/shared/build.gradle.kts#L34-L37).
+    https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started-compose/shared/build.gradle.kts#L22-L25).
     See the [`getting-started`](
     https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/build.gradle.kts#L17-L33) version for
     an example of how to link the Couchbase Lite framework without using CocoaPods.
@@ -203,7 +203,7 @@ Using the apps with Sync Gateway and Couchbase Server obviously requires you hav
 See also — [Install Sync Gateway](https://docs.couchbase.com/sync-gateway/current/get-started-install.html)
 
 Once you have Sync Gateway configured, update the `ReplicatorConfiguration` [in the app](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L89)
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L90)
 with the server's URL endpoint and authentication credentials.
 
 ## Kotlin Multiplatform Tips
@@ -212,12 +212,12 @@ with the server's URL endpoint and authentication credentials.
 
 The apps utilize the Kotlin Multiplatform [`expect`/`actual` feature](
 https://kotlinlang.org/docs/multiplatform-connect-to-apis.html) to populate the created document with [the platform](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L29)
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L30)
 the app is running on.
 
-See common [`expect class Platform`](
+See common [`expect fun getPlatform()`](
 https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.kt)
-and `actual class Platform` for [Android](
+and `actual fun getPlatform()` for [Android](
 https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/androidMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.android.kt),
 [iOS](
 https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/iosMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.ios.kt),
@@ -234,13 +234,13 @@ https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/sr
 
 The `getting-started` app uses [KMP-NativeCoroutines](https://github.com/rickclephas/KMP-NativeCoroutines) to consume
 Kotlin `Flow`s in Swift. See [`@NativeCoroutines` annotation](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L84)
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L85)
 in Kotlin and [`asyncSequence(for:)`](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/iosApp/iosApp/ContentView.swift#L97) in Swift
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/iosApp/iosApp/ContentView.swift#L98) in Swift
 code.
 
 ## Kotbase Library Source
 
-The apps can get the Kotbase library dependency either from its published Maven artifact or build the library locally from the
-source repository. Set the `useLocalLib` property in **gradle.properties** to `true` to build the library from source, otherwise the published
-artifact from Maven Central will be used.
+The apps can get the Kotbase library dependency either from its published Maven artifact or build the library locally
+from the source repository. Set the `useLocalLib` property in **gradle.properties** to `true` to build the library from
+source, otherwise the published artifact from Maven Central will be used.

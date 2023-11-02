@@ -91,6 +91,7 @@ nav:
     - Kotbase: index.md
     - Differences from Java SDK: differences.md
     - Roadmap: roadmap.md
+    - Change Log: changelog.md
     - Community: community.md
     - License: license.md
   - Getting Started:

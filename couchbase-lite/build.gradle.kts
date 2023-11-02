@@ -72,6 +72,6 @@ android.namespace = "dev.kotbase"
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {
     doLast {
         val cblDefFile = file("src/nativeInterop/cinterop/podCouchbaseLite.def")
-        outputFile.appendText(cblDefFile.readText())
+        defFile.get().asFile.appendText(cblDefFile.readText())
     }
 }

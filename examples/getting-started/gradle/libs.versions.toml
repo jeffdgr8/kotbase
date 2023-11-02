@@ -5,12 +5,12 @@ androidx-constraintlayout = "2.1.4"
 androidx-core-ktx = "1.12.0"
 androidx-lifecycle-ktx = "2.6.2"
 androidx-material = "1.10.0"
-compose = "1.5.3"
+compose = "1.5.10"
 couchbase-lite-c = "3.0.12"
-kmp-native-coroutines = "1.0.0-ALPHA-18"
+kmp-native-coroutines = "1.0.0-ALPHA-19"
 kotbase = "3.0.12-1.0.0"
-kotlin = "1.9.10"
-ksp = "1.9.10-1.0.13"
+kotlin = "1.9.20"
+ksp = "1.9.20-1.0.13"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }

@@ -1,5 +1,3 @@
-import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -10,27 +8,17 @@ plugins {
 }
 
 kotlin {
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    targetHierarchy.default()
-
     androidTarget()
-
-    jvm("desktop")
-
-    iosX64()
+    jvm()
     iosArm64()
+    iosX64()
     iosSimulatorArm64()
 
     cocoapods {
-        version = "1.0.0"
         summary = "Kotbase Getting Started Compose Multiplatform"
         homepage = "https://kotbase.dev/"
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
-        framework {
-            baseName = "shared"
-            isStatic = true
-        }
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
             linkOnly = true
@@ -40,27 +28,20 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                val useLocalLib: String by project
-                if (useLocalLib.toBoolean()) {
-                    api(libs.kotbase.get().module.toString())
-                } else {
-                    api(libs.kotbase)
-                }
+                api(libs.kotbase)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                @OptIn(ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
             }
         }
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 api(libs.androidx.activity.compose)
                 api(libs.androidx.appcompat)
                 api(libs.androidx.core.ktx)
             }
         }
-        val desktopMain by getting {
+        jvmMain {
             dependencies {
                 implementation(compose.desktop.common)
             }
@@ -69,14 +50,12 @@ kotlin {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+    kotlinOptions.jvmTarget = "11"
 }
 
 android {
-    compileSdk = 34
     namespace = "dev.kotbase.gettingstarted.compose.shared"
+    compileSdk = 34
     defaultConfig {
         minSdk = 24
     }

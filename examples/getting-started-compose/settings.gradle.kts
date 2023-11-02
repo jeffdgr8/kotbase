@@ -4,7 +4,7 @@ include(":androidApp")
 include(":desktopApp")
 include(":shared")
 
-if (settings.extra["useLocalLib"]?.toString().toBoolean()) {
+if (settings.extra.properties.getOrDefault("useLocalLib", "false")?.toString().toBoolean()) {
     includeBuild("../..")
 }
 
@@ -20,7 +20,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev/")
     }
 }
 

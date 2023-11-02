@@ -1,5 +1,7 @@
 package dev.kotbase.gettingstarted.shared
 
-actual class Platform actual constructor() {
-    actual val platform: String = "Windows"
+class MingwPlatform : Platform {
+    override val name: String = "Windows"
 }
+
+actual fun getPlatform(): Platform = MingwPlatform()

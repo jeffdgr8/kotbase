@@ -26,7 +26,7 @@ class SharedDbWork {
         val mutableDoc = MutableDocument()
             .setFloat("version", 2.0f)
             .setString("language", "Kotlin")
-            .setString("platform", Platform().platform)
+            .setString("platform", getPlatform().name)
         database?.save(mutableDoc)
         return mutableDoc.id
     }
