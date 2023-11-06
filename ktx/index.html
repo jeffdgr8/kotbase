@@ -791,6 +791,11 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+        
           <li class="md-nav__item">
   <a href="#index-creation" class="md-nav__link">
     Index creation
@@ -802,11 +807,6 @@
   <a href="#replicator-extensions" class="md-nav__link">
     Replicator extensions
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1618,6 +1618,11 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+        
           <li class="md-nav__item">
   <a href="#index-creation" class="md-nav__link">
     Index creation
@@ -1629,11 +1634,6 @@
   <a href="#replicator-extensions" class="md-nav__link">
     Replicator extensions
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1790,12 +1790,12 @@ decode the JSON string to a Kotlin object.</p>
 </span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">    </span><span class="n">Json</span><span class="p">.</span><span class="na">decodeFromString</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
 </span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="p">}</span>
 </span></code></pre></div>
-<h4 id="index-creation">Index creation<a class="headerlink" href="#index-creation" title="Permanent link"></a></h4>
+<h3 id="index-creation">Index creation<a class="headerlink" href="#index-creation" title="Permanent link"></a></h3>
 <p>Kotbase KTX provides concise top-level functions for index creation:</p>
 <div class="language-kotlin highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">database</span><span class="p">.</span><span class="na">createIndex</span><span class="p">(</span><span class="s">&quot;typeNameIndex&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">valueIndex</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;name&quot;</span><span class="p">))</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">database</span><span class="p">.</span><span class="na">createIndex</span><span class="p">(</span><span class="s">&quot;overviewFTSIndex&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fullTextIndex</span><span class="p">(</span><span class="s">&quot;overview&quot;</span><span class="p">))</span>
 </span></code></pre></div>
-<h4 id="replicator-extensions">Replicator extensions<a class="headerlink" href="#replicator-extensions" title="Permanent link"></a></h4>
+<h3 id="replicator-extensions">Replicator extensions<a class="headerlink" href="#replicator-extensions" title="Permanent link"></a></h3>
 <p>For the Android platform, you can bind the <code>Replicator</code> <code>start()</code> and <code>stop()</code> methods to be performed automatically
 when your <a href="https://developer.android.com/jetpack/androidx/releases/lifecycle"><code>Lifecycle</code></a>-enabled component gets
 resumed or paused.</p>
