@@ -268,7 +268,7 @@ public expect class Result : Iterable<String> {
      *
      * @return The Iterator object of all result keys.
      */
-    override fun iterator(): Iterator<String>
+    override operator fun iterator(): Iterator<String>
 }
 
 /**

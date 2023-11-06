@@ -31,7 +31,7 @@ internal constructor(actual: CBLQueryResultSet) :
     public actual fun allResults(): List<Result> =
         (actual.allResults() as List<CBLQueryResult>).map { Result(it) }
 
-    actual override fun iterator(): Iterator<Result> =
+    actual override operator fun iterator(): Iterator<Result> =
         allResults().iterator()
 
     actual override fun close() {

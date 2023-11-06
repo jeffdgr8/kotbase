@@ -168,7 +168,7 @@ private constructor(
     public actual operator fun contains(key: String): Boolean =
         dict.getValue(key) != null
 
-    actual override fun iterator(): Iterator<String> =
+    actual override operator fun iterator(): Iterator<String> =
         keys.iterator()
 
     private fun isInBounds(index: Int): Boolean {

@@ -142,7 +142,7 @@ internal constructor(actual: CBLQueryResult) : DelegatedClass<CBLQueryResult>(ac
         actual.containsValueForKey(key)
 
     @Suppress("UNCHECKED_CAST")
-    actual override fun iterator(): Iterator<String> =
+    actual override operator fun iterator(): Iterator<String> =
         (actual.keys as List<String>).iterator()
 
     private fun isInBounds(index: Int): Boolean {
