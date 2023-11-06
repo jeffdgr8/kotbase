@@ -171,7 +171,7 @@ val usersFlow: Flow<List<User>> = query.asObjectsFlow { json: String ->
 }
 ```
 
-#### Index creation
+### Index creation
 
 Kotbase KTX provides concise top-level functions for index creation:
 
@@ -180,7 +180,7 @@ database.createIndex("typeNameIndex", valueIndex("type", "name"))
 database.createIndex("overviewFTSIndex", fullTextIndex("overview"))
 ```
 
-#### Replicator extensions
+### Replicator extensions
 
 For the Android platform, you can bind the `Replicator` `start()` and `stop()` methods to be performed automatically
 when your [`Lifecycle`](https://developer.android.com/jetpack/androidx/releases/lifecycle)-enabled component gets
