@@ -1945,6 +1945,7 @@ class QueryTest : BaseQueryTest() {
             //  https://forums.couchbase.com/t/unicode-collation-locale-null-or-device-locale/34103
             //assertEquals(expected[i], collations[i].asJSON())
             val expectedCollation = expected[i]
+            @Suppress("UNNECESSARY_SAFE_CALL", "KotlinRedundantDiagnosticSuppress")
             val collation = collations[i].asJSON()?.massageJson(expectedCollation)
             assertEquals(expectedCollation, collation)
         }
