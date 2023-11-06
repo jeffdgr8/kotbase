@@ -19,6 +19,7 @@
  * Modified by Jeff Lockhart
  * - Use kotbase package
  * - Resolve explicitApiWarning() requirements
+ * - Handle first projected property is dictionary edge case
  */
 
 package kotbase.ktx
