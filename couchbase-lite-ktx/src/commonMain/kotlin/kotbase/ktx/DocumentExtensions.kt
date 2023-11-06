@@ -47,9 +47,12 @@ import kotlinx.datetime.Instant
 public fun MutableDocument(block: DocumentBuilder.() -> Unit): MutableDocument =
     DocumentBuilder().apply(block).build()
 
-public class DocumentBuilder internal constructor(
-    private val document: MutableDocument = MutableDocument()
-) {
+public fun MutableDocument(id: String, block: DocumentBuilder.() -> Unit): MutableDocument =
+    DocumentBuilder(id).apply(block).build()
+
+public class DocumentBuilder internal constructor(id: String? = null) {
+
+    private val document: MutableDocument = id?.let { MutableDocument(it) } ?: MutableDocument()
 
     internal fun build() = document
 

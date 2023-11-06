@@ -25,6 +25,7 @@ public final class kotbase/ktx/DocumentBuilder {
 }
 
 public final class kotbase/ktx/DocumentExtensionsKt {
+	public static final fun MutableDocument (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lkotbase/MutableDocument;
 	public static final fun MutableDocument (Lkotlin/jvm/functions/Function1;)Lkotbase/MutableDocument;
 }
 
