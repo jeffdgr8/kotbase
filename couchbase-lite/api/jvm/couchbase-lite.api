@@ -972,7 +972,7 @@ public final class kotbase/ReplicatedDocument : kotbase/internal/DelegatedClass 
 	public final fun getId ()Ljava/lang/String;
 }
 
-public final class kotbase/Replicator : kotbase/internal/DelegatedClass {
+public final class kotbase/Replicator : kotbase/internal/DelegatedClass, java/lang/AutoCloseable {
 	public fun <init> (Lkotbase/ReplicatorConfiguration;)V
 	public final fun addChangeListener (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lcom/couchbase/lite/ListenerToken;
 	public final fun addChangeListener (Lkotlin/jvm/functions/Function1;)Lcom/couchbase/lite/ListenerToken;
@@ -980,6 +980,7 @@ public final class kotbase/Replicator : kotbase/internal/DelegatedClass {
 	public final fun addDocumentReplicationListener (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lcom/couchbase/lite/ListenerToken;
 	public final fun addDocumentReplicationListener (Lkotlin/jvm/functions/Function1;)Lcom/couchbase/lite/ListenerToken;
 	public final fun addDocumentReplicationListener (Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function2;)V
+	public fun close ()V
 	public final fun getConfig ()Lkotbase/ReplicatorConfiguration;
 	public final fun getPendingDocumentIds ()Ljava/util/Set;
 	public final fun getServerCertificates ()Ljava/util/List;
