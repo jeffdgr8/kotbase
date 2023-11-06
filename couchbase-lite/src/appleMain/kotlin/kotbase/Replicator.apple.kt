@@ -27,11 +27,12 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
+@OptIn(ExperimentalStdlibApi::class)
 public actual class Replicator
 internal constructor(
     actual: CBLReplicator,
     private val _config: ReplicatorConfiguration
-) : DelegatedClass<CBLReplicator>(actual) {
+) : DelegatedClass<CBLReplicator>(actual), AutoCloseable {
 
     public actual constructor(config: ReplicatorConfiguration) : this(
         CBLReplicator(config.actual),
@@ -144,5 +145,10 @@ internal constructor(
             token as DelegatedListenerToken
             actual.removeChangeListenerWithToken(token.actual)
         }
+    }
+
+    actual override fun close() {
+        // no close() in Objective-C SDK
+        // https://github.com/couchbase/couchbase-lite-ios/blob/b1eca5996b06564e65ae1c0a1a8bb55db28f37f5/Objective-C/CBLReplicator.mm#L122
     }
 }
