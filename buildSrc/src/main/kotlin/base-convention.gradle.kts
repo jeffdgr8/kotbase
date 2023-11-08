@@ -21,6 +21,7 @@ kotlin {
         afterEvaluate { summary = description }
         ios.deploymentTarget = "9.0"
         osx.deploymentTarget = "10.11"
+        noPodspec()
     }
 
     targets.configureEach {
