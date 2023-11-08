@@ -97,7 +97,7 @@ internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual),
     public actual operator fun contains(key: String): Boolean =
         actual.contains(key)
 
-    actual override operator fun iterator(): Iterator<String> =
+    actual override fun iterator(): Iterator<String> =
         actual.iterator()
 }
 

@@ -105,7 +105,7 @@ internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Itera
     public actual open fun toJSON(): String =
         actual.toJSON()
 
-    actual override operator fun iterator(): Iterator<Any?> =
+    actual override fun iterator(): Iterator<Any?> =
         ArrayIterator(count)
 
     private inner class ArrayIterator(private val count: Int) : Iterator<Any?> {

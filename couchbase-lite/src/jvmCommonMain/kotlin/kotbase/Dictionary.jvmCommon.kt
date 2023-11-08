@@ -88,7 +88,7 @@ internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actu
     public actual operator fun contains(key: String): Boolean =
         actual.contains(key)
 
-    override operator fun iterator(): Iterator<String> =
+    override fun iterator(): Iterator<String> =
         actual.iterator()
 }
 

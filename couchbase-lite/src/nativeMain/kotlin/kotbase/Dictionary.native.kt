@@ -124,7 +124,7 @@ internal constructor(
     public actual operator fun contains(key: String): Boolean =
         keys.contains(key)
 
-    override operator fun iterator(): Iterator<String> =
+    override fun iterator(): Iterator<String> =
         keys.iterator()
 
     override fun equals(other: Any?): Boolean {

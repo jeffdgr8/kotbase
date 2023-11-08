@@ -210,7 +210,7 @@ public expect open class Document : Iterable<String> {
      *
      * @return The key iterator
      */
-    override operator fun iterator(): Iterator<String>
+    override fun iterator(): Iterator<String>
 }
 
 /**

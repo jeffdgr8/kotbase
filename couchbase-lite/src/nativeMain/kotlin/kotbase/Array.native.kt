@@ -119,7 +119,7 @@ internal constructor(
     public actual open fun toJSON(): String =
         FLValue_ToJSON(actual.reinterpret()).toKString()!!
 
-    actual override operator fun iterator(): Iterator<Any?> =
+    actual override fun iterator(): Iterator<Any?> =
         ArrayIterator(count)
 
     private inner class ArrayIterator(private val count: Int) : Iterator<Any?> {

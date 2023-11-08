@@ -58,7 +58,7 @@ internal constructor(
         return results
     }
 
-    actual override operator fun iterator(): Iterator<Result> =
+    actual override fun iterator(): Iterator<Result> =
         allResults().iterator()
 
     actual override fun close() {
