@@ -176,6 +176,8 @@ public expect open class Dictionary : Iterable<String> {
      * @return the boolean value representing whether a property exists or not.
      */
     public operator fun contains(key: String): Boolean
+
+    override fun iterator(): Iterator<String>
 }
 
 /**
