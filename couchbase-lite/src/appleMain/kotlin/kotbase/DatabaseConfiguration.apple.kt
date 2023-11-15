@@ -21,6 +21,8 @@ import kotbase.internal.DelegatedClass
 public actual class DatabaseConfiguration
 internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatabaseConfiguration>(actual) {
 
+    public actual constructor() : this(CBLDatabaseConfiguration())
+
     public actual constructor(config: DatabaseConfiguration?) : this(
         CBLDatabaseConfiguration(config?.actual)
     )

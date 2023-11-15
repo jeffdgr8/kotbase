@@ -37,6 +37,8 @@ internal constructor(
         FLDict_Release(it)
     }
 
+    public actual constructor() : this(null)
+
     public actual constructor(parameters: Parameters?) : this(
         if (parameters != null) {
             FLDict_MutableCopy(parameters.actual, kFLDefaultCopy)

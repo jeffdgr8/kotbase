@@ -23,6 +23,8 @@ import com.couchbase.lite.Parameters as CBLParameters
 public actual class Parameters
 internal constructor(actual: CBLParameters) : DelegatedClass<CBLParameters>(actual) {
 
+    public actual constructor() : this(CBLParameters())
+
     public actual constructor(parameters: Parameters?) : this(CBLParameters(parameters?.actual))
 
     public actual fun getValue(name: String): Any? =

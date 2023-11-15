@@ -18,9 +18,11 @@ package kotbase
 /**
  * Configuration for opening a database.
  */
-public expect class DatabaseConfiguration(
-    config: DatabaseConfiguration? = null
-) {
+public expect class DatabaseConfiguration {
+
+    public constructor()
+
+    public constructor(config: DatabaseConfiguration?)
 
     /**
      * Set the canonical path of the directory to store the database in.

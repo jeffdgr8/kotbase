@@ -331,8 +331,8 @@ public final class kotbase/DatabaseChange : kotbase/internal/DelegatedClass {
 }
 
 public final class kotbase/DatabaseConfiguration : kotbase/internal/DelegatedClass {
+	public fun <init> ()V
 	public fun <init> (Lkotbase/DatabaseConfiguration;)V
-	public synthetic fun <init> (Lkotbase/DatabaseConfiguration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getDirectory ()Ljava/lang/String;
 	public final fun setDirectory (Ljava/lang/String;)Lkotbase/DatabaseConfiguration;
 	public final fun setDirectory (Ljava/lang/String;)V
@@ -1047,8 +1047,8 @@ public final class kotbase/Ordering$SortOrder : kotbase/Ordering {
 }
 
 public final class kotbase/Parameters : kotbase/internal/DelegatedClass {
+	public fun <init> ()V
 	public fun <init> (Lkotbase/Parameters;)V
-	public synthetic fun <init> (Lkotbase/Parameters;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getValue (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/Parameters;
 	public final fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/Parameters;
@@ -1331,8 +1331,8 @@ public final class kotbase/SelectResult$From : kotbase/SelectResult {
 }
 
 public final class kotbase/SessionAuthenticator : kotbase/Authenticator {
+	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun getActual$couchbase_lite_ee ()Ljava/lang/Object;
 	public final fun getCookieName ()Ljava/lang/String;
 	public final fun getSessionID ()Ljava/lang/String;
@@ -1391,6 +1391,7 @@ public final class kotbase/URLEndpointListener : kotbase/internal/DelegatedClass
 }
 
 public final class kotbase/URLEndpointListenerConfiguration : kotbase/internal/DelegatedClass {
+	public static final field Companion Lkotbase/URLEndpointListenerConfiguration$Companion;
 	public fun <init> (Lkotbase/Database;Ljava/lang/String;IZLkotbase/TLSIdentity;Lkotbase/ListenerAuthenticator;ZZ)V
 	public synthetic fun <init> (Lkotbase/Database;Ljava/lang/String;IZLkotbase/TLSIdentity;Lkotbase/ListenerAuthenticator;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Lkotbase/URLEndpointListenerConfiguration;)V
@@ -1411,9 +1412,12 @@ public final class kotbase/URLEndpointListenerConfiguration : kotbase/internal/D
 	public final fun setTlsIdentity (Lkotbase/TLSIdentity;)V
 }
 
+public final class kotbase/URLEndpointListenerConfiguration$Companion {
+}
+
 public final class kotbase/URLEndpointListenerConfigurationKt {
-	public static final fun getMAX_PORT (Lkotbase/URLEndpointListenerConfiguration;)I
-	public static final fun getMIN_PORT (Lkotbase/URLEndpointListenerConfiguration;)I
+	public static final fun getMAX_PORT (Lkotbase/URLEndpointListenerConfiguration$Companion;)I
+	public static final fun getMIN_PORT (Lkotbase/URLEndpointListenerConfiguration$Companion;)I
 }
 
 public final class kotbase/ValueIndex : kotbase/Index {

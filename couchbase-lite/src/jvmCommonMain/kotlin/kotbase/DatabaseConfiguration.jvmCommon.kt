@@ -21,6 +21,8 @@ import com.couchbase.lite.DatabaseConfiguration as CBLDatabaseConfiguration
 public actual class DatabaseConfiguration
 internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatabaseConfiguration>(actual) {
 
+    public actual constructor() : this(CBLDatabaseConfiguration())
+
     public actual constructor(config: DatabaseConfiguration?) : this(CBLDatabaseConfiguration(config?.actual))
 
     public actual fun setDirectory(directory: String): DatabaseConfiguration {
