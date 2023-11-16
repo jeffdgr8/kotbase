@@ -19,8 +19,8 @@ kotlin {
         authors = "Jeff Lockhart"
         license = "Apache License, Version 2.0"
         afterEvaluate { summary = description }
-        ios.deploymentTarget = "9.0"
-        osx.deploymentTarget = "10.11"
+        ios.deploymentTarget = "11.0"
+        osx.deploymentTarget = "10.14"
     }
 
     targets.configureEach {
