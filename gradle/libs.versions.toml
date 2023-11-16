@@ -1,14 +1,14 @@
 [versions]
-couchbase-lite-java = "3.0.12"
-couchbase-lite-objc = "3.0.12"
-couchbase-lite-c = "3.0.12"
-kotlinx-serialization = "1.6.0"
+couchbase-lite-java = "3.0.15"
+couchbase-lite-objc = "3.0.15"
+couchbase-lite-c = "3.0.15"
+kotlinx-serialization = "1.6.1"
 # 1.13.4 breaks QueryExtensionKtTest on Android https://github.com/mockk/mockk/issues/1035
 # fixed in 1.13.8, but JVM source compatibility needs to be reverted to 1.8 https://github.com/mockk/mockk/pull/1161
 mockk = "1.13.3"
 
 [plugins]
-android-library = { id = "com.android.library", version = "8.1.2" }
+android-library = { id = "com.android.library", version = "8.1.3" }
 dokka = { id = "org.jetbrains.dokka", version = "1.9.10" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.20" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.13.2" }
@@ -28,6 +28,7 @@ kermit = { module = "co.touchlab:kermit", version = "2.0.2" }
 korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.10" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
+# 0.23.0 fails to build with kotlinx-coroutines 1.7.3 https://github.com/Kotlin/kotlinx-atomicfu/issues/365
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.22.0" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.7.3" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.1" }
