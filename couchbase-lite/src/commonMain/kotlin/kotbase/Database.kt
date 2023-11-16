@@ -22,7 +22,8 @@ import kotlin.coroutines.CoroutineContext
 /**
  * A Couchbase Lite database.
  */
-public expect class Database {
+@OptIn(ExperimentalStdlibApi::class)
+public expect class Database : AutoCloseable {
 
     /**
      * Construct a Database with a given name and the default config.
@@ -74,6 +75,7 @@ public expect class Database {
 
         /**
          * Make a copy of a database in a new location.
+         * It is recommended that this method not be used on an open database.
          *
          * @param path   path to the existing db file
          * @param name   the name of the new DB
@@ -95,130 +97,137 @@ public expect class Database {
     public val path: String?
 
     /**
-     * The number of documents in the database, 0 if database is closed.
-     */
-    public val count: Long
-
-    /**
      * A READONLY copy of the database configuration.
      */
     public val config: DatabaseConfiguration
 
     /**
-     * Gets an existing Document object with the given ID. If the document with the given ID doesn't
-     * exist in the database, the value returned will be null.
+     * Closes a database.
+     * Closing a database will stop all replicators, live queries and all listeners attached to it.
      *
-     * @param id the document ID
-     * @return the Document object
+     * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
      */
-    public fun getDocument(id: String): Document?
+    override fun close()
 
     /**
-     * Saves a document to the database. When write operations are executed
-     * concurrently, the last writer will overwrite all other written values.
-     * Calling this method is the same as calling the ave(MutableDocument, ConcurrencyControl)
-     * method with LAST_WRITE_WINS concurrency control.
+     * Deletes a database.
+     * Deleting a database will stop all replicators, live queries and all listeners attached to it.
+     * Although attempting to close a closed database is not an error, attempting to delete a closed database is.
      *
-     * @param document The document.
-     * @throws CouchbaseLiteException on error
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun save(document: MutableDocument)
-
-    /**
-     * Saves a document to the database. When used with LAST_WRITE_WINS
-     * concurrency control, the last write operation will win if there is a conflict.
-     * When used with FAIL_ON_CONFLICT concurrency control, save will fail with false value
-     *
-     * @param document           The document.
-     * @param concurrencyControl The concurrency control.
-     * @return true if successful. false if the FAIL_ON_CONFLICT concurrency
-     * @throws CouchbaseLiteException on error
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun save(document: MutableDocument, concurrencyControl: ConcurrencyControl): Boolean
-
-    /**
-     * Saves a document to the database. Conflicts will be resolved by the passed ConflictHandler.
-     * When write operations are executed concurrently and if conflicts occur, the conflict handler
-     * will be called. Use the conflict handler to directly edit the document to resolve the
-     * conflict. When the conflict handler returns 'true', the save method will save the edited
-     * document as the resolved document. If the conflict handler returns 'false', the save
-     * operation will be canceled with 'false' value returned as the conflict wasn't resolved.
-     *
-     * @param document        The document.
-     * @param conflictHandler A conflict handler.
-     * @return true if successful. false if the FAIL_ON_CONFLICT concurrency
-     * @throws CouchbaseLiteException on error
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean
-
-    /**
-     * Deletes a document from the database. When write operations are executed
-     * concurrently, the last writer will overwrite all other written values.
-     * Calling this function is the same as calling the delete(Document, ConcurrencyControl)
-     * function with LAST_WRITE_WINS concurrency control.
-     *
-     * @param document The document.
-     * @throws CouchbaseLiteException on error
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun delete(document: Document)
-
-    /**
-     * Deletes a document from the database. When used with lastWriteWins concurrency
-     * control, the last write operation will win if there is a conflict.
-     * When used with FAIL_ON_CONFLICT concurrency control, delete will fail with
-     * 'false' value returned.
-     *
-     * @param document           The document.
-     * @param concurrencyControl The concurrency control.
-     * @throws CouchbaseLiteException on error
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean
-
-    /**
-     * Purges the given document from the database. This is more drastic than delete(Document),
-     * it removes all traces of the document. The purge will NOT be replicated to other databases.
-     *
-     * @param document the document to be purged.
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun purge(document: Document)
-
-    /**
-     * Purges the given document id for the document in database. This is more drastic than delete(Document),
-     * it removes all traces of the document. The purge will NOT be replicated to other databases.
-     *
-     * @param id the document ID
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun purge(id: String)
-
-    /**
-     * Sets an expiration date on a document. After this time, the document
-     * will be purged from the database.
-     *
-     * @param id         The ID of the Document
-     * @param expiration Nullable expiration timestamp as a Date, set timestamp to null
-     *                   to remove expiration date time from doc.
      * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
      */
     @Throws(CouchbaseLiteException::class)
-    public fun setDocumentExpiration(id: String, expiration: Instant?)
+    public fun delete()
 
     /**
-     * Returns the expiration time of the document. null will be returned if there is
-     * no expiration time set
-     *
-     * @param id The ID of the Document
-     * @return Date a nullable expiration timestamp of the document or null if time not set.
-     * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
+     * Get scope names that have at least one collection.
+     * Note: the default scope is exceptional as it will always be listed even though there are no collections
+     * under it.
      */
     @Throws(CouchbaseLiteException::class)
-    public fun getDocumentExpiration(id: String): Instant?
+    public fun getScopes(): Set<Scope>
+
+    /**
+     * Get a scope object by name. As the scope cannot exist by itself without having a collection,
+     * the hull value will be returned if there are no collections under the given scope’s name.
+     * Note: The default scope is exceptional, and it will always be returned.
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun getScope(name: String): Scope?
+
+    /**
+     * Get the default scope.
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun getDefaultScope(): Scope
+
+    /**
+     * Create a named collection in the default scope.
+     * If the collection already exists, the existing collection will be returned.
+     *
+     * @param name the scope in which to create the collection
+     * @return the named collection in the default scope
+     * @throws CouchbaseLiteException on failure
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun createCollection(name: String): Collection
+
+    /**
+     * Create a named collection in the specified scope.
+     * If the collection already exists, the existing collection will be returned.
+     *
+     * @param collectionName the name of the new collection
+     * @param scopeName      the scope in which to create the collection
+     * @return the named collection in the default scope
+     * @throws CouchbaseLiteException on failure
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun createCollection(collectionName: String, scopeName: String?): Collection
+
+    /**
+     * Get all collections in the default scope.
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun getCollections(): Set<Collection>
+
+    /**
+     * Get all collections in the named scope.
+     *
+     * @param scopeName the scope name
+     * @return the collections in the named scope
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun getCollections(scopeName: String?): Set<Collection>
+
+    /**
+     * Get a collection in the default scope by name.
+     * If the collection doesn't exist, the function will return null.
+     *
+     * @param name the collection to find
+     * @return the named collection or null
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun getCollection(name: String): Collection?
+
+    /**
+     * Get a collection in the specified scope by name.
+     * If the collection doesn't exist, the function will return null.
+     *
+     * @param collectionName the collection to find
+     * @param scopeName      the scope in which to create the collection
+     * @return the named collection or null
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun getCollection(collectionName: String, scopeName: String?): Collection?
+
+    /**
+     * Get the default collection. If the default collection has been deleted the function will return null.
+     *
+     * @return the default collection or null if it does not exist.
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun getDefaultCollection(): Collection?
+
+    /**
+     * Delete a collection by name  in the default scope. If the collection doesn't exist, the operation
+     * will be no-ops. Note: the default collection can be deleted but cannot be recreated.
+     *
+     * @param name the collection to be deleted
+     * @throws CouchbaseLiteException on failure
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun deleteCollection(name: String)
+
+    /**
+     * Delete a collection by name  in the specified scope. If the collection doesn't exist, the operation
+     * will be no-ops. Note: the default collection can be deleted but cannot be recreated.
+     *
+     * @param collectionName the collection to be deleted
+     * @param scopeName      the scope from which to delete the collection
+     * @throws CouchbaseLiteException on failure
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun deleteCollection(collectionName: String, scopeName: String?)
 
     /**
      * Runs a group of database operations in a batch. Use this when performing bulk write operations
@@ -232,49 +241,227 @@ public expect class Database {
     public fun <R> inBatch(work: Database.() -> R): R
 
     /**
-     * Adds a change listener for the changes that occur in the database.
+     * Create a SQL++ query.
+     *
+     * @param query a valid SQL++ query
+     * @return the Query object
+     */
+    public fun createQuery(query: String): Query
+
+    /**
+     * The number of documents in the default collection, 0 if database is closed.
+     */
+    @Deprecated(
+        "Use getDefaultCollection().count",
+        ReplaceWith("getDefaultCollection().count")
+    )
+    public val count: Long
+
+    /**
+     * Gets an existing Document with the given ID from the default collection.
+     * If the document with the given ID doesn't exist in the default collection,
+     * the method will return null.  If the default collection does not exist or if
+     * the database is closed, the method will throw an IllegalStateException
+     *
+     * @param id the document ID
+     * @return the Document object or null
+     * @throws IllegalStateException when the database is closed or the default collection has been deleted
+     */
+    @Deprecated(
+        "Use getDefaultCollection().getDocument()",
+        ReplaceWith("getDefaultCollection().getDocument(id)")
+    )
+    public fun getDocument(id: String): Document?
+
+    /**
+     * Saves a document to the default collection. When write operations are executed
+     * concurrently, the last writer will overwrite all other written values.
+     * Calling this method is the same as calling save(MutableDocument, ConcurrencyControl.LAST_WRITE_WINS)
+     *
+     * @param document The document.
+     * @throws CouchbaseLiteException on error
+     */
+    @Deprecated(
+        "Use getDefaultCollection().save()",
+        ReplaceWith("getDefaultCollection().save(document)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun save(document: MutableDocument)
+
+    /**
+     * Saves a document to the default collection. When used with LAST_WRITE_WINS
+     * concurrency control, the last write operation will win if there is a conflict.
+     * When used with FAIL_ON_CONFLICT concurrency control, save will fail when there
+     * is a conflict and the method will return false
+     *
+     * @param document           The document.
+     * @param concurrencyControl The concurrency control.
+     * @return true if successful. false if the FAIL_ON_CONFLICT concurrency
+     * @throws CouchbaseLiteException on error
+     */
+    @Deprecated(
+        "Use getDefaultCollection().save()",
+        ReplaceWith("getDefaultCollection().save(document, concurrencyControl)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun save(document: MutableDocument, concurrencyControl: ConcurrencyControl): Boolean
+
+    /**
+     * Saves a document to the default collection. Conflicts will be resolved by the passed ConflictHandler
+     *
+     * @param document        The document.
+     * @param conflictHandler A conflict handler.
+     * @return true if successful. false if the FAIL_ON_CONFLICT concurrency
+     * @throws CouchbaseLiteException on error
+     */
+    @Deprecated(
+        "Use getDefaultCollection().save()",
+        ReplaceWith("getDefaultCollection().save(document, conflictHandler)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean
+
+    /**
+     * Deletes a document from the default collection. When write operations are executed
+     * concurrently, the last writer will overwrite all other written values.
+     * Calling this function is the same as calling delete(Document, ConcurrencyControl.LAST_WRITE_WINS)
+     *
+     * @param document The document.
+     * @throws CouchbaseLiteException on error
+     */
+    @Deprecated(
+        "Use getDefaultCollection().delete()",
+        ReplaceWith("getDefaultCollection().delete(document)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun delete(document: Document)
+
+    /**
+     * Deletes a document from the default collection. When used with lastWriteWins concurrency
+     * control, the last write operation will win if there is a conflict.
+     * When used with FAIL_ON_CONFLICT concurrency control, delete will fail and the method will return false.
+     *
+     * @param document           The document.
+     * @param concurrencyControl The concurrency control.
+     * @throws CouchbaseLiteException on error
+     */
+    @Deprecated(
+        "Use getDefaultCollection().delete()",
+        ReplaceWith("getDefaultCollection().delete(document, concurrencyControl)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean
+
+    /**
+     * Purges the passed document from the default collection. This is more drastic than delete(Document):
+     * it removes all local traces of the document. Purges will NOT be replicated to other databases.
+     *
+     * @param document the document to be purged.
+     */
+    @Deprecated(
+        "Use getDefaultCollection().purge()",
+        ReplaceWith("getDefaultCollection().purge(document)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun purge(document: Document)
+
+    /**
+     * Purges the document with the passed id from default collection. This is more drastic than delete(Document),
+     * it removes all local traces of the document. Purges will NOT be replicated to other databases.
+     *
+     * @param id the document ID
+     */
+    @Deprecated(
+        "Use getDefaultCollection().purge()",
+        ReplaceWith("getDefaultCollection().purge(id)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun purge(id: String)
+
+    /**
+     * Sets an expiration date for a document in the default collection. The document
+     * will be purged from the database at the set time.
+     *
+     * @param id         The ID of the Document
+     * @param expiration Nullable expiration timestamp as a Date, set timestamp to null
+     * to remove expiration date time from doc.
+     * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
+     */
+    @Deprecated(
+        "Use getDefaultCollection().setDocumentExpiration()",
+        ReplaceWith("getDefaultCollection().setDocumentExpiration(id, expiration)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun setDocumentExpiration(id: String, expiration: Instant?)
+
+    /**
+     * Returns the expiration time of the document. If the document has no expiration time set,
+     * the method will return null.
+     *
+     * @param id The ID of the Document
+     * @return Date a nullable expiration timestamp of the document or null if time not set.
+     * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
+     */
+    @Deprecated(
+        "Use getDefaultCollection().getDocumentExpiration()",
+        ReplaceWith("getDefaultCollection().getDocumentExpiration(id)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun getDocumentExpiration(id: String): Instant?
+
+    /**
+     * Adds a change listener for the changes that occur in the database, in the default collection.
      *
      * The changes will be delivered on the main thread for platforms that support it: Android, iOS, and macOS.
      * Callbacks are on an arbitrary thread for the JVM, Linux, and Windows platform.
      *
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
+     * @throws IllegalStateException if the default collection doesn’t exist.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
+    @Deprecated(
+        "Use getDefaultCollection().addChangeListener()",
+        ReplaceWith("getDefaultCollection().addChangeListener(listener)")
+    )
     public fun addChangeListener(listener: DatabaseChangeListener): ListenerToken
 
     /**
-     * Adds a change listener for the changes that occur in the database with a [CoroutineContext] that will be
-     * used to launch coroutines the listener will be called on. Coroutines will be launched in a [CoroutineScope]
-     * that is canceled when the listener is removed.
+     * Adds a change listener for the changes that occur in the database, in the default collection,
+     * with a [CoroutineContext] that will be used to launch coroutines the listener will be called on.
+     * Coroutines will be launched in a [CoroutineScope] that is canceled when the listener is removed.
      *
      * @param context coroutine context in which the listener will run
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
+     * @throws IllegalStateException if the default collection doesn’t exist.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
+    @Deprecated(
+        "Use getDefaultCollection().addChangeListener()",
+        ReplaceWith("getDefaultCollection().addChangeListener(context, listener)")
+    )
     public fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken
 
     /**
-     * Adds a change listener for the changes that occur in the database with a [CoroutineScope] that will be used
-     * to launch coroutines the listener will be called on. The listener is removed when the scope is canceled.
+     * Adds a change listener for the changes that occur in the database, in the default collection,
+     * with a [CoroutineScope] that will be used to launch coroutines the listener will be called on.
+     * The listener is removed when the scope is canceled.
+     * @throws IllegalStateException if the default collection doesn’t exist.
      *
      * @param scope coroutine scope in which the listener will run
      * @param listener The listener to post changes.
      */
+    @Deprecated(
+        "Use getDefaultCollection().addChangeListener()",
+        ReplaceWith("getDefaultCollection().addChangeListener(scope, listener)")
+    )
     public fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener)
 
     /**
-     * Removes the change listener added to the database.
-     *
-     * @param token returned by a previous call to [addChangeListener] or [addDocumentChangeListener].
-     */
-    public fun removeChangeListener(token: ListenerToken)
-
-    /**
-     * Adds a change listener for the changes that occur to the specified document.
+     * Adds a change listener for the changes that occur to the specified document, in the default collection.
      *
      * The changes will be delivered on the main thread for platforms that support it: Android, iOS, and macOS.
      * Callbacks are on an arbitrary thread for the JVM, Linux, and Windows platform.
@@ -283,22 +470,30 @@ public expect class Database {
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
+    @Deprecated(
+        "Use getDefaultCollection().addDocumentChangeListener()",
+        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, listener)")
+    )
     public fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken
 
     /**
-     * Adds a change listener for the changes that occur to the specified document with a [CoroutineContext]
-     * that will be used to launch coroutines the listener will be called on. Coroutines will be launched in
-     * a [CoroutineScope] that is canceled when the listener is removed.
+     * Adds a change listener for the changes that occur to the specified document, in the default collection,
+     * with a [CoroutineContext] that will be used to launch coroutines the listener will be called on.
+     * Coroutines will be launched in a [CoroutineScope] that is canceled when the listener is removed.
      *
      * @param id document ID
      * @param context coroutine context in which the listener will run
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
+    @Deprecated(
+        "Use getDefaultCollection().addDocumentChangeListener()",
+        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, context, listener)")
+    )
     public fun addDocumentChangeListener(
         id: String,
         context: CoroutineContext,
@@ -306,84 +501,87 @@ public expect class Database {
     ): ListenerToken
 
     /**
-     * Adds a change listener for the changes that occur to the specified document with a [CoroutineScope]
-     * that will be used to launch coroutines the listener will be called on. The listener is removed when
-     * the scope is canceled.
+     * Adds a change listener for the changes that occur to the specified document, in the default collection,
+     * with a [CoroutineScope] that will be used to launch coroutines the listener will be called on.
+     * The listener is removed when the scope is canceled.
      *
      * @param id document ID
      * @param scope coroutine scope in which the listener will run
      * @param listener callback
      */
+    @Deprecated(
+        "Use getDefaultCollection().addDocumentChangeListener()",
+        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, scope, listener)")
+    )
     public fun addDocumentChangeListener(id: String, scope: CoroutineScope, listener: DocumentChangeSuspendListener)
 
     /**
-     * Closes a database.
-     * Closing a database will stop all replicators, live queries and all listeners attached to it.
+     * Removes a change listener added to the default collection.
      *
-     * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
+     * @param token returned by a previous call to [addChangeListener] or [addDocumentChangeListener].
      */
-    @Throws(CouchbaseLiteException::class)
-    public fun close()
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
+    public fun removeChangeListener(token: ListenerToken)
 
     /**
-     * Deletes a database.
-     * Deleting a database will stop all replicators, live queries and all listeners attached to it.
-     * Although attempting to close a closed database is not an error, attempting to delete a closed database is.
-     *
-     * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun delete()
-
-    /**
-     * Create a SQL++ query.
-     *
-     * @param query a valid SQL++ query
-     * @return the Query object
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun createQuery(query: String): Query
-
-    /**
-     * Get a list of the names of indices on the database.
+     * Get a list of the names of indices on the default collection.
      *
      * @return the list of index names
      * @throws CouchbaseLiteException on failure
      */
+    @Deprecated(
+        "Use getDefaultCollection().indexes",
+        ReplaceWith("getDefaultCollection().indexes")
+    )
     @Throws(CouchbaseLiteException::class)
     public fun getIndexes(): List<String>
 
     /**
-     * Add an index to the database.
+     * Add an index to the default collection.
      *
      * @param name  index name
      * @param index index description
      * @throws CouchbaseLiteException on failure
      */
+    @Deprecated(
+        "Use getDefaultCollection().createIndex()",
+        ReplaceWith("getDefaultCollection().createIndex(name, index)")
+    )
     @Throws(CouchbaseLiteException::class)
     public fun createIndex(name: String, index: Index)
 
     /**
-     * Add an index to the database.
+     * Add an index to the default collection.
      *
      * @param name   index name
      * @param config index configuration
      * @throws CouchbaseLiteException on failure
      */
+    @Deprecated(
+        "Use getDefaultCollection().createIndex()",
+        ReplaceWith("getDefaultCollection().createIndex(name, config)")
+    )
     @Throws(CouchbaseLiteException::class)
     public fun createIndex(name: String, config: IndexConfiguration)
 
     /**
-     * Delete the named index from the database.
+     * Delete the named index from the default collection.
      *
      * @param name name of the index to delete
      * @throws CouchbaseLiteException on failure
      */
+    @Deprecated(
+        "Use getDefaultCollection().deleteIndex()",
+        ReplaceWith("getDefaultCollection().deleteIndex(name)")
+    )
     @Throws(CouchbaseLiteException::class)
     public fun deleteIndex(name: String)
 
     /**
-     * Performs database maintenance.
+     * Perform database maintenance.
      */
     @Throws(CouchbaseLiteException::class)
     public fun performMaintenance(type: MaintenanceType): Boolean
@@ -394,5 +592,10 @@ public expect class Database {
  *
  * @param key The key.
  */
+@Deprecated(
+    "Use getDefaultCollection().get()",
+    ReplaceWith("getDefaultCollection()[key]")
+)
+@Suppress("DEPRECATION")
 public operator fun Database.get(key: String): DocumentFragment =
     DocumentFragment(getDocument(key))

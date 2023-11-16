@@ -22,7 +22,7 @@ package kotbase
  * it will use this key, and the same key must be given every time it's opened
  *
  * @param encryptionKey the key
- * @return The self object.
+ * @return this.
  */
 public fun DatabaseConfiguration.setEncryptionKey(encryptionKey: EncryptionKey?): DatabaseConfiguration {
     this.encryptionKey = encryptionKey

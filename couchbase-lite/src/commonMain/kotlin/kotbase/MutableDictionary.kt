@@ -18,12 +18,12 @@ package kotbase
 import kotlinx.datetime.Instant
 
 /**
- * Dictionary provides access to dictionary data.
+ * Mutable access to dictionary data.
  */
 public expect class MutableDictionary : Dictionary {
 
     /**
-     * Initialize a new empty Dictionary object.
+     * Construct a new empty Dictionary object.
      */
     public constructor()
 
@@ -184,7 +184,7 @@ public expect class MutableDictionary : Dictionary {
     public fun remove(key: String): MutableDictionary
 
     /**
-     * Get a property's value as an Array, which is a mapping object of an array value.
+     * Get a property's value as an Array.
      * Returns null if the property doesn't exist, or its value is not an array.
      *
      * @param key the key.
@@ -193,7 +193,7 @@ public expect class MutableDictionary : Dictionary {
     override fun getArray(key: String): MutableArray?
 
     /**
-     * Get a property's value as a Dictionary, which is a mapping object of a dictionary value.
+     * Get a property's value as a Dictionary.
      * Returns null if the property doesn't exist, or its value is not a dictionary.
      *
      * @param key the key.

@@ -21,12 +21,12 @@ package kotbase
 public expect class ReplicatorChange {
 
     /**
-     * Return the source replicator object.
+     * The source replicator object.
      */
     public val replicator: Replicator
 
     /**
-     * Return the replicator status.
+     * The replicator status.
      */
     public val status: ReplicatorStatus
 }

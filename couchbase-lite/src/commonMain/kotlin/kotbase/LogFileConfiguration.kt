@@ -17,9 +17,10 @@ package kotbase
 
 /**
  * A class that describes the file configuration for the [FileLogger] class.
- * These options must be set atomically, so they won't take effect unless a new
- * configuration object is set on the logger.  Attempting to modify an in-use
- * configuration object will result in an exception being thrown.
+ * Once a configuration has been assigned to a Logger, it becomes read-only:
+ * an attempt to mutate it will cause an exception.
+ * To change the configuration of a logger, copy its configuration, mutate the
+ * copy and then use it to replace the loggers current configuration.
  */
 public expect class LogFileConfiguration {
 
@@ -48,43 +49,10 @@ public expect class LogFileConfiguration {
     public constructor(directory: String, config: LogFileConfiguration?)
 
     /**
-     * Sets whether or not to log in plaintext.  The default is
-     * to log in a binary encoded format that is more CPU and I/O friendly
-     * and enabling plaintext is not recommended in production.
-     *
-     * @param usePlaintext Whether or not to log in plaintext
-     * @return The self object
-     */
-    public fun setUsePlaintext(usePlaintext: Boolean): LogFileConfiguration
-
-    /**
-     * The number of rotated logs that are saved (i.e.
-     * if the value is 1, then 2 logs will be present:  the 'current'
-     * and the 'rotated')
-     */
-    public var maxRotateCount: Int
-
-    /**
-     * Sets the number of rotated logs that are saved (i.e.
-     * if the value is 1, then 2 logs will be present:  the 'current'
-     * and the 'rotated')
-     *
-     * @param maxRotateCount The number of rotated logs to be saved
-     * @return The self object
-     */
-    public fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration
-
-    /**
-     * The max size of the log file in bytes.  If a log file
-     * passes this size then a new log file will be started.  This
+     * Sets the max size of the log file in bytes. If a log file
+     * passes this size then a new log file will be started. This
      * number is a best effort and the actual size may go over slightly.
-     */
-    public var maxSize: Long
-
-    /**
-     * Sets the max size of the log file in bytes.  If a log file
-     * passes this size then a new log file will be started.  This
-     * number is a best effort and the actual size may go over slightly.
+     * The default size is 500Kb.
      *
      * @param maxSize The max size of the log file in bytes
      * @return The self object
@@ -92,9 +60,46 @@ public expect class LogFileConfiguration {
     public fun setMaxSize(maxSize: Long): LogFileConfiguration
 
     /**
-     * Whether or not CBL is logging in plaintext.  The default is
-     * to log in a binary encoded format that is more CPU and I/O friendly
-     * and enabling plaintext is not recommended in production.
+     * Sets the number of rotated logs that are saved. For instance,
+     * if the value is 1 then 2 logs will be present: the 'current' log
+     * and the previous 'rotated' log.
+     * The default value is 1.
+     *
+     * @param maxRotateCount The number of rotated logs to be saved
+     * @return The self object
+     */
+    public fun setMaxRotateCount(maxRotateCount: Int): LogFileConfiguration
+
+    /**
+     * Sets whether or not CBL logs in plaintext. The default (false) is
+     * to log in a binary encoded format that is more CPU and I/O friendly.
+     * Enabling plaintext is not recommended in production.
+     *
+     * @param usePlaintext Whether or not to log in plaintext
+     * @return The self object
+     */
+    public fun setUsePlaintext(usePlaintext: Boolean): LogFileConfiguration
+
+    /**
+     * The max size of the log file in bytes. If a log file
+     * passes this size then a new log file will be started. This
+     * number is a best effort and the actual size may go over slightly.
+     * The default size is 500Kb.
+     */
+    public var maxSize: Long
+
+    /**
+     * The number of rotated logs that are saved. For instance,
+     * if the value is 1 then 2 logs will be present: the 'current' log
+     * and the previous 'rotated' log.
+     * The default value is 1.
+     */
+    public var maxRotateCount: Int
+
+    /**
+     * Whether or not CBL is logging in plaintext. The default (false) is
+     * to log in a binary encoded format that is more CPU and I/O friendly.
+     * Enabling plaintext is not recommended in production.
      */
     public var usesPlaintext: Boolean
 

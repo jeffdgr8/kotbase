@@ -18,6 +18,6 @@ package kotbase
 /**
  * **ENTERPRISE EDITION API**
  *
- * The authenticator used by URLEndpointListener to authenticate clients.
+ * Opaque interface for the authenticator used by a URLEndpointListener
  */
 public expect sealed class ListenerAuthenticator

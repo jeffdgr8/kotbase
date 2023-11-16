@@ -52,7 +52,8 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
     /**
      * Stop a running replicator.
      * This method does not wait for the replicator to stop.
-     * When it does actually stop it will a new state, STOPPED, to change listeners.
+     * When the replicator actually stops, it will broadcast a new state, STOPPED,
+     * to change listeners.
      */
     public fun stop()
 
@@ -62,7 +63,7 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
     public val config: ReplicatorConfiguration
 
     /**
-     * The replicator's current status: its activity level and progress. Observable.
+     * The replicator's current status: its activity level and progress.
      */
     public val status: ReplicatorStatus
 
@@ -74,12 +75,37 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
     public val serverCertificates: List<ByteArray>?
 
     /**
-     * Get a best effort list of documents still pending replication.
+     * Get a best effort list of documents in the default collection, that are still pending replication.
      *
-     * @return a set of ids for documents still awaiting replication.
+     * @return a set of ids for documents in the default collection still awaiting replication.
      */
+    @Deprecated(
+        "Use getPendingDocumentIds(Collection)",
+        ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection())")
+    )
     @Throws(CouchbaseLiteException::class)
     public fun getPendingDocumentIds(): Set<String>
+
+    /**
+     * Get a best effort list of documents in the passed collection that are still pending replication.
+     *
+     * @return a set of ids for documents in the passed collection still awaiting replication.
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun getPendingDocumentIds(collection: Collection): Set<String>
+
+    /**
+     * Best effort check to see if the document whose ID is passed is still pending replication.
+     *
+     * @param docId Document id
+     * @return true if the document is pending
+     */
+    @Deprecated(
+        "Use isDocumentPending(String, Collection)",
+        ReplaceWith("isDocumentPending(docId, config.database.getDefaultCollection())")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun isDocumentPending(docId: String): Boolean
 
     /**
      * Best effort check to see if the document whose ID is passed is still pending replication.
@@ -88,7 +114,7 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
      * @return true if the document is pending
      */
     @Throws(CouchbaseLiteException::class)
-    public fun isDocumentPending(docId: String): Boolean
+    public fun isDocumentPending(docId: String, collection: Collection): Boolean
 
     /**
      * Adds a change listener for the changes in the replication status and progress.
@@ -99,7 +125,7 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
     public fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken
 
@@ -112,7 +138,7 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
     public fun addChangeListener(context: CoroutineContext, listener: ReplicatorChangeSuspendListener): ListenerToken
 
@@ -139,7 +165,7 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
     public fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken
 
@@ -156,7 +182,7 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
     public fun addDocumentReplicationListener(
         context: CoroutineContext,
@@ -181,6 +207,10 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
      *
      * @param token returned by a previous call to [addChangeListener] or [addDocumentReplicationListener].
      */
+    @Deprecated(
+        "Use ListenerToken.remove",
+        ReplaceWith("token.remove()")
+    )
     public fun removeChangeListener(token: ListenerToken)
 
     override fun close()

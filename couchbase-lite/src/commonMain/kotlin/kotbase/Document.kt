@@ -26,6 +26,11 @@ public expect open class Document : Iterable<String> {
     internal val collectionMap: MutableMap<String, Any>
 
     /**
+     * The collection to which the document belongs.
+     */
+    public val collection: Collection?
+
+    /**
      * The document's ID.
      */
     public val id: String
@@ -41,11 +46,11 @@ public expect open class Document : Iterable<String> {
 
     /**
      * The sequence number of the document in the database.
-     * The sequence number indicates how recently the document has been changed.  Every time a document
-     * is updated, the database assigns it the next sequential sequence number.  Thus, when a document's
-     * sequence number changes it means that the document been update (on-disk).  If one document's sequence
+     * The sequence number indicates how recently the document has been changed. Every time a document
+     * is updated, the database assigns it the next sequential sequence number. Thus, when a document's
+     * sequence number changes it means that the document been updated (on-disk). If one document's sequence
      * is different than another's, the document with the larger sequence number was changed more recently.
-     * Sequence numbers are not available for documents obtained from a replication filter.  This method
+     * Sequence numbers are not available for documents obtained from a replication filter. This method
      * will always return 0 for such documents.
      */
     public val sequence: Long
@@ -58,7 +63,7 @@ public expect open class Document : Iterable<String> {
     public open fun toMutable(): MutableDocument
 
     /**
-     * The number of the entries in the dictionary.
+     * The number of the entries in the document.
      */
     public val count: Int
 
@@ -167,7 +172,7 @@ public expect open class Document : Iterable<String> {
     public fun getDate(key: String): Instant?
 
     /**
-     * Get a property's value as an Array, which is a mapping object of an array value.
+     * Get a property's value as a Array.
      * Returns null if the property doesn't exist, or its value is not an Array.
      *
      * @param key the key
@@ -176,8 +181,7 @@ public expect open class Document : Iterable<String> {
     public open fun getArray(key: String): Array?
 
     /**
-     * Get a property's value as a Dictionary, which is a mapping object of
-     * a Dictionary value.
+     * Get a property's value as a Dictionary.
      * Returns null if the property doesn't exist, or its value is not a Dictionary.
      *
      * @param key the key

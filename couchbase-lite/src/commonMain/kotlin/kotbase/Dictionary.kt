@@ -37,6 +37,17 @@ public expect open class Dictionary : Iterable<String> {
      */
     public val count: Int
 
+
+    /**
+     * Tests whether a property exists or not.
+     * This can be less expensive than getValue(String), because it does not have to allocate an Object for the
+     * property value.
+     *
+     * @param key the key
+     * @return the boolean value representing whether a property exists or not.
+     */
+    public operator fun contains(key: String): Boolean
+
     /**
      * A List containing all keys, or an empty List if the dictionary has no properties.
      */
@@ -140,7 +151,7 @@ public expect open class Dictionary : Iterable<String> {
     public fun getDate(key: String): Instant?
 
     /**
-     * Get a property's value as an Array, which is a mapping object of an array value.
+     * Get a property's value as an Array.
      * Returns null if the property doesn't exist, or its value is not an array.
      *
      * @param key the key.
@@ -149,7 +160,7 @@ public expect open class Dictionary : Iterable<String> {
     public open fun getArray(key: String): Array?
 
     /**
-     * Get a property's value as a Dictionary, which is a mapping object of a dictionary value.
+     * Get a property's value as a Dictionary.
      * Returns null if the property doesn't exist, or its value is not a dictionary.
      *
      * @param key the key.
@@ -168,15 +179,13 @@ public expect open class Dictionary : Iterable<String> {
     public fun toJSON(): String
 
     /**
-     * Tests whether a property exists or not.
-     * This can be less expensive than getValue(String), because it does not have to allocate an Object for the
-     * property value.
+     * An iterator over keys of this Dictionary.
+     * A call to the `next()` method of the returned iterator
+     * will throw a ConcurrentModificationException, if the MutableDictionary is
+     * modified while it is in use.
      *
-     * @param key the key
-     * @return the boolean value representing whether a property exists or not.
+     * @return an iterator over the dictionary's keys.
      */
-    public operator fun contains(key: String): Boolean
-
     override fun iterator(): Iterator<String>
 }
 

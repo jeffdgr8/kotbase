@@ -16,7 +16,7 @@
 package kotbase
 
 /**
- * SelectResult represents a single return value of the query statement.
+ * SelectResult represents the result of a query.
  */
 public expect open class SelectResult {
 
@@ -26,7 +26,7 @@ public expect open class SelectResult {
     public class From : SelectResult {
 
         /**
-         * Species the data source alias name to the SelectResult object.
+         * Specifies the data source alias for the SelectResult object.
          *
          * @param alias The data source alias name.
          * @return The SelectResult object with the data source alias name specified.
@@ -35,14 +35,13 @@ public expect open class SelectResult {
     }
 
     /**
-     * SelectResult.As is a SelectResult that you can specify an alias name to it. The
-     * alias name can be used as the key for accessing the result value from the query Result
-     * object.
+     * SelectResult.As is a SelectResult with an alias.
+     * The alias can be used as the key for accessing the result value from the query Result.
      */
     public class As : SelectResult {
 
         /**
-         * Specifies the alias name to the SelectResult object.
+         * Specifies the alias for the SelectResult object.
          *
          * @param alias The alias name.
          * @return The SelectResult object with the alias name specified.
@@ -53,10 +52,10 @@ public expect open class SelectResult {
     public companion object {
 
         /**
-         * Creates a SelectResult object with the given property name.
+         * Creates a SelectResult with the given property name.
          *
          * @param property The property name.
-         * @return The SelectResult.As object that you can give the alias name to the returned value.
+         * @return a SelectResult.From that can be used to alias the property.
          */
         public fun property(property: String): As
 
@@ -64,15 +63,15 @@ public expect open class SelectResult {
          * Creates a SelectResult object with the given expression.
          *
          * @param expression The expression.
-         * @return The SelectResult.As object that you can give the alias name to the returned value.
+         * @return a SelectResult.From that can be used to alias the property.
          */
         public fun expression(expression: Expression): As
 
         /**
-         * Creates a SelectResult object that returns all properties data. The query returned result
-         * will be grouped into a single CBLMutableDictionary object under the key of the data source name.
+         * Creates a SelectResult that contains values for all properties matching the query.
+         * The result is a single CBLMutableDictionary whose key is the name of the data source.
          *
-         * @return The SelectResult.From object that you can specify the data source alias name.
+         * @return a SelectResult.From that can be used to alias the property.
          */
         public fun all(): From
     }

@@ -33,7 +33,7 @@ package kotbase
  *
  * @param model      The predictive model name.
  * @param input      The input specification that should be matched with the input
- * specification given to the query prediction function.
+ *                   specification given to the query prediction function.
  * @param properties The prediction result's properties to be indexed.
  * @return The predictive index.
  */

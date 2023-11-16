@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2023 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,4 @@
  */
 package kotbase
 
-/**
- * Holder for the three Couchbase Lite loggers: console, file, and custom.
- */
-public expect class Log {
-
-    /**
-     * The logger that writes to the system console
-     */
-    public val console: ConsoleLogger
-
-    /**
-     * The logger that writes to log files
-     */
-    public val file: FileLogger
-
-    /**
-     * An application specific logging method
-     */
-    public var custom: Logger?
-}
+public sealed interface IndexExpression

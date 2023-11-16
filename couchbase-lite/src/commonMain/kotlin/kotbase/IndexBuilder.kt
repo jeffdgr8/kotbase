@@ -16,8 +16,9 @@
 package kotbase
 
 /**
- * IndexBuilder used for building database index objects.
- * Use Database.createIndex(IndexConfiguration, String)
+ * IndexBuilder used for building database indices.
+ *
+ * Use Database.createIndex(IndexConfiguration, String) instead.
  */
 public expect object IndexBuilder {
 

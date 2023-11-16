@@ -18,14 +18,15 @@ package kotbase
 /**
  * **ENTERPRISE EDITION API**
  *
- * The replicator connection used by the application to tell the replicator to
- * consume the data received from the other peer or to close the connection.
+ * The connection passed to an application using a custom transportation
+ * method, when a MessageEndpointConnection is opened, to represent the
+ * replicator's side of the connection.
  */
 public interface ReplicatorConnection {
 
     /**
-     * Tells the replicator to close the current replicator connection. In return,
-     * the replicator will call the MessageEndpointConnection's close(error, completion)
+     * Tells the replicator to close the current connection.
+     * The replicator will call [MessageEndpointConnection.close]
      * to acknowledge the closed connection.
      *
      * @param error the error if any

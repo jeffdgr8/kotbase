@@ -16,6 +16,8 @@
 package kotbase
 
 /**
+ * **ENTERPRISE EDITION API**
+ *
  * Connection Status
  */
 public expect class ConnectionStatus {

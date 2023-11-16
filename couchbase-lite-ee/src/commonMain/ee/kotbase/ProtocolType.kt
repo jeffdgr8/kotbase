@@ -34,7 +34,7 @@ public expect enum class ProtocolType {
      * connection.  The data with which Core calls us contains the
      * properly framed message, heartbeats and so on.
      * ... we don't use this because that would be too easy, right?
-     * OkHTTP also wants to frame the data.
+     * Mostly, though, OkHttp wants to frame the data.
      */
     BYTE_STREAM
 }

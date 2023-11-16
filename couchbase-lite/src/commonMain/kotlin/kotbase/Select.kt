@@ -19,8 +19,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
 /**
- * Select represents the SELECT clause of the query for specifying the returning properties in each
- * query result row.
+ * Select represents the SELECT clause of the query for specifying
+ * the properties in each query result row.
  */
 public expect class Select : Query, FromRouter {
 

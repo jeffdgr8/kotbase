@@ -28,15 +28,46 @@ public expect class URLEndpointListenerConfiguration {
      *
      * @param database the database to which the listener is attached
      */
+    @Deprecated(
+        "Use URLEndpointListenerConfiguration(Collections)",
+        ReplaceWith("URLEndpointListenerConfiguration(setOf(database.getDefaultCollection()), networkInterface, port, disableTls, identity, authenticator, readOnly, enableDeltaSync)")
+    )
     public constructor(
         database: Database,
         networkInterface: String? = null,
-        port: Int = 0,
-        disableTls: Boolean = false,
+        port: Int = Defaults.Listener.PORT,
+        disableTls: Boolean = Defaults.Listener.DISABLE_TLS,
         identity: TLSIdentity? = null,
         authenticator: ListenerAuthenticator? = null,
-        readOnly: Boolean = false,
-        enableDeltaSync: Boolean = false
+        readOnly: Boolean = Defaults.Listener.READ_ONLY,
+        enableDeltaSync: Boolean = Defaults.Listener.ENABLE_DELTA_SYNC
+    )
+
+    /**
+     * Create a URLEndpointListenerConfiguration with the passed properties. The set of passed Collections
+     * must contain at least one collection and all of the collections it contains must belong
+     * to the same scope and the same database, otherwise an InvalidArgumentException will be thrown.
+     * If one of the specified collections is deleted during replication, connected clients will be closed
+     * with an error.
+     *
+     * @param collections      the collections to which the listener is attached
+     * @param networkInterface the name of the interface on which to receive connections
+     * @param port             the ip port (0 - 65535) on which to configure the listener. Default is 0: first available
+     * @param disableTls       set true to turn of TLS.  Default is false
+     * @param identity         the identity this listener will use to authenticate itself
+     * @param authenticator    the predicate used to authenticate clients
+     * @param readOnly         set true to prevent modification of the local connections
+     * @param enableDeltaSync  set true to turn on fast synching.
+     */
+    public constructor(
+        collections: Set<Collection>,
+        networkInterface: String? = null,
+        port: Int = Defaults.Listener.PORT,
+        disableTls: Boolean = Defaults.Listener.DISABLE_TLS,
+        identity: TLSIdentity? = null,
+        authenticator: ListenerAuthenticator? = null,
+        readOnly: Boolean = Defaults.Listener.READ_ONLY,
+        enableDeltaSync: Boolean = Defaults.Listener.ENABLE_DELTA_SYNC
     )
 
     /**
@@ -49,7 +80,13 @@ public expect class URLEndpointListenerConfiguration {
     /**
      * The configured database.
      */
+    @Deprecated("Use collections")
     public val database: Database
+
+    /**
+     * Get the configured collections.
+     */
+    public val collections: Set<Collection>
 
     /**
      * The name of the configured network interface on which to configure the listener (e.g. "en0")

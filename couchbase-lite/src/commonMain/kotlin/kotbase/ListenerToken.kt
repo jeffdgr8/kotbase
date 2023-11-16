@@ -16,6 +16,12 @@
 package kotbase
 
 /**
- * The listener token interface
+ * Base class for a removable subscription to an observable.
  */
-public expect interface ListenerToken
+@OptIn(ExperimentalStdlibApi::class)
+public expect sealed class ListenerToken : AutoCloseable {
+
+    override fun close()
+
+    public fun remove()
+}

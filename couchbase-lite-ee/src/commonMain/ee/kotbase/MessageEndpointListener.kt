@@ -19,6 +19,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
 /**
+ * **ENTERPRISE EDITION API**
+ *
  * MessageEndpointListener to serve incoming message endpoint connection.
  */
 public expect class MessageEndpointListener(config: MessageEndpointListenerConfiguration) {
@@ -48,7 +50,7 @@ public expect class MessageEndpointListener(config: MessageEndpointListenerConfi
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
     public fun addChangeListener(listener: MessageEndpointListenerChangeListener): ListenerToken
 
@@ -60,7 +62,7 @@ public expect class MessageEndpointListener(config: MessageEndpointListenerConfi
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
      *
-     * @see removeChangeListener
+     * @see ListenerToken.remove
      */
     public fun addChangeListener(
         context: CoroutineContext,

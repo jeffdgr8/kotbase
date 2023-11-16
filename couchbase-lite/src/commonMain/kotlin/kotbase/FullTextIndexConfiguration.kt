@@ -15,6 +15,9 @@
  */
 package kotbase
 
+/**
+ * Full Text Index Configuration
+ */
 public expect class FullTextIndexConfiguration(vararg expressions: String) : IndexConfiguration {
 
     /**

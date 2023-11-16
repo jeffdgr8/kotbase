@@ -37,7 +37,7 @@ public expect class FileLogger : Logger {
     /**
      * The configuration currently in use by the file logger.
      * Note that once a configuration has been installed in a logger,
-     * the configuration is read-only and can no longer be modified.
+     * it is read-only and can no longer be modified.
      * An attempt to modify the configuration returned by this method will cause an exception.
      */
     public var config: LogFileConfiguration?

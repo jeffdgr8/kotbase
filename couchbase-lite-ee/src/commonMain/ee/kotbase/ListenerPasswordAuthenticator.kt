@@ -16,6 +16,8 @@
 package kotbase
 
 /**
+ * **ENTERPRISE EDITION API**
+ *
  * Authenticator for HTTP Listener password authentication
  */
 public expect class ListenerPasswordAuthenticator

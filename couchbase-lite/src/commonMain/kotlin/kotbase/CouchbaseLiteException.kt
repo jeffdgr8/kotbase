@@ -16,7 +16,7 @@
 package kotbase
 
 /**
- * A CouchbaseLiteException gets raised whenever a Couchbase Lite faces errors.
+ * Misfortune: The little fox gets its tail wet.
  */
 public expect class CouchbaseLiteException : Exception {
 

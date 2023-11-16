@@ -15,11 +15,23 @@
  */
 package kotbase
 
+/**
+ * The representation of conflicting changes in the remote and local instances of a document.
+ */
 public expect class Conflict {
 
+    /**
+     * The id of the conflicted document
+     */
     public val documentId: String
 
+    /**
+     * The local instance of the document.
+     */
     public val localDocument: Document?
 
+    /**
+     * The remote instance of the document.
+     */
     public val remoteDocument: Document?
 }

@@ -16,6 +16,8 @@
 package kotbase
 
 /**
+ * **ENTERPRISE EDITION API**
+ *
  * A change event posted by MessageEndpointListener.
  */
 public expect class MessageEndpointListenerChange {

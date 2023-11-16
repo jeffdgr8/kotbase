@@ -36,7 +36,7 @@ public expect class Result : Iterable<String> {
     public fun getValue(index: Int): Any?
 
     /**
-     * The result at the given index as a String
+     * The result at the given index converted to a String
      *
      * @param index the index of the required value.
      * @return a String value.
@@ -44,7 +44,8 @@ public expect class Result : Iterable<String> {
     public fun getString(index: Int): String?
 
     /**
-     * The result  at the given index as a Number
+     * The result at the given index interpreted as a Number.
+     * Returns null if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return a Number value.
@@ -52,7 +53,8 @@ public expect class Result : Iterable<String> {
     public fun getNumber(index: Int): Number?
 
     /**
-     * The result at the given index as an int
+     * The result at the given index interpreted as and an int.
+     * Returns 0 if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return an int value.
@@ -60,7 +62,8 @@ public expect class Result : Iterable<String> {
     public fun getInt(index: Int): Int
 
     /**
-     * The result at the given index as a long
+     * The result at the given index interpreted as a long.
+     * Returns 0 if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return a long value.
@@ -68,7 +71,8 @@ public expect class Result : Iterable<String> {
     public fun getLong(index: Int): Long
 
     /**
-     * The result at the given index as a float
+     * The result at the given index interpreted as a float.
+     * Returns 0.0F if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return a float value.
@@ -76,7 +80,8 @@ public expect class Result : Iterable<String> {
     public fun getFloat(index: Int): Float
 
     /**
-     * The result at the given index as a double
+     * The result at the given index interpreted as a double.
+     * Returns 0.0 if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return a double value.
@@ -84,7 +89,8 @@ public expect class Result : Iterable<String> {
     public fun getDouble(index: Int): Double
 
     /**
-     * The result at the given index as a boolean
+     * The result at the given index interpreted as a boolean.
+     * Returns false if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return a boolean value.
@@ -92,7 +98,8 @@ public expect class Result : Iterable<String> {
     public fun getBoolean(index: Int): Boolean
 
     /**
-     * The result at the given index as a Blob
+     * The result at the given index interpreted as a Blob.
+     * Returns null if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return a Blob.
@@ -100,7 +107,8 @@ public expect class Result : Iterable<String> {
     public fun getBlob(index: Int): Blob?
 
     /**
-     * The result at the given index as a Date
+     * The result at the given index interpreted as a Date.
+     * Returns null if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return a Date.
@@ -108,7 +116,8 @@ public expect class Result : Iterable<String> {
     public fun getDate(index: Int): Instant?
 
     /**
-     * The result at the given index as an Array
+     * The result at the given index interpreted as an Array.
+     * Returns null if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return an Array.
@@ -116,7 +125,8 @@ public expect class Result : Iterable<String> {
     public fun getArray(index: Int): Array?
 
     /**
-     * The result at the given index as a Dictionary
+     * The result at the given index interpreted as a Dictionary.
+     * Returns null if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
      * @return a Dictionary.
@@ -124,7 +134,7 @@ public expect class Result : Iterable<String> {
     public fun getDictionary(index: Int): Dictionary?
 
     /**
-     * Gets all values as a List. The types of the values contained in the returned List
+     * Gets all the values as a List. The types of the values contained in the returned List
      * are Array, Blob, Dictionary, Number types, String, and null.
      *
      * @return a List containing all values.
@@ -146,7 +156,7 @@ public expect class Result : Iterable<String> {
     public fun getValue(key: String): Any?
 
     /**
-     * The result value for the given key as a String object
+     * The result value for the given key as a String
      * Returns null if the key doesn't exist.
      *
      * @param key The select result key.
@@ -155,8 +165,8 @@ public expect class Result : Iterable<String> {
     public fun getString(key: String): String?
 
     /**
-     * The projecting result value for the given key  as a Number object
-     * Returns null if the key doesn't exist.
+     * The result value for the given key as a Number
+     * Returns null if the key doesn't exist or if the value is not a Number
      *
      * @param key The select result key.
      * @return The Number object.
@@ -164,8 +174,8 @@ public expect class Result : Iterable<String> {
     public fun getNumber(key: String): Number?
 
     /**
-     * The projecting result value for the given key  as an integer value
-     * Returns 0 if the key doesn't exist.
+     * The result value for the given key as an int
+     * Returns 0 if the key doesn't exist or if the value is not a int
      *
      * @param key The select result key.
      * @return The integer value.
@@ -173,8 +183,8 @@ public expect class Result : Iterable<String> {
     public fun getInt(key: String): Int
 
     /**
-     * The projecting result value for the given key  as a long value
-     * Returns 0L if the key doesn't exist.
+     * The result value for the given key as a long
+     * Returns 0L if the key doesn't exist or if the value is not a long
      *
      * @param key The select result key.
      * @return The long value.
@@ -182,8 +192,8 @@ public expect class Result : Iterable<String> {
     public fun getLong(key: String): Long
 
     /**
-     * The projecting result value for the given key  as a float value.
-     * Returns 0.0f if the key doesn't exist.
+     * The result value for the given key as a float
+     * Returns 0.0F if the key doesn't exist or if the value is not a float
      *
      * @param key The select result key.
      * @return The float value.
@@ -191,8 +201,8 @@ public expect class Result : Iterable<String> {
     public fun getFloat(key: String): Float
 
     /**
-     * The projecting result value for the given key as a double value.
-     * Returns 0.0 if the key doesn't exist.
+     * The result value for the given key as a double
+     * Returns 0.0 if the key doesn't exist or if the value is not a double
      *
      * @param key The select result key.
      * @return The double value.
@@ -200,8 +210,8 @@ public expect class Result : Iterable<String> {
     public fun getDouble(key: String): Double
 
     /**
-     * The projecting result value for the given key  as a boolean value.
-     * Returns false if the key doesn't exist.
+     * The result value for the given key as a boolean
+     * Returns null if the key doesn't exist or if the value is not a boolean
      *
      * @param key The select result key.
      * @return The boolean value.
@@ -209,8 +219,8 @@ public expect class Result : Iterable<String> {
     public fun getBoolean(key: String): Boolean
 
     /**
-     * The projecting result value for the given key  as a Blob object.
-     * Returns null if the key doesn't exist.
+     * The result value for the given key as a Blob
+     * Returns null if the key doesn't exist or if the value is not a Blob
      *
      * @param key The select result key.
      * @return The Blob object.
@@ -218,8 +228,8 @@ public expect class Result : Iterable<String> {
     public fun getBlob(key: String): Blob?
 
     /**
-     * The projecting result value for the given key as a Date object.
-     * Returns null if the key doesn't exist.
+     * The result value for the given key as a Date
+     * Returns null if the key doesn't exist or if the value is not a Date
      *
      * @param key The select result key.
      * @return The Date object.
@@ -227,8 +237,8 @@ public expect class Result : Iterable<String> {
     public fun getDate(key: String): Instant?
 
     /**
-     * The projecting result value for the given key as a readonly Array object.
-     * Returns null if the key doesn't exist.
+     * The result value for the given key as a Array
+     * Returns null if the key doesn't exist or if the value is not an Array
      *
      * @param key The select result key.
      * @return The Array object.
@@ -236,8 +246,8 @@ public expect class Result : Iterable<String> {
     public fun getArray(key: String): Array?
 
     /**
-     * The projecting result value for the given key as a readonly Dictionary object.
-     * Returns null if the key doesn't exist.
+     * The result value for the given key as a Dictionary
+     * Returns null if the key doesn't exist or if the value is not a Dictionary
      *
      * @param key The select result key.
      * @return The Dictionary object.
@@ -245,9 +255,8 @@ public expect class Result : Iterable<String> {
     public fun getDictionary(key: String): Dictionary?
 
     /**
-     * Gets all values as a Dictionary. The value types of the values contained
-     * in the returned Dictionary object are Array, Blob, Dictionary,
-     * Number types, String, and null.
+     * Gets all values as a Map. The keys in the returned map are the names of columns that have
+     * values. The types of the values are Array, Blob, Dictionary, Number types, String, and null.
      *
      * @return The Map representing all values.
      */
@@ -256,7 +265,7 @@ public expect class Result : Iterable<String> {
     public fun toJSON(): String
 
     /**
-     * Tests whether a projecting result key exists or not.
+     * Tests whether key exists or not.
      *
      * @param key The select result key.
      * @return True if exists, otherwise false.
@@ -264,7 +273,7 @@ public expect class Result : Iterable<String> {
     public operator fun contains(key: String): Boolean
 
     /**
-     * Gets  an iterator over the projecting result keys.
+     * Gets an iterator over the result's keys.
      *
      * @return The Iterator object of all result keys.
      */

@@ -18,7 +18,7 @@ package kotbase
 /**
  * **ENTERPRISE EDITION API**
  *
- * Message endpoint.
+ * Replication Message endpoint.
  */
 public expect class MessageEndpoint
 

@@ -16,6 +16,8 @@
 package kotbase
 
 /**
+ * **ENTERPRISE EDITION API**
+ *
  * Functional Interface for an Authenticator that uses an authentication strategy based on a username and password.
  * Pass implementations of this interface to the [ListenerPasswordAuthenticator] to realize
  * specific authentication strategies.
