@@ -41,6 +41,5 @@ public expect object QueryBuilder {
      * @param query A valid N1QL query.
      * @return database The database against which the query will be run.
      */
-    @Throws(CouchbaseLiteException::class)
     public fun createQuery(query: String, database: Database): Query
 }

@@ -21,12 +21,21 @@ package kotbase
 public expect class DocumentChange {
 
     /**
-     * The Database instance
+     * The Document's collection
      */
-    public val database: Database
+    public val collection: Collection
 
     /**
      * The changed document ID
      */
     public val documentID: String
+
+    /**
+     * The Database instance
+     */
+    @Deprecated(
+        "Use DocumentChange.collection",
+        ReplaceWith("collection")
+    )
+    public val database: Database
 }

@@ -18,7 +18,16 @@ package kotbase
 /**
  * Provides details about a Database change.
  */
-public expect class DatabaseChange {
+@Deprecated(
+    "Use CollectionChange",
+    ReplaceWith("CollectionChange")
+)
+public expect open class DatabaseChange {
+
+    /**
+     * The collection
+     */
+    public val collection: Collection
 
     /**
      * The database instance

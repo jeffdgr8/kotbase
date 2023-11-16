@@ -15,10 +15,23 @@
  */
 package kotbase
 
+/**
+ * Information about a Document updated by replication.
+ */
 public expect class ReplicatedDocument {
 
     /**
-     * The current document id.
+     * The scope of the collection to which the changed document belongs.
+     */
+    public val collectionScope: String
+
+    /**
+     * The name of the collection to which the changed document belongs.
+     */
+    public val collectionName: String
+
+    /**
+     * The document id of the changed document.
      */
     public val id: String
 

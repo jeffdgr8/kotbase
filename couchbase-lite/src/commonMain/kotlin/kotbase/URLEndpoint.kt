@@ -21,15 +21,17 @@ package kotbase
 public expect class URLEndpoint
 
 /**
- * Constructor with the url. The supported URL schemes
- * are ws and wss for transferring data over a secure channel.
+ * Constructor with the url. The supported URL schemes are
+ *
+ *  * wss -- data transfer over a secure channel
+ *  * ws  -- data transfer over an insecure channel
  *
  * @param url The url.
  */
 constructor(url: String) : Endpoint {
 
     /**
-     * Returns the url.
+     * The url.
      */
     public val url: String
 }

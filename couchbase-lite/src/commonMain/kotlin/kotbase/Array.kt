@@ -40,7 +40,7 @@ public expect open class Array : Iterable<Any?> {
     /**
      * Gets value at the given index as an object. The object types are Blob,
      * Array, Dictionary, Number, or String based on the underlying
-     * data type; or nil if the value is nil.
+     * data type; or null if the value is null.
      *
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the Object or null.
@@ -134,7 +134,8 @@ public expect open class Array : Iterable<Any?> {
     public fun getDate(index: Int): Instant?
 
     /**
-     * Gets an Array at the given index. Return null if the value is not an array.
+     * Gets value at the given index as an Array.
+     * Returns null if the value doesn't exist, or its value is not an Array.
      *
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the Array object.
@@ -159,6 +160,14 @@ public expect open class Array : Iterable<Any?> {
 
     public fun toJSON(): String
 
+    /**
+     * An iterator over elements of this array.
+     * A call to the `next()` method of the returned iterator
+     * will throw a ConcurrentModificationException, if the MutableArray is
+     * modified while it is in use.
+     *
+     * @return an iterator over the array's elements.
+     */
     override fun iterator(): Iterator<Any?>
 }
 

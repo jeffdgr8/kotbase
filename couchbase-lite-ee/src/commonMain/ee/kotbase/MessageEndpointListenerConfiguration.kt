@@ -16,14 +16,46 @@
 package kotbase
 
 /**
+ * **ENTERPRISE EDITION API**
+ *
  * Configuration for MessageEndpointListener
  */
-public expect class MessageEndpointListenerConfiguration(
-    database: Database,
-    protocolType: ProtocolType
-) {
+public expect class MessageEndpointListenerConfiguration {
 
+    /**
+     * The database to which the listener is attached
+     *
+     * @param database     to which the listener is attached
+     * @param protocolType protocol type
+     */
+    @Deprecated(
+        "Use MessageEndpointListener(Collection, ProtocolType)",
+        ReplaceWith("MessageEndpointListener(setOf(database.getDefaultCollection()), protocolType)")
+    )
+    public constructor(database: Database, protocolType: ProtocolType)
+
+    /**
+     * Create a MessageEndpointListenerConfiguration with the passed protocol type, for the passed Collections
+     * The passed set must contain at least one collection and all of the collections it contains must belong
+     * to the same scope and the same database, otherwise an InvalidArgumentException will be thrown.
+     * If one of the specified collections is deleted during replication, connected clients will be closed
+     * with an error.
+     *
+     * @param collections  the collections to which the listener is attached
+     * @param protocolType protocol type
+     */
+    public constructor(collections: Set<Collection>, protocolType: ProtocolType)
+
+    /**
+     * The endpoint database
+     */
+    @Deprecated(
+        "Use collections",
+        ReplaceWith("collections")
+    )
     public val database: Database
+
+    public val collections: Set<Collection>
 
     public val protocolType: ProtocolType
 }

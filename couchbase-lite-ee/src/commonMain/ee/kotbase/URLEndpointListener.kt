@@ -17,6 +17,8 @@ package kotbase
 
 /**
  * **ENTERPRISE EDITION API**
+ *
+ * A listener to which remote replicators can connect.
  */
 public expect class URLEndpointListener
 

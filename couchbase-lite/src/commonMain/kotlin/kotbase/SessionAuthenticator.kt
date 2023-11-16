@@ -38,12 +38,12 @@ public expect class SessionAuthenticator : Authenticator {
     public constructor(sessionID: String, cookieName: String?)
 
     /**
-     * Return session ID of the session created by a Sync Gateway.
+     * Session ID of the session created by a Sync Gateway.
      */
     public val sessionID: String
 
     /**
-     * Return session cookie name that the session ID value will be set to when communicating
+     * Session cookie name that the session ID value will be set to when communicating
      * the Sync Gateway.
      */
     public val cookieName: String

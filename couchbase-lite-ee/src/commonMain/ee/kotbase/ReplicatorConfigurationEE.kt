@@ -18,18 +18,18 @@ package kotbase
 /**
  * **ENTERPRISE EDITION API**
  *
- * Specify whether the replicator will accept any and only self-signed certificates.
- * Any non-self-signed certificates will be rejected to avoid accidentally using
- * this mode with the non-self-signed certs in production. The default value is false.
+ * Specify whether the replicator will accept only self-signed certificates.
+ * If set true, the replicator will accept any self-signed but <b>NO</b> not self-signed certificates
+ * This guards against using this mode accidentally, in production.
+ * The default value is false.
  *
- * @param acceptOnlySelfSignedServerCertificate Whether the replicator will accept
- * any and only self-signed certificates.
+ * @param selfSignedOnly Whether the replicator will accept any and only self-signed certificates.
  * @return this.
  */
 public fun ReplicatorConfiguration.setAcceptOnlySelfSignedServerCertificate(
-    acceptOnlySelfSignedServerCertificate: Boolean
+    selfSignedOnly: Boolean
 ): ReplicatorConfiguration {
-    isAcceptOnlySelfSignedServerCertificate = acceptOnlySelfSignedServerCertificate
+    isAcceptOnlySelfSignedServerCertificate = selfSignedOnly
     return this
 }
 

@@ -150,6 +150,18 @@ public expect open class Expression {
          * @return a negated expression.
          */
         public fun not(expression: Expression): Expression
+
+        /**
+         * Create a full-text index expression referencing a full-text index with the given index name.
+         *
+         * When there is a need to specify the data source in which the index has been created (e.g. in
+         * multi-collection join statement, calls the from(_ alias: String) method from the returned
+         * FullTextIndexExpressionProtocol object to specify the data source.
+         *
+         * @param indexName The name of the full-text index.
+         * @return The full-text index expression referring to a full text index in the specified data source.
+         */
+        public fun fullTextIndex(indexName: String): FullTextIndexExpression
     }
 
     /**
@@ -311,22 +323,6 @@ public expect open class Expression {
     public fun between(expression1: Expression, expression2: Expression): Expression
 
     /**
-     * Creates an IS VALUED expression that returns true if the current
-     * expression is valued.
-     *
-     * @return An IS VALUED expression.
-     */
-    public fun isValued(): Expression
-
-    /**
-     * Creates an NOT IS VALUED expression that returns true if the current
-     * expression is NOT VALUED.
-     *
-     * @return An IS NOT VALUED expression.
-     */
-    public fun isNotValued(): Expression
-
-    /**
      * Creates a Collate expression with the given Collation specification. Commonly
      * the collate expression is used in the Order BY clause or the string comparison
      * 　expression (e.g. equalTo or lessThan) to specify how the two strings are　compared.
@@ -344,4 +340,20 @@ public expect open class Expression {
      * @return an IN expression.
      */
     public fun `in`(vararg expressions: Expression): Expression
+
+    /**
+     * Creates an IS VALUED expression that returns true if the current
+     * expression is valued.
+     *
+     * @return An IS VALUED expression.
+     */
+    public fun isValued(): Expression
+
+    /**
+     * Creates an NOT IS VALUED expression that returns true if the current
+     * expression is NOT VALUED.
+     *
+     * @return An IS NOT VALUED expression.
+     */
+    public fun isNotValued(): Expression
 }

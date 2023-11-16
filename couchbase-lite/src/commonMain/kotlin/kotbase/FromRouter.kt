@@ -18,7 +18,7 @@ package kotbase
 public interface FromRouter : Query {
 
     /**
-     * Create and chain a FROM component for specifying the data source of the query.
+     * Create and chain a FROM component for specifying the query's data source.
      *
      * @param dataSource the data source.
      * @return the From component.

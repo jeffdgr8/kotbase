@@ -16,7 +16,7 @@
 package kotbase
 
 /**
- * Combined activity level and progress of a replicator.
+ * The activity level and progress of a replicator.
  */
 public expect class ReplicatorStatus {
 

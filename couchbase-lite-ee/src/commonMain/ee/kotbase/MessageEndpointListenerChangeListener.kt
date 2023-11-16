@@ -16,11 +16,15 @@
 package kotbase
 
 /**
- * A change listener protocol.
+ * **ENTERPRISE EDITION API**
+ *
+ * The [MessageEndpointListener] change listener protocol.
  */
 public typealias MessageEndpointListenerChangeListener = ChangeListener<MessageEndpointListenerChange>
 
 /**
- * A change listener protocol, called within a coroutine.
+ * **ENTERPRISE EDITION API**
+ *
+ * The [MessageEndpointListener] change listener protocol, called within a coroutine.
  */
 public typealias MessageEndpointListenerChangeSuspendListener = ChangeSuspendListener<MessageEndpointListenerChange>

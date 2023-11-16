@@ -18,12 +18,12 @@ package kotbase
 import kotlinx.datetime.Instant
 
 /**
- * MutableArray provides access to array data.
+ * Mutable access to array data.
  */
 public expect class MutableArray : Array {
 
     /**
-     * Constructs a new empty Array object.
+     * Construct a new empty Array object.
      */
     public constructor()
 
@@ -32,7 +32,7 @@ public expect class MutableArray : Array {
      * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
      * If present, Lists, Maps and Dictionaries may contain only the above types.
      *
-     * @param data the document content list
+     * @param data the array content list
      */
     public constructor(data: List<Any?>)
 

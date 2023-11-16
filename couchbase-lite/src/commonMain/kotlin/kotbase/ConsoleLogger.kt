@@ -21,8 +21,7 @@ package kotbase
 public expect class ConsoleLogger : Logger {
 
     /**
-     * The overall logging level that will be written to the console log.
-     * The lowest (most verbose) level to include in the logs
+     * The lowest level that will be logged to the console.
      */
     override var level: LogLevel
 

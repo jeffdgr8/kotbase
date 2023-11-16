@@ -33,6 +33,9 @@ public object CouchbaseLite {
      * Initialize CouchbaseLite library. Unlike the Couchbase Lite Android SDK,
      * this method is optional to call before using CouchbaseLite. The single-parameter
      * `CouchbaseLite.init(Context)` will be called automatically by androidx-startup.
+     *
+     * @param ctxt the ApplicationContext.
+     * @throws IllegalStateException on initialization failure
      */
     public fun init(ctxt: Context) {
         init(ctxt, BuildConfig.CBL_DEBUG)
@@ -42,6 +45,9 @@ public object CouchbaseLite {
      * Initialize CouchbaseLite library. Unlike the Couchbase Lite Android SDK,
      * this method is optional to call before using CouchbaseLite. The single-parameter
      * `CouchbaseLite.init(Context)` will be called automatically by androidx-startup.
+     *
+     * @param debug true to enable debugging
+     * @throws IllegalStateException on initialization failure
      */
     public fun init(ctxt: Context, debug: Boolean) {
         init(
@@ -57,13 +63,15 @@ public object CouchbaseLite {
 
     /**
      * Initialize CouchbaseLite library.
-     * This method allows specifying a root directory for CBL files.
-     * Use this version with great caution.
+     * This method allows specifying a default root directory for database files,
+     * and the scratch directory used for SQLite temporary files.
+     * Use it with great caution.
      *
      * @param ctxt       Application context
-     * @param debug      true if debugging
-     * @param rootDbDir  default directory for databases
+     * @param debug      to enable debugging
+     * @param rootDir    default directory for databases
      * @param scratchDir scratch directory for SQLite
+     * @throws IllegalStateException on initialization failure
      */
     public fun init(ctxt: Context, debug: Boolean, rootDbDir: File, scratchDir: File) {
         if (initCalled.getAndSet(true)) return

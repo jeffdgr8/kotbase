@@ -18,8 +18,7 @@ package kotbase
 /**
  * **ENTERPRISE EDITION API**
  *
- * PredictionFunction that allows to create an expression that
- * refers to one of the properties of the prediction result dictionary.
+ * Create an expression that refers to one of the properties of the prediction results dictionary.
  */
 public expect class PredictionFunction : Expression {
 

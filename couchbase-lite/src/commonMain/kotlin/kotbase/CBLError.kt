@@ -22,7 +22,9 @@ package kotbase
 
 object CBLError {
 
-    // Error Domain
+    /**
+     * The error type: roughly, where it originated.
+     */
     object Domain {
 
         const val CBLITE = "CouchbaseLite"
@@ -50,8 +52,8 @@ object CBLError {
         const val UNSUPPORTED_ENCRYPTION = 3
 
         /**
-         * An invalid revision ID was attempted to be used to insert a document
-         * (usually because of an invalid revision ID written directly into Sync Gateway via the REST API)
+         * An attempt was made to insert a document with an invalid revision ID
+         * This is frequently caused by an invalid revision ID written directly into Sync Gateway via the REST API
          */
         const val BAD_REVISION_ID = 4
 

@@ -16,18 +16,28 @@
 package kotbase
 
 /**
- * Full-text function.
+ * Full-text functions.
  */
 public expect object FullTextFunction {
 
     /**
-     * Creates a full-text expression with the given full-text index name and search text.
+     * Creates a full-text rank function with the given full-text index expression.
+     * The rank function indicates how well the current query result matches
+     * the full-text query when performing the match comparison.
      *
-     * @param indexName The full-text index name.
-     * @param text The search text
-     * @return The full-text match expression
+     * @param index The full-text index expression.
+     * @return The full-text rank function.
      */
-    public fun match(indexName: String, text: String): Expression
+    public fun rank(index: IndexExpression): Expression
+
+    /**
+     * Creates a full-text match() function  with the given full-text index expression and the query text
+     *
+     * @param index  The full-text index expression.
+     * @param query The query string.
+     * @return The full-text match() function expression.
+     */
+    public fun match(index: IndexExpression, query: String): Expression
 
     /**
      * Creates a full-text rank function with the given full-text index name.
@@ -37,5 +47,16 @@ public expect object FullTextFunction {
      * @param indexName The index name.
      * @return The full-text rank function.
      */
+    @Deprecated("Use FullTextFunction.rank(IndexExpression)")
     public fun rank(indexName: String): Expression
+
+    /**
+     * Creates a full-text expression with the given full-text index name and search text.
+     *
+     * @param indexName The full-text index name.
+     * @param query     The query string.
+     * @return The full-text match expression
+     */
+    @Deprecated("Use FullTextFunction.match(IndexExpression)")
+    public fun match(indexName: String, query: String): Expression
 }

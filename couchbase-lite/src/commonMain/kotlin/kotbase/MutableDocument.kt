@@ -224,7 +224,7 @@ public expect class MutableDocument : Document {
     public fun remove(key: String): MutableDocument
 
     /**
-     * Get a property's value as an Array, which is a mapping object of an array value.
+     * Get a property's value as an Array.
      * Returns null if the property doesn't exist, or its value is not an array.
      *
      * @param key the key.
@@ -233,7 +233,7 @@ public expect class MutableDocument : Document {
     override fun getArray(key: String): MutableArray?
 
     /**
-     * Get a property's value as a Dictionary, which is a mapping object of a dictionary value.
+     * Get a property's value as a Dictionary.
      * Returns null if the property doesn't exist, or its value is not a dictionary.
      *
      * @param key the key.

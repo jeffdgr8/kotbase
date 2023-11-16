@@ -16,17 +16,17 @@
 package kotbase
 
 /**
- * Document replicated update of a replicator.
+ * The representation of the replication of a document.
  */
 public expect class DocumentReplication {
 
     /**
-     * The source replicator object.
+     * The source replicator.
      */
     public val replicator: Replicator
 
     /**
-     * The current document replication direction flag.
+     * The direction of replication for the affected documents.
      */
     public val isPush: Boolean
 

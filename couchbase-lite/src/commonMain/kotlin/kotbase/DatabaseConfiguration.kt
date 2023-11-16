@@ -22,16 +22,21 @@ public expect class DatabaseConfiguration {
 
     public constructor()
 
+    /**
+     * Copy constructor
+     *
+     * @param config the configuration to duplicate.
+     */
     public constructor(config: DatabaseConfiguration?)
 
     /**
-     * Set the canonical path of the directory to store the database in.
+     * Set the canonical path of the directory in which to store the database.
      * If the directory doesn't already exist it will be created.
-     * If it cannot be created throw an IllegalStateException
+     * If it cannot be created an IllegalStateException will be thrown.
      *
      * @param directory the directory
      * @return this.
-     * @throws IllegalStateException if the directory does not exist anc cannot be created
+     * @throws IllegalStateException if the directory does not exist and cannot be created
      */
     public fun setDirectory(directory: String): DatabaseConfiguration
 

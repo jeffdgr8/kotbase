@@ -16,6 +16,6 @@
 package kotbase
 
 /**
- * Value (standard query) index
+ * A Standard query index.
  */
 public expect class ValueIndex : Index

@@ -19,22 +19,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A database query used for querying data from the database. The query statement of the Query
- * object can be fluently constructed by calling the static select methods.
+ * A database query built using the fluent interface in [QueryBuilder].
  */
 public interface Query {
 
     /**
-     * Returns a copies of the current parameters.
+     * A copy of the current parameters.
      *
-     * Set parameters should copy the given parameters. Set a new parameter will
-     * also re-execute the query if there is at least one listener listening for
-     * changes.
+     * Setting new parameters will re-execute a query if there is at least one listener listening for changes.
+     *
+     * @throws IllegalStateException    on failure to create the query (e.g., database closed)
+     * @throws IllegalArgumentException on failure to encode the parameters (e.g., parameter value not supported)
      */
     public var parameters: Parameters?
 
     /**
-     * Executes the query. The returning a result set that enumerates result rows one at a time.
+     * Executes the query returning a result set that enumerates result rows one at a time.
      * You can run the query any number of times, and you can even have multiple ResultSet active at
      * once.
      *
@@ -52,10 +52,12 @@ public interface Query {
      * This is intended to be read by a developer for purposes of optimizing the query, especially
      * to add database indexes. It's not machine-readable and its format may change.
      * As currently implemented, the result is two or more lines separated by newline characters:
-     * * The first line is the SQLite SELECT statement.
-     * * The subsequent lines are the output of SQLite's "EXPLAIN QUERY PLAN" command applied to that
-     * statement; for help interpreting this, see https://www.sqlite.org/eqp.html . The most
-     * important thing to know is that if you see "SCAN TABLE", it means that SQLite is doing a
+     *
+     *  *  The first line is the SQLite SELECT statement.
+     *  *  The subsequent lines are the output of SQLite's "EXPLAIN QUERY PLAN" command applied to that statement.
+     *
+     * For help interpreting this, see: [eqp](https://www.sqlite.org/eqp.html).
+     * The most important thing to know is that if you see "SCAN TABLE", it means that SQLite is doing a
      * slow linear scan of the documents instead of using an index.
      *
      * @return a string describing the implementation of the compiled query.
@@ -72,6 +74,7 @@ public interface Query {
      *
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
+     * @throws IllegalStateException on failure to create the query (e.g., database closed)
      */
     public fun addChangeListener(listener: QueryChangeListener): ListenerToken
 
@@ -83,6 +86,7 @@ public interface Query {
      * @param context coroutine context in which the listener will run
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
+     * @throws IllegalStateException on failure to create the query (e.g., database closed)
      */
     public fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
 
@@ -93,6 +97,7 @@ public interface Query {
      * @param scope coroutine scope in which the listener will run
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
+     * @throws IllegalStateException on failure to create the query (e.g., database closed)
      */
     public fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
 
@@ -101,5 +106,9 @@ public interface Query {
      *
      * @param token The listener token.
      */
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
     public fun removeChangeListener(token: ListenerToken)
 }
