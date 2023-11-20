@@ -64,6 +64,11 @@ repositories {
 }
 ```
 
+### Native Platforms
+
+Native platform targets should additionally link to the Couchbase Lite dependency native binary. See [Supported
+Platforms](https://kotbase.dev/platforms/) for more details.
+
 ## Documentation
 
 Kotbase documentation can be found at [kotbase.dev](https://kotbase.dev/), including [getting started examples](

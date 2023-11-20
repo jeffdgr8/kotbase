@@ -49,3 +49,8 @@ Couchbase Maven repository.
         mavenCentral()
     }
     ```
+
+## Native Platforms
+
+Native platform targets should additionally link to the Couchbase Lite dependency native binary. See [Supported Platforms](
+platforms.md) for more details.
