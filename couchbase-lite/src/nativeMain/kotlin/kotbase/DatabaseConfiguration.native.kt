@@ -17,7 +17,6 @@ package kotbase
 
 import kotbase.internal.fleece.toKString
 import kotlinx.cinterop.*
-import kotlinx.io.files.Path
 import kotlinx.io.files.SystemPathSeparator
 import libcblite.CBLDatabaseConfiguration
 import libcblite.CBLDatabaseConfiguration_Default

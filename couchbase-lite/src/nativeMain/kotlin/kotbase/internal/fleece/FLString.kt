@@ -24,7 +24,6 @@ import libcblite.FLSliceResult_Release
 import libcblite.FLStr
 import libcblite.FLString
 import libcblite.FLStringResult
-import platform.posix.strdup
 
 internal fun FLString.toKString(): String? =
     buf?.toByteArray(size.toInt())?.decodeToString()
