@@ -41,10 +41,5 @@ internal fun CValue<FLStringResult>.toKString(): String? {
     return result
 }
 
-// TODO: ensure all usages of this actually take ownership of heap allocated C string
-internal fun String?.toFLString(): CValue<FLString> =
-    FLStr(this?.let { strdup(it) })
-
-// TODO: ensure all usages don't access string past the scope
 internal fun String?.toFLString(memScope: MemScope): CValue<FLString> =
     FLStr(this?.cstr?.getPointer(memScope))

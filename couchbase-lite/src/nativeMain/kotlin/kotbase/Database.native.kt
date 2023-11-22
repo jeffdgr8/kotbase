@@ -56,7 +56,9 @@ internal constructor(
     public actual constructor(name: String, config: DatabaseConfiguration) : this(
         try {
             wrapCBLError { error ->
-                CBLDatabase_Open(name.toFLString(), config.actual, error)
+                memScoped {
+                    CBLDatabase_Open(name.toFLString(this), config.actual, error)
+                }
             }!!
         } catch (e: CouchbaseLiteException) {
             if (e.code == CBLError.Code.INVALID_PARAMETER && e.domain == CBLError.Domain.CBLITE) {
@@ -87,17 +89,29 @@ internal constructor(
                 )
             }
             wrapCBLError { error ->
-                CBL_DeleteDatabase(name.toFLString(), directory.toFLString(), error)
+                memScoped {
+                    CBL_DeleteDatabase(name.toFLString(this), directory.toFLString(this), error)
+                }
             }
         }
 
-        public actual fun exists(name: String, directory: String?): Boolean =
-            CBL_DatabaseExists(name.toFLString(), directory.toFLString())
+        public actual fun exists(name: String, directory: String?): Boolean {
+            return memScoped {
+                CBL_DatabaseExists(name.toFLString(this), directory.toFLString(this))
+            }
+        }
 
         @Throws(CouchbaseLiteException::class)
         public actual fun copy(path: String, name: String, config: DatabaseConfiguration?) {
             wrapCBLError { error ->
-                CBL_CopyDatabase(path.toFLString(), name.toFLString(), config?.actual, error)
+                memScoped {
+                    CBL_CopyDatabase(
+                        path.toFLString(this),
+                        name.toFLString(this),
+                        config?.actual,
+                        error
+                    )
+                }
             }
         }
     }
@@ -283,7 +297,9 @@ internal constructor(
     public actual fun purge(id: String) {
         wrapCBLError { error ->
             mustBeOpen {
-                CBLDatabase_PurgeDocumentByID(actual, id.toFLString(), error)
+                memScoped {
+                    CBLDatabase_PurgeDocumentByID(actual, id.toFLString(this), error)
+                }
             }
         }
     }
@@ -292,12 +308,14 @@ internal constructor(
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
         wrapCBLError { error ->
             mustBeOpen {
-                CBLDatabase_SetDocumentExpiration(
-                    actual,
-                    id.toFLString(),
-                    expiration?.toEpochMilliseconds()?.convert() ?: 0,
-                    error
-                )
+                memScoped {
+                    CBLDatabase_SetDocumentExpiration(
+                        actual,
+                        id.toFLString(this),
+                        expiration?.toEpochMilliseconds()?.convert() ?: 0,
+                        error
+                    )
+                }
             }
         }
     }
@@ -306,7 +324,9 @@ internal constructor(
     public actual fun getDocumentExpiration(id: String): Instant? {
         return wrapCBLError { error ->
             mustBeOpen {
-                CBLDatabase_GetDocumentExpiration(actual, id.toFLString(), error).toKotlinInstant()
+                memScoped {
+                    CBLDatabase_GetDocumentExpiration(actual, id.toFLString(this), error).toKotlinInstant()
+                }
             }
         }
     }
@@ -458,12 +478,14 @@ internal constructor(
     ): DelegatedListenerToken {
         val (index, stableRef) = addListener(documentChangeListeners, holder)
         return DelegatedListenerToken(
-            CBLDatabase_AddDocumentChangeListener(
-                actual,
-                id.toFLString(),
-                nativeDocumentChangeListener(),
-                stableRef
-            )!!,
+            memScoped {
+                CBLDatabase_AddDocumentChangeListener(
+                    actual,
+                    id.toFLString(this),
+                    nativeDocumentChangeListener(),
+                    stableRef
+                )!!
+            },
             ListenerTokenType.DOCUMENT,
             index
         )
@@ -514,13 +536,15 @@ internal constructor(
                 toExceptionNotNull(mapOf("position" to errorPos.value))
             }) { error ->
                 mustBeOpen {
-                    CBLDatabase_CreateQuery(
-                        actual,
-                        language,
-                        queryString.toFLString(),
-                        errorPos.ptr,
-                        error
-                    )!!
+                    memScoped {
+                        CBLDatabase_CreateQuery(
+                            actual,
+                            language,
+                            queryString.toFLString(this),
+                            errorPos.ptr,
+                            error
+                        )!!
+                    }
                 }
             }
         }

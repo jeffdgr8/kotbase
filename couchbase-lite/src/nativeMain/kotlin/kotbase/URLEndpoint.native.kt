@@ -19,6 +19,7 @@ import cnames.structs.CBLEndpoint
 import kotbase.internal.fleece.toFLString
 import kotbase.internal.wrapCBLError
 import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.memScoped
 import libcblite.CBLEndpoint_CreateWithURL
 
 public actual class URLEndpoint
@@ -30,7 +31,9 @@ internal constructor(
     public actual constructor(url: String) : this(
         try {
             wrapCBLError { error ->
-                CBLEndpoint_CreateWithURL(url.toFLString(), error)
+                memScoped {
+                    CBLEndpoint_CreateWithURL(url.toFLString(this), error)
+                }
             }!!
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException(e.message, e)

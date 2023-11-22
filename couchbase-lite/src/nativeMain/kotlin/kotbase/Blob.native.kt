@@ -64,7 +64,7 @@ private constructor(
     }
 
     public actual constructor(contentType: String, content: ByteArray) : this(
-        contentType.toFLString(),
+        contentType,
         content.toFLSlice()
     ) {
         blobContent = content
@@ -73,9 +73,13 @@ private constructor(
     internal constructor(content: ByteArray) : this(MIME_UNKNOWN, content)
 
     internal constructor(
-        contentType: CValue<FLString> = MIME_UNKNOWN.toFLString(),
+        contentType: String = MIME_UNKNOWN,
         content: CValue<FLSlice>
-    ) : this(CBLBlob_CreateWithData(contentType, content)!!) {
+    ) : this(
+        memScoped {
+            CBLBlob_CreateWithData(contentType.toFLString(this), content)!!
+        }
+    ) {
         CBLBlob_Release(actual)
     }
 
@@ -111,10 +115,12 @@ private constructor(
 
     internal fun saveToDb(db: Database) {
         if (actual == null) {
-            memory.actual = CBLBlob_CreateWithStream(
-                blobContentType.toFLString(),
-                blobContentStream!!.blobWriteStream(db)
-            )
+            memScoped {
+                memory.actual = CBLBlob_CreateWithStream(
+                    blobContentType.toFLString(this),
+                    blobContentStream!!.blobWriteStream(db)
+                )
+            }
         }
     }
 
@@ -129,10 +135,12 @@ private constructor(
                         blobContent = it.readByteArray()
                     }
                     blobContentStream = null
-                    memory.actual = CBLBlob_CreateWithData(
-                        blobContentType.toFLString(),
-                        blobContent!!.toFLSlice()
-                    )
+                    memScoped {
+                        memory.actual = CBLBlob_CreateWithData(
+                            blobContentType.toFLString(this),
+                            blobContent!!.toFLSlice()
+                        )
+                    }
                 } else if (actual != null) {
                     dbContext?.database?.mustBeOpen()
                     blobContent = wrapCBLError { error ->

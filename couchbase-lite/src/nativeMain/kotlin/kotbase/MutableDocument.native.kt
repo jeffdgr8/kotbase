@@ -33,7 +33,11 @@ internal constructor(
         CBLDocument_Release(actual)
     }
 
-    public actual constructor(id: String?) : this(CBLDocument_CreateWithID(id.toFLString())!!) {
+    public actual constructor(id: String?) : this(
+        memScoped {
+            CBLDocument_CreateWithID(id.toFLString(this))!!
+        }
+    ) {
         CBLDocument_Release(actual)
     }
 

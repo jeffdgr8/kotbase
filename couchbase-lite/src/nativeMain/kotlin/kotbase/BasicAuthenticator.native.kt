@@ -18,6 +18,7 @@ package kotbase
 import cnames.structs.CBLAuthenticator
 import kotbase.internal.fleece.toFLString
 import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.memScoped
 import libcblite.CBLAuth_CreatePassword
 
 public actual class BasicAuthenticator
@@ -30,6 +31,11 @@ private constructor(
     public actual constructor(username: String, password: CharArray) : this(
         username,
         password,
-        CBLAuth_CreatePassword(username.toFLString(), password.concatToString().toFLString())!!
+        memScoped {
+            CBLAuth_CreatePassword(
+                username.toFLString(this),
+                password.concatToString().toFLString(this)
+            )!!
+        }
     )
 }

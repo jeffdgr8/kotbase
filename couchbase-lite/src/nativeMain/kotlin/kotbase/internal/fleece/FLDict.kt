@@ -32,7 +32,13 @@ internal fun FLDict.toMap(ctxt: DbContext?): Map<String, Any?> {
 internal fun Map<String, String>.toFLDict(): FLDict {
     return FLMutableDict_New()!!.apply {
         forEach { (key, value) ->
-            FLMutableDict_SetString(this, key.toFLString(), value.toFLString())
+            memScoped {
+                FLMutableDict_SetString(
+                    this@apply,
+                    key.toFLString(this),
+                    value.toFLString(this)
+                )
+            }
         }
     }
 }
