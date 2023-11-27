@@ -429,6 +429,11 @@ class LogTest : BaseDbTest() {
         assertEquals(newConfig.directory, tempDir2)
     }
 
+    // Disable this test because it causes the console log output to be flooded with
+    // rotateLog fails to open /Users/runner/work/kotbase/kotbase/couchbase-lite/build/cb-tmp/cbl_test_scratch/log-dir_0OdgfeNqn4K7/cbl_info_1696182797644.cbllog
+    // https://www.couchbase.com/forums/t/rotatelog-fails-to-open-cbllog/37082
+    // should be fixed in 3.2 https://issues.couchbase.com/browse/CBL-4996
+    @Ignore
     @Test
     fun testEditReadOnlyLogFileConfiguration() {
         testWithConfiguration(LogLevel.DEBUG, LogFileConfiguration(scratchDirPath!!)) {
