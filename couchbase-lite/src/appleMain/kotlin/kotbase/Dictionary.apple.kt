@@ -92,7 +92,7 @@ internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actu
         actual.containsValueForKey(key)
 
     @Suppress("UNCHECKED_CAST")
-    override fun iterator(): Iterator<String> =
+    actual override fun iterator(): Iterator<String> =
         (actual.keys as List<String>).iterator()
 }
 

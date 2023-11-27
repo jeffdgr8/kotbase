@@ -30,7 +30,7 @@ public actual class Replicator
 internal constructor(
     actual: CBLReplicator,
     private val _config: ReplicatorConfiguration
-) : DelegatedClass<CBLReplicator>(actual) {
+) : DelegatedClass<CBLReplicator>(actual), AutoCloseable {
 
     public actual constructor(config: ReplicatorConfiguration) : this(CBLReplicator(config.actual), config)
 
@@ -136,5 +136,9 @@ internal constructor(
         } else {
             actual.removeChangeListener(token)
         }
+    }
+
+    actual override fun close() {
+        actual.close()
     }
 }

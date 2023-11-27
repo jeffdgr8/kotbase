@@ -35,5 +35,3 @@ public fun DatabaseConfiguration.setEncryptionKey(encryptionKey: EncryptionKey?)
  * A key to encrypt the database with.
  */
 public expect var DatabaseConfiguration.encryptionKey: EncryptionKey?
-
-// TODO: provide update EE KTX creator function

@@ -22,6 +22,8 @@ internal constructor(
     override val actual: CBLSessionAuthenticator
 ) : Authenticator(actual) {
 
+    public actual constructor(sessionID: String) : this(CBLSessionAuthenticator(sessionID))
+
     public actual constructor(sessionID: String, cookieName: String?) : this(
         CBLSessionAuthenticator(sessionID, cookieName)
     )

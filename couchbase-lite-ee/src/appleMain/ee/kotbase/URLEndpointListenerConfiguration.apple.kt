@@ -98,4 +98,6 @@ private constructor(
         set(value) {
             actual.enableDeltaSync = value
         }
+
+    public actual companion object
 }

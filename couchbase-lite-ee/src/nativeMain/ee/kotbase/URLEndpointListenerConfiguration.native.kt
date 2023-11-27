@@ -49,4 +49,6 @@ public actual class URLEndpointListenerConfiguration private constructor() {
     public actual var isReadOnly: Boolean
 
     public actual var isDeltaSyncEnabled: Boolean
+
+    public actual companion object
 }

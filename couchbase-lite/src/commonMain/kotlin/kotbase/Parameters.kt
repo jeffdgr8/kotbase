@@ -20,7 +20,11 @@ import kotlinx.datetime.Instant
 /**
  * A Parameters object used for setting values to the query parameters defined in the query.
  */
-public expect class Parameters(parameters: Parameters? = null) {
+public expect class Parameters {
+
+    public constructor()
+
+    public constructor(parameters: Parameters?)
 
     /**
      * Gets a parameter's value.

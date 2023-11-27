@@ -19,16 +19,23 @@ package kotbase
  * SessionAuthenticator class is an authenticator that will authenticate by using the session ID of
  * the session created by a Sync Gateway
  */
-public expect class SessionAuthenticator
+public expect class SessionAuthenticator : Authenticator {
 
-/**
- * Initializes with the session ID and the cookie name. If the given cookieName
- * is null, the default cookie name will be used.
- *
- * @param sessionID  Sync Gateway session ID
- * @param cookieName The cookie name
- */
-constructor(sessionID: String, cookieName: String? = null) : Authenticator {
+    /**
+     * Initializes with the Sync Gateway session ID and uses the default cookie name.
+     *
+     * @param sessionID Sync Gateway session ID
+     */
+    public constructor(sessionID: String)
+
+    /**
+     * Initializes with the session ID and the cookie name. If the given cookieName
+     * is null, the default cookie name will be used.
+     *
+     * @param sessionID  Sync Gateway session ID
+     * @param cookieName The cookie name
+     */
+    public constructor(sessionID: String, cookieName: String?)
 
     /**
      * Return session ID of the session created by a Sync Gateway.

@@ -27,6 +27,8 @@ private constructor(
     actual: CPointer<CBLAuthenticator>
 ) : Authenticator(actual) {
 
+    public actual constructor(sessionID: String) : this(sessionID, null)
+
     public actual constructor(sessionID: String, cookieName: String?) : this(
         sessionID,
         cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME,

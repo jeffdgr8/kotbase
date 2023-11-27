@@ -59,8 +59,11 @@ public inline fun <T : Any> ResultSet.toObjects(factory: (String) -> T?): List<T
             // projections for each Document key. We can then use the `Result` object as a
             // JSON String.
 
-            if (count > 0) getDictionary(0)?.toJSON() ?: toJSON()
-            else null
+            when (count) {
+                0 -> null
+                1 -> getDictionary(0)?.toJSON() ?: toJSON()
+                else -> toJSON()
+            }
         }?.let(factory)
     }
 

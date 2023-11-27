@@ -34,16 +34,24 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
+@OptIn(ExperimentalStdlibApi::class)
 public actual class Replicator
 private constructor(
     internal val actual: CPointer<CBLReplicator>,
     private val immutableConfig: ImmutableReplicatorConfiguration
-) {
+) : AutoCloseable {
+
+    private val memory = object {
+        var closeCalled = false
+        val actual = this@Replicator.actual
+    }
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
-    private val cleaner = createCleaner(actual) {
-        CBLReplicator_Release(it)
+    private val cleaner = createCleaner(memory) {
+        if (!it.closeCalled) {
+            CBLReplicator_Release(it.actual)
+        }
     }
 
     public actual constructor(config: ReplicatorConfiguration) :
@@ -228,5 +236,10 @@ private constructor(
                 else -> error("${token.type} change listener can't be removed from Replicator instance")
             }
         }
+    }
+
+    actual override fun close() {
+        memory.closeCalled = true
+        CBLReplicator_Release(actual)
     }
 }

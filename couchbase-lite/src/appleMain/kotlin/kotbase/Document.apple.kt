@@ -102,7 +102,7 @@ internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual),
         actual.toDictionary().containsKey(key)
 
     @Suppress("UNCHECKED_CAST")
-    actual override operator fun iterator(): Iterator<String> =
+    actual override fun iterator(): Iterator<String> =
         (actual.keys as List<String>).iterator()
 }
 

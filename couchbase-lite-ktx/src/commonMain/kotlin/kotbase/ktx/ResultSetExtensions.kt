@@ -19,6 +19,7 @@
  * Modified by Jeff Lockhart
  * - Use kotbase package
  * - Resolve explicitApiWarning() requirements
+ * - Handle first projected property is dictionary edge case
  */
 
 package kotbase.ktx
@@ -63,7 +64,10 @@ public inline fun <T : Any> ResultSet.toObjects(factory: (Map<String, Any?>) -> 
             // If the first dictionary is `null`, then the query was written using the
             // projections for each Document key. We can then use the `Result` object as a Map.
 
-            if (count > 0) getDictionary(0)?.toMap() ?: toMap()
-            else null
+            when (count) {
+                0 -> null
+                1 -> getDictionary(0)?.toMap() ?: toMap()
+                else -> toMap()
+            }
         }?.let(factory)
     }

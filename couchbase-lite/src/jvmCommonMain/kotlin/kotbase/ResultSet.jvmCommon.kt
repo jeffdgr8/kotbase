@@ -30,7 +30,7 @@ internal constructor(actual: CBLResultSet) : DelegatedClass<CBLResultSet>(actual
     public actual fun allResults(): List<Result> =
         actual.allResults().map { Result(it) }
 
-    actual override operator fun iterator(): Iterator<Result> = object : Iterator<Result> {
+    actual override fun iterator(): Iterator<Result> = object : Iterator<Result> {
 
         private val iter: Iterator<CBLResult> =
             actual.iterator()

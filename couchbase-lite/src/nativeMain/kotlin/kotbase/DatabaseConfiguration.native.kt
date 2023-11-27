@@ -30,6 +30,8 @@ import kotlin.native.ref.createCleaner
 public actual class DatabaseConfiguration
 public actual constructor(config: DatabaseConfiguration?) {
 
+    public actual constructor() : this(null)
+
     private val arena = Arena()
 
     internal val actual: CPointer<CBLDatabaseConfiguration> =
