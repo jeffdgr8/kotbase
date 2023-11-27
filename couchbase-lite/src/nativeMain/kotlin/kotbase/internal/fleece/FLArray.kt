@@ -33,7 +33,9 @@ internal fun FLArray.toList(ctxt: DbContext?): List<Any?> {
 internal fun List<String>.toFLArray(): FLArray {
     return FLMutableArray_New()!!.apply {
         forEach {
-            FLMutableArray_AppendString(this, it.toFLString())
+            memScoped {
+                FLMutableArray_AppendString(this@apply, it.toFLString(this))
+            }
         }
     }
 }

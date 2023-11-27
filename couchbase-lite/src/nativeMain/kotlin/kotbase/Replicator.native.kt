@@ -23,6 +23,7 @@ import kotbase.util.to
 import kotbase.util.toList
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.StableRef
+import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -100,7 +101,9 @@ private constructor(
     @Throws(CouchbaseLiteException::class)
     public actual fun isDocumentPending(docId: String): Boolean {
         return wrapCBLError { error ->
-            CBLReplicator_IsDocumentPending(actual, docId.toFLString(), error)
+            memScoped {
+                CBLReplicator_IsDocumentPending(actual, docId.toFLString(this), error)
+            }
         }
     }
 

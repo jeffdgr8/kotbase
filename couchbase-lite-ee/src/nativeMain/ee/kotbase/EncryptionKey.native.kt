@@ -49,8 +49,10 @@ internal constructor(actual: CPointer<CBLEncryptionKey>? = null) {
     }
 
     public actual constructor(password: String) : this() {
-        if (!CBLEncryptionKey_FromPassword(actual, password.toFLString())) {
-            throw IllegalArgumentException("Error deriving key from password")
+        memScoped {
+            if (!CBLEncryptionKey_FromPassword(actual, password.toFLString(this))) {
+                throw IllegalArgumentException("Error deriving key from password")
+            }
         }
     }
 }

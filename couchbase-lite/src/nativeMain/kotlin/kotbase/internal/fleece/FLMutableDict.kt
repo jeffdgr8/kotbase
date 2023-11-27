@@ -19,6 +19,7 @@ import kotbase.*
 import kotbase.ext.toStringMillis
 import kotbase.internal.DbContext
 import kotlinx.cinterop.convert
+import kotlinx.cinterop.memScoped
 import kotlinx.datetime.Instant
 import libcblite.*
 
@@ -35,81 +36,113 @@ internal fun FLMutableDict.setValue(key: String, value: Any?, ctxt: DbContext?) 
         is Array -> setArray(key, value, ctxt)
         is Map<*, *> -> setDictionary(key, MutableDictionary(value as Map<String, Any?>), ctxt)
         is Dictionary -> setDictionary(key, value, ctxt)
-        null -> FLMutableDict_SetNull(this, key.toFLString())
+        null -> memScoped {
+            FLMutableDict_SetNull(this@setValue, key.toFLString(this))
+        }
         else -> invalidTypeError(value)
     }
 }
 
 internal fun FLMutableDict.setString(key: String, value: String?) {
-    if (value != null) {
-        FLMutableDict_SetString(this, key.toFLString(), value.toFLString())
-    } else {
-        FLMutableDict_SetNull(this, key.toFLString())
+    memScoped {
+        if (value != null) {
+            FLMutableDict_SetString(
+                this@setString,
+                key.toFLString(this),
+                value.toFLString(this)
+            )
+        } else {
+            FLMutableDict_SetNull(this@setString, key.toFLString(this))
+        }
     }
 }
 
 internal fun FLMutableDict.setNumber(key: String, value: Number?) {
-    when (value) {
-        is Double -> FLMutableDict_SetDouble(this, key.toFLString(), value)
-        is Float -> FLMutableDict_SetFloat(this, key.toFLString(), value)
-        null -> FLMutableDict_SetNull(this, key.toFLString())
-        else -> FLMutableDict_SetInt(this, key.toFLString(), value.toLong().convert())
+    memScoped {
+        when (value) {
+            is Double -> FLMutableDict_SetDouble(this@setNumber, key.toFLString(this), value)
+            is Float -> FLMutableDict_SetFloat(this@setNumber, key.toFLString(this), value)
+            null -> FLMutableDict_SetNull(this@setNumber, key.toFLString(this))
+            else -> FLMutableDict_SetInt(this@setNumber, key.toFLString(this), value.toLong().convert())
+        }
     }
 }
 
 internal fun FLMutableDict.setInt(key: String, value: Int) {
-    FLMutableDict_SetInt(this, key.toFLString(), value.convert())
+    memScoped {
+        FLMutableDict_SetInt(this@setInt, key.toFLString(this), value.convert())
+    }
 }
 
 internal fun FLMutableDict.setLong(key: String, value: Long) {
-    FLMutableDict_SetInt(this, key.toFLString(), value.convert())
+    memScoped {
+        FLMutableDict_SetInt(this@setLong, key.toFLString(this), value.convert())
+    }
 }
 
 internal fun FLMutableDict.setFloat(key: String, value: Float) {
-    FLMutableDict_SetFloat(this, key.toFLString(), value)
+    memScoped {
+        FLMutableDict_SetFloat(this@setFloat, key.toFLString(this), value)
+    }
 }
 
 internal fun FLMutableDict.setDouble(key: String, value: Double) {
-    FLMutableDict_SetDouble(this, key.toFLString(), value)
+    memScoped {
+        FLMutableDict_SetDouble(this@setDouble, key.toFLString(this), value)
+    }
 }
 
 internal fun FLMutableDict.setBoolean(key: String, value: Boolean) {
-    FLMutableDict_SetBool(this, key.toFLString(), value)
+    memScoped {
+        FLMutableDict_SetBool(this@setBoolean, key.toFLString(this), value)
+    }
 }
 
 internal fun FLMutableDict.setBlob(key: String, value: Blob?, ctxt: DbContext?) {
-    if (value?.actual == null) {
-        FLMutableDict_SetNull(this, key.toFLString())
-    } else {
-        FLMutableDict_SetBlob(this, key.toFLString(), value.actual)
+    memScoped {
+        if (value?.actual == null) {
+            FLMutableDict_SetNull(this@setBlob, key.toFLString(this))
+        } else {
+            FLMutableDict_SetBlob(this@setBlob, key.toFLString(this), value.actual)
+        }
     }
     value?.checkSetDb(ctxt)
 }
 
 internal fun FLMutableDict.setDate(key: String, value: Instant?) {
-    if (value != null) {
-        FLMutableDict_SetString(this, key.toFLString(), value.toStringMillis().toFLString())
-    } else {
-        FLMutableDict_SetNull(this, key.toFLString())
+    memScoped {
+        if (value != null) {
+            FLMutableDict_SetString(
+                this@setDate,
+                key.toFLString(this),
+                value.toStringMillis().toFLString(this)
+            )
+        } else {
+            FLMutableDict_SetNull(this@setDate, key.toFLString(this))
+        }
     }
 }
 
 internal fun FLMutableDict.setArray(key: String, value: Array?, ctxt: DbContext?) {
-    if (value != null) {
-        value.dbContext = ctxt
-        FLMutableDict_SetArray(this, key.toFLString(), value.actual)
-    } else {
-        FLMutableDict_SetNull(this, key.toFLString())
+    memScoped {
+        if (value != null) {
+            value.dbContext = ctxt
+            FLMutableDict_SetArray(this@setArray, key.toFLString(this), value.actual)
+        } else {
+            FLMutableDict_SetNull(this@setArray, key.toFLString(this))
+        }
     }
 }
 
 internal fun FLMutableDict.setDictionary(key: String, value: Dictionary?, ctxt: DbContext?) {
-    if (value != null) {
-        checkSelf(value.actual)
-        value.dbContext = ctxt
-        FLMutableDict_SetDict(this, key.toFLString(), value.actual)
-    } else {
-        FLMutableDict_SetNull(this, key.toFLString())
+    memScoped {
+        if (value != null) {
+            checkSelf(value.actual)
+            value.dbContext = ctxt
+            FLMutableDict_SetDict(this@setDictionary, key.toFLString(this), value.actual)
+        } else {
+            FLMutableDict_SetNull(this@setDictionary, key.toFLString(this))
+        }
     }
 }
 
@@ -120,5 +153,7 @@ private fun FLMutableDict.checkSelf(value: FLMutableDict) {
 }
 
 internal fun FLMutableDict.remove(key: String) {
-    FLMutableDict_Remove(this, key.toFLString())
+    memScoped {
+        FLMutableDict_Remove(this@remove, key.toFLString(this))
+    }
 }

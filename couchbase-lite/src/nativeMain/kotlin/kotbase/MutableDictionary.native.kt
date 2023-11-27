@@ -18,6 +18,7 @@ package kotbase
 import kotbase.internal.DbContext
 import kotbase.internal.JsonUtils
 import kotbase.internal.fleece.*
+import kotlinx.cinterop.memScoped
 import kotlinx.datetime.Instant
 import libcblite.*
 
@@ -38,7 +39,9 @@ internal constructor(
     public actual constructor(json: String) : this(
         try {
             wrapFLError { error ->
-                FLMutableDict_NewFromJSON(json.toFLString(), error)!!
+                memScoped {
+                    FLMutableDict_NewFromJSON(json.toFLString(this), error)!!
+                }
             }
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)

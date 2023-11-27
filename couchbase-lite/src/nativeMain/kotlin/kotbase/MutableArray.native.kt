@@ -20,6 +20,7 @@ import kotbase.internal.DbContext
 import kotbase.internal.JsonUtils
 import kotbase.internal.fleece.*
 import kotlinx.cinterop.convert
+import kotlinx.cinterop.memScoped
 import kotlinx.datetime.Instant
 import libcblite.*
 
@@ -40,7 +41,9 @@ internal constructor(
     public actual constructor(json: String) : this(
         try {
             wrapFLError { error ->
-                FLMutableArray_NewFromJSON(json.toFLString(), error)!!
+                memScoped {
+                    FLMutableArray_NewFromJSON(json.toFLString(this), error)!!
+                }
             }
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)
@@ -133,7 +136,9 @@ internal constructor(
     public actual fun setString(index: Int, value: String?): MutableArray {
         checkIndex(index)
         if (value != null) {
-            FLMutableArray_SetString(actual, index.convert(), value.toFLString())
+            memScoped {
+                FLMutableArray_SetString(actual, index.convert(), value.toFLString(this))
+            }
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
@@ -208,7 +213,9 @@ internal constructor(
     public actual fun setDate(index: Int, value: Instant?): MutableArray {
         checkIndex(index)
         if (value != null) {
-            FLMutableArray_SetString(actual, index.convert(), value.toStringMillis().toFLString())
+            memScoped {
+                FLMutableArray_SetString(actual, index.convert(), value.toStringMillis().toFLString(this))
+            }
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
@@ -262,7 +269,9 @@ internal constructor(
 
     public actual fun addString(value: String?): MutableArray {
         if (value != null) {
-            FLMutableArray_AppendString(actual, value.toFLString())
+            memScoped {
+                FLMutableArray_AppendString(actual, value.toFLString(this))
+            }
         } else {
             FLMutableArray_AppendNull(actual)
         }
@@ -323,7 +332,9 @@ internal constructor(
 
     public actual fun addDate(value: Instant?): MutableArray {
         if (value != null) {
-            FLMutableArray_AppendString(actual, value.toStringMillis().toFLString())
+            memScoped {
+                FLMutableArray_AppendString(actual, value.toStringMillis().toFLString(this))
+            }
         } else {
             FLMutableArray_AppendNull(actual)
         }
