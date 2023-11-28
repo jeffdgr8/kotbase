@@ -25,8 +25,6 @@ import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
-// On Linux, install libicu v71 from vendor/libicu as -rpath and LD_LIBRARY_PATH both don't work to resolve
-
 fun KotlinMultiplatformExtension.linkLibcblite(delegate: DelegatingProjectDependency) =
     linkLibcblite(delegate.dependencyProject)
 
