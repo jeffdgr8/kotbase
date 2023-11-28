@@ -23,10 +23,10 @@ import kotlinx.io.buffered
 
 actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
 
-    override fun gc() {
+    actual override fun gc() {
         System.gc()
     }
 
-    override fun getAsset(asset: String): Source =
+    actual override fun getAsset(asset: String): Source? =
         getApplicationContext<Context>().assets.open(asset).asSource().buffered()
 }

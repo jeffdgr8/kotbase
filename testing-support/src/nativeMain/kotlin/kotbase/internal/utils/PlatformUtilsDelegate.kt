@@ -26,12 +26,12 @@ import kotlin.native.runtime.NativeRuntimeApi
 actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
 
     @OptIn(NativeRuntimeApi::class)
-    override fun gc() {
+    actual override fun gc() {
         GC.collect()
     }
 
     @OptIn(ExperimentalNativeApi::class)
-    override fun getAsset(asset: String): Source {
+    actual override fun getAsset(asset: String): Source? {
         val target = when (Platform.osFamily) {
             OsFamily.LINUX -> "linux"
             OsFamily.WINDOWS -> "mingw"

@@ -22,7 +22,7 @@
  * - Removed Android-specific functions and annotations
  */
 
-@file:Suppress("TYPE_MISMATCH", "UNRESOLVED_REFERENCE", "NOTHING_TO_OVERRIDE", "ABSTRACT_CLASS_MEMBER_NOT_IMPLEMENTED")
+@file:Suppress("TYPE_MISMATCH", "UNRESOLVED_REFERENCE", "NOTHING_TO_OVERRIDE", "ABSTRACT_CLASS_MEMBER_NOT_IMPLEMENTED", "NO_VALUE_FOR_PARAMETER")
 
 package androidx.paging
 
@@ -34,7 +34,9 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmOverloads
 
 /**
@@ -45,15 +47,98 @@ import kotlin.jvm.JvmOverloads
  * [AsyncPagingDataDiffer] is exposed for complex cases, and where overriding [PagingDataAdapter] to
  * support paging isn't convenient.
  */
-class AsyncPagingDataDiffer<T : Any> @JvmOverloads constructor(
+class AsyncPagingDataDiffer<T : Any>
+/**
+ * Construct an [AsyncPagingDataDiffer].
+ *
+ * @param diffCallback Callback for calculating the diff between two non-disjoint lists on
+ * [REFRESH]. Used as a fallback for item-level diffing when Paging is unable to find a faster
+ * path for generating the UI events required to display the new list.
+ * @param updateCallback [ListUpdateCallback] which receives UI events dispatched by this
+ * [AsyncPagingDataDiffer] as items are loaded.
+ * @param mainDispatcher [CoroutineContext] where UI events are dispatched. Typically, this should
+ * be [Dispatchers.Main].
+ * @param workerDispatcher [CoroutineContext] where the work to generate UI events is dispatched,
+ * for example when diffing lists on [REFRESH]. Typically, this should dispatch on a background
+ * thread; [Dispatchers.Default] by default.
+ */
+@JvmOverloads
+constructor(
     private val diffCallback: DiffUtil.ItemCallback<T>,
-    @Suppress("ListenerLast") // have to suppress for each, due to defaults / JvmOverloads
+    @Suppress("ListenerLast") // have to suppress for each, due to optional args
     private val updateCallback: ListUpdateCallback,
-    @Suppress("ListenerLast") // have to suppress for each, due to defaults / JvmOverloads
-    private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
-    @Suppress("ListenerLast") // have to suppress for each, due to defaults / JvmOverloads
-    private val workerDispatcher: CoroutineDispatcher = Dispatchers.Default
+    @Suppress("ListenerLast") // have to suppress for each, due to optional args
+    private val mainDispatcher: CoroutineContext = Dispatchers.Main,
+    @Suppress("ListenerLast") // have to suppress for each, due to optional args
+    private val workerDispatcher: CoroutineContext = Dispatchers.Default,
 ) {
+    /**
+     * Construct an [AsyncPagingDataDiffer].
+     *
+     * @param diffCallback Callback for calculating the diff between two non-disjoint lists on
+     * [REFRESH]. Used as a fallback for item-level diffing when Paging is unable to find a faster
+     * path for generating the UI events required to display the new list.
+     * @param updateCallback [ListUpdateCallback] which receives UI events dispatched by this
+     * [AsyncPagingDataDiffer] as items are loaded.
+     * @param mainDispatcher [CoroutineDispatcher] where UI events are dispatched. Typically,
+     * this should be [Dispatchers.Main].
+     */
+    @Deprecated(
+        message = "Superseded by constructors which accept CoroutineContext",
+        level = DeprecationLevel.HIDDEN
+    )
+    // Only for binary compatibility; cannot apply @JvmOverloads as the function signature would
+    // conflict with the primary constructor.
+    @Suppress("MissingJvmstatic")
+    constructor(
+        diffCallback: DiffUtil.ItemCallback<T>,
+        @Suppress("ListenerLast") // have to suppress for each, due to optional args
+        updateCallback: ListUpdateCallback,
+        @Suppress("ListenerLast") // have to suppress for each, due to optional args
+        mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    ) : this(
+        diffCallback = diffCallback,
+        updateCallback = updateCallback,
+        mainDispatcher = mainDispatcher,
+        workerDispatcher = Dispatchers.Default
+    )
+
+    /**
+     * Construct an [AsyncPagingDataDiffer].
+     *
+     * @param diffCallback Callback for calculating the diff between two non-disjoint lists on
+     * [REFRESH]. Used as a fallback for item-level diffing when Paging is unable to find a faster
+     * path for generating the UI events required to display the new list.
+     * @param updateCallback [ListUpdateCallback] which receives UI events dispatched by this
+     * [AsyncPagingDataDiffer] as items are loaded.
+     * @param mainDispatcher [CoroutineDispatcher] where UI events are dispatched. Typically,
+     * this should be [Dispatchers.Main].
+     * @param workerDispatcher [CoroutineDispatcher] where the work to generate UI events is
+     * dispatched, for example when diffing lists on [REFRESH]. Typically, this should dispatch on a
+     * background thread; [Dispatchers.Default] by default.
+     */
+    @Deprecated(
+        message = "Superseded by constructors which accept CoroutineContext",
+        level = DeprecationLevel.HIDDEN
+    )
+    // Only for binary compatibility; cannot apply @JvmOverloads as the function signature would
+    // conflict with the primary constructor.
+    @Suppress("MissingJvmstatic")
+    constructor(
+        diffCallback: DiffUtil.ItemCallback<T>,
+        @Suppress("ListenerLast") // have to suppress for each, due to optional args
+        updateCallback: ListUpdateCallback,
+        @Suppress("ListenerLast") // have to suppress for each, due to optional args
+        mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
+        @Suppress("ListenerLast") // have to suppress for each, due to optional args
+        workerDispatcher: CoroutineDispatcher = Dispatchers.Default,
+    ) : this(
+        diffCallback = diffCallback,
+        updateCallback = updateCallback,
+        mainDispatcher = mainDispatcher,
+        workerDispatcher = workerDispatcher
+    )
+
     @Suppress("MemberVisibilityCanBePrivate") // synthetic access
     internal val differCallback = object : DifferCallback {
         override fun onInserted(position: Int, count: Int) {
@@ -237,7 +322,7 @@ class AsyncPagingDataDiffer<T : Any> @JvmOverloads constructor(
      *
      * @sample androidx.paging.samples.loadStateFlowSample
      */
-    val loadStateFlow: Flow<CombinedLoadStates> = differBase.loadStateFlow
+    val loadStateFlow: Flow<CombinedLoadStates> = differBase.loadStateFlow.filterNotNull()
 
     /**
      * A hot [Flow] that emits after the pages presented to the UI are updated, even if the

@@ -15,20 +15,37 @@
  */
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * A From represents a FROM clause for specifying the data source of the query.
  */
 public expect class From : Query, JoinRouter, WhereRouter, GroupByRouter, OrderByRouter, LimitRouter {
 
-    public override fun join(vararg joins: Join): Joins
+    override var parameters: Parameters?
 
-    public override fun where(expression: Expression): Where
+    override fun execute(): ResultSet
 
-    public override fun groupBy(vararg expressions: Expression): GroupBy
+    override fun explain(): String
 
-    public override fun orderBy(vararg orderings: Ordering): OrderBy
+    override fun addChangeListener(listener: QueryChangeListener): ListenerToken
 
-    public override fun limit(limit: Expression): Limit
+    override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
 
-    public override fun limit(limit: Expression, offset: Expression?): Limit
+    override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
+
+    override fun removeChangeListener(token: ListenerToken)
+
+    override fun join(vararg joins: Join): Joins
+
+    override fun where(expression: Expression): Where
+
+    override fun groupBy(vararg expressions: Expression): GroupBy
+
+    override fun orderBy(vararg orderings: Ordering): OrderBy
+
+    override fun limit(limit: Expression): Limit
+
+    override fun limit(limit: Expression, offset: Expression?): Limit
 }

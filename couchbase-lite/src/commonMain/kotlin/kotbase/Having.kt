@@ -15,15 +15,32 @@
  */
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * Having represents a HAVING clause of the query statement used for filtering the aggregated values
  * from the GROUP BY clause.
  */
 public expect class Having : Query, OrderByRouter, LimitRouter {
 
-    public override fun orderBy(vararg orderings: Ordering): OrderBy
+    override var parameters: Parameters?
 
-    public override fun limit(limit: Expression): Limit
+    override fun execute(): ResultSet
 
-    public override fun limit(limit: Expression, offset: Expression?): Limit
+    override fun explain(): String
+
+    override fun addChangeListener(listener: QueryChangeListener): ListenerToken
+
+    override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
+
+    override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
+
+    override fun removeChangeListener(token: ListenerToken)
+
+    override fun orderBy(vararg orderings: Ordering): OrderBy
+
+    override fun limit(limit: Expression): Limit
+
+    override fun limit(limit: Expression, offset: Expression?): Limit
 }

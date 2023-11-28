@@ -15,16 +15,33 @@
  */
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * A Joins component represents a collection of the joins clauses of the query statement.
  */
 public expect class Joins : Query, WhereRouter, OrderByRouter, LimitRouter {
 
-    public override fun where(expression: Expression): Where
+    override var parameters: Parameters?
 
-    public override fun orderBy(vararg orderings: Ordering): OrderBy
+    override fun execute(): ResultSet
 
-    public override fun limit(limit: Expression): Limit
+    override fun explain(): String
 
-    public override fun limit(limit: Expression, offset: Expression?): Limit
+    override fun addChangeListener(listener: QueryChangeListener): ListenerToken
+
+    override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
+
+    override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
+
+    override fun removeChangeListener(token: ListenerToken)
+
+    override fun where(expression: Expression): Where
+
+    override fun orderBy(vararg orderings: Ordering): OrderBy
+
+    override fun limit(limit: Expression): Limit
+
+    override fun limit(limit: Expression, offset: Expression?): Limit
 }

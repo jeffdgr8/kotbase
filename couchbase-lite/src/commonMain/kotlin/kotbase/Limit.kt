@@ -15,7 +15,25 @@
  */
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * A Limit component represents the LIMIT clause of the query statement.
  */
-public expect class Limit : Query
+public expect class Limit : Query {
+
+    override var parameters: Parameters?
+
+    override fun execute(): ResultSet
+
+    override fun explain(): String
+
+    override fun addChangeListener(listener: QueryChangeListener): ListenerToken
+
+    override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
+
+    override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
+
+    override fun removeChangeListener(token: ListenerToken)
+}

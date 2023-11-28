@@ -15,4 +15,11 @@
  */
 package kotbase.internal.utils
 
-expect class PlatformUtilsDelegate() : PlatformUtils.Delegate
+import kotlinx.io.Source
+
+expect class PlatformUtilsDelegate() : PlatformUtils.Delegate {
+
+    override fun gc()
+
+    override fun getAsset(asset: String): Source?
+}

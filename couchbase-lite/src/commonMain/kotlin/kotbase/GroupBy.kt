@@ -15,6 +15,9 @@
  */
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * A GroupBy represents the GROUP BY clause to group the query result.
  * The GROUP BY clause is normally used with aggregate functions (AVG, COUNT, MAX, MIN, SUM)
@@ -22,11 +25,25 @@ package kotbase
  */
 public expect class GroupBy : Query, HavingRouter, OrderByRouter, LimitRouter {
 
-    public override fun having(expression: Expression): Having
+    override var parameters: Parameters?
 
-    public override fun orderBy(vararg orderings: Ordering): OrderBy
+    override fun execute(): ResultSet
 
-    public override fun limit(limit: Expression): Limit
+    override fun explain(): String
 
-    public override fun limit(limit: Expression, offset: Expression?): Limit
+    override fun addChangeListener(listener: QueryChangeListener): ListenerToken
+
+    override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
+
+    override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
+
+    override fun removeChangeListener(token: ListenerToken)
+
+    override fun having(expression: Expression): Having
+
+    override fun orderBy(vararg orderings: Ordering): OrderBy
+
+    override fun limit(limit: Expression): Limit
+
+    override fun limit(limit: Expression, offset: Expression?): Limit
 }

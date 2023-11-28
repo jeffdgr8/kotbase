@@ -15,16 +15,33 @@
  */
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * A Where represents the WHERE clause of the query for filtering the query result.
  */
 public expect class Where : Query, GroupByRouter, OrderByRouter, LimitRouter {
 
-    public override fun groupBy(vararg expressions: Expression): GroupBy
+    override var parameters: Parameters?
 
-    public override fun orderBy(vararg orderings: Ordering): OrderBy
+    override fun execute(): ResultSet
 
-    public override fun limit(limit: Expression): Limit
+    override fun explain(): String
 
-    public override fun limit(limit: Expression, offset: Expression?): Limit
+    override fun addChangeListener(listener: QueryChangeListener): ListenerToken
+
+    override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
+
+    override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
+
+    override fun removeChangeListener(token: ListenerToken)
+
+    override fun groupBy(vararg expressions: Expression): GroupBy
+
+    override fun orderBy(vararg orderings: Ordering): OrderBy
+
+    override fun limit(limit: Expression): Limit
+
+    override fun limit(limit: Expression, offset: Expression?): Limit
 }

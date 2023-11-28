@@ -85,7 +85,7 @@ class LogTest : BaseDbTest() {
 //        var minLevel = 0
 //            private set
 //
-//        public override fun logInternal(c4Domain: String, c4Level: Int, message: String) {
+//        override fun logInternal(c4Domain: String, c4Level: Int, message: String) {
 //            if (domainFilter != c4Domain) {
 //                return
 //            }
