@@ -18,8 +18,6 @@ import org.gradle.api.Project
 import org.gradle.api.internal.catalog.DelegatingProjectDependency
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.kpm.external.ExternalVariantApi
-import org.jetbrains.kotlin.gradle.kpm.external.project
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.Architecture
 import org.jetbrains.kotlin.konan.target.Family
@@ -28,7 +26,8 @@ import org.jetbrains.kotlin.konan.target.KonanTarget
 fun KotlinMultiplatformExtension.linkLibcblite(delegate: DelegatingProjectDependency) =
     linkLibcblite(delegate.dependencyProject)
 
-@OptIn(ExternalVariantApi::class)
+// TODO: use context receiver to provide ProjectDelegate receiver to access project
+@Suppress("INVISIBLE_MEMBER")
 fun KotlinMultiplatformExtension.linkLibcblite(fromProject: Project = project) {
     with(project) {
         targets.withType<KotlinNativeTarget>().configureEach {

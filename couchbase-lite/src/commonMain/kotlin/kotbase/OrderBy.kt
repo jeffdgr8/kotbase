@@ -15,13 +15,30 @@
  */
 package kotbase
 
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
+
 /**
  * An OrderBy represents an ORDER BY clause of the query for specifying properties or expressions
  * that the result rows should be sorted by.
  */
 public expect class OrderBy : Query, LimitRouter {
 
-    public override fun limit(limit: Expression): Limit
+    override var parameters: Parameters?
 
-    public override fun limit(limit: Expression, offset: Expression?): Limit
+    override fun execute(): ResultSet
+
+    override fun explain(): String
+
+    override fun addChangeListener(listener: QueryChangeListener): ListenerToken
+
+    override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
+
+    override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
+
+    override fun removeChangeListener(token: ListenerToken)
+
+    override fun limit(limit: Expression): Limit
+
+    override fun limit(limit: Expression, offset: Expression?): Limit
 }

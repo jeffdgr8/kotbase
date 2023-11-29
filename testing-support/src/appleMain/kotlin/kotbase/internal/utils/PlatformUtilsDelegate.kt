@@ -26,11 +26,11 @@ import kotlin.native.runtime.NativeRuntimeApi
 actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
 
     @OptIn(NativeRuntimeApi::class)
-    override fun gc() {
+    actual override fun gc() {
         GC.collect()
     }
 
-    override fun getAsset(asset: String): Source? {
+    actual override fun getAsset(asset: String): Source? {
         val dotIndex = asset.lastIndexOf('.')
         val name = asset.substring(0, dotIndex)
         val type = asset.substring(dotIndex + 1)
