@@ -46,6 +46,13 @@ An application that enables ProGuard minification must ensure that certain piece
 |:---:|:----------------:|:----------------:|:----------------:|
 | 8+  | :material-check: | :material-check: | :material-check: |
 
+#### JVM on Linux
+
+Targeting JVM running on Linux requires a specific version of the libicu dependency. (You will see an error such as
+`libLiteCore.so: libicuuc.so.71: cannot open shared object file: No such file or directory` indicating the expected
+version.) If the required version isn't available from your distribution's package manager, you can download it from
+[GitHub](https://github.com/unicode-org/icu/releases).
+
 ## iOS + macOS :fontawesome-brands-apple:
 
 Kotbase supports native iOS and macOS apps via the [Couchbase Lite Objective-C SDK](
@@ -126,6 +133,11 @@ Kotbase, e.g. libcblite {{ version_short }}.x for Kotbase {{ version }}.
 
 Linux also [requires](https://github.com/couchbase/couchbase-lite-core#linux) libz, libicu, and libpthread, which may or
 may not be installed on your system.
+
+Targeting Linux requires a specific version of the libicu dependency. (You will see an error such as `libLiteCore.so:
+libicuuc.so.71: cannot open shared object file: No such file or directory` indicating the expected version.) If the
+required version isn't available from your distribution's package manager, you can download it from [GitHub](
+https://github.com/unicode-org/icu/releases).
 
 |     Distro      | Version |       x64        |      ARM64       |
 |:---------------:|:-------:|:----------------:|:----------------:|
