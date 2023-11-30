@@ -32,7 +32,7 @@ private constructor(
 
     internal fun asJSON(): Map<String, Any?> {
         return buildMap {
-            "COLLECTION" to "${source.scope.name}.${source.name}"
+            "COLLECTION" to source.fullName
             if (alias != null) {
                 "AS" to alias
             }

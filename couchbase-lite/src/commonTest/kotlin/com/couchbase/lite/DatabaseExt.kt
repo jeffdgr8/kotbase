@@ -18,8 +18,6 @@ package com.couchbase.lite
 import kotbase.Blob
 import kotbase.Database
 
-internal expect val Database.dbPath: String?
-
 internal expect fun Database.saveBlob(blob: Blob)
 
 internal expect fun Database.getBlob(props: Map<String, Any?>): Blob?

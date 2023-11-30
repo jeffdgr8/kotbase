@@ -13,174 +13,259 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("MemberVisibilityCanBePrivate")
+@file:Suppress("MemberVisibilityCanBePrivate", "INVISIBLE_MEMBER")
 
 package kotbase
 
 import com.couchbase.lite.isOpen
-import com.couchbase.lite.withDbLock
 import kotbase.internal.utils.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.sync.CountDownLatch
 import kotlinx.datetime.Instant
-import kotlinx.io.IOException
 import kotlinx.io.readLine
 import kotlinx.serialization.json.*
 import kotlin.test.*
+import kotlin.time.Duration.Companion.seconds
+
+val Scope.collectionCount
+    get() = this.getCollections().size
+
+fun Database.createTestCollection(name: String = "coll_", scope: String = "scope_"): Collection {
+    val uname = BaseTest.getUniqueName(name)
+    val uscope = BaseTest.getUniqueName(scope)
+    try {
+        val coll = this.createCollection(uname, uscope)
+        assertNotNull(coll)
+        return coll
+    } catch (e: Exception) {
+        throw AssertionError("Failed creating collection ${uname}.${uscope} in database ${this}", e)
+    }
+}
+
+fun Database.createSimilarCollection(collection: Collection): Collection {
+    try {
+        val coll = this.createCollection(collection.name, collection.scope.name)
+        assertNotNull(coll)
+        return coll
+    } catch (e: Exception) {
+        throw AssertionError("Failed creating collection similar to $collection in database $this", e)
+    }
+}
+
+fun Database.getSimilarCollection(collection: Collection): Collection {
+    try {
+        val coll = this.getCollection(collection.name, collection.scope.name)
+        assertNotNull(coll)
+        return coll
+    } catch (e: Exception) {
+        throw AssertionError("Failed getting collection similar to $collection in database $this", e)
+    }
+}
+
+fun Collection.getQualifiedName() = "${this.scope.name}.${this.name}"
+
+fun Collection.getNonNullDoc(id: String) = this.getDocument(id) ?: throw AssertionError("document $id is null")
+
+fun Collection.delete() {
+    val db = this.database
+    try {
+        db.deleteCollection(this.name, this.scope.name)
+    } catch (e: Exception) {
+        throw AssertionError("Failed deleting collection $this from database $db", e)
+    }
+}
+
+fun Document.delete() {
+    val coll = this.collection
+    assertNotNull(coll)
+    try {
+        coll.delete(this)
+    } catch (e: CouchbaseLiteException) {
+        throw AssertionError("Failed deleting document ${this.id} from collection $coll")
+    }
+}
+
+fun <T : Comparable<T>> assertContents(l1: List<T>, vararg contents: T) {
+    assertEquals(l1.sorted(), listOf(*contents).sorted())
+}
+
+fun <T : Comparable<T>> assertContents(l1: Set<T>, vararg contents: T) {
+    assertEquals(l1.sorted(), listOf(*contents).sorted())
+}
+
+suspend fun CountDownLatch.stdWait(): Boolean {
+    return try {
+        await(BaseTest.STD_TIMEOUT_SEC.seconds)
+    } catch (e: CancellationException) {
+        false
+    }
+}
+
+// Comparing documents isn't trivial:
+// Fleece will change the types of numeric values
+// to suit its internal requirements.
+// This comparator also will not work with nested
+// complex objects: arrays and dictionaries.
+fun assertSameContent(mDoc: MutableDocument, doc: Document?) {
+    doc ?: throw AssertionError("doc is null")
+    assertEquals(mDoc.toMap(), doc.toMap())
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+fun readJSONResource(name: String): String {
+    return buildString {
+        PlatformUtils.getAsset(name)?.use { src ->
+            while (true) {
+                val l = src.readLine() ?: break
+                if (l.trim().isNotEmpty()) append(l)
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalStdlibApi::class)
 abstract class BaseDbTest : BaseTest() {
 
-    fun interface DocValidator {
-        fun accept(document: Document)
-    }
+    protected val testDatabase: Database
+        get() = testDb
+    protected val testCollection: Collection
+        get() = testCol
+    protected val testTag: String
+        get() = testTg
 
-    protected open fun <T : Comparable<T>?> assertContents(l1: List<T>, vararg contents: T) {
-        val l2 = contents.toList()
-        assertTrue(l1.containsAll(l2) && l2.containsAll(l1))
-    }
-
-    protected lateinit var baseTestDb: Database
+    private lateinit var testDb: Database
+    private lateinit var testCol: Collection
+    private lateinit var testTg: String
 
     @BeforeTest
     fun setUpBaseDbTest() {
-        baseTestDb = createDb("base_db")
-        Report.log("Created base test DB: $baseTestDb")
-        assertNotNull(baseTestDb)
-        baseTestDb.withDbLock { assertTrue(baseTestDb.isOpen) }
+        testDb = createDb("base_db")
+        Report.log("Created base test DB: $testDatabase")
+        assertNotNull(testDatabase)
+        assertTrue(testDatabase.isOpen)
+        testCol =
+            testDatabase.createCollection(getUniqueName("test_collection"), getUniqueName("test_scope"))
+        Report.log("Created base test Collection: $testCollection")
+        testTg = getUniqueName("db_test_tag")
     }
 
     @AfterTest
     fun tearDownBaseDbTest() {
-        if (::baseTestDb.isInitialized) {
-            deleteDb(baseTestDb)
-            Report.log("Deleted baseTestDb: $baseTestDb")
-        } else {
-            Report.log("baseTestDb never initialized")
+        testCol.close()
+        Report.log("Test collection closed: ${testCol.fullName}")
+        eraseDb(testDb)
+        Report.log("Test db erased: ${testDb.name}")
+    }
+
+    protected fun reopenTestDb() {
+        val cScope = testCollection.scope.name
+        val cName = testCollection.name
+        testCollection.close()
+
+        testDb = reopenDb(testDatabase)
+
+        testCol = testDatabase.getCollection(cName, cScope)
+            ?: throw AssertionError("Could not create collection ${cScope}.${cName} in database ${testDb.name}")
+    }
+
+    protected fun recreateTestDb() {
+        val cScope = testCollection.scope.name
+        val cName = testCollection.name
+        testCollection.close()
+
+        eraseDb(testDatabase)
+
+        testDb = createDb("base_db")
+
+        testCol = testDatabase.getCollection(cName, cScope)
+            ?: throw AssertionError("Could not create collection ${cScope}.${cName} in database ${testDb.name}")
+    }
+
+    protected fun duplicateTestDb(): Pair<Database, Collection> {
+        val otherDb = duplicateDb(testDatabase)
+        assertNotNull(otherDb)
+        val otherCollection = otherDb.getSimilarCollection(testCollection)
+        assertNotNull(otherCollection)
+        return Pair(otherDb, otherCollection)
+    }
+
+    protected fun saveDocInCollection(mDoc: MutableDocument, collection: Collection = testCollection): Document {
+        collection.save(mDoc)
+        val doc = collection.getDocument(mDoc.id)
+        assertNotNull(doc)
+        assertEquals(mDoc.id, doc.id)
+        return doc
+    }
+
+    protected fun saveDocsInCollection(
+        mDocs: List<MutableDocument>,
+        collection: Collection = testCollection
+    ): List<Document> {
+        var docs: List<Document>? = null
+        collection.database.inBatch {
+            docs = mDocs.map { saveDocInCollection(it, collection) }
         }
+        return docs ?: throw IllegalStateException("doc list is null")
     }
 
-    protected fun createSingleDocInBaseTestDb(docID: String?): Document {
-        val n = baseTestDb.count
-        val doc = MutableDocument(docID)
-        doc.setValue("key", 1)
-        val savedDoc = saveDocInBaseTestDb(doc)
-        assertEquals(n + 1, baseTestDb.count)
-        assertEquals(1, savedDoc.sequence)
-        return savedDoc
+    protected fun createDocInCollection(
+        tag: String = testTag,
+        collection: Collection = testCollection
+    ): MutableDocument {
+        val mDoc = createTestDoc(tag)
+        val n = collection.count
+        saveDocInCollection(mDoc, collection)
+        assertEquals(n + 1, collection.count)
+        return mDoc
     }
 
-    protected fun createDocsInDb(first: Int, count: Int, db: Database) {
-        db.inBatch {
-            for (i in first until first + count) {
-                val doc = MutableDocument("doc-$i")
-                doc.setNumber("count", i)
-                doc.setString("inverse", "minus-$i")
-                save(doc)
-            }
-        }
+    protected fun createDocsInCollection(
+        count: Int = 1,
+        tag: String = testTag,
+        collection: Collection = testCollection,
+        first: Int = 1
+    ): List<MutableDocument> {
+        val mDocs = createTestDocs(first, count, tag)
+        saveDocsInCollection(mDocs, collection)
+        return mDocs
     }
 
-    protected fun saveDocInBaseTestDb(doc: MutableDocument): Document {
-        baseTestDb.save(doc)
-        val savedDoc = baseTestDb.getDocument(doc.id)
-        assertNotNull(savedDoc)
-        assertEquals(doc.id, savedDoc.id)
-        return savedDoc
+    protected fun verifyDocInCollection(docId: String, tag: String = testTag, coll: Collection = testCollection) {
+        val doc = coll.getDocument(docId)
+        assertNotNull(doc)
+        assertEquals(docId, doc.id)
+        assertEquals(tag, doc.getValue(TEST_DOC_TAG_KEY))
     }
 
-    protected fun saveDocInBaseTestDb(doc: MutableDocument, validator: DocValidator): Document {
-        validator.accept(doc)
-        val savedDoc = saveDocInBaseTestDb(doc)
-        validator.accept(doc)
-        validator.accept(savedDoc)
-        return savedDoc
-    }
-
-    // used from other package's tests
-    protected fun populateData(doc: MutableDocument) {
-        doc.setValue("true", true)
-        doc.setValue("false", false)
-        doc.setValue("string", "string")
-        doc.setValue("zero", 0)
-        doc.setValue("one", 1)
-        doc.setValue("minus_one", -1)
-        doc.setValue("one_dot_one", 1.1)
-        doc.setValue("date", Instant.parse(TEST_DATE))
-        doc.setValue("null", null)
-
-        // Dictionary:
-        val dict = MutableDictionary()
-        dict.setValue("street", "1 Main street")
-        dict.setValue("city", "Mountain View")
-        dict.setValue("state", "CA")
-        doc.setValue("dict", dict)
-
-        // Array:
-        val array = MutableArray()
-        array.addValue("650-123-0001")
-        array.addValue("650-123-0002")
-        doc.setValue("array", array)
-
-        // Blob:
-        doc.setValue("blob", Blob("text/plain", BLOB_CONTENT.encodeToByteArray()))
-    }
-
-    // used from other package's tests
-    protected fun populateDataByTypedSetter(doc: MutableDocument) {
-        doc.setBoolean("true", true)
-        doc.setBoolean("false", false)
-        doc.setString("string", "string")
-        doc.setNumber("zero", 0)
-        doc.setInt("one", 1)
-        doc.setLong("minus_one", -1)
-        doc.setDouble("one_dot_one", 1.1)
-        doc.setDate("date", Instant.parse(TEST_DATE))
-        doc.setString("null", null)
-
-        // Dictionary:
-        val dict = MutableDictionary()
-        dict.setString("street", "1 Main street")
-        dict.setString("city", "Mountain View")
-        dict.setString("state", "CA")
-        doc.setDictionary("dict", dict)
-
-        // Array:
-        val array = MutableArray()
-        array.addString("650-123-0001")
-        array.addString("650-123-0002")
-        doc.setArray("array", array)
-
-        // Blob:
-        doc.setValue("blob", Blob("text/plain", BLOB_CONTENT.encodeToByteArray()))
+    protected fun verifyDocsInCollection(
+        docIds: kotlin.collections.Collection<String>,
+        tag: String = testTag,
+        coll: Collection = testCollection
+    ) {
+        docIds.forEach { verifyDocInCollection(it, tag, coll) }
     }
 
     // file is one JSON object per line
-    protected fun loadJSONResource(name: String) {
-        PlatformUtils.getAsset(name)?.use { fileSource ->
-            var n = 1
-            while (true) {
-                val line = fileSource.readLine() ?: break
-                if (line.isBlank()) continue
-
-                val doc = MutableDocument("doc-${n++.paddedString(3)}")
-                doc.setData(JSONUtils.fromJSON(Json.parseToJsonElement(line).jsonObject))
-
-                saveDocInBaseTestDb(doc)
-            }
-        }
-    }
-
-    protected fun readJSONResource(name: String): String {
-        val buf = StringBuilder()
-        PlatformUtils.getAsset(name)?.use { fileSource ->
-            while (true) {
-                val line = fileSource.readLine() ?: break
-                if (line.isNotBlank()) {
-                    buf.append(line)
+    protected fun loadJSONResourceIntoCollection(
+        resName: String,
+        collection: Collection = testCollection
+    ) {
+        try {
+            PlatformUtils.getAsset(resName)?.use { src ->
+                var n = 1
+                while (true) {
+                    val l = src.readLine() ?: break
+                    val doc = MutableDocument("doc-${n++.paddedString(3)}")
+                    doc.setData(JSONUtils.fromJSON(Json.parseToJsonElement(l).jsonObject))
+                    saveDocInCollection(doc, collection)
                 }
             }
+        } catch (e: Exception) {
+            throw AssertionError("Failed reading JSON resource $resName into collection $collection", e)
         }
-        return buf.toString()
     }
+
+    /// Data objects
 
     protected fun makeArray(): MutableArray {
         // A small array
@@ -192,46 +277,34 @@ abstract class BaseDbTest : BaseTest() {
         val simpleDict = MutableDictionary()
         simpleDict.setInt("sdict-1", 58)
         simpleDict.setString("sdict-2", "Winehouse")
-
         val array = MutableArray()
         array.addValue(null)
-
         array.addBoolean(true)
         array.addBoolean(false)
-
         array.addInt(0)
         array.addInt(Int.MIN_VALUE)
         array.addInt(Int.MAX_VALUE)
-
         array.addLong(0L)
         array.addLong(Long.MIN_VALUE)
         array.addLong(Long.MAX_VALUE)
-
         array.addFloat(0.0f)
         array.addFloat(Float.MIN_VALUE)
         array.addFloat(Float.MAX_VALUE)
-
         array.addDouble(0.0)
         array.addDouble(Double.MIN_VALUE)
         array.addDouble(Double.MAX_VALUE)
-
         array.addNumber(null)
         array.addNumber(0)
         array.addNumber(Float.MIN_VALUE)
         array.addNumber(Long.MIN_VALUE)
-
         array.addString(null)
         array.addString("Harry")
-
         array.addDate(null)
         array.addDate(Instant.parse(TEST_DATE))
-
         array.addArray(null)
         array.addArray(simpleArray)
-
         array.addDictionary(null)
         array.addDictionary(simpleDict)
-
         return array
     }
 
@@ -251,9 +324,9 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(Long.MIN_VALUE, jArray[7].jsonPrimitive.long)
         assertEquals(Long.MAX_VALUE, jArray[8].jsonPrimitive.long)
 
-        assertEquals(0.0f, jArray[9].jsonPrimitive.float, 0.001f)
-        assertEquals(Float.MIN_VALUE, jArray[10].jsonPrimitive.float, 0.001f)
-        assertEquals(Float.MAX_VALUE, jArray[11].jsonPrimitive.float, 100.0f)
+        assertEquals(0.0f, jArray[9].jsonPrimitive.float, 0.001F)
+        assertEquals(Float.MIN_VALUE, jArray[10].jsonPrimitive.float, 0.001F)
+        assertEquals(Float.MAX_VALUE, jArray[11].jsonPrimitive.float, 100.0F)
 
         assertEquals(0.0, jArray[12].jsonPrimitive.double, 0.001)
         assertEquals(Double.MIN_VALUE, jArray[13].jsonPrimitive.double, 0.001)
@@ -271,24 +344,24 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(TEST_DATE, jArray[22].jsonPrimitive.content)
 
         assertEquals(JsonNull, jArray[23])
-        assertTrue(jArray[24] is JsonArray)
+        assertIs<JsonArray>(jArray[24])
 
         assertEquals(JsonNull, jArray[25])
-        assertTrue(jArray[26] is JsonObject)
+        assertIs<JsonObject>(jArray[26])
 
         assertEquals(JsonNull, jArray[25])
-        assertTrue(jArray[26] is JsonObject)
+        assertIs<JsonObject>(jArray[26])
     }
 
     protected fun verifyArray(array: Array?) {
         assertNotNull(array)
 
-        assertEquals(27, array.count)
+        assertEquals(27, array.count.toLong())
 
         //#0 array.addValue(null);
         assertNull(array.getValue(0))
         assertFalse(array.getBoolean(0))
-        assertEquals(0, array.getInt(0))
+        assertEquals(0, array.getInt(0).toLong())
         assertEquals(0L, array.getLong(0))
         assertEquals(0.0f, array.getFloat(0), 0.001f)
         assertEquals(0.0, array.getDouble(0), 0.001)
@@ -302,7 +375,7 @@ abstract class BaseDbTest : BaseTest() {
         //#1 array.addBoolean(true);
         assertEquals(true, array.getValue(1))
         assertTrue(array.getBoolean(1))
-        assertEquals(1, array.getInt(1))
+        assertEquals(1, array.getInt(1).toLong())
         assertEquals(1L, array.getLong(1))
         assertEquals(1.0f, array.getFloat(1), 0.001f)
         assertEquals(1.0, array.getDouble(1), 0.001)
@@ -414,7 +487,7 @@ abstract class BaseDbTest : BaseTest() {
         //#9 array.addFloat(0.0F);
         assertEquals(0.0f, array.getValue(9))
         assertFalse(array.getBoolean(9))
-        assertEquals(0, array.getInt(9))
+        assertEquals(0, array.getInt(9).toLong())
         assertEquals(0L, array.getLong(9))
         assertEquals(0.0f, array.getFloat(9), 0.001f)
         assertEquals(0.0, array.getDouble(9), 0.001)
@@ -426,13 +499,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(array.getDictionary(9))
 
         //#10 array.addFloat(Float.MIN_VALUE);
-        assertEquals(Float.MIN_VALUE, demoteToFloat(array.getValue(10)))
+        assertEquals(Float.MIN_VALUE, array.getValue(10)!!.demoteToFloat())
         // !!! Fails on iOS: assertFalse(array.getBoolean(10)) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
-        assertEquals(Float.MIN_VALUE.toInt(), array.getInt(10))
-        assertEquals(Float.MIN_VALUE.toLong(), array.getLong(10))
+        assertEquals(Float.MIN_VALUE, array.getInt(10).toFloat(), 0.001f)
+        assertEquals(Float.MIN_VALUE, array.getLong(10).toFloat(), 0.001f)
         assertEquals(Float.MIN_VALUE, array.getFloat(10), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), array.getDouble(10), 0.001)
-        assertEquals(Float.MIN_VALUE, demoteToFloat(array.getNumber(10)))
+        assertEquals(Float.MIN_VALUE, array.getNumber(10)!!.demoteToFloat())
         assertNull(array.getString(10))
         assertNull(array.getDate(10))
         assertNull(array.getBlob(10))
@@ -440,17 +513,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(array.getDictionary(10))
 
         //#11 array.addFloat(Float.MAX_VALUE);
-        assertEquals(Float.MAX_VALUE, demoteToFloat(array.getValue(11)))
+        assertEquals(Float.MAX_VALUE, array.getValue(11)!!.demoteToFloat())
         assertTrue(array.getBoolean(11))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), array.getInt(11))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), array.getLong(11))
         assertEquals(Float.MAX_VALUE, array.getFloat(11), 100.0f)
-        assertEquals(
-            Float.MAX_VALUE.toDouble(),
-            demoteToFloat(array.getDouble(11)).toDouble(),
-            100.0
-        )
-        assertEquals(Float.MAX_VALUE, demoteToFloat(array.getNumber(11)))
+        assertEquals(Float.MAX_VALUE.toDouble(), array.getDouble(11), 1.0E31)
+        assertEquals(Float.MAX_VALUE, array.getNumber(11)!!.demoteToFloat())
         assertNull(array.getString(11))
         assertNull(array.getDate(11))
         assertNull(array.getBlob(11))
@@ -458,7 +527,7 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(array.getDictionary(11))
 
         //#12 array.addDouble(0.0);
-        assertEquals(0f, array.getValue(12))
+        assertEquals(0.0, array.getValue(12)!!.promoteToDouble(), 0.001)
         assertFalse(array.getBoolean(12))
         assertEquals(0, array.getInt(12))
         assertEquals(0L, array.getLong(12))
@@ -528,13 +597,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(array.getDictionary(16))
 
         //#17 array.addNumber(Float.MIN_VALUE);
-        assertEquals(Float.MIN_VALUE, demoteToFloat(array.getValue(17)))
+        assertEquals(Float.MIN_VALUE, array.getValue(17)!!.demoteToFloat())
         // !!! Fails on iOS: assertFalse(array.getBoolean(17)) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
         assertEquals(Float.MIN_VALUE.toInt(), array.getInt(17))
         assertEquals(Float.MIN_VALUE.toLong(), array.getLong(17))
         assertEquals(Float.MIN_VALUE, array.getFloat(17), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), array.getDouble(17), 0.001)
-        assertEquals(Float.MIN_VALUE, demoteToFloat(array.getNumber(17)))
+        assertEquals(Float.MIN_VALUE, array.getNumber(17)!!.demoteToFloat())
         assertNull(array.getString(17))
         assertNull(array.getDate(17))
         assertNull(array.getBlob(17))
@@ -628,7 +697,7 @@ abstract class BaseDbTest : BaseTest() {
         //#24 array.addArray(simpleArray);
         assertTrue(array.getValue(24) is Array)
         assertTrue(array.getBoolean(24))
-        assertEquals(0, array.getInt(24))
+        assertEquals(0, array.getInt(24).toLong())
         assertEquals(0L, array.getLong(24))
         assertEquals(0.0f, array.getFloat(24), 0.001f)
         assertEquals(0.0, array.getDouble(24), 0.001)
@@ -682,92 +751,70 @@ abstract class BaseDbTest : BaseTest() {
         // Dictionary:
         val dict = MutableDictionary()
         dict.setValue("dict-1", null)
-
         dict.setBoolean("dict-2", true)
         dict.setBoolean("dict-3", false)
-
         dict.setInt("dict-4", 0)
         dict.setInt("dict-5", Int.MIN_VALUE)
         dict.setInt("dict-6", Int.MAX_VALUE)
-
         dict.setLong("dict-7", 0L)
         dict.setLong("dict-8", Long.MIN_VALUE)
         dict.setLong("dict-9", Long.MAX_VALUE)
-
         dict.setFloat("dict-10", 0.0f)
         dict.setFloat("dict-11", Float.MIN_VALUE)
         dict.setFloat("dict-12", Float.MAX_VALUE)
-
         dict.setDouble("dict-13", 0.0)
         dict.setDouble("dict-14", Double.MIN_VALUE)
         dict.setDouble("dict-15", Double.MAX_VALUE)
-
         dict.setNumber("dict-16", null)
         dict.setNumber("dict-17", 0)
         dict.setNumber("dict-18", Float.MIN_VALUE)
         dict.setNumber("dict-19", Long.MIN_VALUE)
-
         dict.setString("dict-20", null)
         dict.setString("dict-21", "Quatro")
-
         dict.setDate("dict-22", null)
         dict.setDate("dict-23", Instant.parse(TEST_DATE))
-
         dict.setArray("dict-24", null)
         dict.setArray("dict-25", simpleArray)
-
         dict.setDictionary("dict-26", null)
         dict.setDictionary("dict-27", simpleDict)
-
         return dict
     }
 
     protected fun verifyDict(jObj: JsonObject) {
-        assertEquals(27, jObj.size)
-
+        assertEquals(27, jObj.size.toLong())
         assertEquals(JsonNull, jObj["dict-1"])
-
         assertEquals(true, jObj["dict-2"]?.jsonPrimitive?.boolean)
         assertEquals(false, jObj["dict-3"]?.jsonPrimitive?.boolean)
-
         assertEquals(0, jObj["dict-4"]?.jsonPrimitive?.int)
         assertEquals(Int.MIN_VALUE, jObj["dict-5"]?.jsonPrimitive?.int)
         assertEquals(Int.MAX_VALUE, jObj["dict-6"]?.jsonPrimitive?.int)
-
         assertEquals(0, jObj["dict-7"]?.jsonPrimitive?.long)
         assertEquals(Long.MIN_VALUE, jObj["dict-8"]?.jsonPrimitive?.long)
         assertEquals(Long.MAX_VALUE, jObj["dict-9"]?.jsonPrimitive?.long)
-
-        assertEquals(0.0F, jObj["dict-10"]!!.jsonPrimitive.float, 0.001F)
+        assertEquals(0.0, jObj["dict-10"]!!.jsonPrimitive.double, 0.001)
         assertEquals(Float.MIN_VALUE, jObj["dict-11"]!!.jsonPrimitive.float, 0.001F)
         assertEquals(Float.MAX_VALUE, jObj["dict-12"]!!.jsonPrimitive.float, 100.0F)
-
         assertEquals(0.0, jObj["dict-13"]!!.jsonPrimitive.double, 0.001)
         assertEquals(Double.MIN_VALUE, jObj["dict-14"]!!.jsonPrimitive.double, 0.001)
         assertEquals(Double.MAX_VALUE, jObj["dict-15"]!!.jsonPrimitive.double, 1.0)
-
         assertEquals(JsonNull, jObj["dict-16"])
         assertEquals(0, jObj["dict-17"]?.jsonPrimitive?.long)
         assertEquals(Float.MIN_VALUE.toDouble(), jObj["dict-18"]!!.jsonPrimitive.double, 0.001)
-        assertEquals(Long.MIN_VALUE, jObj["dict-19"]?.jsonPrimitive?.long)
-
+        assertEquals(Long.MIN_VALUE.toDouble(), jObj["dict-19"]!!.jsonPrimitive.long.toDouble(), 0.001)
         assertEquals(JsonNull, jObj["dict-20"])
         assertEquals("Quatro", jObj["dict-21"]?.jsonPrimitive?.content)
-
         assertEquals(JsonNull, jObj["dict-22"])
         assertEquals(TEST_DATE, jObj["dict-23"]?.jsonPrimitive?.content)
-
         assertEquals(JsonNull, jObj["dict-24"])
-        assertTrue(jObj["dict-25"] is JsonArray)
-
+        assertIs<JsonArray>(jObj["dict-25"])
         assertEquals(JsonNull, jObj["dict-26"])
-        assertTrue(jObj["dict-27"] is JsonObject)
+        assertIs<JsonObject>(jObj["dict-27"])
     }
 
     protected fun verifyDict(dict: Dictionary?) {
         assertNotNull(dict)
 
-        assertEquals(27, dict.count)
+        assertEquals(27, dict.count.toLong())
 
         //#0 dict.setValue(null);
         assertNull(dict.getValue("dict-1"))
@@ -826,13 +873,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(dict.getDictionary("dict-4"))
 
         //#4 dict.setInt(Integer.MIN_VALUE);
-        assertEquals(Int.MIN_VALUE.toLong(), dict.getValue("dict-5"))
+        assertEquals(Int.MIN_VALUE, dict.getValue("dict-5")!!.demoteToInt())
         assertTrue(dict.getBoolean("dict-5"))
         assertEquals(Int.MIN_VALUE, dict.getInt("dict-5"))
         assertEquals(Int.MIN_VALUE.toLong(), dict.getLong("dict-5"))
         assertEquals(Int.MIN_VALUE.toFloat(), dict.getFloat("dict-5"), 0.001f)
         assertEquals(Int.MIN_VALUE.toDouble(), dict.getDouble("dict-5"), 0.001)
-        assertEquals(Int.MIN_VALUE.toLong(), dict.getNumber("dict-5"))
+        assertEquals(Int.MIN_VALUE, dict.getNumber("dict-5")!!.demoteToInt())
         assertNull(dict.getString("dict-5"))
         assertNull(dict.getDate("dict-5"))
         assertNull(dict.getBlob("dict-5"))
@@ -840,13 +887,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(dict.getDictionary("dict-5"))
 
         //#5 dict.setInt(Integer.MAX_VALUE);
-        assertEquals(Int.MAX_VALUE.toLong(), dict.getValue("dict-6"))
+        assertEquals(Int.MAX_VALUE, dict.getValue("dict-6")!!.demoteToInt())
         assertTrue(dict.getBoolean("dict-6"))
         assertEquals(Int.MAX_VALUE, dict.getInt("dict-6"))
         assertEquals(Int.MAX_VALUE.toLong(), dict.getLong("dict-6"))
         assertEquals(Int.MAX_VALUE.toFloat(), dict.getFloat("dict-6"), 100.0f)
         assertEquals(Int.MAX_VALUE.toDouble(), dict.getDouble("dict-6"), 100.0)
-        assertEquals(Int.MAX_VALUE.toLong(), dict.getNumber("dict-6"))
+        assertEquals(Int.MAX_VALUE, dict.getNumber("dict-6")!!.demoteToInt())
         assertNull(dict.getString("dict-6"))
         assertNull(dict.getDate("dict-6"))
         assertNull(dict.getBlob("dict-6"))
@@ -910,13 +957,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(dict.getDictionary("dict-10"))
 
         //#10 dict.setFloat(Float.MIN_VALUE);
-        assertEquals(Float.MIN_VALUE, demoteToFloat(dict.getValue("dict-11")))
+        assertEquals(Float.MIN_VALUE, dict.getValue("dict-11")!!.demoteToFloat())
         // !!! Fails on iOS: assertFalse(dict.getBoolean("dict-11")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
         assertEquals(Float.MIN_VALUE.toInt(), dict.getInt("dict-11"))
         assertEquals(Float.MIN_VALUE.toLong(), dict.getLong("dict-11"))
         assertEquals(Float.MIN_VALUE, dict.getFloat("dict-11"), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), dict.getDouble("dict-11"), 0.001)
-        assertEquals(Float.MIN_VALUE, demoteToFloat(dict.getNumber("dict-11")))
+        assertEquals(Float.MIN_VALUE, dict.getNumber("dict-11")!!.demoteToFloat())
         assertNull(dict.getString("dict-11"))
         assertNull(dict.getDate("dict-11"))
         assertNull(dict.getBlob("dict-11"))
@@ -924,17 +971,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(dict.getDictionary("dict-11"))
 
         //#11 dict.setFloat(Float.MAX_VALUE);
-        assertEquals(Float.MAX_VALUE, demoteToFloat(dict.getValue("dict-12")))
+        assertEquals(Float.MAX_VALUE, dict.getValue("dict-12")!!.demoteToFloat())
         assertTrue(dict.getBoolean("dict-12"))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), dict.getInt("dict-12"))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), dict.getLong("dict-12"))
-        assertEquals(
-            Float.MAX_VALUE.toDouble(),
-            dict.getFloat("dict-12").toDouble(),
-            1.0E32
-        )
+        assertEquals(Float.MAX_VALUE, dict.getFloat("dict-12"), 1.0E32F)
         assertEquals(Float.MAX_VALUE.toDouble(), dict.getDouble("dict-12"), 1.0E32)
-        assertEquals(Float.MAX_VALUE, demoteToFloat(dict.getNumber("dict-12")))
+        assertEquals(Float.MAX_VALUE, dict.getNumber("dict-12")!!.demoteToFloat())
         assertNull(dict.getString("dict-12"))
         assertNull(dict.getDate("dict-12"))
         assertNull(dict.getBlob("dict-12"))
@@ -942,13 +985,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(dict.getDictionary("dict-12"))
 
         //#12 dict.setDouble(0.0);
-        assertEquals(0f, dict.getValue("dict-13"))
+        assertEquals(0.0, dict.getValue("dict-13")!!.promoteToDouble(), 0.001)
         assertFalse(dict.getBoolean("dict-13"))
         assertEquals(0, dict.getInt("dict-13"))
         assertEquals(0L, dict.getLong("dict-13"))
         assertEquals(0.0f, dict.getFloat("dict-13"), 0.001f)
         assertEquals(0.0, dict.getDouble("dict-13"), 0.001)
-        assertEquals(0f, dict.getNumber("dict-13"))
+        assertEquals(0.0, dict.getNumber("dict-13")!!.promoteToDouble(), 0.001)
         assertNull(dict.getString("dict-13"))
         assertNull(dict.getDate("dict-13"))
         assertNull(dict.getBlob("dict-13"))
@@ -956,13 +999,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(dict.getDictionary("dict-13"))
 
         //#13 dict.setDouble(Double.MIN_VALUE);
-        assertEquals(Double.MIN_VALUE, dict.getValue("dict-14"))
+        assertEquals(Double.MIN_VALUE, dict.getValue("dict-14")!!.promoteToDouble(), 0.001)
         // !!! Fails on iOS: assertFalse(dict.getBoolean("dict-14")) (any non-zero number should be true, but Double.MIN_VALUE is false on Android)
         assertEquals(Double.MIN_VALUE.toInt(), dict.getInt("dict-14"))
         assertEquals(Double.MIN_VALUE.toLong(), dict.getLong("dict-14"))
         assertEquals(Double.MIN_VALUE.toFloat(), dict.getFloat("dict-14"), 0.001f)
         assertEquals(Double.MIN_VALUE, dict.getDouble("dict-14"), 0.001)
-        assertEquals(Double.MIN_VALUE, dict.getNumber("dict-14"))
+        assertEquals(Double.MIN_VALUE, dict.getNumber("dict-14")!!.promoteToDouble(), 0.001)
         assertNull(dict.getString("dict-14"))
         assertNull(dict.getDate("dict-14"))
         assertNull(dict.getBlob("dict-14"))
@@ -970,13 +1013,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(dict.getDictionary("dict-14"))
 
         //#14 dict.setDouble(Double.MAX_VALUE);
-        assertEquals(Double.MAX_VALUE, dict.getValue("dict-15"))
+        assertEquals(Double.MAX_VALUE, dict.getValue("dict-15")!!.promoteToDouble(), 0.001)
         assertTrue(dict.getBoolean("dict-15"))
-        // ??? Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).intValue(), dict.getInt("dict-15"));
-        // ??? Fails: assertEquals(Double.valueOf(Double.MAX_VALUE).longValue(), dict.getLong("dict-15"));
+        // ??? Fails: assertEquals(Double.MAX_VALUE.toInt(), dict.getInt("dict-15"))
+        // ??? Fails: assertEquals(Double.MAX_VALUE.toLong(), dict.getLong("dict-15"))
         assertEquals(Double.MAX_VALUE.toFloat(), dict.getFloat("dict-15"), 100.0f)
         assertEquals(Double.MAX_VALUE, dict.getDouble("dict-15"), 100.0)
-        assertEquals(Double.MAX_VALUE, dict.getNumber("dict-15"))
+        assertEquals(Double.MAX_VALUE, dict.getNumber("dict-15")!!.promoteToDouble(), 0.001)
         assertNull(dict.getString("dict-15"))
         assertNull(dict.getDate("dict-15"))
         assertNull(dict.getBlob("dict-15"))
@@ -1000,7 +1043,7 @@ abstract class BaseDbTest : BaseTest() {
         //#16 dict.setNumber(0);
         assertEquals(0L, dict.getValue("dict-17"))
         assertFalse(dict.getBoolean("dict-17"))
-        assertEquals(0, dict.getInt("dict-17"))
+        assertEquals(0, dict.getInt("dict-17").toLong())
         assertEquals(0L, dict.getLong("dict-17"))
         assertEquals(0.0f, dict.getFloat("dict-17"), 0.001f)
         assertEquals(0.0, dict.getDouble("dict-17"), 0.001)
@@ -1012,13 +1055,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(dict.getDictionary("dict-17"))
 
         //#17 dict.setNumber(Float.MIN_VALUE);
-        assertEquals(Float.MIN_VALUE, demoteToFloat(dict.getValue("dict-18")))
+        assertEquals(Float.MIN_VALUE, dict.getValue("dict-18")!!.demoteToFloat())
         // !!! Fails on iOS: assertFalse(dict.getBoolean("dict-18")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
         assertEquals(Float.MIN_VALUE.toInt(), dict.getInt("dict-18"))
         assertEquals(Float.MIN_VALUE.toLong(), dict.getLong("dict-18"))
         assertEquals(Float.MIN_VALUE, dict.getFloat("dict-18"), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), dict.getDouble("dict-18"), 0.001)
-        assertEquals(Float.MIN_VALUE, demoteToFloat(dict.getNumber("dict-18")))
+        assertEquals(Float.MIN_VALUE, dict.getNumber("dict-18")!!.demoteToFloat())
         assertNull(dict.getString("dict-18"))
         assertNull(dict.getDate("dict-18"))
         assertNull(dict.getBlob("dict-18"))
@@ -1157,7 +1200,7 @@ abstract class BaseDbTest : BaseTest() {
     }
 
     protected fun verifyBlob(jBlob: JsonObject) {
-        assertEquals(4, jBlob.size)
+        assertEquals(4, jBlob.size.toLong())
         // Blob.TYPE_BLOB Blob.META_PROP_TYPE
         assertEquals("blob", jBlob["@type"]?.jsonPrimitive?.content)
         // Blob.PROP_DIGEST
@@ -1180,51 +1223,39 @@ abstract class BaseDbTest : BaseTest() {
         // Dictionary:
         val mDoc = MutableDocument()
         mDoc.setValue("doc-1", null)
-
         mDoc.setBoolean("doc-2", true)
         mDoc.setBoolean("doc-3", false)
-
         mDoc.setInt("doc-4", 0)
         mDoc.setInt("doc-5", Int.MIN_VALUE)
         mDoc.setInt("doc-6", Int.MAX_VALUE)
-
         mDoc.setLong("doc-7", 0L)
         mDoc.setLong("doc-8", Long.MIN_VALUE)
         mDoc.setLong("doc-9", Long.MAX_VALUE)
-
         mDoc.setFloat("doc-10", 0.0f)
         mDoc.setFloat("doc-11", Float.MIN_VALUE)
         mDoc.setFloat("doc-12", Float.MAX_VALUE)
-
         mDoc.setDouble("doc-13", 0.0)
         mDoc.setDouble("doc-14", Double.MIN_VALUE)
         mDoc.setDouble("doc-15", Double.MAX_VALUE)
-
         mDoc.setNumber("doc-16", null)
         mDoc.setNumber("doc-17", 0)
         mDoc.setNumber("doc-18", Float.MIN_VALUE)
         mDoc.setNumber("doc-19", Long.MIN_VALUE)
-
         mDoc.setString("doc-20", null)
         mDoc.setString("doc-21", "Jett")
-
         mDoc.setDate("doc-22", null)
         mDoc.setDate("doc-23", Instant.parse(TEST_DATE))
-
         mDoc.setArray("doc-24", null)
         mDoc.setArray("doc-25", makeArray())
-
         mDoc.setDictionary("doc-26", null)
         mDoc.setDictionary("doc-27", makeDict())
-
         mDoc.setBlob("doc-28", null)
         mDoc.setBlob("doc-29", makeBlob())
-
         return mDoc
     }
 
     protected fun verifyDocument(jObj: JsonObject) {
-        assertEquals(29, jObj.size)
+        assertEquals(29, jObj.size.toLong())
 
         assertEquals(JsonNull, jObj["doc-1"])
 
@@ -1269,12 +1300,12 @@ abstract class BaseDbTest : BaseTest() {
     }
 
     protected fun verifyDocument(doc: Dictionary) {
-        assertEquals(29, doc.count)
+        assertEquals(29, doc.count.toLong())
 
         //#0 doc.setValue(null);
         assertNull(doc.getValue("doc-1"))
         assertFalse(doc.getBoolean("doc-1"))
-        assertEquals(0, doc.getInt("doc-1"))
+        assertEquals(0, doc.getInt("doc-1").toLong())
         assertEquals(0L, doc.getLong("doc-1"))
         assertEquals(0.0f, doc.getFloat("doc-1"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-1"), 0.001)
@@ -1288,7 +1319,7 @@ abstract class BaseDbTest : BaseTest() {
         //#1 doc.setBoolean(true);
         assertEquals(true, doc.getValue("doc-2"))
         assertTrue(doc.getBoolean("doc-2"))
-        assertEquals(1, doc.getInt("doc-2"))
+        assertEquals(1, doc.getInt("doc-2").toLong())
         assertEquals(1L, doc.getLong("doc-2"))
         assertEquals(1.0f, doc.getFloat("doc-2"), 0.001f)
         assertEquals(1.0, doc.getDouble("doc-2"), 0.001)
@@ -1302,7 +1333,7 @@ abstract class BaseDbTest : BaseTest() {
         //#2 doc.setBoolean(false);
         assertEquals(false, doc.getValue("doc-3"))
         assertFalse(doc.getBoolean("doc-3"))
-        assertEquals(0, doc.getInt("doc-3"))
+        assertEquals(0, doc.getInt("doc-3").toLong())
         assertEquals(0L, doc.getLong("doc-3"))
         assertEquals(0.0f, doc.getFloat("doc-3"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-3"), 0.001)
@@ -1316,7 +1347,7 @@ abstract class BaseDbTest : BaseTest() {
         //#3 doc.setInt(0);
         assertEquals(0L, doc.getValue("doc-4"))
         assertFalse(doc.getBoolean("doc-4"))
-        assertEquals(0, doc.getInt("doc-4"))
+        assertEquals(0, doc.getInt("doc-4").toLong())
         assertEquals(0L, doc.getLong("doc-4"))
         assertEquals(0.0f, doc.getFloat("doc-4"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-4"), 0.001)
@@ -1358,7 +1389,7 @@ abstract class BaseDbTest : BaseTest() {
         //#6 doc.setLong(0L);
         assertEquals(0L, doc.getValue("doc-7"))
         assertFalse(doc.getBoolean("doc-7"))
-        assertEquals(0, doc.getInt("doc-7"))
+        assertEquals(0, doc.getInt("doc-7").toLong())
         assertEquals(0L, doc.getLong("doc-7"))
         assertEquals(0.0f, doc.getFloat("doc-7"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-7"), 0.001)
@@ -1372,7 +1403,7 @@ abstract class BaseDbTest : BaseTest() {
         //#7 doc.setLong(Long.MIN_VALUE);
         assertEquals(Long.MIN_VALUE, doc.getValue("doc-8"))
         // ??? Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-8"));
-        assertEquals(Long.MIN_VALUE.toInt(), doc.getInt("doc-8"))
+        assertEquals(Long.MIN_VALUE.toInt().toLong(), doc.getInt("doc-8").toLong())
         assertEquals(Long.MIN_VALUE, doc.getLong("doc-8"))
         assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-8"), 0.001f)
         assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-8"), 0.001)
@@ -1386,7 +1417,7 @@ abstract class BaseDbTest : BaseTest() {
         //#8 doc.setLong(Long.MAX_VALUE);
         assertEquals(Long.MAX_VALUE, doc.getValue("doc-9"))
         assertTrue(doc.getBoolean("doc-9"))
-        assertEquals(Long.MAX_VALUE.toInt(), doc.getInt("doc-9"))
+        assertEquals(Long.MAX_VALUE.toInt().toLong(), doc.getInt("doc-9").toLong())
         assertEquals(Long.MAX_VALUE, doc.getLong("doc-9"))
         assertEquals(Long.MAX_VALUE.toFloat(), doc.getFloat("doc-9"), 100.0f)
         assertEquals(Long.MAX_VALUE.toDouble(), doc.getDouble("doc-9"), 100.0)
@@ -1400,7 +1431,7 @@ abstract class BaseDbTest : BaseTest() {
         //#9 doc.setFloat(0.0F);
         assertEquals(0.0f, doc.getValue("doc-10"))
         assertFalse(doc.getBoolean("doc-10"))
-        assertEquals(0, doc.getInt("doc-10"))
+        assertEquals(0, doc.getInt("doc-10").toLong())
         assertEquals(0L, doc.getLong("doc-10"))
         assertEquals(0.0f, doc.getFloat("doc-10"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-10"), 0.001)
@@ -1412,13 +1443,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-10"))
 
         //#10 doc.setFloat(Float.MIN_VALUE);
-        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getValue("doc-11")))
+        assertEquals(Float.MIN_VALUE, doc.getValue("doc-11")?.demoteToFloat())
         // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-11")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
-        assertEquals(Float.MIN_VALUE.toInt(), doc.getInt("doc-11"))
-        assertEquals(Float.MIN_VALUE.toLong(), doc.getLong("doc-11"))
+        assertEquals(Float.MIN_VALUE.toInt().toFloat(), doc.getInt("doc-11").toFloat(), 0.001f)
+        assertEquals(Float.MIN_VALUE.toLong().toFloat(), doc.getLong("doc-11").toFloat(), 0.001f)
         assertEquals(Float.MIN_VALUE, doc.getFloat("doc-11"), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-11"), 0.001)
-        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getValue("doc-11")))
+        assertEquals(Float.MIN_VALUE, doc.getValue("doc-11")?.demoteToFloat())
         assertNull(doc.getString("doc-11"))
         assertNull(doc.getDate("doc-11"))
         assertNull(doc.getBlob("doc-11"))
@@ -1426,13 +1457,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-11"))
 
         //#11 doc.setFloat(Float.MAX_VALUE);
-        assertEquals(Float.MAX_VALUE, demoteToFloat(doc.getValue("doc-12")))
+        assertEquals(Float.MAX_VALUE, doc.getValue("doc-12")?.demoteToFloat())
         assertTrue(doc.getBoolean("doc-12"))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), doc.getInt("doc-12"))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), doc.getLong("doc-12"))
         assertEquals(Float.MAX_VALUE, doc.getFloat("doc-12"), 1.0E32F)
         assertEquals(Float.MAX_VALUE.toDouble(), doc.getDouble("doc-12"), 1.0E32)
-        assertEquals(Float.MAX_VALUE, demoteToFloat(doc.getNumber("doc-12")))
+        assertEquals(Float.MAX_VALUE, doc.getNumber("doc-12")?.demoteToFloat())
         assertNull(doc.getString("doc-12"))
         assertNull(doc.getDate("doc-12"))
         assertNull(doc.getBlob("doc-12"))
@@ -1442,7 +1473,7 @@ abstract class BaseDbTest : BaseTest() {
         //#12 doc.setDouble(0.0);
         assertEquals(0f, doc.getValue("doc-13"))
         assertFalse(doc.getBoolean("doc-13"))
-        assertEquals(0, doc.getInt("doc-13"))
+        assertEquals(0, doc.getInt("doc-13").toLong())
         assertEquals(0L, doc.getLong("doc-13"))
         assertEquals(0.0f, doc.getFloat("doc-13"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-13"), 0.001)
@@ -1456,7 +1487,7 @@ abstract class BaseDbTest : BaseTest() {
         //#13 doc.setDouble(Double.MIN_VALUE);
         assertEquals(Double.MIN_VALUE, doc.getValue("doc-14"))
         // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-14")) (any non-zero number should be true, but Double.MIN_VALUE is false on Android)
-        assertEquals(Double.MIN_VALUE.toInt(), doc.getInt("doc-14"))
+        assertEquals(Double.MIN_VALUE.toInt().toLong(), doc.getInt("doc-14").toLong())
         assertEquals(Double.MIN_VALUE.toLong(), doc.getLong("doc-14"))
         assertEquals(Double.MIN_VALUE.toFloat(), doc.getFloat("doc-14"), 0.001f)
         assertEquals(Double.MIN_VALUE, doc.getDouble("doc-14"), 0.001)
@@ -1483,7 +1514,7 @@ abstract class BaseDbTest : BaseTest() {
         //#15 doc.setNumber(null);
         assertNull(doc.getValue("doc-16"))
         assertFalse(doc.getBoolean("doc-16"))
-        assertEquals(0, doc.getInt("doc-16"))
+        assertEquals(0, doc.getInt("doc-16").toLong())
         assertEquals(0L, doc.getLong("doc-16"))
         assertEquals(0.0f, doc.getFloat("doc-16"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-16"), 0.001)
@@ -1497,7 +1528,7 @@ abstract class BaseDbTest : BaseTest() {
         //#16 doc.setNumber(0);
         assertEquals(0L, doc.getValue("doc-17"))
         assertFalse(doc.getBoolean("doc-17"))
-        assertEquals(0, doc.getInt("doc-17"))
+        assertEquals(0, doc.getInt("doc-17").toLong())
         assertEquals(0L, doc.getLong("doc-17"))
         assertEquals(0.0f, doc.getFloat("doc-17"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-17"), 0.001)
@@ -1509,13 +1540,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-17"))
 
         //#17 doc.setNumber(Float.MIN_VALUE);
-        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getValue("doc-18")))
+        assertEquals(Float.MIN_VALUE, doc.getValue("doc-18")?.demoteToFloat())
         // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-18")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
-        assertEquals(Float.MIN_VALUE.toInt(), doc.getInt("doc-18"))
+        assertEquals(Float.MIN_VALUE.toInt().toLong(), doc.getInt("doc-18").toLong())
         assertEquals(Float.MIN_VALUE.toLong(), doc.getLong("doc-18"))
         assertEquals(Float.MIN_VALUE, doc.getFloat("doc-18"), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-18"), 0.001)
-        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getNumber("doc-18")))
+        assertEquals(Float.MIN_VALUE, doc.getNumber("doc-18")?.demoteToFloat())
         assertNull(doc.getString("doc-18"))
         assertNull(doc.getDate("doc-18"))
         assertNull(doc.getBlob("doc-18"))
@@ -1525,7 +1556,7 @@ abstract class BaseDbTest : BaseTest() {
         //#18 doc.setNumber(Long.MIN_VALUE);
         assertEquals(Long.MIN_VALUE, doc.getValue("doc-19"))
         // ??? Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-19"))
-        assertEquals(Long.MIN_VALUE.toInt(), doc.getInt("doc-19"))
+        assertEquals(Long.MIN_VALUE.toInt().toLong(), doc.getInt("doc-19").toLong())
         assertEquals(Long.MIN_VALUE, doc.getLong("doc-19"))
         assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-19"), 0.001f)
         assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-19"), 0.001)
@@ -1539,7 +1570,7 @@ abstract class BaseDbTest : BaseTest() {
         //#19 doc.setString(null);
         assertNull(doc.getValue("doc-20"))
         assertFalse(doc.getBoolean("doc-20"))
-        assertEquals(0, doc.getInt("doc-20"))
+        assertEquals(0, doc.getInt("doc-20").toLong())
         assertEquals(0L, doc.getLong("doc-20"))
         assertEquals(0.0f, doc.getFloat("doc-20"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-20"), 0.001)
@@ -1553,7 +1584,7 @@ abstract class BaseDbTest : BaseTest() {
         //#20 doc.setString("Quatro");
         assertEquals("Jett", doc.getValue("doc-21"))
         assertTrue(doc.getBoolean("doc-21"))
-        assertEquals(0, doc.getInt("doc-21"))
+        assertEquals(0, doc.getInt("doc-21").toLong())
         assertEquals(0, doc.getLong("doc-21"))
         assertEquals(0.0f, doc.getFloat("doc-21"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-21"), 0.001)
@@ -1567,7 +1598,7 @@ abstract class BaseDbTest : BaseTest() {
         //#21 doc.setDate(null);
         assertNull(doc.getValue("doc-22"))
         assertFalse(doc.getBoolean("doc-22"))
-        assertEquals(0, doc.getInt("doc-22"))
+        assertEquals(0, doc.getInt("doc-22").toLong())
         assertEquals(0L, doc.getLong("doc-22"))
         assertEquals(0.0f, doc.getFloat("doc-22"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-22"), 0.001)
@@ -1581,7 +1612,7 @@ abstract class BaseDbTest : BaseTest() {
         //#22 doc.setDate(Instant.parse(TEST_DATE));
         assertEquals(TEST_DATE, doc.getValue("doc-23"))
         assertTrue(doc.getBoolean("doc-23"))
-        assertEquals(0, doc.getInt("doc-23"))
+        assertEquals(0, doc.getInt("doc-23").toLong())
         assertEquals(0L, doc.getLong("doc-23"))
         assertEquals(0.0f, doc.getFloat("doc-23"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-23"), 0.001)
@@ -1595,7 +1626,7 @@ abstract class BaseDbTest : BaseTest() {
         //#23 doc.setArray(null);
         assertNull(doc.getValue("doc-24"))
         assertFalse(doc.getBoolean("doc-24"))
-        assertEquals(0, doc.getInt("doc-24"))
+        assertEquals(0, doc.getInt("doc-24").toLong())
         assertEquals(0L, doc.getLong("doc-24"))
         assertEquals(0.0f, doc.getFloat("doc-24"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-24"), 0.001)
@@ -1612,7 +1643,7 @@ abstract class BaseDbTest : BaseTest() {
         //#25 doc.setDictionary(null);
         assertNull(doc.getValue("doc-26"))
         assertFalse(doc.getBoolean("doc-26"))
-        assertEquals(0, doc.getInt("doc-26"))
+        assertEquals(0, doc.getInt("doc-26").toLong())
         assertEquals(0L, doc.getLong("doc-26"))
         assertEquals(0.0f, doc.getFloat("doc-26"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-26"), 0.001)
@@ -1629,7 +1660,7 @@ abstract class BaseDbTest : BaseTest() {
         //#27 doc.setDictionary(null);
         assertNull(doc.getValue("doc-28"))
         assertFalse(doc.getBoolean("doc-28"))
-        assertEquals(0, doc.getInt("doc-28"))
+        assertEquals(0, doc.getInt("doc-28").toLong())
         assertEquals(0L, doc.getLong("doc-28"))
         assertEquals(0.0f, doc.getFloat("doc-28"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-28"), 0.001)
@@ -1644,12 +1675,12 @@ abstract class BaseDbTest : BaseTest() {
 
     // identical to verifyDocument(doc: Dictionary) (since publicly they don't share an interface)
     protected fun verifyDocument(doc: Result) {
-        assertEquals(29, doc.count)
+        assertEquals(29, doc.count.toLong())
 
         //#0 doc.setValue(null);
         assertNull(doc.getValue("doc-1"))
         assertFalse(doc.getBoolean("doc-1"))
-        assertEquals(0, doc.getInt("doc-1"))
+        assertEquals(0, doc.getInt("doc-1").toLong())
         assertEquals(0L, doc.getLong("doc-1"))
         assertEquals(0.0f, doc.getFloat("doc-1"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-1"), 0.001)
@@ -1663,7 +1694,7 @@ abstract class BaseDbTest : BaseTest() {
         //#1 doc.setBoolean(true);
         assertEquals(true, doc.getValue("doc-2"))
         assertTrue(doc.getBoolean("doc-2"))
-        assertEquals(1, doc.getInt("doc-2"))
+        assertEquals(1, doc.getInt("doc-2").toLong())
         assertEquals(1L, doc.getLong("doc-2"))
         assertEquals(1.0f, doc.getFloat("doc-2"), 0.001f)
         assertEquals(1.0, doc.getDouble("doc-2"), 0.001)
@@ -1677,7 +1708,7 @@ abstract class BaseDbTest : BaseTest() {
         //#2 doc.setBoolean(false);
         assertEquals(false, doc.getValue("doc-3"))
         assertFalse(doc.getBoolean("doc-3"))
-        assertEquals(0, doc.getInt("doc-3"))
+        assertEquals(0, doc.getInt("doc-3").toLong())
         assertEquals(0L, doc.getLong("doc-3"))
         assertEquals(0.0f, doc.getFloat("doc-3"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-3"), 0.001)
@@ -1691,7 +1722,7 @@ abstract class BaseDbTest : BaseTest() {
         //#3 doc.setInt(0);
         assertEquals(0L, doc.getValue("doc-4"))
         assertFalse(doc.getBoolean("doc-4"))
-        assertEquals(0, doc.getInt("doc-4"))
+        assertEquals(0, doc.getInt("doc-4").toLong())
         assertEquals(0L, doc.getLong("doc-4"))
         assertEquals(0.0f, doc.getFloat("doc-4"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-4"), 0.001)
@@ -1733,7 +1764,7 @@ abstract class BaseDbTest : BaseTest() {
         //#6 doc.setLong(0L);
         assertEquals(0L, doc.getValue("doc-7"))
         assertFalse(doc.getBoolean("doc-7"))
-        assertEquals(0, doc.getInt("doc-7"))
+        assertEquals(0, doc.getInt("doc-7").toLong())
         assertEquals(0L, doc.getLong("doc-7"))
         assertEquals(0.0f, doc.getFloat("doc-7"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-7"), 0.001)
@@ -1747,7 +1778,7 @@ abstract class BaseDbTest : BaseTest() {
         //#7 doc.setLong(Long.MIN_VALUE);
         assertEquals(Long.MIN_VALUE, doc.getValue("doc-8"))
         // ??? Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-8"));
-        assertEquals(Long.MIN_VALUE.toInt(), doc.getInt("doc-8"))
+        assertEquals(Long.MIN_VALUE.toInt().toLong(), doc.getInt("doc-8").toLong())
         assertEquals(Long.MIN_VALUE, doc.getLong("doc-8"))
         assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-8"), 0.001f)
         assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-8"), 0.001)
@@ -1761,7 +1792,7 @@ abstract class BaseDbTest : BaseTest() {
         //#8 doc.setLong(Long.MAX_VALUE);
         assertEquals(Long.MAX_VALUE, doc.getValue("doc-9"))
         assertTrue(doc.getBoolean("doc-9"))
-        assertEquals(Long.MAX_VALUE.toInt(), doc.getInt("doc-9"))
+        assertEquals(Long.MAX_VALUE.toInt().toLong(), doc.getInt("doc-9").toLong())
         assertEquals(Long.MAX_VALUE, doc.getLong("doc-9"))
         assertEquals(Long.MAX_VALUE.toFloat(), doc.getFloat("doc-9"), 100.0f)
         assertEquals(Long.MAX_VALUE.toDouble(), doc.getDouble("doc-9"), 100.0)
@@ -1775,7 +1806,7 @@ abstract class BaseDbTest : BaseTest() {
         //#9 doc.setFloat(0.0F);
         assertEquals(0.0f, doc.getValue("doc-10"))
         assertFalse(doc.getBoolean("doc-10"))
-        assertEquals(0, doc.getInt("doc-10"))
+        assertEquals(0, doc.getInt("doc-10").toLong())
         assertEquals(0L, doc.getLong("doc-10"))
         assertEquals(0.0f, doc.getFloat("doc-10"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-10"), 0.001)
@@ -1787,13 +1818,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-10"))
 
         //#10 doc.setFloat(Float.MIN_VALUE);
-        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getValue("doc-11")))
+        assertEquals(Float.MIN_VALUE, doc.getValue("doc-11")?.demoteToFloat())
         // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-11")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
-        assertEquals(Float.MIN_VALUE.toInt(), doc.getInt("doc-11"))
-        assertEquals(Float.MIN_VALUE.toLong(), doc.getLong("doc-11"))
+        assertEquals(Float.MIN_VALUE.toInt().toFloat(), doc.getInt("doc-11").toFloat(), 0.001f)
+        assertEquals(Float.MIN_VALUE.toLong().toFloat(), doc.getLong("doc-11").toFloat(), 0.001f)
         assertEquals(Float.MIN_VALUE, doc.getFloat("doc-11"), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-11"), 0.001)
-        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getValue("doc-11")))
+        assertEquals(Float.MIN_VALUE, doc.getValue("doc-11")?.demoteToFloat())
         assertNull(doc.getString("doc-11"))
         assertNull(doc.getDate("doc-11"))
         assertNull(doc.getBlob("doc-11"))
@@ -1801,13 +1832,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-11"))
 
         //#11 doc.setFloat(Float.MAX_VALUE);
-        assertEquals(Float.MAX_VALUE, demoteToFloat(doc.getValue("doc-12")))
+        assertEquals(Float.MAX_VALUE, doc.getValue("doc-12")?.demoteToFloat())
         assertTrue(doc.getBoolean("doc-12"))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), doc.getInt("doc-12"))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), doc.getLong("doc-12"))
         assertEquals(Float.MAX_VALUE, doc.getFloat("doc-12"), 1.0E32F)
         assertEquals(Float.MAX_VALUE.toDouble(), doc.getDouble("doc-12"), 1.0E32)
-        assertEquals(Float.MAX_VALUE, demoteToFloat(doc.getNumber("doc-12")))
+        assertEquals(Float.MAX_VALUE, doc.getNumber("doc-12")?.demoteToFloat())
         assertNull(doc.getString("doc-12"))
         assertNull(doc.getDate("doc-12"))
         assertNull(doc.getBlob("doc-12"))
@@ -1817,7 +1848,7 @@ abstract class BaseDbTest : BaseTest() {
         //#12 doc.setDouble(0.0);
         assertEquals(0f, doc.getValue("doc-13"))
         assertFalse(doc.getBoolean("doc-13"))
-        assertEquals(0, doc.getInt("doc-13"))
+        assertEquals(0, doc.getInt("doc-13").toLong())
         assertEquals(0L, doc.getLong("doc-13"))
         assertEquals(0.0f, doc.getFloat("doc-13"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-13"), 0.001)
@@ -1831,7 +1862,7 @@ abstract class BaseDbTest : BaseTest() {
         //#13 doc.setDouble(Double.MIN_VALUE);
         assertEquals(Double.MIN_VALUE, doc.getValue("doc-14"))
         // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-14")) (any non-zero number should be true, but Double.MIN_VALUE is false on Android)
-        assertEquals(Double.MIN_VALUE.toInt(), doc.getInt("doc-14"))
+        assertEquals(Double.MIN_VALUE.toInt().toLong(), doc.getInt("doc-14").toLong())
         assertEquals(Double.MIN_VALUE.toLong(), doc.getLong("doc-14"))
         assertEquals(Double.MIN_VALUE.toFloat(), doc.getFloat("doc-14"), 0.001f)
         assertEquals(Double.MIN_VALUE, doc.getDouble("doc-14"), 0.001)
@@ -1858,7 +1889,7 @@ abstract class BaseDbTest : BaseTest() {
         //#15 doc.setNumber(null);
         assertNull(doc.getValue("doc-16"))
         assertFalse(doc.getBoolean("doc-16"))
-        assertEquals(0, doc.getInt("doc-16"))
+        assertEquals(0, doc.getInt("doc-16").toLong())
         assertEquals(0L, doc.getLong("doc-16"))
         assertEquals(0.0f, doc.getFloat("doc-16"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-16"), 0.001)
@@ -1872,7 +1903,7 @@ abstract class BaseDbTest : BaseTest() {
         //#16 doc.setNumber(0);
         assertEquals(0L, doc.getValue("doc-17"))
         assertFalse(doc.getBoolean("doc-17"))
-        assertEquals(0, doc.getInt("doc-17"))
+        assertEquals(0, doc.getInt("doc-17").toLong())
         assertEquals(0L, doc.getLong("doc-17"))
         assertEquals(0.0f, doc.getFloat("doc-17"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-17"), 0.001)
@@ -1884,13 +1915,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-17"))
 
         //#17 doc.setNumber(Float.MIN_VALUE);
-        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getValue("doc-18")))
+        assertEquals(Float.MIN_VALUE, doc.getValue("doc-18")?.demoteToFloat())
         // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-18")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
-        assertEquals(Float.MIN_VALUE.toInt(), doc.getInt("doc-18"))
+        assertEquals(Float.MIN_VALUE.toInt().toLong(), doc.getInt("doc-18").toLong())
         assertEquals(Float.MIN_VALUE.toLong(), doc.getLong("doc-18"))
         assertEquals(Float.MIN_VALUE, doc.getFloat("doc-18"), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-18"), 0.001)
-        assertEquals(Float.MIN_VALUE, demoteToFloat(doc.getNumber("doc-18")))
+        assertEquals(Float.MIN_VALUE, doc.getNumber("doc-18")?.demoteToFloat())
         assertNull(doc.getString("doc-18"))
         assertNull(doc.getDate("doc-18"))
         assertNull(doc.getBlob("doc-18"))
@@ -1900,7 +1931,7 @@ abstract class BaseDbTest : BaseTest() {
         //#18 doc.setNumber(Long.MIN_VALUE);
         assertEquals(Long.MIN_VALUE, doc.getValue("doc-19"))
         // ??? Value differs for Documents and Results: assertTrue(doc.getBoolean("doc-19"))
-        assertEquals(Long.MIN_VALUE.toInt(), doc.getInt("doc-19"))
+        assertEquals(Long.MIN_VALUE.toInt().toLong(), doc.getInt("doc-19").toLong())
         assertEquals(Long.MIN_VALUE, doc.getLong("doc-19"))
         assertEquals(Long.MIN_VALUE.toFloat(), doc.getFloat("doc-19"), 0.001f)
         assertEquals(Long.MIN_VALUE.toDouble(), doc.getDouble("doc-19"), 0.001)
@@ -1914,7 +1945,7 @@ abstract class BaseDbTest : BaseTest() {
         //#19 doc.setString(null);
         assertNull(doc.getValue("doc-20"))
         assertFalse(doc.getBoolean("doc-20"))
-        assertEquals(0, doc.getInt("doc-20"))
+        assertEquals(0, doc.getInt("doc-20").toLong())
         assertEquals(0L, doc.getLong("doc-20"))
         assertEquals(0.0f, doc.getFloat("doc-20"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-20"), 0.001)
@@ -1928,7 +1959,7 @@ abstract class BaseDbTest : BaseTest() {
         //#20 doc.setString("Quatro");
         assertEquals("Jett", doc.getValue("doc-21"))
         assertTrue(doc.getBoolean("doc-21"))
-        assertEquals(0, doc.getInt("doc-21"))
+        assertEquals(0, doc.getInt("doc-21").toLong())
         assertEquals(0, doc.getLong("doc-21"))
         assertEquals(0.0f, doc.getFloat("doc-21"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-21"), 0.001)
@@ -1942,7 +1973,7 @@ abstract class BaseDbTest : BaseTest() {
         //#21 doc.setDate(null);
         assertNull(doc.getValue("doc-22"))
         assertFalse(doc.getBoolean("doc-22"))
-        assertEquals(0, doc.getInt("doc-22"))
+        assertEquals(0, doc.getInt("doc-22").toLong())
         assertEquals(0L, doc.getLong("doc-22"))
         assertEquals(0.0f, doc.getFloat("doc-22"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-22"), 0.001)
@@ -1956,7 +1987,7 @@ abstract class BaseDbTest : BaseTest() {
         //#22 doc.setDate(Instant.parse(TEST_DATE));
         assertEquals(TEST_DATE, doc.getValue("doc-23"))
         assertTrue(doc.getBoolean("doc-23"))
-        assertEquals(0, doc.getInt("doc-23"))
+        assertEquals(0, doc.getInt("doc-23").toLong())
         assertEquals(0L, doc.getLong("doc-23"))
         assertEquals(0.0f, doc.getFloat("doc-23"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-23"), 0.001)
@@ -1970,7 +2001,7 @@ abstract class BaseDbTest : BaseTest() {
         //#23 doc.setArray(null);
         assertNull(doc.getValue("doc-24"))
         assertFalse(doc.getBoolean("doc-24"))
-        assertEquals(0, doc.getInt("doc-24"))
+        assertEquals(0, doc.getInt("doc-24").toLong())
         assertEquals(0L, doc.getLong("doc-24"))
         assertEquals(0.0f, doc.getFloat("doc-24"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-24"), 0.001)
@@ -1987,7 +2018,7 @@ abstract class BaseDbTest : BaseTest() {
         //#25 doc.setDictionary(null);
         assertNull(doc.getValue("doc-26"))
         assertFalse(doc.getBoolean("doc-26"))
-        assertEquals(0, doc.getInt("doc-26"))
+        assertEquals(0, doc.getInt("doc-26").toLong())
         assertEquals(0L, doc.getLong("doc-26"))
         assertEquals(0.0f, doc.getFloat("doc-26"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-26"), 0.001)
@@ -2004,7 +2035,7 @@ abstract class BaseDbTest : BaseTest() {
         //#27 doc.setDictionary(null);
         assertNull(doc.getValue("doc-28"))
         assertFalse(doc.getBoolean("doc-28"))
-        assertEquals(0, doc.getInt("doc-28"))
+        assertEquals(0, doc.getInt("doc-28").toLong())
         assertEquals(0L, doc.getLong("doc-28"))
         assertEquals(0.0f, doc.getFloat("doc-28"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-28"), 0.001)
@@ -2017,49 +2048,29 @@ abstract class BaseDbTest : BaseTest() {
         verifyBlob(doc.getBlob("doc-29"))
     }
 
-    protected open fun openDatabase(): Database {
-        return verifyOrDeleteDb(createDb(getUniqueName("test_db")))
+    // Some JSON encoding will promote a Float to a Double.
+    private fun Any.demoteToFloat() = when (this) {
+        is Float -> this
+        is Double -> this.toFloat()
+        else -> throw IllegalArgumentException("$this cannot be converted to float")
     }
 
-    protected fun reopenBaseTestDb() {
-        baseTestDb = reopenDb(baseTestDb)
-    }
-
-    protected fun recreateBastTestDb() {
-        baseTestDb = recreateDb(baseTestDb)
-    }
-
-    protected open fun duplicateBaseTestDb(): Database {
-        return verifyOrDeleteDb(duplicateDb(baseTestDb))
+    private fun Any.promoteToDouble() = when (this) {
+        is Float -> this.toDouble()
+        is Double -> this
+        else -> throw IllegalArgumentException("$this cannot be converted to double")
     }
 
     // Some JSON encoding will promote a Float to a Double.
-    protected fun demoteToFloat(`val`: Any?): Float {
-        if (`val` is Float) {
-            return `val`
-        }
-        if (`val` is Double) {
-            return `val`.toFloat()
-        }
-        throw IllegalArgumentException("expected a floating point value")
+    private fun Any.demoteToInt() = when (this) {
+        is Int -> this
+        is Long -> this.toInt()
+        else -> throw IllegalArgumentException("$this cannot be converted to int")
     }
 
-    private fun verifyOrDeleteDb(db: Database): Database {
-        return try {
-            assertNotNull(db)
-            assertTrue(FileUtils.getCanonicalPath(db.path!!).endsWith(DB_EXTENSION))
-            db
-        } catch (e: IOException) {
-            deleteDb(db)
-            throw AssertionError("Unable to get db path", e)
-        } catch (e: AssertionError) {
-            deleteDb(db)
-            throw e
-        }
-    }
-
-    companion object {
-        const val TEST_DATE = "2019-02-21T05:37:22.014Z"
-        const val BLOB_CONTENT = "Knox on fox in socks in box. Socks on Knox and Knox in box."
+    private fun Any.promoteToLong() = when (this) {
+        is Int -> this.toLong()
+        is Long -> this
+        else -> throw IllegalArgumentException("$this cannot be converted to float")
     }
 }

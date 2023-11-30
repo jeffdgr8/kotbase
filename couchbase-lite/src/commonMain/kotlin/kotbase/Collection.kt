@@ -289,3 +289,6 @@ public expect class Collection : AutoCloseable {
 
 public val Collection.Companion.DEFAULT_NAME: String
     get() = "_default"
+
+internal val Collection.fullName: String
+    get() = "${scope.name}.$name"
