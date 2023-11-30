@@ -27,7 +27,7 @@ import com.couchbase.lite.Collection as CBLCollection
 public actual class Collection
 internal constructor(
     actual: CBLCollection,
-    internal actual val database: Database
+    public actual val database: Database
 ) : DelegatedClass<CBLCollection>(actual), AutoCloseable {
 
     public actual val scope: Scope

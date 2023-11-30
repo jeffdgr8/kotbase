@@ -54,7 +54,10 @@ import kotlin.coroutines.CoroutineContext
 @OptIn(ExperimentalStdlibApi::class)
 public expect class Collection : AutoCloseable {
 
-    internal val database: Database
+    /**
+     * Database
+     */
+    public val database: Database
 
     /**
      * Scope

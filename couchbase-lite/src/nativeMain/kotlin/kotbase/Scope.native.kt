@@ -27,7 +27,7 @@ import libcblite.*
 public actual class Scope
 internal constructor(
     internal val actual: CPointer<CBLScope>,
-    internal actual val database: Database
+    public actual val database: Database
 ) {
 
     public actual val name: String

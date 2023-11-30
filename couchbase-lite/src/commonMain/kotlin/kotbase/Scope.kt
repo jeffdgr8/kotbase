@@ -26,7 +26,10 @@ package kotbase
  */
 public expect class Scope {
 
-    internal val database: Database
+    /**
+     * Database
+     */
+    public val database: Database
 
     /**
      * The scope name.
