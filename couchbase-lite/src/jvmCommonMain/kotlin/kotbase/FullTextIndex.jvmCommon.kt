@@ -15,7 +15,6 @@
  */
 package kotbase
 
-import java.util.*
 import com.couchbase.lite.FullTextIndex as CBLFullTextIndex
 
 public actual class FullTextIndex
@@ -26,10 +25,9 @@ internal constructor(override val actual: CBLFullTextIndex) : Index(actual) {
         return this
     }
 
-    // TODO: use actual getter instead of field in 3.1
-    public actual var language: String? = Locale.getDefault().language
+    public actual var language: String?
+        get() = actual.language
         set(value) {
-            field = value
             actual.setLanguage(value)
         }
 
@@ -38,10 +36,9 @@ internal constructor(override val actual: CBLFullTextIndex) : Index(actual) {
         return this
     }
 
-    // TODO: use actual getter instead of field in 3.1
-    public actual var isIgnoringAccents: Boolean = false
+    public actual var isIgnoringAccents: Boolean
+        get() = actual.isIgnoringAccents
         set(value) {
-            field = value
             actual.ignoreAccents(value)
         }
 }

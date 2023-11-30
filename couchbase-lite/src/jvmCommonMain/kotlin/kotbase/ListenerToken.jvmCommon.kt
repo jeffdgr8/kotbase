@@ -15,11 +15,38 @@
  */
 package kotbase
 
+import kotbase.internal.DelegatedClass
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import com.couchbase.lite.ListenerToken as CBLListenerToken
 
-public actual typealias ListenerToken = com.couchbase.lite.ListenerToken
+@Suppress("ACTUAL_WITHOUT_EXPECT") // https://youtrack.jetbrains.com/issue/KTIJ-27834
+public actual sealed class ListenerToken(
+    actual: CBLListenerToken
+) : DelegatedClass<CBLListenerToken>(actual), AutoCloseable {
+
+    actual override fun close() {
+        removeImpl()
+    }
+
+    public actual fun remove() {
+        removeImpl()
+    }
+
+    protected open fun removeImpl() {
+        actual.remove()
+    }
+}
+
+internal class DelegatedListenerToken(actual: CBLListenerToken) : ListenerToken(actual)
 
 internal class SuspendListenerToken(
     val scope: CoroutineScope,
-    val actual: ListenerToken
-) : ListenerToken
+    actual: CBLListenerToken
+) : ListenerToken(actual) {
+
+    override fun removeImpl() {
+        super.removeImpl()
+        scope.cancel()
+    }
+}

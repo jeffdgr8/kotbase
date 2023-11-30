@@ -22,6 +22,7 @@ package kotbase
  *
  * @param change the database change information
  */
+@Suppress("DEPRECATION")
 @Deprecated("Use CollectionChangeListener")
 public typealias DatabaseChangeListener = ChangeListener<DatabaseChange>
 
@@ -32,5 +33,6 @@ public typealias DatabaseChangeListener = ChangeListener<DatabaseChange>
  *
  * @param change the database change information
  */
+@Suppress("DEPRECATION")
 @Deprecated("Use CollectionChangeSuspendListener")
 public typealias DatabaseChangeSuspendListener = ChangeSuspendListener<DatabaseChange>

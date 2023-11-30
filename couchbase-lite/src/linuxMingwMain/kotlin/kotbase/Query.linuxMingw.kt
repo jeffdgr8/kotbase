@@ -22,7 +22,6 @@ import kotbase.internal.fleece.toKString
 import kotbase.internal.wrapCBLError
 import kotbase.util.to
 import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.*
 import libcblite.*
@@ -52,8 +51,6 @@ internal abstract class AbstractQuery : Query {
     override fun explain(): String =
         CBLQuery_Explain(actual).toKString()!!
 
-    private val changeListeners = mutableListOf<StableRef<QueryChangeListenerHolder>?>()
-
     override fun addChangeListener(listener: QueryChangeListener): ListenerToken {
         val holder = QueryChangeDefaultListenerHolder(listener, this)
         return addNativeChangeListener(holder)
@@ -70,22 +67,14 @@ internal abstract class AbstractQuery : Query {
         val holder = QueryChangeSuspendListenerHolder(listener, this, scope)
         val token = addNativeChangeListener(holder)
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            removeChangeListener(token)
+            token.remove()
         }
     }
 
-    private fun addNativeChangeListener(holder: QueryChangeListenerHolder): DelegatedListenerToken {
-        val (index, stableRef) = addListener(changeListeners, holder)
-        return DelegatedListenerToken(
-            CBLQuery_AddChangeListener(
-                actual,
-                nativeChangeListener(),
-                stableRef
-            )!!,
-            ListenerTokenType.QUERY,
-            index
-        )
-    }
+    private fun addNativeChangeListener(holder: QueryChangeListenerHolder) =
+        StableRefListenerToken(holder) {
+            CBLQuery_AddChangeListener(actual, nativeChangeListener(), it)!!
+        }
 
     private fun nativeChangeListener(): CBLQueryChangeListener {
         return staticCFunction { ref, cblQuery, token ->
@@ -110,24 +99,12 @@ internal abstract class AbstractQuery : Query {
         }
     }
 
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
     override fun removeChangeListener(token: ListenerToken) {
-        if (token is SuspendListenerToken) {
-            removeChangeListener(token.token)
-            token.scope.cancel()
-        } else {
-            removeChangeListener(token as DelegatedListenerToken)
-        }
-    }
-
-    private fun removeChangeListener(token: DelegatedListenerToken) {
-        if (token.type == ListenerTokenType.QUERY) {
-            if (changeListeners.getOrNull(token.index) != null) {
-                CBLListener_Remove(token.actual)
-                removeListener(changeListeners, token.index)
-            }
-        } else {
-            error("${token.type} change listener can't be removed from Query instance")
-        }
+        token.remove()
     }
 }
 
@@ -154,7 +131,7 @@ internal data class QueryState(
 
     private val database: Database by lazy {
         val from = requireNotNull(from) { "From statement is required." }
-        from.source
+        from.source.database
     }
 
     private fun toJSON(): String {

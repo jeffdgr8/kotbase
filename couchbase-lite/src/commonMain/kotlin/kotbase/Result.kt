@@ -19,6 +19,10 @@ import kotlinx.datetime.Instant
 
 /**
  * Result represents a row of result set returned by a Query.
+ *
+ * A Result may be referenced **only** while the ResultSet that contains it is open.
+ * An Attempt to reference a Result after calling ResultSet.close on the ResultSet that
+ * contains it will throw and IllegalStateException
  */
 public expect class Result : Iterable<String> {
 
@@ -211,7 +215,7 @@ public expect class Result : Iterable<String> {
 
     /**
      * The result value for the given key as a boolean
-     * Returns null if the key doesn't exist or if the value is not a boolean
+     * Returns false if the key doesn't exist or if the value is not a boolean
      *
      * @param key The select result key.
      * @return The boolean value.

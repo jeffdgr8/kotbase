@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
+
 package kotbase
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import com.couchbase.lite.DatabaseChangeListener as CBLDatabaseChangeListener
 
-internal fun DatabaseChangeListener.convert(): CBLDatabaseChangeListener =
+internal fun DatabaseChangeListener.convert(database: Database): CBLDatabaseChangeListener =
     CBLDatabaseChangeListener { change ->
-        invoke(DatabaseChange(change))
+        invoke(DatabaseChange(change, database))
     }
 
-internal fun DatabaseChangeSuspendListener.convert(scope: CoroutineScope): CBLDatabaseChangeListener =
+internal fun DatabaseChangeSuspendListener.convert(
+    database: Database,
+    scope: CoroutineScope
+): CBLDatabaseChangeListener =
     CBLDatabaseChangeListener { change ->
         scope.launch {
-            invoke(DatabaseChange(change))
+            invoke(DatabaseChange(change, database))
         }
     }

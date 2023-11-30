@@ -47,7 +47,10 @@ public expect object FullTextFunction {
      * @param indexName The index name.
      * @return The full-text rank function.
      */
-    @Deprecated("Use FullTextFunction.rank(IndexExpression)")
+    @Deprecated(
+        "Use FullTextFunction.rank(IndexExpression)",
+        ReplaceWith("FullTextFunction.rank(Expression.fullTextIndex(indexName))")
+    )
     public fun rank(indexName: String): Expression
 
     /**
@@ -57,6 +60,9 @@ public expect object FullTextFunction {
      * @param query     The query string.
      * @return The full-text match expression
      */
-    @Deprecated("Use FullTextFunction.match(IndexExpression)")
+    @Deprecated(
+        "Use FullTextFunction.match(IndexExpression)",
+        ReplaceWith("FullTextFunction.match(Expression.fullTextIndex(indexName), query)")
+    )
     public fun match(indexName: String, query: String): Expression
 }

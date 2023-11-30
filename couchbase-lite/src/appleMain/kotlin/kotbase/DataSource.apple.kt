@@ -15,6 +15,7 @@
  */
 package kotbase
 
+import cocoapods.CouchbaseLite.CBLCollection
 import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.CBLQueryDataSource
 import kotbase.internal.DelegatedClass
@@ -23,17 +24,37 @@ public actual open class DataSource
 private constructor(override var actual: CBLQueryDataSource) : DelegatedClass<CBLQueryDataSource>(actual) {
 
     public actual class As
-    internal constructor(private val database: CBLDatabase) : DataSource(CBLQueryDataSource.database(database)) {
+    internal constructor(
+        private val database: CBLDatabase? = null,
+        private val collection: CBLCollection? = null
+    ) : DataSource(
+        if (collection != null) {
+            CBLQueryDataSource.collection(collection)
+        } else {
+            CBLQueryDataSource.database(database!!)
+        }
+    ) {
 
         public actual fun `as`(alias: String): DataSource {
-            actual = CBLQueryDataSource.database(database, alias)
+            actual = if (collection != null) {
+                CBLQueryDataSource.collection(collection, alias)
+            } else {
+                CBLQueryDataSource.database(database!!, alias)
+            }
             return this
         }
     }
 
     public actual companion object {
 
+        @Deprecated(
+            "Use DataSource.collection(Collection)",
+            ReplaceWith("collection(database.getDefaultCollection())")
+        )
         public actual fun database(database: Database): As =
-            As(database.actual)
+            As(database = database.actual)
+
+        public actual fun collection(collection: Collection): As =
+            As(collection = collection.actual)
     }
 }

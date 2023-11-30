@@ -42,6 +42,65 @@ public fun DatabaseConfiguration?.newConfig(
  * Note: A document that is blocked by a document Id filter will not be auto-purged
  *       regardless of the setting of the enableAutoPurge property
  *
+ * @param target (required) The max size of the log file in bytes.
+ * @param collections a map of collections to be replicated, to their configurations.
+ * @param type replicator type: push, pull, or push and pull: default is push and pull.
+ * @param continuous continuous flag: true for continuous, false by default.
+ * @param authenticator connection authenticator.
+ * @param headers extra HTTP headers to send in all requests to the remote target.
+ * @param pinnedServerCertificate target server's SSL certificate.
+ * @param maxAttempts max retry attempts after connection failure.
+ * @param maxAttemptWaitTime max time between retry attempts (exponential backoff).
+ * @param heartbeat heartbeat interval, in seconds.
+ * @param enableAutoPurge auto-purge enabled.
+ * @param acceptOnlySelfSignedServerCertificate ENTERPRISE EDITION API: Whether the replicator will accept all/only self-signed certificates.
+ * @param acceptParentDomainCookies Advanced: accept cookies for parent domains.
+ *
+ * @see ReplicatorConfiguration
+ */
+public fun ReplicatorConfiguration?.newConfig(
+    target: Endpoint? = null,
+    collections: Map<out kotlin.collections.Collection<Collection>, CollectionConfiguration?>? = null,
+    type: ReplicatorType? = null,
+    continuous: Boolean? = null,
+    authenticator: Authenticator? = null,
+    headers: Map<String, String>? = null,
+    pinnedServerCertificate: ByteArray? = null,
+    maxAttempts: Int? = null,
+    maxAttemptWaitTime: Int? = null,
+    heartbeat: Int? = null,
+    enableAutoPurge: Boolean? = null,
+    acceptOnlySelfSignedServerCertificate: Boolean? = null,
+    acceptParentDomainCookies: Boolean? = null
+): ReplicatorConfiguration {
+    val orig = this
+    return newConfig(
+        target = target,
+        collections = collections,
+        type = type,
+        continuous = continuous,
+        authenticator = authenticator,
+        headers = headers,
+        pinnedServerCertificate = pinnedServerCertificate,
+        maxAttempts = maxAttempts,
+        maxAttemptWaitTime = maxAttemptWaitTime,
+        heartbeat = heartbeat,
+        enableAutoPurge = enableAutoPurge,
+        acceptParentDomainCookies = acceptParentDomainCookies
+    ).apply {
+        (acceptOnlySelfSignedServerCertificate ?: orig?.isAcceptOnlySelfSignedServerCertificate)?.let {
+            this.isAcceptOnlySelfSignedServerCertificate = it
+        }
+    }
+}
+
+/**
+ * Create a ReplicatorConfiguration, overriding the receiver's
+ * values with the passed parameters:
+ *
+ * Note: A document that is blocked by a document Id filter will not be auto-purged
+ *       regardless of the setting of the enableAutoPurge property
+ *
  * Warning: This factory method configures only the default collection!
  *          Using it on a configuration that describes any collections other than the default
  *          will lose all information associated with those collections
@@ -67,6 +126,8 @@ public fun DatabaseConfiguration?.newConfig(
  *
  * @see ReplicatorConfiguration
  */
+@Suppress("DEPRECATION")
+@Deprecated("Use ReplicatorConfigurationFactory.newConfig(Endpoint?, Map<Set<Collection>, CollectionConfiguration?>?, ...)")
 public fun ReplicatorConfiguration?.newConfig(
     database: Database? = null,
     target: Endpoint? = null,
@@ -130,17 +191,41 @@ public val MessageEndpointListenerConfigurationFactory: MessageEndpointListenerC
  * Create a MessageEndpointListenerConfiguration, overriding the receiver's
  * values with the passed parameters:
  *
- * @param database the local database.
+ * @param collections the local collections.
  * @param protocolType (required) data transport type: messages or bytes.
  *
  * @see MessageEndpointListenerConfiguration
  */
 public fun MessageEndpointListenerConfiguration?.newConfig(
+    collections: Set<Collection>? = null,
+    protocolType: ProtocolType? = null
+): MessageEndpointListenerConfiguration = MessageEndpointListenerConfiguration(
+    collections ?: this?.collections
+    ?: error("A MessageEndpointListenerConfiguration must specify collections"),
+    protocolType ?: this?.protocolType
+    ?: error("A MessageEndpointListenerConfiguration must specify a protocol type")
+)
+
+/**
+ * **ENTERPRISE EDITION API**
+ *
+ * Create a MessageEndpointListenerConfiguration, overriding the receiver's
+ * values with the passed parameters:
+ *
+ * @param database the local database.
+ * @param protocolType (required) data transport type: messages or bytes.
+ *
+ * @see MessageEndpointListenerConfiguration
+ */
+@Suppress("DEPRECATION")
+@Deprecated("Use MessageEndpointListenerConfigurationFactory().newConfig(Endpoint?, Set<Collection>?)")
+public fun MessageEndpointListenerConfiguration?.newConfig(
     database: Database? = null,
     protocolType: ProtocolType? = null
 ): MessageEndpointListenerConfiguration = MessageEndpointListenerConfiguration(
-    database ?: this?.database ?: error("Must specify a database"),
-    protocolType ?: this?.protocolType ?: error("Must specify a protocol"),
+    database ?: this?.database ?: error("A MessageEndpointListenerConfiguration must specify a database"),
+    protocolType ?: this?.protocolType
+    ?: error("A MessageEndpointListenerConfiguration must specify a protocol type"),
 )
 
 /**
@@ -160,7 +245,7 @@ public val URLEndpointListenerConfigurationFactory: URLEndpointListenerConfigura
  * Create a URLEndpointListenerConfigurations, overriding the receiver's
  * values with the passed parameters:
  *
- * @param database the local database.
+ * @param collections the local collection.
  * @param networkInterface the interface on which to listen: default is 0.0.0.0.
  * @param port listener port: default is next available port.
  * @param disableTls true to disable TLS: default is false.
@@ -172,6 +257,45 @@ public val URLEndpointListenerConfigurationFactory: URLEndpointListenerConfigura
  * @see URLEndpointListenerConfiguration
  */
 public fun URLEndpointListenerConfiguration?.newConfig(
+    collections: Set<Collection>? = null,
+    networkInterface: String? = null,
+    port: Int? = null,
+    disableTls: Boolean? = null,
+    identity: TLSIdentity? = null,
+    authenticator: ListenerAuthenticator? = null,
+    readOnly: Boolean? = null,
+    enableDeltaSync: Boolean? = null,
+): URLEndpointListenerConfiguration = URLEndpointListenerConfiguration(
+    collections ?: this?.collections ?: error("A URLEndpointListenerConfiguration must specify collections"),
+    networkInterface ?: this?.networkInterface,
+    port ?: this?.port ?: Defaults.Listener.PORT,
+    disableTls ?: this?.isTlsDisabled ?: Defaults.Listener.DISABLE_TLS,
+    identity ?: this?.tlsIdentity,
+    authenticator ?: this?.authenticator,
+    readOnly ?: this?.isReadOnly ?: Defaults.Listener.READ_ONLY,
+    enableDeltaSync ?: this?.isDeltaSyncEnabled ?: Defaults.Listener.ENABLE_DELTA_SYNC
+)
+
+/**
+ * **ENTERPRISE EDITION API**
+ *
+ * Create a URLEndpointListenerConfigurations, overriding the receiver's
+ * values with the passed parameters:
+ *
+ * @param database the local database.
+ * @param networkInterface the interface on which to listen: default is 0.0.0.0.
+ * @param port listener port: default is next available port.
+ * @param disableTls true to disable TLS: default is false.
+ * @param identity certs and keys for the listener.
+ * @param authenticator authenticator.
+ * @param readOnly true for a read-only connection.
+ * @param enableDeltaSync true to enable delta sync.
+ *
+ * @see URLEndpointListenerConfiguration
+ */
+@Suppress("DEPRECATION")
+@Deprecated("Use URLEndpointListenerConfigurations().newConfig(Set<Collection>?, ...)")
+public fun URLEndpointListenerConfiguration?.newConfig(
     database: Database? = null,
     networkInterface: String? = null,
     port: Int? = null,
@@ -181,12 +305,12 @@ public fun URLEndpointListenerConfiguration?.newConfig(
     readOnly: Boolean? = null,
     enableDeltaSync: Boolean? = null,
 ): URLEndpointListenerConfiguration = URLEndpointListenerConfiguration(
-    database ?: this?.database ?: error("Must specify a database"),
+    database ?: this?.database ?: error("A URLEndpointListenerConfiguration must specify a database"),
     networkInterface ?: this?.networkInterface,
-    port ?: this?.port ?: error("Must specify a port"),
-    disableTls ?: this?.isTlsDisabled ?: false,
+    port ?: this?.port ?: Defaults.Listener.PORT,
+    disableTls ?: this?.isTlsDisabled ?: Defaults.Listener.DISABLE_TLS,
     identity ?: this?.tlsIdentity,
     authenticator ?: this?.authenticator,
-    readOnly ?: this?.isReadOnly ?: false,
-    enableDeltaSync ?: this?.isDeltaSyncEnabled ?: false
+    readOnly ?: this?.isReadOnly ?: Defaults.Listener.READ_ONLY,
+    enableDeltaSync ?: this?.isDeltaSyncEnabled ?: Defaults.Listener.ENABLE_DELTA_SYNC
 )

@@ -15,6 +15,10 @@
  */
 package kotbase
 
+@Deprecated(
+    "Use CollectionChange",
+    ReplaceWith("CollectionChange")
+)
 public actual class DatabaseChange
 internal constructor(
     public actual val database: Database,

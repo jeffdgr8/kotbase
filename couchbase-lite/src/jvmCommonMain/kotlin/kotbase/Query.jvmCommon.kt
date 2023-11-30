@@ -50,7 +50,7 @@ internal class DelegatedQuery(actual: CBLQuery) : DelegatedClass<CBLQuery>(actua
         actual.explain()
 
     override fun addChangeListener(listener: QueryChangeListener): ListenerToken =
-        actual.addChangeListener(listener.convert())
+        DelegatedListenerToken(actual.addChangeListener(listener.convert()))
 
     @OptIn(ExperimentalStdlibApi::class)
     override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken {
@@ -66,16 +66,19 @@ internal class DelegatedQuery(actual: CBLQuery) : DelegatedClass<CBLQuery>(actua
             listener.convert(scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            actual.removeChangeListener(token)
+            token.remove()
         }
     }
 
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
     override fun removeChangeListener(token: ListenerToken) {
+        actual.removeChangeListener(token.actual)
         if (token is SuspendListenerToken) {
-            actual.removeChangeListener(token.actual)
             token.scope.cancel()
-        } else {
-            actual.removeChangeListener(token)
         }
     }
 }

@@ -49,13 +49,79 @@ public val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
 
 /**
  * Create a ReplicatorConfiguration, overriding the receiver's
+ * values with the passed parameters.
+ *
+ * Note: A document that is blocked by a document Id filter will not be auto-purged
+ *       regardless of the setting of the enableAutoPurge property
+ *
+ * @param target (required) The replication endpoint.
+ * @param collections a map of collections to be replicated, to their configurations.
+ * @param type replicator type: push, pull, or push and pull: default is push and pull.
+ * @param continuous continuous flag: true for continuous, false by default.
+ * @param authenticator connection authenticator.
+ * @param headers extra HTTP headers to send in all requests to the remote target.
+ * @param pinnedServerCertificate target server's SSL certificate.
+ * @param maxAttempts max retry attempts after connection failure.
+ * @param maxAttemptWaitTime max time between retry attempts (exponential backoff).
+ * @param heartbeat heartbeat interval, in seconds.
+ * @param enableAutoPurge auto-purge enabled.
+ * @param acceptParentDomainCookies Advanced: accept cookies for parent domains.
+ *
+ * @see ReplicatorConfiguration
+ */
+public fun ReplicatorConfiguration?.newConfig(
+    target: Endpoint? = null,
+    collections: Map<out kotlin.collections.Collection<Collection>, CollectionConfiguration?>? = null,
+    type: ReplicatorType? = null,
+    continuous: Boolean? = null,
+    authenticator: Authenticator? = null,
+    headers: Map<String, String>? = null,
+    pinnedServerCertificate: ByteArray? = null,
+    maxAttempts: Int? = null,
+    maxAttemptWaitTime: Int? = null,
+    heartbeat: Int? = null,
+    enableAutoPurge: Boolean? = null,
+    acceptParentDomainCookies: Boolean? = null
+): ReplicatorConfiguration {
+    val orig = this
+    return ReplicatorConfiguration(
+        target ?: this?.target ?: error("A ReplicatorConfiguration must specify an endpoint")
+    ).apply {
+        (type ?: orig?.type)?.let { this.type = it }
+        (continuous ?: orig?.isContinuous)?.let { this.isContinuous = it }
+        this.authenticator = authenticator ?: orig?.authenticator
+        this.headers = headers ?: orig?.headers
+        (acceptParentDomainCookies ?: orig?.isAcceptParentDomainCookies)?.let { this.isAcceptParentDomainCookies = it }
+        this.pinnedServerCertificate = pinnedServerCertificate ?: orig?.pinnedServerCertificate
+        (maxAttempts ?: orig?.maxAttempts)?.let { this.maxAttempts = it }
+        (maxAttemptWaitTime ?: orig?.maxAttemptWaitTime)?.let { this.maxAttemptWaitTime = it }
+        (heartbeat ?: orig?.heartbeat)?.let { this.heartbeat = it }
+        (enableAutoPurge ?: orig?.isAutoPurgeEnabled)?.let { this.isAutoPurgeEnabled = it }
+        if (collections != null) {
+            collections.forEach {
+                addCollections(it.key, it.value)
+            }
+        } else {
+            orig?.collections?.forEach {
+                addCollection(it, orig.getCollectionConfiguration(it))
+            }
+        }
+    }
+}
+
+/**
+ * Create a ReplicatorConfiguration, overriding the receiver's
  * values with the passed parameters:
  *
  * Note: A document that is blocked by a document Id filter will not be auto-purged
  *       regardless of the setting of the enableAutoPurge property
  *
- * @param database (required) the local database.
- * @param target (required) The max size of the log file in bytes.
+ * Warning: This factory method configures only the default collection!
+ *          Using it on a configuration that describes any collections other than the default
+ *          will lose all information associated with those collections
+ *
+ * @param database the local database.
+ * @param target (required) The replication endpoint.
  * @param type replicator type: push, pull, or push and pull: default is push and pull.
  * @param continuous continuous flag: true for continuous, false by default.
  * @param authenticator connection authenticator.
@@ -74,6 +140,8 @@ public val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
  *
  * @see ReplicatorConfiguration
  */
+@Suppress("DEPRECATION")
+@Deprecated("Use ReplicatorConfigurationFactory.newConfig(Endpoint?, Map<Set<Collection>, CollectionConfiguration?>?, ...)")
 public fun ReplicatorConfiguration?.newConfig(
     database: Database? = null,
     target: Endpoint? = null,

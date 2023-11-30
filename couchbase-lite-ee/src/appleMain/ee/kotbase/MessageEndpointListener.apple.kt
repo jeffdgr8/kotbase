@@ -58,7 +58,7 @@ internal constructor(actual: CBLMessageEndpointListener) :
             context[CoroutineDispatcher]?.asDispatchQueue(),
             listener.convert(scope)
         )
-        return SuspendListenerToken(scope, DelegatedListenerToken(token))
+        return SuspendListenerToken(scope, token)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -68,17 +68,15 @@ internal constructor(actual: CBLMessageEndpointListener) :
             listener.convert(scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            actual.removeChangeListenerWithToken(token)
+            token.remove()
         }
     }
 
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
     public actual fun removeChangeListener(token: ListenerToken) {
-        if (token is SuspendListenerToken) {
-            actual.removeChangeListenerWithToken(token.token.actual)
-            token.scope.cancel()
-        } else {
-            token as DelegatedListenerToken
-            actual.removeChangeListenerWithToken(token.actual)
-        }
+        token.remove()
     }
 }

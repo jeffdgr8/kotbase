@@ -18,5 +18,15 @@ package kotbase
 /**
  * Provides details about a Collection change.
  */
-@Suppress("DEPRECATION")
-public expect class CollectionChange : DatabaseChange
+public expect class CollectionChange {
+
+    /**
+     * The collection
+     */
+    public val collection: Collection
+
+    /**
+     * The list of the changed document IDs
+     */
+    public val documentIDs: List<String>
+}

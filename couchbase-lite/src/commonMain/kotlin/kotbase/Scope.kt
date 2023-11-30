@@ -15,7 +15,18 @@
  */
 package kotbase
 
+/**
+ * A `Scope` represents a scope or namespace of collections.
+ *
+ * The scope implicitly exists when there is at least one collection created under the scope. The default scope is
+ * exceptional in that it will always exist even when there are no collections under it.
+ *
+ * A `Scope` object remains valid until either the database is closed or the scope itself is invalidated as all
+ * collections in the scope have been deleted.
+ */
 public expect class Scope {
+
+    internal val database: Database
 
     /**
      * The scope name.
@@ -28,7 +39,7 @@ public expect class Scope {
      * @return a set of all collections in the scope
      */
     @Throws(CouchbaseLiteException::class)
-    public fun getCollections(): Set<Any>
+    public fun getCollections(): Set<Collection>
 
     /**
      * Get the named collection for the scope.

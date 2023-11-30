@@ -19,47 +19,71 @@ import cocoapods.CouchbaseLite.CBLReplicatorConfiguration
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toByteArray
 import kotbase.ext.toSecCertificate
+import kotbase.internal.actuals
 import kotlinx.cinterop.convert
+import platform.Security.SecCertificateRef
 
 public actual class ReplicatorConfiguration
 private constructor(
-    public actual val database: Database,
-    public actual val target: Endpoint,
     actual: CBLReplicatorConfiguration,
-    authenticator: Authenticator? = null,
-    conflictResolver: ConflictResolver? = null,
-    pullFilter: ReplicationFilter? = null,
-    pushFilter: ReplicationFilter? = null
+    public actual val target: Endpoint,
+    private var db: Database? = null,
+    private val collectionConfigurations: MutableMap<Collection, CollectionConfiguration> = mutableMapOf(),
+    authenticator: Authenticator? = null
 ) : DelegatedClass<CBLReplicatorConfiguration>(actual) {
 
+    @Deprecated(
+        "Use ReplicatorConfiguration(Endpoint)",
+        ReplaceWith("ReplicatorConfiguration(target)")
+    )
     public actual constructor(database: Database, target: Endpoint) : this(
-        database,
+        CBLReplicatorConfiguration(database.actual, target.actual),
         target,
-        CBLReplicatorConfiguration(database.actual, target.actual)
+        database
+    ) {
+        addCollection(database.getDefaultCollectionNotNull(), null)
+    }
+
+    public actual constructor(target: Endpoint) : this(
+        CBLReplicatorConfiguration(target.actual),
+        target
     )
 
     public actual constructor(config: ReplicatorConfiguration) : this(
-        config.database,
-        config.target,
         CBLReplicatorConfiguration(config.actual),
-        config.authenticator,
-        config.conflictResolver,
-        config.pullFilter,
-        config.pushFilter
+        config.target,
+        config.db,
+        config.collectionConfigurations.toMutableMap(),
+        config.authenticator
     )
 
-    public actual fun setAuthenticator(authenticator: Authenticator): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.authenticator = authenticator
+    public actual fun addCollection(collection: Collection, config: CollectionConfiguration?): ReplicatorConfiguration {
+        val configNotNull = config?.let(::CollectionConfiguration) ?: CollectionConfiguration()
+        actual.addCollection(collection.actual, configNotNull.actual)
+        collectionConfigurations[collection] = configNotNull
         return this
     }
 
-    public actual fun setChannels(channels: List<String>?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.channels = channels
+    public actual fun addCollections(
+        collections: kotlin.collections.Collection<Collection>,
+        config: CollectionConfiguration?
+    ): ReplicatorConfiguration {
+        val configNotNull = config?.let(::CollectionConfiguration) ?: CollectionConfiguration()
+        actual.addCollections(collections.actuals(), configNotNull.actual)
+        collections.forEach {
+            collectionConfigurations[it] = configNotNull
+        }
         return this
     }
 
-    public actual fun setConflictResolver(conflictResolver: ConflictResolver?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.conflictResolver = conflictResolver
+    public actual fun removeCollection(collection: Collection): ReplicatorConfiguration {
+        actual.removeCollection(collection.actual)
+        collectionConfigurations.remove(collection)
+        return this
+    }
+
+    public actual fun setType(type: ReplicatorType): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.type = type
         return this
     }
 
@@ -68,8 +92,8 @@ private constructor(
         return this
     }
 
-    public actual fun setDocumentIDs(documentIDs: List<String>?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.documentIDs = documentIDs
+    public actual fun setAutoPurgeEnabled(enabled: Boolean): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.isAutoPurgeEnabled = enabled
         return this
     }
 
@@ -83,23 +107,13 @@ private constructor(
         return this
     }
 
+    public actual fun setAuthenticator(authenticator: Authenticator?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.authenticator = authenticator
+        return this
+    }
+
     public actual fun setPinnedServerCertificate(pinnedCert: ByteArray?): ReplicatorConfiguration {
         this@ReplicatorConfiguration.pinnedServerCertificate = pinnedCert
-        return this
-    }
-
-    public actual fun setPullFilter(pullFilter: ReplicationFilter?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.pullFilter = pullFilter
-        return this
-    }
-
-    public actual fun setPushFilter(pushFilter: ReplicationFilter?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.pushFilter = pushFilter
-        return this
-    }
-
-    public actual fun setType(type: ReplicatorType): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.type = type
         return this
     }
 
@@ -118,28 +132,51 @@ private constructor(
         return this
     }
 
-    public actual fun setAutoPurgeEnabled(enabled: Boolean): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.isAutoPurgeEnabled = enabled
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setDocumentIDs")
+    public actual fun setDocumentIDs(documentIDs: List<String>?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.documentIDs = documentIDs
         return this
     }
 
-    public actual var authenticator: Authenticator? = authenticator
-        set(value) {
-            field = value
-            actual.authenticator = value?.actual
-        }
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setChannels")
+    public actual fun setChannels(channels: List<String>?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.channels = channels
+        return this
+    }
 
-    public actual var channels: List<String>?
-        @Suppress("UNCHECKED_CAST")
-        get() = actual.channels as List<String>?
-        set(value) {
-            actual.channels = value
-        }
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setConflictResolver")
+    public actual fun setConflictResolver(conflictResolver: ConflictResolver?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.conflictResolver = conflictResolver
+        return this
+    }
 
-    public actual var conflictResolver: ConflictResolver? = conflictResolver
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setPullFilter")
+    public actual fun setPullFilter(pullFilter: ReplicationFilter?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.pullFilter = pullFilter
+        return this
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setPushFilter")
+    public actual fun setPushFilter(pushFilter: ReplicationFilter?): ReplicatorConfiguration {
+        this@ReplicatorConfiguration.pushFilter = pushFilter
+        return this
+    }
+
+    public actual fun getCollectionConfiguration(collection: Collection): CollectionConfiguration? =
+        collectionConfigurations[collection]?.let(::CollectionConfiguration)
+
+    public actual val collections: Set<Collection>
+        get() = collectionConfigurations.keys
+
+    public actual var type: ReplicatorType
+        get() = ReplicatorType.from(actual.replicatorType)
         set(value) {
-            field = value
-            actual.conflictResolver = value?.convert()
+            actual.replicatorType = value.actual
         }
 
     public actual var isContinuous: Boolean
@@ -148,11 +185,10 @@ private constructor(
             actual.continuous = value
         }
 
-    public actual var documentIDs: List<String>?
-        @Suppress("UNCHECKED_CAST")
-        get() = actual.documentIDs as List<String>?
+    public actual var isAutoPurgeEnabled: Boolean
+        get() = actual.enableAutoPurge
         set(value) {
-            actual.documentIDs = value
+            actual.enableAutoPurge = value
         }
 
     @Suppress("UNCHECKED_CAST")
@@ -168,28 +204,16 @@ private constructor(
             actual.acceptParentDomainCookies = value
         }
 
+    public actual var authenticator: Authenticator? = authenticator
+        set(value) {
+            field = value
+            actual.authenticator = value?.actual
+        }
+
     public actual var pinnedServerCertificate: ByteArray?
         get() = actual.pinnedServerCertificate?.toByteArray()
         set(value) {
             actual.pinnedServerCertificate = value?.toSecCertificate()
-        }
-
-    public actual var pullFilter: ReplicationFilter? = pullFilter
-        set(value) {
-            field = value
-            actual.pullFilter = value?.convert()
-        }
-
-    public actual var pushFilter: ReplicationFilter? = pushFilter
-        set(value) {
-            field = value
-            actual.pushFilter = value?.convert()
-        }
-
-    public actual var type: ReplicatorType
-        get() = ReplicatorType.from(actual.replicatorType)
-        set(value) {
-            actual.replicatorType = value.actual
         }
 
     public actual var maxAttempts: Int
@@ -210,11 +234,104 @@ private constructor(
             actual.heartbeat = value.toDouble()
         }
 
-    public actual var isAutoPurgeEnabled: Boolean
-        get() = actual.enableAutoPurge
-        set(value) {
-            actual.enableAutoPurge = value
+    @Deprecated("Use CollectionConfiguration.collections")
+    public actual val database: Database
+        get() {
+            val actualDb = actual.database
+            return collectionConfigurations.keys.firstOrNull()?.database
+                ?: db
+                ?: Database(actualDb)
         }
+
+    @Deprecated("Use CollectionConfiguration.documentIDs")
+    public actual var documentIDs: List<String>?
+        get() = getDefaultCollectionConfiguration().documentIDs?.toList()
+        set(value) {
+            updateDefaultConfig {
+                documentIDs = value
+            }
+        }
+
+    @Deprecated("Use CollectionConfiguration.channels")
+    public actual var channels: List<String>?
+        get() = getDefaultCollectionConfiguration().channels?.toList()
+        set(value) {
+            updateDefaultConfig {
+                channels = value
+            }
+        }
+
+    @Deprecated("Use CollectionConfiguration.conflictResolver")
+    public actual var conflictResolver: ConflictResolver?
+        get() = getDefaultCollectionConfiguration().conflictResolver
+        set(value) {
+            updateDefaultConfig {
+                conflictResolver = value
+            }
+        }
+
+    @Deprecated("Use CollectionConfiguration.pullFilter")
+    public actual var pullFilter: ReplicationFilter?
+        get() = getDefaultCollectionConfiguration().pullFilter
+        set(value) {
+            updateDefaultConfig {
+                pullFilter = value
+            }
+        }
+
+    @Deprecated("Use CollectionConfiguration.pushFilter")
+    public actual var pushFilter: ReplicationFilter?
+        get() = getDefaultCollectionConfiguration().pushFilter
+        set(value) {
+            updateDefaultConfig {
+                pushFilter = value
+            }
+        }
+
+    @Suppress("DEPRECATION")
+    private val defaultCollection: Collection by lazy {
+        database.getDefaultCollection()
+            ?: throw IllegalArgumentException("Cannot use legacy parameters when there is no default collection")
+    }
+
+    private fun getDefaultCollectionConfiguration(): CollectionConfiguration {
+        return collectionConfigurations[defaultCollection]
+            ?: throw IllegalArgumentException(
+                "Cannot use legacy parameters when the default collection has no configuration"
+            )
+    }
+
+    private fun updateDefaultConfig(updater: CollectionConfiguration.() -> Unit) {
+        val config = getDefaultCollectionConfiguration()
+        val updated = CollectionConfiguration(config)
+        updated.updater()
+        addCollection(defaultCollection, updated)
+    }
 
     public actual companion object
 }
+
+/**
+ * Sets the certificate used to authenticate the target server.
+ * A server will be authenticated if it presents a chain of certificates (possibly of length 1)
+ * in which any one of the certificates matches the one passed here.
+ * The default is no pinned certificate.
+ *
+ * @param pinnedCert the SSL certificate.
+ * @return this.
+ */
+public fun ReplicatorConfiguration.setPinnedServerSecCertificate(
+    pinnedCert: SecCertificateRef?
+): ReplicatorConfiguration {
+    actual.pinnedServerCertificate = pinnedCert
+    return this
+}
+
+/**
+ * The remote target’s SSL certificate.
+ */
+public var ReplicatorConfiguration.pinnedServerSecCertificate: SecCertificateRef?
+    get() = actual.pinnedServerCertificate
+    set(value) {
+        actual.pinnedServerCertificate = value
+    }

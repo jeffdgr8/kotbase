@@ -68,7 +68,7 @@ public expect class Database : AutoCloseable {
          * Checks whether a database of the given name exists in the given directory or not.
          *
          * @param name      the database's name
-         * @param directory the path where the database is located.
+         * @param directory the path where the database is located. If null, the default db directory will be used.
          * @return true if exists, false otherwise.
          */
         public fun exists(name: String, directory: String? = null): Boolean
@@ -129,7 +129,7 @@ public expect class Database : AutoCloseable {
 
     /**
      * Get a scope object by name. As the scope cannot exist by itself without having a collection,
-     * the hull value will be returned if there are no collections under the given scope’s name.
+     * the null value will be returned if there are no collections under the given scope’s name.
      * Note: The default scope is exceptional, and it will always be returned.
      */
     @Throws(CouchbaseLiteException::class)
@@ -421,6 +421,7 @@ public expect class Database : AutoCloseable {
      *
      * @see ListenerToken.remove
      */
+    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
         "Use getDefaultCollection().addChangeListener()",
         ReplaceWith("getDefaultCollection().addChangeListener(listener)")
@@ -439,6 +440,7 @@ public expect class Database : AutoCloseable {
      *
      * @see ListenerToken.remove
      */
+    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
         "Use getDefaultCollection().addChangeListener()",
         ReplaceWith("getDefaultCollection().addChangeListener(context, listener)")
@@ -454,6 +456,7 @@ public expect class Database : AutoCloseable {
      * @param scope coroutine scope in which the listener will run
      * @param listener The listener to post changes.
      */
+    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
         "Use getDefaultCollection().addChangeListener()",
         ReplaceWith("getDefaultCollection().addChangeListener(scope, listener)")
@@ -599,3 +602,12 @@ public expect class Database : AutoCloseable {
 @Suppress("DEPRECATION")
 public operator fun Database.get(key: String): DocumentFragment =
     DocumentFragment(getDocument(key))
+
+@Throws(CouchbaseLiteException::class)
+internal fun Database.getDefaultCollectionNotNull(): Collection {
+    return runCatching {
+        getDefaultCollection()!!
+    }.getOrElse {
+        throw IllegalStateException("Attempt to perform an operation on a closed database or a deleted collection.", it)
+    }
+}

@@ -13,22 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
+
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLDatabaseChange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-internal fun DatabaseChangeListener.convert(): (CBLDatabaseChange?) -> Unit {
+internal fun DatabaseChangeListener.convert(database: Database): (CBLDatabaseChange?) -> Unit {
     return { change ->
-        invoke(DatabaseChange(change!!))
+        invoke(DatabaseChange(change!!, database))
     }
 }
 
-internal fun DatabaseChangeSuspendListener.convert(scope: CoroutineScope): (CBLDatabaseChange?) -> Unit {
+internal fun DatabaseChangeSuspendListener.convert(
+    database: Database,
+    scope: CoroutineScope
+): (CBLDatabaseChange?) -> Unit {
     return { change ->
         scope.launch {
-            invoke(DatabaseChange(change!!))
+            invoke(DatabaseChange(change!!, database))
         }
     }
 }

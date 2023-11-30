@@ -17,12 +17,26 @@ package kotbase
 
 public actual object FullTextFunction {
 
-    public actual fun match(indexName: String, text: String): Expression =
-        Expression.FunctionExpression(
-            "MATCH()",
-            listOf(Expression.string(indexName), Expression.string(text))
-        )
+    public actual fun rank(index: IndexExpression): Expression =
+        Expression.IdxExpression("RANK()", index)
 
+    public actual fun match(index: IndexExpression, query: String): Expression =
+        Expression.IdxExpression("MATCH()", index, Expression.string(query))
+
+    @Deprecated(
+        "Use FullTextFunction.rank(IndexExpression)",
+        ReplaceWith("FullTextFunction.rank(Expression.fullTextIndex(indexName))")
+    )
     public actual fun rank(indexName: String): Expression =
         Expression.FunctionExpression("RANK()", listOf(Expression.string(indexName)))
+
+    @Deprecated(
+        "Use FullTextFunction.match(IndexExpression)",
+        ReplaceWith("FullTextFunction.match(Expression.fullTextIndex(indexName), query)")
+    )
+    public actual fun match(indexName: String, query: String): Expression =
+        Expression.FunctionExpression(
+            "MATCH()",
+            listOf(Expression.string(indexName), Expression.string(query))
+        )
 }

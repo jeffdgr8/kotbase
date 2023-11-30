@@ -18,12 +18,15 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLDatabaseChange
 import kotbase.internal.DelegatedClass
 
+@Deprecated(
+    "Use CollectionChange",
+    ReplaceWith("CollectionChange")
+)
 public actual class DatabaseChange
-internal constructor(actual: CBLDatabaseChange) : DelegatedClass<CBLDatabaseChange>(actual) {
-
-    public actual val database: Database by lazy {
-        Database(actual.database!!)
-    }
+internal constructor(
+    actual: CBLDatabaseChange,
+    public actual val database: Database
+) : DelegatedClass<CBLDatabaseChange>(actual) {
 
     @Suppress("UNCHECKED_CAST")
     public actual val documentIDs: List<String>

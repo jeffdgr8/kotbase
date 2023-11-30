@@ -21,14 +21,14 @@ package kotbase
 public expect class ReplicatedDocument {
 
     /**
-     * The scope of the collection to which the changed document belongs.
+     * The name of the scope to which the changed document belongs.
      */
-    public val collectionScope: String
+    public val scope: String
 
     /**
      * The name of the collection to which the changed document belongs.
      */
-    public val collectionName: String
+    public val collection: String
 
     /**
      * The document id of the changed document.

@@ -33,9 +33,6 @@ public expect class DocumentChange {
     /**
      * The Database instance
      */
-    @Deprecated(
-        "Use DocumentChange.collection",
-        ReplaceWith("collection")
-    )
+    @Deprecated("Use DocumentChange.collection")
     public val database: Database
 }

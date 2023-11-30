@@ -17,12 +17,12 @@ package kotbase
 
 public actual open class DataSource
 private constructor(
-    internal val source: Database,
+    internal val source: Collection,
     protected var alias: String? = null
 ) {
 
     public actual class As
-    internal constructor(database: Database) : DataSource(database) {
+    internal constructor(collection: Collection) : DataSource(collection) {
 
         public actual fun `as`(alias: String): DataSource {
             this.alias = alias
@@ -30,15 +30,25 @@ private constructor(
         }
     }
 
-    private fun getColumnName(): String =
-        alias ?: source.name
-
-    internal fun asJSON(): Map<String, Any?> =
-        mapOf("AS" to getColumnName())
+    internal fun asJSON(): Map<String, Any?> {
+        return buildMap {
+            "COLLECTION" to "${source.scope.name}.${source.name}"
+            if (alias != null) {
+                "AS" to alias
+            }
+        }
+    }
 
     public actual companion object {
 
+        @Deprecated(
+            "Use DataSource.collection(Collection)",
+            ReplaceWith("collection(database.getDefaultCollection())")
+        )
         public actual fun database(database: Database): As =
-            As(database)
+            As(database.getDefaultCollectionNotNull())
+
+        public actual fun collection(collection: Collection): As =
+            As(collection)
     }
 }

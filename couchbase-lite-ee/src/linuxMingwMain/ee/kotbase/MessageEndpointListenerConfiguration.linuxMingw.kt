@@ -16,10 +16,33 @@
 package kotbase
 
 public actual class MessageEndpointListenerConfiguration
-actual constructor(
+internal constructor(
     public actual val database: Database,
+    public actual val collections: Set<Collection>,
     public actual val protocolType: ProtocolType
 ) {
+
+    @Deprecated(
+        "Use MessageEndpointListener(Collection, ProtocolType)",
+        ReplaceWith("MessageEndpointListener(setOf(database.getDefaultCollection()), protocolType)")
+    )
+    public actual constructor(
+        database: Database,
+        protocolType: ProtocolType
+    ) : this(
+        database,
+        setOf(database.getDefaultCollectionNotNull()),
+        protocolType
+    )
+
+    public actual constructor(
+        collections: Set<Collection>,
+        protocolType: ProtocolType
+    ) : this(
+        collections.first().database,
+        collections,
+        protocolType
+    )
 
     init {
         messageEndpointUnsupported()

@@ -16,13 +16,40 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLListenerTokenProtocol
+import kotbase.internal.DelegatedProtocol
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 
-public actual interface ListenerToken
+@OptIn(ExperimentalStdlibApi::class)
+public actual sealed class ListenerToken(
+    actual: CBLListenerTokenProtocol
+) : DelegatedProtocol<CBLListenerTokenProtocol>(actual), AutoCloseable {
 
-internal class DelegatedListenerToken(val actual: CBLListenerTokenProtocol) : ListenerToken
+    actual override fun close() {
+        removeImpl()
+    }
+
+    public actual fun remove() {
+        removeImpl()
+    }
+
+    protected open fun removeImpl() {
+        actual.remove()
+    }
+}
+
+internal class DelegatedListenerToken(
+    actual: CBLListenerTokenProtocol
+) : ListenerToken(actual)
 
 internal class SuspendListenerToken(
     val scope: CoroutineScope,
-    val token: DelegatedListenerToken
-) : ListenerToken
+    actual: CBLListenerTokenProtocol
+) : ListenerToken(actual) {
+
+    override fun removeImpl() {
+        super.removeImpl()
+        scope.cancel()
+    }
+}
+

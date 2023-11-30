@@ -23,7 +23,10 @@ import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 
 public actual class MutableDocument
-internal constructor(override val actual: CBLMutableDocument) : Document(actual) {
+internal constructor(
+    override val actual: CBLMutableDocument,
+    collection: Collection? = null
+) : Document(actual, collection) {
 
     public actual constructor() : this(CBLMutableDocument())
 
@@ -51,9 +54,6 @@ internal constructor(override val actual: CBLMutableDocument) : Document(actual)
             }
         }
     }
-
-    actual override fun toMutable(): MutableDocument =
-        MutableDocument(actual.toMutable())
 
     public actual fun setData(data: Map<String, Any?>): MutableDocument {
         collectionMap.clear()

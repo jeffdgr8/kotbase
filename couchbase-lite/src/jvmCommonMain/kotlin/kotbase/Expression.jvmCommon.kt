@@ -20,6 +20,8 @@ import kotbase.internal.DelegatedClass
 import kotbase.internal.actuals
 import kotlinx.datetime.Instant
 import com.couchbase.lite.Expression as CBLExpression
+import com.couchbase.lite.FullTextIndexExpression as CBLFullTextIndexExpression
+import com.couchbase.lite.IndexExpression as CBLIndexExpression
 
 public actual open class Expression(actual: CBLExpression) : DelegatedClass<CBLExpression>(actual) {
 
@@ -72,6 +74,21 @@ public actual open class Expression(actual: CBLExpression) : DelegatedClass<CBLE
 
         public actual fun not(expression: Expression): Expression =
             Expression(CBLExpression.not(expression.actual))
+
+        public actual fun fullTextIndex(indexName: String): FullTextIndexExpression =
+            DelegatedFullTextIndexExpression(CBLExpression.fullTextIndex(indexName))
+
+        private class DelegatedFullTextIndexExpression(
+            actual: CBLFullTextIndexExpression
+        ) : DelegatedIndexExpression<CBLFullTextIndexExpression>(actual), FullTextIndexExpression {
+
+            override fun from(alias: String): IndexExpression =
+                DelegatedIndexExpression(actual.from(alias))
+        }
+
+        internal open class DelegatedIndexExpression<A : CBLIndexExpression>(
+            actual: A
+        ) : DelegatedClass<A>(actual), IndexExpression
     }
 
     public actual fun multiply(expression: Expression): Expression =
@@ -128,15 +145,15 @@ public actual open class Expression(actual: CBLExpression) : DelegatedClass<CBLE
     public actual fun between(expression1: Expression, expression2: Expression): Expression =
         Expression(actual.between(expression1.actual, expression2.actual))
 
-    public actual fun isValued(): Expression =
-        Expression(actual.isValued)
-
-    public actual fun isNotValued(): Expression =
-        Expression(actual.isNotValued)
-
     public actual fun collate(collation: Collation): Expression =
         Expression(actual.collate(collation.actual))
 
     public actual fun `in`(vararg expressions: Expression): Expression =
         Expression(actual.`in`(*expressions.actuals()))
+
+    public actual fun isValued(): Expression =
+        Expression(actual.isValued)
+
+    public actual fun isNotValued(): Expression =
+        Expression(actual.isNotValued)
 }

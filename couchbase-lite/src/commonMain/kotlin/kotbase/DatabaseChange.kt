@@ -22,12 +22,7 @@ package kotbase
     "Use CollectionChange",
     ReplaceWith("CollectionChange")
 )
-public expect open class DatabaseChange {
-
-    /**
-     * The collection
-     */
-    public val collection: Collection
+public expect class DatabaseChange {
 
     /**
      * The database instance

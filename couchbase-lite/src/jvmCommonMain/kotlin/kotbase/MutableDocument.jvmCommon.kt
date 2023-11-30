@@ -20,7 +20,10 @@ import kotlinx.datetime.Instant
 import com.couchbase.lite.MutableDocument as CBLMutableDocument
 
 public actual class MutableDocument
-internal constructor(override val actual: CBLMutableDocument) : Document(actual) {
+internal constructor(
+    override val actual: CBLMutableDocument,
+    collection: Collection? = null
+) : Document(actual, collection) {
 
     public actual constructor() : this(CBLMutableDocument())
 
@@ -33,9 +36,6 @@ internal constructor(override val actual: CBLMutableDocument) : Document(actual)
     )
 
     public actual constructor(id: String?, json: String) : this(CBLMutableDocument(id, json))
-
-    actual override fun toMutable(): MutableDocument =
-        MutableDocument(actual.toMutable())
 
     public actual fun setData(data: Map<String, Any?>): MutableDocument {
         collectionMap.clear()

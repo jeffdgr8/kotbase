@@ -16,53 +16,54 @@
 package kotbase
 
 import cnames.structs.CBLListenerToken
+import kotlinx.atomicfu.atomic
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.StableRef
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import libcblite.CBLListener_Remove
 
-public actual interface ListenerToken
+@OptIn(ExperimentalStdlibApi::class)
+public actual sealed class ListenerToken : AutoCloseable {
 
-internal class DelegatedListenerToken(
-    val actual: CPointer<CBLListenerToken>,
-    val type: ListenerTokenType,
-    val index: Int
-) : ListenerToken
+    actual override fun close() {
+        removeImpl()
+    }
+
+    public actual fun remove() {
+        removeImpl()
+    }
+
+    protected abstract fun removeImpl()
+}
 
 internal class SuspendListenerToken(
-    val scope: CoroutineScope,
-    val token: DelegatedListenerToken
-) : ListenerToken
+    private val scope: CoroutineScope,
+    private  val token: ListenerToken
+) : ListenerToken() {
 
-internal enum class ListenerTokenType {
-    DATABASE,
-    DOCUMENT,
-    QUERY,
-    REPLICATOR,
-    DOCUMENT_REPLICATION
-}
-
-internal fun <T : Any> addListener(
-    listeners: MutableList<StableRef<T>?>,
-    listener: T
-): Pair<Int, COpaquePointer> {
-    val stableRef = StableRef.create(listener)
-    var index = listeners.indexOf(null)
-    if (index < 0) {
-        listeners.add(stableRef)
-        index = listeners.lastIndex
-    } else {
-        listeners[index] = stableRef
+    override fun removeImpl() {
+        token.remove()
+        scope.cancel()
     }
-    return Pair(index, stableRef.asCPointer())
 }
 
-internal fun <T : Any> removeListener(listeners: MutableList<StableRef<T>?>, index: Int) {
-    if (index > listeners.lastIndex) return
-    val stableRef = listeners[index] ?: return
-    stableRef.dispose()
-    listeners[index] = null
-    while (listeners.isNotEmpty() && listeners.last() == null) {
-        listeners.removeLast()
+internal class StableRefListenerToken<T : Any>(
+    ref: T,
+    actualBuilder: (COpaquePointer) -> CPointer<CBLListenerToken>
+) : ListenerToken() {
+
+    private val stableRef = StableRef.create(ref)
+
+    internal val actual: CPointer<CBLListenerToken> = actualBuilder(stableRef.asCPointer())
+
+    private var disposed = atomic(false)
+
+    override fun removeImpl() {
+        if (disposed.compareAndSet(expect = false, update = true)) {
+            CBLListener_Remove(actual)
+            stableRef.dispose()
+        }
     }
 }

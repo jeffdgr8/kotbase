@@ -83,5 +83,9 @@ public expect class MessageEndpointListener(config: MessageEndpointListenerConfi
      *
      * @param token identifier for the listener to be removed
      */
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
     public fun removeChangeListener(token: ListenerToken)
 }
