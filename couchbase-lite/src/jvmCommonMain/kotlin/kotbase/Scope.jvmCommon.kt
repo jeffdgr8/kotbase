@@ -21,7 +21,7 @@ import com.couchbase.lite.Scope as CBLScope
 public actual class Scope
 internal constructor(
     actual: CBLScope,
-    internal actual val database: Database
+    public actual val database: Database
 ) : DelegatedClass<CBLScope>(actual) {
 
     public actual val name: String

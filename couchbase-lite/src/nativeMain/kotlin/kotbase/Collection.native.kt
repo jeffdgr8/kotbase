@@ -33,7 +33,7 @@ import kotlin.coroutines.CoroutineContext
 public actual class Collection
 internal constructor(
     internal val actual: CPointer<CBLCollection>,
-    internal actual val database: Database
+    public actual val database: Database
 ) : AutoCloseable {
 
     public actual val scope: Scope
