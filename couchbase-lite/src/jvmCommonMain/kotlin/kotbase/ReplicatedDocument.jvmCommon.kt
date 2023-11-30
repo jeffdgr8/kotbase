@@ -21,6 +21,12 @@ import com.couchbase.lite.ReplicatedDocument as CBLReplicatedDocument
 public actual class ReplicatedDocument
 internal constructor(actual: CBLReplicatedDocument) : DelegatedClass<CBLReplicatedDocument>(actual) {
 
+    public actual val scope: String
+        get() = actual.collectionScope
+
+    public actual val collection: String
+        get() = actual.collectionName
+
     public actual val id: String
         get() = actual.id
 

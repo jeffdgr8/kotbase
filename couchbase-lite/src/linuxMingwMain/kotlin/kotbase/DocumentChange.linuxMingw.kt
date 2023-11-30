@@ -15,8 +15,23 @@
  */
 package kotbase
 
+import kotbase.internal.fleece.toKString
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.pointed
+import libcblite.CBLDocumentChange
+
 public actual class DocumentChange
 internal constructor(
-    public actual val database: Database,
+    public actual val collection: Collection,
     public actual val documentID: String
-)
+) {
+
+    internal constructor(collection: Collection, actual: CPointer<CBLDocumentChange>) : this(
+        collection,
+        actual.pointed.docID.toKString()!!
+    )
+
+    @Deprecated("Use DocumentChange.collection")
+    public actual val database: Database
+        get() = collection.database
+}

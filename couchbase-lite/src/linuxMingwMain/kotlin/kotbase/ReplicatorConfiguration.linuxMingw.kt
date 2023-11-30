@@ -24,24 +24,33 @@ import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-public actual class ReplicatorConfiguration actual constructor(
-    public actual val database: Database,
-    public actual val target: Endpoint
+public actual class ReplicatorConfiguration
+private constructor(
+    public actual val target: Endpoint,
+    private var db: Database?,
+    internal val collectionConfigurations: MutableMap<Collection, CollectionConfiguration> = mutableMapOf()
 ) {
 
+    @Deprecated(
+        "Use ReplicatorConfiguration(Endpoint)",
+        ReplaceWith("ReplicatorConfiguration(target)")
+    )
+    public actual constructor(database: Database, target: Endpoint) : this(target, database) {
+        addCollection(database.getDefaultCollectionNotNull(), null)
+    }
+
+    public actual constructor(target: Endpoint) : this(target, null)
+
     public actual constructor(config: ReplicatorConfiguration) : this(
-        config.database,
-        config.target
+        config.target,
+        config.db,
+        config.collectionConfigurations.toMutableMap()
     ) {
         authenticator = config.authenticator
-        channels = config.channels
-        conflictResolver = config.conflictResolver
         isContinuous = config.isContinuous
-        documentIDs = config.documentIDs
         headers = config.headers
+        isAcceptParentDomainCookies = config.isAcceptParentDomainCookies
         pinnedServerCertificate = config.pinnedServerCertificate
-        pullFilter = config.pullFilter
-        pushFilter = config.pushFilter
         type = config.type
         maxAttempts = config.maxAttempts
         maxAttemptWaitTime = config.maxAttemptWaitTime
@@ -50,19 +59,15 @@ public actual class ReplicatorConfiguration actual constructor(
     }
 
     internal constructor(config: ImmutableReplicatorConfiguration) : this(
+        config.target,
         config.database,
-        config.target
+        config.collectionConfigurations.toMutableMap()
     ) {
         authenticator = config.authenticator
-        channels = config.channels
-        conflictResolver = config.conflictResolver
         isContinuous = config.isContinuous
-        documentIDs = config.documentIDs
         headers = config.headers
         isAcceptParentDomainCookies = config.isAcceptParentDomainCookies
         pinnedServerCertificate = config.pinnedServerCertificate
-        pullFilter = config.pullFilter
-        pushFilter = config.pushFilter
         type = config.type
         maxAttempts = config.maxAttempts
         maxAttemptWaitTime = config.maxAttemptWaitTime
@@ -70,18 +75,30 @@ public actual class ReplicatorConfiguration actual constructor(
         isAutoPurgeEnabled = config.isAutoPurgeEnabled
     }
 
-    public actual fun setAuthenticator(authenticator: Authenticator): ReplicatorConfiguration {
-        this.authenticator = authenticator
+    public actual fun addCollection(collection: Collection, config: CollectionConfiguration?): ReplicatorConfiguration {
+        val configNotNull = config?.let(::CollectionConfiguration) ?: CollectionConfiguration()
+        collectionConfigurations[collection] = configNotNull
         return this
     }
 
-    public actual fun setChannels(channels: List<String>?): ReplicatorConfiguration {
-        this.channels = channels
+    public actual fun addCollections(
+        collections: kotlin.collections.Collection<Collection>,
+        config: CollectionConfiguration?
+    ): ReplicatorConfiguration {
+        val configNotNull = config?.let(::CollectionConfiguration) ?: CollectionConfiguration()
+        collections.forEach {
+            collectionConfigurations[it] = configNotNull
+        }
         return this
     }
 
-    public actual fun setConflictResolver(conflictResolver: ConflictResolver?): ReplicatorConfiguration {
-        this.conflictResolver = conflictResolver
+    public actual fun removeCollection(collection: Collection): ReplicatorConfiguration {
+        collectionConfigurations.remove(collection)
+        return this
+    }
+
+    public actual fun setType(type: ReplicatorType): ReplicatorConfiguration {
+        this.type = type
         return this
     }
 
@@ -90,8 +107,8 @@ public actual class ReplicatorConfiguration actual constructor(
         return this
     }
 
-    public actual fun setDocumentIDs(documentIDs: List<String>?): ReplicatorConfiguration {
-        this.documentIDs = documentIDs
+    public actual fun setAutoPurgeEnabled(enabled: Boolean): ReplicatorConfiguration {
+        this.isAutoPurgeEnabled = enabled
         return this
     }
 
@@ -105,23 +122,13 @@ public actual class ReplicatorConfiguration actual constructor(
         return this
     }
 
+    public actual fun setAuthenticator(authenticator: Authenticator?): ReplicatorConfiguration {
+        this.authenticator = authenticator
+        return this
+    }
+
     public actual fun setPinnedServerCertificate(pinnedCert: ByteArray?): ReplicatorConfiguration {
         this.pinnedServerCertificate = pinnedCert
-        return this
-    }
-
-    public actual fun setPullFilter(pullFilter: ReplicationFilter?): ReplicatorConfiguration {
-        this.pullFilter = pullFilter
-        return this
-    }
-
-    public actual fun setPushFilter(pushFilter: ReplicationFilter?): ReplicatorConfiguration {
-        this.pushFilter = pushFilter
-        return this
-    }
-
-    public actual fun setType(type: ReplicatorType): ReplicatorConfiguration {
-        this.type = type
         return this
     }
 
@@ -140,32 +147,60 @@ public actual class ReplicatorConfiguration actual constructor(
         return this
     }
 
-    public actual fun setAutoPurgeEnabled(enabled: Boolean): ReplicatorConfiguration {
-        this.isAutoPurgeEnabled = enabled
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setDocumentIDs")
+    public actual fun setDocumentIDs(documentIDs: List<String>?): ReplicatorConfiguration {
+        this.documentIDs = documentIDs
         return this
     }
 
-    public actual var authenticator: Authenticator? = null
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setChannels")
+    public actual fun setChannels(channels: List<String>?): ReplicatorConfiguration {
+        this.channels = channels
+        return this
+    }
 
-    public actual var channels: List<String>? = null
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setConflictResolver")
+    public actual fun setConflictResolver(conflictResolver: ConflictResolver?): ReplicatorConfiguration {
+        this.conflictResolver = conflictResolver
+        return this
+    }
 
-    public actual var conflictResolver: ConflictResolver? = null
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setPullFilter")
+    public actual fun setPullFilter(pullFilter: ReplicationFilter?): ReplicatorConfiguration {
+        this.pullFilter = pullFilter
+        return this
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated("Use CollectionConfiguration.setPushFilter")
+    public actual fun setPushFilter(pushFilter: ReplicationFilter?): ReplicatorConfiguration {
+        this.pushFilter = pushFilter
+        return this
+    }
+
+    public actual fun getCollectionConfiguration(collection: Collection): CollectionConfiguration? =
+        collectionConfigurations[collection]
+
+    public actual val collections: Set<Collection>
+        get() = collectionConfigurations.keys
+
+    public actual var type: ReplicatorType = ReplicatorType.PUSH_AND_PULL
 
     public actual var isContinuous: Boolean = false
 
-    public actual var documentIDs: List<String>? = null
+    public actual var isAutoPurgeEnabled: Boolean = true
 
     public actual var headers: Map<String, String>? = null
 
     public actual var isAcceptParentDomainCookies: Boolean = false
 
+    public actual var authenticator: Authenticator? = null
+
     public actual var pinnedServerCertificate: ByteArray? = null
-
-    public actual var pullFilter: ReplicationFilter? = null
-
-    public actual var pushFilter: ReplicationFilter? = null
-
-    public actual var type: ReplicatorType = ReplicatorType.PUSH_AND_PULL
 
     public actual var maxAttempts: Int = 0
 
@@ -173,7 +208,75 @@ public actual class ReplicatorConfiguration actual constructor(
 
     public actual var heartbeat: Int = 0
 
-    public actual var isAutoPurgeEnabled: Boolean = true
+    @Deprecated("Use CollectionConfiguration.collections")
+    public actual val database: Database
+        get() {
+            return collectionConfigurations.keys.firstOrNull()?.database
+                ?: db
+                ?: throw IllegalStateException("No database or collections provided for replication configuration")
+        }
+
+    @Deprecated("Use CollectionConfiguration.documentIDs")
+    public actual var documentIDs: List<String>? = null
+        get() {
+            getDefaultCollectionConfiguration()
+            return field
+        }
+        set(value) {
+            field = value
+            getDefaultCollectionConfiguration().documentIDs = value
+        }
+
+    @Deprecated("Use CollectionConfiguration.channels")
+    public actual var channels: List<String>? = null
+        get() {
+            getDefaultCollectionConfiguration()
+            return field
+        }
+        set(value) {
+            field = value
+            getDefaultCollectionConfiguration().channels = value
+        }
+
+    @Deprecated("Use CollectionConfiguration.conflictResolver")
+    public actual var conflictResolver: ConflictResolver? = null
+        get() {
+            getDefaultCollectionConfiguration()
+            return field
+        }
+        set(value) {
+            field = value
+            getDefaultCollectionConfiguration().conflictResolver = value
+        }
+
+    @Deprecated("Use CollectionConfiguration.pullFilter")
+    public actual var pullFilter: ReplicationFilter? = null
+        get() {
+            getDefaultCollectionConfiguration()
+            return field
+        }
+        set(value) {
+            field = value
+            getDefaultCollectionConfiguration().pullFilter = value
+        }
+
+    @Deprecated("Use CollectionConfiguration.pushFilter")
+    public actual var pushFilter: ReplicationFilter? = null
+        get() {
+            getDefaultCollectionConfiguration()
+            return field
+        }
+        set(value) {
+            field = value
+            getDefaultCollectionConfiguration().pushFilter = value
+        }
+
+    @Suppress("DEPRECATION")
+    private fun getDefaultCollectionConfiguration(): CollectionConfiguration =
+        getCollectionConfiguration(database.getDefaultCollectionNotNull())
+            ?: throw IllegalArgumentException(
+                "Cannot use legacy parameters when the default collection has no configuration"
+            )
 
     public actual companion object
 }
@@ -212,18 +315,15 @@ internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration)
         }
     }
 
+    @Suppress("DEPRECATION")
     val database: Database = config.database
+    val collectionConfigurations: Map<Collection, CollectionConfiguration> = config.collectionConfigurations.toMap()
     val target: Endpoint = config.target
     val authenticator: Authenticator? = config.authenticator
-    val channels: List<String>? = config.channels
-    val conflictResolver: ConflictResolver? = config.conflictResolver
     val isContinuous: Boolean = config.isContinuous
-    val documentIDs: List<String>? = config.documentIDs
     val headers: Map<String, String>? = config.headers
     val isAcceptParentDomainCookies: Boolean = config.isAcceptParentDomainCookies
     val pinnedServerCertificate: ByteArray? = config.pinnedServerCertificate
-    val pullFilter: ReplicationFilter? = config.pullFilter
-    val pushFilter: ReplicationFilter? = config.pushFilter
     val type: ReplicatorType = config.type
     val maxAttempts: Int = config.maxAttempts
     val maxAttemptWaitTime: Int = config.maxAttemptWaitTime
@@ -234,13 +334,24 @@ internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration)
         memory.arena.alloc<CBLReplicatorConfiguration>().also {
             it.acceptParentDomainCookies = config.isAcceptParentDomainCookies
             it.authenticator = config.authenticator?.actual
-            it.channels = config.channels?.toFLArray()?.retain()
-            it.conflictResolver = nativeConflictResolver()
+            val collectionsSize = config.collections.size
+            it.collectionCount = collectionsSize.convert()
+            it.collections = memory.arena.allocArray<CBLReplicationCollection>(collectionsSize).also { collections ->
+                config.collections.forEachIndexed { index, collection ->
+                    val collectionConfig = config.getCollectionConfiguration(collection) ?: return@forEachIndexed
+                    collections[index].apply {
+                        this.channels = collectionConfig.channels?.toFLArray()?.retain()
+                        this.collection = collection.actual
+                        this.conflictResolver = collectionConfig.nativeConflictResolver()
+                        this.documentIDs = collectionConfig.documentIDs?.toFLArray()?.retain()
+                        this.pullFilter = collectionConfig.nativePullFilter()
+                        this.pushFilter = collectionConfig.nativePushFilter()
+                    }
+                }
+            }
             it.context = memory.ref.asCPointer()
             it.continuous = config.isContinuous
-            it.database = config.database.actual
             it.disableAutoPurge = !config.isAutoPurgeEnabled
-            it.documentIDs = config.documentIDs?.toFLArray()?.retain()
             it.endpoint = config.target.actual
             it.headers = config.headers?.toFLDict()?.retain()
             it.heartbeat = config.heartbeat.convert()
@@ -253,44 +364,59 @@ internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration)
                 }
             }
             it.proxy = null
-            it.pullFilter = nativePullFilter()
-            it.pushFilter = nativePushFilter()
             it.replicatorType = config.type.actual
         }.ptr
+}
 
-    private fun nativeConflictResolver(): CBLConflictResolver? {
-        if (conflictResolver == null) return null
-        return staticCFunction { ref, documentId, localDocument, remoteDocument ->
-            val config = ref.to<ImmutableReplicatorConfiguration>()
-            config.conflictResolver!!.invoke(
-                Conflict(
-                    documentId.toKString()!!,
-                    localDocument?.asDocument(config.database),
-                    remoteDocument?.asDocument(config.database)
-                )
-            )?.actual
-        }
-    }
-
-    private fun nativePullFilter(): CBLReplicationFilter? {
-        if (pullFilter == null) return null
-        return staticCFunction { ref, document, flags ->
-            val config = ref.to<ImmutableReplicatorConfiguration>()
-            config.pullFilter!!.invoke(
-                Document(document!!, config.database),
-                flags.toDocumentFlags()
+private fun CollectionConfiguration.nativeConflictResolver(): CBLConflictResolver? {
+    if (conflictResolver == null) return null
+    return staticCFunction { ref, documentId, localDoc, remoteDoc ->
+        val config = ref.to<ImmutableReplicatorConfiguration>()
+        val localDocument = localDoc?.asDocument(config.database)
+        val remoteDocument = remoteDoc?.asDocument(config.database)
+        val collection = localDocument?.collection
+            ?: remoteDocument?.collection
+            ?: return@staticCFunction null
+        val collectionConfig = config.collectionConfigurations[collection]
+            ?: return@staticCFunction null
+        collectionConfig.conflictResolver!!.invoke(
+            Conflict(
+                documentId.toKString()!!,
+                localDocument,
+                remoteDocument
             )
-        }
+        )?.actual
     }
+}
 
-    private fun nativePushFilter(): CBLReplicationFilter? {
-        if (pushFilter == null) return null
-        return staticCFunction { ref, document, flags ->
-            val config = ref.to<ImmutableReplicatorConfiguration>()
-            config.pushFilter!!.invoke(
-                Document(document!!, config.database),
-                flags.toDocumentFlags()
-            )
-        }
+private fun CollectionConfiguration.nativePullFilter(): CBLReplicationFilter? {
+    if (pullFilter == null) return null
+    return staticCFunction { ref, doc, flags ->
+        val config = ref.to<ImmutableReplicatorConfiguration>()
+        val document = Document(doc!!, config.database)
+        val collection = document.collection
+            ?: return@staticCFunction true
+        val collectionConfig = config.collectionConfigurations[collection]
+            ?: return@staticCFunction true
+        collectionConfig.pullFilter!!.invoke(
+            document,
+            flags.toDocumentFlags()
+        )
+    }
+}
+
+private fun CollectionConfiguration.nativePushFilter(): CBLReplicationFilter? {
+    if (pushFilter == null) return null
+    return staticCFunction { ref, doc, flags ->
+        val config = ref.to<ImmutableReplicatorConfiguration>()
+        val document = Document(doc!!, config.database)
+        val collection = document.collection
+            ?: return@staticCFunction true
+        val collectionConfig = config.collectionConfigurations[collection]
+            ?: return@staticCFunction true
+        collectionConfig.pushFilter!!.invoke(
+            document,
+            flags.toDocumentFlags()
+        )
     }
 }

@@ -21,11 +21,13 @@ internal sealed class DatabaseChangeListenerHolder(
     val database: Database
 )
 
+@Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
 internal class DatabaseChangeDefaultListenerHolder(
     val listener: DatabaseChangeListener,
     database: Database
 ) : DatabaseChangeListenerHolder(database)
 
+@Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
 internal class DatabaseChangeSuspendListenerHolder(
     val listener: DatabaseChangeSuspendListener,
     database: Database,

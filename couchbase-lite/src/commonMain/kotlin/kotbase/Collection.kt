@@ -20,7 +20,7 @@ import kotlinx.datetime.Instant
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A `Collection` is a container for documents similar to aa table in a relational
+ * A `Collection` is a container for documents similar to a table in a relational
  * database. Collections are grouped into namespaces called `scope`s and have a
  * unique name within that scope.
  *
@@ -54,6 +54,8 @@ import kotlin.coroutines.CoroutineContext
 @OptIn(ExperimentalStdlibApi::class)
 public expect class Collection : AutoCloseable {
 
+    internal val database: Database
+
     /**
      * Scope
      */
@@ -63,8 +65,6 @@ public expect class Collection : AutoCloseable {
      * The collection name
      */
     public val name: String
-
-    public val fullName: String
 
     /**
      * The number of documents in the collection.
@@ -283,4 +283,9 @@ public expect class Collection : AutoCloseable {
     public fun deleteIndex(name: String)
 
     public override fun close()
+
+    public companion object
 }
+
+public val Collection.Companion.DEFAULT_NAME: String
+    get() = "_default"

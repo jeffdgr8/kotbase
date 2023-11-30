@@ -26,10 +26,10 @@ internal constructor(actual: CBLConflict) :
         get() = actual.documentID
 
     public actual val localDocument: Document? by lazy {
-        actual.localDocument?.asDocument()
+        actual.localDocument?.asDocument(null)
     }
 
     public actual val remoteDocument: Document? by lazy {
-        actual.remoteDocument?.asDocument()
+        actual.remoteDocument?.asDocument(null)
     }
 }

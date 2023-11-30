@@ -66,6 +66,11 @@ typedef struct C4Document {
 
 @interface CBLDatabase ()
 - (BOOL) isClosed;
+- (nonnull id) mutex;
+@end
+
+@interface CBLCollection ()
+@property (nonatomic, readonly, weak) CBLDatabase* db;
 @end
 
 @interface CBLQueryExpression ()

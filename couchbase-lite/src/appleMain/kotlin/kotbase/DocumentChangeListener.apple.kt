@@ -19,16 +19,16 @@ import cocoapods.CouchbaseLite.CBLDocumentChange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-internal fun DocumentChangeListener.convert(): (CBLDocumentChange?) -> Unit {
+internal fun DocumentChangeListener.convert(collection: Collection): (CBLDocumentChange?) -> Unit {
     return { change ->
-        invoke(DocumentChange(change!!))
+        invoke(DocumentChange(change!!, collection))
     }
 }
 
-internal fun DocumentChangeSuspendListener.convert(scope: CoroutineScope): (CBLDocumentChange?) -> Unit {
+internal fun DocumentChangeSuspendListener.convert(collection: Collection, scope: CoroutineScope): (CBLDocumentChange?) -> Unit {
     return { change ->
         scope.launch {
-            invoke(DocumentChange(change!!))
+            invoke(DocumentChange(change!!, collection))
         }
     }
 }

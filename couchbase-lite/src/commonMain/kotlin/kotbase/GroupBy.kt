@@ -37,6 +37,10 @@ public expect class GroupBy : Query, HavingRouter, OrderByRouter, LimitRouter {
 
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
 
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
     override fun removeChangeListener(token: ListenerToken)
 
     override fun having(expression: Expression): Having

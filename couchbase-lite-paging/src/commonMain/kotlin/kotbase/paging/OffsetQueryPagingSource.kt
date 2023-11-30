@@ -52,9 +52,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
     private var listenerToken: ListenerToken? = null
 
     private fun cancelCurrentQueryListener() {
-        listenerToken?.let {
-            currentQuery?.removeChangeListener(it)
-        }
+        listenerToken?.remove()
         listenerToken = null
         currentQuery = null
     }

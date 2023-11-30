@@ -19,14 +19,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import com.couchbase.lite.DocumentChangeListener as CBLDocumentChangeListener
 
-internal fun DocumentChangeListener.convert(): CBLDocumentChangeListener =
+internal fun DocumentChangeListener.convert(collection: Collection): CBLDocumentChangeListener =
     CBLDocumentChangeListener { change ->
-        invoke(DocumentChange(change))
+        invoke(DocumentChange(change, collection))
     }
 
-internal fun DocumentChangeSuspendListener.convert(scope: CoroutineScope): CBLDocumentChangeListener =
+internal fun DocumentChangeSuspendListener.convert(collection: Collection, scope: CoroutineScope): CBLDocumentChangeListener =
     CBLDocumentChangeListener { change ->
         scope.launch {
-            invoke(DocumentChange(change))
+            invoke(DocumentChange(change, collection))
         }
     }

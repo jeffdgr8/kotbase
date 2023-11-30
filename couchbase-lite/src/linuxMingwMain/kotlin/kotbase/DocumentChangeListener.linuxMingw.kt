@@ -31,3 +31,18 @@ internal class DocumentChangeSuspendListenerHolder(
     database: Database,
     val scope: CoroutineScope
 ) : DocumentChangeListenerHolder(database)
+
+internal sealed class CollectionDocumentChangeListenerHolder(
+    val collection: Collection
+)
+
+internal class CollectionDocumentChangeDefaultListenerHolder(
+    val listener: DocumentChangeListener,
+    collection: Collection
+) : CollectionDocumentChangeListenerHolder(collection)
+
+internal class CollectionDocumentChangeSuspendListenerHolder(
+    val listener: DocumentChangeSuspendListener,
+    collection: Collection,
+    val scope: CoroutineScope
+) : CollectionDocumentChangeListenerHolder(collection)

@@ -36,6 +36,10 @@ public expect class Select : Query, FromRouter {
 
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
 
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
     override fun removeChangeListener(token: ListenerToken)
 
     override fun from(dataSource: DataSource): From

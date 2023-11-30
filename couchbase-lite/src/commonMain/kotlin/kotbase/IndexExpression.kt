@@ -15,4 +15,4 @@
  */
 package kotbase
 
-public sealed interface IndexExpression
+public interface IndexExpression

@@ -26,6 +26,7 @@ import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Replicator as CBLReplicator
 
+@Suppress("ACTUAL_WITHOUT_EXPECT") // https://youtrack.jetbrains.com/issue/KTIJ-27834
 public actual class Replicator
 internal constructor(
     actual: CBLReplicator,
@@ -64,16 +65,34 @@ internal constructor(
     public actual val serverCertificates: List<ByteArray>?
         get() = actual.serverCertificates?.map { it.encoded }
 
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getPendingDocumentIds(Collection)",
+        ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection())")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> =
         actual.pendingDocumentIds
 
     @Throws(CouchbaseLiteException::class)
+    public actual fun getPendingDocumentIds(collection: Collection): Set<String> =
+        actual.getPendingDocumentIds(collection.actual)
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use isDocumentPending(String, Collection)",
+        ReplaceWith("isDocumentPending(docId, config.database.getDefaultCollection())")
+    )
+    @Throws(CouchbaseLiteException::class)
     public actual fun isDocumentPending(docId: String): Boolean =
         actual.isDocumentPending(docId)
 
+    @Throws(CouchbaseLiteException::class)
+    public actual fun isDocumentPending(docId: String, collection: Collection): Boolean =
+        actual.isDocumentPending(docId, collection.actual)
+
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken =
-        actual.addChangeListener(listener.convert(this))
+        DelegatedListenerToken(actual.addChangeListener(listener.convert(this)))
 
     @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(
@@ -95,12 +114,12 @@ internal constructor(
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            actual.removeChangeListener(token)
+            token.remove()
         }
     }
 
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken =
-        actual.addDocumentReplicationListener(listener.convert(this))
+        DelegatedListenerToken(actual.addDocumentReplicationListener(listener.convert(this)))
 
     @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentReplicationListener(
@@ -125,16 +144,19 @@ internal constructor(
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            actual.removeChangeListener(token)
+            token.remove()
         }
     }
 
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use ListenerToken.remove",
+        ReplaceWith("token.remove()")
+    )
     public actual fun removeChangeListener(token: ListenerToken) {
+        actual.removeChangeListener(token.actual)
         if (token is SuspendListenerToken) {
-            actual.removeChangeListener(token.actual)
             token.scope.cancel()
-        } else {
-            actual.removeChangeListener(token)
         }
     }
 

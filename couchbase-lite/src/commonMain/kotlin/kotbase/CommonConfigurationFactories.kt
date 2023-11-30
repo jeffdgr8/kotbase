@@ -16,6 +16,45 @@
 package kotbase
 
 /**
+ * Configuration factory for new CollectionConfigurations
+ *
+ * Usage:
+ *
+ *     val collConfig = CollectionConfigurationFactory.newConfig(...)
+ */
+public val CollectionConfigurationFactory: CollectionConfiguration? = null
+
+/**
+ * Create a CollectionConfiguration, overriding the receiver's
+ * values with the passed parameters:
+ *
+ * @param channels Sync Gateway channel names.
+ * @param documentIDs IDs of documents to be replicated: default is all documents.
+ * @param pullFilter filter for pulled documents.
+ * @param pushFilter filter for pushed documents.
+ * @param conflictResolver conflict resolver.
+ *
+ * @see CollectionConfiguration
+ */
+public fun CollectionConfiguration?.newConfig(
+    channels: List<String>? = null,
+    documentIDs: List<String>? = null,
+    pullFilter: ReplicationFilter? = null,
+    pushFilter: ReplicationFilter? = null,
+    conflictResolver: ConflictResolver? = null
+): CollectionConfiguration {
+    val config = CollectionConfiguration()
+
+    (channels ?: this?.channels)?.let { config.channels = it }
+    (documentIDs ?: this?.documentIDs)?.let { config.documentIDs = it }
+    (pushFilter ?: this?.pushFilter)?.let { config.pushFilter = it }
+    (pullFilter ?: this?.pullFilter)?.let { config.pullFilter = it }
+    (conflictResolver ?: this?.conflictResolver)?.let { config.conflictResolver = it }
+
+    return config
+}
+
+/**
  * Configuration factory for new FullTextIndexConfigurations
  *
  * Usage:
@@ -44,7 +83,7 @@ public fun FullTextIndexConfiguration?.newConfig(
             } else {
                 this?.expressions?.toTypedArray()
             }
-        ) { "Must specify an expression" }
+        ) { "A FullTextIndexConfiguration must specify expressions" }
     ).apply {
         (language ?: this@newConfig?.language)?.let { this.language = it }
         (ignoreAccents ?: this@newConfig?.isIgnoringAccents)?.let { this.isIgnoringAccents = it }
@@ -78,7 +117,7 @@ public fun ValueIndexConfiguration?.newConfig(
             } else {
                 this?.expressions?.toTypedArray()
             }
-        ) { "Must specify an expression" }
+        ) { "A ValueIndexConfiguration must specify expressions" }
     )
 }
 

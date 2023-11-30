@@ -16,7 +16,6 @@
 package kotbase
 
 import com.couchbase.lite.UnitOfWork
-import com.couchbase.lite.internal.CouchbaseLiteInternal
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toDate
 import kotbase.ext.toFile
@@ -33,15 +32,15 @@ import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Database as CBLDatabase
 import com.couchbase.lite.DatabaseConfiguration as CBLDatabaseConfiguration
 
+@Suppress("ACTUAL_WITHOUT_EXPECT") // https://youtrack.jetbrains.com/issue/KTIJ-27834
 public actual class Database
-internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) {
+internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual), AutoCloseable {
 
     @Throws(CouchbaseLiteException::class)
     public actual constructor(name: String) : this(CBLDatabase(name))
 
     @Throws(CouchbaseLiteException::class)
-    public actual constructor(name: String, config: DatabaseConfiguration) :
-            this(CBLDatabase(name, config.actual))
+    public actual constructor(name: String, config: DatabaseConfiguration) : this(CBLDatabase(name, config.actual))
 
     public actual companion object {
 
@@ -59,10 +58,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         public actual fun exists(name: String, directory: String?): Boolean =
             CBLDatabase.exists(
                 name,
-                // TODO: remove CouchbaseLiteInternal.getRootDir() when nullable in Java SDK
-                //  should be in 3.1
-                //  https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/6
-                directory?.let { File(it) } ?: CouchbaseLiteInternal.getRootDir()
+                directory?.let { File(it) }
             )
 
         @Throws(CouchbaseLiteException::class)
@@ -81,58 +77,72 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
     public actual val path: String?
         get() = actual.path
 
-    public actual val count: Long
-        get() = actual.count
-
     public actual val config: DatabaseConfiguration
         get() = DatabaseConfiguration(actual.config)
 
-    public actual fun getDocument(id: String): Document? =
-        actual.getDocument(id)?.asDocument()
-
     @Throws(CouchbaseLiteException::class)
-    public actual fun save(document: MutableDocument) {
-        actual.save(document.actual)
+    actual override fun close() {
+        actual.close()
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun save(
-        document: MutableDocument,
-        concurrencyControl: ConcurrencyControl
-    ): Boolean =
-        actual.save(document.actual, concurrencyControl)
-
-    @Throws(CouchbaseLiteException::class)
-    public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean =
-        actual.save(document.actual, conflictHandler.convert())
-
-    @Throws(CouchbaseLiteException::class)
-    public actual fun delete(document: Document) {
-        actual.delete(document.actual)
+    public actual fun delete() {
+        actual.delete()
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean =
-        actual.delete(document.actual, concurrencyControl)
+    public actual fun getScopes(): Set<Scope> =
+        actual.scopes.asScopes(this)
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun purge(document: Document) {
-        actual.purge(document.actual)
+    public actual fun getScope(name: String): Scope? =
+        actual.getScope(name)?.asScope(this)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getDefaultScope(): Scope =
+        Scope(actual.defaultScope, this)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun createCollection(name: String): Collection =
+        Collection(actual.createCollection(name), this)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun createCollection(collectionName: String, scopeName: String?): Collection =
+        Collection(actual.createCollection(collectionName, scopeName), this)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getCollections(): Set<Collection> =
+        actual.collections.asCollections(this)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getCollections(scopeName: String?): Set<Collection> =
+        actual.getCollections(scopeName).asCollections(this)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getCollection(name: String): Collection? =
+        actual.getCollection(name)?.asCollection(this)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getCollection(collectionName: String, scopeName: String?): Collection? =
+        actual.getCollection(collectionName, scopeName)?.asCollection(this)
+
+    private val _defaultCollection: Collection? by lazy {
+        actual.defaultCollection?.asCollection(this)
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun purge(id: String) {
-        actual.purge(id)
+    public actual fun getDefaultCollection(): Collection? =
+        _defaultCollection
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun deleteCollection(name: String) {
+        actual.deleteCollection(name)
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
-        actual.setDocumentExpiration(id, expiration?.toDate())
+    public actual fun deleteCollection(collectionName: String, scopeName: String?) {
+        actual.deleteCollection(collectionName, scopeName)
     }
-
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getDocumentExpiration(id: String): Instant? =
-        actual.getDocumentExpiration(id)?.toKotlinInstant()
 
     @Throws(CouchbaseLiteException::class)
     public actual fun <R> inBatch(work: Database.() -> R): R {
@@ -144,43 +154,168 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         return result as R
     }
 
-    public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken =
-        actual.addChangeListener(listener.convert())
+    @Throws(CouchbaseLiteException::class)
+    public actual fun createQuery(query: String): Query =
+        DelegatedQuery(actual.createQuery(query))
 
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().count",
+        ReplaceWith("getDefaultCollection().count")
+    )
+    public actual val count: Long
+        get() = actual.count
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().getDocument()",
+        ReplaceWith("getDefaultCollection().getDocument(id)")
+    )
+    public actual fun getDocument(id: String): Document? =
+        actual.getDocument(id)?.asDocument(getDefaultCollectionNotNull())
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().save()",
+        ReplaceWith("getDefaultCollection().save(document)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public actual fun save(document: MutableDocument) {
+        actual.save(document.actual)
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().save()",
+        ReplaceWith("getDefaultCollection().save(document, concurrencyControl)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public actual fun save(
+        document: MutableDocument,
+        concurrencyControl: ConcurrencyControl
+    ): Boolean =
+        actual.save(document.actual, concurrencyControl)
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().save()",
+        ReplaceWith("getDefaultCollection().save(document, conflictHandler)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean =
+        actual.save(document.actual, conflictHandler.convert(getDefaultCollectionNotNull()))
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().delete()",
+        ReplaceWith("getDefaultCollection().delete(document)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public actual fun delete(document: Document) {
+        actual.delete(document.actual)
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().delete()",
+        ReplaceWith("getDefaultCollection().delete(document, concurrencyControl)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean =
+        actual.delete(document.actual, concurrencyControl)
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().purge()",
+        ReplaceWith("getDefaultCollection().purge(document)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public actual fun purge(document: Document) {
+        actual.purge(document.actual)
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().purge()",
+        ReplaceWith("getDefaultCollection().purge(id)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public actual fun purge(id: String) {
+        actual.purge(id)
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().setDocumentExpiration()",
+        ReplaceWith("getDefaultCollection().setDocumentExpiration(id, expiration)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
+        actual.setDocumentExpiration(id, expiration?.toDate())
+    }
+
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().getDocumentExpiration()",
+        ReplaceWith("getDefaultCollection().getDocumentExpiration(id)")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getDocumentExpiration(id: String): Instant? =
+        actual.getDocumentExpiration(id)?.toKotlinInstant()
+
+    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().addChangeListener()",
+        ReplaceWith("getDefaultCollection().addChangeListener(listener)")
+    )
+    public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken =
+        DelegatedListenerToken(actual.addChangeListener(listener.convert(this)))
+
+    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @OptIn(ExperimentalStdlibApi::class)
+    @Deprecated(
+        "Use getDefaultCollection().addChangeListener()",
+        ReplaceWith("getDefaultCollection().addChangeListener(context, listener)")
+    )
     public actual fun addChangeListener(
         context: CoroutineContext,
         listener: DatabaseChangeSuspendListener
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(scope))
+        val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(this, scope))
         return SuspendListenerToken(scope, token)
     }
 
+    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @OptIn(ExperimentalStdlibApi::class)
+    @Deprecated(
+        "Use getDefaultCollection().addChangeListener()",
+        ReplaceWith("getDefaultCollection().addChangeListener(scope, listener)")
+    )
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         val token = actual.addChangeListener(
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
-            listener.convert(scope)
+            listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            actual.removeChangeListener(token)
+            token.remove()
         }
     }
 
-    public actual fun removeChangeListener(token: ListenerToken) {
-        if (token is SuspendListenerToken) {
-            actual.removeChangeListener(token.actual)
-            token.scope.cancel()
-        } else {
-            actual.removeChangeListener(token)
-        }
-    }
-
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().addDocumentChangeListener()",
+        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, listener)")
+    )
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken =
-        actual.addDocumentChangeListener(id, listener.convert())
+        DelegatedListenerToken(actual.addDocumentChangeListener(id, listener.convert(getDefaultCollectionNotNull())))
 
+    @Suppress("DEPRECATION")
     @OptIn(ExperimentalStdlibApi::class)
+    @Deprecated(
+        "Use getDefaultCollection().addDocumentChangeListener()",
+        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, context, listener)")
+    )
     public actual fun addDocumentChangeListener(
         id: String,
         context: CoroutineContext,
@@ -190,12 +325,17 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         val token = actual.addDocumentChangeListener(
             id,
             context[CoroutineDispatcher]?.asExecutor(),
-            listener.convert(scope)
+            listener.convert(getDefaultCollectionNotNull(), scope)
         )
         return SuspendListenerToken(scope, token)
     }
 
+    @Suppress("DEPRECATION")
     @OptIn(ExperimentalStdlibApi::class)
+    @Deprecated(
+        "Use getDefaultCollection().addDocumentChangeListener()",
+        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, scope, listener)")
+    )
     public actual fun addDocumentChangeListener(
         id: String,
         scope: CoroutineScope,
@@ -204,41 +344,55 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual) 
         val token = actual.addDocumentChangeListener(
             id,
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
-            listener.convert(scope)
+            listener.convert(getDefaultCollectionNotNull(), scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            actual.removeChangeListener(token)
+            token.remove()
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun close() {
-        actual.close()
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
+    public actual fun removeChangeListener(token: ListenerToken) {
+        token.remove()
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun delete() {
-        actual.delete()
-    }
-
-    @Throws(CouchbaseLiteException::class)
-    public actual fun createQuery(query: String): Query =
-        DelegatedQuery(actual.createQuery(query))
-
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().indexes",
+        ReplaceWith("getDefaultCollection().indexes")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun getIndexes(): List<String> =
         actual.indexes
 
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().createIndex()",
+        ReplaceWith("getDefaultCollection().createIndex(name, index)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
         actual.createIndex(name, index.actual)
     }
 
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().createIndex()",
+        ReplaceWith("getDefaultCollection().createIndex(name, config)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
         actual.createIndex(name, config.actual)
     }
 
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().deleteIndex()",
+        ReplaceWith("getDefaultCollection().deleteIndex(name)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {
         actual.deleteIndex(name)

@@ -45,7 +45,7 @@ internal constructor(actual: CBLMessageEndpointListener) : DelegatedClass<CBLMes
     }
 
     public actual fun addChangeListener(listener: MessageEndpointListenerChangeListener): ListenerToken =
-        actual.addChangeListener(listener.convert())
+        DelegatedListenerToken(actual.addChangeListener(listener.convert()))
 
     @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(
@@ -64,16 +64,15 @@ internal constructor(actual: CBLMessageEndpointListener) : DelegatedClass<CBLMes
             listener.convert(scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            actual.removeChangeListener(token)
+            token.remove()
         }
     }
 
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
     public actual fun removeChangeListener(token: ListenerToken) {
-        if (token is SuspendListenerToken) {
-            actual.removeChangeListener(token.actual)
-            token.scope.cancel()
-        } else {
-            actual.removeChangeListener(token)
-        }
+        token.remove()
     }
 }

@@ -30,3 +30,9 @@ internal constructor(internal open val actual: D) {
 
 internal inline fun <reified D : Any> Array<out DelegatedClass<D>>.actuals(): Array<D> =
     map { it.actual }.toTypedArray()
+
+internal inline fun <reified D : Any> Iterable<DelegatedClass<D>>.actuals(): List<D> =
+    map { it.actual }
+
+internal inline fun <reified D : Any> Iterable<DelegatedClass<D>>.actualSet(): Set<D> =
+    map { it.actual }.toSet()

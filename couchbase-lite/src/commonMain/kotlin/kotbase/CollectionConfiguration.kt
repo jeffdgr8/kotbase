@@ -15,16 +15,19 @@
  */
 package kotbase
 
+/**
+ * The collection configuration that can be configured specifically for the replication.
+ */
 public expect class CollectionConfiguration {
 
     public constructor()
 
     public constructor(
-        channels: List<String>?,
-        documentIDs: List<String>?,
-        pullFilter: ReplicationFilter?,
-        pushFilter: ReplicationFilter?,
-        conflictResolver: ConflictResolver?
+        channels: List<String>? = null,
+        documentIDs: List<String>? = null,
+        pullFilter: ReplicationFilter? = null,
+        pushFilter: ReplicationFilter? = null,
+        conflictResolver: ConflictResolver? = null
     )
 
     /**
@@ -79,7 +82,6 @@ public expect class CollectionConfiguration {
      * @return this.
      */
     public fun setPushFilter(pushFilter: ReplicationFilter?): CollectionConfiguration
-
 
     /**
      * A collection of Sync Gateway channel names from which to pull Documents.

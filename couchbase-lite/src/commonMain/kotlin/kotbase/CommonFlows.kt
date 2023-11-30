@@ -21,60 +21,118 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A Flow of database changes.
+ * A Flow of Collection changes.
  *
- * @see Database.addChangeListener
+ * @param coroutineContext optional CoroutineContext on which to run the change listener:
+ * default is the flow collector's CoroutineContext
+ *
+ * @see Collection.addChangeListener
  */
-public fun Database.databaseChangeFlow(
+public fun Collection.collectionChangeFlow(
     coroutineContext: CoroutineContext? = null
-): Flow<DatabaseChange> = callbackFlow {
-    val token = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
-    awaitClose { removeChangeListener(token) }
+): Flow<CollectionChange> = callbackFlow {
+    val token: ListenerToken = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
+    awaitClose { token.remove() }
 }
 
 /**
- * A Flow of document changes.
+ * A Flow of document changes
  *
- * @see Database.addDocumentChangeListener
+ * @param documentId the document ID
+ * @param coroutineContext optional CoroutineContext on which to run the change listener:
+ * default is the flow collector's CoroutineContext
+ *
+ * @see Collection.addDocumentChangeListener
  */
-public fun Database.documentChangeFlow(
+public fun Collection.documentChangeFlow(
     documentId: String,
     coroutineContext: CoroutineContext? = null
 ): Flow<DocumentChange> = callbackFlow {
-    val token = addDocumentChangeListener(documentId, coroutineContext ?: this.coroutineContext) { trySend(it) }
-    awaitClose { removeChangeListener(token) }
+    val token: ListenerToken = addDocumentChangeListener(documentId, coroutineContext ?: this.coroutineContext) { trySend(it) }
+    awaitClose { token.remove() }
 }
 
 /**
  * A Flow of replicator state changes.
+ *
+ * @param coroutineContext optional CoroutineContext on which to run the change listener:
+ * default is the flow collector's CoroutineContext
  *
  * @see Replicator.addChangeListener
  */
 public fun Replicator.replicatorChangesFlow(
     coroutineContext: CoroutineContext? = null
 ): Flow<ReplicatorChange> = callbackFlow {
-    val token = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
-    awaitClose { removeChangeListener(token) }
+    val token: ListenerToken = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
+    awaitClose { token.remove() }
 }
 
 /**
  * A Flow of document replications.
+ *
+ * @param coroutineContext optional CoroutineContext on which to run the change listener:
+ * default is the flow collector's CoroutineContext
  *
  * @see Replicator.addDocumentReplicationListener
  */
 public fun Replicator.documentReplicationFlow(
     coroutineContext: CoroutineContext? = null
 ): Flow<DocumentReplication> = callbackFlow {
-    val token = addDocumentReplicationListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
-    awaitClose { removeChangeListener(token) }
+    val token: ListenerToken = addDocumentReplicationListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
+    awaitClose { token.remove() }
 }
 
 /**
  * A Flow of query changes.
  *
+ * @param coroutineContext optional CoroutineContext on which to run the change listener:
+ * default is the flow collector's CoroutineContext
+ *
  * @see Query.addChangeListener
  */
 public fun Query.queryChangeFlow(coroutineContext: CoroutineContext? = null): Flow<QueryChange> = callbackFlow {
-    val token = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
-    awaitClose { removeChangeListener(token) }
+    val token: ListenerToken = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
+    awaitClose { token.remove() }
+}
+
+/**
+ * A Flow of database changes.
+ *
+ * @param coroutineContext optional CoroutineContext on which to run the change listener:
+ * default is the flow collector's CoroutineContext
+ *
+ * @see Database.addChangeListener
+ */
+@Suppress("DEPRECATION")
+@Deprecated(
+    "Use Collection.collectionChangeFlow()",
+    ReplaceWith("getDefaultCollection().collectionChangeFlow(coroutineContext)")
+)
+public fun Database.databaseChangeFlow(
+    coroutineContext: CoroutineContext? = null
+): Flow<DatabaseChange> = callbackFlow {
+    val token: ListenerToken = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
+    awaitClose { token.remove() }
+}
+
+/**
+ * A Flow of document changes.
+ *
+ * @param documentId the document ID
+ * @param coroutineContext optional CoroutineContext on which to run the change listener:
+ * default is the flow collector's CoroutineContext
+ *
+ * @see Database.addDocumentChangeListener
+ */
+@Suppress("DEPRECATION")
+@Deprecated(
+    "Use Collection.documentChangeFlow()",
+    ReplaceWith("getDefaultCollection().documentChangeFlow(documentId, coroutineContext)")
+)
+public fun Database.documentChangeFlow(
+    documentId: String,
+    coroutineContext: CoroutineContext? = null
+): Flow<DocumentChange> = callbackFlow {
+    val token: ListenerToken = addDocumentChangeListener(documentId, coroutineContext ?: this.coroutineContext) { trySend(it) }
+    awaitClose { token.remove() }
 }

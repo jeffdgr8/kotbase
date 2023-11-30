@@ -62,6 +62,10 @@ internal constructor(
     public actual val serverCertificates: List<ByteArray>?
         get() = actual.serverCertificate?.toByteArray()?.let { listOf(it) }
 
+    @Deprecated(
+        "Use getPendingDocumentIds(Collection)",
+        ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection())")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {
         return wrapCBLError { error ->
@@ -71,9 +75,28 @@ internal constructor(
     }
 
     @Throws(CouchbaseLiteException::class)
+    public actual fun getPendingDocumentIds(collection: Collection): Set<String> {
+        return wrapCBLError { error ->
+            @Suppress("UNCHECKED_CAST")
+            actual.pendingDocumentIDsForCollection(collection.actual, error) as Set<String>
+        }
+    }
+
+    @Deprecated(
+        "Use isDocumentPending(String, Collection)",
+        ReplaceWith("isDocumentPending(docId, config.database.getDefaultCollection())")
+    )
+    @Throws(CouchbaseLiteException::class)
     public actual fun isDocumentPending(docId: String): Boolean {
         return wrapCBLError { error ->
             actual.isDocumentPending(docId, error)
+        }
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun isDocumentPending(docId: String, collection: Collection): Boolean {
+        return wrapCBLError { error ->
+            actual.isDocumentPending(docId, collection.actual, error)
         }
     }
 
@@ -93,7 +116,7 @@ internal constructor(
             context[CoroutineDispatcher]?.asDispatchQueue(),
             listener.convert(this, scope)
         )
-        return SuspendListenerToken(scope, DelegatedListenerToken(token))
+        return SuspendListenerToken(scope, token)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -103,7 +126,7 @@ internal constructor(
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            actual.removeChangeListenerWithToken(token)
+            token.remove()
         }
     }
 
@@ -123,7 +146,7 @@ internal constructor(
             context[CoroutineDispatcher]?.asDispatchQueue(),
             listener.convert(this, scope)
         )
-        return SuspendListenerToken(scope, DelegatedListenerToken(token))
+        return SuspendListenerToken(scope, token)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -133,18 +156,16 @@ internal constructor(
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            actual.removeChangeListenerWithToken(token)
+            token.remove()
         }
     }
 
+    @Deprecated(
+        "Use ListenerToken.remove",
+        ReplaceWith("token.remove()")
+    )
     public actual fun removeChangeListener(token: ListenerToken) {
-        if (token is SuspendListenerToken) {
-            actual.removeChangeListenerWithToken(token.token.actual)
-            token.scope.cancel()
-        } else {
-            token as DelegatedListenerToken
-            actual.removeChangeListenerWithToken(token.actual)
-        }
+        token.remove()
     }
 
     actual override fun close() {

@@ -73,6 +73,9 @@ internal constructor(
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
+    public actual val collection: Collection?
+        get() = CBLDocument_Collection(actual)?.asCollection(database!!)
+
     public actual val id: String
         get() = CBLDocument_ID(actual).toKString()!!
 

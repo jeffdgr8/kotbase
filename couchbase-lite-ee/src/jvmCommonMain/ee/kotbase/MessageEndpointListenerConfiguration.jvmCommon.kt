@@ -16,20 +16,34 @@
 package kotbase
 
 import kotbase.internal.DelegatedClass
+import kotbase.internal.actualSet
 import com.couchbase.lite.MessageEndpointListenerConfiguration as CBLMessageEndpointListenerConfiguration
 
 public actual class MessageEndpointListenerConfiguration
 internal constructor(
     actual: CBLMessageEndpointListenerConfiguration,
-    public actual val database: Database
+    public actual val database: Database,
+    public actual val collections: Set<Collection>
 ) : DelegatedClass<CBLMessageEndpointListenerConfiguration>(actual) {
 
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use MessageEndpointListener(Collection, ProtocolType)",
+        ReplaceWith("MessageEndpointListener(setOf(database.getDefaultCollection()), protocolType)")
+    )
     public actual constructor(
         database: Database,
         protocolType: ProtocolType
     ) : this(
         CBLMessageEndpointListenerConfiguration(database.actual, protocolType),
-        database
+        database,
+        setOf(database.getDefaultCollectionNotNull())
+    )
+
+    public actual constructor(collections: Set<Collection>, protocolType: ProtocolType) : this(
+        CBLMessageEndpointListenerConfiguration(collections.actualSet(), protocolType),
+        collections.first().database,
+        collections
     )
 
     public actual val protocolType: ProtocolType

@@ -24,6 +24,12 @@ import libcblite.CBLReplicatedDocument
 public actual class ReplicatedDocument
 internal constructor(actual: CPointer<CBLReplicatedDocument>) {
 
+    public actual val scope: String =
+        actual.pointed.scope.toKString()!!
+
+    public actual val collection: String =
+        actual.pointed.collection.toKString()!!
+
     public actual val id: String =
         actual.pointed.ID.toKString()!!
 

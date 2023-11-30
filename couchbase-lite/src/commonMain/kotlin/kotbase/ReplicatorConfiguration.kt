@@ -138,7 +138,7 @@ public expect class ReplicatorConfiguration {
      * @param authenticator The authenticator.
      * @return this.
      */
-    public fun setAuthenticator(authenticator: Authenticator): ReplicatorConfiguration
+    public fun setAuthenticator(authenticator: Authenticator?): ReplicatorConfiguration
 
     /**
      * Sets the certificate used to authenticate the target server.
@@ -329,7 +329,7 @@ public expect class ReplicatorConfiguration {
     /**
      * The local database to replicate with the replication target.
      */
-    @Deprecated("Use Collection.database")
+    @Deprecated("Use CollectionConfiguration.collections")
     public val database: Database
 
     /**

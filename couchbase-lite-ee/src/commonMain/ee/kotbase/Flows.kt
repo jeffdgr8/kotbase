@@ -25,11 +25,14 @@ import kotlin.coroutines.CoroutineContext
  *
  * A Flow of message endpoint state changes.
  *
+ * @param coroutineContext optional CoroutineContext on which to run the change listener:
+ * default is the flow collector's CoroutineContext
+ *
  * @see MessageEndpointListener.addChangeListener
  */
 public fun MessageEndpointListener.messageEndpointChangeFlow(
     coroutineContext: CoroutineContext? = null
 ): Flow<MessageEndpointListenerChange> = callbackFlow {
     val token = addChangeListener(coroutineContext ?: this.coroutineContext) { trySend(it) }
-    awaitClose { removeChangeListener(token) }
+    awaitClose { token.remove() }
 }

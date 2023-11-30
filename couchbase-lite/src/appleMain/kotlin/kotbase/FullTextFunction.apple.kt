@@ -16,12 +16,27 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLQueryFullTextFunction
+import kotbase.Expression.Companion.DelegatedIndexExpression
 
 public actual object FullTextFunction {
 
-    public actual fun match(indexName: String, text: String): Expression =
-        Expression(CBLQueryFullTextFunction.matchWithIndexName(indexName, text))
+    public actual fun rank(index: IndexExpression): Expression =
+        Expression(CBLQueryFullTextFunction.rankWithIndex((index as DelegatedIndexExpression<*>).actual))
 
+    public actual fun match(index: IndexExpression, query: String): Expression =
+        Expression(CBLQueryFullTextFunction.matchWithIndex((index as DelegatedIndexExpression<*>).actual, query))
+
+    @Deprecated(
+        "Use FullTextFunction.rank(IndexExpression)",
+        ReplaceWith("FullTextFunction.rank(Expression.fullTextIndex(indexName))")
+    )
     public actual fun rank(indexName: String): Expression =
         Expression(CBLQueryFullTextFunction.rank(indexName))
+
+    @Deprecated(
+        "Use FullTextFunction.match(IndexExpression)",
+        ReplaceWith("FullTextFunction.match(Expression.fullTextIndex(indexName), query)")
+    )
+    public actual fun match(indexName: String, query: String): Expression =
+        Expression(CBLQueryFullTextFunction.matchWithIndexName(indexName, query))
 }

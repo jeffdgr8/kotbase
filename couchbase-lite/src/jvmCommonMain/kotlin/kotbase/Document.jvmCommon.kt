@@ -15,15 +15,29 @@
  */
 package kotbase
 
+import com.couchbase.lite.database
 import kotbase.ext.toKotlinInstant
 import kotbase.internal.DelegatedClass
 import kotlinx.datetime.Instant
 import com.couchbase.lite.Document as CBLDocument
 
 public actual open class Document
-internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual), Iterable<String> {
+internal constructor(
+    actual: CBLDocument,
+    internal var collectionInternal: Collection?
+) : DelegatedClass<CBLDocument>(actual), Iterable<String> {
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
+
+    public actual val collection: Collection?
+        get() {
+            if (collectionInternal == null) {
+                val actualCollection = actual.collection ?: return null
+                val db = actualCollection.database()
+                collectionInternal = actual.collection?.asCollection(db)
+            }
+            return collectionInternal
+        }
 
     public actual val id: String
         get() = actual.id
@@ -35,7 +49,7 @@ internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual),
         get() = actual.sequence
 
     public actual open fun toMutable(): MutableDocument =
-        MutableDocument(actual.toMutable())
+        MutableDocument(actual.toMutable(), collection)
 
     public actual val count: Int
         get() = actual.count()
@@ -101,4 +115,4 @@ internal constructor(actual: CBLDocument) : DelegatedClass<CBLDocument>(actual),
         actual.iterator()
 }
 
-internal fun CBLDocument.asDocument() = Document(this)
+internal fun CBLDocument.asDocument(collection: Collection?) = Document(this, collection)

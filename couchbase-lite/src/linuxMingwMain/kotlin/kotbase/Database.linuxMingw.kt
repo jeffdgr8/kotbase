@@ -17,6 +17,7 @@ package kotbase
 
 import cnames.structs.CBLDatabase
 import cnames.structs.CBLQuery
+import kotbase.internal.fleece.iterator
 import kotbase.internal.fleece.toFLString
 import kotbase.internal.fleece.toKString
 import kotbase.internal.fleece.toList
@@ -35,11 +36,12 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
+@OptIn(ExperimentalStdlibApi::class)
 public actual class Database
-internal constructor(
+private constructor(
     internal val actual: CPointer<CBLDatabase>,
     private val _config: DatabaseConfiguration
-) {
+) : AutoCloseable {
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
@@ -122,12 +124,205 @@ internal constructor(
     public actual val path: String?
         get() = if (isClosed) null else CBLDatabase_Path(actual).toKString()
 
-    public actual val count: Long
-        get() = CBLDatabase_Count(actual).toLong()
-
     public actual val config: DatabaseConfiguration
         get() = DatabaseConfiguration(_config)
 
+    actual override fun close() {
+        withLock {
+            wrapCBLError { error ->
+                CBLDatabase_Close(actual, error)
+            }
+            isClosed = true
+        }
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun delete() {
+        mustBeOpen {
+            wrapCBLError { error ->
+                CBLDatabase_Delete(actual, error)
+            }
+            isClosed = true
+        }
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getScopes(): Set<Scope> {
+        val names = wrapCBLError { error ->
+            CBLDatabase_ScopeNames(actual, error)
+        }
+        return buildSet {
+            memScoped {
+                names?.iterator(this)?.forEach {
+                    wrapCBLError { error ->
+                        CBLDatabase_Scope(actual, FLValue_AsString(it), error)
+                    }?.asScope(this@Database)?.let(::add)
+                }
+            }
+        }
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getScope(name: String): Scope? {
+        return wrapCBLError { error ->
+            memScoped {
+                CBLDatabase_Scope(actual, name.toFLString(this), error)
+            }
+        }?.asScope(this)
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getDefaultScope(): Scope {
+        return wrapCBLError { error ->
+            CBLDatabase_DefaultScope(actual, error)
+        }!!.asScope(this)
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun createCollection(name: String): Collection =
+        createCollection(name, getDefaultScope().name)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun createCollection(collectionName: String, scopeName: String?): Collection {
+        return wrapCBLError { error ->
+            memScoped {
+                CBLDatabase_CreateCollection(
+                    actual,
+                    collectionName.toFLString(this),
+                    scopeName.toFLString(this),
+                    error
+                )
+            }
+        }!!.asCollection(this)
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getCollections(): Set<Collection> =
+        getCollections(getDefaultScope().name)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getCollections(scopeName: String?): Set<Collection> {
+        return memScoped {
+            val scope = scopeName.toFLString(this)
+            val names = wrapCBLError { error ->
+                CBLDatabase_CollectionNames(actual, scope, error)
+            }
+            buildSet {
+                memScoped {
+                    names?.iterator(this)?.forEach {
+                        wrapCBLError { error ->
+                            CBLDatabase_Collection(actual, FLValue_AsString(it), scope, error)
+                        }?.asCollection(this@Database)?.let(::add)
+                    }
+                }
+            }
+        }
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getCollection(name: String): Collection? =
+        getCollection(name, getDefaultScope().name)
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getCollection(collectionName: String, scopeName: String?): Collection? {
+        return wrapCBLError { error ->
+            memScoped {
+                CBLDatabase_Collection(
+                    actual,
+                    collectionName.toFLString(this),
+                    scopeName.toFLString(this),
+                    error
+                )
+            }
+        }?.asCollection(this)
+    }
+
+    private val _defaultCollection: Collection? by lazy {
+        wrapCBLError { error ->
+            CBLDatabase_DefaultCollection(actual, error)
+        }?.asCollection(this)
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getDefaultCollection(): Collection? =
+        _defaultCollection
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun deleteCollection(name: String) {
+        deleteCollection(name, getDefaultScope().name)
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun deleteCollection(collectionName: String, scopeName: String?) {
+        wrapCBLError { error ->
+            memScoped {
+                CBLDatabase_DeleteCollection(
+                    actual,
+                    name.toFLString(this),
+                    scopeName.toFLString(this),
+                    error
+                )
+            }
+        }
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun <R> inBatch(work: Database.() -> R): R {
+        return mustBeOpen {
+            wrapCBLError { error ->
+                CBLDatabase_BeginTransaction(actual, error)
+            }
+
+            val result: R
+            var commit = false
+            try {
+                result = this@Database.work()
+                commit = true
+            } finally {
+                wrapCBLError { error ->
+                    CBLDatabase_EndTransaction(actual, commit, error)
+                }
+            }
+            result
+        }
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun createQuery(query: String): Query =
+        DelegatedQuery(createQuery(kCBLN1QLLanguage, query), this)
+
+    internal fun createQuery(language: CBLQueryLanguage, queryString: String): CPointer<CBLQuery> {
+        return memScoped {
+            val errorPos = alloc<IntVar>()
+            wrapCBLError({
+                toExceptionNotNull(mapOf("position" to errorPos.value))
+            }) { error ->
+                mustBeOpen {
+                    memScoped {
+                        CBLDatabase_CreateQuery(
+                            actual,
+                            language,
+                            queryString.toFLString(this),
+                            errorPos.ptr,
+                            error
+                        )!!
+                    }
+                }
+            }
+        }
+    }
+
+    @Deprecated(
+        "Use getDefaultCollection().count",
+        ReplaceWith("getDefaultCollection().count")
+    )
+    public actual val count: Long
+        get() = CBLDatabase_Count(actual).toLong()
+
+    @Deprecated(
+        "Use getDefaultCollection().getDocument()",
+        ReplaceWith("getDefaultCollection().getDocument(id)")
+    )
     public actual fun getDocument(id: String): Document? {
         return mustBeOpen {
             wrapCBLError { error ->
@@ -139,6 +334,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().save()",
+        ReplaceWith("getDefaultCollection().save(document)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
         mustBeOpen {
@@ -150,6 +349,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().save()",
+        ReplaceWith("getDefaultCollection().save(document, concurrencyControl)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(
         document: MutableDocument,
@@ -179,14 +382,12 @@ internal constructor(
         }
     }
 
-    private class ConflictHandlerWrapper(
-        val db: Database,
-        val handler: ConflictHandler,
-        var exception: Exception? = null
-    )
-
     private var conflictHandler: StableRef<ConflictHandlerWrapper>? = null
 
+    @Deprecated(
+        "Use getDefaultCollection().save()",
+        ReplaceWith("getDefaultCollection().save(document, conflictHandler)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
         return mustBeOpen {
@@ -225,24 +426,10 @@ internal constructor(
         }
     }
 
-    private fun nativeConflictHandler(): CBLConflictHandler {
-        return staticCFunction { ref, document, oldDocument ->
-            with(ref.to<ConflictHandlerWrapper>()) {
-                try {
-                    handler(
-                        MutableDocument(document!!, db),
-                        oldDocument?.asDocument(db)
-                    )
-                } catch (e: Exception) {
-                    // save a reference, as Linux will propagate
-                    // the error as an "unknown C++ exception"
-                    exception = e
-                    throw e
-                }
-            }
-        }
-    }
-
+    @Deprecated(
+        "Use getDefaultCollection().delete()",
+        ReplaceWith("getDefaultCollection().delete(document)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
         mustBeOpen {
@@ -252,6 +439,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().delete()",
+        ReplaceWith("getDefaultCollection().delete(document, concurrencyControl)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
         return mustBeOpen {
@@ -277,6 +468,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().purge()",
+        ReplaceWith("getDefaultCollection().purge(document)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
         mustBeOpen {
@@ -293,6 +488,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().purge()",
+        ReplaceWith("getDefaultCollection().purge(id)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
         wrapCBLError { error ->
@@ -304,6 +503,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().setDocumentExpiration()",
+        ReplaceWith("getDefaultCollection().setDocumentExpiration(id, expiration)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
         wrapCBLError { error ->
@@ -320,6 +523,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().getDocumentExpiration()",
+        ReplaceWith("getDefaultCollection().getDocumentExpiration(id)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocumentExpiration(id: String): Instant? {
         return wrapCBLError { error ->
@@ -331,29 +538,11 @@ internal constructor(
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun <R> inBatch(work: Database.() -> R): R {
-        return mustBeOpen {
-            wrapCBLError { error ->
-                CBLDatabase_BeginTransaction(actual, error)
-            }
-
-            val result: R
-            var commit = false
-            try {
-                result = this@Database.work()
-                commit = true
-            } finally {
-                wrapCBLError { error ->
-                    CBLDatabase_EndTransaction(actual, commit, error)
-                }
-            }
-            result
-        }
-    }
-
-    private val changeListeners = mutableListOf<StableRef<DatabaseChangeListenerHolder>?>()
-
+    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().addChangeListener()",
+        ReplaceWith("getDefaultCollection().addChangeListener(listener)")
+    )
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {
         return mustBeOpen {
             val holder = DatabaseChangeDefaultListenerHolder(listener, this)
@@ -361,6 +550,11 @@ internal constructor(
         }
     }
 
+    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().addChangeListener()",
+        ReplaceWith("getDefaultCollection().addChangeListener(context, listener)")
+    )
     public actual fun addChangeListener(
         context: CoroutineContext,
         listener: DatabaseChangeSuspendListener
@@ -373,32 +567,30 @@ internal constructor(
         }
     }
 
+    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
+    @Deprecated(
+        "Use getDefaultCollection().addChangeListener()",
+        ReplaceWith("getDefaultCollection().addChangeListener(scope, listener)")
+    )
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         mustBeOpen {
             val holder = DatabaseChangeSuspendListenerHolder(listener, this, scope)
             val token = addNativeChangeListener(holder)
             scope.coroutineContext[Job]?.invokeOnCompletion {
-                removeChangeListener(token)
+                token.remove()
             }
         }
     }
 
-    private fun addNativeChangeListener(holder: DatabaseChangeListenerHolder): DelegatedListenerToken {
-        val (index, stableRef) = addListener(changeListeners, holder)
-        return DelegatedListenerToken(
-            CBLDatabase_AddChangeListener(
-                actual,
-                nativeChangeListener(),
-                stableRef
-            )!!,
-            ListenerTokenType.DATABASE,
-            index
-        )
-    }
+    private fun addNativeChangeListener(holder: DatabaseChangeListenerHolder) =
+        StableRefListenerToken(holder) {
+            CBLDatabase_AddChangeListener(actual, nativeChangeListener(), it)!!
+        }
 
+    @Suppress("DEPRECATION")
     private fun nativeChangeListener(): CBLDatabaseChangeListener {
         return staticCFunction { ref, _, numDocs, docIds ->
-            val documentIds = docIds!!.toList(numDocs.toInt()) { it.pointed.toKString()!! }
+            val documentIds = docIds!!.toList(numDocs) { it.pointed.toKString()!! }
             with(ref.to<DatabaseChangeListenerHolder>()) {
                 val change = DatabaseChange(database, documentIds)
                 when (this) {
@@ -411,33 +603,10 @@ internal constructor(
         }
     }
 
-    public actual fun removeChangeListener(token: ListenerToken) {
-        if (token is SuspendListenerToken) {
-            removeChangeListener(token.token)
-            token.scope.cancel()
-        } else {
-            removeChangeListener(token as DelegatedListenerToken)
-        }
-    }
-
-    private fun removeChangeListener(token: DelegatedListenerToken) {
-        val ref = when (token.type) {
-            ListenerTokenType.DATABASE -> changeListeners.getOrNull(token.index)
-            ListenerTokenType.DOCUMENT -> documentChangeListeners.getOrNull(token.index)
-            else -> error("${token.type} change listener can't be removed from Database instance")
-        }
-        if (ref != null) {
-            CBLListener_Remove(token.actual)
-            when (token.type) {
-                ListenerTokenType.DATABASE -> removeListener(changeListeners, token.index)
-                ListenerTokenType.DOCUMENT -> removeListener(documentChangeListeners, token.index)
-                else -> error("${token.type} change listener can't be removed from Database instance")
-            }
-        }
-    }
-
-    private val documentChangeListeners = mutableListOf<StableRef<DocumentChangeListenerHolder>?>()
-
+    @Deprecated(
+        "Use getDefaultCollection().addDocumentChangeListener()",
+        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, listener)")
+    )
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken {
         return mustBeOpen {
             val holder = DocumentChangeDefaultListenerHolder(listener, this)
@@ -445,6 +614,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().addDocumentChangeListener()",
+        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, context, listener)")
+    )
     public actual fun addDocumentChangeListener(
         id: String,
         context: CoroutineContext,
@@ -458,6 +631,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().addDocumentChangeListener()",
+        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, scope, listener)")
+    )
     public actual fun addDocumentChangeListener(
         id: String,
         scope: CoroutineScope,
@@ -467,7 +644,7 @@ internal constructor(
             val holder = DocumentChangeSuspendListenerHolder(listener, this, scope)
             val token = addNativeDocumentChangeListener(id, holder)
             scope.coroutineContext[Job]?.invokeOnCompletion {
-                removeChangeListener(token)
+                token.remove()
             }
         }
     }
@@ -475,26 +652,21 @@ internal constructor(
     private fun addNativeDocumentChangeListener(
         id: String,
         holder: DocumentChangeListenerHolder
-    ): DelegatedListenerToken {
-        val (index, stableRef) = addListener(documentChangeListeners, holder)
-        return DelegatedListenerToken(
-            memScoped {
-                CBLDatabase_AddDocumentChangeListener(
-                    actual,
-                    id.toFLString(this),
-                    nativeDocumentChangeListener(),
-                    stableRef
-                )!!
-            },
-            ListenerTokenType.DOCUMENT,
-            index
-        )
+    ) = StableRefListenerToken(holder) {
+        memScoped {
+            CBLDatabase_AddDocumentChangeListener(
+                actual,
+                id.toFLString(this),
+                nativeDocumentChangeListener(),
+                it
+            )!!
+        }
     }
 
     private fun nativeDocumentChangeListener(): CBLDocumentChangeListener {
         return staticCFunction { ref, _, docId ->
             with(ref.to<DocumentChangeListenerHolder>()) {
-                val change = DocumentChange(database, docId.toKString()!!)
+                val change = DocumentChange(database.getDefaultCollectionNotNull(), docId.toKString()!!)
                 when (this) {
                     is DocumentChangeDefaultListenerHolder -> listener(change)
                     is DocumentChangeSuspendListenerHolder -> scope.launch {
@@ -505,60 +677,31 @@ internal constructor(
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun close() {
-        withLock {
-            wrapCBLError { error ->
-                CBLDatabase_Close(actual, error)
-            }
-            isClosed = true
-        }
+    @Deprecated(
+        "Use ListenerToken.remove()",
+        ReplaceWith("token.remove()")
+    )
+    public actual fun removeChangeListener(token: ListenerToken) {
+        token.remove()
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun delete() {
-        mustBeOpen {
-            wrapCBLError { error ->
-                CBLDatabase_Delete(actual, error)
-            }
-            isClosed = true
-        }
-    }
-
-    @Throws(CouchbaseLiteException::class)
-    public actual fun createQuery(query: String): Query =
-        DelegatedQuery(createQuery(kCBLN1QLLanguage, query), this)
-
-    internal fun createQuery(language: CBLQueryLanguage, queryString: String): CPointer<CBLQuery> {
-        return memScoped {
-            val errorPos = alloc<IntVar>()
-            wrapCBLError({
-                toExceptionNotNull(mapOf("position" to errorPos.value))
-            }) { error ->
-                mustBeOpen {
-                    memScoped {
-                        CBLDatabase_CreateQuery(
-                            actual,
-                            language,
-                            queryString.toFLString(this),
-                            errorPos.ptr,
-                            error
-                        )!!
-                    }
-                }
-            }
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
+    @Deprecated(
+        "Use getDefaultCollection().indexes",
+        ReplaceWith("getDefaultCollection().indexes")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun getIndexes(): List<String> {
         return mustBeOpen {
+            @Suppress("UNCHECKED_CAST")
             CBLDatabase_GetIndexNames(actual)
                 ?.toList(null) as List<String>? ?: emptyList()
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().createIndex()",
+        ReplaceWith("getDefaultCollection().createIndex(name, index)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
         wrapCBLError { error ->
@@ -585,11 +728,16 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().createIndex()",
+        ReplaceWith("getDefaultCollection().createIndex(name, config)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
         wrapCBLError { error ->
             mustBeOpen {
                 memScoped {
+                    @Suppress("NO_ELSE_IN_WHEN")
                     when (config) {
                         is ValueIndexConfiguration -> CBLDatabase_CreateValueIndex(
                             actual,
@@ -609,6 +757,10 @@ internal constructor(
         }
     }
 
+    @Deprecated(
+        "Use getDefaultCollection().deleteIndex()",
+        ReplaceWith("getDefaultCollection().deleteIndex(name)")
+    )
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {
         wrapCBLError { error ->
@@ -641,7 +793,7 @@ internal constructor(
         }
     }
 
-    private fun <R> mustBeOpen(action: () -> R): R {
+    internal fun <R> mustBeOpen(action: () -> R): R {
         return withLock {
             if (isClosed) {
                 throw IllegalStateException("Attempt to perform an operation on a closed database.")

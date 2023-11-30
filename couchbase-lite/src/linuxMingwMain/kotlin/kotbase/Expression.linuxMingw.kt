@@ -84,52 +84,34 @@ public actual open class Expression {
     private class BinaryExpression(
         private val lhs: Expression,
         private val rhs: Expression,
-        private val type: OpType
+        private val op: String
     ) : Expression() {
 
-        enum class OpType {
-            Add,
-            Between,
-            Divide,
-            EqualTo,
-            GreaterThan,
-            GreaterThanOrEqualTo,
-            In,
-            Is,
-            IsNot,
-            LessThan,
-            LessThanOrEqualTo,
-            Like,
-            Modulus,
-            Multiply,
-            NotEqualTo,
-            Subtract,
-            RegexLike
+        companion object {
+            val OP_ADD = "+"
+            val OP_BETWEEN = "BETWEEN"
+            val OP_DIVIDE = "/"
+            val OP_EQUALS = "="
+            val OP_GREATER = ">"
+            val OP_GREATER_OR_EQUAL = ">="
+            val OP_IN = "IN"
+            val OP_IS = "IS"
+            val OP_IS_NOT = "IS NOT"
+            val OP_LESS = "<"
+            val OP_LESS_OR_EQUAL = "<="
+            val OP_LIKE = "LIKE"
+            val OP_MODULO = "%"
+            val OP_MULTIPLY = "*"
+            val OP_NOT_EQUAL = "!="
+            val OP_SUBTRACT = "-"
+            val OP_REGEX_LIKE = "regexp_like()"
         }
 
         override fun asJSON(): Any {
             return buildList {
-                when (type) {
-                    OpType.Add -> add("+")
-                    OpType.Between -> add("BETWEEN")
-                    OpType.Divide -> add("/")
-                    OpType.EqualTo -> add("=")
-                    OpType.GreaterThan -> add(">")
-                    OpType.GreaterThanOrEqualTo -> add(">=")
-                    OpType.In -> add("IN")
-                    OpType.Is -> add("IS")
-                    OpType.IsNot -> add("IS NOT")
-                    OpType.LessThan -> add("<")
-                    OpType.LessThanOrEqualTo -> add("<=")
-                    OpType.Like -> add("LIKE")
-                    OpType.Modulus -> add("%")
-                    OpType.Multiply -> add("*")
-                    OpType.NotEqualTo -> add("!=")
-                    OpType.RegexLike -> add("regexp_like()")
-                    OpType.Subtract -> add("-")
-                }
+                add(op)
                 add(lhs.asJSON())
-                if (type != OpType.Between) {
+                if (op != OP_BETWEEN) {
                     add(rhs.asJSON())
                 } else {
                     // "between"'s RHS is an aggregate of the min and max, but the min and max need to be
@@ -144,20 +126,18 @@ public actual open class Expression {
 
     private class CompoundExpression(
         private val subexpressions: List<Expression>,
-        private val type: OpType
+        private val op: String
     ) : Expression() {
 
-        enum class OpType {
-            And, Or, Not
+        companion object {
+            val OP_AND = "AND"
+            val OP_OR = "OR"
+            val OP_NOT = "NOT"
         }
 
         override fun asJSON(): Any {
             return buildList {
-                when (type) {
-                    OpType.And -> add("AND")
-                    OpType.Or -> add("OR")
-                    OpType.Not -> add("NOT")
-                }
+                add(op)
                 subexpressions.forEach {
                     add(it.asJSON())
                 }
@@ -178,6 +158,10 @@ public actual open class Expression {
             val opd = operand.asJSON()
             return buildList {
                 when (type) {
+                    OpType.Valued -> {
+                        add("IS VALUED")
+                        add(opd)
+                    }
                     OpType.Missing -> {
                         add("IS")
                         add(opd)
@@ -197,10 +181,6 @@ public actual open class Expression {
                         add("IS NOT")
                         add(opd)
                         add(null)
-                    }
-                    OpType.Valued -> {
-                        add("IS VALUED")
-                        add(opd)
                     }
                 }
             }
@@ -235,6 +215,23 @@ public actual open class Expression {
         override fun asJSON(): Any {
             return buildList {
                 add(func)
+                params.forEach {
+                    add(it.asJSON())
+                }
+            }
+        }
+    }
+
+    internal class IdxExpression(
+        private val func: String,
+        private val idx: IndexExpression,
+        private vararg val params: Expression
+    ) : Expression() {
+
+        public override fun asJSON(): Any {
+            return buildList {
+                add(func)
+                add(idx.toString())
                 params.forEach {
                     add(it.asJSON())
                 }
@@ -287,73 +284,88 @@ public actual open class Expression {
             ParameterExpression(name)
 
         public actual fun negated(expression: Expression): Expression =
-            CompoundExpression(listOf(expression), CompoundExpression.OpType.Not)
+            CompoundExpression(listOf(expression), CompoundExpression.OP_NOT)
 
         public actual fun not(expression: Expression): Expression =
             negated(expression)
+
+        public actual fun fullTextIndex(indexName: String): FullTextIndexExpression =
+            FTIExpression(indexName)
+
+        private class FTIExpression(
+            private val name: String,
+            private val alias: String? = null
+        ) : FullTextIndexExpression {
+
+            override fun from(alias: String): IndexExpression =
+                FTIExpression(name, alias)
+
+            override fun toString(): String {
+                return buildString {
+                    if (alias != null) {
+                        append(alias).append('.')
+                    }
+                    append(name)
+                }
+            }
+        }
     }
 
     public actual fun multiply(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.Multiply)
+        BinaryExpression(this, expression, BinaryExpression.OP_MULTIPLY)
 
     public actual fun divide(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.Divide)
+        BinaryExpression(this, expression, BinaryExpression.OP_DIVIDE)
 
     public actual fun modulo(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.Modulus)
+        BinaryExpression(this, expression, BinaryExpression.OP_MODULO)
 
     public actual fun add(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.Add)
+        BinaryExpression(this, expression, BinaryExpression.OP_ADD)
 
     public actual fun subtract(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.Subtract)
+        BinaryExpression(this, expression, BinaryExpression.OP_SUBTRACT)
 
     public actual fun lessThan(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.LessThan)
+        BinaryExpression(this, expression, BinaryExpression.OP_LESS)
 
     public actual fun lessThanOrEqualTo(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.LessThanOrEqualTo)
+        BinaryExpression(this, expression, BinaryExpression.OP_LESS_OR_EQUAL)
 
     public actual fun greaterThan(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.GreaterThan)
+        BinaryExpression(this, expression, BinaryExpression.OP_GREATER)
 
     public actual fun greaterThanOrEqualTo(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.GreaterThanOrEqualTo)
+        BinaryExpression(this, expression, BinaryExpression.OP_GREATER_OR_EQUAL)
 
     public actual fun equalTo(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.EqualTo)
+        BinaryExpression(this, expression, BinaryExpression.OP_EQUALS)
 
     public actual fun notEqualTo(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.NotEqualTo)
+        BinaryExpression(this, expression, BinaryExpression.OP_NOT_EQUAL)
 
     public actual fun and(expression: Expression): Expression =
-        CompoundExpression(listOf(this, expression), CompoundExpression.OpType.And)
+        CompoundExpression(listOf(this, expression), CompoundExpression.OP_AND)
 
     public actual fun or(expression: Expression): Expression =
-        CompoundExpression(listOf(this, expression), CompoundExpression.OpType.Or)
+        CompoundExpression(listOf(this, expression), CompoundExpression.OP_OR)
 
     public actual fun like(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.Like)
+        BinaryExpression(this, expression, BinaryExpression.OP_LIKE)
 
     public actual fun regex(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.RegexLike)
+        BinaryExpression(this, expression, BinaryExpression.OP_REGEX_LIKE)
 
     public actual fun `is`(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.Is)
+        BinaryExpression(this, expression, BinaryExpression.OP_IS)
 
     public actual fun isNot(expression: Expression): Expression =
-        BinaryExpression(this, expression, BinaryExpression.OpType.IsNot)
+        BinaryExpression(this, expression, BinaryExpression.OP_IS_NOT)
 
     public actual fun between(expression1: Expression, expression2: Expression): Expression {
         val aggr = AggregateExpression(listOf(expression1, expression2))
-        return BinaryExpression(this, aggr, BinaryExpression.OpType.Between)
+        return BinaryExpression(this, aggr, BinaryExpression.OP_BETWEEN)
     }
-
-    public actual fun isValued(): Expression =
-        UnaryExpression(this, UnaryExpression.OpType.Valued)
-
-    public actual fun isNotValued(): Expression =
-        negated(isValued())
 
     public actual fun collate(collation: Collation): Expression =
         CollationExpression(this, collation)
@@ -361,8 +373,14 @@ public actual open class Expression {
     public actual fun `in`(vararg expressions: Expression): Expression {
         if (expressions.isEmpty()) throw IllegalArgumentException("empty 'IN'.")
         val aggr = AggregateExpression(expressions.toList())
-        return BinaryExpression(this, aggr, BinaryExpression.OpType.In)
+        return BinaryExpression(this, aggr, BinaryExpression.OP_IN)
     }
+
+    public actual fun isValued(): Expression =
+        UnaryExpression(this, UnaryExpression.OpType.Valued)
+
+    public actual fun isNotValued(): Expression =
+        negated(isValued())
 
     override fun toString(): String =
         "${this::class.simpleName} {@${hashCode().toString(16)},json=" + asJSON() + "}"

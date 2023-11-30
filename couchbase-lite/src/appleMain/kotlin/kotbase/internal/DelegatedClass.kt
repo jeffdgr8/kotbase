@@ -36,3 +36,6 @@ public abstract class AbstractDelegatedClass<D : NSObject> {
 
 internal inline fun <reified D : NSObject> Array<out DelegatedClass<D>>.actuals(): List<D> =
     map { it.actual }
+
+internal inline fun <reified D : NSObject> Iterable<DelegatedClass<D>>.actuals(): List<D> =
+    map { it.actual }

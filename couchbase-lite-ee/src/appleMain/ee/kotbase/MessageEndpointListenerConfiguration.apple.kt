@@ -17,19 +17,32 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLMessageEndpointListenerConfiguration
 import kotbase.internal.DelegatedClass
+import kotbase.internal.actuals
 
 public actual class MessageEndpointListenerConfiguration
 internal constructor(
     actual: CBLMessageEndpointListenerConfiguration,
-    public actual val database: Database
+    public actual val database: Database,
+    public actual val collections: Set<Collection>
 ) : DelegatedClass<CBLMessageEndpointListenerConfiguration>(actual) {
 
+    @Deprecated(
+        "Use MessageEndpointListener(Collection, ProtocolType)",
+        ReplaceWith("MessageEndpointListener(setOf(database.getDefaultCollection()), protocolType)")
+    )
     public actual constructor(
         database: Database,
         protocolType: ProtocolType
     ) : this(
         CBLMessageEndpointListenerConfiguration(database.actual, protocolType.actual),
-        database
+        database,
+        setOf(database.getDefaultCollectionNotNull())
+    )
+
+    public actual constructor(collections: Set<Collection>, protocolType: ProtocolType) : this(
+        CBLMessageEndpointListenerConfiguration(collections.actuals(), protocolType.actual),
+        collections.first().database,
+        collections
     )
 
     public actual val protocolType: ProtocolType

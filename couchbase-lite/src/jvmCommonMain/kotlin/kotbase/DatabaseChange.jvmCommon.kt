@@ -18,12 +18,16 @@ package kotbase
 import kotbase.internal.DelegatedClass
 import com.couchbase.lite.DatabaseChange as CBLDatabaseChange
 
+@Suppress("DEPRECATION")
+@Deprecated(
+    "Use CollectionChange",
+    ReplaceWith("CollectionChange")
+)
 public actual class DatabaseChange
-internal constructor(actual: CBLDatabaseChange) : DelegatedClass<CBLDatabaseChange>(actual) {
-
-    public actual val database: Database by lazy {
-        Database(actual.database)
-    }
+internal constructor(
+    actual: CBLDatabaseChange,
+    public actual val database: Database
+) : DelegatedClass<CBLDatabaseChange>(actual) {
 
     public actual val documentIDs: List<String>
         get() = actual.documentIDs

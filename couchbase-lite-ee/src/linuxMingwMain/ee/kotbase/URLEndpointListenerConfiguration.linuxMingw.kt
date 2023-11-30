@@ -21,6 +21,10 @@ public actual class URLEndpointListenerConfiguration private constructor() {
         urlEndpointListenerUnsupported()
     }
 
+    @Deprecated(
+        "Use URLEndpointListenerConfiguration(Collections)",
+        ReplaceWith("URLEndpointListenerConfiguration(setOf(database.getDefaultCollection()), networkInterface, port, disableTls, identity, authenticator, readOnly, enableDeltaSync)")
+    )
     public actual constructor(
         database: Database,
         networkInterface: String?,
@@ -32,9 +36,23 @@ public actual class URLEndpointListenerConfiguration private constructor() {
         enableDeltaSync: Boolean
     ) : this()
 
+    public actual constructor(
+        collections: Set<Collection>,
+        networkInterface: String?,
+        port: Int,
+        disableTls: Boolean,
+        identity: TLSIdentity?,
+        authenticator: ListenerAuthenticator?,
+        readOnly: Boolean,
+        enableDeltaSync: Boolean
+    ) : this()
+
     public actual constructor(config: URLEndpointListenerConfiguration) : this()
 
+    @Deprecated("Use collections")
     public actual val database: Database
+
+    public actual val collections: Set<Collection>
 
     public actual var networkInterface: String?
 
