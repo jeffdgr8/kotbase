@@ -17,6 +17,7 @@
 
 package kotbase
 
+import com.couchbase.lite.dbPath
 import com.couchbase.lite.isOpen
 import com.couchbase.lite.withDbLock
 import kotbase.internal.utils.FileUtils
@@ -57,38 +58,13 @@ abstract class BaseTest : PlatformTest() {
         Report.log("<<<<<<<< Test completed(${formatInterval(Clock.System.now() - startTime)})")
     }
 
-    protected fun getUniqueName(prefix: String): String = StringUtils.getUniqueName(prefix, 12)
-
-    protected fun waitUntil(maxTime: Long, test: () -> Boolean) {
-        val delay = 100L
-        if (maxTime <= delay) {
-            assertTrue(test())
-        }
-        val endTimes = Clock.System.now() + (maxTime - delay).milliseconds
-        do {
-            try {
-                runBlocking {
-                    delay(delay)
-                }
-            } catch (e: CancellationException) {
-                break
-            }
-            if (test()) {
-                return
-            }
-        } while (Clock.System.now() < endTimes)
-
-        // assertTrue() provides a more relevant message than fail()
-        assertTrue(false)
-    }
-
     protected fun getScratchDirectoryPath(name: String): String {
         return try {
             val path = FileUtils.getCanonicalPath(FileUtils.verifyDir("$tmpDir/$name"))
             SCRATCH_DIRS.add(path)
             path
         } catch (e: IOException) {
-            throw IllegalStateException("Failed creating scratch directory: $name", e)
+            throw AssertionError("Failed creating scratch directory: $name", e)
         }
     }
 
@@ -100,83 +76,165 @@ abstract class BaseTest : PlatformTest() {
         val dbName = getUniqueName(name)
         val dbDir = "${config.directory}/$dbName$DB_EXTENSION"
         assertFalse(FileUtils.dirExists(dbDir))
-        val db = Database(dbName, config)
+        val db = try {
+            Database(dbName, config)
+        } catch (e: Exception) {
+            throw AssertionError("Failed creating database $name", e)
+        }
         assertTrue(FileUtils.dirExists(dbDir))
         return db
     }
 
+    // Get a new instance of the db or fail.
     protected fun duplicateDb(db: Database, config: DatabaseConfiguration? = null): Database {
-        return Database(db.name, config ?: DatabaseConfiguration())
+        try {
+            return Database(db.name, config ?: DatabaseConfiguration())
+        } catch (e: Exception) {
+            throw AssertionError("Failed duplicating database $db", e)
+        }
     }
 
+    // Close and reopen the db or fail.
     protected fun reopenDb(db: Database, config: DatabaseConfiguration? = null): Database {
         val dbName = db.name
-        assertTrue(closeDb(db))
-        return Database(dbName, config ?: DatabaseConfiguration())
+        closeDb(db)
+        try {
+            return Database(dbName, config ?: DatabaseConfiguration())
+        } catch (e: Exception) {
+            throw AssertionError("Failed reopening database $db", e)
+        }
     }
 
-    protected fun recreateDb(db: Database, config: DatabaseConfiguration? = null): Database {
-        val dbName = db.name
-        assertTrue(deleteDb(db))
-        return Database(dbName, config ?: DatabaseConfiguration())
+    // Close the db or fail.
+    protected fun closeDb(db: Database) {
+        try {
+            db.close()
+        } catch (e: Exception) {
+            throw AssertionError("Failed closing database $db", e)
+        }
     }
 
-    protected fun closeDb(db: Database?): Boolean {
-        if (db == null) {
-            return true
+    // Delete the db or fail.
+    protected fun deleteDb(db: Database) {
+        try {
+            // there is a race here but probably small.
+            if (db.isOpen) {
+                db.delete()
+                return
+            }
+            val dbPath = db.dbPath
+            if (dbPath != null && FileUtils.dirExists(dbPath)) {
+                FileUtils.eraseFileOrDir(dbPath)
+            }
+        } catch (e: Exception) {
+            throw AssertionError("Failed deleting database $db", e)
         }
-        if (db.withDbLock { !db.isOpen }) {
-            return true
-        }
-        return doSafely("Close db " + db.name, db::close)
     }
 
-    protected fun deleteDb(db: Database?): Boolean {
-        if (db == null) {
-            return true
+    // Test cleanup: Best effort to delete the db.
+    protected fun eraseDb(db: Database?) {
+        if (db == null) return
+        try {
+            // there is a race here but probably small.
+            if (db.isOpen) {
+                db.delete()
+                return
+            }
+            val dbPath = db.dbPath
+            if (dbPath != null && FileUtils.dirExists(dbPath)) {
+                FileUtils.eraseFileOrDir(dbPath)
+            }
+        } catch (e: Exception) {
+            Report.log("Failed to delete database $db", e)
         }
-        val isOpen = db.withDbLock {
-            db.isOpen
-        }
-        // there is a race here... probably small.
-        return if (isOpen) {
-            doSafely("Delete db " + db.name, db::delete)
-        } else {
-            //db.dbPath?.let { path ->
-            //    FileUtils.eraseFileOrDir(path)
-            //} ?: true
+    }
 
-            // Use Database.delete() as eraseFileOrDir() may fail
-            // to delete blobs right after database was closed
-            try {
-                Database.delete(db.name, db.config.directory)
-                true
-            } catch (e: CouchbaseLiteException) {
-                // Already deleted
-                e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_FOUND
+    protected fun createTestDoc(): MutableDocument {
+        return createTestDoc(1, 1, getUniqueName("no-tag"))
+    }
+
+    protected fun createTestDoc(tag: String): MutableDocument {
+        return createTestDoc(1, 1, tag)
+    }
+
+    protected fun createTestDocs(
+        first: Int,
+        n: Int,
+        tag: String = getUniqueName("no-tag")
+    ): List<MutableDocument> {
+        return buildList {
+            val last = first + n - 1
+            for (i in first..last) {
+                add(createTestDoc(i, last, tag))
             }
         }
     }
 
-    protected fun formatInterval(duration: Duration): String {
+    protected fun createComplexTestDoc(tag: String = getUniqueName("tag")): MutableDocument {
+        return addComplexData(createTestDoc(1, 1, tag))
+    }
+
+    protected fun createComplexTestDocs(n: Int, tag: String): List<MutableDocument> {
+        return createComplexTestDocs(1000, n, tag)
+    }
+
+    protected fun createComplexTestDocs(first: Int, n: Int, tag: String): List<MutableDocument> {
+        return buildList {
+            val last = first + n - 1
+            for (i in first..last) {
+                add(addComplexData(createTestDoc(i, last, tag)))
+            }
+        }
+    }
+
+    // Comparing documents isn't trivial: Fleece
+    // will compress numeric values into the smallest
+    // type that can be used to represent them.
+    // This doc is sufficiently complex to make simple
+    // comparison interesting but uses only values/types
+    // that are seen to survive the Fleece round-trip, unchanged
+    private fun createTestDoc(id: Int, top: Int, tag: String): MutableDocument {
+        return MutableDocument().apply {
+            setValue("nullValue", null)
+            setBoolean("booleanTrue", true)
+            setBoolean("booleanFalse", false)
+            setLong("longZero", 0)
+            setLong("longBig", 4000000000L)
+            setLong("longSmall", -4000000000L)
+            setDouble("doubleBig", 1.0E200)
+            setDouble("doubleSmall", -1.0E200)
+            setString("stringNull", null)
+            setString("stringPunk", "Jett")
+            setDate("dateNull", null)
+            setDate("dateCB", Instant.parse(TEST_DATE))
+            setBlob("blobNull", null)
+            setString(TEST_DOC_TAG_KEY, tag)
+            setLong(TEST_DOC_SORT_KEY, id.toLong())
+            setLong(TEST_DOC_REV_SORT_KEY, (top - id).toLong())
+        }
+    }
+
+    private fun addComplexData(mDoc: MutableDocument): MutableDocument {
+        // Dictionary:
+        val address: MutableDictionary = MutableDictionary()
+        address.setValue("street", "1 Main street")
+        address.setValue("city", "Mountain View")
+        address.setValue("state", "CA")
+        mDoc.setValue("address", address)
+
+        // Array:
+        val phones: MutableArray = MutableArray()
+        phones.addValue("650-123-0001")
+        phones.addValue("650-123-0002")
+        mDoc.setValue("phones", phones)
+        return mDoc
+    }
+
+    private fun formatInterval(duration: Duration): String {
         return duration.toComponents { min, sec, nano ->
             val mil = nano / 1_000_000
             "${min.paddedString(2)}:${sec.paddedString(2)}.${mil.paddedString(3)}"
         }
-    }
-
-    protected fun doSafely(
-        taskDesc: String,
-        task: () -> Unit
-    ): Boolean {
-        try {
-            task()
-            Report.log("$taskDesc succeeded")
-            return true
-        } catch (ex: CouchbaseLiteException) {
-            Report.log("$taskDesc failed", ex)
-        }
-        return false
     }
 
     @Suppress("unused")
@@ -184,6 +242,11 @@ abstract class BaseTest : PlatformTest() {
 
         const val STD_TIMEOUT_SEC = 10L
         const val LONG_TIMEOUT_SEC = 60L
+        const val TEST_DATE = "2019-02-21T05:37:22.014Z"
+        const val BLOB_CONTENT = "Knox on fox in socks in box. Socks on Knox and Knox in box."
+        const val TEST_DOC_SORT_KEY = "TEST_SORT_ASC"
+        const val TEST_DOC_REV_SORT_KEY = "TEST_SORT_DESC"
+        const val TEST_DOC_TAG_KEY = "TEST_TAG"
         private val SCRATCH_DIRS = mutableListOf<String>()
         const val DB_EXTENSION = ".cblite2" // C4Database.DB_EXTENSION
 
@@ -201,6 +264,31 @@ abstract class BaseTest : PlatformTest() {
             }
             SCRATCH_DIRS.clear()
             Report.log("<<<<<<<<<<<< Suite completed")
+        }
+
+        fun getUniqueName(prefix: String): String =
+            StringUtils.getUniqueName(prefix, 8)
+
+        // Run a boolean function every `waitMs` until it is true
+        // If it is not true within `maxWaitMs` fail.
+        protected fun waitUntil(maxWaitMs: Long, test: () -> Boolean) {
+            val waitMs = 100L
+            val endTime = Clock.System.now() + (maxWaitMs - waitMs).milliseconds
+            while (true) {
+                if (test()) {
+                    break
+                }
+                if (Clock.System.now() > endTime) {
+                    throw AssertionError("Operation timed out")
+                }
+                try {
+                    runBlocking {
+                        delay(waitMs)
+                    }
+                } catch (e: CancellationException) {
+                    throw AssertionError("Operation interrupted", e)
+                }
+            }
         }
     }
 }

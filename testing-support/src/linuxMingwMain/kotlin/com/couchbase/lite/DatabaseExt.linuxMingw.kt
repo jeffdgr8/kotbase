@@ -17,10 +17,19 @@
 
 package com.couchbase.lite
 
+import kotbase.BaseTest
 import kotbase.Database
 
 actual val Database.isOpen: Boolean
     get() = !isClosed
+
+internal actual val Database.dbPath: String?
+    get() {
+        // CBLDatabase.databasePath(name, dir)
+        val name = name.replace('/', ':') + BaseTest.DB_EXTENSION
+        val dir = config.directory.dropLastWhile { it == '/' }
+        return "$dir/$name"
+    }
 
 actual fun <R> Database.withDbLock(action: () -> R): R =
     withLock(action)

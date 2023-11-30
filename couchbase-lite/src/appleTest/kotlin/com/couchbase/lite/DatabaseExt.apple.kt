@@ -23,14 +23,6 @@ import kotbase.asBlob
 import kotbase.internal.DelegatedClass
 import kotbase.ext.wrapCBLError
 
-internal actual val Database.dbPath: String?
-    get() {
-        // CBLDatabase.databasePath(name, dir)
-        val name = name.replace('/', ':') + DB_EXTENSION
-        val dir = config.directory.dropLastWhile { it == '/' }
-        return "$dir/$name"
-    }
-
 internal actual fun Database.saveBlob(blob: Blob) {
     wrapCBLError { error ->
         actual.saveBlob(blob.actual, error)

@@ -21,9 +21,6 @@ import kotbase.asBlob
 import kotbase.internal.DelegatedClass
 import com.couchbase.lite.internal.core.C4Document as CBLC4Document
 
-internal actual val Database.dbPath: String?
-    get() = actual.dbPath
-
 internal actual fun Database.saveBlob(blob: Blob) =
     actual.saveBlob(blob.actual)
 
