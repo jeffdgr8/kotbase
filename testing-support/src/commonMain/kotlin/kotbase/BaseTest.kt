@@ -31,10 +31,7 @@ import kotlinx.datetime.Instant
 import kotlinx.io.IOException
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmStatic
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -290,6 +287,28 @@ abstract class BaseTest : PlatformTest() {
                 } catch (e: CancellationException) {
                     throw AssertionError("Operation interrupted", e)
                 }
+            }
+        }
+
+        fun assertIsCBLException(e: Exception?, domain: String? = null, code: Int = 0) {
+            assertNotNull(e)
+            if (e !is CouchbaseLiteException) {
+                throw AssertionError("Expected CBL exception ($domain, $code) but got:", e)
+            }
+            if (domain != null) {
+                assertEquals(domain, e.domain)
+            }
+            if (code > 0) {
+                assertEquals(code.toLong(), e.code.toLong())
+            }
+        }
+
+        fun assertThrowsCBLException(domain: String?, code: Int, block: () -> Unit) {
+            try {
+                block()
+                fail("Expected CBL exception ($domain, $code)")
+            } catch (e: Exception) {
+                assertIsCBLException(e, domain, code)
             }
         }
     }
