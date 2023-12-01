@@ -19,7 +19,6 @@ import kotbase.ext.toStringMillis
 import kotbase.test.assertIntContentEquals
 import kotlinx.datetime.Instant
 import kotlinx.io.IOException
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlin.test.*
@@ -31,10 +30,12 @@ class ArrayTest : BaseDbTest() {
         val array = MutableArray()
         assertEquals(0, array.count)
         assertEquals(emptyList(), array.toList())
+
         val doc = MutableDocument("doc1")
         doc.setValue("array", array)
         assertEquals(array, doc.getArray("array"))
-        val updatedDoc = saveDocInBaseTestDb(doc)
+
+        val updatedDoc = saveDocInCollection(doc)
         assertEquals(emptyList(), updatedDoc.getArray("array")?.toList())
     }
 
@@ -47,19 +48,19 @@ class ArrayTest : BaseDbTest() {
         val array = MutableArray(data)
         assertEquals(3, array.count)
         assertEquals(data, array.toList())
+
         val doc = MutableDocument("doc1")
         doc.setValue("array", array)
         assertEquals(array, doc.getArray("array"))
-        val savedDoc = saveDocInBaseTestDb(doc)
+
+        val savedDoc = saveDocInCollection(doc)
         assertEquals(data, savedDoc.getArray("array")?.toList())
     }
 
     @Test
     fun testRecursiveArray() {
-        assertFailsWith<IllegalArgumentException> {
-            val array = MutableArray()
-            array.addArray(array)
-        }
+        val array = MutableArray()
+        assertFailsWith<IllegalArgumentException> { array.addArray(array) }
     }
 
     @Test
@@ -72,12 +73,13 @@ class ArrayTest : BaseDbTest() {
         array.setData(data)
         assertEquals(3, array.count)
         assertEquals(data, array.toList())
+
         val doc = MutableDocument("doc1")
         doc.setValue("array", array)
         assertEquals(array, doc.getArray("array"))
 
         // save
-        val savedDoc = saveDocInBaseTestDb(doc)
+        val savedDoc = saveDocInCollection(doc)
         assertEquals(data, savedDoc.getArray("array")?.toList())
 
         // update
@@ -87,6 +89,7 @@ class ArrayTest : BaseDbTest() {
         data.add("5")
         data.add("6")
         array.setData(data)
+
         assertEquals(data.size, array.count)
         assertEquals(data, array.toList())
     }
@@ -116,6 +119,7 @@ class ArrayTest : BaseDbTest() {
             val doc = MutableDocument("doc1")
             save(doc, "array", array) { a ->
                 assertEquals(12, a.count)
+
                 assertEquals(true, a.getValue(0))
                 assertEquals(false, a.getValue(1))
                 assertEquals("string", a.getValue(2))
@@ -129,6 +133,7 @@ class ArrayTest : BaseDbTest() {
                 // dictionary
                 val dict = a.getValue(9) as Dictionary
                 val subdict = if (dict is MutableDictionary) dict else dict.toMutable()
+
                 val expectedMap = mutableMapOf<String, Any?>()
                 expectedMap["name"] = "Scott Tiger"
                 assertEquals(expectedMap, subdict.toMap())
@@ -136,6 +141,7 @@ class ArrayTest : BaseDbTest() {
                 // array
                 val array1 = a.getValue(10) as Array
                 val subarray = if (array1 is MutableArray) array1 else array1.toMutable()
+
                 val expected = mutableListOf<Any?>()
                 expected.add("a")
                 expected.add("b")
@@ -152,17 +158,13 @@ class ArrayTest : BaseDbTest() {
     fun testAddObjectsToExistingArray() {
         for (i in 0..1) {
             var array: MutableArray? = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array!!)
-            } else {
-                populateDataByType(array!!)
-            }
+            if (i % 2 == 0) { populateData(array!!) }
+            else { populateDataByType(array!!) }
 
             // Save
-            val docID = "doc$i"
-            var doc = MutableDocument(docID)
+            var doc = MutableDocument(docId(i))
             doc.setValue("array", array)
-            doc = saveDocInBaseTestDb(doc).toMutable()
+            doc = saveDocInCollection(doc).toMutable()
 
             // Get an existing array:
             array = doc.getArray("array")
@@ -170,14 +172,13 @@ class ArrayTest : BaseDbTest() {
             assertEquals(12, array.count)
 
             // Update:
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(24, array.count)
+
             save(doc, "array", array) { a ->
                 assertEquals(24, a.count)
+
                 assertEquals(true, a.getValue(12))
                 assertEquals(false, a.getValue(12 + 1))
                 assertEquals("string", a.getValue(12 + 2))
@@ -216,17 +217,15 @@ class ArrayTest : BaseDbTest() {
 
         // Prepare CBLArray with NSNull placeholders:
         val array = MutableArray()
-        for (i in data.indices) {
-            array.addValue(null)
-        }
+        for (i in data.indices) { array.addValue(null) }
 
         // Set object at index:
-        for (i in data.indices) {
-            array.setValue(i, data[i])
-        }
+        for (i in data.indices) { array.setValue(i, data[i]) }
+
         val doc = MutableDocument("doc1")
         save(doc, "array", array) { a ->
             assertEquals(12, a.count)
+
             assertEquals(true, a.getValue(0))
             assertEquals(false, a.getValue(1))
             assertEquals("string", a.getValue(2))
@@ -262,27 +261,24 @@ class ArrayTest : BaseDbTest() {
     fun testSetObjectToExistingArray() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
 
             // Save
-            val docID = "doc$i"
-            var doc = MutableDocument(docID)
+            var doc = MutableDocument(docId(i))
             doc.setArray("array", array)
-            doc = saveDocInBaseTestDb(doc).toMutable()
+            doc = saveDocInCollection(doc).toMutable()
             val gotArray = doc.getArray("array")!!
+
             val data = arrayOfAllTypes()
             assertEquals(data.size, gotArray.count)
 
             // reverse the array
-            for (j in data.indices) {
-                gotArray.setValue(j, data[data.size - j - 1])
-            }
+            for (j in data.indices) { gotArray.setValue(j, data[data.size - j - 1]) }
+
             save(doc, "array", gotArray) { a ->
                 assertEquals(12, a.count)
+
                 assertEquals(true, a.getValue(11))
                 assertEquals(false, a.getValue(10))
                 assertEquals("string", a.getValue(9))
@@ -296,6 +292,7 @@ class ArrayTest : BaseDbTest() {
                 // dictionary
                 val dict = a.getValue(2) as Dictionary
                 val subdict = if (dict is MutableDictionary) dict else dict.toMutable()
+
                 val expectedMap = mutableMapOf<String, Any?>()
                 expectedMap["name"] = "Scott Tiger"
                 assertEquals(expectedMap, subdict.toMap())
@@ -303,6 +300,7 @@ class ArrayTest : BaseDbTest() {
                 // array
                 val array1 = a.getValue(1) as Array
                 val subarray = if (array1 is MutableArray) array1 else array1.toMutable()
+
                 val expected = mutableListOf<Any?>()
                 expected.add("a")
                 expected.add("b")
@@ -319,31 +317,38 @@ class ArrayTest : BaseDbTest() {
     fun testSetObjectOutOfBound() {
         val array = MutableArray()
         array.addValue("a")
+
         assertFailsWith<IndexOutOfBoundsException> { array.setValue(-1, "b") }
+
         assertFailsWith<IndexOutOfBoundsException> { array.setValue(1, "b") }
     }
 
     @Test
     fun testInsertObject() {
         val array = MutableArray()
+
         array.insertValue(0, "a")
         assertEquals(1, array.count)
         assertEquals("a", array.getValue(0))
+
         array.insertValue(0, "c")
         assertEquals(2, array.count)
         assertEquals("c", array.getValue(0))
         assertEquals("a", array.getValue(1))
+
         array.insertValue(1, "d")
         assertEquals(3, array.count)
         assertEquals("c", array.getValue(0))
         assertEquals("d", array.getValue(1))
         assertEquals("a", array.getValue(2))
+
         array.insertValue(2, "e")
         assertEquals(4, array.count)
         assertEquals("c", array.getValue(0))
         assertEquals("d", array.getValue(1))
         assertEquals("e", array.getValue(2))
         assertEquals("a", array.getValue(3))
+
         array.insertValue(4, "f")
         assertEquals(5, array.count)
         assertEquals("c", array.getValue(0))
@@ -357,8 +362,9 @@ class ArrayTest : BaseDbTest() {
     fun testInsertObjectToExistingArray() {
         var mDoc = MutableDocument("doc1")
         mDoc.setValue("array", MutableArray())
-        var doc = saveDocInBaseTestDb(mDoc)
+        var doc = saveDocInCollection(mDoc)
         mDoc = doc.toMutable()
+
         var mArray = mDoc.getArray("array")
         assertNotNull(mArray)
         mArray.insertValue(0, "a")
@@ -366,6 +372,7 @@ class ArrayTest : BaseDbTest() {
             assertEquals(1, a.count)
             assertEquals("a", a.getValue(0))
         }
+
         mDoc = doc.toMutable()
         mArray = mDoc.getArray("array")
         assertNotNull(mArray)
@@ -375,6 +382,7 @@ class ArrayTest : BaseDbTest() {
             assertEquals("c", a.getValue(0))
             assertEquals("a", a.getValue(1))
         }
+
         mDoc = doc.toMutable()
         mArray = mDoc.getArray("array")
         assertNotNull(mArray)
@@ -385,6 +393,7 @@ class ArrayTest : BaseDbTest() {
             assertEquals("d", a.getValue(1))
             assertEquals("a", a.getValue(2))
         }
+
         mDoc = doc.toMutable()
         mArray = mDoc.getArray("array")
         assertNotNull(mArray)
@@ -396,6 +405,7 @@ class ArrayTest : BaseDbTest() {
             assertEquals("e", a.getValue(2))
             assertEquals("a", a.getValue(3))
         }
+
         mDoc = doc.toMutable()
         mArray = mDoc.getArray("array")
         assertNotNull(mArray)
@@ -414,7 +424,9 @@ class ArrayTest : BaseDbTest() {
     fun testInsertObjectOutOfBound() {
         val array = MutableArray()
         array.addValue("a")
+
         assertFailsWith<IndexOutOfBoundsException> { array.insertValue(-1, "b") }
+
         assertFailsWith<IndexOutOfBoundsException> { array.insertValue(2, "b") }
     }
 
@@ -422,16 +434,14 @@ class ArrayTest : BaseDbTest() {
     fun testRemove() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
+
             for (j in array.count - 1 downTo 0) {
                 array.remove(j)
             }
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertEquals(0, a.count)
                 assertEquals(emptyList(), a.toList())
@@ -443,19 +453,18 @@ class ArrayTest : BaseDbTest() {
     fun testRemoveExistingArray() {
         for (i in 0..1) {
             var array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
-            val docID = "doc$i"
-            var doc = MutableDocument(docID)
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
+
+            var doc = MutableDocument(docId(i))
             doc.setValue("array", array)
-            doc = saveDocInBaseTestDb(doc).toMutable()
+            doc = saveDocInCollection(doc).toMutable()
             array = doc.getArray("array")!!
+
             for (j in array.count - 1 downTo 0) {
                 array.remove(j)
             }
+
             save(doc, "array", array) { a ->
                 assertEquals(0, a.count)
                 assertEquals(emptyList(), a.toList())
@@ -467,7 +476,9 @@ class ArrayTest : BaseDbTest() {
     fun testRemoveOutOfBound() {
         val array = MutableArray()
         array.addValue("a")
+
         assertFailsWith<IndexOutOfBoundsException> { array.remove(-1) }
+
         assertFailsWith<IndexOutOfBoundsException> { array.remove(1) }
     }
 
@@ -475,16 +486,11 @@ class ArrayTest : BaseDbTest() {
     fun testCount() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            save(doc, "array", array) { a ->
-                assertEquals(12, a.count)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
+
+            val doc = MutableDocument(docId(i))
+            save(doc, "array", array) { a -> assertEquals(12, a.count) }
         }
     }
 
@@ -492,14 +498,11 @@ class ArrayTest : BaseDbTest() {
     fun testGetString() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertNull(a.getString(0))
                 assertNull(a.getString(1))
@@ -519,18 +522,14 @@ class ArrayTest : BaseDbTest() {
 
     // ??? Fails on Nexus 4
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetNumber() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertEquals(1, a.getNumber(0)?.toInt())
                 assertEquals(0, a.getNumber(1)?.toInt())
@@ -549,18 +548,14 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetInteger() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertEquals(1, a.getInt(0))
                 assertEquals(0, a.getInt(1))
@@ -579,18 +574,14 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetLong() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertEquals(1, a.getLong(0))
                 assertEquals(0, a.getLong(1))
@@ -609,18 +600,14 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetFloat() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertEquals(1.0f, a.getFloat(0), 0.0f)
                 assertEquals(0.0f, a.getFloat(1), 0.0f)
@@ -639,18 +626,14 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDouble() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertEquals(1.0, a.getDouble(0), 0.0)
                 assertEquals(0.0, a.getDouble(1), 0.0)
@@ -669,7 +652,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetGetMinMaxNumbers() {
         val array = MutableArray()
         array.addValue(Int.MIN_VALUE)
@@ -696,12 +678,14 @@ class ArrayTest : BaseDbTest() {
             assertEquals(Long.MAX_VALUE, a.getValue(3))
             assertEquals(Long.MIN_VALUE, a.getLong(2))
             assertEquals(Long.MAX_VALUE, a.getLong(3))
+
             assertEquals(Float.MIN_VALUE, a.getNumber(4))
             assertEquals(Float.MAX_VALUE, a.getNumber(5))
             assertEquals(Float.MIN_VALUE, a.getValue(4))
             assertEquals(Float.MAX_VALUE, a.getValue(5))
             assertEquals(Float.MIN_VALUE, a.getFloat(4), 0.0f)
             assertEquals(Float.MAX_VALUE, a.getFloat(5), 0.0f)
+
             assertEquals(Double.MIN_VALUE, a.getNumber(6))
             assertEquals(Double.MAX_VALUE, a.getNumber(7))
             assertEquals(Double.MIN_VALUE, a.getValue(6))
@@ -712,7 +696,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetGetFloatNumbers() {
         val array = MutableArray()
         array.addValue(1.00)
@@ -730,7 +713,7 @@ class ArrayTest : BaseDbTest() {
             assertEquals(1.00, a.getNumber(0)!!.toDouble(), 0.0)
             assertEquals(1, a.getInt(0))
             assertEquals(1L, a.getLong(0))
-            assertEquals(1.00f, a.getFloat(0), 0.0f)
+            assertEquals(1.00F, a.getFloat(0), 0.0F)
             assertEquals(1.00, a.getDouble(0), 0.0)
 
             assertEquals(1.49, a.getValue(1))
@@ -744,38 +727,34 @@ class ArrayTest : BaseDbTest() {
             assertEquals(1.50, a.getNumber(2)!!.toDouble(), 0.0)
             assertEquals(1, a.getInt(2))
             assertEquals(1L, a.getLong(2))
-            assertEquals(1.50f, a.getFloat(2), 0.0f)
+            assertEquals(1.50f, a.getFloat(2), 0.0F)
             assertEquals(1.50, a.getDouble(2), 0.0)
 
             assertEquals(1.51, a.getValue(3))
             assertEquals(1.51, a.getNumber(3))
             assertEquals(1, a.getInt(3))
             assertEquals(1L, a.getLong(3))
-            assertEquals(1.51f, a.getFloat(3), 0.0f)
+            assertEquals(1.51f, a.getFloat(3), 0.0F)
             assertEquals(1.51, a.getDouble(3), 0.0)
 
             assertEquals(1.99, a.getValue(4))
             assertEquals(1.99, a.getNumber(4))
             assertEquals(1, a.getInt(4))
             assertEquals(1L, a.getLong(4))
-            assertEquals(1.99f, a.getFloat(4), 0.0f)
+            assertEquals(1.99f, a.getFloat(4), 0.0F)
             assertEquals(1.99, a.getDouble(4), 0.0)
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetBoolean() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertTrue(a.getBoolean(0))
                 assertFalse(a.getBoolean(1))
@@ -794,18 +773,14 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDate() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertNull(a.getDate(0))
                 assertNull(a.getDate(1))
@@ -824,18 +799,14 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetMap() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertNull(a.getDictionary(0))
                 assertNull(a.getDictionary(1))
@@ -856,18 +827,14 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetArray() {
         for (i in 0..1) {
             val array = MutableArray()
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
             assertEquals(12, array.count)
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
+
+            val doc = MutableDocument(docId(i))
             save(doc, "array", array) { a ->
                 assertNull(a.getArray(0))
                 assertNull(a.getArray(1))
@@ -885,16 +852,17 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetNestedArray() {
         val array1 = MutableArray()
         val array2 = MutableArray()
         val array3 = MutableArray()
+
         array1.addValue(array2)
         array2.addValue(array3)
         array3.addValue("a")
         array3.addValue("b")
         array3.addValue("c")
+
         val doc = MutableDocument("doc1")
         save(doc, "array", array1) { a1 ->
             assertEquals(1, a1.count)
@@ -909,7 +877,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testReplaceArray() {
         var doc = MutableDocument("doc1")
         val array1 = MutableArray()
@@ -919,6 +886,7 @@ class ArrayTest : BaseDbTest() {
         assertEquals(3, array1.count)
         assertEquals(listOf("a", "b", "c"), array1.toList())
         doc.setValue("array", array1)
+
         var array2 = MutableArray()
         array2.addValue("x")
         array2.addValue("y")
@@ -939,7 +907,7 @@ class ArrayTest : BaseDbTest() {
         assertEquals(listOf("x", "y", "z"), array2.toList())
 
         // Save:
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         // Check current array:
         assertNotSame(doc.getArray("array"), array2)
@@ -949,7 +917,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testReplaceArrayDifferentType() {
         var doc = MutableDocument("doc1")
         val array1 = MutableArray()
@@ -969,18 +936,18 @@ class ArrayTest : BaseDbTest() {
         assertEquals(listOf("a", "b", "c", "d"), array1.toList())
 
         // Save:
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
         assertEquals("Daniel Tiger", doc.getString("array"))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEnumeratingArray() {
         val array = MutableArray()
-        for (i in 0..19) {
+        for (i in 0..<20) {
             array.addValue(i)
         }
         var content = array.toList()
+
         var result = mutableListOf<Any?>()
         var counter = 0
         for (item in array) {
@@ -996,14 +963,17 @@ class ArrayTest : BaseDbTest() {
         array.addValue(20)
         array.addValue(21)
         content = array.toList()
+
         result = mutableListOf()
         for (item in array) {
             assertNotNull(item)
             result.add(item)
         }
         assertEquals(content, result)
+
         val doc = MutableDocument("doc1")
         doc.setValue("array", array)
+
         val c = content
         save(doc, "array", array) { array1 ->
             val r = mutableListOf<Any?>()
@@ -1015,54 +985,51 @@ class ArrayTest : BaseDbTest() {
         }
     }
 
-    // ??? Surprisingly, no conncurrent modification exception.
     @Test
     fun testArrayEnumerationWithDataModification1() {
         val array = MutableArray()
-        for (i in 0..2) {
-            array.addValue(i)
-        }
+        for (i in 0..2) { array.addValue(i) }
+
         assertEquals(3, array.count)
         assertIntContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
-        var n = 0
-        val itr = array.iterator()
-        while (itr.hasNext()) {
-            if (n++ == 1) {
-                array.addValue(3)
+
+        assertFailsWith<ConcurrentModificationException> {
+            var n = 0
+            val itr = array.iterator()
+            while (itr.hasNext()) {
+                if (n++ == 1) {
+                    array.addValue(3)
+                }
+                itr.next()
             }
-            itr.next()
         }
-        assertEquals(4, array.count)
-        assertIntContentEquals(arrayOf(0, 1, 2, 3), array.toList().toTypedArray())
     }
 
-    // ??? Surprisingly, no conncurrent modification exception.
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testArrayEnumerationWithDataModification2() {
-        var array: MutableArray? = MutableArray()
-        for (i in 0..2) {
-            array!!.addValue(i)
-        }
-        assertEquals(3, array!!.count)
+        val array = MutableArray()
+        for (i in 0..2) { array.addValue(i) }
+
+        assertEquals(3, array.count)
         assertIntContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
+
         val doc = MutableDocument("doc1").setValue("array", array)
-        array = saveDocInBaseTestDb(doc).toMutable().getArray("array")
-        assertNotNull(array)
-        var n = 0
-        val itr = array.iterator()
-        while (itr.hasNext()) {
-            if (n++ == 1) {
-                array.addValue(3)
+        val savedArray = saveDocInCollection(doc).toMutable().getArray("array")
+        assertNotNull(savedArray)
+
+        assertFailsWith<ConcurrentModificationException> {
+            var n = 0
+            val itr = savedArray.iterator()
+            while (itr.hasNext()) {
+                if (n++ == 1) {
+                    savedArray.addValue(3)
+                }
+                itr.next()
             }
-            itr.next()
         }
-        assertEquals(4, array.count)
-        assertIntContentEquals(arrayOf(0, 1, 2, 3), array.toList().toTypedArray())
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetNull() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
@@ -1073,52 +1040,57 @@ class ArrayTest : BaseDbTest() {
         mArray.addArray(null)
         mArray.addDictionary(null)
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(6, array.count)
-            assertNull(array.getValue(0))
-            assertNull(array.getValue(1))
-            assertNull(array.getValue(2))
-            assertNull(array.getValue(3))
-            assertNull(array.getValue(4))
-            assertNull(array.getValue(5))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(6, array.count)
+        assertNull(array.getValue(0))
+        assertNull(array.getValue(1))
+        assertNull(array.getValue(2))
+        assertNull(array.getValue(3))
+        assertNull(array.getValue(4))
+        assertNull(array.getValue(5))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEquals() {
 
         // mArray1 and mArray2 have exactly same data
         // mArray3 is different
         // mArray4 is different
         // mArray5 is different
+
         val mArray1 = MutableArray()
         mArray1.addValue(1L)
         mArray1.addValue("Hello")
         mArray1.addValue(null)
+
         val mArray2 = MutableArray()
         mArray2.addValue(1L)
         mArray2.addValue("Hello")
         mArray2.addValue(null)
+
         val mArray3 = MutableArray()
         mArray3.addValue(100L)
         mArray3.addValue(true)
+
         val mArray4 = MutableArray()
         mArray4.addValue(100L)
+
         val mArray5 = MutableArray()
         mArray4.addValue(100L)
         mArray3.addValue(false)
+
         val mDoc = MutableDocument("test")
         mDoc.setArray("array1", mArray1)
         mDoc.setArray("array2", mArray2)
         mDoc.setArray("array3", mArray3)
         mDoc.setArray("array4", mArray4)
         mDoc.setArray("array5", mArray5)
-        val doc = saveDocInBaseTestDb(mDoc)
+
+        val doc = saveDocInCollection(mDoc)
         val array1 = doc.getArray("array1")!!
         val array2 = doc.getArray("array2")!!
         val array3 = doc.getArray("array3")!!
@@ -1219,7 +1191,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testHashCode() {
         // mArray1 and mArray2 have exactly same data
         // mArray3 is different
@@ -1254,7 +1225,7 @@ class ArrayTest : BaseDbTest() {
         mDoc.setArray("array4", mArray4)
         mDoc.setArray("array5", mArray5)
 
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
         val array1 = doc.getArray("array1")!!
         val array2 = doc.getArray("array2")!!
         val array3 = doc.getArray("array3")
@@ -1306,65 +1277,70 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDictionary() {
         val mNestedDict = MutableDictionary()
         mNestedDict.setValue("key1", 1L)
         mNestedDict.setValue("key2", "Hello")
         mNestedDict.setValue("key3", null)
+
         val mArray = MutableArray()
         mArray.addValue(1L)
         mArray.addValue("Hello")
         mArray.addValue(null)
         mArray.addValue(mNestedDict)
+
         val mDoc = MutableDocument("test")
         mDoc.setArray("array", mArray)
-        val doc = saveDocInBaseTestDb(mDoc)
+
+        val doc = saveDocInCollection(mDoc)
         val array = doc.getArray("array")
+
         assertNotNull(array)
         assertNull(array.getDictionary(0))
         assertNull(array.getDictionary(1))
         assertNull(array.getDictionary(2))
         assertNotNull(array.getDictionary(3))
-        assertFailsWith<IndexOutOfBoundsException> {
-            assertNull(array.getDictionary(4))
-        }
+
+        assertFailsWith<IndexOutOfBoundsException> { assertNull(array.getDictionary(4)) }
+
         val nestedDict = array.getDictionary(3)
         assertEquals(nestedDict, mNestedDict)
         assertEquals(array, mArray)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetArray2() {
         val mNestedArray = MutableArray()
         mNestedArray.addValue(1L)
         mNestedArray.addValue("Hello")
         mNestedArray.addValue(null)
+
         val mArray = MutableArray()
         mArray.addValue(1L)
         mArray.addValue("Hello")
         mArray.addValue(null)
         mArray.addValue(mNestedArray)
+
         val mDoc = MutableDocument("test")
         mDoc.setValue("array", mArray)
-        val doc = saveDocInBaseTestDb(mDoc)
+
+        val doc = saveDocInCollection(mDoc)
         val array = doc.getArray("array")
+
         assertNotNull(array)
         assertNull(array.getArray(0))
         assertNull(array.getArray(1))
         assertNull(array.getArray(2))
         assertNotNull(array.getArray(3))
-        assertFailsWith<IndexOutOfBoundsException> {
-            assertNull(array.getArray(4))
-        }
+
+        assertFailsWith<IndexOutOfBoundsException> { assertNull(array.getArray(4)) }
+
         val nestedArray = array.getArray(3)
         assertEquals(nestedArray, mNestedArray)
         assertEquals(array, mArray)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddInt() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
@@ -1372,67 +1348,66 @@ class ArrayTest : BaseDbTest() {
         mArray.addInt(Int.MAX_VALUE)
         mArray.addInt(Int.MIN_VALUE)
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals(0, array.getInt(0))
-            assertEquals(Int.MAX_VALUE, array.getInt(1))
-            assertEquals(Int.MIN_VALUE, array.getInt(2))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+        assertEquals(0, array.getInt(0))
+        assertEquals(Int.MAX_VALUE, array.getInt(1))
+        assertEquals(Int.MIN_VALUE, array.getInt(2))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetInt() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addInt(0)
         mArray.addInt(Int.MAX_VALUE)
         mArray.addInt(Int.MIN_VALUE)
+
         mArray.setInt(0, Int.MAX_VALUE)
         mArray.setInt(1, Int.MIN_VALUE)
         mArray.setInt(2, 0)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals(0, array.getInt(2))
-            assertEquals(Int.MAX_VALUE, array.getInt(0))
-            assertEquals(Int.MIN_VALUE, array.getInt(1))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+        assertEquals(0, array.getInt(2))
+        assertEquals(Int.MAX_VALUE, array.getInt(0))
+        assertEquals(Int.MIN_VALUE, array.getInt(1))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testInsertInt() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addInt(10) // will be pushed 3 times.
         mArray.insertInt(0, 0)
         mArray.insertInt(1, Int.MAX_VALUE)
         mArray.insertInt(2, Int.MIN_VALUE)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(4, array.count)
-            assertEquals(0, array.getInt(0))
-            assertEquals(Int.MAX_VALUE, array.getInt(1))
-            assertEquals(Int.MIN_VALUE, array.getInt(2))
-            assertEquals(10, array.getInt(3))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(4, array.count)
+        assertEquals(0, array.getInt(0))
+        assertEquals(Int.MAX_VALUE, array.getInt(1))
+        assertEquals(Int.MIN_VALUE, array.getInt(2))
+        assertEquals(10, array.getInt(3))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddLong() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
@@ -1440,20 +1415,18 @@ class ArrayTest : BaseDbTest() {
         mArray.addLong(Long.MAX_VALUE)
         mArray.addLong(Long.MIN_VALUE)
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals(0, array.getLong(0))
-            assertEquals(Long.MAX_VALUE, array.getLong(1))
-            assertEquals(Long.MIN_VALUE, array.getLong(2))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+        assertEquals(0, array.getLong(0))
+        assertEquals(Long.MAX_VALUE, array.getLong(1))
+        assertEquals(Long.MIN_VALUE, array.getLong(2))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetLong() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
@@ -1464,43 +1437,41 @@ class ArrayTest : BaseDbTest() {
         mArray.setLong(1, Long.MIN_VALUE)
         mArray.setLong(2, 0)
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals(0, array.getLong(2))
-            assertEquals(Long.MAX_VALUE, array.getLong(0))
-            assertEquals(Long.MIN_VALUE, array.getLong(1))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+        assertEquals(0, array.getLong(2))
+        assertEquals(Long.MAX_VALUE, array.getLong(0))
+        assertEquals(Long.MIN_VALUE, array.getLong(1))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testInsertLong() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addLong(10) // will be pushed 3 times.
         mArray.insertLong(0, 0)
         mArray.insertLong(1, Long.MAX_VALUE)
         mArray.insertLong(2, Long.MIN_VALUE)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(4, array.count)
-            assertEquals(0, array.getLong(0))
-            assertEquals(Long.MAX_VALUE, array.getLong(1))
-            assertEquals(Long.MIN_VALUE, array.getLong(2))
-            assertEquals(10, array.getLong(3))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(4, array.count)
+        assertEquals(0, array.getLong(0))
+        assertEquals(Long.MAX_VALUE, array.getLong(1))
+        assertEquals(Long.MIN_VALUE, array.getLong(2))
+        assertEquals(10, array.getLong(3))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddFloat() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
@@ -1508,348 +1479,353 @@ class ArrayTest : BaseDbTest() {
         mArray.addFloat(Float.MAX_VALUE)
         mArray.addFloat(Float.MIN_VALUE)
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals(0.0f, array.getFloat(0), 0.0f)
-            assertEquals(Float.MAX_VALUE, array.getFloat(1), 0.0f)
-            assertEquals(Float.MIN_VALUE, array.getFloat(2), 0.0f)
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+        assertEquals(0.0F, array.getFloat(0), 0.0F)
+        assertEquals(Float.MAX_VALUE, array.getFloat(1), 0.0F)
+        assertEquals(Float.MIN_VALUE, array.getFloat(2), 0.0F)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetFloat() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
-        mArray.addFloat(0f)
+
+        mArray.addFloat(0F)
         mArray.addFloat(Float.MAX_VALUE)
         mArray.addFloat(Float.MIN_VALUE)
+
         mArray.setFloat(0, Float.MAX_VALUE)
         mArray.setFloat(1, Float.MIN_VALUE)
-        mArray.setFloat(2, 0f)
+        mArray.setFloat(2, 0F)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals(0.0f, array.getLong(2).toFloat(), 0.0f)
-            assertEquals(Float.MAX_VALUE, array.getFloat(0), 0.0f)
-            assertEquals(Float.MIN_VALUE, array.getFloat(1), 0.0f)
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+
+        assertEquals(0.0F, array.getLong(2).toFloat(), 0.0F)
+        assertEquals(Float.MAX_VALUE, array.getFloat(0), 0.0F)
+        assertEquals(Float.MIN_VALUE, array.getFloat(1), 0.0F)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testInsertFloat() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
-        mArray.addFloat(10f) // will be pushed 3 times.
-        mArray.insertFloat(0, 0f)
+
+        mArray.addFloat(10F) // will be pushed 3 times.
+        mArray.insertFloat(0, 0F)
         mArray.insertFloat(1, Float.MAX_VALUE)
         mArray.insertFloat(2, Float.MIN_VALUE)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(4, array.count)
-            assertEquals(0f, array.getFloat(0), 0f)
-            assertEquals(Float.MAX_VALUE, array.getFloat(1), 0f)
-            assertEquals(Float.MIN_VALUE, array.getFloat(2), 0f)
-            assertEquals(10f, array.getFloat(3), 0f)
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(4, array.count)
+        assertEquals(0F, array.getFloat(0), 0F)
+        assertEquals(Float.MAX_VALUE, array.getFloat(1), 0F)
+        assertEquals(Float.MIN_VALUE, array.getFloat(2), 0F)
+        assertEquals(10F, array.getFloat(3), 0F)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddDouble() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addDouble(0.0)
         mArray.addDouble(Double.MAX_VALUE)
         mArray.addDouble(Double.MIN_VALUE)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals(0.0, array.getDouble(0), 0.0)
-            assertEquals(Double.MAX_VALUE, array.getDouble(1), 0.0)
-            assertEquals(Double.MIN_VALUE, array.getDouble(2), 0.0)
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+        assertEquals(0.0, array.getDouble(0), 0.0)
+        assertEquals(Double.MAX_VALUE, array.getDouble(1), 0.0)
+        assertEquals(Double.MIN_VALUE, array.getDouble(2), 0.0)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetDouble() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addDouble(0.0)
         mArray.addDouble(Double.MAX_VALUE)
         mArray.addDouble(Double.MIN_VALUE)
+
         mArray.setDouble(0, Double.MAX_VALUE)
         mArray.setDouble(1, Double.MIN_VALUE)
         mArray.setDouble(2, 0.0)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals(0.0, array.getDouble(2), 0.0)
-            assertEquals(Double.MAX_VALUE, array.getDouble(0), 0.0)
-            assertEquals(Double.MIN_VALUE, array.getDouble(1), 0.0)
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+
+        assertEquals(0.0, array.getDouble(2), 0.0)
+        assertEquals(Double.MAX_VALUE, array.getDouble(0), 0.0)
+        assertEquals(Double.MIN_VALUE, array.getDouble(1), 0.0)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testInsertDouble() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addDouble(10.0) // will be pushed 3 times.
         mArray.insertDouble(0, 0.0)
         mArray.insertDouble(1, Double.MAX_VALUE)
         mArray.insertDouble(2, Double.MIN_VALUE)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(4, array.count)
-            assertEquals(0.0, array.getDouble(0), 0.0)
-            assertEquals(Double.MAX_VALUE, array.getDouble(1), 0.0)
-            assertEquals(Double.MIN_VALUE, array.getDouble(2), 0.0)
-            assertEquals(10.0, array.getDouble(3), 0.0)
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(4, array.count)
+        assertEquals(0.0, array.getDouble(0), 0.0)
+        assertEquals(Double.MAX_VALUE, array.getDouble(1), 0.0)
+        assertEquals(Double.MIN_VALUE, array.getDouble(2), 0.0)
+        assertEquals(10.0, array.getDouble(3), 0.0)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddNumber() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addNumber(Int.MAX_VALUE)
         mArray.addNumber(Long.MAX_VALUE)
         mArray.addNumber(Double.MAX_VALUE)
-        mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
 
-            assertEquals(Int.MAX_VALUE, array.getNumber(0)?.toInt())
-            assertEquals(Long.MAX_VALUE, array.getNumber(1)?.toLong())
-            assertEquals(Double.MAX_VALUE, array.getNumber(2)!!.toDouble(), 0.0)
-        }
+        mDoc.setArray("array", mArray)
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+
+        assertEquals(Int.MAX_VALUE, array.getNumber(0)?.toInt())
+        assertEquals(Long.MAX_VALUE, array.getNumber(1)?.toLong())
+        assertEquals(Double.MAX_VALUE, array.getNumber(2)!!.toDouble(), 0.0)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetNumber() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addNumber(Int.MAX_VALUE)
         mArray.addNumber(Long.MAX_VALUE)
         mArray.addNumber(Double.MAX_VALUE)
+
         mArray.setNumber(0, Long.MAX_VALUE)
         mArray.setNumber(1, Double.MAX_VALUE)
         mArray.setNumber(2, Int.MAX_VALUE)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals(Int.MAX_VALUE, array.getNumber(2)?.toInt())
-            assertEquals(Long.MAX_VALUE, array.getNumber(0)?.toLong())
-            assertEquals(Double.MAX_VALUE, array.getNumber(1)!!.toDouble(), 0.0)
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+
+        assertEquals(Int.MAX_VALUE, array.getNumber(2)?.toInt())
+        assertEquals(Long.MAX_VALUE, array.getNumber(0)?.toLong())
+        assertEquals(Double.MAX_VALUE, array.getNumber(1)!!.toDouble(), 0.0)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testInsertNumber() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addNumber(10L) // will be pushed 3 times.
         mArray.insertNumber(0, Int.MAX_VALUE)
         mArray.insertNumber(1, Long.MAX_VALUE)
         mArray.insertNumber(2, Double.MAX_VALUE)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(4, array.count)
-            assertEquals(Int.MAX_VALUE, array.getInt(0))
-            assertEquals(Long.MAX_VALUE, array.getLong(1))
-            assertEquals(Double.MAX_VALUE, array.getDouble(2), 0.0)
-            assertEquals(10L, array.getNumber(3)?.toLong())
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(4, array.count)
+        assertEquals(Int.MAX_VALUE, array.getInt(0))
+        assertEquals(Long.MAX_VALUE, array.getLong(1))
+        assertEquals(Double.MAX_VALUE, array.getDouble(2), 0.0)
+        assertEquals(10L, array.getNumber(3)?.toLong())
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddString() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addString("")
         mArray.addString("Hello")
         mArray.addString("World")
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals("", array.getString(0))
-            assertEquals("Hello", array.getString(1))
-            assertEquals("World", array.getString(2))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+
+        assertEquals("", array.getString(0))
+        assertEquals("Hello", array.getString(1))
+        assertEquals("World", array.getString(2))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetString() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addString("")
         mArray.addString("Hello")
         mArray.addString("World")
+
         mArray.setString(0, "Hello")
         mArray.setString(1, "World")
         mArray.setString(2, "")
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(3, array.count)
-            assertEquals("", array.getString(2))
-            assertEquals("Hello", array.getString(0))
-            assertEquals("World", array.getString(1))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(3, array.count)
+
+        assertEquals("", array.getString(2))
+        assertEquals("Hello", array.getString(0))
+        assertEquals("World", array.getString(1))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testInsertString() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addString("") // will be pushed 3 times.
         mArray.insertString(0, "Hello")
         mArray.insertString(1, "World")
         mArray.insertString(2, "!")
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(4, array.count)
-            assertEquals("Hello", array.getString(0))
-            assertEquals("World", array.getString(1))
-            assertEquals("!", array.getString(2))
-            assertEquals("", array.getString(3))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(4, array.count)
+        assertEquals("Hello", array.getString(0))
+        assertEquals("World", array.getString(1))
+        assertEquals("!", array.getString(2))
+        assertEquals("", array.getString(3))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAddBoolean() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addBoolean(true)
         mArray.addBoolean(false)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(2, array.count)
-            assertTrue(array.getBoolean(0))
-            assertFalse(array.getBoolean(1))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(2, array.count)
+
+        assertTrue(array.getBoolean(0))
+        assertFalse(array.getBoolean(1))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSetBoolean() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addBoolean(true)
         mArray.addBoolean(false)
+
         mArray.setBoolean(0, false)
         mArray.setBoolean(1, true)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(2, array.count)
-            assertTrue(array.getBoolean(1))
-            assertFalse(array.getBoolean(0))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(2, array.count)
+
+        assertTrue(array.getBoolean(1))
+        assertFalse(array.getBoolean(0))
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testInsertBoolean() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
+
         mArray.addBoolean(false) // will be pushed 2 times
         mArray.addBoolean(true) // will be pushed 2 times.
         mArray.insertBoolean(0, true)
         mArray.insertBoolean(1, false)
+
         mDoc.setArray("array", mArray)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("array"))
-            val array = doc.getArray("array")
-            assertNotNull(array)
-            assertEquals(4, array.count)
-            assertTrue(array.getBoolean(0))
-            assertFalse(array.getBoolean(1))
-            assertFalse(array.getBoolean(2))
-            assertTrue(array.getBoolean(3))
-        }
+        val doc = saveDocInCollection(mDoc)
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("array"))
+        val array = doc.getArray("array")
+        assertNotNull(array)
+        assertEquals(4, array.count)
+        assertTrue(array.getBoolean(0))
+        assertFalse(array.getBoolean(1))
+        assertFalse(array.getBoolean(2))
+        assertTrue(array.getBoolean(3))
     }
 
     ///////////////  JSON tests
+
     // JSON 3.4
     @Test
-    @Throws(
-        CouchbaseLiteException::class,
-        SerializationException::class,
-        IllegalArgumentException::class,
-        IllegalStateException::class,
-        NumberFormatException::class
-    )
     fun testArrayToJSON() {
         val mDoc = MutableDocument().setArray("array", makeArray())
         verifyArray(
             Json.parseToJsonElement(
-                saveDocInBaseTestDb(mDoc).getArray("array")!!.toJSON()
+                saveDocInCollection(mDoc).getArray("array")!!.toJSON()
             ).jsonArray
         )
     }
@@ -1857,25 +1833,15 @@ class ArrayTest : BaseDbTest() {
     // JSON 3.7.?
     @Test
     fun testArrayToJSONBeforeSave() {
-        assertFailsWith<IllegalStateException> {
-            MutableArray().toJSON()
-        }
+        assertFailsWith<IllegalStateException> { MutableArray().toJSON() }
     }
 
     // JSON 3.7.a-b
     @Test
-    @Throws(
-        SerializationException::class,
-        IOException::class,
-        CouchbaseLiteException::class,
-        IllegalArgumentException::class,
-        IllegalStateException::class,
-        NumberFormatException::class
-    )
     fun testArrayFromJSON() {
         val mArray = MutableArray(readJSONResource("array.json"))
         val mDoc = MutableDocument().setArray("array", mArray)
-        val dbArray = saveDocInBaseTestDb(mDoc).getArray("array")
+        val dbArray = saveDocInCollection(mDoc).getArray("array")
         verifyArray(dbArray)
         verifyArray(Json.parseToJsonElement(dbArray!!.toJSON()).jsonArray)
     }
@@ -1883,17 +1849,13 @@ class ArrayTest : BaseDbTest() {
     // JSON 3.7.c.1
     @Test
     fun testArrayFromBadJSON1() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableArray("[")
-        }
+        assertFailsWith<IllegalArgumentException> { MutableArray("[") }
     }
 
     // JSON 3.7.c.2
     @Test
     fun testArrayFromBadJSON2() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableArray("[ab cd]")
-        }
+        assertFailsWith<IllegalArgumentException> { MutableArray("[ab cd]") }
     }
 
     // JSON 3.7.d
@@ -1906,6 +1868,7 @@ class ArrayTest : BaseDbTest() {
     }
 
     ///////////////  Tooling
+
     private fun arrayOfAllTypes(): List<Any?> {
         val list = mutableListOf<Any?>(
             true,
@@ -1933,14 +1896,13 @@ class ArrayTest : BaseDbTest() {
 
         // Blob
         list.add(Blob("text/plain", BLOB_CONTENT.encodeToByteArray()))
+
         return list
     }
 
     private fun populateData(array: MutableArray) {
         val data = arrayOfAllTypes()
-        for (o in data) {
-            array.addValue(o)
-        }
+        for (o in data) { array.addValue(o) }
     }
 
     private fun populateDataByType(array: MutableArray) {
@@ -1963,7 +1925,6 @@ class ArrayTest : BaseDbTest() {
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun save(
         mDoc: MutableDocument,
         key: String,
@@ -1972,7 +1933,7 @@ class ArrayTest : BaseDbTest() {
     ): Document {
         validator(mArray)
         mDoc.setValue(key, mArray)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
         val array = doc.getArray(key)
         validator(array!!)
         return doc
@@ -1987,4 +1948,6 @@ class ArrayTest : BaseDbTest() {
         assertContentEquals(BLOB_CONTENT.encodeToByteArray(), contents)
         assertEquals(BLOB_CONTENT, contents.decodeToString())
     }
+
+    private fun docId(i: Int) = "doc-$i"
 }

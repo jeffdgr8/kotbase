@@ -22,7 +22,6 @@ import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.StringUtils
 import kotbase.internal.utils.TestUtils.assertThrows
 import kotbase.test.IgnoreApple
-import kotlinx.io.Buffer
 import kotlinx.io.readByteArray
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -35,9 +34,7 @@ class BlobTest : BaseDbTest() {
     private lateinit var localBlobContent: String
 
     @BeforeTest
-    fun setUpBlobTest() {
-        localBlobContent = StringUtils.randomString(100)
-    }
+    fun setUpBlobTest() { localBlobContent = StringUtils.randomString(100) }
 
     @Test
     fun testEquals() {
@@ -62,7 +59,7 @@ class BlobTest : BaseDbTest() {
         mDoc.setBlob("blob1a", data1a)
         mDoc.setBlob("blob1b", data1b)
         mDoc.setBlob("blob2a", data2a)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         val blob1a = doc.getBlob("blob1a")
         val blob1b = doc.getBlob("blob1b")
@@ -102,7 +99,7 @@ class BlobTest : BaseDbTest() {
         mDoc.setBlob("blob1a", data1a)
         mDoc.setBlob("blob1b", data1b)
         mDoc.setBlob("blob2a", data2a)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         val blob1a = doc.getBlob("blob1a")
         val blob1b = doc.getBlob("blob1b")
@@ -128,7 +125,7 @@ class BlobTest : BaseDbTest() {
         val blob = Blob("image/png", blobContent)
         val mDoc = MutableDocument("doc1")
         mDoc.setBlob("blob", blob)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         val savedBlob = doc.getBlob("blob")
         assertNotNull(savedBlob)
@@ -148,10 +145,10 @@ class BlobTest : BaseDbTest() {
             val blob = Blob("image/png", input)
             val mDoc = MutableDocument("doc1")
             mDoc.setBlob("blob", blob)
-            baseTestDb.save(mDoc)
+            testCollection.save(mDoc)
         }
 
-        val doc = baseTestDb.getDocument("doc1")
+        val doc = testCollection.getDocument("doc1")
         val savedBlob = doc!!.getBlob("blob")
         assertNotNull(savedBlob)
 
@@ -181,7 +178,7 @@ class BlobTest : BaseDbTest() {
         val blob = Blob("application/json", bytes)
         val mDoc = MutableDocument("doc1")
         mDoc.setBlob("blob", blob)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
         val savedBlob = doc.getBlob("blob")
         assertNotNull(savedBlob)
         assertEquals("application/json", savedBlob.contentType)
@@ -199,11 +196,11 @@ class BlobTest : BaseDbTest() {
         val blob = Blob("application/json", bytes)
         val mDoc = MutableDocument("doc1")
         mDoc.setBlob("blob", blob)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         // Reload the doc from the database to make sure to "bust the cache" for the blob
         // cached in the doc object
-        val reloadedDoc = baseTestDb.getDocument(doc.id)
+        val reloadedDoc = testCollection.getDocument(doc.id)
         val savedBlob = reloadedDoc!!.getBlob("blob")
         val content = savedBlob!!.content
         assertContentEquals(content, bytes)
@@ -239,9 +236,7 @@ class BlobTest : BaseDbTest() {
             input.readByteArray()
         }
 
-        val buffer = Buffer()
-        Blob("application/json", data).contentStream!!.readAtMostTo(buffer, 1)
-        assertEquals(data[0], buffer[0])
+        assertEquals(data[0], Blob("application/json", data).contentStream!!.readByte())
     }
 
     @Test
@@ -250,7 +245,11 @@ class BlobTest : BaseDbTest() {
             input.readByteArray()
         }
 
-        val blobContent = Blob("application/json", data).contentStream!!.readByteArray()
+        val blobContent = ByteArray(data.size)
+        assertEquals(
+            data.size,
+            Blob("application/json", data).contentStream!!.readAtMostTo(blobContent, 0, data.size)
+        )
         assertContentEquals(data, blobContent)
     }
 
@@ -262,7 +261,7 @@ class BlobTest : BaseDbTest() {
 
         val blobStream = Blob("application/json", data).contentStream!!
         blobStream.skip(17)
-        assertEquals(blobStream.readByte(), data[17])
+        assertEquals(data[17], blobStream.readByte())
     }
 
     @Test
@@ -274,7 +273,7 @@ class BlobTest : BaseDbTest() {
         val blob = Blob("image/png", bytes)
         val mDoc = MutableDocument("doc1")
         mDoc.setBlob("blob", blob)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         val savedBlob = doc.getBlob("blob")
         assertNotNull(savedBlob)
@@ -292,7 +291,7 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testDbSaveBlob() {
         val blob = makeBlob()
-        baseTestDb.saveBlob(blob)
+        testDatabase.saveBlob(blob)
         verifyBlob(Json.parseToJsonElement(blob.toJSON()).jsonObject)
     }
 
@@ -308,7 +307,7 @@ class BlobTest : BaseDbTest() {
         fetchProps[META_PROP_TYPE] = TYPE_BLOB
         fetchProps[PROP_DIGEST] = props[PROP_DIGEST]
         fetchProps[PROP_CONTENT_TYPE] = props[PROP_CONTENT_TYPE]
-        val dbBlob = baseTestDb.getBlob(fetchProps)
+        val dbBlob = testDatabase.getBlob(fetchProps)
 
         verifyBlob(dbBlob)
         assertEquals(BLOB_CONTENT, dbBlob?.content?.decodeToString())
@@ -317,9 +316,7 @@ class BlobTest : BaseDbTest() {
     // 3.1.c
     @Test
     fun testUnsavedBlobToJSON() {
-        assertFailsWith<IllegalStateException> {
-            makeBlob().toJSON()
-        }
+        assertFailsWith<IllegalStateException> { makeBlob().toJSON() }
     }
 
     // 3.1.d
@@ -328,67 +325,55 @@ class BlobTest : BaseDbTest() {
         val props = mutableMapOf<String, Any?>()
         props[META_PROP_TYPE] = TYPE_BLOB
         props[PROP_DIGEST] = "sha1-C+ThisIsTheWayWeMakeItFail="
-        assertNull(baseTestDb.getBlob(props))
+        assertNull(testDatabase.getBlob(props))
     }
 
     // 3.1.e.1: empty param
     @Test
     fun testDbGetNotBlob1() {
-        assertFailsWith<IllegalArgumentException> {
-            val blob = makeBlob()
-            baseTestDb.saveBlob(blob)
-            assertNull(baseTestDb.getBlob(emptyMap()))
-        }
+        val blob = makeBlob()
+        testDatabase.saveBlob(blob)
+        assertFailsWith<IllegalArgumentException> { assertNull(testDatabase.getBlob(emptyMap())) }
     }
 
     // 3.1.e.2: missing digest
     @Test
     fun testDbGetNotBlob2() {
-        assertFailsWith<IllegalArgumentException> {
-            val props = getPropsForSavedBlob().toMutableMap()
-            props.remove(PROP_DIGEST)
-            assertNull(baseTestDb.getBlob(props))
-        }
+        val props = getPropsForSavedBlob().toMutableMap()
+        props.remove(PROP_DIGEST)
+        assertFailsWith<IllegalArgumentException> { testDatabase.getBlob(props) }
     }
 
     // 3.1.e.3: missing meta-type
     @Test
     fun testDbGetNotBlob3() {
-        assertFailsWith<IllegalArgumentException> {
-            val props = getPropsForSavedBlob().toMutableMap()
-            props.remove(META_PROP_TYPE)
-            assertNull(baseTestDb.getBlob(props))
-        }
+        val props = getPropsForSavedBlob().toMutableMap()
+        props.remove(META_PROP_TYPE)
+        assertFailsWith<IllegalArgumentException> { assertNull(testDatabase.getBlob(props)) }
     }
 
     // 3.1.e.4: length is not a number
     @Test
     fun testDbGetNotBlob4() {
-        assertFailsWith<IllegalArgumentException> {
-            val props = getPropsForSavedBlob().toMutableMap()
-            props[PROP_LENGTH] = "42"
-            assertNull(baseTestDb.getBlob(props))
-        }
+        val props = getPropsForSavedBlob().toMutableMap()
+        props[PROP_LENGTH] = "42"
+        assertFailsWith<IllegalArgumentException> { assertNull(testDatabase.getBlob(props)) }
     }
 
     // 3.1.e.5: bad content type
     @Test
     fun testDbGetNotBlob5() {
-        assertFailsWith<IllegalArgumentException> {
-            val props = getPropsForSavedBlob().toMutableMap()
-            props[PROP_CONTENT_TYPE] = Any()
-            assertNull(baseTestDb.getBlob(props))
-        }
+        val props = getPropsForSavedBlob().toMutableMap()
+        props[PROP_CONTENT_TYPE] = Any()
+        assertFailsWith<IllegalArgumentException> { assertNull(testDatabase.getBlob(props)) }
     }
 
     // 3.1.e.6: extra arg
     @Test
     fun testDbGetNotBlob6() {
-        assertFailsWith<IllegalArgumentException> {
-            val props = getPropsForSavedBlob().toMutableMap()
-            props["foo"] = "bar"
-            assertNull(baseTestDb.getBlob(props))
-        }
+        val props = getPropsForSavedBlob().toMutableMap()
+        props["foo"] = "bar"
+        assertFailsWith<IllegalArgumentException> { assertNull(testDatabase.getBlob(props)) }
     }
 
     // 3.1.f
@@ -397,7 +382,7 @@ class BlobTest : BaseDbTest() {
         val mDoc = MutableDocument()
         mDoc.setBlob("blob", makeBlob())
 
-        val dbBlob = saveDocInBaseTestDb(mDoc).getBlob("blob")
+        val dbBlob = saveDocInCollection(mDoc).getBlob("blob")
 
         verifyBlob(dbBlob)
 
@@ -408,15 +393,15 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testBlobGoneAfterCompact() {
         val blob = makeBlob()
-        baseTestDb.saveBlob(blob)
+        testDatabase.saveBlob(blob)
 
-        assertTrue(baseTestDb.performMaintenance(MaintenanceType.COMPACT))
+        assertTrue(testDatabase.performMaintenance(MaintenanceType.COMPACT))
 
         val props = mutableMapOf<String, Any?>()
         props[META_PROP_TYPE] = TYPE_BLOB
         props[PROP_DIGEST] = blob.digest
 
-        assertNull(baseTestDb.getBlob(props))
+        assertNull(testDatabase.getBlob(props))
     }
 
     @Test
@@ -425,16 +410,12 @@ class BlobTest : BaseDbTest() {
             val blob = Blob("image/png", input)
             val mDoc = MutableDocument("doc1")
             mDoc.setBlob("blob", blob)
-            baseTestDb.save(mDoc)
+            testCollection.save(mDoc)
         }
 
-        assertTrue(
-            Blob.isBlob(
-                MutableDictionary().setJSON(
-                    baseTestDb.getDocument("doc1")!!.getBlob("blob")!!.toJSON()
-                ).toMap()
-            )
-        )
+        assertTrue(Blob.isBlob(
+            MutableDictionary().setJSON(testCollection.getDocument("doc1")!!.getBlob("blob")!!.toJSON()).toMap()
+        ))
     }
 
     // https://issues.couchbase.com/browse/CBL-2320
@@ -443,15 +424,11 @@ class BlobTest : BaseDbTest() {
         val mDoc = MutableDocument("blobDoc")
         mDoc.setBlob(
             "blob",
-            Blob(
-                "application/octet-stream",
-                byteArrayOf(-1, 255.toByte(), 0xf0.toByte(), 0xa0.toByte())
-            )
+            Blob("application/octet-stream", byteArrayOf(-1, 255.toByte(), 0xf0.toByte(), 0xa0.toByte()))
         )
-        saveDocInBaseTestDb(mDoc)
+        saveDocInCollection(mDoc)
 
-        val blobStream = baseTestDb.getDocument("blobDoc")!!
-            .getBlob("blob")!!.contentStream!!
+        val blobStream = testCollection.getDocument("blobDoc")!!.getBlob("blob")!!.contentStream!!
 
         assertEquals(255.toByte(), blobStream.readByte())
         assertEquals(255.toByte(), blobStream.readByte())
@@ -463,7 +440,7 @@ class BlobTest : BaseDbTest() {
 
     private fun getPropsForSavedBlob(): Map<String, Any?> {
         val blob = makeBlob()
-        baseTestDb.saveBlob(blob)
+        testDatabase.saveBlob(blob)
         return blob.properties
     }
 

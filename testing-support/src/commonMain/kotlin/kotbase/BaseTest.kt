@@ -19,19 +19,17 @@ package kotbase
 
 import com.couchbase.lite.dbPath
 import com.couchbase.lite.isOpen
-import com.couchbase.lite.withDbLock
 import kotbase.internal.utils.FileUtils
 import kotbase.internal.utils.Report
 import kotbase.internal.utils.StringUtils
 import kotbase.internal.utils.paddedString
 import kotbase.test.AfterClass
 import kotbase.test.BeforeClass
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.io.IOException
+import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmStatic
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -42,6 +40,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 abstract class BaseTest : PlatformTest() {
 
+    protected lateinit var testSerialCoroutineContext: CoroutineContext
     private var startTime: Instant = Instant.DISTANT_PAST
 
     @BeforeTest
@@ -49,6 +48,9 @@ abstract class BaseTest : PlatformTest() {
         Report.log(">>>>>>>> Test started")
 
         setupPlatform()
+
+        @OptIn(ExperimentalCoroutinesApi::class)
+        testSerialCoroutineContext = Dispatchers.Default.limitedParallelism(1)
 
         startTime = Clock.System.now()
     }

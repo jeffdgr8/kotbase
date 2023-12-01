@@ -15,6 +15,6 @@
  */
 package kotbase
 
-public typealias ChangeListener<T> = (changed: T) -> Unit
+public typealias ChangeListener<T> = (change: T) -> Unit
 
-public typealias ChangeSuspendListener<T> = suspend (changed: T) -> Unit
+public typealias ChangeSuspendListener<T> = suspend (change: T) -> Unit
