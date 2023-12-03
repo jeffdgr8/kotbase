@@ -15,12 +15,13 @@
  */
 package kotbase
 
-import kotbase.internal.utils.Report
+import co.touchlab.stately.collections.ConcurrentMutableList
 import kotbase.internal.utils.paddedString
-import kotbase.test.lockWithTimeout
+import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.CountDownLatch
+import kotlinx.coroutines.sync.CyclicBarrier
 import kotlinx.datetime.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
@@ -28,603 +29,449 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(ExperimentalStdlibApi::class)
 class ConcurrencyTest : BaseDbTest() {
 
-    internal fun interface Callback {
-        fun callback(coroutineIndex: Int)
-    }
-
-    internal fun interface VerifyBlock<T> {
-        fun verify(n: Int, result: T)
-    }
-
-    private val testFailure = atomic<AssertionError?>(null)
-
-    @BeforeTest
-    fun setUpConcurrencyTest() {
-        testFailure.value = null
-    }
-
     // TODO: native C fails sometimes
     //  AssertionError: Expected <50>, actual <49>.
     @Test
     fun testConcurrentCreate() = runBlocking {
-        Database.log.console.level = LogLevel.DEBUG
-        val kNDocs = 50
-        val kNCoroutines = 4
-        val kWaitInSec = 180
+        val nDocs = 50
 
-        // concurrently creates documents
-        concurrentValidator(kNCoroutines, kWaitInSec) { coroutineIndex ->
-            val tag = "tag-$coroutineIndex"
+        val copies = 4
+        runConcurrentCopies(
+            copies
+        ) { id ->
             try {
-                createDocs(kNDocs, tag)
+                for (mDoc in createComplexTestDocs(nDocs, "TAG@CREATES-$id")) {
+                    testCollection.save(mDoc)
+                }
             } catch (e: CouchbaseLiteException) {
-                fail()
+                throw AssertionError("Failed saving doc", e)
             }
         }
 
         // validate stored documents
-        for (i in 0 until kNCoroutines) {
-            verifyByTagName("tag-$i", kNDocs)
+        for (i in 0 until copies) {
+            assertEquals(nDocs, countTaggedDocs("TAG@CREATES-$i"))
         }
     }
 
     @Test
     fun testConcurrentCreateInBatch() = runBlocking {
-        val kNDocs = 50
-        val kNCoroutines = 4
-        val kWaitInSec = 180
+        val nDocs = 50
 
-        // concurrently creates documents
-        concurrentValidator(kNCoroutines, kWaitInSec) { coroutineIndex ->
-            val tag = "tag-$coroutineIndex"
+        val copies = 4
+        runConcurrentCopies(
+            copies
+        ) { id ->
             try {
-                baseTestDb.inBatch { createDocs(kNDocs, tag) }
+                for (mDoc in createComplexTestDocs(nDocs, "TAG@CREATESBATCH-$id")) {
+                    testDatabase.inBatch { testCollection.save(mDoc) }
+                }
             } catch (e: CouchbaseLiteException) {
-                fail()
+                throw AssertionError("Failed saving doc in batch", e)
             }
         }
-
-        checkForFailure()
 
         // validate stored documents
-        for (i in 0 until kNCoroutines) {
-            verifyByTagName("tag-$i", kNDocs)
+        for (i in 0 until copies) {
+            assertEquals(nDocs, countTaggedDocs("TAG@CREATESBATCH-$i"))
         }
     }
 
     @Test
-    fun testConcurrentUpdate() = runBlocking {
-        // ??? Increasing number of threads causes crashes
-        // (from Java SDK, increasing number of coroutines doesn't cause crash)
-        val nDocs = 5
-        val nCoroutines = 4
-
-        // createDocs2 returns synchronized List.
-        val docIDs = createDocs(nDocs, "Create")
-        assertEquals(nDocs, docIDs.size)
-
-        // concurrently updates documents
-        concurrentValidator(nCoroutines, 600) { coroutineIndex ->
-            val tag = "tag-$coroutineIndex"
-            assertTrue(updateDocs(docIDs, 50, tag))
-        }
-
-        val count = atomic(0)
-        for (i in 0 until nCoroutines) {
-            verifyByTagName("tag-$i") { _, _ -> count.incrementAndGet() }
-        }
-
-        assertEquals(nDocs, count.value)
+    fun testConcurrentReads() = runBlocking {
+        val docIDs = saveDocs(createComplexTestDocs(5, "TAG@READS"))
+        runConcurrentCopies(4) { readDocs(docIDs, 50) }
     }
 
     @Test
-    fun testConcurrentRead() = runBlocking {
-        val kNDocs = 5
-        val kNRounds = 50
-        val kNCoroutines = 4
-        val kWaitInSec = 180
-
-        // createDocs2 returns synchronized List.
-        val docIDs = createDocs(kNDocs, "Create")
-        assertEquals(kNDocs, docIDs.size)
-
-        // concurrently creates documents
-        concurrentValidator(kNCoroutines, kWaitInSec) {
-            readDocs(docIDs, kNRounds)
-        }
-    }
-
-    @Test
-    fun testConcurrentReadInBatch() = runBlocking {
-        val kNDocs = 5
-        val kNRounds = 50
-        val kNCoroutines = 4
-        val kWaitInSec = 180
-
-        // createDocs2 returns synchronized List.
-        val docIDs = createDocs(kNDocs, "Create")
-        assertEquals(kNDocs, docIDs.size)
-
-        // concurrently creates documents
-        concurrentValidator(kNCoroutines, kWaitInSec) {
+    fun testConcurrentReadsInBatch() = runBlocking {
+        val docIDs = saveDocs(createComplexTestDocs(5, "TAG@READSBATCH"))
+        runConcurrentCopies(4) {
             try {
-                baseTestDb.inBatch { readDocs(docIDs, kNRounds) }
+                testDatabase.inBatch { readDocs(docIDs, 50) }
             } catch (e: CouchbaseLiteException) {
-                fail()
+                throw AssertionError("Failed reading docs in batch", e)
             }
         }
     }
 
+    // ??? Increasing the number of threads in this test causes crashes
     @Test
-    fun testConcurrentReadAndUpdate() = runBlocking {
-        val kNDocs = 5
-        val kNRounds = 50
-
-        // createDocs2 returns synchronized List.
-        val docIDs = createDocs(kNDocs, "Create")
-        assertEquals(kNDocs, docIDs.size)
-
-        // Read:
-        val mutex1 = Mutex(true)
-        testOnNewCoroutine("testConcurrentReadAndUpdate-1", mutex1) {
-            readDocs(docIDs, kNRounds)
+    fun testConcurrentUpdates() = runBlocking {
+        val docIDs = saveDocs(createComplexTestDocs(5, "TAG@UPDATES"))
+        val copies = 4
+        runConcurrentCopies(copies) { id -> updateDocs(docIDs, 50, "TAG@UPDATED-$id") }
+        var count = 0
+        for (i in 0 until copies) {
+            count += countTaggedDocs("TAG@UPDATED-$i")
         }
-
-        // Update:
-        val mutex2 = Mutex(true)
-        val tag = "Update"
-        testOnNewCoroutine("testConcurrentReadAndUpdate-2", mutex2) {
-            assertTrue(updateDocs(docIDs, kNRounds, tag))
-        }
-
-        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
-        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
-        checkForFailure()
-
-        verifyByTagName(tag, kNDocs)
+        assertEquals(docIDs.size, count)
     }
 
     @Test
-    fun testConcurrentDelete() = runBlocking {
-        val kNDocs = 100
+    fun testConcurrentDeletes() = runBlocking {
+        val docIDs = saveDocs(createComplexTestDocs(100, "TAG@DELETES"))
+        runConcurrently(
+            name = "delete",
+            task1 = {
+                for (docID in docIDs) {
+                    try {
+                        val doc = testCollection.getDocument(docID)
+                        if (doc != null) {
+                            testCollection.delete(doc)
+                        }
+                    } catch (e: CouchbaseLiteException) {
+                        throw AssertionError("Failed deleting doc: $docID", e)
+                    }
+                }
+            },
+            task2 = {
+                for (docID in docIDs) {
+                    try {
+                        val doc = testCollection.getDocument(docID)
+                        if (doc != null) {
+                            testCollection.delete(doc)
+                        }
+                    } catch (e: CouchbaseLiteException) {
+                        throw AssertionError("Failed deleting doc: $docID", e)
+                    }
+                }
+            }
+        )
+        assertEquals(0, testCollection.count)
+    }
 
-        // createDocs2 returns synchronized List.
-        val docIDs = createDocs(kNDocs, "Create")
-        assertEquals(kNDocs, docIDs.size)
+    @Test
+    fun testConcurrentPurges() = runBlocking {
+        val docIDs = saveDocs(createComplexTestDocs(100, "TAG@PURGES"))
+        runConcurrently(
+            name = "purge",
+            task1 = {
+                for (docID in docIDs) {
+                    try {
+                        val doc = testCollection.getDocument(docID)
+                        if (doc != null) {
+                            testCollection.purge(doc)
+                        }
+                    } catch (e: CouchbaseLiteException) {
+                        if (e.code != 404) {
+                            throw AssertionError("Failed purging doc: $docID", e)
+                        }
+                    }
+                }
+            },
+            task2 = {
+                for (docID in docIDs) {
+                    try {
+                        val doc = testCollection.getDocument(docID)
+                        if (doc != null) {
+                            testCollection.purge(doc)
+                        }
+                    } catch (e: CouchbaseLiteException) {
+                        if (e.code != 404) {
+                            throw AssertionError("Failed purging doc: $docID", e)
+                        }
+                    }
+                }
+            }
+        )
+        assertEquals(0, testCollection.count)
+    }
 
-        val mutex1 = Mutex(true)
-        testOnNewCoroutine("testConcurrentDelete-1", mutex1) {
-            for (docID in docIDs) {
+    @Test
+    fun testConcurrentReadWhileUpdate() = runBlocking {
+        val docIDs = saveDocs(createComplexTestDocs(5, "TAG@READ&UPDATE"))
+        runConcurrently(
+            name = "readWhileUpdate",
+            task1 = { readDocs(docIDs, 50) },
+            task2 = { updateDocs(docIDs, 50, "TAG@READ&UPDATED") }
+        )
+        assertEquals(docIDs.size, countTaggedDocs("TAG@READ&UPDATED"))
+    }
+
+    @Test
+    fun testConcurrentCreateWhileCloseDB() = runBlocking {
+        val docs = createComplexTestDocs(100, "TAG@CLOSEDB")
+        runConcurrently(
+            name = "createWhileCloseD",
+            task1 = {
+                delay() // wait for other task to get busy...
+                closeDb(testDatabase)
+            },
+            task2 = {
+                for (mDoc in docs) {
+                    try {
+                        testCollection.save(mDoc)
+                    } catch (e: CouchbaseLiteException) {
+                        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) break
+                        throw AssertionError("Failed saving document: $mDoc", e)
+                    }
+                }
+            }
+        )
+    }
+
+    @Test
+    fun testConcurrentCreateWhileDeleteDB() = runBlocking {
+        val docs = createComplexTestDocs(100, "TAG@DELETEDB")
+        runConcurrently(
+            name = "createWhileDeleteDb",
+            task1 = {
+                delay() // wait for other task to get busy...
+                deleteDb(testDatabase)
+            },
+            task2 = {
+                for (mDoc in docs) {
+                    try {
+                        testCollection.save(mDoc)
+                    } catch (e: CouchbaseLiteException) {
+                        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) break
+                        throw AssertionError("Failed saving document: $mDoc", e)
+                    }
+                }
+            }
+        )
+    }
+
+    @Test
+    fun testConcurrentCreateWhileCompactDB() = runBlocking {
+        val docs = createComplexTestDocs(100, "TAG@COMPACTDB")
+        runConcurrently(
+            name = "createAndCompactDb@1",
+            task1 = {
                 try {
-                    val doc = baseTestDb.getDocument(docID)
-                    if (doc != null) {
-                        baseTestDb.delete(doc)
+                    delay() // wait for other task to get busy...
+                    if (!testDatabase.performMaintenance(MaintenanceType.COMPACT)) {
+                        throw CouchbaseLiteException("Compaction failed")
                     }
                 } catch (e: CouchbaseLiteException) {
-                    fail()
+                    throw AssertionError("Failed compacting database", e)
+                }
+            },
+            task2 = {
+                for (doc in docs) {
+                    try {
+                        testCollection.save(doc)
+                    } catch (e: CouchbaseLiteException) {
+                        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) break
+                        throw AssertionError("Failed saving document: $doc", e)
+                    }
                 }
             }
-        }
+        )
+    }
 
-        val mutex2 = Mutex(true)
-        testOnNewCoroutine("testConcurrentDelete-2", mutex2) {
-            for (docID in docIDs) {
+    @Test
+    fun testConcurrentCreateWhileIndexDB() = runBlocking {
+        loadJSONResourceIntoCollection("sentences.json")
+        val docs = createComplexTestDocs(100, "TAG@INDEX")
+        runConcurrently(
+            name = "CreateWhileIndex",
+            task1 = {
                 try {
-                    val doc = baseTestDb.getDocument(docID)
-                    if (doc != null) {
-                        baseTestDb.delete(doc)
-                    }
-                } catch (e: CouchbaseLiteException) {
-                    fail()
-                }
-            }
-        }
-
-        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
-        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
-        checkForFailure()
-
-        assertEquals(0, baseTestDb.count)
-    }
-
-    @Test
-    fun testConcurrentPurge() = runBlocking {
-        val nDocs = 100
-
-        // createDocs returns synchronized List.
-        val docIDs = createDocs(nDocs, "Create")
-        assertEquals(nDocs, docIDs.size)
-
-        val mutex1 = Mutex(true)
-        testOnNewCoroutine("testConcurrentPurge-1", mutex1) {
-            for (docID in docIDs) {
-                val doc = baseTestDb.getDocument(docID)
-                if (doc != null) {
-                    try {
-                        baseTestDb.purge(doc)
-                    } catch (e: CouchbaseLiteException) {
-                        assertEquals(404, e.code)
-                    }
-                }
-            }
-        }
-        val mutex2 = Mutex(true)
-        testOnNewCoroutine("testConcurrentPurge-2", mutex2) {
-            for (docID in docIDs) {
-                val doc = baseTestDb.getDocument(docID)
-                if (doc != null) {
-                    try {
-                        baseTestDb.purge(doc)
-                    } catch (e: CouchbaseLiteException) {
-                        assertEquals(404, e.code)
-                    }
-                }
-            }
-        }
-
-        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
-        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
-        checkForFailure()
-
-        assertEquals(0, baseTestDb.count)
-    }
-
-    @Test
-    fun testConcurrentCreateAndCloseDB() = runBlocking {
-        val mutex1 = Mutex(true)
-        testOnNewCoroutine("testConcurrentCreateAndCloseDB-1", mutex1) {
-            try {
-                createDocs(100, "Create1")
-            } catch (e: CouchbaseLiteException) {
-                if (e.domain != CBLError.Domain.CBLITE || e.code != CBLError.Code.NOT_OPEN) {
-                    throw AssertionError("Unrecognized exception", e)
-                }
-            } catch (ignore: IllegalStateException) {
-                // db not open
-            }
-        }
-
-        val mutex2 = Mutex(true)
-        testOnNewCoroutine("testConcurrentCreateAndCloseDB-2", mutex2) {
-            try {
-                baseTestDb.close()
-            } catch (e: CouchbaseLiteException) {
-                fail()
-            }
-        }
-
-        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
-        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
-        checkForFailure()
-    }
-
-    @Test
-    fun testConcurrentCreateAndDeleteDB() = runBlocking {
-        val kNDocs = 100
-
-        val mutex1 = Mutex(true)
-        val tag1 = "Create1"
-        testOnNewCoroutine("testConcurrentCreateAndDeleteDB-1", mutex1) {
-            try {
-                createDocs(kNDocs, tag1)
-            } catch (e: CouchbaseLiteException) {
-                if (e.domain != CBLError.Domain.CBLITE || e.code != CBLError.Code.NOT_OPEN) {
-                    fail()
-                }
-            } catch (ignore: IllegalStateException) {
-                // db not open
-            }
-        }
-        val mutex2 = Mutex(true)
-        testOnNewCoroutine("testConcurrentCreateAndDeleteDB-2", mutex2) {
-            try {
-                baseTestDb.delete()
-            } catch (e: CouchbaseLiteException) {
-                fail()
-            }
-        }
-
-        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
-        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
-        checkForFailure()
-    }
-
-    @Test
-    fun testConcurrentCreateAndCompactDB() = runBlocking {
-        val kNDocs = 100
-
-        val mutex1 = Mutex(true)
-        testOnNewCoroutine("testConcurrentCreateAndCompactDB-1", mutex1) {
-            try {
-                createDocs(kNDocs, "Create1")
-            } catch (e: CouchbaseLiteException) {
-                if (e.domain != CBLError.Domain.CBLITE || e.code != CBLError.Code.NOT_OPEN) {
-                    fail()
-                }
-            }
-        }
-
-        val mutex2 = Mutex(true)
-        testOnNewCoroutine("testConcurrentCreateAndCompactDB-2", mutex2) {
-            try {
-                assertTrue(baseTestDb.performMaintenance(MaintenanceType.COMPACT))
-            } catch (e: CouchbaseLiteException) {
-                fail()
-            }
-        }
-
-        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
-        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
-        checkForFailure()
-    }
-
-    @Test
-    fun testConcurrentCreateAndCreateIndexDB() = runBlocking {
-        loadJSONResource("sentences.json")
-
-        val kNDocs = 100
-
-        val mutex1 = Mutex(true)
-        testOnNewCoroutine("testConcurrentCreateAndCreateIndexDB-1", mutex1) {
-            try {
-                createDocs(kNDocs, "Create1")
-            } catch (e: CouchbaseLiteException) {
-                if (e.domain != CBLError.Domain.CBLITE || e.code != CBLError.Code.NOT_OPEN) {
-                    fail()
-                }
-            }
-        }
-
-        val mutex2 = Mutex(true)
-        testOnNewCoroutine("testConcurrentCreateAndCreateIndexDB-2", mutex2) {
-            try {
-                val index: Index =
-                    IndexBuilder.fullTextIndex(
-                        FullTextIndexItem.property("sentence")
+                    testCollection.createIndex(
+                        "sentence",
+                        IndexBuilder.fullTextIndex(FullTextIndexItem.property("sentence"))
                     )
-                baseTestDb.createIndex("sentence", index)
-            } catch (e: CouchbaseLiteException) {
-                fail()
-            }
-        }
-
-        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
-        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
-        checkForFailure()
-    }
-
-    @Test
-    fun testBlockDatabaseChange() = runBlocking {
-        val mutex1 = Mutex(true)
-        val mutex2 = Mutex(true)
-
-        @Suppress("UNUSED_VARIABLE")
-        val token = baseTestDb.addChangeListener { mutex2.unlock() }
-
-        testOnNewCoroutine("testBlockDatabaseChange", mutex1) {
-            try {
-                baseTestDb.save(MutableDocument("doc1"))
-            } catch (e: CouchbaseLiteException) {
-                fail()
-            }
-        }
-
-        assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
-        assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
-        checkForFailure()
-    }
-
-    @Test
-    fun testBlockDocumentChange() = runBlocking {
-        val mutex1 = Mutex(true)
-        val mutex2 = Mutex(true)
-
-        val token = baseTestDb.addDocumentChangeListener("doc1") { mutex2.unlock() }
-        try {
-            testOnNewCoroutine("testBlockDocumentChange", mutex1) {
-                try {
-                    baseTestDb.save(MutableDocument("doc1"))
                 } catch (e: CouchbaseLiteException) {
-                    fail()
+                    throw AssertionError("Failed creating index", e)
+                }
+            },
+            task2 = { saveDocs(docs) }
+        )
+    }
+
+    @Test
+    @Throws(CancellationException::class)
+    fun testBlockDatabaseChange() = runBlocking {
+        val latch = CountDownLatch(1)
+        val error: AtomicRef<Exception?> = atomic(null)
+        testCollection.addChangeListener(testSerialCoroutineContext) { latch.countDown() }.use {
+            launch(testSerialCoroutineContext) {
+                try {
+                    testCollection.save(MutableDocument())
+                } catch (e: Exception) {
+                    error.compareAndSet(null, e)
                 }
             }
+            assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
+        }
+        val e = error.value
+        if (e != null) {
+            throw AssertionError("Error saving document", e)
+        }
+    }
 
-            assertTrue(mutex1.lockWithTimeout(TIMEOUT.seconds))
-            assertTrue(mutex2.lockWithTimeout(TIMEOUT.seconds))
-            checkForFailure()
-        } finally {
-            baseTestDb.removeChangeListener(token)
+    @Test
+    @Throws(CancellationException::class)
+    fun testBlockDocumentChange() = runBlocking {
+        val mDoc = MutableDocument()
+        val latch = CountDownLatch(1)
+        val error: AtomicRef<Exception?> = atomic(null)
+        testCollection.addDocumentChangeListener(mDoc.id, testSerialCoroutineContext) { latch.countDown() }.use {
+            launch(testSerialCoroutineContext) {
+                try {
+                    testCollection.save(mDoc)
+                } catch (e: Exception) {
+                    error.compareAndSet(null, e)
+                }
+            }
+            assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
+        }
+        val e = error.value
+        if (e != null) {
+            throw AssertionError("Error saving document", e)
         }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1407
     @Test
     fun testQueryExecute() = runBlocking {
-        loadJSONResource("names_100.json")
-
-        val query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.expression(Meta.sequence))
-            .from(DataSource.database(baseTestDb))
-
-        concurrentValidator(
-            10,
-            180
-        ) {
+        loadJSONResourceIntoCollection("names_100.json")
+        val query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.expression(Meta.sequence))
+            .from(DataSource.collection(testCollection))
+        val nResults: MutableList<Int> = ConcurrentMutableList()
+        runConcurrentCopies(10) {
             try {
-                query.execute().use { rs ->
-                    val results = rs.allResults()
-                    assertEquals(100, results.size)
-                    assertEquals(baseTestDb.count, results.size.toLong())
-                }
+                query.execute().use { rs -> nResults.add(rs.allResults().size) }
             } catch (e: CouchbaseLiteException) {
-                Report.log(LogLevel.ERROR, "Query Error", e)
-                fail()
+                throw AssertionError("Failed executing query", e)
             }
         }
-    }
-
-    private fun createDocumentWithTag(tag: String): MutableDocument {
-        val doc = MutableDocument()
-
-        // Tag
-        doc.setValue("tag", tag)
-
-        // String
-        doc.setValue("firstName", "Daniel")
-        doc.setValue("lastName", "Tiger")
-
-        // Dictionary:
-        val address = MutableDictionary()
-        address.setValue("street", "1 Main street")
-        address.setValue("city", "Mountain View")
-        address.setValue("state", "CA")
-        doc.setValue("address", address)
-
-        // Array:
-        val phones = MutableArray()
-        phones.addValue("650-123-0001")
-        phones.addValue("650-123-0002")
-        doc.setValue("phones", phones)
-
-        // Date:
-        doc.setValue("updated", Clock.System.now())
-
-        return doc
-    }
-
-    private fun createDocs(nDocs: Int, tag: String): List<String> {
-        val docs = mutableListOf<String>()
-        for (i in 0 until nDocs) {
-            val doc = createDocumentWithTag(tag)
-            docs.add(saveDocInBaseTestDb(doc).id)
+        assertEquals(10, nResults.size)
+        for (n in nResults) {
+            assertEquals(testCollection.count, n.toLong())
         }
-        return docs
     }
 
-    private fun updateDocs(docIds: List<String>, rounds: Int, tag: String): Boolean {
+    private fun saveDocs(mDocs: List<MutableDocument>): List<String> {
+        return try {
+            ConcurrentMutableList<String>().apply {
+                saveDocsInCollection(mDocs).forEach { add(it.id) }
+            }
+        } catch (e: Exception) {
+            throw AssertionError("Failed saving documents", e)
+        }
+    }
+
+    private fun updateDocs(docIds: List<String>, rounds: Int, tag: String) {
         for (i in 1..rounds) {
             for (docId in docIds) {
-                val d = baseTestDb.getDocument(docId)!!
-                val doc = d.toMutable()
-                doc.setValue("tag", tag)
-
-                val address = doc.getDictionary("address")
+                val mDoc = try {
+                    testCollection.getDocument(docId)!!.toMutable()
+                } catch (e: CouchbaseLiteException) {
+                    throw AssertionError("Failed getting document: $docId", e)
+                }
+                mDoc.setValue(TEST_DOC_TAG_KEY, tag)
+                val address = mDoc.getDictionary("address")
                 assertNotNull(address)
                 val street = "$i street."
                 address.setValue("street", street)
-
-                val phones = doc.getArray("phones")
+                val phones = mDoc.getArray("phones")
                 assertNotNull(phones)
-                assertEquals(2, phones.count)
+                assertEquals(2, phones.count())
                 val phone = "650-000-${i.paddedString(4)}"
                 phones.setValue(0, phone)
-
-                doc.setValue("updated", Clock.System.now())
+                mDoc.setValue("updated", Clock.System.now())
                 try {
-                    baseTestDb.save(doc)
+                    testCollection.save(mDoc)
                 } catch (e: CouchbaseLiteException) {
-                    return false
+                    throw AssertionError("Failed saving document: $docId", e)
                 }
             }
         }
-        return true
     }
 
     private fun readDocs(docIDs: List<String>, rounds: Int) {
         for (i in 1..rounds) {
             for (docID in docIDs) {
-                val doc = baseTestDb.getDocument(docID)
+                val doc = try {
+                    testCollection.getDocument(docID)
+                } catch (e: CouchbaseLiteException) {
+                    throw AssertionError("Failed reading document: $docID", e)
+                }
                 assertNotNull(doc)
                 assertEquals(docID, doc.id)
             }
         }
     }
 
-    private fun verifyByTagName(tag: String, block: VerifyBlock<Result>) {
-        QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
-            .where(Expression.property("tag").equalTo(Expression.string(tag)))
-            .execute().use { rs ->
-                rs.forEachIndexed { n, result ->
-                    block.verify(n, result)
-                }
-            }
+    @Throws(CouchbaseLiteException::class)
+    private fun countTaggedDocs(tag: String): Int {
+        val query = QueryBuilder.select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property(TEST_DOC_TAG_KEY).equalTo(Expression.string(tag)))
+        query.execute().use { rs -> return rs.allResults().size }
     }
 
-    private fun verifyByTagName(tag: String, nRows: Int) {
-        val count = atomic(0)
-        verifyByTagName(tag) { _, _ -> count.incrementAndGet() }
-        assertEquals(nRows, count.value)
+    private suspend fun runConcurrently(
+        name: String,
+        task1: suspend () -> Unit,
+        task2: suspend () -> Unit
+    ) = coroutineScope {
+        val barrier = CyclicBarrier(2)
+        val latch = CountDownLatch(2)
+        val error: AtomicRef<Throwable?> = atomic(null)
+        createTestCoroutines("$name@1", 1, barrier, latch, error) { task1() }
+        createTestCoroutines("$name@2", 1, barrier, latch, error) { task2() }
+        var ok = false
+        try {
+            ok = latch.await(STD_TIMEOUT_SEC.seconds)
+        } catch (ignore: CancellationException) { }
+        checkForFailure(error)
+        assertTrue(ok)
     }
 
-    private suspend fun concurrentValidator(nCoroutines: Int, waitSec: Int, callback: Callback) =
-        coroutineScope {
-            // setup
-            val jobs = arrayOfNulls<Job>(nCoroutines)
-            val mutexes = arrayOfNulls<Mutex>(nCoroutines)
+    private suspend fun runConcurrentCopies(nThreads: Int, task: (Int) -> Unit) = coroutineScope {
+        val barrier = CyclicBarrier(nThreads)
+        val latch = CountDownLatch(nThreads)
+        val error: AtomicRef<Throwable?> = atomic(null)
+        createTestCoroutines("Concurrency-test", nThreads, barrier, latch, error, task)
 
-            for (i in 0 until nCoroutines) {
-                mutexes[i] = Mutex(true)
-                jobs[i] = launch(
-                    CoroutineName("Coroutine-$i") + Dispatchers.Default,
-                    CoroutineStart.LAZY
-                ) {
-                    try {
-                        callback.callback(i)
-                        mutexes[i]!!.unlock()
-                    } catch (failure: AssertionError) {
-                        Report.log(LogLevel.DEBUG, "Test failed", failure)
-                        testFailure.compareAndSet(null, failure)
-                    }
-                }
-            }
+        // wait
+        assertTrue(latch.await(LONG_TIMEOUT_SEC.seconds))
+        checkForFailure(error)
+    }
 
-            // start
-            for (i in 0 until nCoroutines) {
-                jobs[i]!!.start()
-            }
-
-            // wait
-            for (i in 0 until nCoroutines) {
-                assertTrue(mutexes[i]!!.lockWithTimeout(waitSec.seconds))
-            }
-
-            checkForFailure()
-        }
-
-    private fun CoroutineScope.testOnNewCoroutine(
-        coroutineName: String,
-        mutex: Mutex,
-        test: () -> Unit
+    private fun CoroutineScope.createTestCoroutines(
+        name: String,
+        nThreads: Int,
+        barrier: CyclicBarrier,
+        latch: CountDownLatch,
+        error: AtomicRef<Throwable?>,
+        task: suspend (Int) -> Unit
     ) {
-        newTestCoroutine(coroutineName, mutex, test).start()
-    }
-
-    private fun CoroutineScope.newTestCoroutine(
-        coroutineName: String,
-        mutex: Mutex,
-        test: () -> Unit
-    ): Job {
-        return launch(CoroutineName(coroutineName) + Dispatchers.Default) {
-            try {
-                test()
-            } catch (failure: AssertionError) {
-                Report.log(LogLevel.DEBUG, "Test failed", failure)
-                testFailure.compareAndSet(null, failure)
-            } finally {
-                mutex.unlock()
+        for (i in 0 until nThreads) {
+            val coroutineName = "$name-$i"
+            launch(CoroutineName(coroutineName)) {
+                try {
+                    barrier.await()
+                    task(i)
+                } catch (e: Exception) {
+                    error.compareAndSet(
+                        null,
+                        AssertionError("Unexpected error in test on thread $coroutineName", e)
+                    )
+                } finally {
+                    latch.countDown()
+                }
             }
         }
     }
 
-    private fun checkForFailure() {
-        val failure = testFailure.value
-        if (failure != null) {
-            throw AssertionError(failure)
+    private fun checkForFailure(error: AtomicRef<Throwable?>) {
+        val err = error.value
+        if (err is AssertionError) {
+            throw err
+        }
+        if (err != null) {
+            throw AssertionError("Exception thrown in test", err)
         }
     }
 
-    companion object {
-        private const val TIMEOUT = 180L
+    private suspend fun delay() {
+        try {
+            delay(2)
+        } catch (ignore: CancellationException) { }
     }
 }
