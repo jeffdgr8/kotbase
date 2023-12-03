@@ -58,10 +58,10 @@ typedef struct C4Document {
 @interface CBLDocument ()
 @property (atomic, nullable) CBLC4Document* c4Doc;
 @property (nonatomic, readonly) NSUInteger generation;
-- (nullable instancetype) initWithDatabase: (CBLDatabase*)database
-                                documentID: (NSString*)documentID
-                            includeDeleted: (BOOL)includeDeleted
-                                     error: (NSError**)outError;
+- (nullable instancetype) initWithCollection: (CBLCollection*)collection
+                                  documentID: (NSString*)documentID
+                              includeDeleted: (BOOL)includeDeleted
+                                       error: (NSError**)outError;
 @end
 
 @interface CBLDatabase ()
