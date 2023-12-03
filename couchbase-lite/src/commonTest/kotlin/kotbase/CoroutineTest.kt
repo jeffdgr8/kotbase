@@ -19,18 +19,18 @@ import kotlin.test.Test
 
 class CoroutineTest : BaseCoroutineTest() {
 
-    // DatabaseChange
+    // CollectionChange
 
     @Test
     fun testDatabaseChangeOnCoroutineContext() {
         testOnCoroutineContext(
             addListener = { context, work ->
-                baseTestDb.addChangeListener(context) {
+                testCollection.addChangeListener(context) {
                     work()
                 }
             },
             change = {
-                saveDocInBaseTestDb(MutableDocument("newDoc"))
+                saveDocInCollection(MutableDocument("newDoc"))
             }
         )
     }
@@ -39,15 +39,15 @@ class CoroutineTest : BaseCoroutineTest() {
     fun testDatabaseChangeCoroutineCanceled() {
         testCoroutineCanceled(
             addListener = { context, work ->
-                baseTestDb.addChangeListener(context) {
+                testCollection.addChangeListener(context) {
                     work()
                 }
             },
             change = {
-                saveDocInBaseTestDb(MutableDocument("newDoc"))
+                saveDocInCollection(MutableDocument("newDoc"))
             },
             removeListener = { token ->
-                baseTestDb.removeChangeListener(token)
+                token.remove()
             }
         )
     }
@@ -56,15 +56,15 @@ class CoroutineTest : BaseCoroutineTest() {
     fun testDatabaseChangeCoroutineScopeListenerRemoved() {
         testCoroutineScopeListenerRemoved(
             addListener = { scope, work ->
-                baseTestDb.addChangeListener(scope) {
+                testCollection.addChangeListener(scope) {
                     work()
                 }
             },
             listenedChange = {
-                saveDocInBaseTestDb(MutableDocument("withListener"))
+                saveDocInCollection(MutableDocument("withListener"))
             },
             notListenedChange = {
-                saveDocInBaseTestDb(MutableDocument("noListener"))
+                saveDocInCollection(MutableDocument("noListener"))
             }
         )
     }
@@ -76,17 +76,17 @@ class CoroutineTest : BaseCoroutineTest() {
         val id = "testDoc"
         val doc = MutableDocument(id)
         doc.setString("property", "initial value")
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
         testOnCoroutineContext(
             addListener = { context, work ->
-                baseTestDb.addDocumentChangeListener(id, context) {
+                testCollection.addDocumentChangeListener(id, context) {
                     work()
                 }
             },
             change = {
                 doc.setString("property", "changed value")
-                saveDocInBaseTestDb(doc)
+                saveDocInCollection(doc)
             }
         )
     }
@@ -96,20 +96,20 @@ class CoroutineTest : BaseCoroutineTest() {
         val id = "testDoc"
         val doc = MutableDocument(id)
         doc.setString("property", "initial value")
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
         testCoroutineCanceled(
             addListener = { context, work ->
-                baseTestDb.addDocumentChangeListener(id, context) {
+                testCollection.addDocumentChangeListener(id, context) {
                     work()
                 }
             },
             change = {
                 doc.setString("property", "changed value")
-                saveDocInBaseTestDb(doc)
+                saveDocInCollection(doc)
             },
             removeListener = { token ->
-                baseTestDb.removeChangeListener(token)
+                token.remove()
             }
         )
     }
@@ -119,21 +119,21 @@ class CoroutineTest : BaseCoroutineTest() {
         val id = "testDoc"
         val doc = MutableDocument(id)
         doc.setString("property", "initial value")
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
         testCoroutineScopeListenerRemoved(
             addListener = { scope, work ->
-                baseTestDb.addDocumentChangeListener(id, scope) {
+                testCollection.addDocumentChangeListener(id, scope) {
                     work()
                 }
             },
             listenedChange = {
                 doc.setString("property", "listened change")
-                saveDocInBaseTestDb(doc)
+                saveDocInCollection(doc)
             },
             notListenedChange = {
                 doc.setString("property", "not listened change")
-                saveDocInBaseTestDb(doc)
+                saveDocInCollection(doc)
             }
         )
     }
@@ -143,7 +143,7 @@ class CoroutineTest : BaseCoroutineTest() {
     @Test
     fun testQueryChangeOnCoroutineContext() {
         val query = QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
         testOnCoroutineContext(
             addListener = { context, work ->
@@ -152,7 +152,7 @@ class CoroutineTest : BaseCoroutineTest() {
                 }
             },
             change = {
-                saveDocInBaseTestDb(MutableDocument("newDoc"))
+                saveDocInCollection(MutableDocument("newDoc"))
             }
         )
     }
@@ -160,7 +160,7 @@ class CoroutineTest : BaseCoroutineTest() {
     @Test
     fun testQueryChangeCoroutineCanceled() {
         val query = QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
         testCoroutineCanceled(
             addListener = { context, work ->
@@ -169,7 +169,7 @@ class CoroutineTest : BaseCoroutineTest() {
                 }
             },
             change = {
-                saveDocInBaseTestDb(MutableDocument("newDoc"))
+                saveDocInCollection(MutableDocument("newDoc"))
             },
             removeListener = { token ->
                 query.removeChangeListener(token)
@@ -180,7 +180,7 @@ class CoroutineTest : BaseCoroutineTest() {
     @Test
     fun testQueryChangeCoroutineScopeListenerRemoved() {
         val query = QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
         testCoroutineScopeListenerRemoved(
             addListener = { scope, work ->
@@ -189,10 +189,10 @@ class CoroutineTest : BaseCoroutineTest() {
                 }
             },
             listenedChange = {
-                saveDocInBaseTestDb(MutableDocument("listenedDoc"))
+                saveDocInCollection(MutableDocument("listenedDoc"))
             },
             notListenedChange = {
-                saveDocInBaseTestDb(MutableDocument("notListenedDoc"))
+                saveDocInCollection(MutableDocument("notListenedDoc"))
             }
         )
     }
