@@ -45,6 +45,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(projects.testingSupport)
+                implementation(libs.stately)
             }
         }
         jvmCommonMain {

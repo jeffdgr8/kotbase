@@ -36,3 +36,4 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 paging = { module = "app.cash.paging:paging-common", version = "3.3.0-alpha02-0.4.0" }
+stately = { module = "co.touchlab:stately-concurrent-collections", version = "2.0.5" }
