@@ -15,11 +15,11 @@
  */
 package kotbase
 
-import kotbase.internal.utils.TestUtils.assertThrows
 import kotbase.test.assertIntEquals
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
+
 
 class DictionaryTest : BaseDbTest() {
 
@@ -33,16 +33,14 @@ class DictionaryTest : BaseDbTest() {
         mDoc.setValue("address", address)
         assertEquals(address, mDoc.getDictionary("address"))
 
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
         assertEquals(emptyMap(), doc.getDictionary("address")?.toMap())
     }
 
     @Test
     fun testRecursiveDictionary() {
-        assertFailsWith<IllegalArgumentException> {
-            val dict = MutableDictionary()
-            dict.setDictionary("k1", dict)
-        }
+        val dict = MutableDictionary()
+        assertFailsWith<IllegalArgumentException> { dict.setDictionary("k1", dict) }
     }
 
     @Test
@@ -63,7 +61,7 @@ class DictionaryTest : BaseDbTest() {
         mDoc1.setValue("address", address)
         assertEquals(address, mDoc1.getDictionary("address"))
 
-        val doc1 = saveDocInBaseTestDb(mDoc1)
+        val doc1 = saveDocInCollection(mDoc1)
         assertEquals(dict, doc1.getDictionary("address")?.toMap())
     }
 
@@ -87,7 +85,7 @@ class DictionaryTest : BaseDbTest() {
         val mDoc = MutableDocument("doc1")
         mDoc.setValue("dict", mDict)
 
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         val dict = doc.getDictionary("dict")!!
 
@@ -134,7 +132,7 @@ class DictionaryTest : BaseDbTest() {
         dict["level3"] = l3
         assertEquals(dict, doc.toMap())
 
-        val savedDoc = saveDocInBaseTestDb(doc)
+        val savedDoc = saveDocInCollection(doc)
 
         assertNotSame(level1, savedDoc.getDictionary("level1"))
         assertEquals(dict, savedDoc.toMap())
@@ -172,7 +170,7 @@ class DictionaryTest : BaseDbTest() {
         assertEquals("4", mDict4.getString("name"))
 
         // after save
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         val array = doc.getArray("array")!!
         assertEquals(4, array.count)
@@ -212,7 +210,7 @@ class DictionaryTest : BaseDbTest() {
         assertNull(profile2.getValue("age"))
 
         // Save:
-        val savedDoc = saveDocInBaseTestDb(doc)
+        val savedDoc = saveDocInCollection(doc)
 
         assertNotSame(profile2, savedDoc.getDictionary("profile"))
         val savedDict = savedDoc.getDictionary("profile")!!
@@ -241,7 +239,7 @@ class DictionaryTest : BaseDbTest() {
         assertEquals("Daniel Tiger", doc.getValue("profile"))
 
         // Save
-        val savedDoc = saveDocInBaseTestDb(doc)
+        val savedDoc = saveDocInCollection(doc)
         assertEquals("Daniel Tiger", savedDoc.getValue("profile"))
     }
 
@@ -268,7 +266,7 @@ class DictionaryTest : BaseDbTest() {
         assertNull(doc.getValue("profile"))
 
         // Save:
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         assertNull(doc.getValue("profile"))
         assertFalse(doc.contains("profile"))
@@ -277,9 +275,7 @@ class DictionaryTest : BaseDbTest() {
     @Test
     fun testEnumeratingKeys() {
         val dict = MutableDictionary()
-        for (i in 0 until 20) {
-            dict.setValue("key$i", i)
-        }
+        for (i in 0 until 20) { dict.setValue("key$i", i) }
         var content = dict.toMap()
 
         var result = mutableMapOf<String, Any?>()
@@ -308,66 +304,56 @@ class DictionaryTest : BaseDbTest() {
 
         val finalContent = content
 
-        val doc = MutableDocument("doc1")
-        doc.setValue("dict", dict)
-        saveDocInBaseTestDb(doc) { doc1: Document ->
-            val result1 = mutableMapOf<String, Any?>()
-            var count1 = 0
-            val dictObj = doc1.getDictionary("dict")
-            for (key in dictObj!!) {
-                result1[key] = dict.getValue(key)
-                count1++
-            }
-            assertEquals(finalContent.size, count1)
-            assertEquals(finalContent, result1)
+        val mDoc = MutableDocument("doc1")
+        mDoc.setValue("dict", dict)
+        val doc = saveDocInCollection(mDoc)
+
+        count = 0
+        result = mutableMapOf()
+        val dictObj = doc.getDictionary("dict")
+        for (key in dictObj!!) {
+            result[key] = dict.getValue(key)
+            count++
         }
+        assertEquals(finalContent.size, count)
+        assertEquals(finalContent, result)
     }
 
-    // ??? Surprisingly, no concurrent modification exception.
     @Test
     fun testDictionaryEnumerationWithDataModification1() {
         val dict = MutableDictionary()
-        for (i in 0..2) {
-            dict.setValue("key-$i", i)
-        }
+        for (i in 0..2) { dict.setValue("key-$i", i) }
 
         assertEquals(3, dict.count)
 
-        var n = 0
-        val itr = dict.iterator()
-        while (itr.hasNext()) {
-            if (n++ == 1) {
-                dict.setValue("key-3", 3)
+        assertFailsWith<ConcurrentModificationException> {
+            var n = 0
+            val itr = dict.iterator()
+            while (itr.hasNext()) {
+                if (n++ == 1) { dict.setValue("key-3", 3) }
+                itr.next()
             }
-            itr.next()
         }
-
-        assertEquals(4, dict.count)
     }
 
-    // ??? Surprisingly, no concurrent modification exception.
     @Test
     fun testDictionaryEnumerationWithDataModification2() {
-        var dict = MutableDictionary()
-        for (i in 0..2) {
-            dict.setValue("key-$i", i)
-        }
+        val dict = MutableDictionary()
+        for (i in 0..2) { dict.setValue("key-$i", i) }
 
         assertEquals(3, dict.count)
 
         val doc = MutableDocument("doc1").setValue("dict", dict)
-        dict = saveDocInBaseTestDb(doc).toMutable().getDictionary("dict")!!
+        val savedDict = saveDocInCollection(doc).toMutable().getDictionary("dict")!!
 
-        var n = 0
-        val itr = dict.iterator()
-        while (itr.hasNext()) {
-            if (n++ == 1) {
-                dict.setValue("key-3", 3)
+        assertFailsWith<ConcurrentModificationException> {
+            var n = 0
+            val itr: Iterator<String> = savedDict.iterator()
+            while (itr.hasNext()) {
+                if (n++ == 1) { savedDict.setValue("key-3", 3) }
+                itr.next()
             }
-            itr.next()
         }
-
-        assertEquals(4, dict.count)
     }
 
     // https://github.com/couchbase/couchbase-lite-core/issues/230
@@ -380,7 +366,7 @@ class DictionaryTest : BaseDbTest() {
         doc.setValue("num1", num1)
         doc.setValue("num2", num2)
         doc.setValue("num3", num3)
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
         assertEquals(num1, doc.getLong("num1"))
         assertEquals(num2, doc.getLong("num2"))
         assertEquals(num3, doc.getLong("num3"))
@@ -394,7 +380,7 @@ class DictionaryTest : BaseDbTest() {
         val num2 = 231548688L
         doc.setValue("num1", num1)
         doc.setValue("num2", num2)
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
         assertEquals(num1, doc.getLong("num1"))
         assertEquals(num2, doc.getLong("num2"))
     }
@@ -410,25 +396,25 @@ class DictionaryTest : BaseDbTest() {
         mDict.setArray("array-null", null)
         mDict.setDictionary("dict-null", null)
         mDoc.setDictionary("dict", mDict)
-        saveDocInBaseTestDb(mDoc) { doc ->
-            assertEquals(1, doc.count)
-            assertTrue(doc.contains("dict"))
-            val d = doc.getDictionary("dict")
-            assertNotNull(d)
-            assertEquals(6, d.count)
-            assertTrue(d.contains("obj-null"))
-            assertTrue(d.contains("string-null"))
-            assertTrue(d.contains("number-null"))
-            assertTrue(d.contains("date-null"))
-            assertTrue(d.contains("array-null"))
-            assertTrue(d.contains("dict-null"))
-            assertNull(d.getValue("obj-null"))
-            assertNull(d.getValue("string-null"))
-            assertNull(d.getValue("number-null"))
-            assertNull(d.getValue("date-null"))
-            assertNull(d.getValue("array-null"))
-            assertNull(d.getValue("dict-null"))
-        }
+        val doc = saveDocInCollection(mDoc)
+
+        assertEquals(1, doc.count)
+        assertTrue(doc.contains("dict"))
+        val d = doc.getDictionary("dict")
+        assertNotNull(d)
+        assertEquals(6, d.count)
+        assertTrue(d.contains("obj-null"))
+        assertTrue(d.contains("string-null"))
+        assertTrue(d.contains("number-null"))
+        assertTrue(d.contains("date-null"))
+        assertTrue(d.contains("array-null"))
+        assertTrue(d.contains("dict-null"))
+        assertNull(d.getValue("obj-null"))
+        assertNull(d.getValue("string-null"))
+        assertNull(d.getValue("number-null"))
+        assertNull(d.getValue("date-null"))
+        assertNull(d.getValue("array-null"))
+        assertNull(d.getValue("dict-null"))
     }
 
     @Test
@@ -466,7 +452,7 @@ class DictionaryTest : BaseDbTest() {
         mDoc.setDictionary("dict4", mDict4)
         mDoc.setDictionary("dict5", mDict5)
 
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
         val dict1 = doc.getDictionary("dict1")
         val dict2 = doc.getDictionary("dict2")
         val dict3 = doc.getDictionary("dict3")
@@ -593,7 +579,7 @@ class DictionaryTest : BaseDbTest() {
         mDoc.setDictionary("dict4", mDict4)
         mDoc.setDictionary("dict5", mDict5)
 
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
         val dict1 = doc.getDictionary("dict1")!!
         val dict2 = doc.getDictionary("dict2")!!
         val dict3 = doc.getDictionary("dict3")!!
@@ -651,7 +637,7 @@ class DictionaryTest : BaseDbTest() {
         val mDoc = MutableDocument("test")
         mDoc.setDictionary("dict", mDict)
 
-        val dict = saveDocInBaseTestDb(mDoc).getDictionary("dict")
+        val dict = saveDocInCollection(mDoc).getDictionary("dict")
 
         assertNotNull(dict)
         assertNull(dict.getDictionary("not-exists"))
@@ -678,7 +664,7 @@ class DictionaryTest : BaseDbTest() {
         val mDoc = MutableDocument("test")
         mDoc.setValue("array", mArray)
 
-        val array = saveDocInBaseTestDb(mDoc).getArray("array")
+        val array = saveDocInCollection(mDoc).getArray("array")
 
         assertNotNull(array)
         assertNull(array.getArray(0))
@@ -686,9 +672,7 @@ class DictionaryTest : BaseDbTest() {
         assertNull(array.getArray(2))
         assertNotNull(array.getArray(3))
 
-        assertThrows<IndexOutOfBoundsException> {
-            assertNull(array.getArray(4))
-        }
+        assertFailsWith<IndexOutOfBoundsException> { assertNull(array.getArray(4)) }
 
         val nestedArray = array.getArray(3)
         assertEquals(nestedArray, mNestedArray)
@@ -703,14 +687,14 @@ class DictionaryTest : BaseDbTest() {
 
         var mDoc = MutableDocument("doc1")
         mDoc.setValue("dict", mDict)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         var dict = doc.getDictionary("dict")!!
 
         mDoc = doc.toMutable()
         mDoc.setValue("dict2", dict)
 
-        dict = saveDocInBaseTestDb(mDoc).getDictionary("dict2")!!
+        dict = saveDocInCollection(mDoc).getDictionary("dict2")!!
         assertEquals(1, dict.count)
         assertEquals("world", dict.getString("hello"))
     }
@@ -723,27 +707,30 @@ class DictionaryTest : BaseDbTest() {
 
         var mDoc = MutableDocument("doc1")
         mDoc.setValue("array", mArray)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         var array = doc.getArray("array")!!
 
         mDoc = doc.toMutable()
         mDoc.setValue("array2", array)
 
-        array = saveDocInBaseTestDb(mDoc).getArray("array2")!!
+        array = saveDocInCollection(mDoc).getArray("array2")!!
         assertEquals(2, array.count)
         assertEquals("hello", array.getString(0))
         assertEquals("world", array.getString(1))
     }
 
+
     ///////////////  JSON tests
+    // https://docs.google.com/document/d/1H0mnutn-XXIADvGT_EjINAOVwt0Ea8vwW70v0i_PO54
+
     // JSON 3.3
     @Test
     fun testDictToJSON() {
         val mDoc = MutableDocument().setDictionary("dict", makeDict())
         verifyDict(
             Json.parseToJsonElement(
-                saveDocInBaseTestDb(mDoc).getDictionary("dict")!!.toJSON()
+                saveDocInCollection(mDoc).getDictionary("dict")!!.toJSON()
             ).jsonObject
         )
     }
@@ -751,9 +738,7 @@ class DictionaryTest : BaseDbTest() {
     // JSON 3.6.?
     @Test
     fun testDictToJSONBeforeSave() {
-        assertFailsWith<IllegalStateException> {
-            MutableDictionary().toJSON()
-        }
+        assertFailsWith<IllegalStateException> { MutableDictionary().toJSON() }
     }
 
     // JSON 3.5.a-b
@@ -761,7 +746,7 @@ class DictionaryTest : BaseDbTest() {
     fun testDictFromJSON() {
         val mDict = MutableDictionary(readJSONResource("dictionary.json"))
         val mDoc = MutableDocument().setDictionary("dict", mDict)
-        val dbDict = saveDocInBaseTestDb(mDoc).getDictionary("dict")
+        val dbDict = saveDocInCollection(mDoc).getDictionary("dict")
         verifyDict(dbDict)
         verifyDict(Json.parseToJsonElement(dbDict!!.toJSON()).jsonObject)
     }
@@ -769,32 +754,24 @@ class DictionaryTest : BaseDbTest() {
     // JSON 3.6.c.1
     @Test
     fun testDictFromBadJSON1() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableDictionary("{")
-        }
+        assertFailsWith<IllegalArgumentException> { MutableDictionary("{") }
     }
 
     // JSON 3.6.c.2
     @Test
     fun testDictFromBadJSON2() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableDictionary("{ab cd: \"xyz\"}")
-        }
+        assertFailsWith<IllegalArgumentException> { MutableDictionary("{ab cd: \"xyz\"}") }
     }
 
     // JSON 3.6.c.3
     @Test
     fun testDictFromBadJSON3() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableDictionary("{ab: \"xyz\" cd: \"xyz\"}")
-        }
+        assertFailsWith<IllegalArgumentException> { MutableDictionary("{ab: \"xyz\" cd: \"xyz\"}") }
     }
 
     // JSON 3.6.d
     @Test
     fun testDictFromArray() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableDictionary(readJSONResource("array.json"))
-        }
+        assertFailsWith<IllegalArgumentException> { MutableDictionary("[1, a, 1.0]") }
     }
 }
