@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2023 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,16 @@
  */
 package com.couchbase.lite
 
-import kotbase.Blob
-import kotbase.Database
-import kotbase.asBlob
-import kotbase.ext.wrapCBLError
+import kotbase.Collection
+import kotbase.Document
 
-internal actual fun Database.saveBlob(blob: Blob) {
-    wrapCBLError { error ->
-        actual.saveBlob(blob.actual, error)
-    }
-}
+// TODO: implement native C getC4Document()
 
-@Suppress("UNCHECKED_CAST")
-internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? {
-    if (!Blob.isBlob(props)) {
-        throw IllegalArgumentException("getBlob arg does not specify a blob")
-    }
-    return actual.getBlob(props as Map<Any?, *>)?.asBlob()
+internal actual fun Collection.getC4Document(id: String): C4Document =
+    C4Document(getDocument(id))
+
+internal actual class C4Document(private val doc: Document?) {
+
+    actual fun isRevDeleted(): Boolean =
+        doc == null
 }

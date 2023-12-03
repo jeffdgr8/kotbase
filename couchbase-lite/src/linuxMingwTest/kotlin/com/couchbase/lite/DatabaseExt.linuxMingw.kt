@@ -43,14 +43,3 @@ internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? {
         null
     }
 }
-
-// TODO: implement native C getC4Document()
-
-internal actual fun Database.getC4Document(id: String): C4Document =
-    C4Document(getDocument(id))
-
-internal actual class C4Document(private val doc: Document?) {
-
-    actual fun isRevDeleted(): Boolean =
-        doc == null
-}
