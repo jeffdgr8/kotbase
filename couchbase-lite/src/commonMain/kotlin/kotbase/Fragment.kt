@@ -284,7 +284,7 @@ internal constructor(
             })
             else -> null
         }
-        return if (parent is Array && index in 0 until parent.count) {
+        return if (parent is Array && index in 0..<parent.count) {
             Fragment(parent, null, index)
         } else {
             Fragment()

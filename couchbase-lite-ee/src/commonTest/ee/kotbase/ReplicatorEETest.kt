@@ -815,7 +815,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
      */
     private fun createDocs(): MutableSet<String> {
         val docIds = mutableSetOf<String>()
-        for (i in 0 until noOfDocument) {
+        for (i in 0..<noOfDocument) {
             val doc = MutableDocument("doc-$i")
             doc.setValue(kActionKey, kCreateActionValue)
             saveDocInBaseTestDb(doc)

@@ -1145,7 +1145,7 @@ class DatabaseTest : BaseDbTest() {
         testDatabase.inBatch {
             docIds.forEach { docId ->
                 var savedDoc = testCollection.getDocument(docId)
-                for (i in 0 until nUpdates) {
+                for (i in 0..<nUpdates) {
                     val doc = savedDoc!!.toMutable()
                     doc.setValue("number", i)
                     savedDoc = saveDocInCollection(doc)

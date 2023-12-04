@@ -49,7 +49,7 @@ class ConcurrencyTest : BaseDbTest() {
         }
 
         // validate stored documents
-        for (i in 0 until copies) {
+        for (i in 0..<copies) {
             assertEquals(nDocs, countTaggedDocs("TAG@CREATES-$i"))
         }
     }
@@ -72,7 +72,7 @@ class ConcurrencyTest : BaseDbTest() {
         }
 
         // validate stored documents
-        for (i in 0 until copies) {
+        for (i in 0..<copies) {
             assertEquals(nDocs, countTaggedDocs("TAG@CREATESBATCH-$i"))
         }
     }
@@ -102,7 +102,7 @@ class ConcurrencyTest : BaseDbTest() {
         val copies = 4
         runConcurrentCopies(copies) { id -> updateDocs(docIDs, 50, "TAG@UPDATED-$id") }
         var count = 0
-        for (i in 0 until copies) {
+        for (i in 0..<copies) {
             count += countTaggedDocs("TAG@UPDATED-$i")
         }
         assertEquals(docIDs.size, count)
@@ -441,7 +441,7 @@ class ConcurrencyTest : BaseDbTest() {
         error: AtomicRef<Throwable?>,
         task: suspend (Int) -> Unit
     ) {
-        for (i in 0 until nThreads) {
+        for (i in 0..<nThreads) {
             val coroutineName = "$name-$i"
             launch(CoroutineName(coroutineName)) {
                 try {

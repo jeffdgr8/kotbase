@@ -178,7 +178,7 @@ public expect open class Array : Iterable<Any?> {
  * the MutableFragment object will represent a nil value.
  */
 public operator fun Array.get(index: Int): Fragment {
-    return if (index in 0 until count) {
+    return if (index in 0..<count) {
         Fragment(this, index)
     } else {
         Fragment()

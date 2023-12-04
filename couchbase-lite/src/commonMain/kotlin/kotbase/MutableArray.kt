@@ -411,7 +411,7 @@ public expect class MutableArray : Array {
  * the MutableFragment object will represent a nil value.
  */
 public operator fun MutableArray.get(index: Int): MutableFragment {
-    return if (index in 0 until count) {
+    return if (index in 0..<count) {
         MutableFragment(this, index)
     } else {
         MutableFragment()

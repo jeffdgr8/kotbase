@@ -69,7 +69,7 @@ class LoadTest : BaseDbTest() {
     fun testDelete() {
         timeTest("testDelete", 20 * 1000L) {
             // create & delete doc ITERATIONS times
-            for (i in 0 until ITERATIONS) {
+            for (i in 0..<ITERATIONS) {
                 val docID = "doc-${i.paddedString(10)}"
                 createAndSaveDocument(docID, "Delete")
                 assertEquals(1, baseTestDb.count)
@@ -88,7 +88,7 @@ class LoadTest : BaseDbTest() {
             // create 1 doc
             createAndSaveDocument("doc1", "Read")
             // read the doc n times
-            for (i in 0 until ITERATIONS) {
+            for (i in 0..<ITERATIONS) {
                 val doc = baseTestDb.getDocument("doc1")
                 assertNotNull(doc)
                 assertEquals("doc1", doc.id)
@@ -102,9 +102,9 @@ class LoadTest : BaseDbTest() {
     fun testSaveManyDocs() {
         timeTest("testSaveManyDocs", 20 * 1000L) {
             // Without Batch
-            for (i in 0 until ITERATIONS) {
+            for (i in 0..<ITERATIONS) {
                 val doc = MutableDocument("doc-${i.paddedString(5)}")
-                for (j in 0 until 100) {
+                for (j in 0..<100) {
                     doc.setInt(j.toString(), j); }
                 try {
                     baseTestDb.save(doc)
@@ -188,7 +188,7 @@ class LoadTest : BaseDbTest() {
     }
 
     private fun updateDoc(doc: MutableDocument, revisions: Int) {
-        for (i in 0 until revisions) {
+        for (i in 0..<revisions) {
             doc.setValue("count", i)
             baseTestDb.save(doc)
         }
@@ -196,7 +196,7 @@ class LoadTest : BaseDbTest() {
 
     private fun updateDocWithGetDocument(document: MutableDocument, revisions: Int) {
         var doc = document
-        for (i in 0 until revisions) {
+        for (i in 0..<revisions) {
             doc.setValue("count", i)
             baseTestDb.save(doc)
             doc = baseTestDb.getDocument("doc")!!.toMutable()
@@ -237,7 +237,7 @@ class LoadTest : BaseDbTest() {
     }
 
     private fun createAndSaveDocument(tag: String, nDocs: Int) {
-        for (i in 0 until nDocs) {
+        for (i in 0..<nDocs) {
             val docID = "doc-${i.paddedString(10)}"
             createAndSaveDocument(docID, tag)
         }

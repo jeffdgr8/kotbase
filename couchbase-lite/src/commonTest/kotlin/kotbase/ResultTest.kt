@@ -910,7 +910,7 @@ class ResultTest : BaseQueryTest() {
     @Test
     @Throws(CouchbaseLiteException::class)
     fun testResultToJSON() {
-        for (i in 0 until 5) {
+        for (i in 0..<5) {
             val mDoc = makeDocument()
             mDoc.setString("id", "jsonQuery-$i")
             saveDocInBaseTestDb(mDoc)

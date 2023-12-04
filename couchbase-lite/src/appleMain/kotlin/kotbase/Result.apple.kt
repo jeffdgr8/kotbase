@@ -146,7 +146,7 @@ internal constructor(actual: CBLQueryResult) : DelegatedClass<CBLQueryResult>(ac
         (actual.keys as List<String>).iterator()
 
     private fun isInBounds(index: Int): Boolean {
-        return index in 0 until count
+        return index in 0..<count
     }
 
     private fun assertInBounds(index: Int) {

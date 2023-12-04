@@ -47,7 +47,7 @@ class NotificationTest : BaseDbTest() {
             }
         }
 
-        for (i in 0 until 10) {
+        for (i in 0..<10) {
             val doc = MutableDocument("doc-$i")
             doc.setValue("type", "demo")
             saveDocInBaseTestDb(doc)
@@ -172,7 +172,7 @@ class NotificationTest : BaseDbTest() {
             }
 
             baseTestDb.inBatch {
-                for (i in 0 until 10) {
+                for (i in 0..<10) {
                     val doc = MutableDocument("doc-$i")
                     doc.setValue("type", "demo")
                     saveDocInBaseTestDb(doc)
