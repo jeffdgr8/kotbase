@@ -241,12 +241,19 @@ abstract class BaseTest : PlatformTest() {
 
         const val STD_TIMEOUT_SEC = 10L
         const val LONG_TIMEOUT_SEC = 60L
+
+        const val STD_TIMEOUT_MS = STD_TIMEOUT_SEC * 1000L
+        const val LONG_TIMEOUT_MS = LONG_TIMEOUT_SEC * 1000L
+
         const val TEST_DATE = "2019-02-21T05:37:22.014Z"
         const val BLOB_CONTENT = "Knox on fox in socks in box. Socks on Knox and Knox in box."
+
         const val TEST_DOC_SORT_KEY = "TEST_SORT_ASC"
         const val TEST_DOC_REV_SORT_KEY = "TEST_SORT_DESC"
         const val TEST_DOC_TAG_KEY = "TEST_TAG"
+
         private val SCRATCH_DIRS = mutableListOf<String>()
+
         const val DB_EXTENSION = ".cblite2" // C4Database.DB_EXTENSION
 
         @BeforeClass
@@ -270,6 +277,7 @@ abstract class BaseTest : PlatformTest() {
 
         // Run a boolean function every `waitMs` until it is true
         // If it is not true within `maxWaitMs` fail.
+        @JvmStatic
         protected fun waitUntil(maxWaitMs: Long, test: () -> Boolean) {
             val waitMs = 100L
             val endTime = Clock.System.now() + (maxWaitMs - waitMs).milliseconds

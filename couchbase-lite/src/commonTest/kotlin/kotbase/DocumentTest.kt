@@ -16,19 +16,19 @@
 package kotbase
 
 import com.couchbase.lite.content
-import com.couchbase.lite.copy
 import com.couchbase.lite.exists
 import com.couchbase.lite.saveBlob
-import kotbase.BaseDbTest.DocValidator
+import kotbase.DocumentTest.DocValidator
 import kotbase.ext.nowMillis
 import kotbase.ext.toStringMillis
+import kotbase.internal.utils.Report
 import kotbase.internal.utils.StringUtils
-import kotbase.internal.utils.TestUtils.assertThrowsCBL
+import kotbase.internal.utils.paddedString
 import kotbase.test.assertIntEquals
-import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.CountDownLatch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.io.Buffer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -42,6 +42,11 @@ import kotlin.time.DurationUnit
 @OptIn(ExperimentalStdlibApi::class)
 class DocumentTest : BaseDbTest() {
 
+    fun interface DocValidator {
+        @Throws(CouchbaseLiteException::class)
+        fun validate(doc: Document)
+    }
+
     @Test
     fun testCreateDoc() {
         val doc1a = MutableDocument()
@@ -49,7 +54,7 @@ class DocumentTest : BaseDbTest() {
         assertTrue(doc1a.id.isNotEmpty())
         assertEquals(emptyMap(), doc1a.toMap())
 
-        val doc1b = saveDocInBaseTestDb(doc1a)
+        val doc1b = saveDocInCollection(doc1a)
         assertNotNull(doc1b)
         assertNotSame(doc1a, doc1b)
         assertTrue(doc1b.exists())
@@ -63,7 +68,7 @@ class DocumentTest : BaseDbTest() {
         assertEquals("doc1", doc1a.id)
         assertEquals(emptyMap(), doc1a.toMap())
 
-        val doc1b = saveDocInBaseTestDb(doc1a)
+        val doc1b = saveDocInCollection(doc1a)
         assertNotNull(doc1b)
         assertNotSame(doc1a, doc1b)
         assertTrue(doc1b.exists())
@@ -74,8 +79,11 @@ class DocumentTest : BaseDbTest() {
     fun testCreateDocWithEmptyStringID() {
         val doc1a = MutableDocument("")
         assertNotNull(doc1a)
-        assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.BAD_DOC_ID) {
-            saveDocInBaseTestDb(doc1a)
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.BAD_DOC_ID
+        ) {
+            testCollection.save(doc1a)
         }
     }
 
@@ -86,7 +94,7 @@ class DocumentTest : BaseDbTest() {
         assertTrue(doc1a.id.isNotEmpty())
         assertEquals(emptyMap(), doc1a.toMap())
 
-        val doc1b = saveDocInBaseTestDb(doc1a)
+        val doc1b = saveDocInCollection(doc1a)
         assertNotNull(doc1b)
         assertNotSame(doc1a, doc1b)
         assertTrue(doc1b.exists())
@@ -113,7 +121,7 @@ class DocumentTest : BaseDbTest() {
         assertTrue(doc1a.id.isNotEmpty())
         assertEquals(dict, doc1a.toMap())
 
-        val doc1b = saveDocInBaseTestDb(doc1a)
+        val doc1b = saveDocInCollection(doc1a)
         assertNotNull(doc1b)
         assertNotSame(doc1a, doc1b)
         assertTrue(doc1b.exists())
@@ -141,7 +149,7 @@ class DocumentTest : BaseDbTest() {
         assertEquals("doc1", doc1a.id)
         assertEquals(dict, doc1a.toMap())
 
-        val doc1b = saveDocInBaseTestDb(doc1a)
+        val doc1b = saveDocInCollection(doc1a)
         assertNotNull(doc1b)
         assertNotSame(doc1a, doc1b)
         assertTrue(doc1b.exists())
@@ -168,7 +176,7 @@ class DocumentTest : BaseDbTest() {
         doc.setData(dict)
         assertEquals(dict, doc.toMap())
 
-        var savedDoc = saveDocInBaseTestDb(doc)
+        var savedDoc = saveDocInCollection(doc)
         assertEquals(dict, savedDoc.toMap())
 
         val nuDict = mutableMapOf<String, Any?>()
@@ -188,35 +196,35 @@ class DocumentTest : BaseDbTest() {
         doc.setData(nuDict)
         assertEquals(nuDict, doc.toMap())
 
-        savedDoc = saveDocInBaseTestDb(doc)
+        savedDoc = saveDocInCollection(doc)
         assertEquals(nuDict, savedDoc.toMap())
     }
 
     @Test
     fun testMutateEmptyDocument() {
         var doc = MutableDocument("doc")
-        baseTestDb.save(doc)
+        testCollection.save(doc)
 
-        doc = baseTestDb.getDocument("doc")!!.toMutable()
+        doc = testCollection.getDocument("doc")!!.toMutable()
         doc.setString("foo", "bar")
-        baseTestDb.save(doc)
+        testCollection.save(doc)
     }
 
     @Test
     fun testGetValueFromDocument() {
         val doc = MutableDocument("doc1")
-        saveDocInBaseTestDb(doc) { d ->
-            assertEquals(0, d.getInt("key"))
-            assertEquals(0.0f, d.getFloat("key"), 0.0f)
-            assertEquals(0.0, d.getDouble("key"), 0.0)
-            assertFalse(d.getBoolean("key"))
-            assertNull(d.getBlob("key"))
-            assertNull(d.getDate("key"))
-            assertNull(d.getNumber("key"))
-            assertNull(d.getValue("key"))
-            assertNull(d.getString("key"))
-            assertNull(d.getArray("key"))
-            assertNull(d.getDictionary("key"))
+        validateAndSaveDocInTestCollection(doc) { d ->
+            assertEquals(0, d.getInt(TEST_DOC_TAG_KEY))
+            assertEquals(0.0f, d.getFloat(TEST_DOC_TAG_KEY), 0.0f)
+            assertEquals(0.0, d.getDouble(TEST_DOC_TAG_KEY), 0.0)
+            assertFalse(d.getBoolean(TEST_DOC_TAG_KEY))
+            assertNull(d.getBlob(TEST_DOC_TAG_KEY))
+            assertNull(d.getDate(TEST_DOC_TAG_KEY))
+            assertNull(d.getNumber(TEST_DOC_TAG_KEY))
+            assertNull(d.getValue(TEST_DOC_TAG_KEY))
+            assertNull(d.getString(TEST_DOC_TAG_KEY))
+            assertNull(d.getArray(TEST_DOC_TAG_KEY))
+            assertNull(d.getDictionary(TEST_DOC_TAG_KEY))
             assertEquals(emptyMap(), d.toMap())
         }
     }
@@ -225,14 +233,14 @@ class DocumentTest : BaseDbTest() {
     fun testSaveThenGetFromAnotherDB() {
         val doc1a = MutableDocument("doc1")
         doc1a.setValue("name", "Scott Tiger")
-        saveDocInBaseTestDb(doc1a)
+        saveDocInCollection(doc1a)
 
-        val anotherDb: Database = baseTestDb.copy()
-        val doc1b = anotherDb.getDocument("doc1")
-        assertNotSame(doc1a, doc1b)
-        assertEquals(doc1a.id, doc1b!!.id)
-        assertEquals(doc1a.toMap(), doc1b.toMap())
-        anotherDb.close()
+        duplicateDb(testDatabase).use { anotherDb ->
+            val doc1b = anotherDb.getSimilarCollection(testCollection).getDocument("doc1")
+            assertNotSame(doc1a, doc1b)
+            assertEquals(doc1a.id, doc1b!!.id)
+            assertEquals(doc1a.toMap(), doc1b.toMap())
+        }
     }
 
     @Test
@@ -240,34 +248,33 @@ class DocumentTest : BaseDbTest() {
         val doc1a = MutableDocument("doc1")
         doc1a.setValue("name", "Scott Tiger")
 
-        saveDocInBaseTestDb(doc1a)
+        saveDocInCollection(doc1a)
 
-        var doc1b = baseTestDb.getDocument("doc1")!!
-        val doc1c = baseTestDb.getDocument("doc1")!!
+        var doc1b = testCollection.getDocument("doc1")!!
+        val doc1c = testCollection.getDocument("doc1")!!
 
-        val anotherDb = baseTestDb.copy()
-        val doc1d = anotherDb.getDocument("doc1")!!
+        duplicateDb(testDatabase).use { anotherDb ->
+            val doc1d = anotherDb.getSimilarCollection(testCollection).getDocument("doc1")
 
-        assertNotSame(doc1a, doc1b)
-        assertNotSame(doc1a, doc1c)
-        assertNotSame(doc1a, doc1d)
-        assertNotSame(doc1b, doc1c)
-        assertNotSame(doc1b, doc1d)
-        assertNotSame(doc1c, doc1d)
+            assertNotSame(doc1a, doc1b)
+            assertNotSame(doc1a, doc1c)
+            assertNotSame(doc1a, doc1d)
+            assertNotSame(doc1b, doc1c)
+            assertNotSame(doc1b, doc1d)
+            assertNotSame(doc1c, doc1d)
 
-        assertEquals(doc1a.toMap(), doc1b.toMap())
-        assertEquals(doc1a.toMap(), doc1c.toMap())
-        assertEquals(doc1a.toMap(), doc1d.toMap())
+            assertEquals(doc1a.toMap(), doc1b.toMap())
+            assertEquals(doc1a.toMap(), doc1c.toMap())
+            assertEquals(doc1a.toMap(), doc1d!!.toMap())
 
-        val mDoc1b = doc1b.toMutable()
-        mDoc1b.setValue("name", "Daniel Tiger")
-        doc1b = saveDocInBaseTestDb(mDoc1b)
+            val mDoc1b = doc1b.toMutable()
+            mDoc1b.setValue("name", "Daniel Tiger")
+            doc1b = saveDocInCollection(mDoc1b)
 
-        assertNotEquals(doc1b.toMap(), doc1a.toMap())
-        assertNotEquals(doc1b.toMap(), doc1c.toMap())
-        assertNotEquals(doc1b.toMap(), doc1d.toMap())
-
-        anotherDb.close()
+            assertNotEquals(doc1b.toMap(), doc1a.toMap())
+            assertNotEquals(doc1b.toMap(), doc1c.toMap())
+            assertNotEquals(doc1b.toMap(), doc1d.toMap())
+        }
     }
 
     @Test
@@ -287,39 +294,34 @@ class DocumentTest : BaseDbTest() {
         var mDoc = MutableDocument("doc1")
         mDoc.setValue("string1", "")
         mDoc.setValue("string2", "string")
-        val doc = saveDocInBaseTestDb(mDoc, validator4Save)
-
+        val doc = validateAndSaveDocInTestCollection(mDoc, validator4Save)
         // update
         mDoc = doc.toMutable()
         mDoc.setValue("string1", "string")
         mDoc.setValue("string2", "")
-        saveDocInBaseTestDb(mDoc, validator4SUpdate)
+        validateAndSaveDocInTestCollection(mDoc, validator4SUpdate)
 
         // -- setString
         // save
         var mDoc2 = MutableDocument("doc2")
         mDoc2.setString("string1", "")
         mDoc2.setString("string2", "string")
-        val doc2 = saveDocInBaseTestDb(mDoc2, validator4Save)
+        val doc2 = validateAndSaveDocInTestCollection(mDoc2, validator4Save)
 
         // update
         mDoc2 = doc2.toMutable()
         mDoc2.setString("string1", "string")
         mDoc2.setString("string2", "")
-        saveDocInBaseTestDb(mDoc2, validator4SUpdate)
+        validateAndSaveDocInTestCollection(mDoc2, validator4SUpdate)
     }
 
     @Test
     fun testGetString() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertNull(d.getString("null"))
                 assertNull(d.getString("true"))
                 assertNull(d.getString("false"))
@@ -359,7 +361,7 @@ class DocumentTest : BaseDbTest() {
         mDoc.setValue("number2", 0)
         mDoc.setValue("number3", -1)
         mDoc.setValue("number4", -10)
-        val doc = saveDocInBaseTestDb(mDoc, validator4Save)
+        val doc = validateAndSaveDocInTestCollection(mDoc, validator4Save)
 
         // Update:
         mDoc = doc.toMutable()
@@ -367,7 +369,7 @@ class DocumentTest : BaseDbTest() {
         mDoc.setValue("number2", 1)
         mDoc.setValue("number3", -10)
         mDoc.setValue("number4", -1)
-        saveDocInBaseTestDb(mDoc, validator4SUpdate)
+        validateAndSaveDocInTestCollection(mDoc, validator4SUpdate)
 
         // -- setNumber
         // save
@@ -376,7 +378,7 @@ class DocumentTest : BaseDbTest() {
         mDoc2.setNumber("number2", 0)
         mDoc2.setNumber("number3", -1)
         mDoc2.setNumber("number4", -10)
-        val doc2 = saveDocInBaseTestDb(mDoc2, validator4Save)
+        val doc2 = validateAndSaveDocInTestCollection(mDoc2, validator4Save)
 
         // Update:
         mDoc2 = doc2.toMutable()
@@ -384,7 +386,7 @@ class DocumentTest : BaseDbTest() {
         mDoc2.setNumber("number2", 1)
         mDoc2.setNumber("number3", -10)
         mDoc2.setNumber("number4", -1)
-        saveDocInBaseTestDb(mDoc2, validator4SUpdate)
+        validateAndSaveDocInTestCollection(mDoc2, validator4SUpdate)
 
         // -- setInt
         // save
@@ -393,7 +395,7 @@ class DocumentTest : BaseDbTest() {
         mDoc3.setInt("number2", 0)
         mDoc3.setInt("number3", -1)
         mDoc3.setInt("number4", -10)
-        val doc3 = saveDocInBaseTestDb(mDoc3, validator4Save)
+        val doc3 = validateAndSaveDocInTestCollection(mDoc3, validator4Save)
 
         // Update:
         mDoc3 = doc3.toMutable()
@@ -401,7 +403,7 @@ class DocumentTest : BaseDbTest() {
         mDoc3.setInt("number2", 1)
         mDoc3.setInt("number3", -10)
         mDoc3.setInt("number4", -1)
-        saveDocInBaseTestDb(mDoc3, validator4SUpdate)
+        validateAndSaveDocInTestCollection(mDoc3, validator4SUpdate)
 
         // -- setLong
         // save
@@ -410,7 +412,7 @@ class DocumentTest : BaseDbTest() {
         mDoc4.setLong("number2", 0)
         mDoc4.setLong("number3", -1)
         mDoc4.setLong("number4", -10)
-        val doc4 = saveDocInBaseTestDb(mDoc4, validator4Save)
+        val doc4 = validateAndSaveDocInTestCollection(mDoc4, validator4Save)
 
         // Update:
         mDoc4 = doc4.toMutable()
@@ -418,24 +420,24 @@ class DocumentTest : BaseDbTest() {
         mDoc4.setLong("number2", 1)
         mDoc4.setLong("number3", -10)
         mDoc4.setLong("number4", -1)
-        saveDocInBaseTestDb(mDoc4, validator4SUpdate)
+        validateAndSaveDocInTestCollection(mDoc4, validator4SUpdate)
 
         // -- setFloat
         // save
         var mDoc5 = MutableDocument("doc5")
-        mDoc5.setFloat("number1", 1f)
-        mDoc5.setFloat("number2", 0f)
-        mDoc5.setFloat("number3", -1f)
-        mDoc5.setFloat("number4", -10f)
-        val doc5 = saveDocInBaseTestDb(mDoc5, validator4Save)
+        mDoc5.setFloat("number1", 1F)
+        mDoc5.setFloat("number2", 0F)
+        mDoc5.setFloat("number3", -1F)
+        mDoc5.setFloat("number4", -10F)
+        val doc5 = validateAndSaveDocInTestCollection(mDoc5, validator4Save)
 
         // Update:
         mDoc5 = doc5.toMutable()
-        mDoc5.setFloat("number1", 0f)
-        mDoc5.setFloat("number2", 1f)
-        mDoc5.setFloat("number3", -10f)
-        mDoc5.setFloat("number4", -1f)
-        saveDocInBaseTestDb(mDoc5, validator4SUpdate)
+        mDoc5.setFloat("number1", 0F)
+        mDoc5.setFloat("number2", 1F)
+        mDoc5.setFloat("number3", -10F)
+        mDoc5.setFloat("number4", -1F)
+        validateAndSaveDocInTestCollection(mDoc5, validator4SUpdate)
 
         // -- setDouble
         // save
@@ -444,7 +446,7 @@ class DocumentTest : BaseDbTest() {
         mDoc6.setDouble("number2", 0.0)
         mDoc6.setDouble("number3", -1.0)
         mDoc6.setDouble("number4", -10.0)
-        val doc6 = saveDocInBaseTestDb(mDoc6, validator4Save)
+        val doc6 = validateAndSaveDocInTestCollection(mDoc6, validator4Save)
 
         // Update:
         mDoc6 = doc6.toMutable()
@@ -452,20 +454,16 @@ class DocumentTest : BaseDbTest() {
         mDoc6.setDouble("number2", 1.0)
         mDoc6.setDouble("number3", -10.0)
         mDoc6.setDouble("number4", -1.0)
-        saveDocInBaseTestDb(mDoc6, validator4SUpdate)
+        validateAndSaveDocInTestCollection(mDoc6, validator4SUpdate)
     }
 
     @Test
     fun testGetNumber() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertNull(d.getNumber("null"))
                 assertEquals(1, d.getNumber("true")!!.toInt())
                 assertEquals(0, d.getNumber("false")!!.toInt())
@@ -486,14 +484,10 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testGetInteger() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertEquals(0, d.getInt("null"))
                 assertEquals(1, d.getInt("true"))
                 assertEquals(0, d.getInt("false"))
@@ -514,14 +508,10 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testGetLong() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertEquals(0, d.getLong("null"))
                 assertEquals(1, d.getLong("true"))
                 assertEquals(0, d.getLong("false"))
@@ -542,14 +532,10 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testGetFloat() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertEquals(0.0f, d.getFloat("null"), 0.0f)
                 assertEquals(1.0f, d.getFloat("true"), 0.0f)
                 assertEquals(0.0f, d.getFloat("false"), 0.0f)
@@ -570,14 +556,10 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testGetDouble() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertEquals(0.0, d.getDouble("null"), 0.0)
                 assertEquals(1.0, d.getDouble("true"), 0.0)
                 assertEquals(0.0, d.getDouble("false"), 0.0)
@@ -637,7 +619,7 @@ class DocumentTest : BaseDbTest() {
         doc.setValue("max_float", Float.MAX_VALUE)
         doc.setValue("min_double", Double.MIN_VALUE)
         doc.setValue("max_double", Double.MAX_VALUE)
-        saveDocInBaseTestDb(doc, validator)
+        validateAndSaveDocInTestCollection(doc, validator)
 
         // -- setInt, setLong, setFloat, setDouble
         val doc2 = MutableDocument("doc2")
@@ -649,7 +631,7 @@ class DocumentTest : BaseDbTest() {
         doc2.setFloat("max_float", Float.MAX_VALUE)
         doc2.setDouble("min_double", Double.MIN_VALUE)
         doc2.setDouble("max_double", Double.MAX_VALUE)
-        saveDocInBaseTestDb(doc2, validator)
+        validateAndSaveDocInTestCollection(doc2, validator)
     }
 
     @Test
@@ -659,46 +641,47 @@ class DocumentTest : BaseDbTest() {
             assertEquals(1.00, doc.getNumber("number1")!!.toDouble(), 0.00001)
             assertEquals(1, doc.getInt("number1"))
             assertEquals(1L, doc.getLong("number1"))
-            assertEquals(1.00f, doc.getFloat("number1"), 0.00001f)
+            assertEquals(1.00f, doc.getFloat("number1"), 0.00001F)
             assertEquals(1.00, doc.getDouble("number1"), 0.00001)
 
             assertEquals(1.49, (doc.getValue("number2") as Number).toDouble(), 0.00001)
             assertEquals(1.49, doc.getNumber("number2")!!.toDouble(), 0.00001)
             assertEquals(1, doc.getInt("number2"))
             assertEquals(1L, doc.getLong("number2"))
-            assertEquals(1.49f, doc.getFloat("number2"), 0.00001f)
+            assertEquals(1.49f, doc.getFloat("number2"), 0.00001F)
             assertEquals(1.49, doc.getDouble("number2"), 0.00001)
 
             assertEquals(1.50, (doc.getValue("number3") as Number).toDouble(), 0.00001)
             assertEquals(1.50, doc.getNumber("number3")!!.toDouble(), 0.00001)
             assertEquals(1, doc.getInt("number3"))
             assertEquals(1L, doc.getLong("number3"))
-            assertEquals(1.50f, doc.getFloat("number3"), 0.00001f)
+            assertEquals(1.50f, doc.getFloat("number3"), 0.00001F)
             assertEquals(1.50, doc.getDouble("number3"), 0.00001)
 
             assertEquals(1.51, (doc.getValue("number4") as Number).toDouble(), 0.00001)
             assertEquals(1.51, doc.getNumber("number4")!!.toDouble(), 0.00001)
             assertEquals(1, doc.getInt("number4"))
             assertEquals(1L, doc.getLong("number4"))
-            assertEquals(1.51f, doc.getFloat("number4"), 0.00001f)
+            assertEquals(1.51f, doc.getFloat("number4"), 0.00001F)
             assertEquals(1.51, doc.getDouble("number4"), 0.00001)
 
             assertEquals(1.99, (doc.getValue("number5") as Number).toDouble(), 0.00001) // return 1
             assertEquals(1.99, doc.getNumber("number5")!!.toDouble(), 0.00001) // return 1
             assertEquals(1, doc.getInt("number5"))
             assertEquals(1L, doc.getLong("number5"))
-            assertEquals(1.99f, doc.getFloat("number5"), 0.00001f)
+            assertEquals(1.99f, doc.getFloat("number5"), 0.00001F)
             assertEquals(1.99, doc.getDouble("number5"), 0.00001)
         }
 
         // -- setValue
         val doc = MutableDocument("doc1")
+
         doc.setValue("number1", 1.00)
         doc.setValue("number2", 1.49)
         doc.setValue("number3", 1.50)
         doc.setValue("number4", 1.51)
         doc.setValue("number5", 1.99)
-        saveDocInBaseTestDb(doc, validator)
+        validateAndSaveDocInTestCollection(doc, validator)
 
         // -- setFloat
         val doc2 = MutableDocument("doc2")
@@ -707,7 +690,7 @@ class DocumentTest : BaseDbTest() {
         doc2.setFloat("number3", 1.50f)
         doc2.setFloat("number4", 1.51f)
         doc2.setFloat("number5", 1.99f)
-        saveDocInBaseTestDb(doc2, validator)
+        validateAndSaveDocInTestCollection(doc2, validator)
 
         // -- setDouble
         val doc3 = MutableDocument("doc3")
@@ -716,7 +699,7 @@ class DocumentTest : BaseDbTest() {
         doc3.setDouble("number3", 1.50)
         doc3.setDouble("number4", 1.51)
         doc3.setDouble("number5", 1.99)
-        saveDocInBaseTestDb(doc3, validator)
+        validateAndSaveDocInTestCollection(doc3, validator)
     }
 
     @Test
@@ -738,38 +721,34 @@ class DocumentTest : BaseDbTest() {
         var mDoc = MutableDocument("doc1")
         mDoc.setValue("boolean1", true)
         mDoc.setValue("boolean2", false)
-        val doc = saveDocInBaseTestDb(mDoc, validator4Save)
+        val doc = validateAndSaveDocInTestCollection(mDoc, validator4Save)
 
         // Update:
         mDoc = doc.toMutable()
         mDoc.setValue("boolean1", false)
         mDoc.setValue("boolean2", true)
-        saveDocInBaseTestDb(mDoc, validator4Update)
+        validateAndSaveDocInTestCollection(mDoc, validator4Update)
 
         // -- setBoolean
         var mDoc2 = MutableDocument("doc2")
         mDoc2.setValue("boolean1", true)
         mDoc2.setValue("boolean2", false)
-        val doc2 = saveDocInBaseTestDb(mDoc2, validator4Save)
+        val doc2 = validateAndSaveDocInTestCollection(mDoc2, validator4Save)
 
         // Update:
         mDoc2 = doc2.toMutable()
         mDoc2.setValue("boolean1", false)
         mDoc2.setValue("boolean2", true)
-        saveDocInBaseTestDb(mDoc2, validator4Update)
+        validateAndSaveDocInTestCollection(mDoc2, validator4Update)
     }
 
     @Test
     fun testGetBoolean() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertFalse(d.getBoolean("null"))
                 assertTrue(d.getBoolean("true"))
                 assertFalse(d.getBoolean("false"))
@@ -796,7 +775,7 @@ class DocumentTest : BaseDbTest() {
         assertTrue(dateStr.isNotEmpty())
         mDoc.setValue("date", date)
 
-        val doc = saveDocInBaseTestDb(mDoc) { d ->
+        val doc = validateAndSaveDocInTestCollection(mDoc) { d ->
             assertEquals(dateStr, d.getValue("date"))
             assertEquals(dateStr, d.getString("date"))
             assertEquals(dateStr, d.getDate("date")!!.toStringMillis())
@@ -808,7 +787,7 @@ class DocumentTest : BaseDbTest() {
         val nuDateStr = nuDate.toStringMillis()
         mDoc.setValue("date", nuDate)
 
-        saveDocInBaseTestDb(mDoc) { d ->
+        validateAndSaveDocInTestCollection(mDoc) { d ->
             assertEquals(nuDateStr, d.getValue("date"))
             assertEquals(nuDateStr, d.getString("date"))
             assertEquals(nuDateStr, d.getDate("date")!!.toStringMillis())
@@ -818,14 +797,10 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testGetDate() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertNull(d.getDate("null"))
                 assertNull(d.getDate("true"))
                 assertNull(d.getDate("false"))
@@ -850,18 +825,12 @@ class DocumentTest : BaseDbTest() {
         val blob = Blob("text/plain", BLOB_CONTENT.encodeToByteArray())
 
         val validator4Save = DocValidator { d ->
-            assertEquals(
-                blob.properties["length"],
-                d.getBlob("blob")!!.properties["length"]
-            )
+            assertEquals(blob.properties["length"], d.getBlob("blob")!!.properties["length"])
             assertEquals(
                 blob.properties["content-type"],
                 d.getBlob("blob")!!.properties["content-type"]
             )
-            assertEquals(
-                blob.properties["digest"],
-                d.getBlob("blob")!!.properties["digest"]
-            )
+            assertEquals(blob.properties["digest"], d.getBlob("blob")!!.properties["digest"])
             assertEquals(
                 blob.properties["length"],
                 (d.getValue("blob") as Blob).properties["length"]
@@ -900,44 +869,37 @@ class DocumentTest : BaseDbTest() {
                 (d.getValue("blob") as Blob).properties["digest"]
             )
             assertEquals(newBlobContent, d.getBlob("blob")!!.content!!.decodeToString())
-            assertContentEquals(
-                newBlobContent.encodeToByteArray(),
-                d.getBlob("blob")!!.content
-            )
+            assertContentEquals(newBlobContent.encodeToByteArray(), d.getBlob("blob")!!.content)
         }
 
         // --setValue
         var mDoc = MutableDocument("doc1")
         mDoc.setValue("blob", blob)
-        val doc = saveDocInBaseTestDb(mDoc, validator4Save)
+        val doc = validateAndSaveDocInTestCollection(mDoc, validator4Save)
 
         // Update:
         mDoc = doc.toMutable()
         mDoc.setValue("blob", newBlob)
-        saveDocInBaseTestDb(mDoc, validator4Update)
+        validateAndSaveDocInTestCollection(mDoc, validator4Update)
 
         // --setBlob
         var mDoc2 = MutableDocument("doc2")
         mDoc2.setBlob("blob", blob)
-        val doc2 = saveDocInBaseTestDb(mDoc2, validator4Save)
+        val doc2 = validateAndSaveDocInTestCollection(mDoc2, validator4Save)
 
         // Update:
         mDoc2 = doc2.toMutable()
         mDoc2.setBlob("blob", newBlob)
-        saveDocInBaseTestDb(mDoc2, validator4Update)
+        validateAndSaveDocInTestCollection(mDoc2, validator4Update)
     }
 
     @Test
     fun testGetBlob() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertNull(d.getBlob("null"))
                 assertNull(d.getBlob("true"))
                 assertNull(d.getBlob("false"))
@@ -962,20 +924,16 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testSetDictionary() {
         for (i in 1..2) {
-            val docID = "doc$i"
             // -- setValue
-            var mDoc = MutableDocument(docID)
+            var mDoc = MutableDocument(docId(i))
             var mDict = MutableDictionary()
             mDict.setValue("street", "1 Main street")
-            if (i % 2 == 1) {
-                mDoc.setValue("dict", mDict)
-            } else {
-                mDoc.setDictionary("dict", mDict)
-            }
+            if (i % 2 == 1) { mDoc.setValue("dict", mDict) }
+            else { mDoc.setDictionary("dict", mDict) }
             assertEquals(mDict, mDoc.getValue("dict"))
             assertEquals(mDict.toMap(), (mDoc.getValue("dict") as MutableDictionary).toMap())
 
-            var doc = saveDocInBaseTestDb(mDoc)
+            var doc = saveDocInCollection(mDoc)
 
             assertNotSame(mDict, doc.getValue("dict"))
             assertEquals(doc.getValue("dict"), doc.getDictionary("dict"))
@@ -995,7 +953,7 @@ class DocumentTest : BaseDbTest() {
             )
             assertEquals(map, mDoc.getDictionary("dict")!!.toMap())
 
-            doc = saveDocInBaseTestDb(mDoc)
+            doc = saveDocInCollection(mDoc)
 
             assertNotSame(mDict, doc.getValue("dict"))
             assertEquals(doc.getValue("dict"), doc.getDictionary("dict"))
@@ -1006,14 +964,10 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testGetDictionary() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertNull(d.getDictionary("null"))
                 assertNull(d.getDictionary("true"))
                 assertNull(d.getDictionary("false"))
@@ -1040,24 +994,17 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testSetArray() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            var mDoc = MutableDocument(docID)
+            var mDoc = MutableDocument(docId(i))
             var array = MutableArray()
             array.addValue("item1")
             array.addValue("item2")
             array.addValue("item3")
-            if (i % 2 == 1) {
-                mDoc.setValue("array", array)
-            } else {
-                mDoc.setArray("array", array)
-            }
+            if (i % 2 == 1) { mDoc.setValue("array", array) }
+            else { mDoc.setArray("array", array) }
             assertEquals(array, mDoc.getValue("array"))
-            assertEquals(
-                array.toList(),
-                (mDoc.getValue("array") as MutableArray).toList()
-            )
+            assertEquals(array.toList(), (mDoc.getValue("array") as MutableArray).toList())
 
-            var doc = saveDocInBaseTestDb(mDoc)
+            var doc = saveDocInCollection(mDoc)
             assertNotSame(array, doc.getValue("array"))
             assertEquals(doc.getValue("array"), doc.getArray("array"))
 
@@ -1070,7 +1017,7 @@ class DocumentTest : BaseDbTest() {
             array = mDoc.getArray("array")!!
             array.addValue("item4")
             array.addValue("item5")
-            doc = saveDocInBaseTestDb(mDoc)
+            doc = saveDocInCollection(mDoc)
             assertNotSame(array, doc.getValue("array"))
             assertEquals(doc.getValue("array"), doc.getArray("array"))
             val list = listOf("item1", "item2", "item3", "item4", "item5")
@@ -1081,14 +1028,10 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testGetArray() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            val doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
-            saveDocInBaseTestDb(doc) { d ->
+            val doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
+            validateAndSaveDocInTestCollection(doc) { d ->
                 assertNull(d.getArray("null"))
                 assertNull(d.getArray("true"))
                 assertNull(d.getArray("false"))
@@ -1118,7 +1061,7 @@ class DocumentTest : BaseDbTest() {
         mDoc.setArray("array-null", null)
         mDoc.setDictionary("dict-null", null)
         // TODO: NOTE: Current implementation follows iOS way. So set null remove it!!
-        saveDocInBaseTestDb(mDoc) { d ->
+        validateAndSaveDocInTestCollection(mDoc) { d ->
             assertEquals(6, d.count)
             assertTrue(d.contains("obj-null"))
             assertTrue(d.contains("string-null"))
@@ -1178,7 +1121,7 @@ class DocumentTest : BaseDbTest() {
         assertNull(address.getString("zip"))
 
         // Save:
-        val savedDoc = saveDocInBaseTestDb(doc)
+        val savedDoc = saveDocInCollection(doc)
 
         nuDict["zip"] = "94302"
         val expected = mapOf(
@@ -1226,7 +1169,7 @@ class DocumentTest : BaseDbTest() {
         assertEquals(3, members.count)
 
         // Save
-        val savedDoc = saveDocInBaseTestDb(doc)
+        val savedDoc = saveDocInCollection(doc)
 
         val expected = mapOf(
             "members" to listOf("d", "e", "f", "g")
@@ -1246,12 +1189,12 @@ class DocumentTest : BaseDbTest() {
         shipping.setValue("state", "CA")
         addresses.setValue("shipping", shipping)
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         shipping = doc.getDictionary("addresses")!!.getDictionary("shipping")!!
         shipping.setValue("zip", "94042")
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         val mapShipping = mapOf(
             "street" to "1 Main street",
@@ -1287,16 +1230,17 @@ class DocumentTest : BaseDbTest() {
         address2.setValue("state", "CA")
         addresses.addValue(address2)
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         address1 = doc.getArray("addresses")!!.getDictionary(0)!!
         address1.setValue("street", "2 Main street")
         address1.setValue("zip", "94042")
+
         address2 = doc.getArray("addresses")!!.getDictionary(1)!!
         address2.setValue("street", "2 Second street")
         address2.setValue("zip", "94302")
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         val mapAddress1 = mapOf(
             "street" to "2 Main street",
@@ -1337,7 +1281,7 @@ class DocumentTest : BaseDbTest() {
         group2.addValue(3)
         groups.addValue(group2)
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         group1 = doc.getArray("groups")!!.getArray(0)!!
         group1.setValue(0, "d")
@@ -1349,7 +1293,7 @@ class DocumentTest : BaseDbTest() {
         group2.setValue(1, 5)
         group2.setValue(2, 6)
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         val expected = mapOf(
             "groups" to listOf(
@@ -1380,7 +1324,7 @@ class DocumentTest : BaseDbTest() {
         group2.setValue("member", member2)
         doc.setValue("group2", group2)
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         member1 = doc.getDictionary("group1")!!.getArray("member")!!
         member1.setValue(0, "d")
@@ -1392,7 +1336,7 @@ class DocumentTest : BaseDbTest() {
         member2.setValue(1, 5)
         member2.setValue(2, 6)
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         val expected = mutableMapOf<String, Any?>()
         val mapGroup1 = mapOf(
@@ -1422,7 +1366,7 @@ class DocumentTest : BaseDbTest() {
         assertEquals("94042", doc.getDictionary("shipping")!!.getString("zip"))
         assertEquals("94042", doc.getDictionary("billing")!!.getString("zip"))
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         val shipping = doc.getDictionary("shipping")!!
         val billing = doc.getDictionary("billing")!!
@@ -1436,15 +1380,9 @@ class DocumentTest : BaseDbTest() {
         billing.setValue("street", "3 Main street")
 
         // Save update:
-        doc = saveDocInBaseTestDb(doc).toMutable()
-        assertEquals(
-            "2 Main street",
-            doc.getDictionary("shipping")!!.getString("street")
-        )
-        assertEquals(
-            "3 Main street",
-            doc.getDictionary("billing")!!.getString("street")
-        )
+        doc = saveDocInCollection(doc).toMutable()
+        assertEquals("2 Main street", doc.getDictionary("shipping")!!.getString("street"))
+        assertEquals("3 Main street", doc.getDictionary("billing")!!.getString("street"))
     }
 
     @Test
@@ -1463,6 +1401,7 @@ class DocumentTest : BaseDbTest() {
 
         // Update phones: both mobile and home should get the update
         phones.addValue("650-000-0003")
+
         assertEquals(
             listOf("650-000-0001", "650-000-0002", "650-000-0003"),
             doc.getArray("mobile")!!.toList()
@@ -1471,7 +1410,7 @@ class DocumentTest : BaseDbTest() {
             listOf("650-000-0001", "650-000-0002", "650-000-0003"),
             doc.getArray("home")!!.toList()
         )
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         // After save: both mobile and home are not independent to each other
         val mobile = doc.getArray("mobile")!!
@@ -1485,7 +1424,7 @@ class DocumentTest : BaseDbTest() {
         home.addValue("650-000-5678")
 
         // Save update:
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         assertEquals(
             listOf("650-000-0001", "650-000-0002", "650-000-0003", "650-000-1234"),
@@ -1538,18 +1477,14 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testCount() {
         for (i in 1..2) {
-            val docID = "doc$i"
-            var doc = MutableDocument(docID)
-            if (i % 2 == 1) {
-                populateData(doc)
-            } else {
-                populateDataByTypedSetter(doc)
-            }
+            var doc = MutableDocument(docId(i))
+            if (i % 2 == 1) { populateData(doc) }
+            else { populateDataByTypedSetter(doc) }
 
             assertEquals(12, doc.count)
             assertEquals(12, doc.toMap().size)
 
-            doc = saveDocInBaseTestDb(doc).toMutable()
+            doc = saveDocInCollection(doc).toMutable()
 
             assertEquals(12, doc.count)
             assertEquals(12, doc.toMap().size)
@@ -1574,7 +1509,7 @@ class DocumentTest : BaseDbTest() {
         )
         doc.setData(profile)
 
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
         doc.remove("name")
         doc.remove("weight")
@@ -1621,16 +1556,16 @@ class DocumentTest : BaseDbTest() {
         )
 
         val mDoc = MutableDocument("docName", props)
-        saveDocInBaseTestDb(mDoc)
+        saveDocInCollection(mDoc)
 
         val newProps = mapOf(
             "PropName3" to "Val3",
             "PropName4" to 84
         )
 
-        val existingDoc = baseTestDb.getDocument("docName")!!.toMutable()
+        val existingDoc = testCollection.getDocument("docName")!!.toMutable()
         existingDoc.setData(newProps)
-        saveDocInBaseTestDb(existingDoc)
+        saveDocInCollection(existingDoc)
 
         assertIntEquals(newProps, existingDoc.toMap())
     }
@@ -1661,8 +1596,11 @@ class DocumentTest : BaseDbTest() {
         val mDoc = MutableDocument("doc1")
         mDoc.setString("name", "Scott Tiger")
 
-        assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND) {
-            baseTestDb.delete(mDoc)
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_FOUND
+        ) {
+            testCollection.delete(mDoc)
         }
 
         assertEquals("Scott Tiger", mDoc.getString("name"))
@@ -1675,12 +1613,12 @@ class DocumentTest : BaseDbTest() {
         mDoc.setValue("name", "Scott Tiger")
 
         // Save:
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         // Delete:
-        baseTestDb.delete(doc)
+        testCollection.delete(doc)
 
-        assertNull(baseTestDb.getDocument(docID))
+        assertNull(testCollection.getDocument(docID))
 
         // NOTE: doc is reserved.
         val v = doc.getValue("name")
@@ -1703,14 +1641,14 @@ class DocumentTest : BaseDbTest() {
         )
 
         val mDoc = MutableDocument("doc1", dict)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         val address = doc.getDictionary("address")!!
         assertEquals("1 Main street", address.getValue("street"))
         assertEquals("Mountain View", address.getValue("city"))
         assertEquals("CA", address.getValue("state"))
 
-        baseTestDb.delete(doc)
+        testCollection.delete(doc)
 
         // The dictionary still has data but is detached:
         assertEquals("1 Main street", address.getValue("street"))
@@ -1725,7 +1663,7 @@ class DocumentTest : BaseDbTest() {
         )
 
         val mDoc = MutableDocument("doc1", dict)
-        val doc = saveDocInBaseTestDb(mDoc)
+        val doc = saveDocInCollection(mDoc)
 
         val members = doc.getArray("members")!!
         assertEquals(3, members.count)
@@ -1733,7 +1671,7 @@ class DocumentTest : BaseDbTest() {
         assertEquals("b", members.getValue(1))
         assertEquals("c", members.getValue(2))
 
-        baseTestDb.delete(doc)
+        testCollection.delete(doc)
 
         // The array still has data but is detached:
         assertEquals(3, members.count)
@@ -1744,24 +1682,19 @@ class DocumentTest : BaseDbTest() {
 
     @Test
     fun testDocumentChangeOnDocumentPurged() = runBlocking {
-        baseTestDb.save(MutableDocument("doc1").setValue("theanswer", 18))
+        testCollection.save(MutableDocument("doc1").setValue("theanswer", 18))
 
-        val mutex = Mutex(true)
-        val token = baseTestDb.addDocumentChangeListener("doc1") { change ->
+        val latch = CountDownLatch(1)
+        testCollection.addDocumentChangeListener("doc1") { change ->
             try {
                 assertNotNull(change)
                 assertEquals("doc1", change.documentID)
             } finally {
-                mutex.unlock()
+                latch.countDown()
             }
-        }
-        try {
-            baseTestDb.setDocumentExpiration("doc1", Clock.System.now() + 100.milliseconds)
-            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
-        } finally {
-            // TODO: 3.1 API
-            //token.remove()
-            baseTestDb.removeChangeListener(token)
+        }.use {
+            testCollection.setDocumentExpiration("doc1", Clock.System.now() + 100.milliseconds)
+            assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
         }
     }
 
@@ -1773,19 +1706,17 @@ class DocumentTest : BaseDbTest() {
         doc.setValue("name", "Scott")
 
         // Purge before save:
-        assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND) {
-            baseTestDb.purge(doc)
-        }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND) { testCollection.purge(doc) }
 
         assertEquals("profile", doc.getValue("type"))
         assertEquals("Scott", doc.getValue("name"))
 
         //Save
-        val savedDoc = saveDocInBaseTestDb(doc)
+        val savedDoc = saveDocInCollection(doc)
 
         // purge
-        baseTestDb.purge(savedDoc)
-        assertNull(baseTestDb.getDocument(docID))
+        testCollection.purge(savedDoc)
+        assertNull(testCollection.getDocument(docID))
     }
 
     @Test
@@ -1796,19 +1727,22 @@ class DocumentTest : BaseDbTest() {
         doc.setValue("name", "Scott")
 
         // Purge before save:
-        assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_FOUND) {
-            baseTestDb.purge(docID)
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_FOUND
+        ) {
+            testCollection.purge(docID)
         }
 
         assertEquals("profile", doc.getValue("type"))
         assertEquals("Scott", doc.getValue("name"))
 
         //Save
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
         // purge
-        baseTestDb.purge(docID)
-        assertNull(baseTestDb.getDocument(docID))
+        testCollection.purge(docID)
+        assertNull(testCollection.getDocument(docID))
     }
 
     @Test
@@ -1820,59 +1754,80 @@ class DocumentTest : BaseDbTest() {
         val doc1c = MutableDocument("doc3")
         doc1a.setInt("answer", 12)
         doc1a.setValue("question", "What is six plus six?")
-        saveDocInBaseTestDb(doc1a)
+        saveDocInCollection(doc1a)
 
         doc1b.setInt("answer", 22)
         doc1b.setValue("question", "What is eleven plus eleven?")
-        saveDocInBaseTestDb(doc1b)
+        saveDocInCollection(doc1b)
 
         doc1c.setInt("answer", 32)
         doc1c.setValue("question", "What is twenty plus twelve?")
-        saveDocInBaseTestDb(doc1c)
+        saveDocInCollection(doc1c)
 
-        baseTestDb.setDocumentExpiration("doc1", dto30)
-        baseTestDb.setDocumentExpiration("doc3", dto30)
+        testCollection.setDocumentExpiration("doc1", dto30)
+        testCollection.setDocumentExpiration("doc3", dto30)
 
-        baseTestDb.setDocumentExpiration("doc3", null)
-        val exp = baseTestDb.getDocumentExpiration("doc1")
+        testCollection.setDocumentExpiration("doc3", null)
+        val exp = testCollection.getDocumentExpiration("doc1")
         assertEquals(exp, dto30)
-        assertNull(baseTestDb.getDocumentExpiration("doc2"))
-        assertNull(baseTestDb.getDocumentExpiration("doc3"))
+        assertNull(testCollection.getDocumentExpiration("doc2"))
+        assertNull(testCollection.getDocumentExpiration("doc3"))
     }
 
     @Test
     fun testSetExpirationOnDoc() {
         val now = Clock.System.now()
+        val testCollection = testCollection
 
-        val doc1 = MutableDocument("doc1")
+        val doc1 = MutableDocument()
         doc1.setInt("answer", 12)
         doc1.setValue("question", "What is six plus six?")
-        saveDocInBaseTestDb(doc1)
+        saveDocInCollection(doc1)
+        assertEquals(1, testCollection.count)
 
-        val doc2 = MutableDocument("doc2")
+        val doc2 = MutableDocument()
         doc2.setInt("answer", 12)
         doc2.setValue("question", "What is six plus six?")
-        saveDocInBaseTestDb(doc2)
+        saveDocInCollection(doc2)
+        assertEquals(2, testCollection.count)
 
-        baseTestDb.setDocumentExpiration("doc1", now + 100.milliseconds)
-        baseTestDb.setDocumentExpiration("doc2", now + LONG_TIMEOUT_SEC.seconds)
-        assertEquals(2, baseTestDb.count)
+        testCollection.setDocumentExpiration(doc1.id, now + 100.milliseconds)
+        testCollection.setDocumentExpiration(doc2.id, now + LONG_TIMEOUT_MS.milliseconds)
 
-        waitUntil(1000L) { 1L == baseTestDb.count }
+        assertEquals(2, testCollection.count)
+        waitUntil(STD_TIMEOUT_MS) { 1L == testCollection.count }
     }
 
     @Test
     fun testSetExpirationOnDeletedDoc() {
-        val dto30 = Clock.System.now() + 30.seconds
-        val doc1a = MutableDocument("deleted_doc")
+        val testCollection = testCollection
+
+        val doc1a = MutableDocument()
         doc1a.setInt("answer", 12)
         doc1a.setValue("question", "What is six plus six?")
-        saveDocInBaseTestDb(doc1a)
-        baseTestDb.delete(doc1a)
-        try {
-            baseTestDb.setDocumentExpiration("deleted_doc", dto30)
-        } catch (e: CouchbaseLiteException) {
-            assertEquals(e.code, CBLError.Code.NOT_FOUND)
+        testCollection.save(doc1a)
+        assertEquals(1, testCollection.count)
+
+        val queryDeleted = QueryBuilder.select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
+            .where(Meta.deleted)
+
+        var n: Int
+        queryDeleted.execute().use { rs -> n = rs.allResults().size }
+        assertEquals(0, n)
+
+        testCollection.delete(doc1a)
+        assertEquals(0, testCollection.count)
+        queryDeleted.execute().use { rs -> n = rs.allResults().size }
+        assertEquals(1, n)
+
+        testCollection.setDocumentExpiration(doc1a.id, Clock.System.now() + 100.milliseconds)
+
+        waitUntil(STD_TIMEOUT_MS) {
+            if (0L != testCollection.count) { return@waitUntil false }
+            try { queryDeleted.execute().use { rs -> return@waitUntil rs.allResults().isEmpty() } }
+            catch (e: CouchbaseLiteException) { Report.log("Unexpected exception", e) }
+            false
         }
     }
 
@@ -1881,31 +1836,156 @@ class DocumentTest : BaseDbTest() {
         val doc1a = MutableDocument("deleted_doc")
         doc1a.setInt("answer", 12)
         doc1a.setValue("question", "What is six plus six?")
-        saveDocInBaseTestDb(doc1a)
-        baseTestDb.delete(doc1a)
-        try {
-            baseTestDb.getDocumentExpiration("deleted_doc")
-        } catch (e: CouchbaseLiteException) {
-            assertEquals(e.code, CBLError.Code.NOT_FOUND)
-        }
+        saveDocInCollection(doc1a)
+
+        testCollection.delete(doc1a)
+
+        assertNull(testCollection.getDocumentExpiration("deleted_doc"))
     }
 
     @Test
     fun testSetExpirationOnNoneExistDoc() {
-        val dto30 = Clock.System.now() + 30.seconds
         try {
-            baseTestDb.setDocumentExpiration("not_exist", dto30)
-        } catch (e: CouchbaseLiteException) {
-            assertEquals(e.code, CBLError.Code.NOT_FOUND)
+            testCollection.setDocumentExpiration("not_exist", Clock.System.now() + 30.seconds)
+            fail("Expect CouchbaseLiteException")
         }
+        catch (e: CouchbaseLiteException) { assertEquals(e.code, CBLError.Code.NOT_FOUND) }
     }
 
     @Test
     fun testGetExpirationFromNoneExistDoc() {
+        assertNull(testCollection.getDocumentExpiration("not_exist"))
+    }
+
+    @Test
+    fun testSetExpirationOnDocInDeletedCollection() {
+        // add doc in collection
+        val id = "test_doc"
+        saveDocInCollection(MutableDocument(id))
+
+        testCollection.delete()
+
         try {
-            baseTestDb.getDocumentExpiration("not_exist")
+            testCollection.setDocumentExpiration(id, Clock.System.now() + 30.seconds)
+            fail("Expect CouchbaseLiteException")
+        }
+        catch (e: CouchbaseLiteException) { assertEquals(CBLError.Code.NOT_OPEN, e.getCode()) }
+    }
+
+    @Test
+    fun testGetExpirationOnDocInDeletedCollection() {
+        val id = "test_doc"
+        saveDocInCollection(MutableDocument(id))
+
+        testCollection.setDocumentExpiration(id, Clock.System.now() + 30.seconds)
+
+        testCollection.database.deleteCollection(
+            testCollection.name,
+            testCollection.scope.name
+        )
+        try {
+            testCollection.getDocumentExpiration(id)
+            fail("Expect CouchbaseLiteException")
+        }
+        catch (e: CouchbaseLiteException) { assertEquals(CBLError.Code.NOT_OPEN, e.getCode()) }
+    }
+
+    @Test
+    fun testSetExpirationDocInCollectionDeletedInDifferentDBInstance() {
+        // add doc in collection
+        val id = "test_doc"
+        saveDocInCollection(MutableDocument(id))
+        try {
+            duplicateDb(testDatabase).use { otherDb ->
+                otherDb.deleteCollection(testCollection.name, testCollection.scope.name)
+                testCollection.setDocumentExpiration(id, Clock.System.now() + 30.seconds)
+                fail("Expect CouchbaseLiteException")
+            }
+        }
+        catch (e: CouchbaseLiteException) { assertEquals(CBLError.Code.NOT_OPEN, e.getCode()) }
+    }
+
+    @Test
+    fun testGetExpirationOnDocInCollectionDeletedInDifferentDBInstance() {
+        val expiration = Clock.System.now() + 30.seconds
+        // add doc in collection
+        val id = "test_doc"
+        val document = MutableDocument(id)
+        saveDocInCollection(document)
+        testCollection.setDocumentExpiration(id, expiration)
+        try {
+            duplicateDb(testDatabase).use { otherDb ->
+                otherDb.deleteCollection(testCollection.name, testCollection.scope.name)
+                testCollection.getDocumentExpiration(id)
+                fail("Expect CouchbaseLiteException")
+            }
+        }
+        catch (e: CouchbaseLiteException) { assertEquals(CBLError.Code.NOT_OPEN, e.getCode()) }
+    }
+
+    // Test setting expiration on doc in a collection of closed database throws CBLException
+    @Test
+    fun testSetExpirationOnDocInCollectionOfClosedDB() {
+        val expiration = Clock.System.now() + 30.seconds
+        try {
+            closeDb(testDatabase)
+            testCollection.setDocumentExpiration("doc_id", expiration)
+            fail("Expect CouchbaseLiteException")
         } catch (e: CouchbaseLiteException) {
-            assertEquals(e.code, CBLError.Code.NOT_FOUND)
+            assertEquals(CBLError.Code.NOT_OPEN, e.getCode())
+        }
+    }
+
+    // Test getting expiration on doc in a collection of closed database throws CBLException
+    @Test
+    fun testGetExpirationOnDocInACollectionOfClosedDatabase() {
+        val expiration = Clock.System.now() + 30.seconds
+        // add doc in collection
+        val id = "test_doc"
+        val document = MutableDocument(id)
+        saveDocInCollection(document)
+        testCollection.setDocumentExpiration(id, expiration)
+        testDatabase.deleteCollection(testCollection.name, testCollection.scope.name)
+
+        try {
+            testCollection.getDocumentExpiration(id)
+            fail("Expect CouchbaseLiteException")
+        } catch (e: CouchbaseLiteException) {
+            assertEquals(CBLError.Code.NOT_OPEN, e.getCode())
+        }
+    }
+
+    // Test setting expiration on doc in a collection of deleted database throws CBLException
+    @Test
+    fun testSetExpirationOnDocInCollectionOfDeletedDB() {
+        val expiration = Clock.System.now() + 30.seconds
+        val id = "doc_id"
+        val document = MutableDocument(id)
+        saveDocInCollection(document)
+        deleteDb(testDatabase)
+        try {
+            testCollection.setDocumentExpiration(id, expiration)
+            fail("Expect CouchbaseLiteException")
+        } catch (e: CouchbaseLiteException) {
+            assertEquals(CBLError.Code.NOT_OPEN, e.getCode())
+        }
+    }
+
+    // Test getting expiration on doc in a collection of deleted database throws CBLException
+    @Test
+    fun testGetExpirationOnDocInACollectionOfDeletedDatabase() {
+        val expiration = Clock.System.now() + 30.seconds
+        // add doc in collection
+        val id = "test_doc"
+        val document = MutableDocument(id)
+        saveDocInCollection(document)
+        testCollection.setDocumentExpiration(id, expiration)
+        deleteDb(testDatabase)
+        try {
+            testCollection.getDocumentExpiration(id)
+            fail("Expect CouchbaseLiteException")
+        } catch (e: CouchbaseLiteException) {
+            assertEquals(CBLError.Code.NOT_OPEN, e.getCode())
         }
     }
 
@@ -1917,12 +1997,12 @@ class DocumentTest : BaseDbTest() {
         val doc = MutableDocument("doc")
         doc.setInt("answer", 42)
         doc.setValue("question", "What is twenty-one times two?")
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
-        assertNull(baseTestDb.getDocumentExpiration("doc"))
-        baseTestDb.setDocumentExpiration("doc", d60Days)
+        assertNull(testCollection.getDocumentExpiration("doc"))
+        testCollection.setDocumentExpiration("doc", d60Days)
 
-        val exp = baseTestDb.getDocumentExpiration("doc")
+        val exp = testCollection.getDocumentExpiration("doc")
         assertNotNull(exp)
         val diff = exp - now
         assertTrue((diff.toDouble(DurationUnit.DAYS) - 60.0).absoluteValue <= 1.0)
@@ -1932,11 +2012,11 @@ class DocumentTest : BaseDbTest() {
     fun testReopenDB() {
         val mDoc = MutableDocument("doc1")
         mDoc.setValue("string", "str")
-        saveDocInBaseTestDb(mDoc)
+        saveDocInCollection(mDoc)
 
-        reopenBaseTestDb()
+        reopenTestDb()
 
-        val doc = baseTestDb.getDocument("doc1")!!
+        val doc = testCollection.getDocument("doc1")!!
         assertEquals("str", doc.getString("string"))
         val expected = mapOf(
             "string" to "str"
@@ -1956,7 +2036,7 @@ class DocumentTest : BaseDbTest() {
         doc.setValue("name", "Jim")
         doc.setValue("data", data)
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         assertEquals("Jim", doc.getValue("name"))
         assertTrue(doc.getValue("data") is Blob)
@@ -1980,7 +2060,7 @@ class DocumentTest : BaseDbTest() {
         var doc = MutableDocument("doc1")
         doc.setValue("data", data)
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         assertTrue(doc.getValue("data") is Blob)
         data = doc.getValue("data") as Blob
@@ -2003,7 +2083,7 @@ class DocumentTest : BaseDbTest() {
             val data = Blob("text/plain", stream)
             assertNotNull(data)
             doc.setValue("data", data)
-            doc = saveDocInBaseTestDb(doc).toMutable()
+            doc = saveDocInCollection(doc).toMutable()
         }
 
         assertTrue(doc.getValue("data") is Blob)
@@ -2028,7 +2108,7 @@ class DocumentTest : BaseDbTest() {
         doc.setValue("data", data)
 
         data = doc.getValue("data") as Blob
-        for (i in 0 until 5) {
+        for (i in 0..<5) {
             assertContentEquals(content, data.content)
             data.contentStream.use { input ->
                 assertNotNull(input)
@@ -2038,11 +2118,11 @@ class DocumentTest : BaseDbTest() {
             }
         }
 
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         assertTrue(doc.getValue("data") is Blob)
         data = doc.getValue("data") as Blob
-        for (i in 0 until 5) {
+        for (i in 0..<5) {
             assertContentEquals(content, data.content)
             data.contentStream.use { input ->
                 assertNotNull(input)
@@ -2062,18 +2142,18 @@ class DocumentTest : BaseDbTest() {
         var doc = MutableDocument("doc1")
         doc.setValue("data", data)
         doc.setValue("name", "Jim")
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         val obj = doc.getValue("data")
         assertTrue(obj is Blob)
         data = obj
         assertContentEquals(content, data.content)
 
-        reopenBaseTestDb()
+        reopenTestDb()
 
-        doc = baseTestDb.getDocument("doc1")!!.toMutable()
+        doc = testCollection.getDocument("doc1")!!.toMutable()
         doc.setValue("foo", "bar")
-        doc = saveDocInBaseTestDb(doc).toMutable()
+        doc = saveDocInCollection(doc).toMutable()
 
         assertTrue(doc.getValue("data") is Blob)
         data = doc.getValue("data") as Blob
@@ -2083,9 +2163,7 @@ class DocumentTest : BaseDbTest() {
     @Test
     fun testEnumeratingKeys() {
         val doc = MutableDocument("doc1")
-        for (i in 0 until 20) {
-            doc.setLong("key$i", i.toLong())
-        }
+        for (i in 0..<20) { doc.setLong("$TEST_DOC_TAG_KEY$i", i.toLong()) }
         val content = doc.toMap()
         val result = mutableMapOf<String, Any?>()
         var count = 0
@@ -2100,7 +2178,7 @@ class DocumentTest : BaseDbTest() {
         doc.setLong("key20", 20L)
         doc.setLong("key21", 21L)
         val content2 = doc.toMap()
-        saveDocInBaseTestDb(doc) { doc1 ->
+        validateAndSaveDocInTestCollection(doc) { doc1 ->
             val content1 = doc1.toMap()
             val result1 = mutableMapOf<String, Any?>()
             var count1 = 0
@@ -2136,7 +2214,7 @@ class DocumentTest : BaseDbTest() {
         assertEquals(mDoc1.getString("name"), mDoc2.getString("name"))
         assertEquals(mDoc1.getInt("score"), mDoc2.getInt("score"))
 
-        val doc1 = saveDocInBaseTestDb(mDoc1)
+        val doc1 = saveDocInCollection(mDoc1)
         val mDoc3 = doc1.toMutable()
 
         // https://forums.couchbase.com/t/bug-in-document-tomutable-in-db21/15441
@@ -2182,7 +2260,7 @@ class DocumentTest : BaseDbTest() {
         assertNotEquals(doc1c, doc1b)
         assertEquals(doc1c, doc1c)
 
-        val savedDoc = saveDocInBaseTestDb(doc1c)
+        val savedDoc = saveDocInCollection(doc1c)
         val mDoc = savedDoc.toMutable()
         assertEquals(savedDoc, mDoc)
         assertEquals(mDoc, savedDoc)
@@ -2197,8 +2275,8 @@ class DocumentTest : BaseDbTest() {
         val doc2 = MutableDocument("doc2")
         doc1.setLong("answer", 42L) // TODO: Integer cause inequality with saved doc
         doc2.setLong("answer", 42L) // TODO: Integer cause inequality with saved doc
-        val sDoc1 = saveDocInBaseTestDb(doc1)
-        val sDoc2 = saveDocInBaseTestDb(doc2)
+        val sDoc1 = saveDocInCollection(doc1)
+        val sDoc2 = saveDocInCollection(doc2)
 
         assertEquals(doc1, doc1)
         assertEquals(sDoc1, sDoc1)
@@ -2218,8 +2296,9 @@ class DocumentTest : BaseDbTest() {
 
     @Test
     fun testEqualityDifferentDB() {
-        var sameDB: Database? = null
+        val dupDb: Database
         val otherDB = createDb("equ-diff-db")
+        val otherCollection = otherDB.createSimilarCollection(testCollection)
         try {
             val doc1a = MutableDocument("doc1")
             val doc1b = MutableDocument("doc1")
@@ -2227,10 +2306,11 @@ class DocumentTest : BaseDbTest() {
             doc1b.setLong("answer", 42L)
             assertEquals(doc1a, doc1b)
             assertEquals(doc1b, doc1a)
-            var sDoc1a: Document? = saveDocInBaseTestDb(doc1a)
-            otherDB.save(doc1b)
+            var sDoc1a: Document? = saveDocInCollection(doc1a)
 
-            var sDoc1b = otherDB.getDocument(doc1b.id)
+            otherCollection.save(doc1b)
+
+            var sDoc1b = otherCollection.getDocument(doc1b.id)
             assertEquals(doc1a, sDoc1a)
             assertEquals(sDoc1a, doc1a)
             assertEquals(doc1b, sDoc1b)
@@ -2238,18 +2318,18 @@ class DocumentTest : BaseDbTest() {
             assertNotEquals(sDoc1a, sDoc1b)
             assertNotEquals(sDoc1b, sDoc1a)
 
-            sDoc1a = baseTestDb.getDocument("doc1")
-            sDoc1b = otherDB.getDocument("doc1")
+            sDoc1a = testCollection.getDocument("doc1")
+            sDoc1b = otherCollection.getDocument("doc1")
             assertNotEquals(sDoc1b, sDoc1a)
 
-            sameDB = Database(baseTestDb.name)
+            dupDb = duplicateDb(testDatabase)
+            val sameCollection = dupDb.getSimilarCollection(testCollection)
 
-            val anotherDoc1a = sameDB.getDocument("doc1")
+            val anotherDoc1a = sameCollection.getDocument("doc1")
             assertEquals(anotherDoc1a, sDoc1a)
             assertEquals(sDoc1a, anotherDoc1a)
         } finally {
-            closeDb(sameDB)
-            deleteDb(otherDB)
+            eraseDb(otherDB)
         }
     }
 
@@ -2258,22 +2338,22 @@ class DocumentTest : BaseDbTest() {
     fun testDeleteDocAndGetDoc() {
         val docID = "doc-1"
 
-        var doc = baseTestDb.getDocument(docID)
+        var doc = testCollection.getDocument(docID)
         assertNull(doc)
 
         val mDoc = MutableDocument(docID)
-        mDoc.setValue("key", "value")
-        doc = saveDocInBaseTestDb(mDoc)
+        mDoc.setValue(TEST_DOC_TAG_KEY, "value")
+        doc = saveDocInCollection(mDoc)
         assertNotNull(doc)
-        assertEquals(1, baseTestDb.count)
+        assertEquals(1, testCollection.count)
 
-        doc = baseTestDb.getDocument(docID)
+        doc = testCollection.getDocument(docID)
         assertNotNull(doc)
-        assertEquals("value", doc.getString("key"))
+        assertEquals("value", doc.getString(TEST_DOC_TAG_KEY))
 
-        baseTestDb.delete(doc)
-        assertEquals(0, baseTestDb.count)
-        doc = baseTestDb.getDocument(docID)
+        testCollection.delete(doc)
+        assertEquals(0, testCollection.count)
+        doc = testCollection.getDocument(docID)
         assertNull(doc)
     }
 
@@ -2319,11 +2399,11 @@ class DocumentTest : BaseDbTest() {
         mDoc9.setValue("key1", 100L)
         mDoc9.setValue("key3", false)
 
-        val doc1 = saveDocInBaseTestDb(mDoc1)
-        val doc2 = saveDocInBaseTestDb(mDoc2)
-        val doc3 = saveDocInBaseTestDb(mDoc3)
-        val doc4 = saveDocInBaseTestDb(mDoc4)
-        val doc5 = saveDocInBaseTestDb(mDoc5)
+        val doc1 = saveDocInCollection(mDoc1)
+        val doc2 = saveDocInCollection(mDoc2)
+        val doc3 = saveDocInCollection(mDoc3)
+        val doc4 = saveDocInCollection(mDoc4)
+        val doc5 = saveDocInCollection(mDoc5)
 
         // compare doc1, doc2, mdoc1, and mdoc2
         assertEquals(doc1, doc1)
@@ -2481,11 +2561,11 @@ class DocumentTest : BaseDbTest() {
         mDoc7.setValue("key1", 100L)
         mDoc7.setValue("key3", false)
 
-        val doc1 = saveDocInBaseTestDb(mDoc1)
-        val doc2 = saveDocInBaseTestDb(mDoc2)
-        val doc3 = saveDocInBaseTestDb(mDoc3)
-        val doc4 = saveDocInBaseTestDb(mDoc4)
-        val doc5 = saveDocInBaseTestDb(mDoc5)
+        val doc1 = saveDocInCollection(mDoc1)
+        val doc2 = saveDocInCollection(mDoc2)
+        val doc3 = saveDocInCollection(mDoc3)
+        val doc4 = saveDocInCollection(mDoc4)
+        val doc5 = saveDocInCollection(mDoc5)
 
         assertEquals(doc1.hashCode(), doc1.hashCode())
         assertNotEquals(doc1.hashCode(), doc2.hashCode())
@@ -2574,17 +2654,17 @@ class DocumentTest : BaseDbTest() {
     fun testRevisionIDNewDoc() {
         val doc = MutableDocument()
         assertNull(doc.revisionID)
-        baseTestDb.save(doc)
+        testCollection.save(doc)
         assertNotNull(doc.revisionID)
     }
 
     @Test
     fun testRevisionIDExistingDoc() {
         var mdoc = MutableDocument("doc1")
-        baseTestDb.save(mdoc)
+        testCollection.save(mdoc)
         val docRevID = mdoc.revisionID
 
-        val doc = baseTestDb.getDocument("doc1")!!
+        val doc = testCollection.getDocument("doc1")!!
         assertEquals(docRevID, doc.revisionID)
         assertEquals(docRevID, mdoc.revisionID)
 
@@ -2596,39 +2676,36 @@ class DocumentTest : BaseDbTest() {
         assertEquals(docRevID, doc.revisionID)
         assertEquals(docRevID, mdoc.revisionID)
 
-        baseTestDb.save(mdoc)
+        testCollection.save(mdoc)
         assertEquals(docRevID, doc.revisionID)
         assertNotEquals(docRevID, mdoc.revisionID)
     }
 
     ///////////////  JSON tests
+
     // JSON 3.2
     @Test
     fun testDocToJSON() {
         val mDoc = makeDocument()
-        saveDocInBaseTestDb(mDoc)
-        verifyDocument(
-            Json.parseToJsonElement(baseTestDb.getDocument(mDoc.id)!!.toJSON()!!).jsonObject
-        )
+        saveDocInCollection(mDoc)
+        verifyDocument(Json.parseToJsonElement(testCollection.getDocument(mDoc.id)!!.toJSON()!!).jsonObject)
     }
 
     // JSON 3.5.?
     @Test
     fun testMutableDocToJSONBeforeSave() {
-        assertFailsWith<IllegalStateException> {
-            MutableDocument().toJSON()
-        }
+        assertFailsWith<IllegalStateException> { MutableDocument().toJSON() }
     }
 
     // JSON 3.5.a
     // Java does not have MutableDocument(String json) because it collides with MutableDocument(String id)
+
     // JSON 3.5.b-c
     @Test
     fun testDocFromJSON() {
-        val dbDoc = saveDocInBaseTestDb(
-            MutableDocument("fromJSON", readJSONResource("document.json"))
-        )
-        baseTestDb.saveBlob(makeBlob()) // be sure the blob is there...
+        val dbDoc =
+            saveDocInCollection(MutableDocument("fromJSON", readJSONResource("document.json")))
+        testDatabase.saveBlob(makeBlob()) // be sure the blob is there...
         verifyDocument(dbDoc.content)
         verifyDocument(Json.parseToJsonElement(dbDoc.toJSON()!!).jsonObject)
     }
@@ -2636,17 +2713,13 @@ class DocumentTest : BaseDbTest() {
     // JSON 3.5.d.1
     @Test
     fun testDocFromBadJSON1() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableDocument("fromJSON", "{")
-        }
+        assertFailsWith<IllegalArgumentException> { MutableDocument("fromJSON", "{") }
     }
 
     // JSON 3.5.d.2
     @Test
     fun testDocFromBadJSON2() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableDocument("fromJSON", "{ab cd: \"xyz\"}")
-        }
+        assertFailsWith<IllegalArgumentException> { MutableDocument("fromJSON", "{ab cd: \"xyz\"}") }
     }
 
     // JSON 3.5.d.3
@@ -2662,6 +2735,80 @@ class DocumentTest : BaseDbTest() {
     fun testMutableFromArray() {
         assertFailsWith<IllegalArgumentException> {
             MutableDocument("fromJSON", readJSONResource("array.json"))
+        }
+    }
+
+    // !!! Replace with BaseDbTest.makeDocument
+    private fun populateData(doc: MutableDocument) {
+        doc.setValue("true", true)
+        doc.setValue("false", false)
+        doc.setValue("string", "string")
+        doc.setValue("zero", 0)
+        doc.setValue("one", 1)
+        doc.setValue("minus_one", -1)
+        doc.setValue("one_dot_one", 1.1)
+        doc.setValue("date", Instant.parse(TEST_DATE))
+        doc.setValue("null", null)
+
+        // Dictionary:
+        val dict = MutableDictionary()
+        dict.setValue("street", "1 Main street")
+        dict.setValue("city", "Mountain View")
+        dict.setValue("state", "CA")
+        doc.setValue("dict", dict)
+
+        // Array:
+        val array = MutableArray()
+        array.addValue("650-123-0001")
+        array.addValue("650-123-0002")
+        doc.setValue("array", array)
+
+        // Blob:
+        doc.setValue("blob", Blob("text/plain", BLOB_CONTENT.encodeToByteArray()))
+    }
+
+    // !!! Replace with BaseDbTest.makeDocument
+    private fun populateDataByTypedSetter(doc: MutableDocument) {
+        doc.setBoolean("true", true)
+        doc.setBoolean("false", false)
+        doc.setString("string", "string")
+        doc.setNumber("zero", 0)
+        doc.setInt("one", 1)
+        doc.setLong("minus_one", -1)
+        doc.setDouble("one_dot_one", 1.1)
+        doc.setDate("date", Instant.parse(TEST_DATE))
+        doc.setString("null", null)
+
+        // Dictionary:
+        val dict = MutableDictionary()
+        dict.setString("street", "1 Main street")
+        dict.setString("city", "Mountain View")
+        dict.setString("state", "CA")
+        doc.setDictionary("dict", dict)
+
+        // Array:
+        val array = MutableArray()
+        array.addString("650-123-0001")
+        array.addString("650-123-0002")
+        doc.setArray("array", array)
+
+        // Blob:
+        doc.setValue("blob", Blob("text/plain", BLOB_CONTENT.encodeToByteArray()))
+    }
+
+    // !!! These smell bad...
+
+    private fun docId(i: Int) = "doc-${i.paddedString(3)}"
+
+    private fun validateAndSaveDocInTestCollection(mDoc: MutableDocument, validator: DocValidator): Document {
+        try {
+            validator.validate(mDoc)
+            val doc = saveDocInCollection(mDoc, testCollection)
+            validator.validate(mDoc)
+            validator.validate(doc)
+            return doc
+        } catch (e: Exception) {
+            throw AssertionError("Failed saving document in test collection: $mDoc", e)
         }
     }
 }
