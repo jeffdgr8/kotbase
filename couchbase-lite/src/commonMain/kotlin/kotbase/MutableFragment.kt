@@ -221,7 +221,7 @@ internal constructor(
             is Array -> parent.getValue(this.index!!)
             else -> null
         }
-        return if (parent is Array && index in 0 until parent.count) {
+        return if (parent is Array && index in 0..<parent.count) {
             MutableFragment(parent, null, index)
         } else {
             MutableFragment()

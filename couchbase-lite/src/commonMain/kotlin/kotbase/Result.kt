@@ -291,7 +291,7 @@ public expect class Result : Iterable<String> {
  * @param index The select result index.
  */
 public operator fun Result.get(index: Int): Fragment {
-    return if (index in 0 until count) {
+    return if (index in 0..<count) {
         Fragment(this, index)
     } else {
         Fragment()

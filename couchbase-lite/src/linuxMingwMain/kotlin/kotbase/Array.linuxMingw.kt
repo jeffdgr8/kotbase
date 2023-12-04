@@ -160,7 +160,7 @@ internal constructor(
             //append(if (isMutated) '!' else '.')
             append(')')
             val n = count
-            for (i in 0 until n) {
+            for (i in 0..<n) {
                 if (i > 0) {
                     append(',')
                 }

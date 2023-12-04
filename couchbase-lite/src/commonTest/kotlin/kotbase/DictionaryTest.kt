@@ -275,7 +275,7 @@ class DictionaryTest : BaseDbTest() {
     @Test
     fun testEnumeratingKeys() {
         val dict = MutableDictionary()
-        for (i in 0 until 20) { dict.setValue("key$i", i) }
+        for (i in 0..<20) { dict.setValue("key$i", i) }
         var content = dict.toMap()
 
         var result = mutableMapOf<String, Any?>()

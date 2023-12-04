@@ -62,7 +62,7 @@ class QueryTest : BaseQueryTest() {
         val value = "value"
 
         val arrayResult = mutableListOf<String?>()
-        for (i in 0 until 32) {
+        for (i in 0..<32) {
             arrayResult.add(null)
         }
         arrayResult.add(value)
