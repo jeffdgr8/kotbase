@@ -42,6 +42,9 @@ internal constructor(
     public actual val name: String
         get() = CBLCollection_Name(actual).toKString()!!
 
+    public actual val fullName: String
+        get() = "${scope.name}.$name"
+
     public actual val count: Long
         get() = CBLCollection_Count(actual).toLong()
 

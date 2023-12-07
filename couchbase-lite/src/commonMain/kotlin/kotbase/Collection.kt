@@ -55,11 +55,6 @@ import kotlin.coroutines.CoroutineContext
 public expect class Collection : AutoCloseable {
 
     /**
-     * Database
-     */
-    public val database: Database
-
-    /**
      * Scope
      */
     public val scope: Scope
@@ -68,6 +63,16 @@ public expect class Collection : AutoCloseable {
      * The collection name
      */
     public val name: String
+
+    /**
+     * The collection name, prefixed by scope: "scope.collection"
+     */
+    public val fullName: String
+
+    /**
+     * Database
+     */
+    public val database: Database
 
     /**
      * The number of documents in the collection.
@@ -292,6 +297,3 @@ public expect class Collection : AutoCloseable {
 
 public val Collection.Companion.DEFAULT_NAME: String
     get() = "_default"
-
-internal val Collection.fullName: String
-    get() = "${scope.name}.$name"
