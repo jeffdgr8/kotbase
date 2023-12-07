@@ -41,6 +41,9 @@ internal constructor(
     public actual val name: String
         get() = actual.name
 
+    public actual val fullName: String
+        get() = "${actual.scope.name}.$name"
+
     public actual val count: Long
         get() = actual.count.toLong()
 
