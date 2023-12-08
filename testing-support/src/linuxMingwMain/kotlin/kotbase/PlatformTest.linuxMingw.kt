@@ -33,6 +33,9 @@ actual abstract class PlatformTest {
     actual val tmpDir: String
         get() = FileUtils.verifyDir("build/cb-tmp/$SCRATCH_DIR_NAME")
 
+    // TODO: calculate appropriate LoadTest multiplier for a machine
+    actual val device: String? = null
+
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         @OptIn(DelicateCoroutinesApi::class)
         GlobalScope.launch(Dispatchers.Default) {

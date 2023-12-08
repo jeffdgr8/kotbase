@@ -43,6 +43,9 @@ actual abstract class PlatformTest {
     actual val tmpDir: String
         get() = FileUtils.verifyDir(File("build/cb-tmp/$SCRATCH_DIR_NAME"))
 
+    // TODO: calculate appropriate LoadTest multiplier for a machine
+    actual val device: String? = null
+
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         val executionService = CouchbaseLiteInternal.getExecutionService()
         executionService.postDelayedOnExecutor(delayMs, executionService.defaultExecutor, task)

@@ -26,6 +26,9 @@ expect abstract class PlatformTest() {
     /* get a scratch directory */
     val tmpDir: String
 
+    /* Get the device name */
+    val device: String?
+
     /* Schedule a task to be executed asynchronously. */
     fun executeAsync(delayMs: Long, task: () -> Unit)
 }
