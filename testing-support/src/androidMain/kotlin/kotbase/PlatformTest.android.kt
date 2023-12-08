@@ -62,6 +62,9 @@ actual abstract class PlatformTest {
             )!!.absolutePath
         )
 
+    actual val device: String?
+        get() = android.os.Build.PRODUCT
+
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         val executionService = CouchbaseLiteInternal.getExecutionService()
         executionService.postDelayedOnExecutor(delayMs, executionService.defaultExecutor, task)

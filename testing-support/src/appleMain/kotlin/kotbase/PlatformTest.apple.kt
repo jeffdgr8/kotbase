@@ -42,6 +42,9 @@ actual abstract class PlatformTest {
             NSFileManager.defaultManager.temporaryDirectory.path!! + SCRATCH_DIR_NAME
         )
 
+    // TODO: calculate appropriate LoadTest multiplier for a machine
+    actual val device: String? = null
+
     actual fun executeAsync(delayMs: Long, task: () -> Unit) {
         dispatch_after(
             dispatch_time(DISPATCH_TIME_NOW, delayMs),
