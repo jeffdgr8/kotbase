@@ -21,25 +21,27 @@ import kotlin.test.*
 class ErrorCaseTest : BaseDbTest() {
 
     internal class CustomClass {
-        var text = "custom"
+        val text = "custom"
     }
 
     // -- DatabaseTest
+
     @Test
     fun testDeleteSameDocTwice() {
         // Store doc:
         val docID = "doc1"
-        val doc = createSingleDocInBaseTestDb(docID)
+        val doc = saveDocInCollection(MutableDocument(docID))
 
         // First time deletion:
-        baseTestDb.delete(doc)
-        assertEquals(0, baseTestDb.count)
-        assertNull(baseTestDb.getDocument(docID))
+        testCollection.delete(doc)
+        assertEquals(0, testCollection.count)
+        assertNull(testCollection.getDocument(docID))
 
         // Second time deletion:
         // NOTE: doc is pointing to old revision. this cause conflict but this generate same revision
-        baseTestDb.delete(doc)
-        assertNull(baseTestDb.getDocument(docID))
+        testCollection.delete(doc)
+
+        assertNull(testCollection.getDocument(docID))
     }
 
     // -- DatabaseTest
@@ -48,12 +50,10 @@ class ErrorCaseTest : BaseDbTest() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
         try {
-            baseTestDb.delete(doc)
+            testCollection.delete(doc)
             fail()
         } catch (e: CouchbaseLiteException) {
-            if (e.code != CBLError.Code.NOT_FOUND) {
-                fail()
-            }
+            if (e.code != CBLError.Code.NOT_FOUND) { fail() }
         }
         assertEquals("Scott Tiger", doc.getValue("name"))
     }
@@ -62,12 +62,11 @@ class ErrorCaseTest : BaseDbTest() {
     fun testSaveSavedMutableDocument() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
-        @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
-        var saved = saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
         doc.setValue("age", 20)
-        saved = saveDocInBaseTestDb(doc)
+        val saved = saveDocInCollection(doc)
         assertEquals(2, saved.generation)
-        assertEquals(20, saved.getInt("age").toLong())
+        assertEquals(20, saved.getInt("age"))
         assertEquals("Scott Tiger", saved.getString("name"))
     }
 
@@ -75,26 +74,25 @@ class ErrorCaseTest : BaseDbTest() {
     fun testDeleteSavedMutableDocument() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
-        saveDocInBaseTestDb(doc)
-        baseTestDb.delete(doc)
-        assertNull(baseTestDb.getDocument("doc1"))
+        saveDocInCollection(doc)
+        testCollection.delete(doc)
+        assertNull(testCollection.getDocument("doc1"))
     }
 
     @Test
     fun testDeleteDocAfterPurgeDoc() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
-        val saved = saveDocInBaseTestDb(doc)
+        val saved = saveDocInCollection(doc)
 
         // purge doc
-        baseTestDb.purge(saved)
+        testCollection.purge(saved)
+
         try {
-            baseTestDb.delete(saved)
+            testCollection.delete(saved)
             fail()
         } catch (e: CouchbaseLiteException) {
-            if (e.code != CBLError.Code.NOT_FOUND) {
-                fail()
-            }
+            if (e.code != CBLError.Code.NOT_FOUND) { fail() }
         }
     }
 
@@ -102,58 +100,56 @@ class ErrorCaseTest : BaseDbTest() {
     fun testDeleteDocAfterDeleteDoc() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
-        val saved = saveDocInBaseTestDb(doc)
+        val saved = saveDocInCollection(doc)
 
         // delete doc
-        baseTestDb.delete(saved)
+        testCollection.delete(saved)
 
         // delete doc -> conflict resolver -> no-op
-        baseTestDb.delete(saved)
+        testCollection.delete(saved)
     }
 
     @Test
     fun testPurgeDocAfterDeleteDoc() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
-        val saved = saveDocInBaseTestDb(doc)
+        val saved = saveDocInCollection(doc)
 
         // delete doc
-        baseTestDb.delete(saved)
+        testCollection.delete(saved)
 
         // purge doc
-        baseTestDb.purge(saved)
+        testCollection.purge(saved)
     }
 
     @Test
     fun testPurgeDocAfterPurgeDoc() {
         val doc = MutableDocument("doc1")
         doc.setValue("name", "Scott Tiger")
-        val saved = saveDocInBaseTestDb(doc)
+        val saved = saveDocInCollection(doc)
 
         // purge doc
-        baseTestDb.purge(saved)
+        testCollection.purge(saved)
+
         try {
-            baseTestDb.purge(saved)
+            testCollection.purge(saved)
             fail()
         } catch (e: CouchbaseLiteException) {
-            if (e.code != CBLError.Code.NOT_FOUND) {
-                fail()
-            }
+            if (e.code != CBLError.Code.NOT_FOUND) { fail() }
         }
     }
 
     // -- ArrayTest
+
     @Test
     fun testAddValueUnExpectedObject() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableArray().addValue(CustomClass())
-        }
+        assertFailsWith<IllegalArgumentException> { MutableArray().addValue(CustomClass()) }
     }
 
     @Test
     fun testSetValueUnExpectedObject() {
-        assertFailsWith<IllegalArgumentException> {
-            MutableArray().setValue(0, CustomClass())
-        }
+        val mArray = MutableArray()
+        mArray.addValue(0)
+        assertFailsWith<IllegalArgumentException> { mArray.setValue(0, CustomClass()) }
     }
 }
