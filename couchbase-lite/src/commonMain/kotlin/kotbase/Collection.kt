@@ -297,3 +297,11 @@ public expect class Collection : AutoCloseable {
 
 public val Collection.Companion.DEFAULT_NAME: String
     get() = "_default"
+
+/**
+ * Gets document fragment object by the given document ID.
+ *
+ * @param key The key.
+ */
+public operator fun Collection.get(key: String): DocumentFragment =
+    DocumentFragment(getDocument(key))
