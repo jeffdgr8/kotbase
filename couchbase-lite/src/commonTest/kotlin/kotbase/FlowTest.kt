@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.sync.CountDownLatch
 import kotlinx.coroutines.sync.Mutex
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,28 +29,28 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 class FlowTest : BaseReplicatorTest() {
-
+    @Suppress("DEPRECATION")
     @Test
     fun testDatabaseChangeFlow() {
         val docIds = mutableListOf<String>()
 
         runBlocking {
-            val mutex = Mutex(true)
+            val latch = CountDownLatch(1)
 
             val collector = launch(Dispatchers.Default) {
-                baseTestDb.databaseChangeFlow()
+                testDatabase.databaseChangeFlow(testSerialCoroutineContext)
                     .map {
-                        assertEquals(baseTestDb, it.database, "change on wrong db")
+                        assertEquals(testDatabase, it.database, "change on wrong db")
                         it.documentIDs
                     }
                     .onEach { ids ->
                         docIds.addAll(ids)
                         if (docIds.size >= 10) {
-                            mutex.unlock()
+                            latch.countDown()
                         }
                     }
                     .catch {
-                        mutex.unlock()
+                        latch.countDown()
                         throw it
                     }
                     .collect()
@@ -63,11 +64,60 @@ class FlowTest : BaseReplicatorTest() {
                 for (i in 0..9) {
                     val doc = MutableDocument("doc-${i}")
                     doc.setValue("type", "demo")
-                    saveDocInBaseTestDb(doc)
+                    saveDocInCollection(doc, testDatabase.getDefaultCollection()!!)
                 }
             }
 
-            assertTrue(mutex.lockWithTimeout(1.seconds))
+            assertTrue(latch.await(1.seconds))
+            collector.cancel()
+        }
+
+        assertEquals(10, docIds.size)
+        for (i in 0..9) {
+            val id = "doc-${i}"
+            assertTrue(docIds.contains(id), "missing $id")
+        }
+    }
+
+    @Test
+    fun testCollectionChangeFlow() {
+        val docIds = mutableListOf<String>()
+
+        runBlocking {
+            val latch = CountDownLatch(1)
+
+            val collector = launch(Dispatchers.Default) {
+                testCollection.collectionChangeFlow(testSerialCoroutineContext)
+                    .map {
+                        assertEquals(testCollection, it.collection, "change on wrong collection")
+                        it.documentIDs
+                    }
+                    .onEach { ids ->
+                        docIds.addAll(ids)
+                        if (docIds.size >= 10) {
+                            latch.countDown()
+                        }
+                    }
+                    .catch {
+                        latch.countDown()
+                        throw it
+                    }
+                    .collect()
+            }
+
+            launch(Dispatchers.Default) {
+                // Hate this: wait until the collector starts
+                delay(50)
+
+                // make 10 db changes
+                for (i in 0..9) {
+                    val doc = MutableDocument("doc-${i}")
+                    doc.setValue("type", "demo")
+                    saveDocInCollection(doc, testCollection)
+                }
+            }
+
+            assertTrue(latch.await(1.seconds))
             collector.cancel()
         }
 
@@ -88,16 +138,16 @@ class FlowTest : BaseReplicatorTest() {
         docB.setValue("thewronganswer", 18)
 
         runBlocking {
-            val mutex = Mutex(true)
+            val latch = CountDownLatch(1)
 
             val collector = launch(Dispatchers.Default) {
-                baseTestDb.documentChangeFlow(docA.id)
+                testCollection.documentChangeFlow(docA.id, testSerialCoroutineContext)
                     .onEach { change ->
                         changes.add(change)
-                        mutex.unlock()
+                        latch.countDown()
                     }
                     .catch {
-                        mutex.unlock()
+                        latch.countDown()
                         throw it
                     }
                     .collect()
@@ -107,16 +157,16 @@ class FlowTest : BaseReplicatorTest() {
                 // Hate this: wait until the collector starts
                 delay(50)
 
-                saveDocInBaseTestDb(docB)
-                saveDocInBaseTestDb(docA)
+                saveDocInCollection(docB)
+                saveDocInCollection(docA)
             }
 
-            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
+            assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
             collector.cancel()
         }
 
         assertEquals(1, changes.size)
-        assertEquals(baseTestDb, changes[0].database, "change on wrong db")
+        assertEquals(testCollection, changes[0].collection, "change on wrong collection")
         assertEquals(docA.id, changes[0].documentID, "change on wrong doc")
     }
 
@@ -126,22 +176,22 @@ class FlowTest : BaseReplicatorTest() {
 
         var mDocA = MutableDocument("A")
         mDocA.setValue("theanswer", 18)
-        val docA = saveDocInBaseTestDb(mDocA)
+        val docA = saveDocInCollection(mDocA)
         var mDocB = MutableDocument("B")
         mDocB.setValue("thewronganswer", 18)
-        val docB = saveDocInBaseTestDb(mDocB)
+        val docB = saveDocInCollection(mDocB)
 
         runBlocking {
-            val mutex = Mutex(true)
+            val latch = CountDownLatch(1)
 
             val collector = launch(Dispatchers.Default) {
-                baseTestDb.documentChangeFlow(docA.id)
+                testCollection.documentChangeFlow(docA.id, testSerialCoroutineContext)
                     .onEach { change ->
                         changes.add(change)
-                        mutex.unlock()
+                        latch.countDown()
                     }
                     .catch {
-                        mutex.unlock()
+                        latch.countDown()
                         throw it
                     }
                     .collect()
@@ -153,19 +203,19 @@ class FlowTest : BaseReplicatorTest() {
 
                 mDocB = docB.toMutable()
                 mDocB.setValue("thewronganswer", 42)
-                saveDocInBaseTestDb(mDocB)
+                saveDocInCollection(mDocB)
 
                 mDocA = docA.toMutable()
                 mDocA.setValue("thewronganswer", 18)
-                saveDocInBaseTestDb(mDocA)
+                saveDocInCollection(mDocA)
             }
 
-            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
+            assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
             collector.cancel()
         }
 
         assertEquals(1, changes.size)
-        assertEquals(baseTestDb, changes[0].database, "change on wrong db")
+        assertEquals(testCollection, changes[0].collection, "change on wrong collection")
         assertEquals(docA.id, changes[0].documentID, "change on wrong doc")
     }
 
@@ -175,22 +225,22 @@ class FlowTest : BaseReplicatorTest() {
 
         val mDocA = MutableDocument("A")
         mDocA.setValue("theanswer", 18)
-        val docA = saveDocInBaseTestDb(mDocA)
+        val docA = saveDocInCollection(mDocA)
         val mDocB = MutableDocument("B")
         mDocB.setValue("thewronganswer", 18)
-        val docB = saveDocInBaseTestDb(mDocB)
+        val docB = saveDocInCollection(mDocB)
 
         runBlocking {
-            val mutex = Mutex(true)
+            val latch = CountDownLatch(1)
 
             val collector = launch(Dispatchers.Default) {
-                baseTestDb.documentChangeFlow(docA.id)
+                testCollection.documentChangeFlow(docA.id, testSerialCoroutineContext)
                     .onEach { change ->
                         changes.add(change)
-                        mutex.unlock()
+                        latch.countDown()
                     }
                     .catch {
-                        mutex.unlock()
+                        latch.countDown()
                         throw it
                     }
                     .collect()
@@ -200,16 +250,16 @@ class FlowTest : BaseReplicatorTest() {
                 // Hate this: wait until the collector starts
                 delay(50)
 
-                baseTestDb.delete(docB)
-                baseTestDb.delete(docA)
+                testCollection.delete(docB)
+                testCollection.delete(docA)
             }
 
-            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
+            assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
             collector.cancel()
         }
 
         assertEquals(1, changes.size)
-        assertEquals(baseTestDb, changes[0].database, "change on wrong db")
+        assertEquals(testCollection, changes[0].collection, "change on wrong collection")
         assertEquals(mDocA.id, changes[0].documentID, "change on wrong doc")
     }
 
@@ -222,11 +272,11 @@ class FlowTest : BaseReplicatorTest() {
 
         runBlocking {
             val query = QueryBuilder.select(SelectResult.expression(Meta.id))
-                .from(DataSource.database(baseTestDb))
-            val mutex = Mutex(true)
+                .from(DataSource.collection(testCollection))
+            val latch = CountDownLatch(1)
 
             val collector = launch(Dispatchers.Default) {
-                query.queryChangeFlow()
+                query.queryChangeFlow(testSerialCoroutineContext)
                     .map { change ->
                         val err = change.error
                         if (err != null) {
@@ -239,20 +289,20 @@ class FlowTest : BaseReplicatorTest() {
                             allResults.addAll(v)
                         }
                         if (allResults.size > 0) {
-                            mutex.unlock()
+                            latch.countDown()
                         }
                     }
                     .collect()
             }
 
             launch(Dispatchers.Default) {
-                // Hate this: wait until the collector starts
+                // Hate this: wait for the collector to start
                 delay(50)
 
-                baseTestDb.save(mDoc)
+                testCollection.save(mDoc)
             }
 
-            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
+            assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
             collector.cancel()
         }
 
