@@ -16,7 +16,8 @@
 package kotbase
 
 import kotbase.ext.toStringMillis
-import kotbase.internal.utils.TestUtils.assertThrows
+import kotbase.internal.utils.paddedString
+import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
@@ -26,12 +27,11 @@ class ResultTest : BaseQueryTest() {
 
     @Test
     fun testGetValueByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
+        runTest { query ->
             // run query
-            val rows = verifyQuery(query, false) { _, r ->
+            val rows = verifyQueryWithEnumerator(
+                query
+            ) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getValue("null"))
@@ -50,19 +50,15 @@ class ResultTest : BaseQueryTest() {
 
                 assertNull(r.getValue("not_in_query_select"))
             }
-
             assertEquals(1, rows)
         }
     }
 
     @Test
     fun testGetValue() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
+        runTest { query ->
             // run query
-            val rows = verifyQuery(query, false) { _, r ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getValue(0))
@@ -79,9 +75,9 @@ class ResultTest : BaseQueryTest() {
                 assertTrue(r.getValue(11) is Blob)
                 assertNull(r.getValue(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getValue(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getValue(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getValue(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getValue(100) }
             }
 
             assertEquals(1, rows)
@@ -90,11 +86,8 @@ class ResultTest : BaseQueryTest() {
 
     @Test
     fun testGetStringByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getString("null"))
@@ -120,11 +113,8 @@ class ResultTest : BaseQueryTest() {
 
     @Test
     fun testGetString() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getString(0))
@@ -141,22 +131,20 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getString(11))
                 assertNull(r.getString(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getString(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getString(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getString(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getString(100) }
             }
 
             assertEquals(1, rows)
         }
     }
 
+
     @Test
     fun testGetNumberByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getNumber("null"))
@@ -182,11 +170,8 @@ class ResultTest : BaseQueryTest() {
 
     @Test
     fun testGetNumber() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getNumber(0)) // null
@@ -203,9 +188,9 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getNumber(11))
                 assertNull(r.getNumber(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getNumber(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getNumber(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getNumber(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getNumber(100) }
             }
 
             assertEquals(1, rows)
@@ -213,13 +198,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetIntegerByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertEquals(0, r.getInt("null"))
@@ -244,13 +225,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetInteger() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertEquals(0, r.getInt(0))
@@ -267,9 +244,9 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0, r.getInt(11))
                 assertEquals(0, r.getInt(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getInt(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getInt(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getInt(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getInt(100) }
             }
 
             assertEquals(1, rows)
@@ -277,13 +254,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetLongByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertEquals(0, r.getLong("null"))
@@ -308,13 +281,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetLong() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertEquals(0, r.getLong(0))
@@ -331,9 +300,9 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0, r.getLong(11))
                 assertEquals(0, r.getLong(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getLong(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getLong(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getLong(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getLong(100) }
             }
 
             assertEquals(1, rows)
@@ -341,13 +310,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetFloatByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertEquals(0.0f, r.getFloat("null"), 0.0f)
@@ -366,19 +331,14 @@ class ResultTest : BaseQueryTest() {
 
                 assertEquals(0.0f, r.getFloat("not_in_query_select"), 0.0f)
             }
-
             assertEquals(1, rows)
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetFloat() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertEquals(0.0f, r.getFloat(0), 0.0f)
@@ -395,9 +355,9 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0.0f, r.getFloat(11), 0.0f)
                 assertEquals(0.0f, r.getFloat(12), 0.0f)
 
-                assertThrows<IndexOutOfBoundsException> { r.getFloat(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getFloat(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getFloat(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getFloat(100) }
             }
 
             assertEquals(1, rows)
@@ -405,13 +365,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDoubleByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertEquals(0.0, r.getDouble("null"), 0.0)
@@ -436,13 +392,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDouble() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertEquals(0.0, r.getDouble(0), 0.0)
@@ -459,9 +411,9 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0.0, r.getDouble(11), 0.0)
                 assertEquals(0.0, r.getDouble(12), 0.0)
 
-                assertThrows<IndexOutOfBoundsException> { r.getDouble(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getDouble(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getDouble(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getDouble(100) }
             }
 
             assertEquals(1, rows)
@@ -469,13 +421,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetBooleanByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertFalse(r.getBoolean("null"))
@@ -500,13 +448,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetBoolean() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertFalse(r.getBoolean(0))
@@ -523,9 +467,9 @@ class ResultTest : BaseQueryTest() {
                 assertTrue(r.getBoolean(11))
                 assertFalse(r.getBoolean(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getBoolean(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getBoolean(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getBoolean(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getBoolean(100) }
             }
 
             assertEquals(1, rows)
@@ -533,13 +477,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDateByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getDate("null"))
@@ -564,13 +504,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDate() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getDate(0))
@@ -587,9 +523,9 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getDate(11))
                 assertNull(r.getDate(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getDate(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getDate(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getDate(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getDate(100) }
             }
 
             assertEquals(1, rows)
@@ -597,13 +533,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetBlobByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getBlob("null"))
@@ -617,8 +549,11 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getBlob("date"))
                 assertNull(r.getBlob("dict"))
                 assertNull(r.getBlob("array"))
-                assertEquals(BLOB_CONTENT, r.getBlob("blob")?.content?.decodeToString())
-                assertContentEquals(BLOB_CONTENT.encodeToByteArray(), r.getBlob("blob")?.content)
+                assertEquals(BLOB_CONTENT, r.getBlob("blob")!!.content!!.decodeToString())
+                assertContentEquals(
+                    BLOB_CONTENT.encodeToByteArray(),
+                    r.getBlob("blob")!!.content
+                )
                 assertNull(r.getBlob("non_existing_key"))
 
                 assertNull(r.getBlob("not_in_query_select"))
@@ -629,13 +564,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetBlob() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getBlob(0))
@@ -649,13 +580,16 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getBlob(8))
                 assertNull(r.getBlob(9))
                 assertNull(r.getBlob(10))
-                assertEquals(BLOB_CONTENT, r.getBlob(11)?.content?.decodeToString())
-                assertContentEquals(BLOB_CONTENT.encodeToByteArray(), r.getBlob(11)?.content)
+                assertEquals(BLOB_CONTENT, r.getBlob(11)!!.content!!.decodeToString())
+                assertContentEquals(
+                    BLOB_CONTENT.encodeToByteArray(),
+                    r.getBlob(11)!!.content
+                )
                 assertNull(r.getBlob(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getBlob(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getBlob(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getBlob(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getBlob(100) }
             }
 
             assertEquals(1, rows)
@@ -663,13 +597,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDictionaryByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getDictionary("null"))
@@ -700,13 +630,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetDictionary() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getDictionary(0))
@@ -729,9 +655,9 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getDictionary(11))
                 assertNull(r.getDictionary(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getDictionary(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getDictionary(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getDictionary(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getDictionary(100) }
             }
 
             assertEquals(1, rows)
@@ -739,13 +665,9 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetArrayByKey() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getArray("null"))
@@ -766,19 +688,14 @@ class ResultTest : BaseQueryTest() {
 
                 assertNull(r.getArray("not_in_query_select"))
             }
-
             assertEquals(1, rows)
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetArray() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 assertEquals(13, r.count)
 
                 assertNull(r.getArray(0))
@@ -797,27 +714,21 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getArray(11))
                 assertNull(r.getArray(12))
 
-                assertThrows<IndexOutOfBoundsException> { r.getArray(-1) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getArray(-1) }
 
-                assertThrows<IndexOutOfBoundsException> { r.getArray(100) }
+                assertFailsWith<IndexOutOfBoundsException> { r.getArray(100) }
             }
-
             assertEquals(1, rows)
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetKeys() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
-                val keys = r.keys.toMutableList()
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
+                val keys = r.keys
                 assertNotNull(keys)
                 assertEquals(13, keys.size)
-                keys.sort()
                 val expected = listOf(
                     "null",
                     "true",
@@ -832,8 +743,8 @@ class ResultTest : BaseQueryTest() {
                     "array",
                     "blob",
                     "non_existing_key"
-                ).sorted()
-                assertEquals(expected, keys)
+                )
+                assertEquals(expected.sorted(), keys.sorted())
 
                 // Result.iterator() test
                 val itr = r.iterator()
@@ -850,22 +761,16 @@ class ResultTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testContains() {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(baseTestDb, docID)
-
-            val rows = verifyQuery(query, false) { _, r ->
+        runTest { query ->
+            val rows = verifyQueryWithEnumerator(query) { _, r ->
                 // exists -> true
                 val expected = listOf(
                     "null", "true", "false", "string", "zero", "one",
                     "minus_one", "one_dot_one", "date", "dict", "array",
                     "blob"
                 )
-                for (key in expected) {
-                    assertTrue(r.contains(key))
-                }
+                for (key in expected) { assertTrue(r.contains(key)) }
                 // not exists -> false
                 assertFalse(r.contains("non_existing_key"))
 
@@ -879,25 +784,24 @@ class ResultTest : BaseQueryTest() {
     // Contributed by Bryan Welter:
     // https://github.com/couchbase/couchbase-lite-android-ce/issues/27
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testEmptyDict() {
-        val doc1 = "doc1"
-        val key1 = "emptyDict"
+        val docId = docId()
+        val key = getUniqueName("emptyDict")
 
-        val mDoc = MutableDocument(doc1)
-        mDoc.setDictionary(key1, MutableDictionary())
-        saveDocInBaseTestDb(mDoc)
+        val mDoc = MutableDocument(docId)
+        mDoc.setDictionary(key, MutableDictionary())
+        saveDocInCollection(mDoc)
 
-        val query = QueryBuilder.select(SelectResult.property(key1))
-            .from(DataSource.database(baseTestDb))
-            .where(Meta.id.equalTo(Expression.string(doc1)))
+        val query = QueryBuilder.select(SelectResult.property(key))
+            .from(DataSource.collection(testCollection))
+            .where(Meta.id.equalTo(Expression.string(docId)))
 
         query.execute().use { results ->
             assertNotNull(results)
             for (result in results.allResults()) {
                 assertNotNull(result)
                 assertEquals(1, result.toMap().size)
-                val emptyDict = result.getDictionary(key1)
+                val emptyDict = result.getDictionary(key)
                 assertNotNull(emptyDict)
                 assertTrue(emptyDict.count == 0)
             }
@@ -908,26 +812,22 @@ class ResultTest : BaseQueryTest() {
 
     // JSON 3.8
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testResultToJSON() {
-        for (i in 0..<5) {
+        for (i in 0..4) {
             val mDoc = makeDocument()
             mDoc.setString("id", "jsonQuery-$i")
-            saveDocInBaseTestDb(mDoc)
+            saveDocInCollection(mDoc)
         }
 
-        val projection = arrayOfNulls<SelectResult>(29)
-        // `makeDocument` creates a document with 29 properties named doc-1 through doc-29
-        for (i in 1..29) {
-            projection[i - 1] = SelectResult.property("doc-$i")
+        val projection = Array(29) { i ->
+            // `makeDocument` creates a document with 29 properties named doc-1 through doc-29
+            SelectResult.property("doc-${i + 1}")
         }
 
-        @Suppress("UNCHECKED_CAST")
-        QueryBuilder.select(*projection as kotlin.Array<SelectResult>)
-            .from(DataSource.database(baseTestDb))
+        QueryBuilder.select(*projection)
+            .from(DataSource.collection(testCollection))
             .where(Expression.property("id").equalTo(Expression.string("jsonQuery-4")))
             .execute().use { results ->
-
                 val result = results.next()
                 assertNotNull(result)
                 assertNull(results.next())
@@ -937,54 +837,104 @@ class ResultTest : BaseQueryTest() {
             }
     }
 
+
     ///////////////  Tooling
-    private fun generateQuery(db: Database, docID: String): Query {
-        val exDocID = Expression.string(docID)
-        return QueryBuilder.select(
-            SR_NULL,
-            SR_TRUE,
-            SR_FALSE,
-            SR_STRING,
-            SR_ZERO,
-            SR_ONE,
-            SR_MINUS_ONE,
-            SR_ONE_DOT_ONE,
-            SR_DATE,
-            SR_DICT,
-            SR_ARRAY,
-            SR_BLOB,
-            SR_NO_KEY
-        )
-            .from(DataSource.database(db))
-            .where(Meta.id.equalTo(exDocID))
+    // !!! Should be using the standard data tools
+    private fun docId() = getUniqueName("doc")
+
+    private fun docId(i: Int) = "doc-${i.paddedString(3)}"
+
+    private fun runTest(test: (Query) -> Unit) {
+        for (i in 1..2) {
+            val docID = prepareData(i)
+            val query = generateQuery(docID)
+            test(query)
+        }
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun prepareData(i: Int): String {
-        val mDoc = MutableDocument("doc$i")
-        if (i % 2 == 1) {
-            populateData(mDoc)
-        } else {
-            populateDataByTypedSetter(mDoc)
-        }
-        saveDocInBaseTestDb(mDoc)
+        val mDoc = MutableDocument(docId(i))
+        if (i % 2 == 1) { populateData(mDoc) }
+        else { populateDataByTypedSetter(mDoc) }
+        saveDocInCollection(mDoc)
         return mDoc.id
     }
 
-    companion object {
+    private fun populateData(doc: MutableDocument) {
+        doc.setValue("true", true)
+        doc.setValue("false", false)
+        doc.setValue("string", "string")
+        doc.setValue("zero", 0)
+        doc.setValue("one", 1)
+        doc.setValue("minus_one", -1)
+        doc.setValue("one_dot_one", 1.1)
+        doc.setValue("date", Instant.parse(TEST_DATE))
+        doc.setValue("null", null)
 
-        private val SR_NULL = SelectResult.property("null")
-        private val SR_TRUE = SelectResult.property("true")
-        private val SR_FALSE = SelectResult.property("false")
-        private val SR_STRING = SelectResult.property("string")
-        private val SR_ZERO = SelectResult.property("zero")
-        private val SR_ONE = SelectResult.property("one")
-        private val SR_MINUS_ONE = SelectResult.property("minus_one")
-        private val SR_ONE_DOT_ONE = SelectResult.property("one_dot_one")
-        private val SR_DATE = SelectResult.property("date")
-        private val SR_DICT = SelectResult.property("dict")
-        private val SR_ARRAY = SelectResult.property("array")
-        private val SR_BLOB = SelectResult.property("blob")
-        private val SR_NO_KEY = SelectResult.property("non_existing_key")
+        // Dictionary:
+        val dict = MutableDictionary()
+        dict.setValue("street", "1 Main street")
+        dict.setValue("city", "Mountain View")
+        dict.setValue("state", "CA")
+        doc.setValue("dict", dict)
+
+        // Array:
+        val array = MutableArray()
+        array.addValue("650-123-0001")
+        array.addValue("650-123-0002")
+        doc.setValue("array", array)
+
+        // Blob:
+        doc.setValue("blob", Blob("text/plain", BLOB_CONTENT.encodeToByteArray()))
+    }
+
+    private fun populateDataByTypedSetter(doc: MutableDocument) {
+        doc.setBoolean("true", true)
+        doc.setBoolean("false", false)
+        doc.setString("string", "string")
+        doc.setNumber("zero", 0)
+        doc.setInt("one", 1)
+        doc.setLong("minus_one", -1)
+        doc.setDouble("one_dot_one", 1.1)
+        doc.setDate("date", Instant.parse(TEST_DATE))
+        doc.setString("null", null)
+
+        // Dictionary:
+        val dict = MutableDictionary()
+        dict.setString("street", "1 Main street")
+        dict.setString("city", "Mountain View")
+        dict.setString("state", "CA")
+        doc.setDictionary("dict", dict)
+
+        // Array:
+        val array = MutableArray()
+        array.addString("650-123-0001")
+        array.addString("650-123-0002")
+        doc.setArray("array", array)
+
+        // Blob:
+        doc.setValue("blob", Blob("text/plain", BLOB_CONTENT.encodeToByteArray()))
+    }
+
+    private fun generateQuery(docID: String) = generateQuery(docID, testCollection)
+
+    private fun generateQuery(docID: String, collection: Collection): Query {
+        return QueryBuilder.select(
+                SelectResult.property("null"),
+                SelectResult.property("true"),
+                SelectResult.property("false"),
+                SelectResult.property("string"),
+                SelectResult.property("zero"),
+                SelectResult.property("one"),
+                SelectResult.property("minus_one"),
+                SelectResult.property("one_dot_one"),
+                SelectResult.property("date"),
+                SelectResult.property("dict"),
+                SelectResult.property("array"),
+                SelectResult.property("blob"),
+                SelectResult.property("non_existing_key")
+            )
+            .from(DataSource.collection(collection))
+            .where(Meta.id.equalTo(Expression.string(docID)))
     }
 }

@@ -15,9 +15,8 @@
  */
 package kotbase
 
-import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.CountDownLatch
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
@@ -26,40 +25,53 @@ class ReplicatorOfflineTest : BaseReplicatorTest() {
 
     @Test
     fun testStopReplicatorAfterOffline() = runBlocking {
-        val target = remoteTargetEndpoint
-        val config = makeConfig(baseTestDb, target, ReplicatorType.PULL, true)
-        val repl = testReplicator(config)
-        val offline = Mutex(true)
-        val stopped = Mutex(true)
-        val token = repl.addChangeListener { change ->
-            val status = change.status
-            when (status.activityLevel) {
-                ReplicatorActivityLevel.OFFLINE -> {
-                    change.replicator.stop()
-                    offline.unlock()
-                }
-                ReplicatorActivityLevel.STOPPED -> stopped.unlock()
+        val offline = CountDownLatch(1)
+        val stopped = CountDownLatch(1)
+
+        val repl = makeConfig().setType(ReplicatorType.PULL).testReplicator()
+        val token: ListenerToken = repl.addChangeListener(
+            testSerialCoroutineContext
+        ) { change ->
+            when (change.status.activityLevel) {
+                ReplicatorActivityLevel.STOPPED -> stopped.countDown()
+                ReplicatorActivityLevel.OFFLINE -> offline.countDown()
                 else -> {}
             }
         }
-        repl.start(false)
-        assertTrue(offline.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
-        assertTrue(stopped.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
-        repl.removeChangeListener(token)
+
+        try {
+            repl.start()
+            assertTrue(offline.await(LONG_TIMEOUT_SEC.seconds))
+            repl.stop()
+            assertTrue(stopped.await(LONG_TIMEOUT_SEC.seconds))
+        } finally { token.remove() }
     }
 
     @Test
     fun testStartSingleShotReplicatorInOffline() = runBlocking {
-        val repl = testReplicator(makeConfig(remoteTargetEndpoint, ReplicatorType.PUSH, false))
-        val stopped = Mutex(true)
-        val token = repl.addChangeListener { change ->
-            val status = change.status
-            if (status.activityLevel == ReplicatorActivityLevel.STOPPED) {
-                stopped.unlock()
-            }
+        val stopped = CountDownLatch(1)
+        val repl = makeConfig().setContinuous(false).testReplicator()
+        val token = repl.addChangeListener(
+            testSerialCoroutineContext
+        ) { change ->
+            if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) { stopped.countDown() }
         }
-        repl.start(false)
-        assertTrue(stopped.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
-        repl.removeChangeListener(token)
+
+        try {
+            repl.start()
+            assertTrue(stopped.await(LONG_TIMEOUT_SEC.seconds))
+        } finally { token.remove() }
+    }
+
+    private fun makeDefaultConfig(): ReplicatorConfiguration {
+        return ReplicatorConfiguration(mockURLEndpoint)
+            .addCollection(testCollection, null)
+    }
+
+    private fun makeConfig(): ReplicatorConfiguration {
+        return makeDefaultConfig()
+            .setType(ReplicatorType.PUSH)
+            .setContinuous(true)
+            .setHeartbeat(ReplicatorConfiguration.DISABLE_HEARTBEAT)
     }
 }

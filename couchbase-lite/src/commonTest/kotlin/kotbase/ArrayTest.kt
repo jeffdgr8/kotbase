@@ -1860,7 +1860,6 @@ class ArrayTest : BaseDbTest() {
 
     // JSON 3.7.d
     @Test
-    @Throws(IOException::class)
     fun testDictFromArray() {
         assertFailsWith<IllegalArgumentException> {
             MutableArray(readJSONResource("dictionary.json"))
