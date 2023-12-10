@@ -18,7 +18,7 @@ package kotbase
 import java.text.SimpleDateFormat
 import java.util.*
 
-actual fun localToUTC(format: String, dateStr: String): String {
+internal actual fun localToUTC(format: String, dateStr: String): String {
     val tz = TimeZone.getDefault()
     var df = SimpleDateFormat(format)
     df.timeZone = tz
