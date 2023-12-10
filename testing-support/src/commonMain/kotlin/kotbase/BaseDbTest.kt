@@ -62,8 +62,6 @@ fun Database.getSimilarCollection(collection: Collection): Collection {
     }
 }
 
-fun Collection.getQualifiedName() = "${this.scope.name}.${this.name}"
-
 fun Collection.getNonNullDoc(id: String) = this.getDocument(id) ?: throw AssertionError("document $id is null")
 
 fun Collection.delete() {

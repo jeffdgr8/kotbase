@@ -20,7 +20,7 @@ import platform.Foundation.NSTimeZone
 import platform.Foundation.defaultTimeZone
 import platform.Foundation.timeZoneWithName
 
-actual fun localToUTC(format: String, dateStr: String): String {
+internal actual fun localToUTC(format: String, dateStr: String): String {
     val df = NSDateFormatter()
     df.dateFormat = format
     df.timeZone = NSTimeZone.defaultTimeZone

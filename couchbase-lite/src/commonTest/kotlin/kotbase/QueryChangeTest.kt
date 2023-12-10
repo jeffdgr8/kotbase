@@ -15,11 +15,11 @@
  */
 package kotbase
 
-import kotbase.test.lockWithTimeout
+import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.CountDownLatch
 import kotlin.test.Test
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -31,34 +31,38 @@ class QueryChangeTest : BaseQueryTest() {
     @Test
     @Throws(Exception::class)
     fun testRemoveQueryChangeListenerInCallback() = runBlocking {
-        loadNumberedDocs(10)
+        loadDocuments(10)
 
         val query: Query = QueryBuilder
             .select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
-            .where(Expression.property("number1").lessThan(Expression.intValue(5)))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property(TEST_DOC_SORT_KEY).lessThan(Expression.intValue(5)))
 
-        val token = arrayOfNulls<ListenerToken>(1)
+        val token = atomic<ListenerToken?>(null)
+        val latch = CountDownLatch(1)
         val lock = SynchronizedObject()
 
-        // Removing the listener while inside the listener itself needs be done carefully.
-        // The change handler might get called from the executor thread before query.addChangeListener() returns.
-        val mutex = Mutex(true)
-        val listener = { change: QueryChange ->
+        val listener: QueryChangeListener = listener@{ change ->
             val rs = change.results
-            if (rs?.next() != null) {
-                synchronized(lock) {
-                    query.removeChangeListener(token[0]!!)
-                    token[0] = null
-                }
+            if (rs?.next() == null) return@listener
+            synchronized(lock) {
+                val t = token.getAndSet(null)
+                t?.remove()
             }
-            mutex.unlock()
+            latch.countDown()
         }
 
-        synchronized(lock) { token[0] = query.addChangeListener(listener) }
+        // Removing the listener while inside the listener itself needs be done carefully.
+        // The listener might get called before query.addChangeListener(), below, returns.
+        // If that happened "token" would not yet have been set and the test would not work.
+        // Seizing a lock here guarantees that that can't happen.
+        synchronized(lock) { token.value = query.addChangeListener(testSerialCoroutineContext, listener) }
+        try { assertTrue(latch.await(STD_TIMEOUT_SEC.seconds)) }
+        finally {
+            val t = token.value
+            t?.remove()
+        }
 
-        assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
-
-        synchronized(lock) { assertNull(token[0]) }
+        assertNull(token.value)
     }
 }

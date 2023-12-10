@@ -17,20 +17,20 @@
 
 package kotbase
 
+import co.touchlab.stately.collections.ConcurrentMutableList
 import com.couchbase.lite.asJSON
 import kotbase.internal.utils.Report
 import kotbase.internal.utils.paddedString
-import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
-import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.offsetAt
 import kotlin.math.*
+import kotlin.random.Random
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -40,35 +40,39 @@ class QueryTest : BaseQueryTest() {
 
     private class MathFn(val name: String, val expr: Expression, val expected: Double)
 
-    private class TestCase(val expr: Expression, vararg documentIDs: Int) {
-        val docIds = documentIDs.map { "doc$it" }
+    private class TestCase(val expr: Expression, val docIds: List<String>) {
+        constructor(expr: Expression, vararg documentIDs: String) : this(expr, documentIDs.toList())
+
+        constructor(expr: Expression, docIds: List<String>, vararg pos: Int) : this(
+            expr,
+            docIds.filterIndexed { index, _ -> index + 1 in pos }
+        )
     }
 
     @Test
     fun testQueryGetColumnNameAfter32Items() {
-        val document = MutableDocument("doc")
-        document.setString("key", "value")
-        saveDocInBaseTestDb(document)
+        val value = getUniqueName("value")
+        val document = MutableDocument()
+        document.setString(TEST_DOC_TAG_KEY, value)
+        saveDocInCollection(document)
 
-        val query = """select
-                `1`,`2`,`3`,`4`,`5`,`6`,`7`,`8`,`9`,`10`,`11`,`12`,
-                `13`,`14`,`15`,`16`,`17`,`18`,`19`,`20`,`21`,`22`,`23`,`24`,
-                `25`,`26`,`27`,`28`,`29`,`30`,`31`,`32`, `key` from _ limit 1"""
+        val queryBuild = QueryBuilder.createQuery("""
+            select
+              `1`,`2`,`3`,`4`,`5`,`6`,`7`,`8`,`9`,`10`,`11`,`12`, `13`,`14`,`15`,`16`,`17`,`18`,`19`,`20`,
+              `21`,`22`,`23`,`24`,`25`,`26`,`27`,`28`,`29`,`30`,`31`,`32`,`key`
+              from _ 
+             limit 1
+        """.trimIndent(),
+            testDatabase
+        )
 
-        val queryBuild = QueryBuilder.createQuery(query, baseTestDb)
+        val res = arrayOfNulls<String>(33)
+        res[32] = value
+        val arrayResult = res.toList()
 
-        //expected results
-        val key = "key"
-        val value = "value"
-
-        val arrayResult = mutableListOf<String?>()
-        for (i in 0..<32) {
-            arrayResult.add(null)
-        }
-        arrayResult.add(value)
-
+        // TODO: these should be value and not "value", right? (confirm with Couchbase)
         val mapResult = mapOf(
-            key to value
+            TEST_DOC_TAG_KEY to value
         )
 
         queryBuild.execute().use { rs ->
@@ -77,8 +81,8 @@ class QueryTest : BaseQueryTest() {
                 assertEquals("{\"key\":\"value\"}", result.toJSON())
                 assertEquals(arrayResult, result.toList())
                 assertEquals(mapResult, result.toMap())
-                assertEquals(value, result.getValue(key).toString())
-                assertEquals(value, result.getString(key))
+                assertEquals(value, result.getValue(TEST_DOC_TAG_KEY).toString())
+                assertEquals(value, result.getString(TEST_DOC_TAG_KEY))
                 assertEquals(value, result.getString(32))
             }
         }
@@ -89,297 +93,342 @@ class QueryTest : BaseQueryTest() {
         val now = Clock.System.now()
 
         // this one should expire
-        val doc = MutableDocument("doc")
+        val doc = MutableDocument()
         doc.setInt("answer", 42)
         doc.setString("notHere", "string")
-        saveDocInBaseTestDb(doc)
-        baseTestDb.setDocumentExpiration("doc", now + 500.milliseconds)
+        saveDocInCollection(doc)
+        testCollection.setDocumentExpiration(doc.id, now + 500.milliseconds)
 
         // this one is deleted
-        val doc10 = MutableDocument("doc10")
+        val doc10 = MutableDocument()
         doc10.setInt("answer", 42)
         doc10.setString("notHere", "string")
-        saveDocInBaseTestDb(doc10)
-        baseTestDb.setDocumentExpiration("doc10", now + 2000.milliseconds) //deleted doc
-        baseTestDb.delete(doc10)
+        saveDocInCollection(doc10)
+        testCollection.setDocumentExpiration(doc10.id, now + 2000.milliseconds) //deleted doc
+        testCollection.delete(doc10)
 
         // should be in the result set
-        val doc1 = MutableDocument("doc1")
+        val doc1 = MutableDocument()
         doc1.setInt("answer", 42)
         doc1.setString("a", "string")
-        saveDocInBaseTestDb(doc1)
-        baseTestDb.setDocumentExpiration("doc1", now + 2000.milliseconds)
+        saveDocInCollection(doc1)
+        testCollection.setDocumentExpiration(doc1.id, now + 2000.milliseconds)
 
         // should be in the result set
-        val doc2 = MutableDocument("doc2")
+        val doc2 = MutableDocument()
         doc2.setInt("answer", 42)
         doc2.setString("b", "string")
-        saveDocInBaseTestDb(doc2)
-        baseTestDb.setDocumentExpiration("doc2", now + 3000.milliseconds)
+        saveDocInCollection(doc2)
+        testCollection.setDocumentExpiration(doc2.id, now + 3000.milliseconds)
 
         // should be in the result set
-        val doc3 = MutableDocument("doc3")
+        val doc3 = MutableDocument()
         doc3.setInt("answer", 42)
         doc3.setString("c", "string")
-        saveDocInBaseTestDb(doc3)
-        baseTestDb.setDocumentExpiration("doc3", now + 4000.milliseconds)
+        saveDocInCollection(doc3)
+        testCollection.setDocumentExpiration(doc3.id, now + 4000.milliseconds)
 
         delay(1000)
 
         // This should get all but the one that has expired
         // and the one that was deleted
-        val query = QueryBuilder.select(SR_DOCID, SR_EXPIRATION)
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.expression(Meta.expiration))
+            .from(DataSource.collection(testCollection))
             .where(Meta.expiration.lessThan(Expression.longValue(now.toEpochMilliseconds() + 6000L)))
 
-        val rows = verifyQuery(query, false) { _, _ -> }
-        assertEquals(3, rows)
+        assertEquals(3, verifyQueryWithEnumerator(query) { _, _ -> })
     }
 
     @Test
     fun testQueryDocumentIsNotDeleted() {
-        val doc1a = MutableDocument("doc1")
+        val doc1a = MutableDocument()
         doc1a.setInt("answer", 42)
         doc1a.setString("a", "string")
-        baseTestDb.save(doc1a)
+        saveDocInCollection(doc1a)
 
-        val query = QueryBuilder.select(SR_DOCID, SR_DELETED)
-            .from(DataSource.database(baseTestDb))
-            .where(
-                Meta.id.equalTo(Expression.string("doc1"))
-                    .and(Meta.deleted.equalTo(Expression.booleanValue(false)))
+        val query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.expression(Meta.deleted))
+            .from(DataSource.collection(testCollection))
+            .where(Meta.id.equalTo(Expression.string(doc1a.id))
+                .and(Meta.deleted.equalTo(Expression.booleanValue(false)))
             )
 
-        val rows = verifyQuery(query, false) { _, result ->
-            assertEquals(result.getString(0), "doc1")
-            assertFalse(result.getBoolean(1))
-        }
-        assertEquals(1, rows)
+        assertEquals(
+            1,
+            verifyQueryWithEnumerator(query) { _, result ->
+                assertEquals(result.getString(0), doc1a.id)
+                assertFalse(result.getBoolean(1))
+            }
+        )
     }
 
     @Test
     fun testQueryDocumentIsDeleted() {
-        val doc = MutableDocument("doc1")
+        val doc = MutableDocument()
         doc.setInt("answer", 42)
         doc.setString("a", "string")
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
-        baseTestDb.delete(baseTestDb.getDocument("doc1")!!)
+        testCollection.delete(testCollection.getDocument(doc.id)!!)
 
-        val query = QueryBuilder.select(SR_DOCID, SR_DELETED)
-            .from(DataSource.database(baseTestDb))
-            .where(
-                Meta.deleted.equalTo(Expression.booleanValue(true))
-                    .and(Meta.id.equalTo(Expression.string("doc1")))
+        val query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.expression(Meta.deleted))
+            .from(DataSource.collection(testCollection))
+            .where(Meta.deleted.equalTo(Expression.booleanValue(true))
+                .and(Meta.id.equalTo(Expression.string(doc.id)))
             )
 
-        assertEquals(1, verifyQuery(query, false) { _, _ -> })
+        assertEquals(1, verifyQueryWithEnumerator(query) { _, _ -> })
     }
 
     @Test
     fun testNoWhereQuery() {
-        loadJSONResource("names_100.json")
-        val numRows = verifyQuery(
-            QueryBuilder.select(SR_DOCID, SR_SEQUENCE).from(DataSource.database(baseTestDb))
+        loadJSONResourceIntoCollection("names_100.json")
+
+        verifyQuery(
+            QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.expression(Meta.sequence))
+                .from(DataSource.collection(testCollection)),
+            100
         ) { n, result ->
             val docID = result.getString(0)
-            val expectedID = "doc-${n.paddedString(3)}"
+            val expectedID: String = jsonDocId(n)
+            val sequence = result.getInt(1)
+
             assertEquals(expectedID, docID)
 
-            val sequence = result.getInt(1)
             assertEquals(n, sequence)
 
-            val doc = baseTestDb.getDocument(docID!!)
-            assertEquals(expectedID, doc!!.id)
+            val doc = testCollection.getDocument(docID!!)!!
+            assertEquals(expectedID, doc.id)
             assertEquals(n.toLong(), doc.sequence)
         }
-        assertEquals(100, numRows)
     }
 
     @Test
     fun testWhereComparison() {
-        loadNumberedDocs(10)
-        runTestCases(
-            TestCase(EXPR_NUMBER1.lessThan(Expression.intValue(3)), 1, 2),
+        val docIds = loadDocuments(10).map(Document::id)
+        runTests(
+            TestCase(Expression.property(TEST_DOC_SORT_KEY).lessThan(Expression.intValue(3)), docIds, 1, 2),
             TestCase(
-                EXPR_NUMBER1.greaterThanOrEqualTo(Expression.intValue(3)),
+                Expression.property(TEST_DOC_SORT_KEY).greaterThanOrEqualTo(Expression.intValue(3)),
+                docIds,
                 3, 4, 5, 6, 7, 8, 9, 10
             ),
-            TestCase(EXPR_NUMBER1.lessThanOrEqualTo(Expression.intValue(3)), 1, 2, 3),
-            TestCase(EXPR_NUMBER1.greaterThan(Expression.intValue(3)), 4, 5, 6, 7, 8, 9, 10),
-            TestCase(EXPR_NUMBER1.greaterThan(Expression.intValue(6)), 7, 8, 9, 10),
-            TestCase(EXPR_NUMBER1.lessThanOrEqualTo(Expression.intValue(6)), 1, 2, 3, 4, 5, 6),
-            TestCase(EXPR_NUMBER1.greaterThanOrEqualTo(Expression.intValue(6)), 6, 7, 8, 9, 10),
-            TestCase(EXPR_NUMBER1.lessThan(Expression.intValue(6)), 1, 2, 3, 4, 5),
-            TestCase(EXPR_NUMBER1.equalTo(Expression.intValue(7)), 7),
-            TestCase(EXPR_NUMBER1.notEqualTo(Expression.intValue(7)), 1, 2, 3, 4, 5, 6, 8, 9, 10)
+            TestCase(
+                Expression.property(TEST_DOC_SORT_KEY).lessThanOrEqualTo(Expression.intValue(3)),
+                docIds,
+                1, 2, 3
+            ),
+            TestCase(
+                Expression.property(TEST_DOC_SORT_KEY).greaterThan(Expression.intValue(3)),
+                docIds,
+                4, 5, 6, 7, 8, 9, 10
+            ),
+            TestCase(
+                Expression.property(TEST_DOC_SORT_KEY).greaterThan(Expression.intValue(6)),
+                docIds,
+                7, 8, 9, 10
+            ),
+            TestCase(
+                Expression.property(TEST_DOC_SORT_KEY).lessThanOrEqualTo(Expression.intValue(6)),
+                docIds,
+                1, 2, 3, 4, 5, 6
+            ),
+            TestCase(
+                Expression.property(TEST_DOC_SORT_KEY).greaterThanOrEqualTo(Expression.intValue(6)),
+                docIds,
+                6, 7, 8, 9, 10
+            ),
+            TestCase(
+                Expression.property(TEST_DOC_SORT_KEY).lessThan(Expression.intValue(6)),
+                docIds,
+                1, 2, 3, 4, 5
+            ),
+            TestCase(Expression.property(TEST_DOC_SORT_KEY).equalTo(Expression.intValue(7)), docIds, 7),
+            TestCase(
+                Expression.property(TEST_DOC_SORT_KEY).notEqualTo(Expression.intValue(7)),
+                docIds,
+                1, 2, 3, 4, 5, 6, 8, 9, 10
+            )
         )
     }
 
+
     @Test
     fun testWhereArithmetic() {
-        loadNumberedDocs(10)
-        runTestCases(
+        val docIds = loadDocuments(10).map(Document::id)
+        runTests(
             TestCase(
-                EXPR_NUMBER1.multiply(Expression.intValue(2)).greaterThan(Expression.intValue(3)),
+                Expression.property(TEST_DOC_SORT_KEY).multiply(Expression.intValue(2))
+                    .greaterThan(Expression.intValue(3)),
+                docIds,
                 2, 3, 4, 5, 6, 7, 8, 9, 10
             ),
             TestCase(
-                EXPR_NUMBER1.divide(Expression.intValue(2)).greaterThan(Expression.intValue(3)),
+                Expression.property(TEST_DOC_SORT_KEY).divide(Expression.intValue(2))
+                    .greaterThan(Expression.intValue(3)),
+                docIds,
                 8, 9, 10
             ),
             TestCase(
-                EXPR_NUMBER1.modulo(Expression.intValue(2)).equalTo(Expression.intValue(0)),
+                Expression.property(TEST_DOC_SORT_KEY).modulo(Expression.intValue(2)).equalTo(Expression.intValue(0)),
+                docIds,
                 2, 4, 6, 8, 10
             ),
             TestCase(
-                EXPR_NUMBER1.add(Expression.intValue(5)).greaterThan(Expression.intValue(10)),
+                Expression.property(TEST_DOC_SORT_KEY).add(Expression.intValue(5)).greaterThan(Expression.intValue(10)),
+                docIds,
                 6, 7, 8, 9, 10
             ),
             TestCase(
-                EXPR_NUMBER1.subtract(Expression.intValue(5)).greaterThan(Expression.intValue(0)),
+                Expression.property(TEST_DOC_SORT_KEY).subtract(Expression.intValue(5))
+                    .greaterThan(Expression.intValue(0)),
+                docIds,
                 6, 7, 8, 9, 10
             ),
             TestCase(
-                EXPR_NUMBER1.multiply(EXPR_NUMBER2).greaterThan(Expression.intValue(10)),
+                Expression.property(TEST_DOC_SORT_KEY).multiply(Expression.property(TEST_DOC_REV_SORT_KEY))
+                    .greaterThan(Expression.intValue(10)),
+                docIds,
                 2, 3, 4, 5, 6, 7, 8
             ),
             TestCase(
-                EXPR_NUMBER2.divide(EXPR_NUMBER1).greaterThan(Expression.intValue(3)),
+                Expression.property(TEST_DOC_REV_SORT_KEY).divide(Expression.property(TEST_DOC_SORT_KEY))
+                    .greaterThan(Expression.intValue(3)),
+                docIds,
                 1, 2
             ),
             TestCase(
-                EXPR_NUMBER2.modulo(EXPR_NUMBER1).equalTo(Expression.intValue(0)),
+                Expression.property(TEST_DOC_REV_SORT_KEY).modulo(Expression.property(TEST_DOC_SORT_KEY))
+                    .equalTo(Expression.intValue(0)),
+                docIds,
                 1, 2, 5, 10
             ),
             TestCase(
-                EXPR_NUMBER1.add(EXPR_NUMBER2).equalTo(Expression.intValue(10)),
+                Expression.property(TEST_DOC_SORT_KEY).add(Expression.property(TEST_DOC_REV_SORT_KEY))
+                    .equalTo(Expression.intValue(10)),
+                docIds,
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
             ),
             TestCase(
-                EXPR_NUMBER1.subtract(EXPR_NUMBER2).greaterThan(Expression.intValue(0)),
+                Expression.property(TEST_DOC_SORT_KEY).subtract(Expression.property(TEST_DOC_REV_SORT_KEY))
+                    .greaterThan(Expression.intValue(0)),
+                docIds,
                 6, 7, 8, 9, 10
             )
         )
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereAndOr() {
-        loadNumberedDocs(10)
-        runTestCases(
+        val docIds = loadDocuments(10).map(Document::id)
+        runTests(
             TestCase(
-                EXPR_NUMBER1.greaterThan(Expression.intValue(3))
-                    .and(EXPR_NUMBER2.greaterThan(Expression.intValue(3))),
+                Expression.property(TEST_DOC_SORT_KEY).greaterThan(Expression.intValue(3))
+                    .and(Expression.property(TEST_DOC_REV_SORT_KEY).greaterThan(Expression.intValue(3))),
+                docIds,
                 4, 5, 6
             ),
             TestCase(
-                EXPR_NUMBER1.lessThan(Expression.intValue(3))
-                    .or(EXPR_NUMBER2.lessThan(Expression.intValue(3))),
+                Expression.property(TEST_DOC_SORT_KEY).lessThan(Expression.intValue(3))
+                    .or(Expression.property(TEST_DOC_REV_SORT_KEY).lessThan(Expression.intValue(3))),
+                docIds,
                 1, 2, 8, 9, 10
             )
         )
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereValued() {
-        val doc1 = MutableDocument("doc1")
+        val doc1 = MutableDocument()
         doc1.setValue("name", "Scott")
         doc1.setValue("address", null)
-        saveDocInBaseTestDb(doc1)
+        saveDocInCollection(doc1)
 
-        val doc2 = MutableDocument("doc2")
+        val doc2 = MutableDocument()
         doc2.setValue("name", "Tiger")
         doc2.setValue("address", "123 1st ave.")
         doc2.setValue("age", 20)
-        saveDocInBaseTestDb(doc2)
+        saveDocInCollection(doc2)
 
         val name = Expression.property("name")
         val address = Expression.property("address")
         val age = Expression.property("age")
         val work = Expression.property("work")
 
-        val cases = arrayOf(
+        for (testCase in arrayOf(
             TestCase(name.isNotValued()),
-            TestCase(name.isValued(), 1, 2),
-            TestCase(address.isNotValued(), 1),
-            TestCase(address.isValued(), 2),
-            TestCase(age.isNotValued(), 1),
-            TestCase(age.isValued(), 2),
-            TestCase(work.isNotValued(), 1, 2),
+            TestCase(name.isValued(), doc1.id, doc2.id),
+            TestCase(address.isNotValued(), doc1.id),
+            TestCase(address.isValued(), doc2.id),
+            TestCase(age.isNotValued(), doc1.id),
+            TestCase(age.isValued(), doc2.id),
+            TestCase(work.isNotValued(), doc1.id, doc2.id),
             TestCase(work.isValued())
-        )
-
-        for (testCase in cases) {
-            val numRows = verifyQuery(
-                QueryBuilder.select(SR_DOCID).from(DataSource.database(baseTestDb))
-                    .where(testCase.expr)
-            ) { n, result ->
-                if (n <= testCase.docIds.size) {
-                    assertEquals(testCase.docIds[n - 1], result.getString(0))
-                }
-            }
-            assertEquals(testCase.docIds.size, numRows)
+        )) {
+            val nIds = testCase.docIds.size
+            verifyQuery(
+                QueryBuilder.select(SelectResult.expression(Meta.id))
+                    .from(DataSource.collection(testCollection))
+                    .where(testCase.expr),
+                nIds
+            ) { n, result -> if (n <= nIds) { assertEquals(testCase.docIds[n - 1], result.getString(0)) } }
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereIs() {
         val doc1 = MutableDocument()
         doc1.setValue("string", "string")
-        saveDocInBaseTestDb(doc1)
+        saveDocInCollection(doc1)
 
-        val query = QueryBuilder.select(SR_DOCID)
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
             .where(Expression.property("string").`is`(Expression.string("string")))
 
-        val numRows = verifyQuery(query) { _, result ->
-            val docID = result.getString(0)!!
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            val docID = result.getString(0)
             assertEquals(doc1.id, docID)
-            val doc = baseTestDb.getDocument(docID)!!
+            val doc = testCollection.getDocument(docID!!)!!
             assertEquals(doc1.getValue("string"), doc.getValue("string"))
         }
-        assertEquals(1, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereIsNot() {
         val doc1 = MutableDocument()
         doc1.setValue("string", "string")
-        saveDocInBaseTestDb(doc1)
+        saveDocInCollection(doc1)
 
-        val query = QueryBuilder.select(SR_DOCID)
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
             .where(Expression.property("string").isNot(Expression.string("string1")))
 
-        val numRows = verifyQuery(query) { _, result ->
-            val docID = result.getString(0)!!
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            val docID = result.getString(0)
             assertEquals(doc1.id, docID)
-            val doc = baseTestDb.getDocument(docID)!!
+            val doc = testCollection.getDocument(docID!!)!!
             assertEquals(doc1.getValue("string"), doc.getValue("string"))
         }
-        assertEquals(1, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereBetween() {
-        loadNumberedDocs(10)
-        runTestCases(
-            TestCase(
-                EXPR_NUMBER1.between(Expression.intValue(3), Expression.intValue(7)),
-                3, 4, 5, 6, 7
-            )
+        val docIds = loadDocuments(10).map(Document::id)
+        runTests(TestCase(Expression.property(TEST_DOC_SORT_KEY)
+            .between(Expression.intValue(3), Expression.intValue(7)), docIds, 3, 4, 5, 6, 7)
         )
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereIn() {
-        loadJSONResource("names_100.json")
+        loadJSONResourceIntoCollection("names_100.json")
 
         val expected = arrayOf(
             Expression.string("Marcy"),
@@ -390,220 +439,258 @@ class QueryTest : BaseQueryTest() {
         )
 
         val query = QueryBuilder.select(SelectResult.property("name.first"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(Expression.property("name.first").`in`(*expected))
             .orderBy(Ordering.property("name.first"))
 
-        val numRows = verifyQuery(query) { n, result ->
-            val name = result.getString(0)
-            assertEquals(expected[n - 1].asJSON(), name)
-        }
-        assertEquals(expected.size, numRows)
+        verifyQuery(query, 5) { n, result -> assertEquals(expected[n - 1].asJSON(), result.getString(0)) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereLike() {
-        loadJSONResource("names_100.json")
+        loadJSONResourceIntoCollection("names_100.json")
 
         val w = Expression.property("name.first").like(Expression.string("%Mar%"))
-        val query = QueryBuilder.select(SR_DOCID)
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
             .where(w)
             .orderBy(Ordering.property("name.first").ascending())
 
         val firstNames = mutableListOf<String>()
-        val numRows = verifyQuery(query, false) { _, result ->
-            val docID = result.getString(0)
-            val doc = baseTestDb.getDocument(docID!!)
-            val name = doc!!.getDictionary("name")!!.toMap()
-            val firstName = name["first"] as String?
-            if (firstName != null) {
-                firstNames.add(firstName)
+        assertEquals(
+            5,
+            verifyQueryWithEnumerator(
+                query
+            ) { _, result ->
+                val docID = result.getString(0)
+                val doc = testCollection.getDocument(docID!!)!!
+                val name = doc.getDictionary("name")!!.toMap()
+                val firstName = name["first"] as String?
+                if (firstName != null) { firstNames.add(firstName) }
             }
-        }
-        assertEquals(5, numRows)
+        )
         assertEquals(5, firstNames.size)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testWhereRegex() {
-        loadJSONResource("names_100.json")
+        loadJSONResourceIntoCollection("names_100.json")
 
-        val query = QueryBuilder.select(SR_DOCID)
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
             .where(Expression.property("name.first").regex(Expression.string("^Mar.*")))
             .orderBy(Ordering.property("name.first").ascending())
 
         val firstNames = mutableListOf<String>()
-        val numRows = verifyQuery(query, false) { _, result ->
-            val docID = result.getString(0)
-            val doc = baseTestDb.getDocument(docID!!)
-            val name = doc!!.getDictionary("name")!!.toMap()
-            val firstName = name["first"] as String?
-            if (firstName != null) {
-                firstNames.add(firstName)
+        assertEquals(
+            5,
+            verifyQueryWithEnumerator(
+                query
+            ) { _, result ->
+                val docID = result.getString(0)
+                val doc = testCollection.getDocument(docID!!)!!
+                val name = doc.getDictionary("name")!!.toMap()
+                val firstName = name["first"] as String?
+                if (firstName != null) { firstNames.add(firstName) }
             }
-        }
-        assertEquals(5, numRows)
+        )
         assertEquals(5, firstNames.size)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
-    fun testWhereMatch() {
-        loadJSONResource("sentences.json")
-
-        baseTestDb.createIndex(
-            "sentence",
-            IndexBuilder.fullTextIndex(FullTextIndexItem.property("sentence"))
-        )
-
-        val query = QueryBuilder.select(SR_DOCID, SelectResult.property("sentence"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("sentence", "'Dummie woman'"))
-            .orderBy(Ordering.expression(FullTextFunction.rank("sentence")).descending())
-
-        val numRows = verifyQuery(query) { _, result ->
-            assertNotNull(result.getString(0))
-            assertNotNull(result.getString(1))
-        }
-        assertEquals(2, numRows)
+    fun testRank() {
+        val expr = FullTextFunction.rank(Expression.fullTextIndex("abc"))
+        assertNotNull(expr)
+        val obj = expr.asJSON()
+        assertNotNull(obj)
+        assertIs<List<*>>(obj)
+        assertEquals(listOf("RANK()", "abc"), obj)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
-    fun testFullTextIndexConfig() {
-        loadJSONResource("sentences.json")
+    fun testWhereIndexMatch() {
+        loadJSONResourceIntoCollection("sentences.json")
 
-        val idxConfig = FullTextIndexConfiguration("sentence", "nonesense")
-        assertFalse(idxConfig.isIgnoringAccents)
-        assertEquals("en", idxConfig.language)
+        testCollection.createIndex("sentence", IndexBuilder.fullTextIndex(FullTextIndexItem.property("sentence")))
+        val idx = Expression.fullTextIndex("sentence")
 
-        idxConfig.setLanguage("en-ca").ignoreAccents(true)
-        assertEquals("en-ca", idxConfig.language)
-        assertTrue(idxConfig.isIgnoringAccents)
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id), SelectResult.property("sentence"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "'Dummie woman'"))
+            .orderBy(Ordering.expression(FullTextFunction.rank(idx)).descending())
 
-        baseTestDb.createIndex("sentence", idxConfig)
-
-        val query = QueryBuilder.select(SR_DOCID, SelectResult.property("sentence"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("sentence", "'Dummie woman'"))
-            .orderBy(Ordering.expression(FullTextFunction.rank("sentence")).descending())
-
-        val numRows = verifyQuery(query) { _, result ->
+        verifyQuery(
+            query,
+            2
+        ) { _, result ->
             assertNotNull(result.getString(0))
             assertNotNull(result.getString(1))
         }
-        assertEquals(2, numRows)
+    }
+
+    @Test
+    fun testWhereMatch() {
+        loadJSONResourceIntoCollection("sentences.json")
+
+        testCollection.createIndex("sentence", IndexBuilder.fullTextIndex(FullTextIndexItem.property("sentence")))
+        val idx = Expression.fullTextIndex("sentence")
+
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id), SelectResult.property("sentence"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "'Dummie woman'"))
+            .orderBy(Ordering.expression(FullTextFunction.rank(idx)).descending())
+
+        verifyQuery(
+            query,
+            2
+        ) { _, result ->
+            assertNotNull(result.getString(0))
+            assertNotNull(result.getString(1))
+        }
+    }
+
+    @Test
+    fun testFullTextIndexConfigDefaults() {
+        val idxConfig = FullTextIndexConfiguration("sentence", "nonsense")
+        assertEquals(Defaults.FullTextIndex.IGNORE_ACCENTS, idxConfig.isIgnoringAccents)
+        //assertEquals(Locale.getDefault().getLanguage(), idxConfig.language)
+
+        idxConfig.setLanguage(null)
+        assertNull(idxConfig.language)
+    }
+
+    @Test
+    fun testFullTextIndexConfig() {
+        loadJSONResourceIntoCollection("sentences.json")
+
+        val idxConfig = FullTextIndexConfiguration("sentence", "nonsense")
+            .setLanguage("en-ca")
+            .ignoreAccents(true)
+        assertEquals("en-ca", idxConfig.language)
+        assertTrue(idxConfig.isIgnoringAccents)
+
+        testCollection.createIndex("sentence", idxConfig)
+        val idx = Expression.fullTextIndex("sentence")
+
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id), SelectResult.property("sentence"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "'Dummie woman'"))
+            .orderBy(Ordering.expression(FullTextFunction.rank(idx)).descending())
+
+        verifyQuery(
+            query,
+            2
+        ) { _, result ->
+            assertNotNull(result.getString(0))
+            assertNotNull(result.getString(1))
+        }
     }
 
     // Test courtesy of Jayahari Vavachan
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testN1QLFTSQuery() {
-        loadJSONResource("sentences.json")
+        loadJSONResourceIntoCollection("sentences.json")
 
-        baseTestDb.createIndex(
-            "sentence",
-            IndexBuilder.fullTextIndex(FullTextIndexItem.property("sentence"))
+        testCollection.createIndex("sentence", IndexBuilder.fullTextIndex(FullTextIndexItem.property("sentence")))
+
+        val query = testDatabase.createQuery(
+            "SELECT _id FROM " + testCollection.fullName
+                    + " WHERE MATCH(sentence, 'Dummie woman')"
         )
 
-        val numRows = verifyQuery(
-            baseTestDb.createQuery("SELECT _id FROM _default WHERE MATCH(sentence, 'Dummie woman')")
-        ) { _, result ->
-            assertNotNull(result.getString(0))
+        verifyQuery(query, 2) { _, result ->
+            assertNotNull(
+                result.getString(0)
+            )
         }
-
-        assertEquals(2, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testOrderBy() {
-        loadJSONResource("names_100.json")
+        loadJSONResourceIntoCollection("names_100.json")
 
         val order = Ordering.expression(Expression.property("name.first"))
 
-        testOrdered(order.ascending(), naturalOrder())
-        testOrdered(order.descending(), reverseOrder())
+        // Don't replace this with Comparator.naturalOrder.
+        // it doesn't exist on older versions of Android
+        testOrdered(order.ascending(), String::compareTo)
+        testOrdered(order.descending()) { c1, c2 -> c2.compareTo(c1) }
     }
 
     // https://github.com/couchbase/couchbase-lite-ios/issues/1669
     // https://github.com/couchbase/couchbase-lite-core/issues/81
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSelectDistinct() {
         val doc1 = MutableDocument()
         doc1.setValue("number", 20)
-        saveDocInBaseTestDb(doc1)
+        saveDocInCollection(doc1)
 
         val doc2 = MutableDocument()
         doc2.setValue("number", 20)
-        saveDocInBaseTestDb(doc2)
+        saveDocInCollection(doc2)
 
-        val S_NUMBER = SelectResult.property("number")
-        val query = QueryBuilder.selectDistinct(S_NUMBER).from(DataSource.database(baseTestDb))
-
-        val numRows = verifyQuery(query) { _, result ->
-            assertEquals(20, result.getInt(0))
-        }
-        assertEquals(1, numRows)
+        verifyQuery(
+            QueryBuilder.selectDistinct(SelectResult.property("number"))
+                .from(DataSource.collection(testCollection)),
+            1
+        ) { _, result -> assertEquals(20, result.getInt(0)) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testJoin() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val doc1 = MutableDocument("joinme")
+        val doc1 = MutableDocument()
         doc1.setValue("theone", 42)
-        saveDocInBaseTestDb(doc1)
+        saveDocInCollection(doc1)
 
-        val join = Join.join(DataSource.database(baseTestDb).`as`("secondary"))
-            .on(
-                Expression.property("number1").from("main")
-                    .equalTo(Expression.property("theone").from("secondary"))
+        val join = Join.join(DataSource.collection(testCollection).`as`("secondary"))
+            .on(Expression.property(TEST_DOC_SORT_KEY).from("main")
+                .equalTo(Expression.property("theone").from("secondary"))
             )
 
         val query = QueryBuilder.select(SelectResult.expression(Meta.id.from("main")))
-            .from(DataSource.database(baseTestDb).`as`("main"))
+            .from(DataSource.collection(testCollection).`as`("main"))
             .join(join)
 
-        val numRows = verifyQuery(query) { _, result ->
-            val docID = result.getString(0)!!
-            val doc = baseTestDb.getDocument(docID)!!
-            assertEquals(42, doc.getInt("number1"))
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            val docID = result.getString(0)
+            val doc = testCollection.getDocument((docID)!!)!!
+            assertEquals(42, doc.getInt(TEST_DOC_SORT_KEY))
         }
-        assertEquals(1, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLeftJoin() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val joinme = MutableDocument("joinme")
+        val joinme = MutableDocument()
         joinme.setValue("theone", 42)
-        saveDocInBaseTestDb(joinme)
-
-        //Expression mainPropExpr =
+        saveDocInCollection(joinme)
 
         val query = QueryBuilder.select(
-            SelectResult.expression(Expression.property("number2").from("main")),
+            SelectResult.expression(Expression.property(TEST_DOC_REV_SORT_KEY).from("main")),
             SelectResult.expression(Expression.property("theone").from("secondary"))
         )
-            .from(DataSource.database(baseTestDb).`as`("main"))
-            .join(
-                Join.leftJoin(DataSource.database(baseTestDb).`as`("secondary"))
-                    .on(
-                        Expression.property("number1").from("main")
-                            .equalTo(Expression.property("theone").from("secondary"))
-                    )
+            .from(DataSource.collection(testCollection).`as`("main"))
+            .join(Join.leftJoin(DataSource.collection(testCollection).`as`("secondary"))
+                .on(Expression.property(TEST_DOC_SORT_KEY).from("main")
+                    .equalTo(Expression.property("theone").from("secondary"))
+                )
             )
 
-        val numRows = verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            101
+        ) { n, result ->
             if (n == 41) {
                 assertEquals(59, result.getInt(0))
                 assertNull(result.getValue(1))
@@ -613,107 +700,107 @@ class QueryTest : BaseQueryTest() {
                 assertEquals(42, result.getInt(1))
             }
         }
-        assertEquals(101, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCrossJoin() {
-        loadNumberedDocs(10)
+        loadDocuments(10)
 
         val query = QueryBuilder.select(
-            SelectResult.expression(Expression.property("number1").from("main")),
-            SelectResult.expression(Expression.property("number2").from("secondary"))
+            SelectResult.expression(Expression.property(TEST_DOC_SORT_KEY).from("main")),
+            SelectResult.expression(Expression.property(TEST_DOC_REV_SORT_KEY).from("secondary"))
         )
-            .from(DataSource.database(baseTestDb).`as`("main"))
-            .join(Join.crossJoin(DataSource.database(baseTestDb).`as`("secondary")))
+            .from(DataSource.collection(testCollection).`as`("main"))
+            .join(Join.crossJoin(DataSource.collection(testCollection).`as`("secondary")))
 
-        val numRows = verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            100
+        ) { n, result ->
             val num1 = result.getInt(0)
             val num2 = result.getInt(1)
             assertEquals((num1 - 1) % 10, (n - 1) / 10)
             assertEquals((10 - num2) % 10, n % 10)
         }
-        assertEquals(100, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGroupBy() {
-        loadJSONResource("names_100.json")
+        loadJSONResourceIntoCollection("names_100.json")
 
         val expectedStates = listOf("AL", "CA", "CO", "FL", "IA")
-        val expectedCounts = listOf<Long>(1, 6, 1, 1, 3)
+        val expectedCounts = listOf(1, 6, 1, 1, 3)
         val expectedMaxZips = listOf("35243", "94153", "81223", "33612", "50801")
 
-        val ds = DataSource.database(baseTestDb)
-
         val state = Expression.property("contact.address.state")
-        val count = Function.count(Expression.intValue(1))
-        val zip = Expression.property("contact.address.zip")
-        val maxZip = Function.max(zip)
-        val gender = Expression.property("gender")
-
-        val rsState = SelectResult.property("contact.address.state")
-        val rsCount = SelectResult.expression(count)
-        val rsMaxZip = SelectResult.expression(maxZip)
-
-        val ordering = Ordering.expression(state)
-
-        var query = QueryBuilder.select(rsState, rsCount, rsMaxZip)
-            .from(ds)
-            .where(gender.equalTo(Expression.string("female")))
+        var query = QueryBuilder
+            .select(
+                SelectResult.property("contact.address.state"),
+                SelectResult.expression(Function.count(Expression.intValue(1))),
+                SelectResult.expression(Function.max(Expression.property("contact.address.zip")))
+            )
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property("gender").equalTo(Expression.string("female")))
             .groupBy(state)
-            .orderBy(ordering)
+            .orderBy(Ordering.expression(state))
 
-        var numRows = verifyQuery(query) { n, result ->
-            val state1 = result.getValue(0) as String
+        verifyQuery(
+            query,
+            31
+        ) { n, result ->
+            val state1 = result.getValue(0) as String?
             val count1 = result.getValue(1) as Long
-            val maxZip1 = result.getValue(2) as String
+            val maxZip1 = result.getValue(2) as String?
             if (n - 1 < expectedStates.size) {
                 assertEquals(expectedStates[n - 1], state1)
-                assertEquals(expectedCounts[n - 1], count1)
+                assertEquals(expectedCounts[n - 1].toLong(), count1)
                 assertEquals(expectedMaxZips[n - 1], maxZip1)
             }
         }
-        assertEquals(31, numRows)
 
         // With HAVING:
         val expectedStates2 = listOf("CA", "IA", "IN")
-        val expectedCounts2 = listOf<Long>(6, 3, 2)
+        val expectedCounts2 = listOf(6, 3, 2)
         val expectedMaxZips2 = listOf("94153", "50801", "47952")
 
-        val havingExpr = count.greaterThan(Expression.intValue(1))
-
-        query = QueryBuilder.select(rsState, rsCount, rsMaxZip)
-            .from(ds)
-            .where(gender.equalTo(Expression.string("female")))
+        query = QueryBuilder
+            .select(
+                SelectResult.property("contact.address.state"),
+                SelectResult.expression(Function.count(Expression.intValue(1))),
+                SelectResult.expression(Function.max(Expression.property("contact.address.zip")))
+            )
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property("gender").equalTo(Expression.string("female")))
             .groupBy(state)
-            .having(havingExpr)
-            .orderBy(ordering)
+            .having(Function.count(Expression.intValue(1)).greaterThan(Expression.intValue(1)))
+            .orderBy(Ordering.expression(state))
 
-        numRows = verifyQuery(query) { n, result ->
-            val state12 = result.getValue(0) as String
+        verifyQuery(
+            query,
+            15
+        ) { n, result ->
+            val state12 = result.getValue(0) as String?
             val count12 = result.getValue(1) as Long
-            val maxZip12 = result.getValue(2) as String
+            val maxZip12 = result.getValue(2) as String?
             if (n - 1 < expectedStates2.size) {
                 assertEquals(expectedStates2[n - 1], state12)
-                assertEquals(expectedCounts2[n - 1], count12)
+                assertEquals(expectedCounts2[n - 1].toLong(), count12)
                 assertEquals(expectedMaxZips2[n - 1], maxZip12)
             }
         }
-        assertEquals(15, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testParameters() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val query = QueryBuilder.select(SR_NUMBER1)
-            .from(DataSource.database(baseTestDb))
-            .where(EXPR_NUMBER1.between(Expression.parameter("num1"), Expression.parameter("num2")))
-            .orderBy(Ordering.expression(EXPR_NUMBER1))
+        val query = QueryBuilder
+            .select(SelectResult.property(TEST_DOC_SORT_KEY))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property(TEST_DOC_SORT_KEY)
+                .between(Expression.parameter("num1"), Expression.parameter("num2"))
+            )
+            .orderBy(Ordering.expression(Expression.property(TEST_DOC_SORT_KEY)))
 
         val params = Parameters(query.parameters)
             .setValue("num1", 2)
@@ -721,27 +808,30 @@ class QueryTest : BaseQueryTest() {
         query.parameters = params
 
         val expectedNumbers = longArrayOf(2, 3, 4, 5)
-        val numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedNumbers[n - 1], result.getValue(0) as Long)
-        }
-        assertEquals(4, numRows)
+        verifyQuery(query, 4) { n, result -> assertEquals(expectedNumbers[n - 1], result.getValue(0) as Long) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testMeta() {
-        loadNumberedDocs(5)
+        val expected = loadDocuments(5).map(Document::id)
 
-        val query = QueryBuilder.select(SR_DOCID, SR_SEQUENCE, SR_REVID, SR_NUMBER1)
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id),
+                SelectResult.expression(Meta.sequence),
+                SelectResult.expression(Meta.revisionID),
+                SelectResult.property(TEST_DOC_SORT_KEY)
+            )
+            .from(DataSource.collection(testCollection))
             .orderBy(Ordering.expression(Meta.sequence))
 
-        val expectedDocIDs = arrayOf("doc1", "doc2", "doc3", "doc4", "doc5")
-
-        val numRows = verifyQuery(query) { n, result ->
-            val docID1 = result.getValue(0) as String
+        verifyQuery(
+            query,
+            5
+        ) { n, result ->
+            val docID1 = result.getValue(0) as String?
             val docID2 = result.getString(0)
-            val docID3 = result.getValue("id") as String
+            val docID3 = result.getValue("id") as String?
             val docID4 = result.getString("id")
 
             val seq1 = result.getValue(1) as Long
@@ -749,9 +839,9 @@ class QueryTest : BaseQueryTest() {
             val seq3 = result.getValue("sequence") as Long
             val seq4 = result.getLong("sequence")
 
-            val revId1 = result.getValue(2) as String
+            val revId1 = result.getValue(2) as String?
             val revId2 = result.getString(2)
-            val revId3 = result.getValue("revisionID") as String
+            val revId3 = result.getValue("revisionID") as String?
             val revId4 = result.getString("revisionID")
 
             val number = result.getValue(3) as Long
@@ -759,7 +849,7 @@ class QueryTest : BaseQueryTest() {
             assertEquals(docID1, docID2)
             assertEquals(docID2, docID3)
             assertEquals(docID3, docID4)
-            assertEquals(docID4, expectedDocIDs[n - 1])
+            assertEquals(docID4, expected[n - 1])
 
             assertEquals(n.toLong(), seq1)
             assertEquals(n.toLong(), seq2)
@@ -769,149 +859,134 @@ class QueryTest : BaseQueryTest() {
             assertEquals(revId1, revId2)
             assertEquals(revId2, revId3)
             assertEquals(revId3, revId4)
-            assertEquals(revId4, baseTestDb.getDocument(docID1)!!.revisionID)
+            assertEquals(revId4, testCollection.getDocument(docID1!!)!!.revisionID)
 
             assertEquals(n.toLong(), number)
         }
-        assertEquals(5, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRevisionIdInCreate() {
         val doc = MutableDocument()
-        baseTestDb.save(doc)
+        saveDocInCollection(doc)
 
-        val query = QueryBuilder.select(SelectResult.expression(Meta.revisionID))
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.revisionID))
+            .from(DataSource.collection(testCollection))
             .where(Meta.id.equalTo(Expression.string(doc.id)))
 
-        val numRows = verifyQuery(query) { _, result ->
-            assertEquals(doc.revisionID, result.getString(0))
-        }
-
-        assertEquals(1, numRows)
+        verifyQuery(query, 1) { _, result -> assertEquals(doc.revisionID, result.getString(0)) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRevisionIdInUpdate() {
         var doc = MutableDocument()
-        baseTestDb.save(doc)
+        saveDocInCollection(doc)
 
-        doc = baseTestDb.getDocument(doc.id)!!.toMutable()
+        doc = testCollection.getDocument(doc.id)!!.toMutable()
         doc.setString("DEC", "Maynard")
-        baseTestDb.save(doc)
+        saveDocInCollection(doc)
         val revId = doc.revisionID
 
-        val query = QueryBuilder.select(SelectResult.expression(Meta.revisionID))
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.revisionID))
+            .from(DataSource.collection(testCollection))
             .where(Meta.id.equalTo(Expression.string(doc.id)))
 
-        val numRows = verifyQuery(query) { _, result ->
-            assertEquals(revId, result.getString(0))
-        }
-
-        assertEquals(1, numRows)
+        verifyQuery(query, 1) { _, result -> assertEquals(revId, result.getString(0)) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRevisionIdInWhere() {
         val doc = MutableDocument()
-        baseTestDb.save(doc)
+        saveDocInCollection(doc)
 
-        val query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
             .where(Meta.revisionID.equalTo(Expression.string(doc.revisionID)))
 
-        val numRows = verifyQuery(query) { _, result ->
-            assertEquals(doc.id, result.getString(0))
-        }
-
-        assertEquals(1, numRows)
+        verifyQuery(query, 1) { _, result -> assertEquals(doc.id, result.getString(0)) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testRevisionIdInDelete() {
         val doc = MutableDocument()
-        baseTestDb.save(doc)
+        saveDocInCollection(doc)
 
-        val dbDoc = baseTestDb.getDocument(doc.id)
+        val dbDoc = testCollection.getDocument(doc.id)
         assertNotNull(dbDoc)
 
-        baseTestDb.delete(dbDoc)
+        testCollection.delete(dbDoc)
 
-        val query = QueryBuilder.select(SelectResult.expression(Meta.revisionID))
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.revisionID))
+            .from(DataSource.collection(testCollection))
             .where(Meta.deleted.equalTo(Expression.booleanValue(true)))
 
-        val numRows = verifyQuery(query) { _, result ->
-            assertEquals(dbDoc.revisionID, result.getString(0))
-        }
-
-        assertEquals(1, numRows)
+        verifyQuery(query, 1) { _, result -> assertEquals(dbDoc.revisionID, result.getString(0)) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLimit() {
-        loadNumberedDocs(10)
+        loadDocuments(10)
 
-        val dataSource = DataSource.database(baseTestDb)
-
-        var query = QueryBuilder.select(SR_NUMBER1)
-            .from(dataSource)
-            .orderBy(Ordering.expression(EXPR_NUMBER1))
+        var query = QueryBuilder
+            .select(SelectResult.property(TEST_DOC_SORT_KEY))
+            .from(DataSource.collection(testCollection))
+            .orderBy(Ordering.expression(Expression.property(TEST_DOC_SORT_KEY)))
             .limit(Expression.intValue(5))
 
         val expectedNumbers = longArrayOf(1, 2, 3, 4, 5)
-        var numRows = verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            5
+        ) { n, result ->
             val number = result.getValue(0) as Long
             assertEquals(expectedNumbers[n - 1], number)
         }
-        assertEquals(5, numRows)
 
         val paramExpr = Expression.parameter("LIMIT_NUM")
-        query = QueryBuilder.select(SR_NUMBER1)
-            .from(dataSource)
-            .orderBy(Ordering.expression(EXPR_NUMBER1))
+        query = QueryBuilder
+            .select(SelectResult.property(TEST_DOC_SORT_KEY))
+            .from(DataSource.collection(testCollection))
+            .orderBy(Ordering.expression(Expression.property(TEST_DOC_SORT_KEY)))
             .limit(paramExpr)
         val params = Parameters(query.parameters).setValue("LIMIT_NUM", 3)
         query.parameters = params
 
         val expectedNumbers2 = longArrayOf(1, 2, 3)
-        numRows = verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            3
+        ) { n, result ->
             val number = result.getValue(0) as Long
             assertEquals(expectedNumbers2[n - 1], number)
         }
-        assertEquals(3, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLimitOffset() {
-        loadNumberedDocs(10)
+        loadDocuments(10)
 
-        val dataSource = DataSource.database(baseTestDb)
-
-        var query = QueryBuilder.select(SR_NUMBER1)
-            .from(dataSource)
-            .orderBy(Ordering.expression(EXPR_NUMBER1))
+        var query = QueryBuilder
+            .select(SelectResult.property(TEST_DOC_SORT_KEY))
+            .from(DataSource.collection(testCollection))
+            .orderBy(Ordering.expression(Expression.property(TEST_DOC_SORT_KEY)))
             .limit(Expression.intValue(5), Expression.intValue(3))
 
         val expectedNumbers = longArrayOf(4, 5, 6, 7, 8)
-        var numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedNumbers[n - 1], result.getValue(0) as Long)
-        }
-        assertEquals(5, numRows)
+        verifyQuery(
+            query,
+            5
+        ) { n, result -> assertEquals(expectedNumbers[n - 1], result.getValue(0) as Long) }
 
         val paramLimitExpr = Expression.parameter("LIMIT_NUM")
         val paramOffsetExpr = Expression.parameter("OFFSET_NUM")
-        query = QueryBuilder.select(SR_NUMBER1)
-            .from(dataSource)
-            .orderBy(Ordering.expression(EXPR_NUMBER1))
+        query = QueryBuilder
+            .select(SelectResult.property(TEST_DOC_SORT_KEY))
+            .from(DataSource.collection(testCollection))
+            .orderBy(Ordering.expression(Expression.property(TEST_DOC_SORT_KEY)))
             .limit(paramLimitExpr, paramOffsetExpr)
         val params = Parameters(query.parameters)
             .setValue("LIMIT_NUM", 3)
@@ -919,188 +994,186 @@ class QueryTest : BaseQueryTest() {
         query.parameters = params
 
         val expectedNumbers2 = longArrayOf(6, 7, 8)
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedNumbers2[n - 1], result.getValue(0) as Long)
-        }
-        assertEquals(3, numRows)
+        verifyQuery(
+            query,
+            3
+        ) { n, result -> assertEquals(expectedNumbers2[n - 1], result.getValue(0) as Long) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryResult() {
-        loadJSONResource("names_100.json")
+        loadJSONResourceIntoCollection("names_100.json")
+        val query = QueryBuilder
+            .select(
+                SelectResult.property("name.first").`as`("firstname"),
+                SelectResult.property("name.last").`as`("lastname"),
+                SelectResult.property("gender"),
+                SelectResult.property("contact.address.city")
+            )
+            .from(DataSource.collection(testCollection))
 
-        val query = QueryBuilder.select(
-            SelectResult.property("name.first").`as`("firstname"),
-            SelectResult.property("name.last").`as`("lastname"),
-            SelectResult.property("gender"),
-            SelectResult.property("contact.address.city")
-        )
-            .from(DataSource.database(baseTestDb))
-
-        val numRows = verifyQuery(query) { _, result ->
+        verifyQuery(
+            query,
+            100
+        ) { _, result ->
             assertEquals(4, result.count())
             assertEquals(result.getValue(0), result.getValue("firstname"))
             assertEquals(result.getValue(1), result.getValue("lastname"))
             assertEquals(result.getValue(2), result.getValue("gender"))
             assertEquals(result.getValue(3), result.getValue("city"))
         }
-        assertEquals(100, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryProjectingKeys() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val query = QueryBuilder.select(
-            SelectResult.expression(Function.avg(EXPR_NUMBER1)),
-            SelectResult.expression(Function.count(EXPR_NUMBER1)),
-            SelectResult.expression(Function.min(EXPR_NUMBER1)).`as`("min"),
-            SelectResult.expression(Function.max(EXPR_NUMBER1)),
-            SelectResult.expression(Function.sum(EXPR_NUMBER1)).`as`("sum")
-        )
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(
+                SelectResult.expression(Function.avg(Expression.property(TEST_DOC_SORT_KEY))),
+                SelectResult.expression(Function.count(Expression.property(TEST_DOC_SORT_KEY))),
+                SelectResult.expression(Function.min(Expression.property(TEST_DOC_SORT_KEY))).`as`("min"),
+                SelectResult.expression(Function.max(Expression.property(TEST_DOC_SORT_KEY))),
+                SelectResult.expression(Function.sum(Expression.property(TEST_DOC_SORT_KEY))).`as`("sum")
+            )
+            .from(DataSource.collection(testCollection))
 
-        val numRows = verifyQuery(query) { _, result ->
-            assertEquals(5, result.count)
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            assertEquals(5, result.count())
             assertEquals(result.getValue(0), result.getValue("$1"))
             assertEquals(result.getValue(1), result.getValue("$2"))
             assertEquals(result.getValue(2), result.getValue("min"))
             assertEquals(result.getValue(3), result.getValue("$3"))
             assertEquals(result.getValue(4), result.getValue("sum"))
         }
-        assertEquals(1, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQuantifiedOperators() {
-        loadJSONResource("names_100.json")
-
-        val ds = DataSource.database(baseTestDb)
+        loadJSONResourceIntoCollection("names_100.json")
 
         val exprLikes = Expression.property("likes")
         val exprVarLike = ArrayExpression.variable("LIKE")
 
         // ANY:
-        var query = QueryBuilder.select(SR_DOCID)
-            .from(ds)
-            .where(
-                ArrayExpression.any(exprVarLike)
-                    .`in`(exprLikes)
-                    .satisfies(exprVarLike.equalTo(Expression.string("climbing")))
+        var query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
+            .where(ArrayExpression
+                .any(exprVarLike)
+                .`in`(exprLikes)
+                .satisfies(exprVarLike.equalTo(Expression.string("climbing")))
             )
 
         val i = atomic(0)
         val expected = arrayOf("doc-017", "doc-021", "doc-023", "doc-045", "doc-060")
-        var numRows = verifyQuery(query, false) { _, result ->
-            assertEquals(expected[i.getAndIncrement()], result.getString(0))
-        }
-        assertEquals(expected.size, numRows)
+        assertEquals(
+            expected.size,
+            verifyQueryWithEnumerator(
+                query
+            ) { _, result -> assertEquals(expected[i.getAndIncrement()], result.getString(0)) }
+        )
 
         // EVERY:
-        query = QueryBuilder.select(SR_DOCID)
-            .from(ds)
-            .where(
-                ArrayExpression.every(ArrayExpression.variable("LIKE"))
-                    .`in`(exprLikes)
-                    .satisfies(exprVarLike.equalTo(Expression.string("taxes")))
+        query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
+            .where(ArrayExpression
+                .every(ArrayExpression.variable("LIKE"))
+                .`in`(exprLikes)
+                .satisfies(exprVarLike.equalTo(Expression.string("taxes")))
             )
 
-        numRows = verifyQuery(query, false) { n, result ->
-            if (n == 1) {
-                assertEquals("doc-007", result.getString(0))
-            }
-        }
-        assertEquals(42, numRows)
+        assertEquals(
+            42,
+            verifyQueryWithEnumerator(
+                query
+            ) { n, result -> if (n == 1) { assertEquals("doc-007", result.getString(0)) } }
+        )
 
         // ANY AND EVERY:
-        query = QueryBuilder.select(SR_DOCID)
-            .from(ds)
-            .where(
-                ArrayExpression.anyAndEvery(ArrayExpression.variable("LIKE"))
-                    .`in`(exprLikes)
-                    .satisfies(exprVarLike.equalTo(Expression.string("taxes")))
+        query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
+            .where(ArrayExpression
+                .anyAndEvery(ArrayExpression.variable("LIKE"))
+                .`in`(exprLikes)
+                .satisfies(exprVarLike.equalTo(Expression.string("taxes")))
             )
 
-        numRows = verifyQuery(query, false) { _, _ -> }
-        assertEquals(0, numRows)
+        assertEquals(0, verifyQueryWithEnumerator(query) { _, _ -> })
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAggregateFunctions() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val query = QueryBuilder.select(
-            SelectResult.expression(Function.avg(EXPR_NUMBER1)),
-            SelectResult.expression(Function.count(EXPR_NUMBER1)),
-            SelectResult.expression(Function.min(EXPR_NUMBER1)),
-            SelectResult.expression(Function.max(EXPR_NUMBER1)),
-            SelectResult.expression(Function.sum(EXPR_NUMBER1))
-        )
-            .from(DataSource.database(baseTestDb))
-        val numRows = verifyQuery(query) { _, result ->
-            assertEquals(50.5f, result.getValue(0) as Float, 0.0f)
+        val query = QueryBuilder
+            .select(
+                SelectResult.expression(Function.avg(Expression.property(TEST_DOC_SORT_KEY))),
+                SelectResult.expression(Function.count(Expression.property(TEST_DOC_SORT_KEY))),
+                SelectResult.expression(Function.min(Expression.property(TEST_DOC_SORT_KEY))),
+                SelectResult.expression(Function.max(Expression.property(TEST_DOC_SORT_KEY))),
+                SelectResult.expression(Function.sum(Expression.property(TEST_DOC_SORT_KEY)))
+            )
+            .from(DataSource.collection(testCollection))
+
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            assertEquals(50.5F, result.getValue(0) as Float, 0.0F)
             assertEquals(100L, result.getValue(1) as Long)
             assertEquals(1L, result.getValue(2) as Long)
             assertEquals(100L, result.getValue(3) as Long)
             assertEquals(5050L, result.getValue(4) as Long)
         }
-        assertEquals(1, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testArrayFunctions() {
-        val doc = MutableDocument("doc1")
+        val doc = MutableDocument()
         val array = MutableArray()
         array.addValue("650-123-0001")
         array.addValue("650-123-0002")
         doc.setValue("array", array)
-        saveDocInBaseTestDb(doc)
-
-        val ds = DataSource.database(baseTestDb)
+        saveDocInCollection(doc)
 
         val exprArray = Expression.property("array")
 
         var query = QueryBuilder.select(SelectResult.expression(ArrayFunction.length(exprArray)))
-            .from(ds)
+            .from(DataSource.collection(testCollection))
 
-        var numRows = verifyQuery(query) { _, result ->
-            assertEquals(2, result.getInt(0))
-        }
-        assertEquals(1, numRows)
+        verifyQuery(query, 1) { _, result -> assertEquals(2, result.getInt(0)) }
 
-        query = QueryBuilder.select(
-            SelectResult.expression(
-                ArrayFunction.contains(exprArray, Expression.string("650-123-0001"))
-            ),
-            SelectResult.expression(
-                ArrayFunction.contains(exprArray, Expression.string("650-123-0003"))
+        query = QueryBuilder
+            .select(
+                SelectResult.expression(ArrayFunction.contains(exprArray, Expression.string("650-123-0001"))),
+                SelectResult.expression(ArrayFunction.contains(exprArray, Expression.string("650-123-0003")))
             )
-        )
-            .from(ds)
+            .from(DataSource.collection(testCollection))
 
-        numRows = verifyQuery(query) { _, result ->
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
             assertTrue(result.getBoolean(0))
             assertFalse(result.getBoolean(1))
         }
-        assertEquals(1, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testMathFunctions() {
         val key = "number"
         val num = 0.6
-
-        val doc = MutableDocument("doc1")
-        doc.setValue(key, num)
-        saveDocInBaseTestDb(doc)
-
         val propNumber = Expression.property(key)
+
+        val doc = MutableDocument()
+        doc.setValue(key, num)
+        saveDocInCollection(doc)
 
         val fns = arrayOf(
             MathFn("abs", Function.abs(propNumber), abs(num)),
@@ -1136,176 +1209,168 @@ class QueryTest : BaseQueryTest() {
         )
 
         for (f in fns) {
-            val nRows = verifyQuery(
-                QueryBuilder.select(SelectResult.expression(f.expr))
-                    .from(DataSource.database(baseTestDb))
-            ) { _, result ->
-                assertEquals(f.expected, result.getDouble(0), 1E-12, f.name)
-            }
-            assertEquals(1, nRows)
+            verifyQuery(
+                QueryBuilder.select(SelectResult.expression(f.expr)).from(DataSource.collection(testCollection)),
+                1
+            ) { _, result -> assertEquals(f.expected, result.getDouble(0), 1E-12, f.name) }
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testStringFunctions() {
         val str = "  See you 18r  "
-        val doc = MutableDocument("doc1")
-        doc.setValue("greeting", str)
-        saveDocInBaseTestDb(doc)
-
-        val ds = DataSource.database(baseTestDb)
-
         val prop = Expression.property("greeting")
 
-        // Contains:
-        val fnContains1 = Function.contains(prop, Expression.string("8"))
-        val fnContains2 = Function.contains(prop, Expression.string("9"))
-        val srFnContains1 = SelectResult.expression(fnContains1)
-        val srFnContains2 = SelectResult.expression(fnContains2)
+        val doc = MutableDocument()
+        doc.setValue("greeting", str)
+        saveDocInCollection(doc)
 
-        var query = QueryBuilder.select(srFnContains1, srFnContains2).from(ds)
+        var query = QueryBuilder
+            .select(
+                SelectResult.expression(Function.contains(prop, Expression.string("8"))),
+                SelectResult.expression(Function.contains(prop, Expression.string("9")))
+            )
+            .from(DataSource.collection(testCollection))
 
-        var numRows = verifyQuery(query) { _, result ->
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
             assertTrue(result.getBoolean(0))
             assertFalse(result.getBoolean(1))
         }
-        assertEquals(1, numRows)
 
         // Length
-        val fnLength = Function.length(prop)
-        query = QueryBuilder.select(SelectResult.expression(fnLength)).from(ds)
+        query = QueryBuilder.select(SelectResult.expression(Function.length(prop)))
+            .from(DataSource.collection(testCollection))
 
-        numRows = verifyQuery(query) { _, result ->
-            assertEquals(str.length, result.getInt(0))
-        }
-        assertEquals(1, numRows)
+        verifyQuery(query, 1) { _, result -> assertEquals(str.length, result.getInt(0)) }
 
         // Lower, Ltrim, Rtrim, Trim, Upper:
-        val fnLower = Function.lower(prop)
-        val fnLTrim = Function.ltrim(prop)
-        val fnRTrim = Function.rtrim(prop)
-        val fnTrim = Function.trim(prop)
-        val fnUpper = Function.upper(prop)
+        query = QueryBuilder
+            .select(
+                SelectResult.expression(Function.lower(prop)),
+                SelectResult.expression(Function.ltrim(prop)),
+                SelectResult.expression(Function.rtrim(prop)),
+                SelectResult.expression(Function.trim(prop)),
+                SelectResult.expression(Function.upper(prop))
+            )
+            .from(DataSource.collection(testCollection))
 
-        query = QueryBuilder.select(
-            SelectResult.expression(fnLower),
-            SelectResult.expression(fnLTrim),
-            SelectResult.expression(fnRTrim),
-            SelectResult.expression(fnTrim),
-            SelectResult.expression(fnUpper)
-        )
-            .from(ds)
-
-        numRows = verifyQuery(query) { _, result ->
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
             assertEquals(str.lowercase(), result.getString(0))
             assertEquals(str.replace("^\\s+".toRegex(), ""), result.getString(1))
             assertEquals(str.replace("\\s+$".toRegex(), ""), result.getString(2))
             assertEquals(str.trim { it <= ' ' }, result.getString(3))
             assertEquals(str.uppercase(), result.getString(4))
         }
-        assertEquals(1, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testSelectAll() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val ds = DataSource.database(baseTestDb)
-        val dbName = baseTestDb.name
+        val collectionName = testCollection.name
 
         // SELECT *
-        var query = QueryBuilder.select(SR_ALL).from(ds)
-
-        var numRows = verifyQuery(query) { n, result ->
-            assertEquals(1, result.count)
-            val a1 = result.getDictionary(0)
-            val a2 = result.getDictionary(dbName)
-            assertEquals(n, a1!!.getInt("number1"))
-            assertEquals((100 - n), a1.getInt("number2"))
-            assertEquals(n, a2!!.getInt("number1"))
-            assertEquals((100 - n), a2.getInt("number2"))
+        verifyQuery(
+            QueryBuilder.select(SelectResult.all()).from(DataSource.collection(testCollection)),
+            100
+        ) { n, result ->
+            assertEquals(1, result.count())
+            val a1 = result.getDictionary(0)!!
+            val a2 = result.getDictionary(collectionName)!!
+            assertEquals(n, a1.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a1.getInt(TEST_DOC_REV_SORT_KEY))
+            assertEquals(n, a2.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a2.getInt(TEST_DOC_REV_SORT_KEY))
         }
-        assertEquals(100, numRows)
 
         // SELECT *, number1
-        query = QueryBuilder.select(SR_ALL, SR_NUMBER1).from(ds)
+        var query = QueryBuilder.select(SelectResult.all(), SelectResult.property(TEST_DOC_SORT_KEY))
+            .from(DataSource.collection(testCollection))
 
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(2, result.count)
-            val a1 = result.getDictionary(0)
-            val a2 = result.getDictionary(dbName)
-            assertEquals(n, a1!!.getInt("number1"))
-            assertEquals((100 - n), a1.getInt("number2"))
-            assertEquals(n, a2!!.getInt("number1"))
-            assertEquals((100 - n), a2.getInt("number2"))
+        verifyQuery(
+            query,
+            100
+        ) { n, result ->
+            assertEquals(2, result.count())
+            val a1 = result.getDictionary(0)!!
+            val a2 = result.getDictionary(collectionName)!!
+            assertEquals(n, a1.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a1.getInt(TEST_DOC_REV_SORT_KEY))
+            assertEquals(n, a2.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a2.getInt(TEST_DOC_REV_SORT_KEY))
             assertEquals(n, result.getInt(1))
-            assertEquals(n, result.getInt("number1"))
+            assertEquals(n, result.getInt(TEST_DOC_SORT_KEY))
         }
-        assertEquals(100, numRows)
 
         // SELECT testdb.*
-        query = QueryBuilder.select(SelectResult.all().from(dbName)).from(ds.`as`(dbName))
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(1, result.count)
-            val a1 = result.getDictionary(0)
-            val a2 = result.getDictionary(dbName)
-            assertEquals(n, a1!!.getInt("number1"))
-            assertEquals((100 - n), a1.getInt("number2"))
-            assertEquals(n, a2!!.getInt("number1"))
-            assertEquals((100 - n), a2.getInt("number2"))
+        query = QueryBuilder.select(SelectResult.all().from(collectionName))
+            .from(DataSource.collection(testCollection).`as`(collectionName))
+
+        verifyQuery(
+            query,
+            100
+        ) { n, result ->
+            assertEquals(1, result.count())
+            val a1 = result.getDictionary(0)!!
+            val a2 = result.getDictionary(collectionName)!!
+            assertEquals(n, a1.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a1.getInt(TEST_DOC_REV_SORT_KEY))
+            assertEquals(n, a2.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a2.getInt(TEST_DOC_REV_SORT_KEY))
         }
-        assertEquals(100, numRows)
 
         // SELECT testdb.*, testdb.number1
-        query = QueryBuilder.select(
-            SelectResult.all().from(dbName),
-            SelectResult.expression(Expression.property("number1").from(dbName))
-        )
-            .from(ds.`as`(dbName))
+        query = QueryBuilder
+            .select(
+                SelectResult.all().from(collectionName),
+                SelectResult.expression(Expression.property(TEST_DOC_SORT_KEY).from(collectionName))
+            )
+            .from(DataSource.collection(testCollection).`as`(collectionName))
 
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(2, result.count)
-            val a1 = result.getDictionary(0)
-            val a2 = result.getDictionary(dbName)
-            assertEquals(n, a1!!.getInt("number1"))
-            assertEquals((100 - n), a1.getInt("number2"))
-            assertEquals(n, a2!!.getInt("number1"))
-            assertEquals((100 - n), a2.getInt("number2"))
+        verifyQuery(
+            query,
+            100
+        ) { n, result ->
+            assertEquals(2, result.count())
+            val a1 = result.getDictionary(0)!!
+            val a2 = result.getDictionary(collectionName)!!
+            assertEquals(n, a1.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a1.getInt(TEST_DOC_REV_SORT_KEY))
+            assertEquals(n, a2.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a2.getInt(TEST_DOC_REV_SORT_KEY))
             assertEquals(n, result.getInt(1))
-            assertEquals(n, result.getInt("number1"))
+            assertEquals(n, result.getInt(TEST_DOC_SORT_KEY))
         }
-        assertEquals(100, numRows)
     }
 
     // With no locale, characters with diacritics should be
     // treated as the original letters A, E, I, O, U,
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testUnicodeCollationWithLocaleNone() {
         createAlphaDocs()
 
-        val noLocale: Collation = Collation.unicode()
+        val noLocale = Collation.unicode()
             .setLocale(null)
             .setIgnoreCase(false)
             .setIgnoreAccents(false)
 
         val query = QueryBuilder.select(SelectResult.property("string"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .orderBy(Ordering.expression(Expression.property("string").collate(noLocale)))
 
         val expected = arrayOf("A", "Å", "B", "Z")
-        val numRows = verifyQuery(query) { n, result ->
-            assertEquals(expected[n - 1], result.getString(0))
-        }
-        assertEquals(expected.size, numRows)
+        verifyQuery(query, expected.size) { n, result -> assertEquals(expected[n - 1], result.getString(0)) }
     }
 
     // In the Spanish alphabet, the six characters with diacritics Á, É, Í, Ó, Ú, Ü
     // are treated as the original letters A, E, I, O, U,
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testUnicodeCollationWithLocaleSpanish() {
         createAlphaDocs()
 
@@ -1315,45 +1380,35 @@ class QueryTest : BaseQueryTest() {
             .setIgnoreAccents(false)
 
         val query = QueryBuilder.select(SelectResult.property("string"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .orderBy(Ordering.expression(Expression.property("string").collate(localeEspanol)))
 
         val expected = arrayOf("A", "Å", "B", "Z")
-        val numRows = verifyQuery(query) { n, result ->
-            assertEquals(expected[n - 1], result.getString(0))
-        }
-        assertEquals(expected.size, numRows)
+        verifyQuery(query, expected.size) { n, result -> assertEquals(expected[n - 1], result.getString(0)) }
     }
 
     // In the Swedish alphabet, there are three extra vowels
     // placed at its end (..., X, Y, Z, Å, Ä, Ö),
     // Early versions of Android do not support the Swedish Locale
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testUnicodeCollationWithLocaleSwedish() {
         createAlphaDocs()
 
         val query = QueryBuilder.select(SelectResult.property("string"))
-            .from(DataSource.database(baseTestDb))
-            .orderBy(
-                Ordering.expression(
-                    Expression.property("string").collate(
-                        Collation.unicode().setLocale("sv")
-                            .setIgnoreCase(false)
-                            .setIgnoreAccents(false)
-                    )
+            .from(DataSource.collection(testCollection))
+            .orderBy(Ordering.expression(Expression.property("string")
+                .collate(Collation.unicode()
+                    .setLocale("sv")
+                    .setIgnoreCase(false)
+                    .setIgnoreAccents(false)
                 )
-            )
+            ))
 
         val expected = arrayOf("A", "B", "Z", "Å")
-        val numRows = verifyQuery(query) { n, result ->
-            assertEquals(expected[n - 1], result.getString(0))
-        }
-        assertEquals(expected.size, numRows)
+        verifyQuery(query, expected.size) { n, result -> assertEquals(expected[n - 1], result.getString(0)) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCompareWithUnicodeCollation() {
         class CollationTest(
             val value: String,
@@ -1361,18 +1416,15 @@ class QueryTest : BaseQueryTest() {
             val mode: Boolean,
             val collation: Collation
         ) {
-            override fun toString(): String =
-                "test '" + value + "' " + (if (mode) "=" else "<") + " '" + test + "'"
+            override fun toString(): String {
+                return "test '" + value + "' " + (if ((mode)) "=" else "<") + " '" + test + "'"
+            }
         }
 
-        val bothSensitive =
-            Collation.unicode().setLocale(null).setIgnoreCase(false).setIgnoreAccents(false)
-        val accentSensitive =
-            Collation.unicode().setLocale(null).setIgnoreCase(true).setIgnoreAccents(false)
-        val caseSensitive =
-            Collation.unicode().setLocale(null).setIgnoreCase(false).setIgnoreAccents(true)
-        val noSensitive =
-            Collation.unicode().setLocale(null).setIgnoreCase(true).setIgnoreAccents(true)
+        val bothSensitive = Collation.unicode().setLocale(null).setIgnoreCase(false).setIgnoreAccents(false)
+        val accentSensitive = Collation.unicode().setLocale(null).setIgnoreCase(true).setIgnoreAccents(false)
+        val caseSensitive = Collation.unicode().setLocale(null).setIgnoreCase(false).setIgnoreAccents(true)
+        val noSensitive = Collation.unicode().setLocale(null).setIgnoreCase(true).setIgnoreAccents(true)
 
         val testData = listOf(
             // Edge cases: empty and 1-char strings:
@@ -1419,9 +1471,7 @@ class QueryTest : BaseQueryTest() {
             CollationTest("abc", "ABC", false, bothSensitive),
             CollationTest("•a", "•A", false, bothSensitive),
             CollationTest("test a", "test á", false, bothSensitive),
-            CollationTest("Ähnlichkeit", "apple", false, bothSensitive),
-
-            // Because 'h'-vs-'p' beats 'Ä'-vs-'a'
+            CollationTest("Ähnlichkeit", "apple", false, bothSensitive), // Because 'h'-vs-'p' beats 'Ä'-vs-'a'
             CollationTest("ax", "Äz", false, bothSensitive),
             CollationTest("test a", "test Á", false, bothSensitive),
             CollationTest("test Á", "test e", false, bothSensitive),
@@ -1444,194 +1494,185 @@ class QueryTest : BaseQueryTest() {
         for (data in testData) {
             val mDoc = MutableDocument()
             mDoc.setValue("value", data.value)
-            val doc = saveDocInBaseTestDb(mDoc)
+            val doc = saveDocInCollection(mDoc)
 
             val test = Expression.value(data.test)
             var comparison = Expression.property("value").collate(data.collation)
             comparison = if (data.mode) comparison.equalTo(test) else comparison.lessThan(test)
 
-            val query = QueryBuilder.select().from(DataSource.database(baseTestDb))
-                .where(comparison)
-
-            val numRows = verifyQuery(query) { n, result ->
+            verifyQuery(
+                QueryBuilder.select().from(DataSource.collection(testCollection)).where(comparison),
+                1
+            ) { n, result ->
                 assertEquals(1, n)
                 assertNotNull(result)
             }
-            assertEquals(1, numRows, data.toString())
 
-            baseTestDb.delete(doc)
+            testCollection.delete(doc)
         }
     }
 
+    // This is a pretty finicky test: the numbers are important.
+    // It will fail by timing out; you'll have to figure out why.
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLiveQuery() = runBlocking {
-        loadNumberedDocs(100)
+        val firstLoad = loadDocuments(100, 20)
 
-        val query = QueryBuilder.select(SR_DOCID)
-            .from(DataSource.database(baseTestDb))
-            .where(EXPR_NUMBER1.lessThan(Expression.intValue(10)))
-            .orderBy(Ordering.property("number1").ascending())
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property(TEST_DOC_SORT_KEY).lessThan(Expression.intValue(110)))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        val latch = CountDownLatch(2)
-        val listener = { change: QueryChange ->
-            val rs = change.results!!
-            if (latch.getCount() == 2L) {
-                var count = 0
-                while (rs.next() != null) {
-                    count++
+        val latch1 = CountDownLatch(1)
+        val latch2 = CountDownLatch(1)
+        val secondBatch: MutableList<String> = ConcurrentMutableList()
+        val listener: QueryChangeListener = { change ->
+            val rs = change.results
+            var count = 0
+            while (true) {
+                val r = rs?.next() ?: break
+                count++
+                // The first run of this query should see a result set with 10 results:
+                // There are 20 docs in the db, with sort keys 100 .. 119. Only 10
+                // meet the where criteria < 110: (100 .. 109)
+                if (latch1.getCount() > 0) {
+                    if (count >= 10) { latch1.countDown() }
+                    continue
                 }
-                assertEquals(9, count)
-            } else if (latch.getCount() == 1L) {
-                var count = 0
-                for (result in rs) {
-                    if (count == 0) {
-                        val doc = baseTestDb.getDocument(result.getString(0)!!)!!
-                        assertEquals(-1L, doc.getValue("number1"))
-                    }
-                    count++
-                }
-                assertEquals(10, count)
+
+                // When we add 10 more documents, sort keys 1 .. 10, the live
+                // query should report 20 docs matching the query
+                secondBatch.add(r.getString("id")!!)
+                if (count >= 20) { latch2.countDown() }
             }
-
-            latch.countDown()
         }
 
-        val token = query.addChangeListener(listener)
         try {
-            // create one doc
-            executeAsync(800) {
-                try {
-                    createNumberedDocInBaseTestDb(-1, 100)
-                } catch (e: CouchbaseLiteException) {
-                    throw RuntimeException(e)
-                }
+            query.addChangeListener(testSerialCoroutineContext, listener).use {
+                assertTrue(latch1.await(STD_TIMEOUT_SEC.seconds))
+                // create some more docs
+                val secondLoad = loadDocuments(10)
+
+                // wait till listener sees them all
+                assertTrue(latch2.await(LONG_TIMEOUT_SEC.seconds))
+
+                // verify that the listener saw, in the second batch
+                // the first 10 of the first load of documents
+                val expected = firstLoad.subList(0, 10).map(Document::id).toMutableList()
+                // and all of the second load.
+                expected.addAll(secondLoad.map(Document::id))
+                expected.sort()
+                secondBatch.sort()
+                assertEquals(expected, secondBatch)
             }
-            // wait till listener is called
-            assertTrue(latch.await(LONG_TIMEOUT_SEC.seconds))
-        } finally {
-            query.removeChangeListener(token)
+        } // Catch clause prevents Windows compiler error
+        catch (e: Exception) {
+            throw AssertionError("Unexpected exception", e)
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
-    fun testLiveQueryNoUpdate() {
-        testLiveQueryNoUpdate(false)
+    fun testLiveQueryNoUpdate1() = runBlocking {
+        liveQueryNoUpdate { }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
-    fun testLiveQueryNoUpdateConsumeAll() {
-        testLiveQueryNoUpdate(true)
+    fun testLiveQueryNoUpdate2() = runBlocking {
+        liveQueryNoUpdate { change ->
+            val rs = change.results
+            @Suppress("ControlFlowWithEmptyBody")
+            while (rs?.next() != null) { }
+        }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1356
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCountFunctions() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val ds = DataSource.database(baseTestDb)
-        val cnt = Function.count(EXPR_NUMBER1)
+        val query = QueryBuilder
+            .select(SelectResult.expression(Function.count(Expression.property(TEST_DOC_SORT_KEY))))
+            .from(DataSource.collection(testCollection))
 
-        val rsCnt = SelectResult.expression(cnt)
-        val query = QueryBuilder.select(rsCnt).from(ds)
-
-        val numRows = verifyQuery(query) { _, result ->
-            assertEquals(100L, result.getValue(0) as Long)
-        }
-        assertEquals(1, numRows)
+        verifyQuery(query, 1) { _, result -> assertEquals(100L, result.getValue(0) as Long) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testJoinWithArrayContains() {
         // Data preparation
         // Hotels
-        val hotel1 = MutableDocument("hotel1")
+        val hotel1 = MutableDocument()
         hotel1.setString("type", "hotel")
         hotel1.setString("name", "Hilton")
-        baseTestDb.save(hotel1)
+        saveDocInCollection(hotel1)
 
-        val hotel2 = MutableDocument("hotel2")
+        val hotel2 = MutableDocument()
         hotel2.setString("type", "hotel")
         hotel2.setString("name", "Sheraton")
-        baseTestDb.save(hotel2)
+        saveDocInCollection(hotel2)
 
-        val hotel3 = MutableDocument("hotel2")
+        val hotel3 = MutableDocument()
         hotel3.setString("type", "hotel")
         hotel3.setString("name", "Marriott")
-        baseTestDb.save(hotel3)
+        saveDocInCollection(hotel3)
 
         // Bookmark
-        val bookmark1 = MutableDocument("bookmark1")
+        val bookmark1 = MutableDocument()
         bookmark1.setString("type", "bookmark")
         bookmark1.setString("title", "Bookmark For Hawaii")
         val hotels1 = MutableArray()
         hotels1.addString("hotel1")
         hotels1.addString("hotel2")
         bookmark1.setArray("hotels", hotels1)
-        baseTestDb.save(bookmark1)
+        saveDocInCollection(bookmark1)
 
-        val bookmark2 = MutableDocument("bookmark2")
+        val bookmark2 = MutableDocument()
         bookmark2.setString("type", "bookmark")
         bookmark2.setString("title", "Bookmark for New York")
         val hotels2 = MutableArray()
         hotels2.addString("hotel3")
         bookmark2.setArray("hotels", hotels2)
-        baseTestDb.save(bookmark2)
+        saveDocInCollection(bookmark2)
 
-        // Join Query
-        val mainDS = DataSource.database(baseTestDb).`as`("main")
-        val secondaryDS = DataSource.database(baseTestDb).`as`("secondary")
-
-        val typeExpr = Expression.property("type").from("main")
-        val hotelsExpr = Expression.property("hotels").from("main")
-        val hotelIdExpr = Meta.id.from("secondary")
-        val joinExpr = ArrayFunction.contains(hotelsExpr, hotelIdExpr)
-        val join = Join.join(secondaryDS).on(joinExpr)
-
-        val srMainAll = SelectResult.all().from("main")
-        val srSecondaryAll = SelectResult.all().from("secondary")
-        val query = QueryBuilder.select(srMainAll, srSecondaryAll)
-            .from(mainDS)
-            .join(join)
-            .where(typeExpr.equalTo(Expression.string("bookmark")))
-
-        verifyQuery(query) { _, result ->
-            Report.log("RESULT: " + result.toMap())
-        }
+        QueryBuilder
+            .select(SelectResult.all().from("main"), SelectResult.all().from("secondary"))
+            .from(DataSource.collection(testCollection).`as`("main"))
+            .join(Join.join(DataSource.collection(testCollection).`as`("secondary"))
+                .on(ArrayFunction.contains(Expression.property("hotels").from("main"), Meta.id.from("secondary")))
+            )
+            .where(Expression.property("type").from("main").equalTo(Expression.string("bookmark")))
     }
 
     //https://github.com/couchbase/couchbase-lite-android/issues/1785
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testResultToMapWithBoolean() {
-        val exam1 = MutableDocument("exam1")
+        val exam1 = MutableDocument()
         exam1.setString("exam type", "final")
         exam1.setString("question", "There are 45 states in the US.")
         exam1.setBoolean("answer", false)
-        baseTestDb.save(exam1)
+        saveDocInCollection(exam1)
 
-        val exam2 = MutableDocument("exam2")
+        val exam2 = MutableDocument()
         exam2.setString("exam type", "final")
         exam2.setString("question", "There are 100 senators in the US.")
         exam2.setBoolean("answer", true)
-        baseTestDb.save(exam2)
+        saveDocInCollection(exam2)
 
         val query = QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(baseTestDb))
-            .where(
-                Expression.property("exam type").equalTo(Expression.string("final"))
-                    .and(Expression.property("answer").equalTo(Expression.booleanValue(true)))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property("exam type").equalTo(Expression.string("final"))
+                .and(Expression.property("answer").equalTo(Expression.booleanValue(true)))
             )
 
-        val dbName = baseTestDb.name
-        verifyQuery(query) { _, result ->
+        val collectionName: String = testCollection.name
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
             val maps = result.toMap()
             assertNotNull(maps)
-            val map = maps[dbName] as Map<*, *>?
+            val map = maps[collectionName] as Map<*, *>?
             assertNotNull(map)
             if ("There are 45 states in the US." == map["question"]) {
                 assertFalse(map["answer"] as Boolean)
@@ -1644,81 +1685,74 @@ class QueryTest : BaseQueryTest() {
 
     //https://github.com/couchbase/couchbase-lite-android-ce/issues/34
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testResultToMapWithBoolean2() {
-        val exam1 = MutableDocument("exam1")
-        exam1.setString("exam type", "final")
-        exam1.setString("question", "There are 45 states in the US.")
-        exam1.setBoolean("answer", true)
+        val mDoc = MutableDocument()
+        mDoc.setString("exam type", "final")
+        mDoc.setString("question", "There are 45 states in the US.")
+        mDoc.setBoolean("answer", true)
 
-        baseTestDb.save(exam1)
+        saveDocInCollection(mDoc)
 
-        val query = QueryBuilder.select(
-            SelectResult.property("exam type"),
-            SelectResult.property("question"),
-            SelectResult.property("answer")
-        )
-            .from(DataSource.database(baseTestDb))
-            .where(Meta.id.equalTo(Expression.string("exam1")))
+        val query = QueryBuilder
+            .select(
+                SelectResult.property("exam type"),
+                SelectResult.property("question"),
+                SelectResult.property("answer")
+            )
+            .from(DataSource.collection(testCollection))
+            .where(Meta.id.equalTo(Expression.string(mDoc.id)))
 
-        verifyQuery(query) { _, result ->
-            assertTrue(result.toMap()["answer"] as Boolean)
-        }
+        verifyQuery(query, 1) { _, result -> assertTrue(result.toMap()["answer"] as Boolean) }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1385
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryDeletedDocument() {
-        // STEP 1: Insert two documents
+        // Insert two documents
         val task1 = createTaskDocument("Task 1", false)
         val task2 = createTaskDocument("Task 2", false)
-        assertEquals(2, baseTestDb.count)
+        assertEquals(2, testCollection.count)
 
-        // STEP 2: query documents before deletion
-        val query = QueryBuilder.select(SR_DOCID, SR_ALL)
-            .from(DataSource.database(baseTestDb))
+        // query documents before deletion
+        val query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.all())
+            .from(DataSource.collection(testCollection))
             .where(Expression.property("type").equalTo(Expression.string("task")))
 
-        var rows = verifyQuery(query) { _, _ -> }
-        assertEquals(2, rows)
+        verifyQuery(query, 2) { _, _ -> }
 
-        // STEP 3: delete task 1
-        baseTestDb.delete(task1)
-        assertEquals(1, baseTestDb.count)
-        assertNull(baseTestDb.getDocument(task1.id))
+        // delete artifacts from task 1
+        testCollection.delete(task1)
+        assertEquals(1, testCollection.count)
+        assertNull(testCollection.getDocument(task1.id))
 
-        // STEP 4: query documents again after deletion
-        rows = verifyQuery(query) { _, result ->
-            assertEquals(task2.id, result.getString(0))
-        }
-        assertEquals(1, rows)
+        // query documents again after deletion
+        verifyQuery(query, 1) { _, result -> assertEquals(task2.id, result.getString(0)) }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1389
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryWhereBooleanExpression() {
         // STEP 1: Insert three documents
         createTaskDocument("Task 1", false)
         createTaskDocument("Task 2", true)
         createTaskDocument("Task 3", true)
-        assertEquals(3, baseTestDb.count)
+        assertEquals(3, testCollection.count)
 
         val exprType = Expression.property("type")
         val exprComplete = Expression.property("complete")
         val srCount = SelectResult.expression(Function.count(Expression.intValue(1)))
 
         // regular query - true
-        var query = QueryBuilder.select(SR_ALL)
-            .from(DataSource.database(baseTestDb))
-            .where(
-                exprType.equalTo(Expression.string("task"))
-                    .and(exprComplete.equalTo(Expression.booleanValue(true)))
+        var query = QueryBuilder.select(SelectResult.all())
+            .from(DataSource.collection(testCollection))
+            .where(exprType.equalTo(Expression.string("task"))
+                .and(exprComplete.equalTo(Expression.booleanValue(true)))
             )
 
-        var numRows = verifyQuery(query, false) { _, result ->
-            val dict = result.getDictionary(baseTestDb.name)!!
+        var numRows = verifyQueryWithEnumerator(
+            query
+        ) { _, result ->
+            val dict = result.getDictionary(testCollection.name)!!
             assertTrue(dict.getBoolean("complete"))
             assertEquals("task", dict.getString("type"))
             assertTrue(dict.getString("title")!!.startsWith("Task "))
@@ -1726,15 +1760,16 @@ class QueryTest : BaseQueryTest() {
         assertEquals(2, numRows)
 
         // regular query - false
-        query = QueryBuilder.select(SR_ALL)
-            .from(DataSource.database(baseTestDb))
-            .where(
-                exprType.equalTo(Expression.string("task"))
-                    .and(exprComplete.equalTo(Expression.booleanValue(false)))
+        query = QueryBuilder.select(SelectResult.all())
+            .from(DataSource.collection(testCollection))
+            .where(exprType.equalTo(Expression.string("task"))
+                .and(exprComplete.equalTo(Expression.booleanValue(false)))
             )
 
-        numRows = verifyQuery(query, false) { _, result ->
-            val dict = result.getDictionary(baseTestDb.name)!!
+        numRows = verifyQueryWithEnumerator(
+            query
+        ) { _, result ->
+            val dict = result.getDictionary(testCollection.name)!!
             assertFalse(dict.getBoolean("complete"))
             assertEquals("task", dict.getString("type"))
             assertTrue(dict.getString("title")!!.startsWith("Task "))
@@ -1743,110 +1778,95 @@ class QueryTest : BaseQueryTest() {
 
         // aggregation query - true
         query = QueryBuilder.select(srCount)
-            .from(DataSource.database(baseTestDb))
-            .where(
-                exprType.equalTo(Expression.string("task"))
-                    .and(exprComplete.equalTo(Expression.booleanValue(true)))
+            .from(DataSource.collection(testCollection))
+            .where(exprType.equalTo(Expression.string("task"))
+                .and(exprComplete.equalTo(Expression.booleanValue(true)))
             )
 
-        numRows = verifyQuery(query, false) { _, result ->
-            assertEquals(2, result.getInt(0))
-        }
+        numRows = verifyQueryWithEnumerator(query) { _, result -> assertEquals(2, result.getInt(0)) }
         assertEquals(1, numRows)
 
         // aggregation query - false
         query = QueryBuilder.select(srCount)
-            .from(DataSource.database(baseTestDb))
-            .where(
-                exprType.equalTo(Expression.string("task"))
-                    .and(exprComplete.equalTo(Expression.booleanValue(false)))
+            .from(DataSource.collection(testCollection))
+            .where(exprType.equalTo(Expression.string("task"))
+                .and(exprComplete.equalTo(Expression.booleanValue(false)))
             )
 
-        numRows = verifyQuery(query, false) { _, result ->
-            assertEquals(1, result.getInt(0))
-        }
+        numRows = verifyQueryWithEnumerator(query) { _, result -> assertEquals(1, result.getInt(0)) }
         assertEquals(1, numRows)
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1413
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testJoinAll() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val doc1 = MutableDocument("joinme")
+        val doc1 = MutableDocument()
         doc1.setValue("theone", 42)
-        saveDocInBaseTestDb(doc1)
+        saveDocInCollection(doc1)
 
-        val mainDS = DataSource.database(baseTestDb).`as`("main")
-        val secondaryDS = DataSource.database(baseTestDb).`as`("secondary")
+        val query = QueryBuilder.select(SelectResult.all().from("main"), SelectResult.all().from("secondary"))
+            .from(DataSource.collection(testCollection).`as`("main"))
+            .join(Join.join(DataSource.collection(testCollection).`as`("secondary"))
+                .on(Expression.property(TEST_DOC_SORT_KEY).from("main")
+                    .equalTo(Expression.property("theone").from("secondary"))
+                )
+            )
 
-        val mainPropExpr = Expression.property("number1").from("main")
-        val secondaryExpr = Expression.property("theone").from("secondary")
-        val joinExpr = mainPropExpr.equalTo(secondaryExpr)
-        val join = Join.join(secondaryDS).on(joinExpr)
-
-        val MAIN_ALL = SelectResult.all().from("main")
-        val SECOND_ALL = SelectResult.all().from("secondary")
-
-        val query = QueryBuilder.select(MAIN_ALL, SECOND_ALL).from(mainDS).join(join)
-
-        val numRows = verifyQuery(query) { _, result ->
-            val mainAll1 = result.getDictionary(0)
-            val mainAll2 = result.getDictionary("main")
-            val secondAll1 = result.getDictionary(1)
-            val secondAll2 = result.getDictionary("secondary")
-            assertEquals(42, mainAll1!!.getInt("number1"))
-            assertEquals(42, mainAll2!!.getInt("number1"))
-            assertEquals(58, mainAll1.getInt("number2"))
-            assertEquals(58, mainAll2.getInt("number2"))
-            assertEquals(42, secondAll1!!.getInt("theone"))
-            assertEquals(42, secondAll2!!.getInt("theone"))
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            val mainAll1 = result.getDictionary(0)!!
+            val mainAll2 = result.getDictionary("main")!!
+            val secondAll1 = result.getDictionary(1)!!
+            val secondAll2 = result.getDictionary("secondary")!!
+            assertEquals(42, mainAll1.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(42, mainAll2.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(58, mainAll1.getInt(TEST_DOC_REV_SORT_KEY))
+            assertEquals(58, mainAll2.getInt(TEST_DOC_REV_SORT_KEY))
+            assertEquals(42, secondAll1.getInt("theone"))
+            assertEquals(42, secondAll2.getInt("theone"))
         }
-        assertEquals(1, numRows)
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1413
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testJoinByDocID() {
-        loadNumberedDocs(100)
+        // Load a bunch of documents and pick one randomly
+        val doc1: Document = loadDocuments(100)[Random.nextInt(100)]
 
-        val doc1 = MutableDocument("joinme")
-        doc1.setValue("theone", 42)
-        doc1.setString("numberID", "doc1") // document ID of number documents.
-        saveDocInBaseTestDb(doc1)
+        val mDoc = MutableDocument()
+        mDoc.setValue("theone", 42)
+        mDoc.setString("numberID", doc1.id) // document ID of number documents.
+        saveDocInCollection(mDoc)
 
-        val mainDS = DataSource.database(baseTestDb).`as`("main")
-        val secondaryDS = DataSource.database(baseTestDb).`as`("secondary")
+        val query = QueryBuilder
+            .select(
+                SelectResult.expression(Meta.id.from("main")).`as`("mainDocID"),
+                SelectResult.expression(Meta.id.from("secondary")).`as`("secondaryDocID"),
+                SelectResult.expression(Expression.property("theone").from("secondary"))
+            )
+            .from(DataSource.collection(testCollection).`as`("main"))
+            .join(Join.join(DataSource.collection(testCollection).`as`("secondary"))
+                .on(Meta.id.from("main").equalTo(Expression.property("numberID").from("secondary")))
+            )
 
-        val mainPropExpr = Meta.id.from("main")
-        val secondaryExpr = Expression.property("numberID").from("secondary")
-        val joinExpr = mainPropExpr.equalTo(secondaryExpr)
-        val join = Join.join(secondaryDS).on(joinExpr)
-
-        val MAIN_DOC_ID = SelectResult.expression(Meta.id.from("main")).`as`("mainDocID")
-        val SECONDARY_DOC_ID = SelectResult.expression(Meta.id.from("secondary"))
-            .`as`("secondaryDocID")
-        val SECONDARY_THEONE = SelectResult.expression(
-            Expression.property("theone").from("secondary")
-        )
-
-        val query = QueryBuilder.select(MAIN_DOC_ID, SECONDARY_DOC_ID, SECONDARY_THEONE)
-            .from(mainDS).join(join)
-
-        val numRows = verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            1
+        ) { n, result ->
             assertEquals(1, n)
-            val docID = result.getString("mainDocID")
-            val doc = baseTestDb.getDocument(docID!!)
-            assertEquals(1, doc!!.getInt("number1"))
-            assertEquals(99, doc.getInt("number2"))
+
+            val doc3 = testCollection.getDocument(result.getString("mainDocID")!!)!!
+            assertEquals(doc1.getInt(TEST_DOC_SORT_KEY), doc3.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(doc1.getInt(TEST_DOC_REV_SORT_KEY), doc3.getInt(TEST_DOC_REV_SORT_KEY))
 
             // data from secondary
-            assertEquals("joinme", result.getString("secondaryDocID"))
+            assertEquals(mDoc.id, result.getString("secondaryDocID"))
             assertEquals(42, result.getInt("theone"))
         }
-        assertEquals(1, numRows)
     }
 
     @Test
@@ -1862,7 +1882,7 @@ class QueryTest : BaseQueryTest() {
             Collation.unicode().setLocale("en").setIgnoreCase(true).setIgnoreAccents(true)
         )
 
-        val expected = listOf<Map<String, Any?>>(
+        val expected = listOf(
             mapOf(
                 "UNICODE" to false,
                 "LOCALE" to null,
@@ -1913,52 +1933,16 @@ class QueryTest : BaseQueryTest() {
             )
         )
 
-        // replace system default locale value with expected null
-        // and number values as booleans
-        fun Any.massageJson(expectedCollation: Map<String, Any?>): Map<String, Any?> {
-            @Suppress("UNCHECKED_CAST")
-            this as Map<String, Any?>
-            return if (expectedCollation["LOCALE"] == null) {
-                mapValues { (key, value) ->
-                    if (key == "LOCALE" && value != null) {
-                        println("Setting $key $value to null")
-                        null
-                    } else {
-                        value
-                    }
-                }
-            } else {
-                this
-            }.mapValues { (key, value) ->
-                if (value is Number) {
-                    val boolean = value != 0
-                    println("Setting $key $value to $boolean")
-                    boolean
-                } else {
-                    value
-                }
-            }
-        }
-
-        for (i in collations.indices) {
-            // TODO: null locale uses system default on iOS, also some numbers for booleans
-            //  https://forums.couchbase.com/t/unicode-collation-locale-null-or-device-locale/34103
-            //assertEquals(expected[i], collations[i].asJSON())
-            val expectedCollation = expected[i]
-            @Suppress("UNNECESSARY_SAFE_CALL", "KotlinRedundantDiagnosticSuppress")
-            val collation = collations[i].asJSON()?.massageJson(expectedCollation)
-            assertEquals(expectedCollation, collation)
-        }
+        for (i in collations.indices) { assertEquals(expected[i], collations[i].asJSON()) }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testAllComparison() {
         val values = arrayOf("Apple", "Aardvark", "Ångström", "Zebra", "äpple")
         for (value in values) {
             val doc = MutableDocument()
             doc.setString("hey", value)
-            saveDocInBaseTestDb(doc)
+            saveDocInCollection(doc)
         }
         val testData = listOf(
             listOf(
@@ -1994,85 +1978,67 @@ class QueryTest : BaseQueryTest() {
         val property = Expression.property("hey")
         for (data in testData) {
             val query = QueryBuilder.select(SelectResult.property("hey"))
-                .from(DataSource.database(baseTestDb))
-                .orderBy(Ordering.expression(property.collate((data[1] as Collation))))
+                .from(DataSource.collection(testCollection))
+                .orderBy(Ordering.expression(property.collate(data[1] as Collation)))
 
-            val list = mutableListOf<String>()
-            verifyQuery(query, false) { _, result ->
-                list.add(result.getString(0)!!)
-            }
+            val list = mutableListOf<String?>()
+            verifyQueryWithEnumerator(query) { _, result -> list.add(result.getString(0)) }
             assertEquals(data[2], list)
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testDeleteDatabaseWithActiveLiveQuery() = runBlocking {
-        val mutex1 = Mutex(true)
-        val query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
+        val latch1 = CountDownLatch(1)
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
 
-        val token = query.addChangeListener {
-            mutex1.unlock()
-        }
-        try {
-            assertTrue(mutex1.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
-            baseTestDb.delete()
-        } finally {
-            query.removeChangeListener(token)
+        query.addChangeListener(testSerialCoroutineContext) { latch1.countDown() }.use {
+            assertTrue(latch1.await(STD_TIMEOUT_SEC.seconds))
+            deleteDb(testDatabase)
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testCloseDatabaseWithActiveLiveQuery() = runBlocking {
-        val mutex = Mutex(true)
-        val query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
+        val latch = CountDownLatch(1)
+        val query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
 
-        val token = query.addChangeListener {
-            mutex.unlock()
-        }
+        val token = query.addChangeListener(testSerialCoroutineContext) { latch.countDown() }
         try {
-            assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
-            baseTestDb.close()
-        } finally {
-            query.removeChangeListener(token)
-        }
+            assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
+            closeDb(testDatabase)
+        } finally { token.remove() }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testFunctionCount() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
         val doc = MutableDocument()
         doc.setValue("string", "STRING")
         doc.setValue("date", null)
-        saveDocInBaseTestDb(doc)
-
-        val ds = DataSource.database(baseTestDb)
-        val cntNum1 = Function.count(EXPR_NUMBER1)
-        val cntInt1 = Function.count(Expression.intValue(1))
-        val cntAstr = Function.count(Expression.string("*"))
-        val cntAll = Function.count(Expression.all())
-        val cntStr = Function.count(Expression.property("string"))
-        val cntDate = Function.count(Expression.property("date"))
-        val cntNotExist = Function.count(Expression.property("notExist"))
-
-        val rsCntNum1 = SelectResult.expression(cntNum1)
-        val rsCntInt1 = SelectResult.expression(cntInt1)
-        val rsCntAstr = SelectResult.expression(cntAstr)
-        val rsCntAll = SelectResult.expression(cntAll)
-        val rsCntStr = SelectResult.expression(cntStr)
-        val rsCntDate = SelectResult.expression(cntDate)
-        val rsCntNotExist = SelectResult.expression(cntNotExist)
+        saveDocInCollection(doc)
 
         val query = QueryBuilder
-            .select(rsCntNum1, rsCntInt1, rsCntAstr, rsCntAll, rsCntStr, rsCntDate, rsCntNotExist)
-            .from(ds)
+            .select(
+                SelectResult.expression(Function.count(Expression.property(TEST_DOC_SORT_KEY))),
+                SelectResult.expression(Function.count(Expression.intValue(1))),
+                SelectResult.expression(Function.count(Expression.string("*"))),
+                SelectResult.expression(Function.count(Expression.all())),
+                SelectResult.expression(Function.count(Expression.property("string"))),
+                SelectResult.expression(Function.count(Expression.property("date"))),
+                SelectResult.expression(Function.count(Expression.property("notExist")))
+            )
+            .from(DataSource.collection(testCollection))
 
-        val numRows = verifyQuery(query) { _, result ->
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
             assertEquals(100L, result.getValue(0) as Long)
             assertEquals(101L, result.getValue(1) as Long)
             assertEquals(101L, result.getValue(2) as Long)
@@ -2081,57 +2047,56 @@ class QueryTest : BaseQueryTest() {
             assertEquals(1L, result.getValue(5) as Long)
             assertEquals(0L, result.getValue(6) as Long)
         }
-        assertEquals(1, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testFunctionCountAll() {
-        loadNumberedDocs(100)
-
-        val ds = DataSource.database(baseTestDb)
-        val dbName = baseTestDb.name
-
-        val countAll = Function.count(Expression.all())
-        val countAllFrom = Function.count(Expression.all().from(dbName))
-        val srCountAll = SelectResult.expression(countAll)
-        val srCountAllFrom = SelectResult.expression(countAllFrom)
+        loadDocuments(100)
 
         // SELECT count(*)
-        var query = QueryBuilder.select(srCountAll).from(ds)
-        var numRows = verifyQuery(query) { _, result ->
-            assertEquals(1, result.count)
+        var query = QueryBuilder.select(SelectResult.expression(Function.count(Expression.all())))
+            .from(DataSource.collection(testCollection))
+
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            assertEquals(1, result.count())
             assertEquals(100L, result.getValue(0) as Long)
         }
-        assertEquals(1, numRows)
 
         // SELECT count(testdb.*)
-        query = QueryBuilder.select(srCountAllFrom).from(ds.`as`(dbName))
-        numRows = verifyQuery(query) { _, result ->
-            assertEquals(1, result.count)
+        query = QueryBuilder.select(SelectResult.expression(Function.count(Expression.all()
+                .from(testCollection.name)
+            )))
+            .from(DataSource.collection(testCollection).`as`(testCollection.name))
+
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            assertEquals(1, result.count())
             assertEquals(100L, result.getValue(0) as Long)
         }
-        assertEquals(1, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testResultSetEnumeration() {
-        loadNumberedDocs(5)
+        val docIds = loadDocuments(5).map(Document::id)
 
         val query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
-            .orderBy(Ordering.property("number1"))
+            .from(DataSource.collection(testCollection))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY))
 
         // Type 1: Enumeration by ResultSet.next()
         var i = 0
         query.execute().use { rs ->
             while (true) {
                 val result = rs.next() ?: break
-                assertEquals("doc${i + 1}", result.getString(0))
+                assertTrue(docIds.contains(result.getString(0)))
                 i++
             }
-            assertEquals(5, i)
+            assertEquals(docIds.size, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
         }
@@ -2140,10 +2105,10 @@ class QueryTest : BaseQueryTest() {
         i = 0
         query.execute().use { rs ->
             for (r in rs) {
-                assertEquals("doc${i + 1}", r.getString(0))
+                assertTrue(docIds.contains(r.getString(0)))
                 i++
             }
-            assertEquals(5, i)
+            assertEquals(docIds.size, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
         }
@@ -2151,12 +2116,12 @@ class QueryTest : BaseQueryTest() {
         // Type 3: Enumeration by ResultSet.allResults().get(int index)
         i = 0
         query.execute().use { rs ->
-            val list: List<Result> = rs.allResults()
+            val list = rs.allResults()
             for (r in list) {
-                assertEquals("doc${i + 1}", r.getString(0))
+                assertTrue(docIds.contains(r.getString(0)))
                 i++
             }
-            assertEquals(5, i)
+            assertEquals(docIds.size, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
         }
@@ -2165,37 +2130,33 @@ class QueryTest : BaseQueryTest() {
         i = 0
         query.execute().use { rs ->
             for (r in rs.allResults()) {
-                assertEquals("doc${i + 1}", r.getString(0))
+                assertTrue(docIds.contains(r.getString(0)))
                 i++
             }
-            assertEquals(5, i)
+            assertEquals(docIds.size, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testGetAllResults() {
-        loadNumberedDocs(5)
+        val docIds = loadDocuments(5).map(Document::id)
 
         val query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
-            .orderBy(Ordering.property("number1"))
-
-        var results: List<Result>
+            .from(DataSource.collection(testCollection))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY))
 
         // Get all results by get(int)
         var i = 0
         query.execute().use { rs ->
-            results = rs.allResults()
+            val results = rs.allResults()
             for (j in results.indices) {
-                val r = results[j]
-                assertEquals("doc${i + 1}", r.getString(0))
+                assertTrue(docIds.contains(results[j].getString(0)))
                 i++
             }
-            assertEquals(5, results.size)
-            assertEquals(5, i)
+            assertEquals(docIds.size, results.size)
+            assertEquals(docIds.size, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
         }
@@ -2203,50 +2164,47 @@ class QueryTest : BaseQueryTest() {
         // Get all results by iterator
         i = 0
         query.execute().use { rs ->
-            results = rs.allResults()
+            val results = rs.allResults()
             for (r in results) {
-                assertEquals("doc${i + 1}", r.getString(0))
+                assertTrue(docIds.contains(r.getString(0)))
                 i++
             }
-            assertEquals(5, results.size)
-            assertEquals(5, i)
+            assertEquals(docIds.size, results.size)
+            assertEquals(docIds.size, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
         }
 
         // Partial enumerating then get all results:
+        i = 0
         query.execute().use { rs ->
             assertNotNull(rs.next())
             assertNotNull(rs.next())
-            results = rs.allResults()
-            i = 2
+            val results = rs.allResults()
             for (r in results) {
-                assertEquals("doc${i + 1}", r.getString(0))
+                assertTrue(docIds.contains(r.getString(0)))
                 i++
             }
-            assertEquals(3, results.size)
-            assertEquals(5, i)
+            assertEquals(docIds.size - 2, results.size)
+            assertEquals(docIds.size - 2, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testResultSetEnumerationZeroResults() {
-        loadNumberedDocs(5)
+        loadDocuments(5)
 
         val query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
-            .where(Expression.property("number1").`is`(Expression.intValue(100)))
-            .orderBy(Ordering.property("number1"))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property(TEST_DOC_SORT_KEY).`is`(Expression.intValue(100)))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY))
 
         // Type 1: Enumeration by ResultSet.next()
         var i = 0
         query.execute().use { rs ->
-            while (rs.next() != null) {
-                i++
-            }
+            while (rs.next() != null) { i++ }
             assertEquals(0, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
@@ -2255,9 +2213,7 @@ class QueryTest : BaseQueryTest() {
         // Type 2: Enumeration by ResultSet.iterator()
         i = 0
         query.execute().use { rs ->
-            for (r in rs) {
-                i++
-            }
+            for (ignored in rs) { i++ }
             assertEquals(0, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
@@ -2266,7 +2222,7 @@ class QueryTest : BaseQueryTest() {
         // Type 3: Enumeration by ResultSet.allResults().get(int index)
         i = 0
         query.execute().use { rs ->
-            val list: List<Result> = rs.allResults()
+            val list = rs.allResults()
             for (j in list.indices) {
                 list[j]
                 i++
@@ -2279,9 +2235,7 @@ class QueryTest : BaseQueryTest() {
         // Type 4: Enumeration by ResultSet.allResults().iterator()
         i = 0
         query.execute().use { rs ->
-            for (r in rs.allResults()) {
-                i++
-            }
+            for (ignored in rs.allResults()) { i++ }
             assertEquals(0, i)
             assertNull(rs.next())
             assertEquals(0, rs.allResults().size)
@@ -2289,23 +2243,25 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testMissingValue() {
-        val doc1 = MutableDocument("doc1")
+        val doc1 = MutableDocument()
         doc1.setValue("name", "Scott")
         doc1.setValue("address", null)
-        saveDocInBaseTestDb(doc1)
+        saveDocInCollection(doc1)
 
         val query = QueryBuilder.select(
-            SelectResult.property("name"),
-            SelectResult.property("address"),
-            SelectResult.property("age")
-        )
-            .from(DataSource.database(baseTestDb))
+                SelectResult.property("name"),
+                SelectResult.property("address"),
+                SelectResult.property("age")
+            )
+            .from(DataSource.collection(testCollection))
 
         // Array:
-        verifyQuery(query) { _, result ->
-            assertEquals(3, result.count)
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            assertEquals(3, result.count())
             assertEquals("Scott", result.getString(0))
             assertNull(result.getValue(1))
             assertNull(result.getValue(2))
@@ -2313,7 +2269,10 @@ class QueryTest : BaseQueryTest() {
         }
 
         // Dictionary:
-        verifyQuery(query) { _, result ->
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
             assertEquals("Scott", result.getString("name"))
             assertNull(result.getString("address"))
             assertTrue(result.contains("address"))
@@ -2329,149 +2288,150 @@ class QueryTest : BaseQueryTest() {
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1603
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testExpressionNot() {
-        loadNumberedDocs(10)
+        loadDocuments(10)
 
         val query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("number1"))
-            .from(DataSource.database(baseTestDb))
-            .where(
-                Expression.not(
-                    Expression.property("number1")
-                        .between(Expression.intValue(3), Expression.intValue(5))
-                )
-            )
-            .orderBy(Ordering.expression(Expression.property("number1")).ascending())
+            .select(SelectResult.expression(Meta.id), SelectResult.property(TEST_DOC_SORT_KEY))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.not(Expression.property(TEST_DOC_SORT_KEY)
+                .between(Expression.intValue(3), Expression.intValue(5))
+            ))
+            .orderBy(Ordering.expression(Expression.property(TEST_DOC_SORT_KEY)).ascending())
 
-        val numRows = verifyQuery(query) { n, result ->
-            if (n < 3) {
-                assertEquals(n, result.getInt("number1"))
-            } else {
-                assertEquals(n + 3, result.getInt("number1"))
-            }
+        verifyQuery(
+            query,
+            7
+        ) { n, result ->
+            if (n < 3) { assertEquals(n, result.getInt(TEST_DOC_SORT_KEY)) }
+            else { assertEquals(n + 3, result.getInt(TEST_DOC_SORT_KEY)) }
         }
-        assertEquals(7, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLimitValueIsLargerThanResult() {
-        val N = 4
-        loadNumberedDocs(N)
+        val docIds = loadDocuments(4)
 
-        val query = QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(baseTestDb))
+        val query = QueryBuilder
+            .select(SelectResult.all())
+            .from(DataSource.collection(testCollection))
             .limit(Expression.intValue(10))
 
-        val numRows = verifyQuery(query) { _, _ -> }
-        assertEquals(N, numRows)
+        verifyQuery(query, docIds.size) { _, _ -> }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1614
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testFTSStemming() {
-        val mDoc0 = MutableDocument("doc0")
+        val mDoc0 = MutableDocument()
         mDoc0.setString("content", "hello")
-        saveDocInBaseTestDb(mDoc0)
+        mDoc0.setInt(TEST_DOC_SORT_KEY, 0)
+        saveDocInCollection(mDoc0)
 
-        val mDoc1 = MutableDocument("doc1")
+        val mDoc1 = MutableDocument()
         mDoc1.setString("content", "beauty")
-        saveDocInBaseTestDb(mDoc1)
+        mDoc1.setInt(TEST_DOC_SORT_KEY, 10)
+        saveDocInCollection(mDoc1)
 
-        val mDoc2 = MutableDocument("doc2")
+        val mDoc2 = MutableDocument()
         mDoc2.setString("content", "beautifully")
-        saveDocInBaseTestDb(mDoc2)
+        mDoc2.setInt(TEST_DOC_SORT_KEY, 20)
+        saveDocInCollection(mDoc2)
 
-        val mDoc3 = MutableDocument("doc3")
+        val mDoc3 = MutableDocument()
         mDoc3.setString("content", "beautiful")
-        saveDocInBaseTestDb(mDoc3)
+        mDoc3.setInt(TEST_DOC_SORT_KEY, 30)
+        saveDocInCollection(mDoc3)
 
-        val mDoc4 = MutableDocument("doc4")
+        val mDoc4 = MutableDocument()
         mDoc4.setString("content", "pretty")
-        saveDocInBaseTestDb(mDoc4)
+        mDoc4.setInt(TEST_DOC_SORT_KEY, 40)
+        saveDocInCollection(mDoc4)
 
         val ftsIndex = IndexBuilder.fullTextIndex(FullTextIndexItem.property("content"))
         ftsIndex.setLanguage("en")
-        baseTestDb.createIndex("ftsIndex", ftsIndex)
+        testCollection.createIndex("ftsIndex", ftsIndex)
+        val idx = Expression.fullTextIndex("ftsIndex")
 
-        val expectedIDs = arrayOf("doc1", "doc2", "doc3")
+        val expectedIDs = arrayOf(mDoc1.id, mDoc2.id, mDoc3.id)
         val expectedContents = arrayOf("beauty", "beautifully", "beautiful")
 
         val query = QueryBuilder
             .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "beautiful"))
-            .orderBy(Ordering.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "beautiful"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        val numRows = verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            3
+        ) { n, result ->
             assertEquals(expectedIDs[n - 1], result.getString("id"))
             assertEquals(expectedContents[n - 1], result.getString("content"))
         }
-        assertEquals(3, numRows)
     }
 
     // https://github.com/couchbase/couchbase-lite-net/blob/master/src/Couchbase.Lite.Tests.Shared/QueryTest.cs#L1721
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testFTSStemming2() {
-        baseTestDb.createIndex(
+        testCollection.createIndex(
             "passageIndex",
             IndexBuilder.fullTextIndex(FullTextIndexItem.property("passage")).setLanguage("en")
         )
-        baseTestDb.createIndex(
+        val idx = Expression.fullTextIndex("passageIndex")
+
+        testCollection.createIndex(
             "passageIndexStemless",
             IndexBuilder.fullTextIndex(FullTextIndexItem.property("passage")).setLanguage(null)
         )
+        val stemlessIdx = Expression.fullTextIndex("passageIndexStemless")
 
-        val mDoc1 = MutableDocument("doc1")
+        val mDoc1 = MutableDocument()
         mDoc1.setString("passage", "The boy said to the child, 'Mommy, I want a cat.'")
-        saveDocInBaseTestDb(mDoc1)
+        saveDocInCollection(mDoc1)
 
-        val mDoc2 = MutableDocument("doc2")
+        val mDoc2 = MutableDocument()
         mDoc2.setString("passage", "The mother replied 'No, you already have too many cats.'")
-        saveDocInBaseTestDb(mDoc2)
+        saveDocInCollection(mDoc2)
 
         var query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("passageIndex", "cat"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "cat"))
 
-        var numRows = verifyQuery(query) { n, result ->
-            assertEquals("doc$n", result.getString(0))
-        }
-        assertEquals(2, numRows)
+        val expected = arrayOf(mDoc1.id, mDoc2.id)
+
+        verifyQuery(query, 2) { n, result -> assertEquals(expected[n - 1], result.getString(0)) }
 
         query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("passageIndexStemless", "cat"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(stemlessIdx, "cat"))
 
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals("doc$n", result.getString(0))
-        }
-        assertEquals(1, numRows)
+        verifyQuery(query, 1) { n, result -> assertEquals(expected[n - 1], result.getString(0)) }
     }
 
     // 3.1. Set Operations Using The Enhanced Query Syntax
     // https://www.sqlite.org/fts3.html#_set_operations_using_the_enhanced_query_syntax
     // https://github.com/couchbase/couchbase-lite-android/issues/1620
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testFTSSetOperations() {
-        val mDoc1 = MutableDocument("doc1")
+        val mDoc1 = MutableDocument()
         mDoc1.setString("content", "a database is a software system")
-        saveDocInBaseTestDb(mDoc1)
+        mDoc1.setInt(TEST_DOC_SORT_KEY, 100)
+        saveDocInCollection(mDoc1)
 
-        val mDoc2 = MutableDocument("doc2")
+        val mDoc2 = MutableDocument()
         mDoc2.setString("content", "sqlite is a software system")
-        saveDocInBaseTestDb(mDoc2)
+        mDoc2.setInt(TEST_DOC_SORT_KEY, 200)
+        saveDocInCollection(mDoc2)
 
-        val mDoc3 = MutableDocument("doc3")
+        val mDoc3 = MutableDocument()
         mDoc3.setString("content", "sqlite is a database")
-        saveDocInBaseTestDb(mDoc3)
+        mDoc3.setInt(TEST_DOC_SORT_KEY, 300)
+        saveDocInCollection(mDoc3)
 
         val ftsIndex = IndexBuilder.fullTextIndex(FullTextIndexItem.property("content"))
-        baseTestDb.createIndex("ftsIndex", ftsIndex)
+        testCollection.createIndex("ftsIndex", ftsIndex)
+        val idx = Expression.fullTextIndex("ftsIndex")
 
         // The enhanced query syntax
         // https://www.sqlite.org/fts3.html#_set_operations_using_the_enhanced_query_syntax
@@ -2479,364 +2439,305 @@ class QueryTest : BaseQueryTest() {
         // AND binary set operator
         var query = QueryBuilder
             .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "sqlite AND database"))
-            .orderBy(Ordering.expression(Meta.id))
-
-        val expectedIDs = arrayOf("doc3")
-        var numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs.size, numRows)
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "sqlite AND database"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
+        verifyQuery(query, 1) { _, result -> assertEquals(mDoc3.id, result.getString("id")) }
 
         // implicit AND operator
-        query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "sqlite database"))
-            .orderBy(Ordering.expression(Meta.id))
-
-        val expectedIDs2 = arrayOf("doc3")
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs2[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs2.size, numRows)
+        query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property("content"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "sqlite database"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
+        verifyQuery(query, 1) { _, result -> assertEquals(mDoc3.id, result.getString("id")) }
 
         // OR operator
-        query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "sqlite OR database"))
-            .orderBy(Ordering.expression(Meta.id))
-
-        val expectedIDs3 = arrayOf("doc1", "doc2", "doc3")
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs3[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs3.size, numRows)
+        query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property("content"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "sqlite OR database"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
+        val expected = arrayOf(mDoc1.id, mDoc2.id, mDoc3.id)
+        verifyQuery(query, 3) { n, result -> assertEquals(expected[n - 1], result.getString("id")) }
 
         // NOT operator
-        query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "database NOT sqlite"))
-            .orderBy(Ordering.expression(Meta.id))
-
-        val expectedIDs4 = arrayOf("doc1")
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs4[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs4.size, numRows)
+        query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property("content"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "database NOT sqlite"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
+        verifyQuery(query, 1) { _, result -> assertEquals(mDoc1.id, result.getString("id")) }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1621
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testFTSMixedOperators() {
-        val mDoc1 = MutableDocument("doc1")
+        val mDoc1 = MutableDocument()
         mDoc1.setString("content", "a database is a software system")
-        saveDocInBaseTestDb(mDoc1)
+        mDoc1.setInt(TEST_DOC_SORT_KEY, 10)
+        saveDocInCollection(mDoc1)
 
-        val mDoc2 = MutableDocument("doc2")
+        val mDoc2 = MutableDocument()
         mDoc2.setString("content", "sqlite is a software system")
-        saveDocInBaseTestDb(mDoc2)
+        mDoc2.setInt(TEST_DOC_SORT_KEY, 20)
+        saveDocInCollection(mDoc2)
 
-        val mDoc3 = MutableDocument("doc3")
+        val mDoc3 = MutableDocument()
         mDoc3.setString("content", "sqlite is a database")
-        saveDocInBaseTestDb(mDoc3)
+        mDoc3.setInt(TEST_DOC_SORT_KEY, 30)
+        saveDocInCollection(mDoc3)
 
         val ftsIndex = IndexBuilder.fullTextIndex(FullTextIndexItem.property("content"))
-        baseTestDb.createIndex("ftsIndex", ftsIndex)
+        testCollection.createIndex("ftsIndex", ftsIndex)
+        val idx = Expression.fullTextIndex("ftsIndex")
 
         // The enhanced query syntax
         // https://www.sqlite.org/fts3.html#_set_operations_using_the_enhanced_query_syntax
 
         // A AND B AND C
-        var query =
-            QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-                .from(DataSource.database(baseTestDb))
-                .where(FullTextFunction.match("ftsIndex", "sqlite AND software AND system"))
-                .orderBy(Ordering.expression(Meta.id))
+        var query = QueryBuilder
+            .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "sqlite AND software AND system"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        val expectedIDs = arrayOf("doc2")
-        var numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs.size, numRows)
+        verifyQuery(query, 1) { _, result -> assertEquals(mDoc2.id, result.getString("id")) }
 
         // (A AND B) OR C
-        query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "(sqlite AND software) OR database"))
-            .orderBy(Ordering.expression(Meta.id))
+        query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property("content"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "(sqlite AND software) OR database"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        val expectedIDs2 = arrayOf("doc1", "doc2", "doc3")
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs2[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs2.size, numRows)
+        val expectedIDs2 = arrayOf(mDoc1.id, mDoc2.id, mDoc3.id)
+        verifyQuery(query, 3) { n, result -> assertEquals(expectedIDs2[n - 1], result.getString("id")) }
 
-        query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "(sqlite AND software) OR system"))
-            .orderBy(Ordering.expression(Meta.id))
+        query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property("content"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "(sqlite AND software) OR system"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        val expectedIDs3 = arrayOf("doc1", "doc2")
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs3[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs3.size, numRows)
+        val expectedIDs3 = arrayOf(mDoc1.id, mDoc2.id)
+        verifyQuery(query, 2) { n, result -> assertEquals(expectedIDs3[n - 1], result.getString("id")) }
 
         // (A OR B) AND C
-        query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "(sqlite OR software) AND database"))
-            .orderBy(Ordering.expression(Meta.id))
+        query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property("content"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "(sqlite OR software) AND database"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        val expectedIDs4 = arrayOf("doc1", "doc3")
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs4[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs4.size, numRows)
+        val expectedIDs4 = arrayOf(mDoc1.id, mDoc3.id)
+        verifyQuery(query, 2) { n, result -> assertEquals(expectedIDs4[n - 1], result.getString("id")) }
 
-        query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "(sqlite OR software) AND system"))
-            .orderBy(Ordering.expression(Meta.id))
+        query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property("content"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "(sqlite OR software) AND system"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        val expectedIDs5 = arrayOf("doc1", "doc2")
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs5[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs5.size, numRows)
+        val expectedIDs5 = arrayOf(mDoc1.id, mDoc2.id)
+        verifyQuery(query, 2) { n, result -> assertEquals(expectedIDs5[n - 1], result.getString("id")) }
 
         // A OR B OR C
-        query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("content"))
-            .from(DataSource.database(baseTestDb))
-            .where(FullTextFunction.match("ftsIndex", "database OR software OR system"))
-            .orderBy(Ordering.expression(Meta.id))
+        query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property("content"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match(idx, "database OR software OR system"))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        val expectedIDs6 = arrayOf("doc1", "doc2", "doc3")
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(expectedIDs6[n - 1], result.getString("id"))
-        }
-        assertEquals(expectedIDs6.size, numRows)
+        val expectedIDs6 = arrayOf(mDoc1.id, mDoc2.id, mDoc3.id)
+        verifyQuery(query, 3) { n, result -> assertEquals(expectedIDs6[n - 1], result.getString("id")) }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1628
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLiveQueryResultsCount() = runBlocking {
-        loadNumberedDocs(50)
+        loadDocuments(50)
 
-        val query = QueryBuilder.select()
-            .from(DataSource.database(baseTestDb))
-            .where(EXPR_NUMBER1.greaterThan(Expression.intValue(25)))
-            .orderBy(Ordering.property("number1").ascending())
+        val query= QueryBuilder
+            .select()
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property(TEST_DOC_SORT_KEY).greaterThan(Expression.intValue(25)))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        val mutex = Mutex(true)
-        val listener = { change: QueryChange ->
+        val latch1 = CountDownLatch(1)
+        val latch2 = CountDownLatch(1)
+
+        val listener: QueryChangeListener = { change ->
             var count = 0
             val rs = change.results
             while (rs?.next() != null) {
                 count++
-            }
-            if (count == 75) { // 26-100
-                mutex.unlock()
+                // The first run of this query should see a result set with 25 results:
+                // 50 docs in the db minus 25 with values < 25
+                // When we add 50 more documents, after the first latch springs,
+                // there are 100 docs in the db, 75 of which have vaules > 25
+                if ((count >= 25) && (latch1.getCount() > 0)) { latch1.countDown() }
+                else if (count >= 75) { latch2.countDown() }
             }
         }
-        val token = query.addChangeListener(listener)
 
-        try {
-            // create one doc
-            val mutexAdd = Mutex(true)
-            executeAsync(500) {
-                try {
-                    loadNumberedDocs(51, 100)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-                mutexAdd.unlock()
-            }
+        query.addChangeListener(testSerialCoroutineContext, listener).use {
+            assertTrue(latch1.await(LONG_TIMEOUT_SEC.seconds))
 
-            assertTrue(mutexAdd.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
-            assertTrue(mutex.lockWithTimeout(LONG_TIMEOUT_SEC.seconds))
-        } finally {
-            query.removeChangeListener(token)
+            loadDocuments(51, 50, testCollection)
+
+            assertTrue(latch2.await(LONG_TIMEOUT_SEC.seconds))
         }
     }
 
-    // https://forums.couchbase.com/t/how-to-be-notifed-that-document-is-changed-but-livequerys-query-isnt-catching-it-anymore/16199/9
+    // https://forums.couchbase.com/t/
+    //     how-to-be-notifed-that-document-is-changed-but-livequerys-query-isnt-catching-it-anymore/16199/9
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testLiveQueryNotification() = runBlocking {
-        // save doc1 with number1 -> 5
-        var doc = MutableDocument("doc1")
-        doc.setInt("number1", 5)
-        baseTestDb.save(doc)
+        // save doc1 with sort key = 5
+        var doc = MutableDocument()
+        doc.setInt(TEST_DOC_SORT_KEY, 5)
+        saveDocInCollection(doc)
 
-        val query = QueryBuilder
-            .select(SelectResult.expression(Meta.id), SelectResult.property("number1"))
-            .from(DataSource.database(baseTestDb))
-            .where(Expression.property("number1").lessThan(Expression.intValue(10)))
-            .orderBy(Ordering.property("number1"))
+        val query= QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.property(TEST_DOC_SORT_KEY))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property(TEST_DOC_SORT_KEY).lessThan(Expression.intValue(10)))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY))
 
-        val mutex1 = Mutex(true)
-        val mutex2 = Mutex(true)
-        val token = query.addChangeListener { change ->
+        val latch1 = CountDownLatch(1)
+        val latch2 = CountDownLatch(1)
+
+        val listener: QueryChangeListener = { change ->
             var matches = 0
-            for (r in change.results!!) {
-                matches++
-            }
+            for (ignored: Result in change.results!!) { matches++ }
 
-            if (matches == 1) {
-                // match doc1 with number1 -> 5 which is less than 10
-                mutex1.unlock()
-            } else {
-                // Not match with doc1 because number1 -> 15 which does not match the query criteria
-                mutex2.unlock()
-            }
+            // match doc1 with number1 -> 5 which is less than 10
+            if (matches == 1) { latch1.countDown() }
+            // Not match with doc1 because number1 -> 15 which does not match the query criteria
+            else { latch2.countDown() }
         }
 
-        try {
-            assertTrue(mutex1.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
+        query.addChangeListener(testSerialCoroutineContext, listener).use {
+            assertTrue(latch1.await(STD_TIMEOUT_SEC.seconds))
 
-            doc = baseTestDb.getDocument("doc1")!!.toMutable()
-            doc.setInt("number1", 15)
-            baseTestDb.save(doc)
+            doc = testCollection.getDocument(doc.id)!!.toMutable()
+            doc.setInt(TEST_DOC_SORT_KEY, 15)
+            saveDocInCollection(doc)
 
-            assertTrue(mutex2.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
-        } finally {
-            query.removeChangeListener(token)
+            assertTrue(latch2.await(STD_TIMEOUT_SEC.seconds))
         }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1689
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryAndNLikeOperators() {
-        val mDoc1 = MutableDocument("doc1")
+        val mDoc1 = MutableDocument()
         mDoc1.setString("name", "food")
         mDoc1.setString("description", "bar")
-        saveDocInBaseTestDb(mDoc1)
+        mDoc1.setInt(TEST_DOC_SORT_KEY, 10)
+        saveDocInCollection(mDoc1)
 
-        val mDoc2 = MutableDocument("doc2")
+        val mDoc2 = MutableDocument()
         mDoc2.setString("name", "foo")
         mDoc2.setString("description", "unknown")
-        saveDocInBaseTestDb(mDoc2)
+        mDoc2.setInt(TEST_DOC_SORT_KEY, 20)
+        saveDocInCollection(mDoc2)
 
-        val mDoc3 = MutableDocument("doc3")
+        val mDoc3 = MutableDocument()
         mDoc3.setString("name", "water")
         mDoc3.setString("description", "drink")
-        saveDocInBaseTestDb(mDoc3)
+        mDoc3.setInt(TEST_DOC_SORT_KEY, 30)
+        saveDocInCollection(mDoc3)
 
-        val mDoc4 = MutableDocument("doc4")
+        val mDoc4 = MutableDocument()
         mDoc4.setString("name", "chocolate")
         mDoc4.setString("description", "bar")
-        saveDocInBaseTestDb(mDoc4)
+        mDoc4.setInt(TEST_DOC_SORT_KEY, 40)
+        saveDocInCollection(mDoc4)
 
         // LIKE operator only
-        var query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
+        var query= QueryBuilder.select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
             .where(Expression.property("name").like(Expression.string("%foo%")))
-            .orderBy(Ordering.expression(Meta.id))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        var numRows = verifyQuery(query) { n, result ->
-            assertEquals(1, result.count)
-            if (n == 1) {
-                assertEquals("doc1", result.getString(0))
-            } else {
-                assertEquals("doc2", result.getString(0))
-            }
+        verifyQuery(
+            query,
+            2
+        ) { n, result ->
+            assertEquals(1, result.count())
+            if (n == 1) { assertEquals(mDoc1.id, result.getString(0)) }
+            else { assertEquals(mDoc2.id, result.getString(0)) }
         }
-        assertEquals(2, numRows)
 
         // EQUAL operator only
         query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(Expression.property("description").equalTo(Expression.string("bar")))
-            .orderBy(Ordering.expression(Meta.id))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        numRows = verifyQuery(query) { n, result ->
-            assertEquals(1, result.count)
-            if (n == 1) {
-                assertEquals("doc1", result.getString(0))
-            } else {
-                assertEquals("doc4", result.getString(0))
-            }
+        verifyQuery(
+            query,
+            2
+        ) { n, result ->
+            assertEquals(1, result.count())
+            if (n == 1) { assertEquals(mDoc1.id, result.getString(0)) }
+            else { assertEquals(mDoc4.id, result.getString(0)) }
         }
-        assertEquals(2, numRows)
 
         // AND and LIKE operators
         query = QueryBuilder.select(SelectResult.expression(Meta.id))
-            .from(DataSource.database(baseTestDb))
-            .where(
-                Expression.property("name").like(Expression.string("%foo%"))
-                    .and(Expression.property("description").equalTo(Expression.string("bar")))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property("name").like(Expression.string("%foo%"))
+                .and(Expression.property("description").equalTo(Expression.string("bar")))
             )
-            .orderBy(Ordering.expression(Meta.id))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
 
-        numRows = verifyQuery(query) { _, result ->
-            assertEquals(1, result.count)
-            assertEquals("doc1", result.getString(0))
+        verifyQuery(
+            query,
+            1
+        ) { _, result ->
+            assertEquals(1, result.count())
+            assertEquals(mDoc1.id, result.getString(0))
         }
-        assertEquals(1, numRows)
     }
 
     // https://forums.couchbase.com/t/
     //     how-to-implement-an-index-join-clause-in-couchbase-lite-2-0-using-objective-c-api/16246
     // https://github.com/couchbase/couchbase-lite-core/issues/497
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryJoinAndSelectAll() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val joinme = MutableDocument("joinme")
+        val joinme = MutableDocument()
         joinme.setValue("theone", 42)
-        saveDocInBaseTestDb(joinme)
+        saveDocInCollection(joinme)
 
-        val mainDS = DataSource.database(baseTestDb).`as`("main")
-        val secondaryDS = DataSource.database(baseTestDb).`as`("secondary")
+        val query= QueryBuilder.select(SelectResult.all().from("main"), SelectResult.all().from("secondary"))
+            .from(DataSource.collection(testCollection).`as`("main"))
+            .join(Join.leftJoin(DataSource.collection(testCollection).`as`("secondary"))
+                .on(Expression.property(TEST_DOC_SORT_KEY).from("main").equalTo(Expression.property("theone")
+                    .from("secondary")
+                ))
+            )
 
-        val mainPropExpr = Expression.property("number1").from("main")
-        val secondaryExpr = Expression.property("theone").from("secondary")
-        val joinExpr = mainPropExpr.equalTo(secondaryExpr)
-        val join = Join.leftJoin(secondaryDS).on(joinExpr)
-
-        val sr1 = SelectResult.all().from("main")
-        val sr2 = SelectResult.all().from("secondary")
-
-        val query = QueryBuilder.select(sr1, sr2).from(mainDS).join(join)
-
-        val numRows = verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            101
+        ) { n, result ->
             if (n == 41) {
-                assertEquals(59, result.getDictionary("main")!!.getInt("number2"))
+                assertEquals(59, result.getDictionary("main")!!.getInt(TEST_DOC_REV_SORT_KEY))
                 assertNull(result.getDictionary("secondary"))
             }
             if (n == 42) {
-                assertEquals(58, result.getDictionary("main")!!.getInt("number2"))
+                assertEquals(58, result.getDictionary("main")!!.getInt(TEST_DOC_REV_SORT_KEY))
                 assertEquals(42, result.getDictionary("secondary")!!.getInt("theone"))
             }
         }
-        assertEquals(101, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testResultSetAllResults() {
-        val doc1a = MutableDocument("doc1")
+        val doc1a = MutableDocument()
         doc1a.setInt("answer", 42)
         doc1a.setString("a", "string")
-        baseTestDb.save(doc1a)
+        saveDocInCollection(doc1a)
 
-        val query = QueryBuilder.select(SR_DOCID, SR_DELETED)
-            .from(DataSource.database(baseTestDb))
-            .where(Meta.id.equalTo(Expression.string("doc1")))
+        val query= QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.expression(Meta.deleted))
+            .from(DataSource.collection(testCollection))
+            .where(Meta.id.equalTo(Expression.string(doc1a.id)))
 
         query.execute().use { rs ->
             assertEquals(1, rs.allResults().size)
@@ -2845,10 +2746,10 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testStringToMillis() {
         createDateDocs()
-        val expectedJST = listOf<Number?>(
+
+        val expectedJST = listOf(
             null,
             499105260000L,
             499105290000L,
@@ -2857,7 +2758,7 @@ class QueryTest : BaseQueryTest() {
             499105290555L
         )
 
-        val expectedPST = listOf<Number?>(
+        val expectedPST = listOf(
             null,
             499166460000L,
             499166490000L,
@@ -2866,7 +2767,7 @@ class QueryTest : BaseQueryTest() {
             499166490555L
         )
 
-        val expectedUTC = listOf<Number?>(
+        val expectedUTC = listOf(
             null,
             499137660000L,
             499137690000L,
@@ -2878,9 +2779,10 @@ class QueryTest : BaseQueryTest() {
         val offset = TimeZone.currentSystemDefault()
             .offsetAt(Instant.fromEpochMilliseconds(499132800000L))
             .totalSeconds * 1000
-        Report.log("Local offset: $offset")
-        val expectedLocal = mutableListOf<Number>()
-        expectedLocal.add(499132800000L - offset)
+        Report.log("Local time offset: $offset")
+        val expectedLocal = mutableListOf(
+            499132800000L - offset
+        )
         var first = true
         for (entry in expectedUTC) {
             if (first) {
@@ -2890,18 +2792,21 @@ class QueryTest : BaseQueryTest() {
             expectedLocal.add(entry as Long - offset)
         }
 
-        val query = QueryBuilder.select(
-            SelectResult.expression(Function.stringToMillis(Expression.property("local"))),
-            SelectResult.expression(Function.stringToMillis(Expression.property("JST"))),
-            SelectResult.expression(Function.stringToMillis(Expression.property("JST2"))),
-            SelectResult.expression(Function.stringToMillis(Expression.property("PST"))),
-            SelectResult.expression(Function.stringToMillis(Expression.property("PST2"))),
-            SelectResult.expression(Function.stringToMillis(Expression.property("UTC")))
-        )
-            .from(DataSource.database(baseTestDb))
+        val query= QueryBuilder.select(
+                SelectResult.expression(Function.stringToMillis(Expression.property("local"))),
+                SelectResult.expression(Function.stringToMillis(Expression.property("JST"))),
+                SelectResult.expression(Function.stringToMillis(Expression.property("JST2"))),
+                SelectResult.expression(Function.stringToMillis(Expression.property("PST"))),
+                SelectResult.expression(Function.stringToMillis(Expression.property("PST2"))),
+                SelectResult.expression(Function.stringToMillis(Expression.property("UTC")))
+            )
+            .from(DataSource.collection(testCollection))
             .orderBy(Ordering.property("local").ascending())
 
-        verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            6
+        ) { n, result ->
             assertEquals(expectedLocal[n - 1], result.getNumber(0))
             assertEquals(expectedJST[n - 1], result.getNumber(1))
             assertEquals(expectedJST[n - 1], result.getNumber(2))
@@ -2912,7 +2817,6 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testStringToUTC() {
         createDateDocs()
 
@@ -2952,18 +2856,21 @@ class QueryTest : BaseQueryTest() {
             "1985-10-26T01:21:30.555Z"
         )
 
-        val query = QueryBuilder.select(
-            SelectResult.expression(Function.stringToUTC(Expression.property("local"))),
-            SelectResult.expression(Function.stringToUTC(Expression.property("JST"))),
-            SelectResult.expression(Function.stringToUTC(Expression.property("JST2"))),
-            SelectResult.expression(Function.stringToUTC(Expression.property("PST"))),
-            SelectResult.expression(Function.stringToUTC(Expression.property("PST2"))),
-            SelectResult.expression(Function.stringToUTC(Expression.property("UTC")))
-        )
-            .from(DataSource.database(baseTestDb))
+        val query= QueryBuilder.select(
+                SelectResult.expression(Function.stringToUTC(Expression.property("local"))),
+                SelectResult.expression(Function.stringToUTC(Expression.property("JST"))),
+                SelectResult.expression(Function.stringToUTC(Expression.property("JST2"))),
+                SelectResult.expression(Function.stringToUTC(Expression.property("PST"))),
+                SelectResult.expression(Function.stringToUTC(Expression.property("PST2"))),
+                SelectResult.expression(Function.stringToUTC(Expression.property("UTC")))
+            )
+            .from(DataSource.collection(testCollection))
             .orderBy(Ordering.property("local").ascending())
 
-        verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            6
+        ) { n, result ->
             assertEquals(expectedLocal[n - 1], result.getString(0))
             assertEquals(expectedJST[n - 1], result.getString(1))
             assertEquals(expectedJST[n - 1], result.getString(2))
@@ -2974,17 +2881,7 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testMillisConversion() {
-        val millis = arrayOf<Number>(
-            499132800000L,
-            499137660000L,
-            499137690000L,
-            499137690500L,
-            499137690550L,
-            499137690555L
-        )
-
         val expectedUTC = listOf(
             "1985-10-26T00:00:00Z",
             "1985-10-26T01:21:00Z",
@@ -2994,45 +2891,49 @@ class QueryTest : BaseQueryTest() {
             "1985-10-26T01:21:30.555Z"
         )
 
-        //val expectedLocal = mutableListOf<String>()
-
-        for (t in millis) {
-            baseTestDb.save(MutableDocument().setNumber("timestamp", t))
+        for (t in arrayOf(
+            499132800000L,
+            499137660000L,
+            499137690000L,
+            499137690500L,
+            499137690550L,
+            499137690555L
+        )) {
+            saveDocInCollection(MutableDocument().setNumber("timestamp", t))
         }
 
-        val query = QueryBuilder.select(
-            SelectResult.expression(Function.millisToString(Expression.property("timestamp"))),
-            SelectResult.expression(Function.millisToUTC(Expression.property("timestamp")))
-        )
-            .from(DataSource.database(baseTestDb))
+        val query= QueryBuilder.select(
+                SelectResult.expression(Function.millisToString(Expression.property("timestamp"))),
+                SelectResult.expression(Function.millisToUTC(Expression.property("timestamp")))
+            )
+            .from(DataSource.collection(testCollection))
             .orderBy(Ordering.property("timestamp").ascending())
 
-        verifyQuery(query) { n, result ->
+        verifyQuery(
+            query,
+            6
+        ) { n, result ->
             val i = n - 1
             assertEquals(expectedUTC[i], result.getString(1))
         }
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testQueryDocumentWithDollarSign() {
-        baseTestDb.save(
-            MutableDocument("doc1")
-                .setString("\$type", "book")
-                .setString("\$description", "about cats")
-                .setString("\$price", "$100")
+        saveDocInCollection(MutableDocument()
+            .setString("\$type", "book")
+            .setString("\$description", "about cats")
+            .setString("\$price", "$100")
         )
-        baseTestDb.save(
-            MutableDocument("doc2")
-                .setString("\$type", "book")
-                .setString("\$description", "about dogs")
-                .setString("\$price", "$95")
+        saveDocInCollection(MutableDocument()
+            .setString("\$type", "book")
+            .setString("\$description", "about dogs")
+            .setString("\$price", "$95")
         )
-        baseTestDb.save(
-            MutableDocument("doc3")
-                .setString("\$type", "animal")
-                .setString("\$description", "puppy")
-                .setString("\$price", "$195")
+        saveDocInCollection(MutableDocument()
+            .setString("\$type", "animal")
+            .setString("\$description", "puppy")
+            .setString("\$price", "$195")
         )
 
         var cheapBooks = 0
@@ -3043,185 +2944,171 @@ class QueryTest : BaseQueryTest() {
             SelectResult.expression(Expression.property("\$type")),
             SelectResult.expression(Expression.property("\$price"))
         )
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(Expression.property("\$type").equalTo(Expression.string("book")))
 
         q.execute().use { res ->
             for (r in res) {
                 books++
                 val p = r.getString("\$price")!!
-                if (p.substring(1).toInt() < 100) {
-                    cheapBooks++
-                }
+                if (p.substring(1).toInt() < 100) { cheapBooks++ }
             }
             assertEquals(2, books)
             assertEquals(1, cheapBooks)
         }
     }
 
-    // ??? This is a ridiculously expensive test
-    @Throws(CouchbaseLiteException::class)
-    private fun testLiveQueryNoUpdate(consumeAll: Boolean) = runBlocking {
-        loadNumberedDocs(100)
-
-        val query = QueryBuilder.select()
-            .from(DataSource.database(baseTestDb))
-            .where(EXPR_NUMBER1.lessThan(Expression.intValue(10)))
-            .orderBy(Ordering.property("number1").ascending())
-
-        val latch = CountDownLatch(2)
-        val listener = { change: QueryChange ->
-            if (consumeAll) {
-                val rs = change.results
-                @Suppress("ControlFlowWithEmptyBody")
-                while (rs?.next() != null) {
-                }
-            }
-
-            latch.countDown()
-            // should happen only once!
-        }
-
-        val token = query.addChangeListener(listener)
-        try {
-            // create one doc
-            executeAsync(500) {
-                try {
-                    createNumberedDocInBaseTestDb(111, 100)
-                } catch (e: CouchbaseLiteException) {
-                    throw RuntimeException(e)
-                }
-            }
-
-            // Wait 5 seconds
-            // The latch should not pop, because the listener should be called only once
-            assertFalse(latch.await(5.seconds))
-            assertEquals(1, latch.getCount())
-        } finally {
-            query.removeChangeListener(token)
-        }
-    }
-
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testN1QLSelect() {
-        loadNumberedDocs(100)
+        loadDocuments(100)
 
-        val numRows = verifyQuery(
-            baseTestDb.createQuery("SELECT number1, number2 FROM _default")
+        val query = testDatabase.createQuery(
+            "SELECT " + TEST_DOC_SORT_KEY + ", " + TEST_DOC_REV_SORT_KEY
+                    + " FROM " + testCollection.fullName
+        )
+
+        verifyQuery(
+            query,
+            100
         ) { n, result ->
-            assertEquals(n, result.getInt("number1"))
+            assertEquals(n, result.getInt(TEST_DOC_SORT_KEY))
             assertEquals(n, result.getInt(0))
-            assertEquals(100 - n, result.getInt("number2"))
+            assertEquals(100 - n, result.getInt(TEST_DOC_REV_SORT_KEY))
             assertEquals(100 - n, result.getInt(1))
         }
-
-        assertEquals(100, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testN1QLSelectStarFromDefault() {
-        loadNumberedDocs(100)
-
-        val numRows = verifyQuery(
-            baseTestDb.createQuery("SELECT * FROM _default")
+        loadDocuments(100, testDatabase.getDefaultCollection())
+        verifyQuery(
+            testDatabase.createQuery("SELECT * FROM _default"),
+            100
         ) { n, result ->
-            assertEquals(1, result.count)
-            val a1 = result.getDictionary(0)
-            val a2 = result.getDictionary("_default")
-            assertEquals(n, a1!!.getInt("number1"))
-            assertEquals((100 - n), a1.getInt("number2"))
-            assertEquals(n, a2!!.getInt("number1"))
-            assertEquals((100 - n), a2.getInt("number2"))
+            assertEquals(1, result.count())
+            val a1 = result.getDictionary(0)!!
+            val a2 = result.getDictionary("_default")!!
+            assertEquals(n, a1.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a1.getInt(TEST_DOC_REV_SORT_KEY))
+            assertEquals(n, a2.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a2.getInt(TEST_DOC_REV_SORT_KEY))
         }
-
-        assertEquals(100, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
-    fun testN1QLSelectStarFromDatabase() {
-        loadNumberedDocs(100)
-        val dbName = baseTestDb.name
+    fun testN1QLSelectStarFromCollection() {
+        loadDocuments(100)
 
-        val numRows = verifyQuery(
-            baseTestDb.createQuery("SELECT * FROM $dbName")
+        verifyQuery(
+            testDatabase.createQuery("SELECT * FROM " + testCollection.fullName),
+            100
         ) { n, result ->
-            assertEquals(1, result.count)
-            val a1 = result.getDictionary(0)
-            val a2 = result.getDictionary(dbName)
-            assertEquals(n, a1!!.getInt("number1"))
-            assertEquals((100 - n), a1.getInt("number2"))
-            assertEquals(n, a2!!.getInt("number1"))
-            assertEquals((100 - n), a2.getInt("number2"))
+            assertEquals(1, result.count())
+            val a1 = result.getDictionary(0)!!
+            val a2 = result.getDictionary(testCollection.name)!!
+            assertEquals(n, a1.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a1.getInt(TEST_DOC_REV_SORT_KEY))
+            assertEquals(n, a2.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a2.getInt(TEST_DOC_REV_SORT_KEY))
         }
-
-        assertEquals(100, numRows)
     }
 
     @Test
-    @Throws(CouchbaseLiteException::class)
     fun testN1QLSelectStarFromUnderscore() {
-        loadNumberedDocs(100)
-
-        val numRows = verifyQuery(
-            baseTestDb.createQuery("SELECT * FROM _")
+        loadDocuments(100, testDatabase.getDefaultCollection())
+        verifyQuery(
+            testDatabase.createQuery("SELECT * FROM _"),
+            100
         ) { n, result ->
-            assertEquals(1, result.count)
-            val a1 = result.getDictionary(0)
-            val a2 = result.getDictionary("_")
-            assertEquals(n, a1!!.getInt("number1"))
-            assertEquals((100 - n), a1.getInt("number2"))
-            assertEquals(n, a2!!.getInt("number1"))
-            assertEquals((100 - n), a2.getInt("number2"))
+            assertEquals(1, result.count())
+            val a1 = result.getDictionary(0)!!
+            val a2 = result.getDictionary("_")!!
+            assertEquals(n, a1.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a1.getInt(TEST_DOC_REV_SORT_KEY))
+            assertEquals(n, a2.getInt(TEST_DOC_SORT_KEY))
+            assertEquals(100 - n, a2.getInt(TEST_DOC_REV_SORT_KEY))
         }
-
-        assertEquals(100, numRows)
     }
 
-    @Throws(CouchbaseLiteException::class)
-    private fun runTestCases(vararg cases: TestCase) {
+    @Suppress("DEPRECATION")
+    @Test
+    fun testLegacyIndexMatch() {
+        loadJSONResourceIntoCollection("sentences.json")
+
+        testCollection.createIndex("sentence", IndexBuilder.fullTextIndex(FullTextIndexItem.property("sentence")))
+
+        val query= QueryBuilder
+            .select(SelectResult.expression(Meta.id), SelectResult.property("sentence"))
+            .from(DataSource.collection(testCollection))
+            .where(FullTextFunction.match("sentence", "'Dummie woman'"))
+            .orderBy(Ordering.expression(FullTextFunction.rank("sentence")).descending())
+
+        verifyQuery(
+            query,
+            2
+        ) { _, result ->
+            assertNotNull(result.getString(0))
+            assertNotNull(result.getString(1))
+        }
+    }
+
+    // Utility Functions
+
+    private fun runTests(vararg cases: TestCase) {
         for (testCase in cases) {
             val docIdList = testCase.docIds.toMutableList()
-
-            val numRows = verifyQuery(
-                QueryBuilder.select(SR_DOCID).from(DataSource.database(baseTestDb))
+            val query = QueryBuilder.select(SelectResult.expression(Meta.id))
+                    .from(DataSource.collection(testCollection))
                     .where(testCase.expr)
-            ) { _, result ->
-                val docID = result.getString(0)
-                docIdList.remove(docID)
-            }
-            assertEquals(0, docIdList.size)
-            assertEquals(testCase.docIds.size, numRows)
+            verifyQuery(
+                query,
+                testCase.docIds.size
+            ) { _, result -> docIdList.remove(result.getString(0)) }
+
+            assertEquals(0, docIdList.size.toLong())
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
+    private fun testOrdered(ordering: Ordering, cmp: Comparator<String>) {
+        val firstNames = mutableListOf<String>()
+        val numRows = verifyQueryWithEnumerator(
+            QueryBuilder.select(SelectResult.expression(Meta.id))
+                .from(DataSource.collection(testCollection))
+                .orderBy(ordering)
+        ) { _, result ->
+            val docID = result.getString(0)
+            val doc = testCollection.getDocument(docID!!)!!
+            val name = doc.getDictionary("name")!!.toMap()
+            val firstName = name["first"] as String
+            firstNames.add(firstName)
+        }
+        assertEquals(100, numRows.toLong())
+        assertEquals(100, firstNames.size.toLong())
+
+        val sorted = firstNames.sortedWith(cmp)
+        assertContentEquals(sorted, firstNames)
+    }
+
     private fun createAlphaDocs() {
-        val letters = arrayOf("B", "Z", "Å", "A")
-        for (letter in letters) {
+        for (letter in arrayOf("B", "Z", "Å", "A")) {
             val doc = MutableDocument()
             doc.setValue("string", letter)
-            saveDocInBaseTestDb(doc)
+            saveDocInCollection(doc)
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun createDateDocs() {
         var doc = MutableDocument()
         doc.setString("local", "1985-10-26")
-        baseTestDb.save(doc)
+        saveDocInCollection(doc)
 
-        val dateTimeFormats = listOf(
+        for (format in arrayOf(
             "1985-10-26 01:21",
             "1985-10-26 01:21:30",
             "1985-10-26 01:21:30.5",
             "1985-10-26 01:21:30.55",
             "1985-10-26 01:21:30.555"
-        )
-
-        for (format in dateTimeFormats) {
+        )) {
             doc = MutableDocument()
             doc.setString("local", format)
             doc.setString("JST", "$format+09:00")
@@ -3229,52 +3116,57 @@ class QueryTest : BaseQueryTest() {
             doc.setString("PST", "$format-08:00")
             doc.setString("PST2", "$format-0800")
             doc.setString("UTC", format + "Z")
-            baseTestDb.save(doc)
+            saveDocInCollection(doc)
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
+    private fun jsonDocId(i: Int): String =
+        "doc-${i.paddedString(3)}"
+
     private fun createTaskDocument(title: String, complete: Boolean): Document {
         val doc = MutableDocument()
         doc.setString("type", "task")
         doc.setString("title", title)
         doc.setBoolean("complete", complete)
-        return saveDocInBaseTestDb(doc)
+        return saveDocInCollection(doc)
     }
 
-    @Throws(CouchbaseLiteException::class)
-    private fun testOrdered(ordering: Ordering, cmp: Comparator<String>) {
-        val firstNames = mutableListOf<String>()
-        val numRows = verifyQuery(
-            QueryBuilder.select(SR_DOCID).from(DataSource.database(baseTestDb)).orderBy(ordering),
-            false
-        ) { _, result ->
-            val docID = result.getString(0)!!
-            val doc = baseTestDb.getDocument(docID)!!
-            val name = doc.getDictionary("name")!!.toMap()
-            val firstName = name["first"] as String
-            firstNames.add(firstName)
+    private suspend fun liveQueryNoUpdate(test: (QueryChange) -> Unit) {
+        loadDocuments(100)
+
+        val query: Query = QueryBuilder
+            .select(SelectResult.expression(Expression.property(TEST_DOC_SORT_KEY)))
+            .from(DataSource.collection(testCollection))
+            .where(Expression.property(TEST_DOC_SORT_KEY).lessThan(Expression.intValue(50)))
+            .orderBy(Ordering.property(TEST_DOC_SORT_KEY).ascending())
+
+        val latch1 = CountDownLatch(1)
+        val latch2 = CountDownLatch(1)
+        val listener: QueryChangeListener = { change ->
+            test(change)
+            // Attaching the listener should run the query and get the results
+            // That will pop the latch allowing the addition of a bunch more docs
+            // Those new docs, however, do not fit the where clause and should
+            // not cause the listener to be called again.
+            if (latch1.getCount() > 0) {
+                latch1.countDown()
+            } else {
+                latch2.countDown()
+            }
         }
-        assertEquals(100, numRows)
-        assertEquals(100, firstNames.size)
 
-        val sorted = firstNames.toMutableList()
-        sorted.sortedWith(cmp)
-        assertContentEquals(sorted, firstNames)
-    }
+        query.addChangeListener(testSerialCoroutineContext, listener).use {
+            assertTrue(latch1.await(STD_TIMEOUT_SEC.seconds))
+            // create more docs
+            loadDocuments(101, 100)
 
-    companion object {
-        private val EXPR_NUMBER1 = Expression.property("number1")
-        private val EXPR_NUMBER2 = Expression.property("number2")
-
-        private val SR_DOCID = SelectResult.expression(Meta.id)
-        private val SR_REVID = SelectResult.expression(Meta.revisionID)
-        private val SR_SEQUENCE = SelectResult.expression(Meta.sequence)
-        private val SR_DELETED = SelectResult.expression(Meta.deleted)
-        private val SR_EXPIRATION = SelectResult.expression(Meta.expiration)
-        private val SR_ALL = SelectResult.all()
-        private val SR_NUMBER1 = SelectResult.property("number1")
+            // Wait 5 seconds
+            // The latch should not pop, because the listener should be called only once
+            // ??? This is a very expensive way to test
+            assertFalse(latch2.await(5.seconds))
+            assertEquals(1, latch2.getCount())
+        }
     }
 }
 
-expect fun localToUTC(format: String, dateStr: String): String
+internal expect fun localToUTC(format: String, dateStr: String): String
