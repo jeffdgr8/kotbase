@@ -29,7 +29,6 @@ class QueryChangeTest : BaseQueryTest() {
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1615
     @Test
-    @Throws(Exception::class)
     fun testRemoveQueryChangeListenerInCallback() = runBlocking {
         loadDocuments(10)
 

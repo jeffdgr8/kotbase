@@ -17,11 +17,7 @@ package kotbase
 
 import com.couchbase.lite.generation
 import com.couchbase.lite.getC4Document
-import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.CountDownLatch
 import kotlin.test.*
-import kotlin.time.Duration.Companion.seconds
 
 // These tests are largely translations of Jay Vavachan's Obj-C tests
 class ConflictResolutionTests : BaseReplicatorTest() {

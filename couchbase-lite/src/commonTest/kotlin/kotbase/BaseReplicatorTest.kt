@@ -16,7 +16,6 @@
 package kotbase
 
 import kotbase.internal.utils.Report
-import kotbase.mock.TestReplicatorChangeListener
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
@@ -25,7 +24,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -110,7 +108,6 @@ abstract class BaseReplicatorTest : BaseDbTest() {
     private val replicators = mutableListOf<Replicator>()
 
     @BeforeTest
-    @Throws(CouchbaseLiteException::class)
     fun setUpBaseReplicatorTest() {
         targetDatabase = createDb("target_db")
         targetCollection = targetDatabase.createSimilarCollection(testCollection)

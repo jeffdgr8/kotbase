@@ -13,34 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//// TODO: uses 3.1 APIs
-//package kotbase
-//
-//import kotlin.test.Test
-//import kotlin.test.assertEquals
-//import kotlin.test.assertTrue
-//
-//class ReplicatorMiscTest : BaseReplicatorTest() {
-//
+package kotbase
+
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.CountDownLatch
+import kotlin.test.*
+import kotlin.time.Duration.Companion.seconds
+
+class ReplicatorMiscTest : BaseReplicatorTest() {
+
 //    @Test
 //    fun testGetExecutor() {
-//        val executor: java.util.concurrent.Executor =
-//            java.util.concurrent.Executor { runnable: java.lang.Runnable? -> }
-//        val listener: ReplicatorChangeListener =
-//            ReplicatorChangeListener { change: com.couchbase.lite.ReplicatorChange? -> }
+//        val executor = Executor { runnable -> }
+//        val listener: ReplicatorChangeListener = ReplicatorChangeListener { change -> }
 //
-//        // custom Executor
-//        var token = ReplicatorChangeListenerToken(executor, listener) { t -> }
-//        assertEquals(executor, token.getExecutor())
-//
-//        // UI thread Executor
-//        token = ReplicatorChangeListenerToken(null, listener) { t -> }
-//        assertEquals(
-//            CouchbaseLiteInternal.getExecutionService().getDefaultExecutor(),
-//            token.getExecutor()
-//        )
+//        ReplicatorChangeListenerToken(executor, listener) { t -> }.use { token ->
+//            assertEquals(executor, token.getExecutor())
+//        }
+//        ReplicatorChangeListenerToken(null, listener) { t -> }.use { token ->
+//            assertEquals(CouchbaseLiteInternal.getExecutionService().getDefaultExecutor(), token.getExecutor())
+//        }
 //    }
-//
+
 //    @Test
 //    fun testReplicatorChange() {
 //        val completed: Long = 10
@@ -56,132 +50,81 @@
 //            errorCode,
 //            0
 //        )
-//        val status: ReplicatorStatus = ReplicatorStatus(c4ReplicatorStatus)
-//        val repChange: ReplicatorChange = ReplicatorChange(baseTestReplicator, status)
-//        assertEquals(repChange.replicator, baseTestReplicator)
-//        assertEquals(repChange.status, status)
-//        assertEquals(repChange.status.activityLevel, status.activityLevel)
-//        assertEquals(repChange.status.progress.completed, completed)
-//        assertEquals(repChange.status.progress.total, total)
-//        assertEquals(
-//            repChange.status.error!!.code,
-//            errorCode
-//        )
-//        assertEquals(repChange.status.error!!.domain, CBLError.Domain.CBLITE)
-//    }
 //
+//        val repl = makeBasicRepl()
+//        val replStatus = ReplicatorStatus(c4ReplicatorStatus)
+//        val repChange = ReplicatorChange(repl, replStatus)
+//
+//        assertEquals(repChange.replicator, repl)
+//
+//        val status = repChange.status
+//        assertNotNull(status)
+//        assertEquals(status.activityLevel, status.activityLevel)
+//
+//        val progress = status.progress
+//        assertNotNull(progress)
+//        assertEquals(progress.completed, completed)
+//        assertEquals(progress.total, total)
+//
+//        val error = status.error
+//        assertNotNull(error)
+//        assertEquals(error.code, errorCode)
+//        assertEquals(error.domain, CBLError.Domain.CBLITE)
+//    }
+
 //    @Test
 //    fun testDocumentReplication() {
-//        val isPush = true
-//        val docs = mutableListOf<ReplicatedDocument>()
-//        val doc: DocumentReplication = DocumentReplication(baseTestReplicator, isPush, docs)
-//        assertEquals(doc.isPush, isPush)
-//        assertEquals(doc.replicator, baseTestReplicator)
+//        val docs = listOf<ReplicatedDocument>()
+//        val repl = makeBasicRepl()
+//        val doc = DocumentReplication(repl, true, docs)
+//        assertTrue(doc.isPush)
+//        assertEquals(doc.replicator, repl)
 //        assertEquals(doc.documents, docs)
 //    }
-//
-//    // https://issues.couchbase.com/browse/CBL-89
-//    // Thanks to @James Flather for the ready-made test code
+
+    // https://issues.couchbase.com/browse/CBL-89
+    // Thanks to @James Flather for the ready-made test code
+    @Test
+    fun testStopBeforeStart() {
+        makeBasicRepl().stop()
+    }
+
+    // https://issues.couchbase.com/browse/CBL-88
+    // Thanks to @James Flather for the ready-made test code
+    @Test
+    fun testStatusBeforeStart() {
+        makeBasicRepl().status
+    }
+
 //    @Test
-//    fun testStopBeforeStart() {
-//        testReplicator(makeConfig(remoteTargetEndpoint, ReplicatorType.PUSH, false)).stop()
-//    }
-//
-//    // https://issues.couchbase.com/browse/CBL-88
-//    // Thanks to @James Flather for the ready-made test code
-//    @Test
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testStatusBeforeStart() {
-//        testReplicator(
-//            makeConfig(
-//                remoteTargetEndpoint,
-//                ReplicatorType.PUSH,
-//                false
-//            )
-//        ).getStatus()
-//    }
-//
-//    @Test(expected = java.lang.IllegalArgumentException::class)
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testIllegalMaxAttempts() {
-//        ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint).maxAttempts = -1
-//    }
-//
-//    @Test
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testMaxAttemptsZero() {
-//        ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint).maxAttempts = 0
-//    }
-//
-//    @Test(expected = java.lang.IllegalArgumentException::class)
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testIllegalAttemptsWaitTime() {
-//        ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint).maxAttemptWaitTime = -1
-//    }
-//
-//    @Test
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testMaxAttemptsWaitTimeZero() {
-//        ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint).maxAttemptWaitTime = 0
-//    }
-//
-//    @Test(expected = java.lang.IllegalArgumentException::class)
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testIllegalHeartbeatMin() {
-//        ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint).heartbeat = -1
-//    }
-//
-//    @Test
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testHeartbeatZero() {
-//        ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint).heartbeat = 0
-//    }
-//
-//    @Test(expected = java.lang.IllegalArgumentException::class)
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testIllegalHeartbeatMax() {
-//        ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint).heartbeat = 2147484
-//    }
-//
-//    @Test
-//    @Throws(java.net.URISyntaxException::class)
 //    fun testDocumentEndListenerTokenRemove() {
-//        val repl: Replicator =
-//            testReplicator(ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint))
+//        val repl = makeBasicRepl()
 //        assertEquals(0, repl.getDocEndListenerCount())
-//        val token = repl.addDocumentReplicationListener { r: DocumentReplication? -> }
+//        val token = repl.addDocumentReplicationListener { }
 //        assertEquals(1, repl.getDocEndListenerCount())
 //        token.remove()
 //        assertEquals(0, repl.getDocEndListenerCount())
 //        token.remove()
 //        assertEquals(0, repl.getDocEndListenerCount())
 //    }
-//
+
 //    @Test
-//    @Throws(java.net.URISyntaxException::class)
-//    fun tesReplicationListenerTokenRemove() {
-//        val repl: Replicator =
-//            testReplicator(ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint))
+//    fun testReplicationListenerTokenRemove() {
+//        val repl = makeBasicRepl()
 //        assertEquals(0, repl.getReplicatorListenerCount())
-//        val token = repl.addChangeListener { r: ReplicatorChange? -> }
+//        val token = repl.addChangeListener { }
 //        assertEquals(1, repl.getReplicatorListenerCount())
 //        token.remove()
 //        assertEquals(0, repl.getReplicatorListenerCount())
 //        token.remove()
 //        assertEquals(0, repl.getReplicatorListenerCount())
 //    }
-//
+
 //    @Test
-//    @Throws(java.net.URISyntaxException::class)
 //    fun testDefaultConnectionOptions() {
-//        // Don't use makeConfig: it sets the heartbeat
-//        val config: ReplicatorConfiguration = also {
-//            ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint)
-//                .type = it
-//        }
-//            .setContinuous(false)
-//        val repl: Replicator = testReplicator(config)
-//        val options: MutableMap<String, Any> = java.util.HashMap<String, Any>()
+//        val repl = makeDefaultConfig().testReplicator()
+//
+//        val options = mutableMapOf<String, Any?>()
 //        repl.getSocketFactory().setTestListener { c4Socket ->
 //            if (c4Socket == null) {
 //                return@setTestListener
@@ -196,33 +139,43 @@
 //        }
 //
 //        // the replicator will fail because the endpoint is bogus
-//        run(
-//            repl,
-//            CBLError.Code.NETWORK_OFFSET + C4Constants.NetworkError.UNKNOWN_HOST,
-//            CBLError.Domain.CBLITE
-//        )
+//        run(repl, false, CBLError.Domain.CBLITE, CBLError.Code.UNKNOWN_HOST)
+//
 //        synchronized(options) {
-//            assertNull(options[C4Replicator.REPLICATOR_OPTION_ENABLE_AUTO_PURGE])
-//            assertFalse(options.containsKey(C4Replicator.REPLICATOR_HEARTBEAT_INTERVAL))
-//            assertFalse(options.containsKey(C4Replicator.REPLICATOR_OPTION_MAX_RETRY_INTERVAL))
-//            assertFalse(options.containsKey(C4Replicator.REPLICATOR_OPTION_MAX_RETRIES))
+//            assertEquals(
+//                Defaults.Replicator.ACCEPT_PARENT_COOKIES,
+//                options[C4Replicator.REPLICATOR_OPTION_ACCEPT_PARENT_COOKIES]
+//            )
+//            assertEquals(
+//                Defaults.Replicator.ENABLE_AUTO_PURGE,
+//                options[C4Replicator.REPLICATOR_OPTION_ENABLE_AUTO_PURGE]
+//            )
+//            assertEquals(
+//                Defaults.Replicator.HEARTBEAT,
+//                (options[C4Replicator.REPLICATOR_HEARTBEAT_INTERVAL] as Number?)!!.toInt()
+//            )
+//            assertEquals(
+//                Defaults.Replicator.MAX_ATTEMPT_WAIT_TIME,
+//                (options[C4Replicator.REPLICATOR_OPTION_MAX_RETRY_INTERVAL] as Number?)!!.toInt()
+//            )
+//            assertEquals(
+//                Defaults.Replicator.MAX_ATTEMPTS_SINGLE_SHOT - 1,
+//                (options[C4Replicator.REPLICATOR_OPTION_MAX_RETRIES] as Number?)!!.toInt()
+//            )
 //        }
 //    }
-//
+
 //    @Test
-//    @Throws(java.net.URISyntaxException::class)
 //    fun testCustomConnectionOptions() {
-//        val config: ReplicatorConfiguration = also {
-//            ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint)
-//                .type = it
-//        }
-//            .setContinuous(false)
+//        // Caution: not disabling heartbeat
+//        val repl = makeDefaultConfig()
 //            .setHeartbeat(33)
 //            .setMaxAttempts(78)
 //            .setMaxAttemptWaitTime(45)
 //            .setAutoPurgeEnabled(false)
-//        val repl: Replicator = testReplicator(config)
-//        val options: MutableMap<String, Any> = java.util.HashMap<String, Any>()
+//            .setAcceptParentDomainCookies(true).testReplicator()
+//
+//        val options = mutableMapOf<String, Any?>()
 //        repl.getSocketFactory().setTestListener { delegate ->
 //            if (delegate !is AbstractCBLWebSocket) {
 //                return@setTestListener
@@ -237,147 +190,135 @@
 //        }
 //
 //        // the replicator will fail because the endpoint is bogus
-//        run(
-//            repl,
-//            CBLError.Code.NETWORK_OFFSET + C4Constants.NetworkError.UNKNOWN_HOST,
-//            CBLError.Domain.CBLITE
-//        )
+//        run(repl, false, CBLError.Domain.CBLITE, CBLError.Code.UNKNOWN_HOST)
+//
 //        synchronized(options) {
-//            assertEquals(
-//                java.lang.Boolean.FALSE,
-//                options[C4Replicator.REPLICATOR_OPTION_ENABLE_AUTO_PURGE]
-//            )
-//            assertEquals(
-//                33L,
-//                options[C4Replicator.REPLICATOR_HEARTBEAT_INTERVAL]
-//            )
-//            assertEquals(
-//                45L,
-//                options[C4Replicator.REPLICATOR_OPTION_MAX_RETRY_INTERVAL]
-//            )
-//            /* A friend once told me: Don't try to teach a pig to sing.  It won't work and it annoys the pig. */assertEquals(
-//            78L - 1L,
-//            options[C4Replicator.REPLICATOR_OPTION_MAX_RETRIES]
-//        )
+//            assertEquals(java.lang.Boolean.TRUE, options[C4Replicator.REPLICATOR_OPTION_ACCEPT_PARENT_COOKIES])
+//            assertEquals(java.lang.Boolean.FALSE, options[C4Replicator.REPLICATOR_OPTION_ENABLE_AUTO_PURGE])
+//            assertEquals(33L, options[C4Replicator.REPLICATOR_HEARTBEAT_INTERVAL])
+//            assertEquals(45L, options[C4Replicator.REPLICATOR_OPTION_MAX_RETRY_INTERVAL])
+//            // A friend once told me: Don't try to teach a pig to sing.  It won't work and it annoys the pig.
+//            assertEquals(78L - 1, options[C4Replicator.REPLICATOR_OPTION_MAX_RETRIES])
 //        }
 //    }
-//
+
 //    @Test
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testStopWhileConnecting() {
-//        val repl: Replicator =
-//            testReplicator(makeConfig(remoteTargetEndpoint, ReplicatorType.PUSH, false))
-//        val latch: java.util.concurrent.CountDownLatch = java.util.concurrent.CountDownLatch(1)
-//        val token = repl.addChangeListener { status: ReplicatorChange ->
-//            if (status.status.activityLevel === ReplicatorActivityLevel.CONNECTING) {
-//                repl.stop()
-//                latch.countDown()
+//    fun testBasicAuthOptions() = runBlocking {
+//        val config = makeBasicConfig()
+//        config.setAuthenticator(BasicAuthenticator("user", "sekrit".toCharArray()))
+//        val repl = config.testReplicator()
+//
+//        val options = mutableMapOf<String, Any?>()
+//        repl.getSocketFactory().setTestListener { c4Socket ->
+//            if (c4Socket == null) {
+//                return@setTestListener
+//            }
+//            synchronized(options) {
+//                val opts: Map<String, Any> =
+//                    (c4Socket as AbstractCBLWebSocket).getOptions()
+//                if (opts != null) {
+//                    options.putAll(opts)
+//                }
 //            }
 //        }
-//        repl.start()
-//        try {
-//            try {
-//                assertTrue(
-//                    latch.await(
-//                        STD_TIMEOUT_SEC,
-//                        java.util.concurrent.TimeUnit.SECONDS
-//                    )
-//                )
-//            } catch (ignore: java.lang.InterruptedException) {
-//            }
-//        } finally {
-//            repl.stop()
+//
+//        // the replicator will fail because the endpoint is bogus
+//        repl.run(false, CBLError.Domain.CBLITE, CBLError.Code.UNKNOWN_HOST)
+//
+//        synchronized(options) {
+//            val authOpts = options[C4Replicator.REPLICATOR_OPTION_AUTHENTICATION]
+//            assertTrue(authOpts is Map<*, *>)
+//            val auth = authOpts as Map<*, *>?
+//            assertEquals(C4Replicator.AUTH_TYPE_BASIC, auth!![C4Replicator.REPLICATOR_AUTH_TYPE])
+//            assertEquals("sekrit", auth[C4Replicator.REPLICATOR_AUTH_PASSWORD])
 //        }
 //    }
-//
+
+    @Test
+    fun testStopWhileConnecting() = runBlocking {
+        val repl = makeBasicRepl()
+
+        val latch = CountDownLatch(1)
+        val token = repl.addChangeListener { status ->
+            if (status.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
+                repl.stop()
+                latch.countDown()
+            }
+        }
+
+        repl.start()
+        try {
+            assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
+        } finally {
+            token.remove()
+            repl.stop()
+        }
+    }
+
 //    @Test
 //    fun testReplicatedDocument() {
-//        val collection: Collection<*> = baseTestDb.getDefaultCollection()
-//        val docID = "someDocumentID"
-//        val flags: Int = C4Constants.DocumentFlags.DELETED
-//        val error = CouchbaseLiteException(
-//            "Replicator busy",
-//            CBLError.Domain.CBLITE,
-//            CBLError.Code.BUSY
-//        )
-//        val doc: ReplicatedDocument = ReplicatedDocument(
-//            collection.getScope().getName(),
-//            collection.getName(),
-//            docID,
-//            flags,
-//            error
-//        )
-//        assertEquals(doc.id, docID)
-//        assertTrue(doc.flags.contains(DocumentFlag.DELETED))
-//        val err = doc.error
-//        assertEquals(CBLError.Domain.CBLITE, err!!.domain)
-//        assertEquals(CBLError.Code.BUSY, err!!.code)
-//        assertEquals(java.util.Collection.DEFAULT_NAME, doc.getCollectionName())
-//    }
-//
-//    // CBL-1218
-//    @Test(expected = java.lang.IllegalStateException::class)
-//    @Throws(java.net.URISyntaxException::class)
-//    fun testStartReplicatorWithClosedDb() {
-//        val replicator: Replicator = testReplicator(
-//            makeConfig(
-//                baseTestDb,
-//                remoteTargetEndpoint,
-//                ReplicatorType.PUSH_AND_PULL,
-//                false,
-//                null,
-//                null
+//        val docId = getUniqueName("replicated-doc")
+//        val replicatedDoc = ReplicatedDocument(
+//            targetCollection.scope.name,
+//            targetCollection.name,
+//            docId,
+//            C4Constants.DocumentFlags.DELETED,
+//            CouchbaseLiteException(
+//                "Replicator busy",
+//                CBLError.Domain.CBLITE,
+//                CBLError.Code.BUSY
 //            )
 //        )
-//        closeDb(baseTestDb)
-//        replicator.start(false)
-//    }
 //
-//    // CBL-1218
-//    @Test(expected = java.lang.IllegalStateException::class)
-//    @Throws(
-//        CouchbaseLiteException::class,
-//        java.net.URISyntaxException::class
-//    )
-//    fun testIsDocumentPendingWithClosedDb() {
-//        val replicator: Replicator = testReplicator(
-//            makeConfig(
-//                baseTestDb,
-//                remoteTargetEndpoint,
-//                ReplicatorType.PUSH_AND_PULL,
-//                false,
-//                null,
-//                null
-//            )
-//        )
-//        closeDb(baseTestDb)
-//        replicator.getPendingDocumentIds()
-//    }
+//        assertEquals(replicatedDoc.id, docId)
 //
-//    // CBL-1218
-//    @Test(expected = java.lang.IllegalStateException::class)
-//    @Throws(
-//        CouchbaseLiteException::class,
-//        java.net.URISyntaxException::class
-//    )
-//    fun testGetPendingDocIdsWithClosedDb() {
-//        val doc = MutableDocument()
-//        otherDB.save(doc)
-//        val replicator: Replicator = testReplicator(
-//            makeConfig(
-//                baseTestDb,
-//                remoteTargetEndpoint,
-//                ReplicatorType.PUSH_AND_PULL,
-//                false,
-//                null,
-//                null
-//            )
-//        )
-//        closeDb(baseTestDb)
-//        replicator.isDocumentPending(doc.id)
-//    }
+//        assertEquals(targetCollection.scope.name, replicatedDoc.scope)
+//        assertEquals(targetCollection.name, replicatedDoc.collection)
 //
-//    // CBL-1441
+//        assertTrue(replicatedDoc.flags.contains(DocumentFlag.DELETED))
+//
+//        val err = replicatedDoc.error
+//        assertNotNull(err)
+//        assertEquals(CBLError.Domain.CBLITE, err.domain)
+//        assertEquals(CBLError.Code.BUSY, err.code)
+//    }
+
+    // CBL-1218
+    @Test
+    fun testStartReplicatorWithClosedDb() {
+        val repl = makeBasicRepl()
+
+        closeDb(testDatabase)
+
+        assertFailsWith<IllegalStateException> { repl.start() }
+    }
+
+    // CBL-1218
+    @Test
+    fun testIsDocumentPendingWithClosedDb() {
+        val repl = makeBasicRepl()
+
+        deleteDb(testDatabase)
+
+        assertFailsWith<IllegalStateException> { repl.getPendingDocumentIds(testCollection) }
+    }
+
+    // CBL-1218
+    @Test
+    fun testGetPendingDocIdsWithClosedDb() {
+        val repl = makeBasicRepl()
+
+        closeDb(testDatabase)
+
+        assertFailsWith<IllegalStateException> {
+            repl.isDocumentPending(
+                "who-cares",
+                testCollection
+            )
+        }
+    }
+
+    // CBL-1441
 //    @Test
 //    fun testReplicatorStatus() {
 //        assertEquals(
@@ -409,58 +350,48 @@
 //            getActivityLevelFor(C4ReplicatorStatus.ActivityLevel.BUSY + 1)
 //        )
 //    }
-//
-//    // Verify that deprecated and new ReplicatorTypes are interchangeable
+
+    // Verify that deprecated and new ReplicatorTypes are interchangeable
+//    @Suppress("deprecation")
 //    @Test
-//    @Throws(java.net.URISyntaxException::class)
 //    fun testDeprecatedReplicatorType() {
-//        val config = ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint)
-//        assertEquals(
-//            AbstractReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL,
-//            config.getReplicatorType()
-//        )
+//        val config = makeDefaultConfig()
+//
+//        assertEquals(AbstractReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL, config.getReplicatorType())
 //        assertEquals(ReplicatorType.PUSH_AND_PULL, config.type)
+//
 //        config.setReplicatorType(AbstractReplicatorConfiguration.ReplicatorType.PUSH)
-//        assertEquals(
-//            AbstractReplicatorConfiguration.ReplicatorType.PUSH,
-//            config.getReplicatorType()
-//        )
+//        assertEquals(AbstractReplicatorConfiguration.ReplicatorType.PUSH, config.getReplicatorType())
 //        assertEquals(ReplicatorType.PUSH, config.type)
+//
 //        config.setReplicatorType(AbstractReplicatorConfiguration.ReplicatorType.PULL)
-//        assertEquals(
-//            AbstractReplicatorConfiguration.ReplicatorType.PULL,
-//            config.getReplicatorType()
-//        )
+//        assertEquals(AbstractReplicatorConfiguration.ReplicatorType.PULL, config.getReplicatorType())
 //        assertEquals(ReplicatorType.PULL, config.type)
-//        config.type = ReplicatorType.PUSH
-//        assertEquals(
-//            AbstractReplicatorConfiguration.ReplicatorType.PUSH,
-//            config.getReplicatorType()
-//        )
+//
+//        config.setType(ReplicatorType.PUSH)
+//        assertEquals(AbstractReplicatorConfiguration.ReplicatorType.PUSH, config.getReplicatorType())
 //        assertEquals(ReplicatorType.PUSH, config.type)
-//        config.type = ReplicatorType.PULL
-//        assertEquals(
-//            AbstractReplicatorConfiguration.ReplicatorType.PULL,
-//            config.getReplicatorType()
-//        )
+//
+//        config.setType(ReplicatorType.PULL)
+//        assertEquals(AbstractReplicatorConfiguration.ReplicatorType.PULL, config.getReplicatorType())
 //        assertEquals(ReplicatorType.PULL, config.type)
 //    }
-//
-//    /**
-//     * The 4 tests below test replicator cookies option when specifying replicator configuration
-//     */
+
+    /**
+     * The 4 tests below test replicator cookies option when specifying replicator configuration
+     */
 //    @Test
-//    @Throws(java.net.URISyntaxException::class)
 //    fun testReplicatorWithBothAuthenticationAndHeaderCookies() {
 //        val authenticator: Authenticator = SessionAuthenticator("mysessionid")
-//        val header: java.util.HashMap<String, String> = java.util.HashMap<String, String>()
-//        header.put(AbstractCBLWebSocket.HEADER_COOKIES, "region=nw; city=sf")
-//        val configuration: ReplicatorConfiguration = authenticator.also {
-//            ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint)
-//                .authenticator = it
-//        }
+//        val header = mapOf<String, String>(
+//            AbstractCBLWebSocket.HEADER_COOKIES to "region=nw; city=sf"
+//        )
+//        val configuration = makeDefaultConfig()
+//            .setAuthenticator(authenticator)
 //            .setHeaders(header)
-//        val immutableConfiguration = ImmutableReplicatorConfiguration(configuration)
+//
+//        val immutableConfiguration: ImmutableReplicatorConfiguration =
+//            ImmutableReplicatorConfiguration(configuration)
 //        val options: java.util.HashMap<String, Any> =
 //            immutableConfiguration.getConnectionOptions() as java.util.HashMap<String, Any>
 //
@@ -470,69 +401,79 @@
 //        assertTrue(cookies.contains("SyncGatewaySession=mysessionid"))
 //        assertTrue(cookies.contains("region=nw; city=sf"))
 //
-//        // user specified cookie should be removed from extra header
-//        val httpHeaders: java.util.HashMap<String, Any> =
-//            options.get(C4Replicator.REPLICATOR_OPTION_EXTRA_HEADERS) as java.util.HashMap<String, Any>
-//        assertNotNull(httpHeaders) //httpHeaders must at least include a mapping for User-Agent
-//        assertFalse(httpHeaders.containsKey(AbstractCBLWebSocket.HEADER_COOKIES))
-//    }
+//        // user specified cookie should have been removed from extra header
+//        val httpHeaders: Any = options.get(C4Replicator.REPLICATOR_OPTION_EXTRA_HEADERS)
+//        assertTrue(httpHeaders is Map<*, *>)
 //
+//        // httpHeaders must at least include a mapping for User-Agent
+//        assertFalse((httpHeaders as Map<*, *>).containsKey(AbstractCBLWebSocket.HEADER_COOKIES))
+//    }
+
 //    @Test
-//    @Throws(java.net.URISyntaxException::class)
 //    fun testReplicatorWithNoCookie() {
-//        val immutableConfiguration = ImmutableReplicatorConfiguration(
-//            ReplicatorConfiguration(
-//                baseTestDb,
-//                remoteTargetEndpoint
-//            )
-//        )
-//        val options: java.util.HashMap<String, Any> =
-//            immutableConfiguration.getConnectionOptions() as java.util.HashMap<String, Any>
+//        val config: ImmutableReplicatorConfiguration =
+//            ImmutableReplicatorConfiguration(makeDefaultConfig())
+//        val options: Map<*, *> = config.getConnectionOptions()
 //        assertFalse(options.containsKey(C4Replicator.REPLICATOR_OPTION_COOKIES))
 //    }
-//
+
 //    @Test
-//    @Throws(java.net.URISyntaxException::class)
 //    fun testReplicatorWithOnlyAuthenticationCookie() {
-//        val authenticator: Authenticator = SessionAuthenticator("mysessionid")
-//        ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint)
-//            .authenticator = authenticator
-//        val configuration: ReplicatorConfiguration? =
-//            ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint)
-//                .authenticator
-//        val immutableConfiguration = ImmutableReplicatorConfiguration(configuration)
-//        val options: java.util.HashMap<String, Any> =
-//            immutableConfiguration.getConnectionOptions() as java.util.HashMap<String, Any>
 //        assertEquals(
 //            "SyncGatewaySession=mysessionid",
-//            options.get(C4Replicator.REPLICATOR_OPTION_COOKIES)
+//            ImmutableReplicatorConfiguration(
+//                makeDefaultConfig().setAuthenticator(SessionAuthenticator("mysessionid"))
+//            )
+//                .getConnectionOptions()
+//                .get(C4Replicator.REPLICATOR_OPTION_COOKIES)
 //        )
 //    }
-//
+
 //    @Test
-//    @Throws(java.net.URISyntaxException::class)
 //    fun testReplicatorWithOnlyHeaderCookie() {
-//        val header: java.util.HashMap<String, String> = java.util.HashMap<String, String>()
-//        header.put(AbstractCBLWebSocket.HEADER_COOKIES, "region=nw; city=sf")
-//        ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint)
-//            .headers = header
-//        val configuration: ReplicatorConfiguration? =
-//            ReplicatorConfiguration(baseTestDb, remoteTargetEndpoint)
-//                .headers
-//        val immutableConfiguration = ImmutableReplicatorConfiguration(configuration)
+//        val header = mapOf<String, String>(
+//            AbstractCBLWebSocket.HEADER_COOKIES to "region=nw; city=sf"
+//        )
+//        val configuration = makeDefaultConfig().setHeaders(header)
+//
+//        val immutableConfiguration: ImmutableReplicatorConfiguration =
+//            ImmutableReplicatorConfiguration(configuration)
 //        val options: java.util.HashMap<String, Any> =
 //            immutableConfiguration.getConnectionOptions() as java.util.HashMap<String, Any>
+//
 //        assertEquals(
 //            "region=nw; city=sf",
 //            options.get(C4Replicator.REPLICATOR_OPTION_COOKIES)
 //        )
-//        val httpHeaders: java.util.HashMap<String, Any> =
-//            options.get(C4Replicator.REPLICATOR_OPTION_EXTRA_HEADERS) as java.util.HashMap<String, Any>
-//        assertNotNull(httpHeaders) // httpHeaders must at least include a mapping for User-Agent
-//        assertFalse(httpHeaders.containsKey(AbstractCBLWebSocket.HEADER_COOKIES))
-//    }
 //
+//        val httpHeaders: Any = options.get(C4Replicator.REPLICATOR_OPTION_EXTRA_HEADERS)
+//        assertTrue(httpHeaders is Map<*, *>)
+//
+//        // httpHeaders must at least include a mapping for User-Agent
+//        assertFalse((httpHeaders as Map<*, *>).containsKey(AbstractCBLWebSocket.HEADER_COOKIES))
+//    }
+
+
+    ///////// Utility functions
 //    private fun getActivityLevelFor(activityLevel: Int): ReplicatorActivityLevel {
 //        return ReplicatorStatus(C4ReplicatorStatus(activityLevel, 0, 0, 0, 0, 0, 0)).activityLevel
 //    }
-//}
+
+    // return a nearly default config.
+    // Not using makeSimpleReplConfig, in order to make sure this is pure vanilla
+    // Note that this does not set heartbeat.  This config is likely to cause flaky tests
+    // when used in test with a live replicator
+    private fun makeDefaultConfig(): ReplicatorConfiguration {
+        return ReplicatorConfiguration(mockURLEndpoint).addCollection(testCollection, null)
+    }
+
+    private fun makeBasicConfig(): ReplicatorConfiguration {
+        val config = makeDefaultConfig()
+        config.setHeartbeat(ReplicatorConfiguration.DISABLE_HEARTBEAT)
+        return config
+    }
+
+    private fun makeBasicRepl(): Replicator {
+        return makeBasicConfig().testReplicator()
+    }
+}
