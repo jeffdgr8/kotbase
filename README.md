@@ -64,17 +64,17 @@ repositories {
 }
 ```
 
+### Native Platforms
+
+Native platform targets should additionally link to the Couchbase Lite dependency native binary. See [Supported
+Platforms](https://kotbase.dev/platforms/) for more details.
+
 ### Linux
 
 Targeting JVM running on Linux or native Linux, both require a specific version of the libicu dependency. (You will see
 an error such as `libLiteCore.so: libicuuc.so.71: cannot open shared object file: No such file or directory` indicating
 the expected version.) If the required version isn't available from your distribution's package manager, you can
 download it from [GitHub](https://github.com/unicode-org/icu/releases).
-
-### Native Platforms
-
-Native platform targets should additionally link to the Couchbase Lite dependency native binary. See [Supported
-Platforms](https://kotbase.dev/platforms/) for more details.
 
 ## Documentation
 
