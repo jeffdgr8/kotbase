@@ -29,7 +29,7 @@ kotlin {
                 api(libs.androidx.test.runner)
             }
         }
-        nativeCommonMain {
+        nativeMain {
             dependencies {
                 implementation(libs.korlibs.korio)
             }
