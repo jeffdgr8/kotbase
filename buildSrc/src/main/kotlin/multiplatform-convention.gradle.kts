@@ -11,13 +11,13 @@ kotlin {
      *                      │ common │
      *                      └───┬────┘
      *               ┌──────────┴───────────┐
-     *               │               ┌──────┴───────┐
-     *               │               │ nativeCommon │
-     *               │               └──────┬───────┘
+     *               │                  ┌───┴────┐
+     *               │                  │ native │
+     *               │                  └───┬────┘
      *               │           ┌──────────┴──────────┐
-     *         ┌─────┴─────┐ ┌───┴───┐             ┌───┴────┐
-     *         │ jvmCommon │ │ apple │             │ native │
-     *         └─────┬─────┘ └───┬───┘             └───┬────┘
+     *         ┌─────┴─────┐ ┌───┴───┐           ┌─────┴──────┐
+     *         │ jvmCommon │ │ apple │           │ linuxMingw │
+     *         └─────┬─────┘ └───┬───┘           └─────┬──────┘
      *          ┌────┴────┐      │       ┌─────────────┼─────────────┐
      *     ╔════╩════╗ ╔══╩══╗   │  ╔════╩═════╗ ╔═════╩══════╗ ╔════╩═════╗
      *     ║ android ║ ║ jvm ║   │  ║ linuxX64 ║ ║ linuxArm64 ║ ║ mingwX64 ║
@@ -29,17 +29,14 @@ kotlin {
      */
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    applyHierarchyTemplate {
+    applyDefaultHierarchyTemplate {
         common {
             group("jvmCommon") {
                 withAndroidTarget()
                 withJvm()
             }
-            group("nativeCommon") {
-                group("apple") {
-                    withApple()
-                }
-                group("native") {
+            group("native") {
+                group("linuxMingw") {
                     withLinux()
                     withMingw()
                 }
