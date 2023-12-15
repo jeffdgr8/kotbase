@@ -73,8 +73,8 @@ plugins:
   - search
   - macros
 extra:
-  version: 3.0.12-1.0.0
-  version_objc: 3.0.12
+  version: 3.0.15-1.0.1
+  version_objc: 3.0.15
   generator: false
   social:
     - icon: simple/github

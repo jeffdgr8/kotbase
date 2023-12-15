@@ -45,9 +45,9 @@ kotlin {
         commonMain {
             dependencies {
                 // Community Edition
-                implementation("dev.kotbase:couchbase-lite:3.0.12-1.0.0")
+                implementation("dev.kotbase:couchbase-lite:3.0.15-1.0.1")
                 // or Enterprise Edition
-                implementation("dev.kotbase:couchbase-lite-ee:3.0.12-1.0.0")
+                implementation("dev.kotbase:couchbase-lite-ee:3.0.15-1.0.1")
             }
         }
     }
@@ -105,9 +105,9 @@ https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-i
 * Some deprecated APIs are omitted.
 * While not available in the Java SDK, as Java doesn't support operator overloading, `Fragment` subscript APIs are
   available in Kotbase, similar to [Swift](
-  https://docs.couchbase.com/mobile/3.0.12/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
-  https://docs.couchbase.com/mobile/3.0.12/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
-  https://docs.couchbase.com/mobile/3.0.12/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
+  https://docs.couchbase.com/mobile/3.0.15/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
+  https://docs.couchbase.com/mobile/3.0.15/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
+  https://docs.couchbase.com/mobile/3.0.15/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
 
 ## Extension Libraries
 
@@ -122,9 +122,9 @@ as well as other convenience functions for composing queries, observing change `
 
 ```kotlin
 // Community Edition
-implementation("dev.kotbase:couchbase-lite-ktx:3.0.12-1.0.0")
+implementation("dev.kotbase:couchbase-lite-ktx:3.0.15-1.0.1")
 // or Enterprise Edition
-implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.12-1.0.0")
+implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.15-1.0.1")
 ```
 
 ### Kotbase Kermit
@@ -136,9 +136,9 @@ https://kermit.touchlab.co/). Kermit can direct its logs to any number of log ou
 
 ```kotlin
 // Community Edition
-implementation("dev.kotbase:couchbase-lite-kermit:3.0.12-1.0.0")
+implementation("dev.kotbase:couchbase-lite-kermit:3.0.15-1.0.1")
 // or Enterprise Edition
-implementation("dev.kotbase:couchbase-lite-ee-kermit:3.0.12-1.0.0")
+implementation("dev.kotbase:couchbase-lite-ee-kermit:3.0.15-1.0.1")
 ```
 
 ### Kotbase Paging
@@ -153,9 +153,9 @@ performs limit/offset paging queries based on a user-supplied database query.
 
 ```kotlin
 // Community Edition
-implementation("dev.kotbase:couchbase-lite-paging:3.0.12-1.0.0")
+implementation("dev.kotbase:couchbase-lite-paging:3.0.15-1.0.1")
 // or Enterprise Edition
-implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.12-1.0.0")
+implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.15-1.0.1")
 ```
 
 ## Roadmap

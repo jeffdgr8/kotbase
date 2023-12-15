@@ -11,7 +11,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("dev.kotbase:couchbase-lite:3.0.12-1.0.0")
+                implementation("dev.kotbase:couchbase-lite:3.0.15-1.0.1")
             }
         }
     }
