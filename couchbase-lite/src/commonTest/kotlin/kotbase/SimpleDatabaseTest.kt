@@ -44,9 +44,7 @@ class SimpleDatabaseTest : BaseTest() {
             val newConfig = db.config
             assertNotNull(newConfig)
             assertEquals(config.directory, newConfig.directory)
-        } finally {
-            deleteDb(db)
-        }
+        } finally { eraseDb(db) }
     }
 
     @Test
@@ -58,9 +56,7 @@ class SimpleDatabaseTest : BaseTest() {
         try {
             assertNotNull(db.config)
             assertNotSame(db.config, config)
-        } finally {
-            deleteDb(db)
-        }
+        } finally { eraseDb(db) }
     }
 
     @Test
@@ -73,40 +69,32 @@ class SimpleDatabaseTest : BaseTest() {
         val db = createDb("default_dir_db", config)
         try {
             assertTrue(FileUtils.getCanonicalPath(db.path!!).contains(expectedPath))
-        } finally {
-            db.delete()
-        }
+        } finally { db.delete() }
     }
 
+    @Suppress("DEPRECATION")
     @Test
     fun testCreateWithDefaultConfiguration() {
         val db = createDb("default_config_db")
         try {
             assertNotNull(db)
             assertEquals(0, db.count)
-        } finally {
-            deleteDb(db)
-        }
+        } finally { eraseDb(db) }
     }
 
     @Test
     fun testCreateWithEmptyDBNames() {
-        assertFailsWith<IllegalArgumentException> {
-            Database("")
-        }
+        assertFailsWith<IllegalArgumentException> { Database("") }
     }
 
     @Test
     fun testCreateWithSpecialCharacterDBNames() {
-        val LEGAL_FILE_NAME_CHARS = "`~@#$%^&()_+{}][=-.,;'12345ABCDEabcde"
         val db = Database(LEGAL_FILE_NAME_CHARS)
-        try {
-            assertEquals(LEGAL_FILE_NAME_CHARS, db.name)
-        } finally {
-            deleteDb(db)
-        }
+        try { assertEquals(LEGAL_FILE_NAME_CHARS, db.name) }
+        finally { eraseDb(db) }
     }
 
+    @Suppress("DEPRECATION")
     @Test
     fun testCreateWithCustomDirectory() {
         val dir = getScratchDirectoryPath(getUniqueName("create-custom-dir"))
@@ -129,7 +117,7 @@ class SimpleDatabaseTest : BaseTest() {
 
             assertEquals(0, db.count)
         } finally {
-            deleteDb(db)
+            eraseDb(db)
         }
     }
 }
