@@ -215,14 +215,14 @@ abstract class BaseTest : PlatformTest() {
 
     private fun addComplexData(mDoc: MutableDocument): MutableDocument {
         // Dictionary:
-        val address: MutableDictionary = MutableDictionary()
+        val address = MutableDictionary()
         address.setValue("street", "1 Main street")
         address.setValue("city", "Mountain View")
         address.setValue("state", "CA")
         mDoc.setValue("address", address)
 
         // Array:
-        val phones: MutableArray = MutableArray()
+        val phones = MutableArray()
         phones.addValue("650-123-0001")
         phones.addValue("650-123-0002")
         mDoc.setValue("phones", phones)
@@ -255,6 +255,8 @@ abstract class BaseTest : PlatformTest() {
         private val SCRATCH_DIRS = mutableListOf<String>()
 
         const val DB_EXTENSION = ".cblite2" // C4Database.DB_EXTENSION
+
+        const val LEGAL_FILE_NAME_CHARS = "`~@#$%^&()_+{}][=-.,;'12345ABCDEabcde"
 
         @BeforeClass
         @JvmStatic
