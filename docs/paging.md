@@ -11,10 +11,8 @@ based on a user-supplied database query.
     ```kotlin title="build.gradle.kts"
     kotlin {
         sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite-ee-paging:{{ version }}")
-                }
+            commonMain.dependencies {
+                implementation("dev.kotbase:couchbase-lite-ee-paging:{{ version }}")
             }
         }
     }
@@ -25,10 +23,8 @@ based on a user-supplied database query.
     ```kotlin title="build.gradle.kts"
     kotlin {
         sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite-paging:{{ version }}")
-                }
+            commonMain.dependencies {
+                implementation("dev.kotbase:couchbase-lite-paging:{{ version }}")
             }
         }
     }

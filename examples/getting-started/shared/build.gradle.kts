@@ -35,10 +35,8 @@ kotlin {
     mingwX64()
 
     sourceSets {
-        commonMain {
-            dependencies {
-                api(libs.kotbase)
-            }
+        commonMain.dependencies {
+            api(libs.kotbase)
         }
         configureEach {
             languageSettings {

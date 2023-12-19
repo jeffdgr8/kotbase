@@ -16,16 +16,12 @@ kotlin {
     linkLibcblite(projects.couchbaseLite)
 
     sourceSets {
-        commonMain {
-            dependencies {
-                api(projects.couchbaseLiteKtx)
-                api(libs.paging)
-            }
+        commonMain.dependencies {
+            api(projects.couchbaseLiteKtx)
+            api(libs.paging)
         }
-        commonTest {
-            dependencies {
-                implementation(projects.testingSupport)
-            }
+        commonTest.dependencies {
+            implementation(projects.testingSupport)
         }
     }
 }

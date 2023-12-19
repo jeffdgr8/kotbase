@@ -8,10 +8,8 @@ its logs to any number of log outputs, including the console.
     ```kotlin title="build.gradle.kts"
     kotlin {
         sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite-ee-kermit:{{ version }}")
-                }
+            commonMain.dependencies {
+                implementation("dev.kotbase:couchbase-lite-ee-kermit:{{ version }}")
             }
         }
     }
@@ -22,10 +20,8 @@ its logs to any number of log outputs, including the console.
     ```kotlin title="build.gradle.kts"
     kotlin {
         sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite-kermit:{{ version }}")
-                }
+            commonMain.dependencies {
+                implementation("dev.kotbase:couchbase-lite-kermit:{{ version }}")
             }
         }
     }

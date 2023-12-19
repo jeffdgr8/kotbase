@@ -13,10 +13,8 @@ based on a user-supplied database query.
 ```kotlin
 kotlin {
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.15-1.0.1")
-            }
+        commonMain.dependencies {
+            implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.15-1.0.1")
         }
     }
 }

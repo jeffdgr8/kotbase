@@ -10,10 +10,8 @@ as well as other convenience functions for composing queries, observing change `
 ```kotlin
 kotlin {
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.15-1.0.1")
-            }
+        commonMain.dependencies {
+            implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.15-1.0.1")
         }
     }
 }

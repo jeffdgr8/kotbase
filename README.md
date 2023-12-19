@@ -42,13 +42,11 @@ shared module's **build.gradle.kts**:
 ```kotlin
 kotlin {
     sourceSets {
-        commonMain {
-            dependencies {
-                // Community Edition
-                implementation("dev.kotbase:couchbase-lite:3.0.15-1.0.1")
-                // or Enterprise Edition
-                implementation("dev.kotbase:couchbase-lite-ee:3.0.15-1.0.1")
-            }
+        commonMain.dependencies {
+            // Community Edition
+            implementation("dev.kotbase:couchbase-lite:3.0.15-1.0.1")
+            // or Enterprise Edition
+            implementation("dev.kotbase:couchbase-lite-ee:3.0.15-1.0.1")
         }
     }
 }

@@ -8,10 +8,8 @@ as well as other convenience functions for composing queries, observing change `
     ```kotlin title="build.gradle.kts"
     kotlin {
         sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite-ee-ktx:{{ version }}")
-                }
+            commonMain.dependencies {
+                implementation("dev.kotbase:couchbase-lite-ee-ktx:{{ version }}")
             }
         }
     }
@@ -22,10 +20,8 @@ as well as other convenience functions for composing queries, observing change `
     ```kotlin title="build.gradle.kts"
     kotlin {
         sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite-ktx:{{ version }}")
-                }
+            commonMain.dependencies {
+                implementation("dev.kotbase:couchbase-lite-ktx:{{ version }}")
             }
         }
     }

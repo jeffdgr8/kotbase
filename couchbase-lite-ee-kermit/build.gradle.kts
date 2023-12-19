@@ -16,16 +16,12 @@ kotlin {
     linkLibcblite(projects.couchbaseLiteEe)
 
     sourceSets {
-        commonMain {
-            dependencies {
-                api(projects.couchbaseLiteEeKtx)
-                api(libs.kermit)
-            }
+        commonMain.dependencies {
+            api(projects.couchbaseLiteEeKtx)
+            api(libs.kermit)
         }
-        commonTest {
-            dependencies {
-                implementation(projects.testingSupportEe)
-            }
+        commonTest.dependencies {
+            implementation(projects.testingSupportEe)
         }
     }
 }
