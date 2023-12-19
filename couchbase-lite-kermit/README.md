@@ -10,10 +10,8 @@ its logs to any number of log outputs, including the console.
 ```kotlin
 kotlin {
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation("dev.kotbase:couchbase-lite-kermit:3.0.15-1.0.1")
-            }
+        commonMain.dependencies {
+            implementation("dev.kotbase:couchbase-lite-kermit:3.0.15-1.0.1")
         }
     }
 }

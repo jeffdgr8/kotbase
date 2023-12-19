@@ -16,30 +16,20 @@ kotlin {
     linkLibcblite(projects.couchbaseLiteEe)
 
     sourceSets {
-        commonMain {
-            dependencies {
-                api(projects.couchbaseLiteEe)
-            }
+        commonMain.dependencies {
+            api(projects.couchbaseLiteEe)
         }
-        commonTest {
-            dependencies {
-                implementation(projects.testingSupportEe)
-            }
+        commonTest.dependencies {
+            implementation(projects.testingSupportEe)
         }
-        jvmCommonTest {
-            dependencies {
-                implementation(libs.mockk)
-            }
+        jvmCommonTest.dependencies {
+            implementation(libs.mockk)
         }
-        androidMain {
-            dependencies {
-                compileOnly(libs.androidx.lifecycle.runtime.ktx)
-            }
+        androidMain.dependencies {
+            compileOnly(libs.androidx.lifecycle.runtime.ktx)
         }
-        androidInstrumentedTest {
-            dependencies {
-                implementation(libs.mockk.android)
-            }
+        androidInstrumentedTest.dependencies {
+            implementation(libs.mockk.android)
         }
     }
 }

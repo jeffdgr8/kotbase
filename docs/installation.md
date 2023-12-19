@@ -7,10 +7,8 @@ your shared module's **build.gradle.kts**:
     ```kotlin title="build.gradle.kts"
     kotlin {
         sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite-ee:{{ version }}")
-                }
+            commonMain.dependencies {
+                implementation("dev.kotbase:couchbase-lite-ee:{{ version }}")
             }
         }
     }
@@ -21,10 +19,8 @@ your shared module's **build.gradle.kts**:
     ```kotlin title="build.gradle.kts"
     kotlin {
         sourceSets {
-            commonMain {
-                dependencies {
-                    implementation("dev.kotbase:couchbase-lite:{{ version }}")
-                }
+            commonMain.dependencies {
+                implementation("dev.kotbase:couchbase-lite:{{ version }}")
             }
         }
     }

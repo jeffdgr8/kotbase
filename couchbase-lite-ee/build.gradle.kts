@@ -41,35 +41,25 @@ kotlin {
         // Windows requires developer mode and git core.symlinks = true
         // https://youtrack.jetbrains.com/issue/IDEA-210311
         // https://youtrack.jetbrains.com/issue/IDEABKL-6745
-        commonMain {
-            dependencies {
-                api(libs.kotlinx.coroutines.core)
-                api(libs.kotlinx.datetime)
-                api(libs.kotlinx.io)
-                implementation(libs.kotlinx.atomicfu)
-            }
+        commonMain.dependencies {
+            api(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.datetime)
+            api(libs.kotlinx.io)
+            implementation(libs.kotlinx.atomicfu)
         }
-        commonTest {
-            dependencies {
-                implementation(projects.testingSupportEe)
-                implementation(libs.stately)
-            }
+        commonTest.dependencies {
+            implementation(projects.testingSupportEe)
+            implementation(libs.stately)
         }
-        jvmCommonMain {
-            dependencies {
-                compileOnly(libs.couchbase.lite.java.ee)
-            }
+        jvmCommonMain.dependencies {
+            compileOnly(libs.couchbase.lite.java.ee)
         }
-        jvmMain {
-            dependencies {
-                api(libs.couchbase.lite.java.ee)
-            }
+        jvmMain.dependencies {
+            api(libs.couchbase.lite.java.ee)
         }
-        androidMain {
-            dependencies {
-                api(libs.couchbase.lite.android.ee)
-                implementation(libs.androidx.startup)
-            }
+        androidMain.dependencies {
+            api(libs.couchbase.lite.android.ee)
+            implementation(libs.androidx.startup)
         }
 
         all {

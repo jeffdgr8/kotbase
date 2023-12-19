@@ -6,11 +6,9 @@ plugins {
 kotlin {
     jvm()
     sourceSets {
-        jvmMain {
-            dependencies {
-                implementation(projects.shared)
-                implementation(compose.desktop.currentOs)
-            }
+        jvmMain.dependencies {
+            implementation(projects.shared)
+            implementation(compose.desktop.currentOs)
         }
     }
 }

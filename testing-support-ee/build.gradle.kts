@@ -14,25 +14,19 @@ kotlin {
     linkLibcblite(projects.couchbaseLiteEe)
 
     sourceSets {
-        commonMain {
-            dependencies {
-                api(projects.couchbaseLiteEe)
-                api(libs.kotlin.test)
-                api(libs.kotlin.test.junit)
-                api(libs.kotlinx.serialization.json)
-                api(libs.kotlinx.atomicfu)
-            }
+        commonMain.dependencies {
+            api(projects.couchbaseLiteEe)
+            api(libs.kotlin.test)
+            api(libs.kotlin.test.junit)
+            api(libs.kotlinx.serialization.json)
+            api(libs.kotlinx.atomicfu)
         }
-        androidMain {
-            dependencies {
-                api(libs.androidx.test.core.ktx)
-                api(libs.androidx.test.runner)
-            }
+        androidMain.dependencies {
+            api(libs.androidx.test.core.ktx)
+            api(libs.androidx.test.runner)
         }
-        nativeMain {
-            dependencies {
-                implementation(libs.korlibs.korio)
-            }
+        nativeMain.dependencies {
+            implementation(libs.korlibs.korio)
         }
     }
 }

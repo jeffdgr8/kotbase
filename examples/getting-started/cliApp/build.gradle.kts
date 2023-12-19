@@ -58,10 +58,8 @@ kotlin {
     }
 
     sourceSets {
-        named("nativeHostMain") {
-            dependencies {
-                implementation(projects.shared)
-            }
+        named("nativeHostMain").dependencies {
+            implementation(projects.shared)
         }
     }
 }

@@ -34,35 +34,25 @@ kotlin {
     }
 
     sourceSets {
-        commonMain {
-            dependencies {
-                api(libs.kotlinx.coroutines.core)
-                api(libs.kotlinx.datetime)
-                api(libs.kotlinx.io)
-                implementation(libs.kotlinx.atomicfu)
-            }
+        commonMain.dependencies {
+            api(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.datetime)
+            api(libs.kotlinx.io)
+            implementation(libs.kotlinx.atomicfu)
         }
-        commonTest {
-            dependencies {
-                implementation(projects.testingSupport)
-                implementation(libs.stately)
-            }
+        commonTest.dependencies {
+            implementation(projects.testingSupport)
+            implementation(libs.stately)
         }
-        jvmCommonMain {
-            dependencies {
-                compileOnly(libs.couchbase.lite.java)
-            }
+        jvmCommonMain.dependencies {
+            compileOnly(libs.couchbase.lite.java)
         }
-        jvmMain {
-            dependencies {
-                api(libs.couchbase.lite.java)
-            }
+        jvmMain.dependencies {
+            api(libs.couchbase.lite.java)
         }
-        androidMain {
-            dependencies {
-                api(libs.couchbase.lite.android)
-                implementation(libs.androidx.startup)
-            }
+        androidMain.dependencies {
+            api(libs.couchbase.lite.android)
+            implementation(libs.androidx.startup)
         }
     }
 }

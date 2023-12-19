@@ -27,25 +27,19 @@ kotlin {
     }
 
     sourceSets {
-        commonMain {
-            dependencies {
-                api(libs.kotbase)
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-            }
+        commonMain.dependencies {
+            api(libs.kotbase)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material)
         }
-        androidMain {
-            dependencies {
-                api(libs.androidx.activity.compose)
-                api(libs.androidx.appcompat)
-                api(libs.androidx.core.ktx)
-            }
+        androidMain.dependencies {
+            api(libs.androidx.activity.compose)
+            api(libs.androidx.appcompat)
+            api(libs.androidx.core.ktx)
         }
-        jvmMain {
-            dependencies {
-                implementation(compose.desktop.common)
-            }
+        jvmMain.dependencies {
+            implementation(compose.desktop.common)
         }
     }
 }
