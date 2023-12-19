@@ -21,8 +21,14 @@ import kotbase.internal.actuals
 public actual object IndexBuilder {
 
     public actual fun valueIndex(vararg items: ValueIndexItem): ValueIndex =
-        ValueIndex(CBLIndexBuilder.valueIndexWithItems(items.actuals()))
+        ValueIndex(
+            if (items.isNotEmpty()) CBLIndexBuilder.valueIndexWithItems(items.actuals())
+            else throw IllegalArgumentException("items must not be 0")
+        )
 
     public actual fun fullTextIndex(vararg items: FullTextIndexItem): FullTextIndex =
-        FullTextIndex(CBLIndexBuilder.fullTextIndexWithItems(items.actuals()))
+        FullTextIndex(
+            if (items.isNotEmpty()) CBLIndexBuilder.fullTextIndexWithItems(items.actuals())
+            else throw IllegalArgumentException("items must not be 0")
+        )
 }

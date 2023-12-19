@@ -23,7 +23,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
@@ -138,7 +137,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     @Throws(CouchbaseLiteException::class)
     public actual fun createCollection(collectionName: String, scopeName: String?): Collection {
         return wrapCBLError { error ->
-            actual.createCollectionWithName(name, scopeName, error)
+            actual.createCollectionWithName(collectionName, scopeName, error)
         }!!.asCollection(this)
     }
 
@@ -168,7 +167,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollection(collectionName: String, scopeName: String?): Collection? {
         return wrapCBLError { error ->
-            actual.collectionWithName(name, scopeName, error)
+            actual.collectionWithName(collectionName, scopeName, error)
         }?.asCollection(this)
     }
 
@@ -192,7 +191,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteCollection(collectionName: String, scopeName: String?) {
         wrapCBLError { error ->
-            actual.deleteCollectionWithName(name, scopeName, error)
+            actual.deleteCollectionWithName(collectionName, scopeName, error)
         }
     }
 
@@ -266,12 +265,9 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
                 }
             }
         } catch (e: CouchbaseLiteException) {
-            if (e.code == CBLError.Code.CONFLICT && e.domain == CBLError.Domain.CBLITE) {
-                // Java SDK doesn't throw exception on conflict, only returns false
-                false
-            } else {
-                throw e
-            }
+            if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
+            // Java SDK doesn't throw exception on conflict, only returns false
+            false
         }
     }
 
@@ -286,12 +282,18 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
                 try {
                     actual.saveDocument(document.actual, conflictHandler.convert(getDefaultCollectionNotNull()), error)
                 } catch (e: Exception) {
-                    throw CouchbaseLiteException(
-                        "Conflict handler threw an exception",
-                        e,
-                        CBLError.Domain.CBLITE,
-                        CBLError.Code.CONFLICT
-                    )
+                    if (e !is CouchbaseLiteException) {
+                        throw CouchbaseLiteException(
+                            "Conflict handler threw an exception",
+                            e,
+                            CBLError.Domain.CBLITE,
+                            CBLError.Code.CONFLICT
+                        )
+                    } else {
+                        if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
+                        // Java SDK doesn't throw exception on conflict, only returns false
+                        false
+                    }
                 }
             }
         }
@@ -323,12 +325,9 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
                 }
             }
         } catch (e: CouchbaseLiteException) {
-            if (e.code == CBLError.Code.CONFLICT && e.domain == CBLError.Domain.CBLITE) {
-                // Java SDK doesn't throw exception on conflict, only returns false
-                false
-            } else {
-                throw e
-            }
+            if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
+            // Java SDK doesn't throw exception on conflict, only returns false
+            false
         }
     }
 

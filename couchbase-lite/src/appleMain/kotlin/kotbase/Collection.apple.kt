@@ -63,15 +63,36 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, concurrencyControl: ConcurrencyControl): Boolean {
-        return wrapCBLError { error ->
-            actual.saveDocument(document.actual, concurrencyControl.actual, error)
+        return try {
+            wrapCBLError { error ->
+                actual.saveDocument(document.actual, concurrencyControl.actual, error)
+            }
+        } catch (e: CouchbaseLiteException) {
+            if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
+            // Java SDK doesn't throw exception on conflict, only returns false
+            false
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
         return wrapCBLError { error ->
-            actual.saveDocument(document.actual, conflictHandler.convert(this), error)
+            try {
+                actual.saveDocument(document.actual, conflictHandler.convert(this), error)
+            } catch (e: Exception) {
+                if (e !is CouchbaseLiteException) {
+                    throw CouchbaseLiteException(
+                        "Conflict handler threw an exception",
+                        e,
+                        CBLError.Domain.CBLITE,
+                        CBLError.Code.CONFLICT
+                    )
+                } else {
+                    if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
+                    // Java SDK doesn't throw exception on conflict, only returns false
+                    false
+                }
+            }
         }
     }
 
@@ -84,15 +105,29 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
-        return wrapCBLError { error ->
-            actual.deleteDocument(document.actual, concurrencyControl.actual, error)
+        return try {
+            wrapCBLError { error ->
+                actual.deleteDocument(document.actual, concurrencyControl.actual, error)
+            }
+        } catch (e: CouchbaseLiteException) {
+            if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
+            // Java SDK doesn't throw exception on conflict, only returns false
+            false
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
-        wrapCBLError { error ->
-            actual.purgeDocument(document.actual, error)
+        try {
+            wrapCBLError { error ->
+                actual.purgeDocument(document.actual, error)
+            }
+        } catch (e: CouchbaseLiteException) {
+            // Java SDK ignores not found error, except for new document
+            val isNew = document.revisionID == null
+            if (isNew || e.code != CBLError.Code.NOT_FOUND || e.domain != CBLError.Domain.CBLITE) {
+                throw e
+            }
         }
     }
 

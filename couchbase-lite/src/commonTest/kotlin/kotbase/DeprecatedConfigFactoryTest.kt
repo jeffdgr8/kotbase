@@ -36,7 +36,7 @@ class DeprecatedConfigFactoryTest : BaseDbTest() {
     @Test
     fun testReplicatorConfigNoDb() {
         assertFailsWith<IllegalArgumentException> {
-            ReplicatorConfigurationFactory.newConfig(target = testEndpoint, type = ReplicatorType.PULL)
+            ReplicatorConfigurationFactory.newConfig(database = null, target = testEndpoint, type = ReplicatorType.PULL)
         }
     }
 

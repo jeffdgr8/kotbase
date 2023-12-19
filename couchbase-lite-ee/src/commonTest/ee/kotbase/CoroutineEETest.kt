@@ -76,7 +76,7 @@ class CoroutineEETest : BaseCoroutineTest() {
                 saveDocInBaseTestDb(MutableDocument("newDoc"))
             },
             removeListener = { token ->
-                replicator.removeChangeListener(token)
+                token.remove()
             }
         )
     }
@@ -130,7 +130,7 @@ class CoroutineEETest : BaseCoroutineTest() {
                 saveDocInBaseTestDb(MutableDocument("newDoc"))
             },
             removeListener = { token ->
-                replicator.removeChangeListener(token)
+                token.remove()
             }
         )
     }

@@ -21,7 +21,7 @@ public abstract class DelegatedProtocol<D : NSObjectProtocol>
 internal constructor(internal open val actual: D) {
 
     override fun equals(other: Any?): Boolean =
-        actual.isEqual((other as? AbstractDelegatedClass<*>)?.actual)
+        actual.isEqual((other as? DelegatedProtocol<*>)?.actual)
 
     override fun hashCode(): Int =
         actual.hash.toInt()

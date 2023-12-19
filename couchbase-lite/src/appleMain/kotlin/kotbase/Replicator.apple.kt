@@ -16,15 +16,14 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLReplicator
-import kotbase.internal.DelegatedClass
 import kotbase.ext.asDispatchQueue
 import kotbase.ext.toByteArray
 import kotbase.ext.wrapCBLError
+import kotbase.internal.DelegatedClass
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
 @OptIn(ExperimentalStdlibApi::class)
@@ -35,7 +34,8 @@ internal constructor(
 ) : DelegatedClass<CBLReplicator>(actual), AutoCloseable {
 
     public actual constructor(config: ReplicatorConfiguration) : this(
-        CBLReplicator(config.actual),
+        if (config.collections.isEmpty()) throw IllegalArgumentException("Attempt to configure a replicator with no source collections")
+        else CBLReplicator(config.actual),
         config
     )
 

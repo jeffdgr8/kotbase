@@ -84,13 +84,13 @@ internal constructor(actual: CBLQueryExpression) : DelegatedClass<CBLQueryExpres
 
         private class DelegatedFullTextIndexExpression(
             actual: CBLQueryFullTextIndexExpressionProtocolProtocol
-        ) : DelegatedProtocol<CBLQueryFullTextIndexExpressionProtocolProtocol>(actual), FullTextIndexExpression {
+        ) : DelegatedIndexExpression<CBLQueryFullTextIndexExpressionProtocolProtocol>(actual), FullTextIndexExpression {
 
             override fun from(alias: String): IndexExpression =
                 DelegatedIndexExpression(actual.from(alias))
         }
 
-        internal class DelegatedIndexExpression<A : CBLQueryIndexExpressionProtocolProtocol>(
+        internal open class DelegatedIndexExpression<A : CBLQueryIndexExpressionProtocolProtocol>(
             actual: A
         ) : DelegatedProtocol<A>(actual), IndexExpression
     }

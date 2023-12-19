@@ -19,7 +19,6 @@ import cocoapods.CouchbaseLite.CBLErrorHTTPNotFound
 import kotbase.ext.toByteArray
 import kotbase.ext.toNSData
 import kotbase.ext.wrapError
-import kotbase.internal.utils.TestUtils.assertThrows
 import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -457,7 +456,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
 //    // Note: fatalError with this test
 //    @Test
 //    fun testCreateListenerConfigWithEmptyCollection() {
-//        assertThrows<IllegalArgumentException> {
+//        assertFailsWith<IllegalArgumentException> {
 //            MessageEndpointListenerConfiguration(emptyList(), ProtocolType.MESSAGE_STREAM)
 //        }
 //    }

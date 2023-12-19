@@ -45,9 +45,6 @@ class CoroutineTest : BaseCoroutineTest() {
             },
             change = {
                 saveDocInCollection(MutableDocument("newDoc"))
-            },
-            removeListener = { token ->
-                token.remove()
             }
         )
     }
@@ -107,9 +104,6 @@ class CoroutineTest : BaseCoroutineTest() {
             change = {
                 doc.setString("property", "changed value")
                 saveDocInCollection(doc)
-            },
-            removeListener = { token ->
-                token.remove()
             }
         )
     }
@@ -170,9 +164,6 @@ class CoroutineTest : BaseCoroutineTest() {
             },
             change = {
                 saveDocInCollection(MutableDocument("newDoc"))
-            },
-            removeListener = { token ->
-                query.removeChangeListener(token)
             }
         )
     }

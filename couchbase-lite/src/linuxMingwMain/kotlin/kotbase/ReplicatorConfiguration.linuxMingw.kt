@@ -27,7 +27,7 @@ import kotlin.native.ref.createCleaner
 public actual class ReplicatorConfiguration
 private constructor(
     public actual val target: Endpoint,
-    private var db: Database?,
+    private val db: Database?,
     internal val collectionConfigurations: MutableMap<Collection, CollectionConfiguration> = mutableMapOf()
 ) {
 
@@ -75,7 +75,24 @@ private constructor(
         isAutoPurgeEnabled = config.isAutoPurgeEnabled
     }
 
+    private fun checkCollection(collection: Collection) {
+        val database = collectionConfigurations.keys.firstOrNull()?.database ?: db ?: collection.database
+        if (database != collection.database) {
+            throw IllegalArgumentException("Cannot add collection $collection because it does not belong to database ${database.name}.")
+        }
+        if (database.isClosed) {
+            throw IllegalArgumentException("Cannot add collection $collection because database ${collection.database} is closed.")
+        }
+        try {
+            database.getCollection(collection.name, collection.scope.name)
+                ?: throw IllegalArgumentException("Cannot add collection $collection because it has been deleted.")
+        } catch (e: CouchbaseLiteException) {
+            throw IllegalArgumentException("Failed getting collection $collection", e)
+        }
+    }
+
     public actual fun addCollection(collection: Collection, config: CollectionConfiguration?): ReplicatorConfiguration {
+        checkCollection(collection)
         val configNotNull = config?.let(::CollectionConfiguration) ?: CollectionConfiguration()
         collectionConfigurations[collection] = configNotNull
         return this
@@ -86,8 +103,9 @@ private constructor(
         config: CollectionConfiguration?
     ): ReplicatorConfiguration {
         val configNotNull = config?.let(::CollectionConfiguration) ?: CollectionConfiguration()
-        collections.forEach {
-            collectionConfigurations[it] = configNotNull
+        collections.forEach { collection ->
+            checkCollection(collection)
+            collectionConfigurations[collection] = configNotNull
         }
         return this
     }
@@ -203,10 +221,22 @@ private constructor(
     public actual var pinnedServerCertificate: ByteArray? = null
 
     public actual var maxAttempts: Int = 0
+        set(value) {
+            if (value < 0) throw IllegalArgumentException("max attempts must be >=0")
+            field = value
+        }
 
     public actual var maxAttemptWaitTime: Int = 0
+        set(value) {
+            if (value < 0) throw IllegalArgumentException("max attempt wait time must be >=0")
+            field = value
+        }
 
     public actual var heartbeat: Int = 0
+        set(value) {
+            if (value < 0) throw IllegalArgumentException("heartbeat must be >=0")
+            field = value
+        }
 
     @Deprecated("Use CollectionConfiguration.collections")
     public actual val database: Database
