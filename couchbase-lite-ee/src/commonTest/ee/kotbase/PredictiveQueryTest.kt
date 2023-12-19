@@ -17,14 +17,13 @@ package kotbase
 
 import kotbase.ext.nowMillis
 import kotbase.ext.toStringMillis
-import kotbase.internal.utils.TestUtils.assertThrowsCBL
-import kotbase.test.IgnoreNative
+import kotbase.test.IgnoreLinuxMingw
 import kotbase.test.assertIntContentEquals
 import kotlinx.datetime.Clock
 import kotlin.test.*
 
 // predictive queries not supported in CBL C SDK
-@IgnoreNative
+@IgnoreLinuxMingw
 class PredictiveQueryTest : BaseQueryTest() {
 
     // PredictiveQueryTest.swift

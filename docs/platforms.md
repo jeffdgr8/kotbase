@@ -119,7 +119,7 @@ dependency. Use `linkOnly = true` to link the dependency without generating Kotl
 Experimental support for Linux and Windows is provided via the [Couchbase Lite C SDK](
 https://github.com/couchbase/couchbase-lite-C). Core functionality should be mostly stable, however these platforms have
 not been tested in production. There are some tests that have slightly different behavior in a few edge cases and others
-that are failing that need further debugging. See comments in tests marked `@IgnoreNative` for details.
+that are failing that need further debugging. See comments in tests marked `@IgnoreLinuxMingw` for details.
 
 There are a few Enterprise Edition features that are not implemented in the Couchbase Lite C SDK. Kotbase will
 throw an `UnsupportedOperationException` if these APIs are called from these platforms.

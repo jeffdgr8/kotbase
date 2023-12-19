@@ -25,4 +25,4 @@ expect annotation class AfterClass()
 expect annotation class IgnoreApple()
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-expect annotation class IgnoreNative()
+expect annotation class IgnoreLinuxMingw()

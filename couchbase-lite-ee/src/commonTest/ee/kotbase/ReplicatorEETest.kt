@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotbase.test.IgnoreNative
+import kotbase.test.IgnoreLinuxMingw
 import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.coroutines.delay
@@ -384,7 +384,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails sometimes
     //  AssertionError: Expected <3>, actual <2>.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testPullFilter() {
         // Add a document to db database so that it can pull the deleted docs from:
@@ -502,7 +502,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails sometimes
     //  AssertionError: Expected <2>, actual <1>.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testPullRemovedDocWithFilterSingleShot() {
         testPullRemovedDocWithFilter(false)
@@ -510,7 +510,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails sometimes
     //  AssertionError: Expected <2>, actual <1>.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testPullRemovedDocWithFilterContinuous() {
         testPullRemovedDocWithFilter(true)
@@ -584,7 +584,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails sometimes
     //  AssertionError: Expected <2>, actual <1>.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testPullDeletedDocWithFilterSingleShot() {
         testPullDeletedDocWithFilter(false)
@@ -593,7 +593,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
     // TODO: native C fails sometimes
     //  AssertionError: Expected <2>, actual <1>.
     //  or AssertionError: Expected value to be true.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testPullDeletedDocWithFilterContinuous() {
         testPullDeletedDocWithFilter(true)
@@ -749,7 +749,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails sometimes
     //  AssertionError: Expected <2>, actual <1>.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testStopAndRestartPullReplicationWithFilter() {
         // Create documents:
@@ -1104,7 +1104,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails
     //  IllegalArgumentException: Invalid URLEndpoint url 'wss://foo'
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testConflictResolverConfigProperty() {
         val target = URLEndpoint("wss://foo")
@@ -1250,7 +1250,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails
     //  AssertionError: Expected <2>, actual <1>.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testConflictResolverCalledTwice() {
         val docID = "doc"
@@ -1649,7 +1649,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails
     //  AssertionError: Expected value to be not null.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testConflictResolverReturningBlobFromDifferentDB() {
         val docID = "doc"
@@ -1736,7 +1736,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails
     //  AssertionError: Expected <doc2>, actual <doc1>.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testNonBlockingConflictResolver() = runBlocking {
         val mutex = Mutex(true)
@@ -1779,7 +1779,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // TODO: native C fails
     //  AssertionError: Expected value to be not null.
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testConflictResolverWhenDocumentIsPurged() {
         val docID = "doc"
