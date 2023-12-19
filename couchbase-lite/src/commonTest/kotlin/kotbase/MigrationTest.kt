@@ -18,7 +18,7 @@ package kotbase
 import kotbase.internal.utils.FileUtils
 import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.ZipUtils
-import kotbase.test.IgnoreNative
+import kotbase.test.IgnoreLinuxMingw
 import kotlin.test.*
 
 class MigrationTest : BaseTest() {
@@ -45,7 +45,7 @@ class MigrationTest : BaseTest() {
     // TODO: 1.x DB's attachment is not automatically detected as blob
     // https://github.com/couchbase/couchbase-lite-android/issues/1237
     // Native C doesn't support legacy 1.x blob
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testOpenExistingDBv1x() {
         ZipUtils.unzip(PlatformUtils.getAsset("replacedb/android140-sqlite.cblite2.zip")!!, dbDir)

@@ -22,4 +22,4 @@ actual typealias AfterClass = kotlin.test.AfterClass
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 actual annotation class IgnoreApple
 
-actual typealias IgnoreNative = kotlin.test.Ignore
+actual typealias IgnoreLinuxMingw = kotlin.test.Ignore

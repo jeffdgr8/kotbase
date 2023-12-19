@@ -22,7 +22,7 @@ import kotbase.internal.utils.FileUtils
 import kotbase.internal.utils.StringUtils
 import kotbase.internal.utils.getParentDir
 import kotbase.test.IgnoreApple
-import kotbase.test.IgnoreNative
+import kotbase.test.IgnoreLinuxMingw
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -644,7 +644,7 @@ class DatabaseTest : BaseDbTest() {
     }
 
     // CBLDatabase_GetBlob() returns null after database is deleted for native C
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testDeleteThenAccessBlob() {
         val path = testDatabase.path!!
@@ -1528,7 +1528,7 @@ class DatabaseTest : BaseDbTest() {
     // TODO: doc1b sequence goes from 1 to 3 after deletion (expecting 2) for native C
     //  https://forums.couchbase.com/t/cbl-c-sdk-kotlin-multiplatform-feedback-questions/34649
     //  https://issues.couchbase.com/browse/CBL-3749
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testDeleteAlreadyDeletedDoc() {
         val doc = createDocInCollection()
@@ -1616,7 +1616,7 @@ class DatabaseTest : BaseDbTest() {
 
     // Specific to Java SDK
     @IgnoreApple
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testReOpenExisting2Dot8DotOhDb() {
         val twoDot8DotOhDirPath = FileUtils.getCanonicalPath("${DatabaseConfiguration().directory}/.couchbase")
@@ -1653,7 +1653,7 @@ class DatabaseTest : BaseDbTest() {
 
     // Specific to Java SDK
     @IgnoreApple
-    @IgnoreNative
+    @IgnoreLinuxMingw
     @Test
     fun testReOpenExisting2Dot8DotOhDbCopyFails() {
         val twoDot8DotOhDirPath = FileUtils.getCanonicalPath("${DatabaseConfiguration().directory}/.couchbase")

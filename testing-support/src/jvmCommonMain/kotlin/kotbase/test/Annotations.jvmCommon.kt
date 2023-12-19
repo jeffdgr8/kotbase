@@ -23,4 +23,4 @@ actual typealias AfterClass = org.junit.AfterClass
 actual annotation class IgnoreApple
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-actual annotation class IgnoreNative
+actual annotation class IgnoreLinuxMingw
