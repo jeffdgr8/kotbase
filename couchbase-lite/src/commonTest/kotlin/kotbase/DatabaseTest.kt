@@ -16,6 +16,7 @@
 package kotbase
 
 import com.couchbase.lite.isOpen
+import kotbase.ext.nowMillis
 import kotbase.internal.utils.FileUtils
 import kotbase.internal.utils.StringUtils
 import kotbase.internal.utils.getParentDir
@@ -1737,7 +1738,7 @@ class DatabaseTest : BaseDbTest() {
     fun testSetDocumentExpirationHangInBatch() = runBlocking {
         val docIds = createDocsInCollection(13).map { it.id }
 
-        val now = Clock.System.now()
+        val now = Clock.System.nowMillis()
         val tomorrow = now + 1.days
 
         val future = async(testSerialCoroutineContext) {

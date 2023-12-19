@@ -64,8 +64,7 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
 
     protected fun testCoroutineCanceled(
         addListener: (context: CoroutineContext, work: suspend () -> Unit) -> ListenerToken,
-        change: () -> Unit,
-        removeListener: (token: ListenerToken) -> Unit
+        change: () -> Unit
     ) = runBlocking {
         val started = Mutex(true)
         val canceled = Mutex(true)
@@ -82,7 +81,7 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
         }
         change()
         assertTrue(started.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
-        removeListener(token)
+        token.remove()
         assertTrue(canceled.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
     }
 

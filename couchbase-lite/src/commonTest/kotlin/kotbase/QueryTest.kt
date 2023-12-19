@@ -1564,7 +1564,7 @@ class QueryTest : BaseQueryTest() {
                 expected.addAll(secondLoad.map(Document::id))
                 expected.sort()
                 secondBatch.sort()
-                assertEquals(expected, secondBatch)
+                assertEquals(expected, secondBatch.toList())
             }
         } // Catch clause prevents Windows compiler error
         catch (e: Exception) {
@@ -1933,7 +1933,41 @@ class QueryTest : BaseQueryTest() {
             )
         )
 
-        for (i in collations.indices) { assertEquals(expected[i], collations[i].asJSON()) }
+        // replace system default locale value with expected null
+        // and number values as booleans
+        fun Any.massageJson(expectedCollation: Map<String, Any?>): Map<String, Any?> {
+            @Suppress("UNCHECKED_CAST")
+            this as Map<String, Any?>
+            return if (expectedCollation["LOCALE"] == null) {
+                mapValues { (key, value) ->
+                    if (key == "LOCALE" && value != null) {
+                        println("Setting $key $value to null")
+                        null
+                    } else {
+                        value
+                    }
+                }
+            } else {
+                this
+            }.mapValues { (key, value) ->
+                if (value is Number) {
+                    val boolean = value != 0
+                    println("Setting $key $value to $boolean")
+                    boolean
+                } else {
+                    value
+                }
+            }
+        }
+
+        for (i in collations.indices) {
+            // TODO: null locale uses system default on iOS, also some numbers for booleans
+            //  https://forums.couchbase.com/t/unicode-collation-locale-null-or-device-locale/34103
+            //assertEquals(expected[i], collations[i].asJSON())
+            val expectedCollation = expected[i]
+            val collation = collations[i].asJSON()?.massageJson(expectedCollation)
+            assertEquals(expectedCollation, collation)
+        }
     }
 
     @Test

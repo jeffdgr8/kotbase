@@ -165,8 +165,8 @@ class CollectionQueryTest : BaseQueryTest() {
         val collection = testDatabase.createCollection("names", "people")
         loadJSONResourceIntoCollection("names_100.json", collection = collection)
         val queryString = "SELECT name.first FROM person.names ORDER BY name.first LIMIT 1"
-        val query = QueryBuilder.createQuery(queryString, testDatabase)
         assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_QUERY) {
+            val query = QueryBuilder.createQuery(queryString, testDatabase)
             query.execute().use { }
         }
     }
@@ -598,18 +598,18 @@ class CollectionQueryTest : BaseQueryTest() {
 
         flowerCol.createIndex("DescIndex", IndexBuilder.fullTextIndex(FullTextIndexItem.property("description")))
 
-        // create with query string
-        val query = QueryBuilder.createQuery(
-            """SELECT f.name, f.description, c.color
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_QUERY) {
+            // create with query string
+            val query = QueryBuilder.createQuery(
+                """SELECT f.name, f.description, c.color
                 FROM test.flowers AS f
                 JOIN test.colors AS c
                 ON f.cid = c.cid
                 WHERE MATCH(DescIndex, "red")
                 ORDER BY f.name"""
-                .trimIndent(),
-            testDatabase
-        )
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_QUERY) {
+                    .trimIndent(),
+                testDatabase
+            )
             query.execute().use { }
         }
     }

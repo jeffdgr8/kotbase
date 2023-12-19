@@ -85,7 +85,7 @@ public fun ReplicatorConfiguration?.newConfig(
 ): ReplicatorConfiguration {
     val orig = this
     return ReplicatorConfiguration(
-        target ?: this?.target ?: error("A ReplicatorConfiguration must specify an endpoint")
+        target ?: this?.target ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify an endpoint")
     ).apply {
         (type ?: orig?.type)?.let { this.type = it }
         (continuous ?: orig?.isContinuous)?.let { this.isContinuous = it }
@@ -104,7 +104,7 @@ public fun ReplicatorConfiguration?.newConfig(
         } else {
             orig?.collections?.forEach {
                 addCollection(it, orig.getCollectionConfiguration(it))
-            }
+            } ?: throw IllegalArgumentException("")
         }
     }
 }
@@ -163,20 +163,21 @@ public fun ReplicatorConfiguration?.newConfig(
 ): ReplicatorConfiguration {
     val orig = this
     return ReplicatorConfiguration(
-        database ?: this?.database ?: error("A ReplicatorConfiguration must specify a database"),
-        target ?: this?.target ?: error("A ReplicatorConfiguration must specify an endpoint")
+        database ?: this?.database ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify a database"),
+        target ?: this?.target ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify an endpoint")
     ).apply {
+        val origDefaultConfig = database?.getDefaultCollection()?.let { orig?.getCollectionConfiguration(it) }
         (type ?: orig?.type)?.let { this.type = it }
         (continuous ?: orig?.isContinuous)?.let { this.isContinuous = it }
         this.authenticator = authenticator ?: orig?.authenticator
         this.headers = headers ?: orig?.headers
         (acceptParentDomainCookies ?: orig?.isAcceptParentDomainCookies)?.let { this.isAcceptParentDomainCookies = it }
         this.pinnedServerCertificate = pinnedServerCertificate ?: orig?.pinnedServerCertificate
-        this.channels = channels ?: orig?.channels
-        this.documentIDs = documentIDs ?: orig?.documentIDs
-        this.pushFilter = pushFilter ?: orig?.pushFilter
-        this.pullFilter = pullFilter ?: orig?.pullFilter
-        this.conflictResolver = conflictResolver ?: orig?.conflictResolver
+        this.channels = channels ?: origDefaultConfig?.channels
+        this.documentIDs = documentIDs ?: origDefaultConfig?.documentIDs
+        this.pushFilter = pushFilter ?: origDefaultConfig?.pushFilter
+        this.pullFilter = pullFilter ?: origDefaultConfig?.pullFilter
+        this.conflictResolver = conflictResolver ?: origDefaultConfig?.conflictResolver
         (maxAttempts ?: orig?.maxAttempts)?.let { this.maxAttempts = it }
         (maxAttemptWaitTime ?: orig?.maxAttemptWaitTime)?.let { this.maxAttemptWaitTime = it }
         (heartbeat ?: orig?.heartbeat)?.let { this.heartbeat = it }

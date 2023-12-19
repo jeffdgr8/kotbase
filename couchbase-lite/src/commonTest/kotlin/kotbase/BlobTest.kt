@@ -20,7 +20,6 @@ import com.couchbase.lite.saveBlob
 import kotbase.internal.utils.FileUtils
 import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.StringUtils
-import kotbase.internal.utils.TestUtils.assertThrows
 import kotbase.test.IgnoreApple
 import kotlinx.io.readByteArray
 import kotlinx.serialization.json.Json
@@ -215,6 +214,7 @@ class BlobTest : BaseDbTest() {
             val blob = PlatformUtils.getAsset("attachment.png")!!.use { input ->
                 val bytes = input.readByteArray()
                 FileUtils.write(bytes, path)
+
                 Blob(contentType, path)
             }
 
@@ -222,9 +222,7 @@ class BlobTest : BaseDbTest() {
             val content = blob.content
             assertContentEquals(content, bytes)
 
-            assertThrows<IllegalArgumentException> {
-                Blob(contentType, "http://java.sun.com")
-            }
+            assertFailsWith<IllegalArgumentException> { Blob(contentType, "http://java.sun.com") }
         } finally {
             FileUtils.deleteContents(tmpDir)
         }
@@ -245,11 +243,8 @@ class BlobTest : BaseDbTest() {
             input.readByteArray()
         }
 
-        val blobContent = ByteArray(data.size)
-        assertEquals(
-            data.size,
-            Blob("application/json", data).contentStream!!.readAtMostTo(blobContent, 0, data.size)
-        )
+        val blobContent = Blob("application/json", data).contentStream!!.readByteArray()
+        assertEquals(data.size, blobContent.size)
         assertContentEquals(data, blobContent)
     }
 

@@ -110,6 +110,7 @@ class ConflictResolutionTests : BaseReplicatorTest() {
 
         var succeeded = false
         try {
+            @Suppress("UNUSED_VALUE")
             succeeded = testCollection.save(doc1b) { cur: MutableDocument, old: Document? ->
                 assertEquals(doc1b, cur)
                 assertEquals(doc1a, old)
@@ -139,6 +140,7 @@ class ConflictResolutionTests : BaseReplicatorTest() {
         doc1d.setString("artist", "G. Charnelet-Vasselon")
 
         try {
+            @Suppress("UNUSED_VALUE")
             succeeded = testCollection.save(doc1d) { cur, _ ->
                 cur.setString("artist", "Holly Sears")
                 false
@@ -210,6 +212,7 @@ class ConflictResolutionTests : BaseReplicatorTest() {
 
         var succeeded = false
         try {
+            @Suppress("UNUSED_VALUE")
             succeeded = testCollection.save(doc1b) { cur: MutableDocument, old: Document? ->
                 assertNull(old)
                 assertNotNull(cur)
@@ -252,6 +255,7 @@ class ConflictResolutionTests : BaseReplicatorTest() {
 
         var succeeded = false
         try {
+            @Suppress("UNUSED_VALUE")
             succeeded = testCollection.save(doc1b) { _: MutableDocument, _: Document? ->
                 throw IllegalStateException("freak out!")
             }
@@ -342,6 +346,7 @@ class ConflictResolutionTests : BaseReplicatorTest() {
 
         var succeeded = false
         try {
+            @Suppress("UNUSED_VALUE")
             succeeded = testCollection.save(doc1a) { _: MutableDocument, _: Document? -> true }
             fail("save should not succeed!")
         } catch (err: CouchbaseLiteException) {
