@@ -30,6 +30,3 @@ internal actual val Database.dbPath: String?
         val dir = config.directory.dropLastWhile { it == '/' }
         return "$dir/$name"
     }
-
-actual fun <R> Database.withDbLock(action: () -> R): R =
-    withLock(action)

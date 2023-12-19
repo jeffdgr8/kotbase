@@ -52,50 +52,53 @@ class LogTest : BaseDbTest() {
 
     private class LogTestLogger(private val prefix: String?) : Logger {
         private val lineCounts = mutableMapOf<LogLevel, Int>()
-        private val content = StringBuilder()
-        val lineCount: Int
-            get() {
-                var total = 0
-                for (level in LogLevel.entries) { total += getLineCount(level) }
-                return total
-            }
+        private val buf = StringBuilder()
+        override var level: LogLevel = LogLevel.NONE
+        val content
+            get() = buf.toString()
 
         override fun log(level: LogLevel, domain: LogDomain, message: String) {
-            if ((prefix != null) && (!message.startsWith(LOG_HEADER + prefix))) { return }
-            if (level < this.level) { return }
+            if ((prefix != null) && (!message.startsWith(LOG_HEADER + prefix))) {
+                return
+            }
+            if (level < this.level) {
+                return
+            }
             lineCounts[level] = getLineCount(level) + 1
-            content.append(message)
+            buf.append(message).append("\n    ")
         }
 
-        override var level: LogLevel = LogLevel.NONE
-
         fun getLineCount(level: LogLevel) = lineCounts[level] ?: 0
-
-        fun getContent() = content.toString()
     }
 
-//    private class TestLogger(private val domainFilter: String) : C4Log(NativeC4Log()) {
+//    private class TestC4Logger(private val domainFilter: String) : C4Log(NativeC4Log()) {
 //        var minLevel = 0
 //            private set
 //
-//        override fun logInternal(c4Domain: String, c4Level: Int, message: String) {
-//            if (domainFilter != c4Domain) { return }
-//            if (c4Level < minLevel) { minLevel = c4Level }
+//        public override fun logInternal(c4Domain: String, c4Level: Int, message: String) {
+//            if (domainFilter != c4Domain) {
+//                return
+//            }
+//            if (c4Level < minLevel) {
+//                minLevel = c4Level
+//            }
 //        }
 //
-//        fun reset() { minLevel = LogLevel.NONE.ordinal }
+//        fun reset() {
+//            minLevel = LogLevel.NONE.ordinal
+//        }
 //    }
 
-//    private class TestConsoleLogger() : AbstractConsoleLogger(null) {
-//        private val content = StringBuilder()
+//    private class TestConsoleLogger : AbstractConsoleLogger(null) {
+//        private val buf = StringBuilder()
+//        val content
+//            get() = buf.toString()
 //
 //        override fun doLog(level: LogLevel, domain: LogDomain, message: String) {
-//            content.append(message)
+//            buf.append(message)
 //        }
 //
-//        fun getContent() = content.toString()
-//
-//        fun clearContent() = content.clear()
+//        fun clearContent() = buf.clear()
 //    }
 
     companion object {
@@ -147,7 +150,7 @@ class LogTest : BaseDbTest() {
 //            consoleLogger.log(LogLevel.WARNING, LogDomain.DATABASE, "W")
 //            consoleLogger.log(LogLevel.ERROR, LogDomain.DATABASE, "E")
 //        }
-//        assertEquals(consoleLogger.getContent(), "")
+//        assertEquals(consoleLogger.content, "")
 //        consoleLogger.clearContent()
 //
 //        consoleLogger.setDomains(LogDomain.NETWORK, LogDomain.QUERY)
@@ -159,7 +162,7 @@ class LogTest : BaseDbTest() {
 //            consoleLogger.log(LogLevel.WARNING, LogDomain.DATABASE, "W")
 //            consoleLogger.log(LogLevel.ERROR, LogDomain.DATABASE, "E")
 //        }
-//        assertEquals(consoleLogger.getContent(), "")
+//        assertEquals(consoleLogger.content, "")
 //
 //        consoleLogger.setDomains(LogDomain.ALL_DOMAINS)
 //        consoleLogger.setLevel(LogLevel.DEBUG,)
@@ -461,7 +464,7 @@ class LogTest : BaseDbTest() {
     @Test
     fun testLogFileConfigurationConstructors() {
         val rotateCount = 4
-        val maxSize: Long = 2048
+        val maxSize = 2048L
         val usePlainText = true
 
         val config = LogFileConfiguration(scratchDirPath!!)
@@ -508,28 +511,6 @@ class LogTest : BaseDbTest() {
         assertEquals(fileLogger.config, config)
         fileLogger.config = LogFileConfiguration("$scratchDirPath/foo")
         assertEquals(fileLogger.config, LogFileConfiguration("$scratchDirPath/foo"))
-    }
-
-    @Test
-    fun testNonASCII() {
-        val hebrew = "מזג האוויר נחמד היום" // The weather is nice today.
-
-        val customLogger = LogTestLogger(null)
-        customLogger.level = LogLevel.VERBOSE
-
-        Database.log.custom = customLogger
-
-        // hack: The console logger sets the C4 callback level
-        Database.log.console.level = LogLevel.VERBOSE
-
-        val doc = MutableDocument()
-        doc.setString("hebrew", hebrew)
-        saveDocInCollection(doc)
-
-        val query: Query = QueryBuilder.select(SelectResult.all()).from(DataSource.collection(testCollection))
-        query.execute().use { rs -> assertEquals(1, rs.allResults().size) }
-
-        assertTrue(customLogger.getContent().contains("[{\"hebrew\":\"$hebrew\"}]"))
     }
 
 //    @Test
@@ -589,6 +570,28 @@ class LogTest : BaseDbTest() {
 //        assertTrue(msg.contains("bork"))
 //    }
 //
+    @Test
+    fun testNonASCII() {
+        val hebrew = "מזג האוויר נחמד היום" // The weather is nice today.
+
+        val customLogger = LogTestLogger(null)
+        customLogger.level = LogLevel.VERBOSE
+
+        Database.log.custom = customLogger
+
+        // hack: The console logger sets the C4 callback level
+        Database.log.console.level = LogLevel.VERBOSE
+
+        val doc = MutableDocument()
+        doc.setString("hebrew", hebrew)
+        saveDocInCollection(doc)
+
+        val query: Query = QueryBuilder.select(SelectResult.all()).from(DataSource.collection(testCollection))
+        query.execute().use { rs -> assertEquals(1, rs.allResults().size) }
+
+        assertTrue(customLogger.content.contains("[{\"hebrew\":\"$hebrew\"}]"))
+    }
+
 //    // Verify that we can set the level for log domains that the platform doesn't recognize.
 //    // !!! I don't think this test is actually testing anything.
 //    @Test

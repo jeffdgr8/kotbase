@@ -19,7 +19,7 @@ import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class MiscTest {
+class JSONTest {
 
     // Verify that round trip String -> Date -> String doesn't alter the string (#1611)
     @Test

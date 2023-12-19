@@ -41,7 +41,9 @@ internal constructor(
 
     internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(config)
 
+    @Suppress("DEPRECATION")
     public actual fun start() {
+        config.database.mustBeOpen()
         actual.start()
     }
 
@@ -62,20 +64,24 @@ internal constructor(
     public actual val serverCertificates: List<ByteArray>?
         get() = actual.serverCertificate?.toByteArray()?.let { listOf(it) }
 
+    @Suppress("DEPRECATION")
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
         ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection())")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {
+        config.database.mustBeOpen()
         return wrapCBLError { error ->
             @Suppress("UNCHECKED_CAST")
             actual.pendingDocumentIDs(error) as Set<String>
         }
     }
 
+    @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(collection: Collection): Set<String> {
+        config.database.mustBeOpen()
         return wrapCBLError { error ->
             @Suppress("UNCHECKED_CAST")
             actual.pendingDocumentIDsForCollection(collection.actual, error) as Set<String>
@@ -93,8 +99,10 @@ internal constructor(
         }
     }
 
+    @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
     public actual fun isDocumentPending(docId: String, collection: Collection): Boolean {
+        config.database.mustBeOpen()
         return wrapCBLError { error ->
             actual.isDocumentPending(docId, collection.actual, error)
         }

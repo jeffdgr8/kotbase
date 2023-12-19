@@ -67,7 +67,9 @@ private constructor(
 
     internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(config)
 
+    @Suppress("DEPRECATION")
     public actual fun start() {
+        config.database.mustBeOpen()
         CBLReplicator_Start(actual, false)
     }
 
@@ -88,12 +90,14 @@ private constructor(
     public actual val serverCertificates: List<ByteArray>?
         get() = null
 
+    @Suppress("DEPRECATION")
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
         ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection())")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {
+        config.database.mustBeOpen()
         return wrapCBLError { error ->
             val dict = CBLReplicator_PendingDocumentIDs(actual, error)
             dict?.keys()?.toSet()?.also {
@@ -102,8 +106,10 @@ private constructor(
         }
     }
 
+    @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(collection: Collection): Set<String> {
+        config.database.mustBeOpen()
         return wrapCBLError { error ->
             val dict = CBLReplicator_PendingDocumentIDs2(actual, collection.actual, error)
             dict?.keys()?.toSet()?.also {
@@ -125,8 +131,10 @@ private constructor(
         }
     }
 
+    @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
     public actual fun isDocumentPending(docId: String, collection: Collection): Boolean {
+        config.database.mustBeOpen()
         return wrapCBLError { error ->
             memScoped {
                 CBLReplicator_IsDocumentPending2(actual, docId.toFLString(this), collection.actual, error)

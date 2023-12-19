@@ -796,7 +796,7 @@ private constructor(
     internal fun <R> mustBeOpen(action: () -> R): R {
         return withLock {
             if (isClosed) {
-                throw IllegalStateException("Attempt to perform an operation on a closed database.")
+                throw IllegalStateException("Attempt to perform an operation on a closed database or a deleted collection.")
             }
             action()
         }

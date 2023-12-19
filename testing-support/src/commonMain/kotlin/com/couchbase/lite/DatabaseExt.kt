@@ -20,5 +20,3 @@ import kotbase.Database
 expect val Database.isOpen: Boolean
 
 internal expect val Database.dbPath: String?
-
-expect fun <R> Database.withDbLock(action: () -> R): R

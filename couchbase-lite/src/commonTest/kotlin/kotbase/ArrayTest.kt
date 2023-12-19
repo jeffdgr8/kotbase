@@ -18,7 +18,6 @@ package kotbase
 import kotbase.ext.toStringMillis
 import kotbase.test.assertIntContentEquals
 import kotlinx.datetime.Instant
-import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlin.test.*
@@ -1815,6 +1814,22 @@ class ArrayTest : BaseDbTest() {
         assertFalse(array.getBoolean(1))
         assertFalse(array.getBoolean(2))
         assertTrue(array.getBoolean(3))
+    }
+
+    ///////////////  Error Case test
+
+    private class Unserializable
+
+    @Test
+    fun testAddValueUnexpectedObject() {
+        assertFailsWith<IllegalArgumentException> { MutableArray().addValue(Unserializable()) }
+    }
+
+    @Test
+    fun testSetValueUnExpectedObject() {
+        val mArray = MutableArray()
+        mArray.addValue(0)
+        assertFailsWith<IllegalArgumentException> { mArray.setValue(0, Unserializable()) }
     }
 
     ///////////////  JSON tests
