@@ -19,6 +19,8 @@ import cocoapods.CouchbaseLite.*
 import kotbase.internal.DelegatedClass
 import kotbase.ext.asDispatchQueue
 import kotbase.ext.wrapCBLError
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -26,8 +28,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
-import platform.objc.objc_sync_enter
-import platform.objc.objc_sync_exit
 import kotlin.coroutines.CoroutineContext
 
 @OptIn(ExperimentalStdlibApi::class)
@@ -91,8 +91,10 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         get() = DatabaseConfiguration(actual.config)
 
     actual override fun close() {
-        wrapCBLError { error ->
-            actual.close(error)
+        withLock {
+            wrapCBLError { error ->
+                actual.close(error)
+            }
         }
     }
 
@@ -564,19 +566,15 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         mustBeOpen { }
     }
 
-    internal inline fun <R> withLock(action: () -> R): R {
-        objc_sync_enter(actual.mutex())
-        return try {
-            action()
-        } finally {
-            objc_sync_exit(actual.mutex())
-        }
-    }
+    private val lock = reentrantLock()
+
+    private inline fun <R> withLock(action: () -> R): R =
+        lock.withLock(action)
 
     private fun <R> mustBeOpen(action: () -> R): R {
         return withLock {
             if (actual.isClosed()) {
-                throw IllegalStateException("Attempt to perform an operation on a closed database.")
+                throw IllegalStateException("Attempt to perform an operation on a closed database or a deleted collection.")
             }
             action()
         }

@@ -39,7 +39,7 @@ internal constructor(override val actual: CBLURLEndpoint) : Endpoint(actual) {
                 throw IllegalArgumentException("Invalid scheme for URLEndpoint url ($url). It must be either 'ws:' or 'wss:'.")
             }
 
-            if (nsUrl.password != null) {
+            if (nsUrl.user != null || nsUrl.password != null) {
                 throw IllegalArgumentException("Embedded credentials in a URL (username:password@url) are not allowed. Use the BasicAuthenticator class instead.")
             }
 

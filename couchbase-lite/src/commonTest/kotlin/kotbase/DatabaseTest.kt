@@ -15,11 +15,13 @@
  */
 package kotbase
 
+import com.couchbase.lite.generation
 import com.couchbase.lite.isOpen
 import kotbase.ext.nowMillis
 import kotbase.internal.utils.FileUtils
 import kotbase.internal.utils.StringUtils
 import kotbase.internal.utils.getParentDir
+import kotbase.test.IgnoreApple
 import kotbase.test.IgnoreNative
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -274,7 +276,7 @@ class DatabaseTest : BaseDbTest() {
             assertNotSame(otherCollection, testCollection)
             assertEquals(n + 1, testCollection.count)
 
-            // Delete from the the wrong db
+            // Delete from the wrong db
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.delete(doc) }
         } finally {
             eraseDb(otherDb)
@@ -1183,27 +1185,22 @@ class DatabaseTest : BaseDbTest() {
     // REF: https://github.com/couchbase/couchbase-lite-android/issues/1231
     @Test
     fun testOverwriteDocWithNewDocInstance() {
-        val mDoc1 = MutableDocument("abc")
-        mDoc1.setValue("someKey", "someVal")
-        val doc1 = saveDocInCollection(mDoc1)
+        val docId = getUniqueName("conflict")
 
-        // This causes a conflict, DefaultConflictResolver should be applied.
-        val mDoc2 = MutableDocument("abc")
-        mDoc2.setValue("someKey", "newVal")
-        val doc2 = saveDocInCollection(mDoc2)
+        var mDoc = MutableDocument(docId)
+        mDoc.setValue("someKey", "someVal")
+        saveDocInCollection(mDoc)
 
-        // Both doc1 and doc2 are now generation 1. Higher revision one should win
+        // This is a conflict: last write should win
+        mDoc = MutableDocument(docId)
+        mDoc.setValue("someKey", "newVal")
+        saveDocInCollection(mDoc)
+
         assertEquals(1, testCollection.count)
-        val doc = testCollection.getDocument("abc")
+
+        val doc = testCollection.getDocument(docId)
         assertNotNull(doc)
-        // doc1 -> theirs, doc2 -> mine
-        if (doc2.revisionID!! > doc1.revisionID!!) {
-            // mine -> doc 2 win
-            assertEquals("newVal", doc.getString("someKey"))
-        } else {
-            // their -> doc 1 win
-            assertEquals("someVar", doc.getString("someKey"))
-        }
+        assertEquals("newVal", doc.getString("someKey"))
     }
 
     @Test
@@ -1266,7 +1263,7 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testCreateIndex() {
-        assertEquals(0, testCollection.getIndexes().size.toLong())
+        assertEquals(0, testCollection.getIndexes().size)
 
         testCollection.createIndex(
             "index1",
@@ -1275,17 +1272,17 @@ class DatabaseTest : BaseDbTest() {
                 ValueIndexItem.property("lastName")
             )
         )
-        assertEquals(1, testCollection.getIndexes().size.toLong())
+        assertEquals(1, testCollection.getIndexes().size)
 
         // Create FTS index:
         testCollection.createIndex("index2", IndexBuilder.fullTextIndex(FullTextIndexItem.property("detail")))
-        assertEquals(2, testCollection.getIndexes().size.toLong())
+        assertEquals(2, testCollection.getIndexes().size)
 
         testCollection.createIndex(
             "index3",
             IndexBuilder.fullTextIndex(FullTextIndexItem.property("es-detail")).ignoreAccents(true).setLanguage("es")
         )
-        assertEquals(3, testCollection.getIndexes().size.toLong())
+        assertEquals(3, testCollection.getIndexes().size)
 
         // Create value index with expression() instead of property()
         testCollection.createIndex(
@@ -1295,23 +1292,23 @@ class DatabaseTest : BaseDbTest() {
                 ValueIndexItem.expression(Expression.property("lastName"))
             )
         )
-        assertEquals(4, testCollection.getIndexes().size.toLong())
+        assertEquals(4, testCollection.getIndexes().size)
 
         assertContents(testCollection.getIndexes(), "index1", "index2", "index3", "index4")
     }
 
     @Test
     fun testCreateIndexWithConfig() {
-        assertEquals(0, testCollection.getIndexes().size.toLong())
+        assertEquals(0, testCollection.getIndexes().size)
 
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-        assertEquals(1, testCollection.getIndexes().size.toLong())
+        assertEquals(1, testCollection.getIndexes().size)
 
         testCollection.createIndex(
             "index2",
             FullTextIndexConfiguration("detail").ignoreAccents(true).setLanguage("es")
         )
-        assertEquals(2, testCollection.getIndexes().size.toLong())
+        assertEquals(2, testCollection.getIndexes().size)
 
         assertContents(testCollection.getIndexes(), "index1", "index2")
     }
@@ -1331,11 +1328,11 @@ class DatabaseTest : BaseDbTest() {
         // Create index with first name:
         val index: Index = IndexBuilder.valueIndex(ValueIndexItem.property("firstName"))
         testCollection.createIndex("myindex", index)
-        assertEquals(1, testCollection.getIndexes().size.toLong())
+        assertEquals(1, testCollection.getIndexes().size)
 
         // Call create index again:
         testCollection.createIndex("myindex", index)
-        assertEquals(1, testCollection.getIndexes().size.toLong())
+        assertEquals(1, testCollection.getIndexes().size)
 
         assertContents(testCollection.getIndexes(), "myindex")
     }
@@ -1344,11 +1341,11 @@ class DatabaseTest : BaseDbTest() {
     fun testCreateSameNameIndexes() {
         // Create value index with first name:
         testCollection.createIndex("myindex", IndexBuilder.valueIndex(ValueIndexItem.property("firstName")))
-        assertEquals(1, testCollection.getIndexes().size.toLong())
+        assertEquals(1, testCollection.getIndexes().size)
 
         // Create value index with last name:
         testCollection.createIndex("myindex", IndexBuilder.valueIndex(ValueIndexItem.property("lastName")))
-        assertEquals(1, testCollection.getIndexes().size.toLong())
+        assertEquals(1, testCollection.getIndexes().size)
 
         assertContents(testCollection.getIndexes(), "myindex")
 
@@ -1365,19 +1362,19 @@ class DatabaseTest : BaseDbTest() {
 
         // Delete indexes:
         testCollection.deleteIndex("index4")
-        assertEquals(3, testCollection.getIndexes().size.toLong())
+        assertEquals(3, testCollection.getIndexes().size)
         assertContents(testCollection.getIndexes(), "index1", "index2", "index3")
 
         testCollection.deleteIndex("index1")
-        assertEquals(2, testCollection.getIndexes().size.toLong())
+        assertEquals(2, testCollection.getIndexes().size)
         assertContents(testCollection.getIndexes(), "index2", "index3")
 
         testCollection.deleteIndex("index2")
-        assertEquals(1, testCollection.getIndexes().size.toLong())
+        assertEquals(1, testCollection.getIndexes().size)
         assertContents(testCollection.getIndexes(), "index3")
 
         testCollection.deleteIndex("index3")
-        assertEquals(0, testCollection.getIndexes().size.toLong())
+        assertEquals(0, testCollection.getIndexes().size)
         assertTrue(testCollection.getIndexes().isEmpty())
     }
 
@@ -1617,6 +1614,9 @@ class DatabaseTest : BaseDbTest() {
         }
     }
 
+    // Specific to Java SDK
+    @IgnoreApple
+    @IgnoreNative
     @Test
     fun testReOpenExisting2Dot8DotOhDb() {
         val twoDot8DotOhDirPath = FileUtils.getCanonicalPath("${DatabaseConfiguration().directory}/.couchbase")
@@ -1651,6 +1651,9 @@ class DatabaseTest : BaseDbTest() {
         }
     }
 
+    // Specific to Java SDK
+    @IgnoreApple
+    @IgnoreNative
     @Test
     fun testReOpenExisting2Dot8DotOhDbCopyFails() {
         val twoDot8DotOhDirPath = FileUtils.getCanonicalPath("${DatabaseConfiguration().directory}/.couchbase")
@@ -1763,6 +1766,120 @@ class DatabaseTest : BaseDbTest() {
         }
     }
 
+    @Test
+    fun testDeleteSameDocTwice() {
+        // Store doc:
+        val docID = "doc1"
+        val doc: Document = saveDocInCollection(MutableDocument(docID))
+
+        // First time deletion:
+        testCollection.delete(doc)
+        assertEquals(0, testCollection.count)
+        assertNull(testCollection.getDocument(docID))
+
+        // Second time deletion:
+        // NOTE: doc is pointing to old revision. This causes a conflict but generates the same revision
+        testCollection.delete(doc)
+        assertNull(testCollection.getDocument(docID))
+    }
+
+    // -- DatabaseTest
+    @Test
+    fun testDeleteUnsavedDocument() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        try {
+            testCollection.delete(doc)
+            fail()
+        } catch (e: CouchbaseLiteException) {
+            if (e.code != CBLError.Code.NOT_FOUND) {
+                fail()
+            }
+        }
+        assertEquals("Scott Tiger", doc.getValue("name"))
+    }
+
+    @Test
+    fun testSaveSavedMutableDocument() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        saveDocInCollection(doc)
+        doc.setValue("age", 20)
+        val saved = saveDocInCollection(doc)
+        assertEquals(2, saved.generation)
+        assertEquals(20, saved.getInt("age"))
+        assertEquals("Scott Tiger", saved.getString("name"))
+    }
+
+    @Test
+    fun testDeleteSavedMutableDocument() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        saveDocInCollection(doc)
+        testCollection.delete(doc)
+        assertNull(testCollection.getDocument("doc1"))
+    }
+
+    @Test
+    fun testDeleteDocAfterPurgeDoc() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        val saved: Document = saveDocInCollection(doc)
+
+        // purge doc
+        testCollection.purge(saved)
+        try {
+            testCollection.delete(saved)
+            fail()
+        } catch (e: CouchbaseLiteException) {
+            assertEquals(CBLError.Code.NOT_FOUND, e.code)
+        }
+    }
+
+    @Test
+    fun testDeleteDocAfterDeleteDoc() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        val saved: Document = saveDocInCollection(doc)
+
+        // delete doc
+        testCollection.delete(saved)
+
+        // delete doc -> conflict resolver -> no-op
+        testCollection.delete(saved)
+    }
+
+    @Test
+    fun testPurgeDocAfterDeleteDoc() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        val saved: Document = saveDocInCollection(doc)
+
+        // delete doc
+        testCollection.delete(saved)
+
+        // purge doc
+        testCollection.purge(saved)
+    }
+
+    @Test
+    fun testPurgeDocAfterPurgeDoc() {
+        val doc = MutableDocument("doc1")
+        doc.setValue("name", "Scott Tiger")
+        val saved: Document = saveDocInCollection(doc)
+
+        // purge doc
+        testCollection.purge(saved)
+        try {
+            testCollection.purge(saved)
+            fail()
+        } catch (e: CouchbaseLiteException) {
+            if (e.code != CBLError.Code.NOT_FOUND) {
+                fail()
+            }
+        }
+    }
+
 
     /////////////////////////////////   H E L P E R S   //////////////////////////////////////
 
@@ -1853,7 +1970,7 @@ class DatabaseTest : BaseDbTest() {
         assertEquals(expected, doc1a.toMap())
         assertEquals(2, doc1a.sequence)
 
-        // Modify doc1b and delete, result to conflict when delete:
+        // Modify doc1b and delete.  This results in a conflict when deleted:
         doc1b.setString("lastName", "Lion")
         when (cc) {
             ConcurrencyControl.LAST_WRITE_WINS -> {

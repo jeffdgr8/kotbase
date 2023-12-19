@@ -25,6 +25,3 @@ actual val Database.isOpen: Boolean
 
 internal actual val Database.dbPath: String?
     get() = actual.dbPath
-
-actual fun <R> Database.withDbLock(action: () -> R): R =
-    synchronized(actual.dbLock, action)
