@@ -37,8 +37,8 @@ kotlin {
             }
             group("native") {
                 group("linuxMingw") {
-                    withLinux()
-                    withMingw()
+                    group("linux")
+                    group("mingw")
                 }
             }
         }
