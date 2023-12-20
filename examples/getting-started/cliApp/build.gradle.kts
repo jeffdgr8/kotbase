@@ -22,7 +22,7 @@ kotlin {
             val path = "$projectDir/vendor/libcblite/linux/x86_64/libcblite-$cblVersion/lib/x86_64-linux-gnu"
             linkerOpts = listOf("-L$path", "-lcblite", "-rpath", path)
             when (val arch = System.getProperty("os.arch")) {
-                "x86_64" -> linuxX64("nativeHost")
+                "x86_64", "amd64" -> linuxX64("nativeHost")
                 "aarch64" -> linuxArm64("nativeHost")
                 else -> throw GradleException("Unknown Linux architecture: $arch")
             }
