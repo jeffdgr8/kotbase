@@ -67,41 +67,35 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocument(id: String): Document? {
-        return database.mustBeOpen {
-            wrapCBLError { error ->
-                memScoped {
-                    CBLCollection_GetDocument(actual, id.toFLString(this), error)
-                }
-            }?.asDocument(database)
-        }
+        return wrapCBLError { error ->
+            memScoped {
+                CBLCollection_GetDocument(actual, id.toFLString(this), error)
+            }
+        }?.asDocument(database)
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
-        database.mustBeOpen {
-            document.willSave(database)
-            wrapCBLError { error ->
-                CBLCollection_SaveDocument(actual, document.actual, error)
-            }
-            document.database = database
+        document.willSave(database)
+        wrapCBLError { error ->
+            CBLCollection_SaveDocument(actual, document.actual, error)
         }
+        document.database = database
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, concurrencyControl: ConcurrencyControl): Boolean {
         return try {
-            database.mustBeOpen {
-                document.willSave(database)
-                wrapCBLError { error ->
-                    CBLCollection_SaveDocumentWithConcurrencyControl(
-                        actual,
-                        document.actual,
-                        concurrencyControl.actual,
-                        error
-                    )
-                }.also {
-                    document.database = database
-                }
+            document.willSave(database)
+            wrapCBLError { error ->
+                CBLCollection_SaveDocumentWithConcurrencyControl(
+                    actual,
+                    document.actual,
+                    concurrencyControl.actual,
+                    error
+                )
+            }.also {
+                document.database = database
             }
         } catch (e: CouchbaseLiteException) {
             if (e.code == CBLError.Code.CONFLICT && e.domain == CBLError.Domain.CBLITE) {
@@ -117,153 +111,133 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
-        return database.mustBeOpen {
-            document.willSave(database)
-            val wrapper = ConflictHandlerWrapper(database, conflictHandler)
-            this.conflictHandler = StableRef.create(wrapper)
-            try {
-                wrapCBLError { error ->
-                    CBLCollection_SaveDocumentWithConflictHandler(
-                        actual,
-                        document.actual,
-                        nativeConflictHandler(),
-                        this.conflictHandler!!.asCPointer(),
-                        error
-                    )
-                }.also { success ->
-                    if (success) {
-                        document.database = database
-                    }
+        document.willSave(database)
+        val wrapper = ConflictHandlerWrapper(database, conflictHandler)
+        this.conflictHandler = StableRef.create(wrapper)
+        return try {
+            wrapCBLError { error ->
+                CBLCollection_SaveDocumentWithConflictHandler(
+                    actual,
+                    document.actual,
+                    nativeConflictHandler(),
+                    this.conflictHandler!!.asCPointer(),
+                    error
+                )
+            }.also { success ->
+                if (success) {
+                    document.database = database
                 }
-            } catch (e: Exception) {
-                if (wrapper.exception != null) {
-                    throw CouchbaseLiteException(
-                        "Conflict handler threw an exception",
-                        wrapper.exception!!,
-                        CBLError.Domain.CBLITE,
-                        CBLError.Code.CONFLICT
-                    )
-                } else {
-                    throw e
-                }
-            } finally {
-                this.conflictHandler?.dispose()
-                this.conflictHandler = null
             }
+        } catch (e: Exception) {
+            if (wrapper.exception != null) {
+                throw CouchbaseLiteException(
+                    "Conflict handler threw an exception",
+                    wrapper.exception!!,
+                    CBLError.Domain.CBLITE,
+                    CBLError.Code.CONFLICT
+                )
+            } else {
+                throw e
+            }
+        } finally {
+            this.conflictHandler?.dispose()
+            this.conflictHandler = null
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
-        database.mustBeOpen {
-            wrapCBLError { error ->
-                CBLCollection_DeleteDocument(actual, document.actual, error)
-            }
+        wrapCBLError { error ->
+            CBLCollection_DeleteDocument(actual, document.actual, error)
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
-        return database.mustBeOpen {
-            try {
-                wrapCBLError { error ->
-                    CBLCollection_DeleteDocumentWithConcurrencyControl(
-                        actual,
-                        document.actual,
-                        concurrencyControl.actual,
-                        error
-                    ).also {
-                        document.database = null
-                    }
+        return try {
+            wrapCBLError { error ->
+                CBLCollection_DeleteDocumentWithConcurrencyControl(
+                    actual,
+                    document.actual,
+                    concurrencyControl.actual,
+                    error
+                ).also {
+                    document.database = null
                 }
-            } catch (e: CouchbaseLiteException) {
-                if (e.code == CBLError.Code.CONFLICT && e.domain == CBLError.Domain.CBLITE) {
-                    // Java SDK doesn't throw exception on conflict, only returns false
-                    false
-                } else {
-                    throw e
-                }
+            }
+        } catch (e: CouchbaseLiteException) {
+            if (e.code == CBLError.Code.CONFLICT && e.domain == CBLError.Domain.CBLITE) {
+                // Java SDK doesn't throw exception on conflict, only returns false
+                false
+            } else {
+                throw e
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
-        database.mustBeOpen {
-            try {
-                wrapCBLError { error ->
-                    CBLCollection_PurgeDocument(actual, document.actual, error)
-                }
-            } catch (e: CouchbaseLiteException) {
-                if (e.code != CBLError.Code.NOT_FOUND || e.domain != CBLError.Domain.CBLITE || document.revisionID == null) {
-                    throw e
-                }
+        try {
+            wrapCBLError { error ->
+                CBLCollection_PurgeDocument(actual, document.actual, error)
             }
-            document.database = null
+        } catch (e: CouchbaseLiteException) {
+            if (e.code != CBLError.Code.NOT_FOUND || e.domain != CBLError.Domain.CBLITE || document.revisionID == null) {
+                throw e
+            }
         }
+        document.database = null
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
-        database.mustBeOpen {
-            wrapCBLError { error ->
-                memScoped {
-                    CBLCollection_PurgeDocumentByID(actual, id.toFLString(this), error)
-                }
+        wrapCBLError { error ->
+            memScoped {
+                CBLCollection_PurgeDocumentByID(actual, id.toFLString(this), error)
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
-        database.mustBeOpen {
-            wrapCBLError { error ->
-                memScoped {
-                    CBLCollection_SetDocumentExpiration(
-                        actual,
-                        id.toFLString(this),
-                        expiration?.toEpochMilliseconds()?.convert() ?: 0,
-                        error
-                    )
-                }
+        wrapCBLError { error ->
+            memScoped {
+                CBLCollection_SetDocumentExpiration(
+                    actual,
+                    id.toFLString(this),
+                    expiration?.toEpochMilliseconds()?.convert() ?: 0,
+                    error
+                )
             }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocumentExpiration(id: String): Instant? {
-        return database.mustBeOpen {
-            wrapCBLError { error ->
-                memScoped {
-                    CBLCollection_GetDocumentExpiration(actual, id.toFLString(this), error).toKotlinInstant()
-                }
+        return wrapCBLError { error ->
+            memScoped {
+                CBLCollection_GetDocumentExpiration(actual, id.toFLString(this), error).toKotlinInstant()
             }
         }
     }
 
     public actual fun addChangeListener(listener: CollectionChangeListener): ListenerToken {
-        return database.mustBeOpen {
-            val holder = CollectionChangeDefaultListenerHolder(listener, this)
-            addNativeChangeListener(holder)
-        }
+        val holder = CollectionChangeDefaultListenerHolder(listener, this)
+        return addNativeChangeListener(holder)
     }
 
     public actual fun addChangeListener(context: CoroutineContext, listener: CollectionChangeSuspendListener): ListenerToken {
-        return database.mustBeOpen {
-            val scope = CoroutineScope(SupervisorJob() + context)
-            val holder = CollectionChangeSuspendListenerHolder(listener, this, scope)
-            val token = addNativeChangeListener(holder)
-            SuspendListenerToken(scope, token)
-        }
+        val scope = CoroutineScope(SupervisorJob() + context)
+        val holder = CollectionChangeSuspendListenerHolder(listener, this, scope)
+        val token = addNativeChangeListener(holder)
+        return SuspendListenerToken(scope, token)
     }
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: CollectionChangeSuspendListener) {
-        database.mustBeOpen {
-            val holder = CollectionChangeSuspendListenerHolder(listener, this, scope)
-            val token = addNativeChangeListener(holder)
-            scope.coroutineContext[Job]?.invokeOnCompletion {
-                token.remove()
-            }
+        val holder = CollectionChangeSuspendListenerHolder(listener, this, scope)
+        val token = addNativeChangeListener(holder)
+        scope.coroutineContext[Job]?.invokeOnCompletion {
+            token.remove()
         }
     }
 
@@ -287,10 +261,8 @@ internal constructor(
     }
 
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken {
-        return database.mustBeOpen {
-            val holder = CollectionDocumentChangeDefaultListenerHolder(listener, this)
-            addNativeDocumentChangeListener(id, holder)
-        }
+        val holder = CollectionDocumentChangeDefaultListenerHolder(listener, this)
+        return addNativeDocumentChangeListener(id, holder)
     }
 
     public actual fun addDocumentChangeListener(
@@ -298,21 +270,17 @@ internal constructor(
         context: CoroutineContext,
         listener: DocumentChangeSuspendListener
     ): ListenerToken {
-        return database.mustBeOpen {
-            val scope = CoroutineScope(SupervisorJob() + context)
-            val holder = CollectionDocumentChangeSuspendListenerHolder(listener, this, scope)
-            val token = addNativeDocumentChangeListener(id, holder)
-            SuspendListenerToken(scope, token)
-        }
+        val scope = CoroutineScope(SupervisorJob() + context)
+        val holder = CollectionDocumentChangeSuspendListenerHolder(listener, this, scope)
+        val token = addNativeDocumentChangeListener(id, holder)
+        return SuspendListenerToken(scope, token)
     }
 
     public actual fun addDocumentChangeListener(id: String, scope: CoroutineScope, listener: DocumentChangeSuspendListener) {
-        database.mustBeOpen {
-            val holder = CollectionDocumentChangeSuspendListenerHolder(listener, this, scope)
-            val token = addNativeDocumentChangeListener(id, holder)
-            scope.coroutineContext[Job]?.invokeOnCompletion {
-                token.remove()
-            }
+        val holder = CollectionDocumentChangeSuspendListenerHolder(listener, this, scope)
+        val token = addNativeDocumentChangeListener(id, holder)
+        scope.coroutineContext[Job]?.invokeOnCompletion {
+            token.remove()
         }
     }
 
@@ -346,35 +314,31 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getIndexes(): Set<String> {
-        return database.mustBeOpen {
-            wrapCBLError { error ->
-                @Suppress("UNCHECKED_CAST")
-                (CBLCollection_GetIndexNames(actual, error)
-                    ?.toList(null) as List<String>?)?.toSet() ?: emptySet()
-            }
+        return wrapCBLError { error ->
+            @Suppress("UNCHECKED_CAST")
+            (CBLCollection_GetIndexNames(actual, error)
+                ?.toList(null) as List<String>?)?.toSet() ?: emptySet()
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
-        database.mustBeOpen {
-            wrapCBLError { error ->
-                memScoped {
-                    @Suppress("NO_ELSE_IN_WHEN")
-                    when (config) {
-                        is ValueIndexConfiguration -> CBLCollection_CreateValueIndex(
-                            actual,
-                            name.toFLString(this),
-                            config.actual,
-                            error
-                        )
-                        is FullTextIndexConfiguration -> CBLCollection_CreateFullTextIndex(
-                            actual,
-                            name.toFLString(this),
-                            config.actual,
-                            error
-                        )
-                    }
+        wrapCBLError { error ->
+            memScoped {
+                @Suppress("NO_ELSE_IN_WHEN")
+                when (config) {
+                    is ValueIndexConfiguration -> CBLCollection_CreateValueIndex(
+                        actual,
+                        name.toFLString(this),
+                        config.actual,
+                        error
+                    )
+                    is FullTextIndexConfiguration -> CBLCollection_CreateFullTextIndex(
+                        actual,
+                        name.toFLString(this),
+                        config.actual,
+                        error
+                    )
                 }
             }
         }
@@ -382,25 +346,23 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
-        database.mustBeOpen {
-            wrapCBLError { error ->
-                memScoped {
-                    @Suppress("REDUNDANT_ELSE_IN_WHEN", "KotlinRedundantDiagnosticSuppress")
-                    when (index) {
-                        is ValueIndex -> CBLCollection_CreateValueIndex(
-                            actual,
-                            name.toFLString(this),
-                            index.actual,
-                            error
-                        )
-                        is FullTextIndex -> CBLCollection_CreateFullTextIndex(
-                            actual,
-                            name.toFLString(this),
-                            index.actual,
-                            error
-                        )
-                        else -> error("Unhandled Index type ${index::class}")
-                    }
+        wrapCBLError { error ->
+            memScoped {
+                @Suppress("REDUNDANT_ELSE_IN_WHEN", "KotlinRedundantDiagnosticSuppress")
+                when (index) {
+                    is ValueIndex -> CBLCollection_CreateValueIndex(
+                        actual,
+                        name.toFLString(this),
+                        index.actual,
+                        error
+                    )
+                    is FullTextIndex -> CBLCollection_CreateFullTextIndex(
+                        actual,
+                        name.toFLString(this),
+                        index.actual,
+                        error
+                    )
+                    else -> error("Unhandled Index type ${index::class}")
                 }
             }
         }
@@ -408,11 +370,9 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {
-        database.mustBeOpen {
-            wrapCBLError { error ->
-                memScoped {
-                    CBLCollection_DeleteIndex(actual, name.toFLString(this), error)
-                }
+        wrapCBLError { error ->
+            memScoped {
+                CBLCollection_DeleteIndex(actual, name.toFLString(this), error)
             }
         }
     }
