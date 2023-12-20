@@ -49,23 +49,29 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocument(id: String): Document? {
-        return wrapCBLError { error ->
-            actual.documentWithID(id, error)
-        }?.asDocument(this)
+        return database.mustBeOpen {
+            wrapCBLError { error ->
+                actual.documentWithID(id, error)
+            }?.asDocument(this)
+        }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
-        return wrapCBLError { error ->
-            actual.saveDocument(document.actual, error)
+        return database.mustBeOpen {
+            wrapCBLError { error ->
+                actual.saveDocument(document.actual, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, concurrencyControl: ConcurrencyControl): Boolean {
         return try {
-            wrapCBLError { error ->
-                actual.saveDocument(document.actual, concurrencyControl.actual, error)
+            database.mustBeOpen {
+                wrapCBLError { error ->
+                    actual.saveDocument(document.actual, concurrencyControl.actual, error)
+                }
             }
         } catch (e: CouchbaseLiteException) {
             if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
@@ -76,21 +82,23 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
-        return wrapCBLError { error ->
-            try {
-                actual.saveDocument(document.actual, conflictHandler.convert(this), error)
-            } catch (e: Exception) {
-                if (e !is CouchbaseLiteException) {
-                    throw CouchbaseLiteException(
-                        "Conflict handler threw an exception",
-                        e,
-                        CBLError.Domain.CBLITE,
-                        CBLError.Code.CONFLICT
-                    )
-                } else {
-                    if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
-                    // Java SDK doesn't throw exception on conflict, only returns false
-                    false
+        return database.mustBeOpen {
+            wrapCBLError { error ->
+                try {
+                    actual.saveDocument(document.actual, conflictHandler.convert(this), error)
+                } catch (e: Exception) {
+                    if (e !is CouchbaseLiteException) {
+                        throw CouchbaseLiteException(
+                            "Conflict handler threw an exception",
+                            e,
+                            CBLError.Domain.CBLITE,
+                            CBLError.Code.CONFLICT
+                        )
+                    } else {
+                        if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
+                        // Java SDK doesn't throw exception on conflict, only returns false
+                        false
+                    }
                 }
             }
         }
@@ -98,16 +106,20 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
-        wrapCBLError { error ->
-            actual.deleteDocument(document.actual, error)
+        database.mustBeOpen {
+            wrapCBLError { error ->
+                actual.deleteDocument(document.actual, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
         return try {
-            wrapCBLError { error ->
-                actual.deleteDocument(document.actual, concurrencyControl.actual, error)
+            database.mustBeOpen {
+                wrapCBLError { error ->
+                    actual.deleteDocument(document.actual, concurrencyControl.actual, error)
+                }
             }
         } catch (e: CouchbaseLiteException) {
             if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
@@ -119,8 +131,10 @@ internal constructor(
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
         try {
-            wrapCBLError { error ->
-                actual.purgeDocument(document.actual, error)
+            database.mustBeOpen {
+                wrapCBLError { error ->
+                    actual.purgeDocument(document.actual, error)
+                }
             }
         } catch (e: CouchbaseLiteException) {
             // Java SDK ignores not found error, except for new document
@@ -133,55 +147,69 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
-        wrapCBLError { error ->
-            actual.purgeDocumentWithID(id, error)
+        database.mustBeOpen {
+            wrapCBLError { error ->
+                actual.purgeDocumentWithID(id, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
-        wrapCBLError { error ->
-            actual.setDocumentExpirationWithID(id, expiration?.toNSDate(), error)
+        database.mustBeOpen {
+            wrapCBLError { error ->
+                actual.setDocumentExpirationWithID(id, expiration?.toNSDate(), error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocumentExpiration(id: String): Instant? {
-        return wrapCBLError { error ->
-            actual.getDocumentExpirationWithID(id, error)
-        }?.toKotlinInstant()
+        return database.mustBeOpen {
+            wrapCBLError { error ->
+                actual.getDocumentExpirationWithID(id, error)
+            }?.toKotlinInstant()
+        }
     }
 
     public actual fun addChangeListener(listener: CollectionChangeListener): ListenerToken {
         return DelegatedListenerToken(
-            actual.addChangeListener(listener.convert(this))
+            database.mustBeOpen {
+                actual.addChangeListener(listener.convert(this))
+            }
         )
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(context: CoroutineContext, listener: CollectionChangeSuspendListener): ListenerToken {
-        val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListenerWithQueue(
-            context[CoroutineDispatcher]?.asDispatchQueue(),
-            listener.convert(this, scope)
-        )
-        return SuspendListenerToken(scope, token)
+        return database.mustBeOpen {
+            val scope = CoroutineScope(SupervisorJob() + context)
+            val token = actual.addChangeListenerWithQueue(
+                context[CoroutineDispatcher]?.asDispatchQueue(),
+                listener.convert(this, scope)
+            )
+            SuspendListenerToken(scope, token)
+        }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(scope: CoroutineScope, listener: CollectionChangeSuspendListener) {
-        val token = actual.addChangeListenerWithQueue(
-            scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
-            listener.convert(this, scope)
-        )
-        scope.coroutineContext[Job]?.invokeOnCompletion {
-            token.remove()
+        database.mustBeOpen {
+            val token = actual.addChangeListenerWithQueue(
+                scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
+                listener.convert(this, scope)
+            )
+            scope.coroutineContext[Job]?.invokeOnCompletion {
+                token.remove()
+            }
         }
     }
 
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken {
         return DelegatedListenerToken(
-            actual.addDocumentChangeListenerWithID(id, listener.convert(this))
+            database.mustBeOpen {
+                actual.addDocumentChangeListenerWithID(id, listener.convert(this))
+            }
         )
     }
 
@@ -191,53 +219,65 @@ internal constructor(
         context: CoroutineContext,
         listener: DocumentChangeSuspendListener
     ): ListenerToken {
-        val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addDocumentChangeListenerWithID(
-            id,
-            context[CoroutineDispatcher]?.asDispatchQueue(),
-            listener.convert(this, scope)
-        )
-        return SuspendListenerToken(scope, token)
+        return database.mustBeOpen {
+            val scope = CoroutineScope(SupervisorJob() + context)
+            val token = actual.addDocumentChangeListenerWithID(
+                id,
+                context[CoroutineDispatcher]?.asDispatchQueue(),
+                listener.convert(this, scope)
+            )
+            SuspendListenerToken(scope, token)
+        }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentChangeListener(id: String, scope: CoroutineScope, listener: DocumentChangeSuspendListener) {
-        val token = actual.addDocumentChangeListenerWithID(
-            id,
-            scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
-            listener.convert(this, scope)
-        )
-        scope.coroutineContext[Job]?.invokeOnCompletion {
-            token.remove()
+        database.mustBeOpen {
+            val token = actual.addDocumentChangeListenerWithID(
+                id,
+                scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
+                listener.convert(this, scope)
+            )
+            scope.coroutineContext[Job]?.invokeOnCompletion {
+                token.remove()
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getIndexes(): Set<String> {
-        return wrapCBLError { error ->
-            @Suppress("UNCHECKED_CAST")
-            actual.indexes(error) as List<String>
-        }.toSet()
+        return database.mustBeOpen {
+            wrapCBLError { error ->
+                @Suppress("UNCHECKED_CAST")
+                actual.indexes(error) as List<String>
+            }.toSet()
+        }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
-        wrapCBLError { error ->
-            actual.createIndexWithName(name, config.actual, error)
+        database.mustBeOpen {
+            wrapCBLError { error ->
+                actual.createIndexWithName(name, config.actual, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
-        wrapCBLError { error ->
-            actual.createIndex(index.actual, name, error)
+        database.mustBeOpen {
+            wrapCBLError { error ->
+                actual.createIndex(index.actual, name, error)
+            }
         }
     }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {
-        wrapCBLError { error ->
-            actual.deleteIndexWithName(name, error)
+        database.mustBeOpen {
+            wrapCBLError { error ->
+                actual.deleteIndexWithName(name, error)
+            }
         }
     }
 
