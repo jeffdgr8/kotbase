@@ -571,7 +571,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     private inline fun <R> withLock(action: () -> R): R =
         lock.withLock(action)
 
-    private fun <R> mustBeOpen(action: () -> R): R {
+    internal fun <R> mustBeOpen(action: () -> R): R {
         return withLock {
             if (actual.isClosed()) {
                 throw IllegalStateException("Attempt to perform an operation on a closed database or a deleted collection.")
