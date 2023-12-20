@@ -787,13 +787,13 @@ private constructor(
 
     private val lock = SynchronizedObject()
 
-    internal inline fun <R> withLock(crossinline action: () -> R): R {
+    private inline fun <R> withLock(crossinline action: () -> R): R {
         return lock.withLock {
             action()
         }
     }
 
-    internal fun <R> mustBeOpen(action: () -> R): R {
+    private fun <R> mustBeOpen(action: () -> R): R {
         return withLock {
             if (isClosed) {
                 throw IllegalStateException("Attempt to perform an operation on a closed database or a deleted collection.")
