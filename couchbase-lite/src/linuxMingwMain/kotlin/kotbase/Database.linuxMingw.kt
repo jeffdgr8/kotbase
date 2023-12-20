@@ -494,8 +494,8 @@ private constructor(
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
-        wrapCBLError { error ->
-            mustBeOpen {
+        mustBeOpen {
+            wrapCBLError { error ->
                 memScoped {
                     CBLDatabase_PurgeDocumentByID(actual, id.toFLString(this), error)
                 }
@@ -509,8 +509,8 @@ private constructor(
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
-        wrapCBLError { error ->
-            mustBeOpen {
+        mustBeOpen {
+            wrapCBLError { error ->
                 memScoped {
                     CBLDatabase_SetDocumentExpiration(
                         actual,
@@ -529,8 +529,8 @@ private constructor(
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocumentExpiration(id: String): Instant? {
-        return wrapCBLError { error ->
-            mustBeOpen {
+        return mustBeOpen {
+            wrapCBLError { error ->
                 memScoped {
                     CBLDatabase_GetDocumentExpiration(actual, id.toFLString(this), error).toKotlinInstant()
                 }
@@ -704,8 +704,8 @@ private constructor(
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
-        wrapCBLError { error ->
-            mustBeOpen {
+        mustBeOpen {
+            wrapCBLError { error ->
                 memScoped {
                     @Suppress("REDUNDANT_ELSE_IN_WHEN", "KotlinRedundantDiagnosticSuppress")
                     when (index) {
@@ -734,8 +734,8 @@ private constructor(
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
-        wrapCBLError { error ->
-            mustBeOpen {
+        mustBeOpen {
+            wrapCBLError { error ->
                 memScoped {
                     @Suppress("NO_ELSE_IN_WHEN")
                     when (config) {
@@ -763,8 +763,8 @@ private constructor(
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {
-        wrapCBLError { error ->
-            mustBeOpen {
+        mustBeOpen {
+            wrapCBLError { error ->
                 memScoped {
                     CBLDatabase_DeleteIndex(actual, name.toFLString(this), error)
                 }
@@ -774,8 +774,8 @@ private constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun performMaintenance(type: MaintenanceType): Boolean {
-        return wrapCBLError { error ->
-            mustBeOpen {
+        return mustBeOpen {
+            wrapCBLError { error ->
                 CBLDatabase_PerformMaintenance(actual, type.actual, error)
             }
         }
