@@ -24,6 +24,7 @@ import kotbase.internal.fleece.toList
 import kotbase.internal.toExceptionNotNull
 import kotbase.internal.toKotlinInstant
 import kotbase.internal.wrapCBLError
+import kotbase.util.identityHashCodeHex
 import kotbase.util.to
 import kotbase.util.toList
 import kotlinx.atomicfu.locks.SynchronizedObject
@@ -800,5 +801,18 @@ private constructor(
             }
             action()
         }
+    }
+
+    public override fun toString(): String {
+        return "Database{@${identityHashCodeHex()}: '$name'}"
+    }
+
+    public override fun hashCode(): Int =
+        name.hashCode()
+
+    public override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Database) return false
+        return path == other.path && name == other.name
     }
 }
