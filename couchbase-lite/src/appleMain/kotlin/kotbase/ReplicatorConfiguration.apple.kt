@@ -86,12 +86,9 @@ private constructor(
         collections: kotlin.collections.Collection<Collection>,
         config: CollectionConfiguration?
     ): ReplicatorConfiguration {
-        val configNotNull = config?.let(::CollectionConfiguration) ?: CollectionConfiguration()
         collections.forEach { collection ->
-            checkCollection(collection)
-            collectionConfigurations[collection] = configNotNull
+            addCollection(collection, config)
         }
-        actual.addCollections(collections.actuals(), configNotNull.actual)
         return this
     }
 

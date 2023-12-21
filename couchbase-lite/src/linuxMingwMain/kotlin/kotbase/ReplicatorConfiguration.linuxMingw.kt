@@ -102,10 +102,8 @@ private constructor(
         collections: kotlin.collections.Collection<Collection>,
         config: CollectionConfiguration?
     ): ReplicatorConfiguration {
-        val configNotNull = config?.let(::CollectionConfiguration) ?: CollectionConfiguration()
         collections.forEach { collection ->
-            checkCollection(collection)
-            collectionConfigurations[collection] = configNotNull
+            addCollection(collection, config)
         }
         return this
     }
@@ -201,7 +199,7 @@ private constructor(
     }
 
     public actual fun getCollectionConfiguration(collection: Collection): CollectionConfiguration? =
-        collectionConfigurations[collection]
+        collectionConfigurations[collection]?.let(::CollectionConfiguration)
 
     public actual val collections: Set<Collection>
         get() = collectionConfigurations.keys
@@ -249,66 +247,68 @@ private constructor(
         }
 
     @Deprecated("Use CollectionConfiguration.documentIDs")
-    public actual var documentIDs: List<String>? = null
-        get() {
-            getDefaultCollectionConfiguration()
-            return field
-        }
+    public actual var documentIDs: List<String>?
+        get() = getDefaultCollectionConfiguration().documentIDs?.toList()
         set(value) {
-            field = value
-            getDefaultCollectionConfiguration().documentIDs = value
+            updateDefaultConfig {
+                documentIDs = value
+            }
         }
 
     @Deprecated("Use CollectionConfiguration.channels")
-    public actual var channels: List<String>? = null
-        get() {
-            getDefaultCollectionConfiguration()
-            return field
-        }
+    public actual var channels: List<String>?
+        get() = getDefaultCollectionConfiguration().channels?.toList()
         set(value) {
-            field = value
-            getDefaultCollectionConfiguration().channels = value
+            updateDefaultConfig {
+                channels = value
+            }
         }
 
     @Deprecated("Use CollectionConfiguration.conflictResolver")
-    public actual var conflictResolver: ConflictResolver? = null
-        get() {
-            getDefaultCollectionConfiguration()
-            return field
-        }
+    public actual var conflictResolver: ConflictResolver?
+        get() = getDefaultCollectionConfiguration().conflictResolver
         set(value) {
-            field = value
-            getDefaultCollectionConfiguration().conflictResolver = value
+            updateDefaultConfig {
+                conflictResolver = value
+            }
         }
 
     @Deprecated("Use CollectionConfiguration.pullFilter")
-    public actual var pullFilter: ReplicationFilter? = null
-        get() {
-            getDefaultCollectionConfiguration()
-            return field
-        }
+    public actual var pullFilter: ReplicationFilter?
+        get() = getDefaultCollectionConfiguration().pullFilter
         set(value) {
-            field = value
-            getDefaultCollectionConfiguration().pullFilter = value
+            updateDefaultConfig {
+                pullFilter = value
+            }
         }
 
     @Deprecated("Use CollectionConfiguration.pushFilter")
-    public actual var pushFilter: ReplicationFilter? = null
-        get() {
-            getDefaultCollectionConfiguration()
-            return field
-        }
+    public actual var pushFilter: ReplicationFilter?
+        get() = getDefaultCollectionConfiguration().pushFilter
         set(value) {
-            field = value
-            getDefaultCollectionConfiguration().pushFilter = value
+            updateDefaultConfig {
+                pushFilter = value
+            }
         }
 
     @Suppress("DEPRECATION")
+    private val defaultCollection: Collection by lazy {
+        database.getDefaultCollection()
+            ?: throw IllegalArgumentException("Cannot use legacy parameters when there is no default collection")
+    }
+
     private fun getDefaultCollectionConfiguration(): CollectionConfiguration =
-        getCollectionConfiguration(database.getDefaultCollectionNotNull())
+        collectionConfigurations[defaultCollection]
             ?: throw IllegalArgumentException(
                 "Cannot use legacy parameters when the default collection has no configuration"
             )
+
+    private fun updateDefaultConfig(updater: CollectionConfiguration.() -> Unit) {
+        val config = getDefaultCollectionConfiguration()
+        val updated = CollectionConfiguration(config)
+        updated.updater()
+        addCollection(defaultCollection, updated)
+    }
 
     public actual companion object
 }
