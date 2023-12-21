@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package kotbase
 
 import kotbase.internal.DelegatedClass
 import com.couchbase.lite.DatabaseChange as CBLDatabaseChange
 
-@Suppress("DEPRECATION")
 @Deprecated(
     "Use CollectionChange",
     ReplaceWith("CollectionChange")

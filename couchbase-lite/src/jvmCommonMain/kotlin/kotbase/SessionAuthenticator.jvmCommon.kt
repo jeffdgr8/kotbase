@@ -32,5 +32,5 @@ internal constructor(
         get() = actual.sessionID
 
     public actual val cookieName: String
-        get() = actual.cookieName!!
+        get() = actual.cookieName
 }
