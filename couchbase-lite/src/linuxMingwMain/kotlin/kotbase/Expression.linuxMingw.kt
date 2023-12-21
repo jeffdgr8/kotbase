@@ -16,6 +16,7 @@
 package kotbase
 
 import kotbase.ext.toStringMillis
+import kotbase.util.identityHashCodeHex
 import kotlinx.datetime.Instant
 
 public actual open class Expression {
@@ -383,7 +384,7 @@ public actual open class Expression {
         negated(isValued())
 
     override fun toString(): String =
-        "${this::class.simpleName} {@${hashCode().toString(16)},json=" + asJSON() + "}"
+        "${this::class.simpleName} {@${identityHashCodeHex()},json=" + asJSON() + "}"
 
     internal open fun asJSON(): Any? {
         throw IllegalStateException("Should be overridden in subclass ${this::class}")
