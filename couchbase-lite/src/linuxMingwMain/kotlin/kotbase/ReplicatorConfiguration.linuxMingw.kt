@@ -206,35 +206,37 @@ private constructor(
     public actual val collections: Set<Collection>
         get() = collectionConfigurations.keys
 
-    public actual var type: ReplicatorType = ReplicatorType.PUSH_AND_PULL
+    public actual var type: ReplicatorType = Defaults.Replicator.TYPE
 
-    public actual var isContinuous: Boolean = false
+    public actual var isContinuous: Boolean = Defaults.Replicator.CONTINUOUS
 
-    public actual var isAutoPurgeEnabled: Boolean = true
+    public actual var isAutoPurgeEnabled: Boolean = Defaults.Replicator.ENABLE_AUTO_PURGE
 
     public actual var headers: Map<String, String>? = null
 
-    public actual var isAcceptParentDomainCookies: Boolean = false
+    public actual var isAcceptParentDomainCookies: Boolean = Defaults.Replicator.ACCEPT_PARENT_COOKIES
 
     public actual var authenticator: Authenticator? = null
 
     public actual var pinnedServerCertificate: ByteArray? = null
 
-    public actual var maxAttempts: Int = 0
+    public actual var maxAttempts: Int = Defaults.Replicator.MAX_ATTEMPTS_SINGLE_SHOT
         set(value) {
             if (value < 0) throw IllegalArgumentException("max attempts must be >=0")
             field = value
         }
 
-    public actual var maxAttemptWaitTime: Int = 0
+    public actual var maxAttemptWaitTime: Int = Defaults.Replicator.MAX_ATTEMPT_WAIT_TIME
         set(value) {
             if (value < 0) throw IllegalArgumentException("max attempt wait time must be >=0")
             field = value
         }
 
-    public actual var heartbeat: Int = 0
+    public actual var heartbeat: Int = Defaults.Replicator.HEARTBEAT
         set(value) {
             if (value < 0) throw IllegalArgumentException("heartbeat must be >=0")
+            val millis = value * 1000L
+            require(millis <= Int.MAX_VALUE) { "heartbeat too large" }
             field = value
         }
 

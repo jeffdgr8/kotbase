@@ -16,6 +16,7 @@
 package kotbase.internal.fleece
 
 import kotbase.*
+import kotbase.CBLError
 import kotbase.internal.DbContext
 import kotbase.internal.wrapCBLError
 import kotlinx.datetime.Instant
@@ -88,8 +89,20 @@ private fun FLValue.asBlob(ctxt: DbContext?): Blob? {
     if (!FLValue_IsBlob(this)) return null
     val db = ctxt?.database
     if (db != null) {
-        val dbBlob = wrapCBLError { error ->
-            CBLDatabase_GetBlob(db.actual, FLValue_AsDict(this), error)
+        val dbBlob = try {
+            wrapCBLError { error ->
+                CBLDatabase_GetBlob(db.actual, FLValue_AsDict(this), error)
+            }
+        } catch (e: CouchbaseLiteException) {
+            if (e.code == CBLError.Code.NOT_OPEN && e.domain == CBLError.Domain.CBLITE) {
+                return Blob(
+                    // database is closed, just use blob dictionary, content won't be available
+                    Dictionary(FLValue_AsDict(this)!!, null),
+                    ctxt
+                )
+            } else {
+                throw e
+            }
         }
         if (dbBlob != null) {
             return Blob(dbBlob, ctxt)

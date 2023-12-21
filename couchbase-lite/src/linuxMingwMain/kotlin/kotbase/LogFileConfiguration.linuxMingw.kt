@@ -43,7 +43,7 @@ public actual constructor(public actual val directory: String) {
         return this
     }
 
-    public actual var maxRotateCount: Int = 1
+    public actual var maxRotateCount: Int = Defaults.LogFile.MAX_ROTATE_COUNT
         set(value) {
             checkReadOnly()
             field = value
@@ -55,7 +55,7 @@ public actual constructor(public actual val directory: String) {
         return this
     }
 
-    public actual var maxSize: Long = 0
+    public actual var maxSize: Long = Defaults.LogFile.MAX_SIZE
         set(value) {
             checkReadOnly()
             field = value
@@ -67,7 +67,7 @@ public actual constructor(public actual val directory: String) {
         return this
     }
 
-    public actual var usesPlaintext: Boolean = false
+    public actual var usesPlaintext: Boolean = Defaults.LogFile.USE_PLAIN_TEXT
         set(value) {
             checkReadOnly()
             field = value

@@ -26,8 +26,6 @@ internal constructor(
     conflictResolver: ConflictResolver? = null
 ) : DelegatedClass<CBLCollectionConfiguration>(actual) {
 
-    public actual constructor() : this(CBLCollectionConfiguration())
-
     public actual constructor(
         channels: List<String>?,
         documentIDs: List<String>?,

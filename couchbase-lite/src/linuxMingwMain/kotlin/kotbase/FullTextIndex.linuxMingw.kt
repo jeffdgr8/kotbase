@@ -39,7 +39,7 @@ internal constructor(private val items: List<FullTextIndexItem>) : Index() {
         return this
     }
 
-    public actual var isIgnoringAccents: Boolean = false
+    public actual var isIgnoringAccents: Boolean = Defaults.FullTextIndex.IGNORE_ACCENTS
 
     private fun getJson(): String {
         val data = buildList {
