@@ -86,7 +86,8 @@ private constructor(
     internal constructor(actual: CPointer<CBLBlob>?, dbContext: DbContext? = null) :
             this(actual, dbContext, null)
 
-    internal constructor(dict: Dictionary?) : this(actual = null, dict = dict)
+    internal constructor(dict: Dictionary?, ctxt: DbContext? = null) :
+            this(actual = null, dbContext = ctxt, dict = dict)
 
     public actual constructor(contentType: String, stream: Source) : this(actual = null) {
         blobContentType = contentType
@@ -141,10 +142,12 @@ private constructor(
                             blobContent!!.toFLSlice()
                         )
                     }
-                } else if (actual != null) {
+                } else {
                     dbContext?.database?.mustBeOpen()
-                    blobContent = wrapCBLError { error ->
-                        CBLBlob_Content(actual, error).toByteArray()
+                    if (actual != null) {
+                        blobContent = wrapCBLError { error ->
+                            CBLBlob_Content(actual, error).toByteArray()
+                        }
                     }
                 }
             }

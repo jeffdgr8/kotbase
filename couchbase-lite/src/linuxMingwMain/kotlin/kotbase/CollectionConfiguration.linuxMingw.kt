@@ -15,17 +15,14 @@
  */
 package kotbase
 
-public actual class CollectionConfiguration {
-
-    public actual constructor()
-
-    public actual constructor(
-        channels: List<String>?,
-        documentIDs: List<String>?,
-        pullFilter: ReplicationFilter?,
-        pushFilter: ReplicationFilter?,
-        conflictResolver: ConflictResolver?
-    )
+public actual class CollectionConfiguration
+public actual constructor(
+    public actual var channels: List<String>?,
+    public actual var documentIDs: List<String>?,
+    public actual var pullFilter: ReplicationFilter?,
+    public actual var pushFilter: ReplicationFilter?,
+    public actual var conflictResolver: ConflictResolver?
+) {
 
     internal constructor(config: CollectionConfiguration) : this(
         config.channels?.toList(),
@@ -59,14 +56,4 @@ public actual class CollectionConfiguration {
         this.pushFilter = pushFilter
         return this
     }
-
-    public actual var channels: List<String>? = null
-
-    public actual var documentIDs: List<String>? = null
-
-    public actual var conflictResolver: ConflictResolver? = null
-
-    public actual var pullFilter: ReplicationFilter? = null
-
-    public actual var pushFilter: ReplicationFilter? = null
 }

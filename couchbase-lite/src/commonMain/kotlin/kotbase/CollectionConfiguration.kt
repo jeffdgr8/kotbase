@@ -18,17 +18,13 @@ package kotbase
 /**
  * The collection configuration that can be configured specifically for the replication.
  */
-public expect class CollectionConfiguration {
-
-    public constructor()
-
-    public constructor(
-        channels: List<String>? = null,
-        documentIDs: List<String>? = null,
-        pullFilter: ReplicationFilter? = null,
-        pushFilter: ReplicationFilter? = null,
-        conflictResolver: ConflictResolver? = null
-    )
+public expect class CollectionConfiguration(
+    channels: List<String>? = null,
+    documentIDs: List<String>? = null,
+    pullFilter: ReplicationFilter? = null,
+    pushFilter: ReplicationFilter? = null,
+    conflictResolver: ConflictResolver? = null
+) {
 
     /**
      * Sets a collection of document IDs to filter by: if given, only documents

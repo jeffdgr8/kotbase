@@ -16,7 +16,7 @@
 package kotbase
 
 public actual var ReplicatorConfiguration.isAcceptOnlySelfSignedServerCertificate: Boolean
-    get() = false
+    get() = Defaults.Replicator.SELF_SIGNED_CERTIFICATE_ONLY
     set(value) {
         if (value) {
             throw UnsupportedOperationException("acceptOnlySelfSignedServerCertificate is not supported in CBL C SDK")

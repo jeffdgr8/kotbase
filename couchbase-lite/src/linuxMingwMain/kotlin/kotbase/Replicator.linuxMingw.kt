@@ -55,8 +55,10 @@ private constructor(
         }
     }
 
-    public actual constructor(config: ReplicatorConfiguration) :
-            this(ImmutableReplicatorConfiguration(config))
+    public actual constructor(config: ReplicatorConfiguration) : this(
+        if (config.collections.isEmpty()) throw IllegalArgumentException("Attempt to configure a replicator with no source collections")
+        else ImmutableReplicatorConfiguration(config)
+    )
 
     private constructor(config: ImmutableReplicatorConfiguration) : this(
         wrapCBLError { error ->
@@ -206,7 +208,7 @@ private constructor(
         val holder = DocumentReplicationSuspendListenerHolder(listener, this, scope)
         val token = addNativeDocumentReplicationListener(holder)
         scope.coroutineContext[Job]?.invokeOnCompletion {
-            removeChangeListener(token)
+            token.remove()
         }
     }
 

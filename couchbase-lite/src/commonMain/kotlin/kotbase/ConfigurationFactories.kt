@@ -98,13 +98,14 @@ public fun ReplicatorConfiguration?.newConfig(
         (heartbeat ?: orig?.heartbeat)?.let { this.heartbeat = it }
         (enableAutoPurge ?: orig?.isAutoPurgeEnabled)?.let { this.isAutoPurgeEnabled = it }
         if (collections != null) {
-            collections.forEach {
-                addCollections(it.key, it.value)
+            collections.forEach { (collection, config) ->
+                addCollections(collection, config)
             }
         } else {
-            orig?.collections?.forEach {
-                addCollection(it, orig.getCollectionConfiguration(it))
-            } ?: throw IllegalArgumentException("")
+            orig?.collections?.forEach { collection ->
+                val config = orig.getCollectionConfiguration(collection)
+                addCollection(collection, config)
+            }
         }
     }
 }
@@ -166,7 +167,7 @@ public fun ReplicatorConfiguration?.newConfig(
         database ?: this?.database ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify a database"),
         target ?: this?.target ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify an endpoint")
     ).apply {
-        val origDefaultConfig = database?.getDefaultCollection()?.let { orig?.getCollectionConfiguration(it) }
+        val origDefaultConfig = orig?.database?.getDefaultCollection()?.let { orig.getCollectionConfiguration(it) }
         (type ?: orig?.type)?.let { this.type = it }
         (continuous ?: orig?.isContinuous)?.let { this.isContinuous = it }
         this.authenticator = authenticator ?: orig?.authenticator

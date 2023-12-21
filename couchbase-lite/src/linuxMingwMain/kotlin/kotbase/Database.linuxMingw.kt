@@ -787,7 +787,7 @@ private constructor(
 
     private val lock = SynchronizedObject()
 
-    private inline fun <R> withLock(crossinline action: () -> R): R {
+    internal inline fun <R> withLock(crossinline action: () -> R): R {
         return lock.withLock {
             action()
         }
