@@ -32,9 +32,9 @@ private constructor(
 
     internal fun asJSON(): Map<String, Any?> {
         return buildMap {
-            "COLLECTION" to source.fullName
+            put("COLLECTION", source.fullName)
             if (alias != null) {
-                "AS" to alias
+                put("AS", alias)
             }
         }
     }
@@ -46,7 +46,9 @@ private constructor(
             ReplaceWith("collection(database.getDefaultCollection())")
         )
         public actual fun database(database: Database): As =
-            As(database.getDefaultCollectionNotNull())
+            As(database.getDefaultCollectionNotNull()).apply {
+                `as`(database.name)
+            }
 
         public actual fun collection(collection: Collection): As =
             As(collection)

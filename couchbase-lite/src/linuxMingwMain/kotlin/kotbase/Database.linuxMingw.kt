@@ -258,7 +258,7 @@ private constructor(
             memScoped {
                 CBLDatabase_DeleteCollection(
                     actual,
-                    name.toFLString(this),
+                    collectionName.toFLString(this),
                     scopeName.toFLString(this),
                     error
                 )
