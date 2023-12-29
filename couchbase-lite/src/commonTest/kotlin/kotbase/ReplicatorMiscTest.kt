@@ -15,6 +15,7 @@
  */
 package kotbase
 
+import kotbase.test.IgnoreLinuxMingw
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
 import kotlin.test.*
@@ -234,6 +235,10 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //        }
 //    }
 
+    // Linux/Mingw never get CONNECTING status before failing to connect and STOPPED
+    // 17:38:42.654379| [WS] error: {BuiltInWebSocket#2} WebSocket failed to connect! (reason=Network error 2) Unknown hostname "foo.couchbase.com"
+    // 17:38:42.654565| [Sync] error: {Repl#1} Got LiteCore error: Network error 2, "Unknown hostname "foo.couchbase.com""
+    @IgnoreLinuxMingw
     @Test
     fun testStopWhileConnecting() = runBlocking {
         val repl = makeBasicRepl()

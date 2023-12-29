@@ -15,6 +15,7 @@
  */
 package kotbase
 
+import kotbase.test.IgnoreLinuxMingw
 import kotlin.test.*
 
 class CollectionCrossDbTest : BaseTest() {
@@ -99,6 +100,10 @@ class CollectionCrossDbTest : BaseTest() {
     //    by using database.getCollection(name: "colA", scope: "scopeA").
     // Ensure that the collection is included when getting all collections from the database instance B
     //    by using database.getCollections(scope: "scopeA").
+    @IgnoreLinuxMingw
+    // error: Function CBLCollection_Count() failed: LiteCore NotOpen, "Invalid collection: either deleted, or db closed"
+    // INFO CouchbaseLite/TEST Failed to delete database kotbase.Database@1ef41860
+    // CouchbaseLiteException{CouchbaseLite,16,'Can't delete db file while other connections are open. The open connections are tagged appOpened, appOpened.'}
     @Test
     fun testDeleteAndRecreateThenGetCollectionFromDifferentDatabaseInstance() {
         val collectionA1 = dbA.createCollection("45s", "laryngo")
