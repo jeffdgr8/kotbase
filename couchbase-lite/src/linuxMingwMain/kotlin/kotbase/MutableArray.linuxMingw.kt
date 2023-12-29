@@ -279,15 +279,11 @@ internal constructor(
     }
 
     public actual fun addNumber(value: Number?): MutableArray {
-        if (value != null) {
-            when (value) {
-                is Double -> FLMutableArray_AppendDouble(actual, value)
-                is Float -> FLMutableArray_AppendFloat(actual, value)
-                null -> FLMutableArray_AppendNull(actual)
-                else -> FLMutableArray_AppendInt(actual, value.toLong().convert())
-            }
-        } else {
-            FLMutableArray_AppendNull(actual)
+        when (value) {
+            is Double -> FLMutableArray_AppendDouble(actual, value)
+            is Float -> FLMutableArray_AppendFloat(actual, value)
+            null -> FLMutableArray_AppendNull(actual)
+            else -> FLMutableArray_AppendInt(actual, value.toLong().convert())
         }
         return this
     }
