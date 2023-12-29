@@ -23,22 +23,15 @@ class DelegatedClassTest {
     private class MyObject(val value: Int) {
 
         override fun equals(other: Any?): Boolean {
-            if (other === this) {
-                return true
-            }
-            if (other is MyObject && other.value == value) {
-                return true
-            }
-            return false
+            if (other === this) return true
+            if (other !is MyObject) return false
+            return value == other.value
         }
 
-        override fun hashCode(): Int {
-            return value
-        }
+        override fun hashCode(): Int = value
 
-        override fun toString(): String {
-            return "My value is $value"
-        }
+        override fun toString(): String =
+            "My value is $value"
     }
 
     private class MyDelegatedObject(actual: MyObject) : DelegatedClass<MyObject>(actual)

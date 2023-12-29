@@ -26,22 +26,15 @@ class DelegatedClassTest {
     private class MyNSObject(val value: Int) : NSObject() {
 
         override fun isEqual(`object`: Any?): Boolean {
-            if (`object` === this) {
-                return true
-            }
-            if (`object` is MyNSObject && `object`.value == value) {
-                return true
-            }
-            return false
+            if (`object` === this) return true
+            if (`object` !is MyNSObject) return false
+            return value == `object`.value
         }
 
-        override fun hash(): NSUInteger {
-            return value.convert()
-        }
+        override fun hash(): NSUInteger = value.convert()
 
-        override fun description(): String {
-            return "My value is $value"
-        }
+        override fun description(): String =
+            "My value is $value"
     }
 
     private class MyDelegatedObject(actual: MyNSObject) : DelegatedClass<MyNSObject>(actual)
