@@ -56,3 +56,33 @@ public inline infix fun Expression.contains(value: String): Expression =
  */
 public inline infix fun Expression.notContains(value: String): Expression =
     Expression.not(contains(value))
+
+public operator fun Expression.times(expression: Expression): Expression = multiply(expression)
+public operator fun Expression.times(value: Int): Expression = multiply(Expression.intValue(value))
+public operator fun Expression.times(value: Long): Expression = multiply(Expression.longValue(value))
+public operator fun Expression.times(value: Float): Expression = multiply(Expression.floatValue(value))
+public operator fun Expression.times(value: Double): Expression = multiply(Expression.doubleValue(value))
+
+public operator fun Expression.div(expression: Expression): Expression = divide(expression)
+public operator fun Expression.div(value: Int): Expression = divide(Expression.intValue(value))
+public operator fun Expression.div(value: Long): Expression = divide(Expression.longValue(value))
+public operator fun Expression.div(value: Float): Expression = divide(Expression.floatValue(value))
+public operator fun Expression.div(value: Double): Expression = divide(Expression.doubleValue(value))
+
+public operator fun Expression.rem(expression: Expression): Expression = modulo(expression)
+public operator fun Expression.rem(value: Int): Expression = modulo(Expression.intValue(value))
+public operator fun Expression.rem(value: Long): Expression = modulo(Expression.longValue(value))
+public operator fun Expression.rem(value: Float): Expression = modulo(Expression.floatValue(value))
+public operator fun Expression.rem(value: Double): Expression = modulo(Expression.doubleValue(value))
+
+public operator fun Expression.plus(expression: Expression): Expression = add(expression)
+public operator fun Expression.plus(value: Int): Expression = add(Expression.intValue(value))
+public operator fun Expression.plus(value: Long): Expression = add(Expression.longValue(value))
+public operator fun Expression.plus(value: Float): Expression = add(Expression.floatValue(value))
+public operator fun Expression.plus(value: Double): Expression = add(Expression.doubleValue(value))
+
+public operator fun Expression.minus(expression: Expression): Expression = subtract(expression)
+public operator fun Expression.minus(value: Int): Expression = subtract(Expression.intValue(value))
+public operator fun Expression.minus(value: Long): Expression = subtract(Expression.longValue(value))
+public operator fun Expression.minus(value: Float): Expression = subtract(Expression.floatValue(value))
+public operator fun Expression.minus(value: Double): Expression = subtract(Expression.doubleValue(value))
