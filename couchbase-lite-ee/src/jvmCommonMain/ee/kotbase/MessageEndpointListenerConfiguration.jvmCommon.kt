@@ -29,7 +29,7 @@ internal constructor(
     @Suppress("DEPRECATION")
     @Deprecated(
         "Use MessageEndpointListener(Collection, ProtocolType)",
-        ReplaceWith("MessageEndpointListener(setOf(database.getDefaultCollection()), protocolType)")
+        ReplaceWith("MessageEndpointListener(setOf(database.getDefaultCollection()!!), protocolType)")
     )
     public actual constructor(
         database: Database,

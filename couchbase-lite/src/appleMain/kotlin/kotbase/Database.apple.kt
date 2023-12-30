@@ -223,14 +223,14 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Deprecated(
         "Use getDefaultCollection().count",
-        ReplaceWith("getDefaultCollection().count")
+        ReplaceWith("getDefaultCollection()!!.count")
     )
     public actual val count: Long
         get() = actual.count.toLong()
 
     @Deprecated(
         "Use getDefaultCollection().getDocument()",
-        ReplaceWith("getDefaultCollection().getDocument(id)")
+        ReplaceWith("getDefaultCollection()!!.getDocument(id)")
     )
     public actual fun getDocument(id: String): Document? {
         return mustBeOpen {
@@ -240,7 +240,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Deprecated(
         "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document)")
+        ReplaceWith("getDefaultCollection()!!.save(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
@@ -253,7 +253,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Deprecated(
         "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document, concurrencyControl)")
+        ReplaceWith("getDefaultCollection()!!.save(document, concurrencyControl)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(
@@ -275,7 +275,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Deprecated(
         "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document, conflictHandler)")
+        ReplaceWith("getDefaultCollection()!!.save(document, conflictHandler)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
@@ -303,7 +303,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Deprecated(
         "Use getDefaultCollection().delete()",
-        ReplaceWith("getDefaultCollection().delete(document)")
+        ReplaceWith("getDefaultCollection()!!.delete(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {

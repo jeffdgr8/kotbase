@@ -253,7 +253,7 @@ public expect class Database : AutoCloseable {
      */
     @Deprecated(
         "Use getDefaultCollection().count",
-        ReplaceWith("getDefaultCollection().count")
+        ReplaceWith("getDefaultCollection()!!.count")
     )
     public val count: Long
 
@@ -269,7 +269,7 @@ public expect class Database : AutoCloseable {
      */
     @Deprecated(
         "Use getDefaultCollection().getDocument()",
-        ReplaceWith("getDefaultCollection().getDocument(id)")
+        ReplaceWith("getDefaultCollection()!!.getDocument(id)")
     )
     public fun getDocument(id: String): Document?
 
@@ -283,7 +283,7 @@ public expect class Database : AutoCloseable {
      */
     @Deprecated(
         "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document)")
+        ReplaceWith("getDefaultCollection()!!.save(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun save(document: MutableDocument)
