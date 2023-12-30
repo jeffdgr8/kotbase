@@ -39,7 +39,8 @@ public expect object QueryBuilder {
      * Create Query from a N1QL string
      *
      * @param query A valid N1QL query.
-     * @return database The database against which the query will be run.
+     * @param database The database against which the query will be run.
+     * @return the Query object
      */
     public fun createQuery(query: String, database: Database): Query
 }
