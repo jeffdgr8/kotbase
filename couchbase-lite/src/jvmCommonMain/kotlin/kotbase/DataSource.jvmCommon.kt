@@ -35,7 +35,7 @@ private constructor(actual: CBLDataSource) : DelegatedClass<CBLDataSource>(actua
         @Suppress("DEPRECATION")
         @Deprecated(
             "Use DataSource.collection(Collection)",
-            ReplaceWith("collection(database.getDefaultCollection())")
+            ReplaceWith("collection(database.getDefaultCollection()!!)")
         )
         public actual fun database(database: Database): As =
             As(CBLDataSource.database(database.actual))

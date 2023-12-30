@@ -161,7 +161,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     @Suppress("DEPRECATION")
     @Deprecated(
         "Use getDefaultCollection().count",
-        ReplaceWith("getDefaultCollection().count")
+        ReplaceWith("getDefaultCollection()!!.count")
     )
     public actual val count: Long
         get() = actual.count
@@ -169,7 +169,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     @Suppress("DEPRECATION")
     @Deprecated(
         "Use getDefaultCollection().getDocument()",
-        ReplaceWith("getDefaultCollection().getDocument(id)")
+        ReplaceWith("getDefaultCollection()!!.getDocument(id)")
     )
     public actual fun getDocument(id: String): Document? =
         actual.getDocument(id)?.asDocument(getDefaultCollectionNotNull())

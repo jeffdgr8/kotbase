@@ -95,7 +95,7 @@ private constructor(
     @Suppress("DEPRECATION")
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
-        ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection())")
+        ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection()!!)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {

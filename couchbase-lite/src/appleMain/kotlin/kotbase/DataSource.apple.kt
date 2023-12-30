@@ -49,7 +49,7 @@ private constructor(override var actual: CBLQueryDataSource) : DelegatedClass<CB
 
         @Deprecated(
             "Use DataSource.collection(Collection)",
-            ReplaceWith("collection(database.getDefaultCollection())")
+            ReplaceWith("collection(database.getDefaultCollection()!!)")
         )
         public actual fun database(database: Database): As =
             As(database = database.actual)
