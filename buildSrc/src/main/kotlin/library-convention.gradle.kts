@@ -2,7 +2,7 @@ import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
-import java.net.URL
+import java.net.URI
 
 plugins {
     id("base-convention")
@@ -28,7 +28,7 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
 
         sourceLink {
             localDirectory.set(projectDir.resolve("src"))
-            remoteUrl.set(URL("https://github.com/jeffdgr8/kotbase/tree/main/${project.name}/src"))
+            remoteUrl.set(URI("https://github.com/jeffdgr8/kotbase/tree/main/${project.name}/src").toURL())
             remoteLineSuffix.set("#L")
         }
 
