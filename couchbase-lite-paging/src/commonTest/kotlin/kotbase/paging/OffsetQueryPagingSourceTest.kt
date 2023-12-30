@@ -25,7 +25,8 @@ package kotbase.paging
 import androidx.recyclerview.widget.DiffUtil
 import app.cash.paging.*
 import kotbase.*
-import kotbase.SelectResult.Companion.all
+import kotbase.ktx.orderBy
+import kotbase.ktx.plus
 import kotbase.ktx.select
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -48,7 +49,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         pagingSource.refresh()
 
@@ -67,7 +69,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         // load once to register db observers
         pagingSource.refresh()
@@ -86,7 +89,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         val result = pagingSource.refresh() as PagingSourceLoadResultPage<Int, TestItem>
@@ -100,7 +104,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         val result = pagingSource.refresh() as PagingSourceLoadResultPage<Int, TestItem>
 
@@ -125,7 +130,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         // refresh with initial key = 20
         val result = pagingSource.refresh(key = 20) as PagingSourceLoadResultPage<Int, TestItem>
@@ -140,7 +146,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         val result = pagingSource.refresh(key = 101) as PagingSourceLoadResultPage<Int, TestItem>
 
@@ -153,7 +160,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         val result = pagingSource.refresh(key = 101) as PagingSourceLoadResultPage<Int, TestItem>
@@ -168,7 +176,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         // should throw error when initial key is negative
@@ -185,7 +194,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         val result = pagingSource.append(key = 20) as PagingSourceLoadResultPage<Int, TestItem>
@@ -202,7 +212,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         val result = pagingSource.append(key = 97) as PagingSourceLoadResultPage<Int, TestItem>
@@ -219,7 +230,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         // first append
@@ -241,7 +253,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         // first append
@@ -266,7 +279,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         val result = pagingSource.prepend(key = 30) as PagingSourceLoadResultPage<Int, TestItem>
@@ -282,7 +296,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         val result = pagingSource.prepend(key = 3) as PagingSourceLoadResultPage<Int, TestItem>
@@ -299,7 +314,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         // first prepend
@@ -321,7 +337,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         // first prepend
@@ -346,7 +363,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         // for initial load
@@ -376,7 +394,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         // for initial load
@@ -406,7 +425,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         // initial load
@@ -450,7 +470,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         pagingSource.refresh(key = 70)
@@ -466,7 +487,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         val result2 = pagingSource2.refresh(key = refreshKey)
                 as PagingSourceLoadResultPage<Int, TestItem>
@@ -509,7 +531,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         pagingSource.refresh()
@@ -528,7 +551,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         // assume user was viewing first few items with anchorPosition = 0 and refresh key
         // clips to 0
@@ -562,7 +586,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         insertItems()
         pagingSource.refresh(key = 30)
@@ -580,7 +605,8 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         // assume user was viewing first few items with anchorPosition = 0 and refresh key
         // clips to 0
@@ -612,14 +638,17 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
             EmptyCoroutineContext,
             select(),
             testCollection,
-            mapper
+            mapper,
+            queryProvider()
         )
         assertTrue(pagingSource.jumpingSupported)
     }
 
-    // SELECT more than only META().id to avoid numeric sort bug
-    // https://www.couchbase.com/forums/t/numeric-ids-sort-as-strings-in-collections/37689
-    private fun select(): Select = select(Meta.id, all())
+    private fun select(): Select = select(Meta.id)
+
+    private fun queryProvider(): From.() -> LimitRouter = {
+        orderBy { (Meta.id + 0).ascending() }
+    }
 
     private fun insertItems(items: List<TestItem> = ITEMS_LIST) {
         testDatabase.inBatch {
