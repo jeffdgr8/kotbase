@@ -33,9 +33,9 @@ class QueryBuilderExtTest : BaseDbTest() {
             SelectResult.expression(Meta.id),
             SelectResult.property("foo"),
             SelectResult.property("bar")
-        ).from(DataSource.database(baseTestDb))
+        ).from(DataSource.collection(testCollection))
 
-        val actual = select(Meta.id, "foo", "bar") from baseTestDb
+        val actual = select(Meta.id, "foo", "bar") from testCollection
 
         assertEquals(expected.explain(), actual.explain())
     }
@@ -45,9 +45,9 @@ class QueryBuilderExtTest : BaseDbTest() {
         val expected = QueryBuilder.select(
             SelectResult.expression(Meta.id),
             SelectResult.all()
-        ).from(DataSource.database(baseTestDb))
+        ).from(DataSource.collection(testCollection))
 
-        val actual = select(Meta.id, all()) from baseTestDb
+        val actual = select(Meta.id, all()) from testCollection
 
         assertEquals(expected.explain(), actual.explain())
     }
@@ -58,9 +58,9 @@ class QueryBuilderExtTest : BaseDbTest() {
             SelectResult.expression(
                 Function.count(Expression.string("*"))
             )
-        ).from(DataSource.database(baseTestDb))
+        ).from(DataSource.collection(testCollection))
 
-        val actual = selectCount() from baseTestDb
+        val actual = selectCount() from testCollection
 
         assertEquals(expected.explain(), actual.explain())
     }

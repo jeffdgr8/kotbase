@@ -27,6 +27,7 @@
 package kotbase.ktx
 
 import kotbase.*
+import kotbase.Collection
 import kotlinx.datetime.Instant
 import kotlin.Array
 
@@ -35,7 +36,14 @@ public inline fun select(vararg keys: String): Select = QueryBuilder.select(*key
 
 public inline fun all(): SelectResult.From = SelectResult.all()
 
+@Suppress("DEPRECATION")
+@Deprecated(
+    "Use from(Collection)",
+    ReplaceWith("from(database.getDefaultCollection()!!)")
+)
 public inline infix fun FromRouter.from(database: Database): From = from(DataSource.database(database))
+
+public inline infix fun FromRouter.from(collection: Collection): From = from(DataSource.collection(collection))
 
 public inline infix fun WhereRouter.where(builder: WhereBuilder.() -> Expression): Where = where(WhereBuilder().builder())
 

@@ -29,22 +29,22 @@ class ResultSetExtTest : BaseDbTest() {
     }
 
     private fun addDocumentsToDatabase() {
-        baseTestDb.save(MutableDocument("john_smith") {
+        testCollection.save(MutableDocument("john_smith") {
             "name" to "John"
             "surname" to "Smith"
             "age" to 42
         })
-        baseTestDb.save(MutableDocument {
+        testCollection.save(MutableDocument {
             "name" to "Jane"
             "surname" to "Johnson"
             "age" to 35
         })
-        baseTestDb.save(MutableDocument {
+        testCollection.save(MutableDocument {
             "name" to "Sally"
             "surname" to "Smith"
             "age" to 54
         })
-        baseTestDb.save(MutableDocument {
+        testCollection.save(MutableDocument {
             "name" to "Jimmy"
             "surname" to "Johnson"
             "age" to 27
@@ -56,7 +56,7 @@ class ResultSetExtTest : BaseDbTest() {
         addDocumentsToDatabase()
 
         val results = select(all())
-            .from(baseTestDb)
+            .from(testCollection)
             .where { "name" equalTo "John" }
             .execute()
             .toObjects(::User)
@@ -72,7 +72,7 @@ class ResultSetExtTest : BaseDbTest() {
         addDocumentsToDatabase()
 
         val results = select(all())
-            .from(baseTestDb)
+            .from(testCollection)
             .where { "surname" equalTo "Smith" }
             .orderBy { "name".ascending() }
             .execute()
@@ -89,7 +89,7 @@ class ResultSetExtTest : BaseDbTest() {
         addDocumentsToDatabase()
 
         val results = select("name", "surname", "age")
-            .from(baseTestDb)
+            .from(testCollection)
             .where { "age" equalTo 27 }
             .execute()
             .toObjects(::User)
@@ -105,7 +105,7 @@ class ResultSetExtTest : BaseDbTest() {
         addDocumentsToDatabase()
 
         val results = select("name", "surname", "age")
-            .from(baseTestDb)
+            .from(testCollection)
             .where { "surname" equalTo "Johnson" }
             .orderBy { "name".ascending() }
             .execute()
