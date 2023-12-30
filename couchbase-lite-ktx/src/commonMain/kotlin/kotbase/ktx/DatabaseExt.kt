@@ -18,23 +18,49 @@ package kotbase.ktx
 import kotbase.Database
 import kotbase.Document
 import kotbase.documentChangeFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A flow of a document's current state.
  * Emits null if document is deleted.
  * [filterNotNull] if this is undesired.
+ *
+ * @param id Document ID
  */
 @Suppress("DEPRECATION")
 @Deprecated(
     "Use getDefaultCollection().documentFlow()",
     ReplaceWith("getDefaultCollection()!!.documentFlow(id)")
 )
-public fun Database.documentFlow(id: String): Flow<Document?> = flow {
-    val doc = getDocument(id)
+public fun Database.documentFlow(id: String): Flow<Document?> = documentFlow(id, Dispatchers.IO)
+
+/**
+ * A flow of a document's current state.
+ * Emits null if document is deleted.
+ * [filterNotNull] if this is undesired.
+ *
+ * @param id Document ID
+ * @param fetchContext CoroutineContext to fetch the document on; defaults to Dispatchers.IO
+ */
+@Suppress("DEPRECATION")
+@Deprecated(
+    "Use getDefaultCollection().documentFlow()",
+    ReplaceWith("getDefaultCollection()!!.documentFlow(id, fetchContext)")
+)
+public fun Database.documentFlow(
+    id: String,
+    fetchContext: CoroutineContext
+): Flow<Document?> = flow {
+    val doc = withContext(fetchContext) {
+        getDocument(id)
+    }
     emit(doc)
     val changes = documentChangeFlow(id).map {
         it.database.getDocument(it.documentID)
-    }
+    }.flowOn(fetchContext)
     emitAll(changes)
 }
