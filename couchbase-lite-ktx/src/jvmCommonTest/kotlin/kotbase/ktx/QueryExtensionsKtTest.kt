@@ -52,7 +52,7 @@ class QueryExtensionsKtTest {
     fun when_query_succeeds_then_result_are_emitted_by_the_flow() = runBlocking {
         val expectedResultSet = mockk<ResultSet>()
         val queryChange = QueryChange(resultSet = expectedResultSet)
-        val listenerToken = object : ListenerToken {}
+        val listenerToken = TestListenerToken()
         val queryUnderTest = TestQuery(this, queryChange, listenerToken)
 
         assertEquals(expectedResultSet, queryUnderTest.asFlow().first())
@@ -61,7 +61,7 @@ class QueryExtensionsKtTest {
     @Test
     fun when_query_fails_then_the_flow_fails() = runBlocking {
         val queryChange = QueryChange(error = TestException())
-        val listenerToken = object : ListenerToken {}
+        val listenerToken = TestListenerToken()
         val queryUnderTest = TestQuery(this, queryChange, listenerToken)
 
         queryUnderTest
@@ -74,13 +74,13 @@ class QueryExtensionsKtTest {
     fun when_the_flow_is_cancelled_then_the_query_is_stopped() = runBlocking {
         val expectedResultSet = mockk<ResultSet>()
         val queryChange = QueryChange(resultSet = expectedResultSet)
-        val listenerToken = mockk<ListenerToken>()
+        val listenerToken = TestListenerToken()
         val queryUnderTest = TestQuery(this, queryChange, listenerToken)
 
         // Apply the `take(1)` operator for disposing the Flow after the first emission.
         queryUnderTest.asFlow().take(1).collect()
 
-        verify { queryUnderTest.removeChangeListener(listenerToken) }
+        verify { listenerToken.remove() }
     }
 }
 
@@ -98,7 +98,10 @@ private fun TestQuery(
         listenerToken
     }
     every { execute() } returns mockk()
-    every { removeChangeListener(any()) } just runs
+}
+
+private fun TestListenerToken(): ListenerToken = mockk {
+    every { remove() } just runs
 }
 
 private fun QueryChange(

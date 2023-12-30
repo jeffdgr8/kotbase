@@ -22,6 +22,7 @@
 
 package kotbase.ktx
 
+import kotbase.Database
 import kotbase.ext.nowMillis
 import kotlinx.datetime.Clock
 import kotlin.test.Test
@@ -34,6 +35,8 @@ class DocumentExtensionsKtTest {
 
     @Test
     fun MutableDocument_adds_properties_correctly() {
+        // Objective-C 3.1 SDK requires initializing CBLDatabase logging before accessing CBLMutableDocument
+        Database.log
         val date = Clock.System.nowMillis()
         val document = MutableDocument {
             "string" to "test-string"
