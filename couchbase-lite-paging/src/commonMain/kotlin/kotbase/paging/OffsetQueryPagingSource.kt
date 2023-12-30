@@ -24,6 +24,7 @@ package kotbase.paging
 
 import app.cash.paging.*
 import kotbase.*
+import kotbase.Collection
 import kotbase.ktx.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -33,7 +34,7 @@ import kotlin.coroutines.resumeWithException
 
 internal class OffsetQueryPagingSource<RowType : Any>(
     private val select: Select,
-    private val database: Database,
+    private val collection: Collection,
     private val queryProvider: From.() -> LimitRouter,
     private val context: CoroutineContext,
     private val mapMapper: ((Map<String, Any?>) -> RowType)? = null,
@@ -78,7 +79,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             else -> params.loadSize
         }
 
-        val count = selectCount().from(database)
+        val count = selectCount().from(collection)
             .queryProvider()
             .execute()
             .countResult()
@@ -89,7 +90,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             is PagingSourceLoadParamsRefresh<*> -> if (key >= count) maxOf(0, count - params.loadSize) else key
             else -> error("Unknown PagingSourceLoadParams ${params::class}")
         }
-        val results = select.from(database)
+        val results = select.from(collection)
             .queryProvider()
             .limit(limit, offset)
             .getAndListenForResults()

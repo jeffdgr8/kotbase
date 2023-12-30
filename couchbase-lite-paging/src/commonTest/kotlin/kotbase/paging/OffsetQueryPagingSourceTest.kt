@@ -24,10 +24,8 @@ package kotbase.paging
 
 import androidx.recyclerview.widget.DiffUtil
 import app.cash.paging.*
-import kotbase.BaseDbTest
-import kotbase.Meta
-import kotbase.MutableDocument
-import kotbase.Select
+import kotbase.*
+import kotbase.SelectResult.Companion.all
 import kotbase.ktx.select
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -49,7 +47,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         pagingSource.refresh()
@@ -68,7 +66,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         // load once to register db observers
@@ -87,7 +85,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -101,7 +99,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         val result = pagingSource.refresh() as PagingSourceLoadResultPage<Int, TestItem>
@@ -126,7 +124,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         // refresh with initial key = 20
@@ -141,7 +139,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         val result = pagingSource.refresh(key = 101) as PagingSourceLoadResultPage<Int, TestItem>
@@ -154,7 +152,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -169,7 +167,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -186,7 +184,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -203,7 +201,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -220,7 +218,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -242,7 +240,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -267,7 +265,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -283,7 +281,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -300,7 +298,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -322,7 +320,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -347,7 +345,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -377,7 +375,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -407,7 +405,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -451,7 +449,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -467,7 +465,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource2 = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         val result2 = pagingSource2.refresh(key = refreshKey)
@@ -510,7 +508,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -529,7 +527,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource2 = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         // assume user was viewing first few items with anchorPosition = 0 and refresh key
@@ -563,7 +561,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         insertItems()
@@ -581,7 +579,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource2 = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         // assume user was viewing first few items with anchorPosition = 0 and refresh key
@@ -613,35 +611,37 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
         val pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
-            baseTestDb,
+            testCollection,
             mapper
         )
         assertTrue(pagingSource.jumpingSupported)
     }
 
-    private fun select(): Select = select(Meta.id)
+    // SELECT more than only META().id to avoid numeric sort bug
+    // https://www.couchbase.com/forums/t/numeric-ids-sort-as-strings-in-collections/37689
+    private fun select(): Select = select(Meta.id, all())
 
     private fun insertItems(items: List<TestItem> = ITEMS_LIST) {
-        baseTestDb.inBatch {
+        testDatabase.inBatch {
             items.forEach {
-                save(MutableDocument(it.id.toString()))
+                testCollection.save(MutableDocument(it.id.toString()))
             }
         }
     }
 
     private fun deleteItem(item: TestItem): Int {
-        return baseTestDb.getDocument(item.id.toString())?.let { doc ->
-            baseTestDb.delete(doc)
+        return testCollection.getDocument(item.id.toString())?.let { doc ->
+            testCollection.delete(doc)
             1
         } ?: 0
     }
 
     private fun deleteItems(range: IntRange): Int {
         var deleted = 0
-        baseTestDb.inBatch {
+        testDatabase.inBatch {
             for (id in range) {
-                getDocument(id.toString())?.let { doc ->
-                    delete(doc)
+                testCollection.getDocument(id.toString())?.let { doc ->
+                    testCollection.delete(doc)
                     deleted++
                 }
             }
