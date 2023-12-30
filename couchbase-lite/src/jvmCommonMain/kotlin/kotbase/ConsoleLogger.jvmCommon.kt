@@ -18,6 +18,7 @@ package kotbase
 import kotbase.internal.DelegatedClass
 import java.util.*
 import com.couchbase.lite.ConsoleLogger as CBLConsoleLogger
+import com.couchbase.lite.LogDomain as CBLLogDomain
 
 public actual class ConsoleLogger
 internal constructor(override val actual: CBLConsoleLogger) : DelegatedClass<CBLConsoleLogger>(actual), Logger {
@@ -25,7 +26,11 @@ internal constructor(override val actual: CBLConsoleLogger) : DelegatedClass<CBL
     public actual var domains: Set<LogDomain>
         get() = actual.domains.map { LogDomain.from(it) }.toSet()
         set(value) {
-            actual.domains = EnumSet.copyOf(value.map { it.actual })
+            actual.domains = if (value.isEmpty()) {
+                EnumSet.noneOf(CBLLogDomain::class.java)
+            } else {
+                EnumSet.copyOf(value.map { it.actual })
+            }
         }
 
     public actual fun setDomains(vararg domains: LogDomain) {
