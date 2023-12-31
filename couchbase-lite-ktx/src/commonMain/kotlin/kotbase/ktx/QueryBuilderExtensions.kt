@@ -20,6 +20,7 @@
  * - Use kotbase package
  * - Resolve explicitApiWarning() requirements
  * - Use router interfaces to add support for all Query subclasses
+ * - Add from Collection DataSource API
  */
 
 @file:Suppress("NOTHING_TO_INLINE", "unused", "KotlinRedundantDiagnosticSuppress")
