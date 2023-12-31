@@ -2296,7 +2296,7 @@ class DocumentTest : BaseDbTest() {
 
     @Test
     fun testEqualityDifferentDB() {
-        val dupDb: Database
+        var dupDb: Database? = null
         val otherDB = createDb("equ-diff-db")
         val otherCollection = otherDB.createSimilarCollection(testCollection)
         try {
@@ -2329,6 +2329,7 @@ class DocumentTest : BaseDbTest() {
             assertEquals(anotherDoc1a, sDoc1a)
             assertEquals(sDoc1a, anotherDoc1a)
         } finally {
+            dupDb?.close()
             eraseDb(otherDB)
         }
     }
