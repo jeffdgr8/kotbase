@@ -18,10 +18,12 @@
  * From https://github.com/MOLO17/couchbase-lite-kotlin/blob/master/library/src/test/java/com/molo17/couchbase/lite/DocumentExtensionsKtTest.kt
  * Modified by Jeff Lockhart
  * - Use kotbase package
+ * - Inherit from BaseTest to initialize root directory and logging
  */
 
 package kotbase.ktx
 
+import kotbase.BaseTest
 import kotbase.Database
 import kotbase.ext.nowMillis
 import kotlinx.datetime.Clock
@@ -31,12 +33,10 @@ import kotlin.test.assertEquals
 /**
  * Created by Damiano Giusti on 19/03/2020.
  */
-class DocumentExtensionsKtTest {
+class DocumentExtensionsKtTest : BaseTest() {
 
     @Test
     fun MutableDocument_adds_properties_correctly() {
-        // Objective-C 3.1 SDK requires initializing CBLDatabase logging before accessing CBLMutableDocument
-        Database.log
         val date = Clock.System.nowMillis()
         val document = MutableDocument {
             "string" to "test-string"
