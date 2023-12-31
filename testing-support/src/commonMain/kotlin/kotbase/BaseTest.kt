@@ -85,9 +85,9 @@ abstract class BaseTest : PlatformTest() {
     }
 
     // Get a new instance of the db or fail.
-    protected fun duplicateDb(db: Database, config: DatabaseConfiguration? = null): Database {
+    protected fun duplicateDb(db: Database, config: DatabaseConfiguration = DatabaseConfiguration()): Database {
         try {
-            return Database(db.name, config ?: DatabaseConfiguration())
+            return Database(db.name, config)
         } catch (e: Exception) {
             throw AssertionError("Failed duplicating database $db", e)
         }
