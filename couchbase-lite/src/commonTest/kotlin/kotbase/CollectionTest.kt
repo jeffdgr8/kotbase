@@ -709,9 +709,15 @@ class CollectionTest : BaseDbTest() {
     @Test
     fun testCopyFullTextIndex() {
         val db = Database(getUniqueName("test"))
-        val coll = db.createCollection("aaa", "bbb")
-        coll.createIndex("idx", FullTextIndexConfiguration("detail"))
-        Database(db.name)
+        var db2: Database? = null
+        try {
+            val coll = db.createCollection("aaa", "bbb")
+            coll.createIndex("idx", FullTextIndexConfiguration("detail"))
+            db2 = Database(db.name)
+        } finally {
+            db2?.close()
+            eraseDb(db)
+        }
     }
 
     // Test getting index from a collection deleted from another DB instance causes CBL exception

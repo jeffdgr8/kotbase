@@ -282,7 +282,7 @@ class DbCollectionsTest : BaseDbTest() {
             val collectionRecreated = otherDb.getCollection("testColl")
             assertNotSame(collectionRecreated, collection)
         } finally {
-            eraseDb(otherDb)
+            otherDb.close()
         }
     }
 
