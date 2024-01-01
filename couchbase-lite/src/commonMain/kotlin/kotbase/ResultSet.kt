@@ -26,7 +26,7 @@ public expect class ResultSet : Iterable<Result>, AutoCloseable {
     /**
      * Move the cursor forward one row from its current row position.
      *
-     * Caution: [ResultSet.next], [ResultSet.iterator] and [ResultSet.iterator]
+     * Caution: [ResultSet.next], [ResultSet.allResults] and [ResultSet.iterator]
      * method share same data structure. They cannot be used together.
      *
      * Caution: When a ResultSet is obtained from a QueryChangeListener and the QueryChangeListener is
@@ -40,7 +40,7 @@ public expect class ResultSet : Iterable<Result>, AutoCloseable {
     /**
      * Return a List of all Results.
      *
-     * Caution: [ResultSet.next], [ResultSet.iterator] and [ResultSet.iterator]
+     * Caution: [ResultSet.next], [ResultSet.allResults] and [ResultSet.iterator]
      * method share same data structure. They cannot be used together.
      *
      * @return List of Results
@@ -50,7 +50,7 @@ public expect class ResultSet : Iterable<Result>, AutoCloseable {
     /**
      * Return Iterator of Results.
      *
-     * Caution: [ResultSet.next], [ResultSet.iterator] and [ResultSet.iterator]
+     * Caution: [ResultSet.next], [ResultSet.allResults] and [ResultSet.iterator]
      * method share same data structure. They cannot be used together.
      *
      * @return an iterator over the elements in this list in proper sequence
