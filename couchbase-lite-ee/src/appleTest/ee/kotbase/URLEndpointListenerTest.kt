@@ -18,7 +18,6 @@ package kotbase
 import cocoapods.CouchbaseLite.*
 import kotbase.ext.toSecCertificate
 import kotbase.internal.utils.PlatformUtils
-import kotbase.internal.utils.TestUtils.assertThrowsCBL
 import kotbase.test.lockWithTimeout
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
@@ -141,15 +140,15 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val stopMutex2 = Mutex(true)
 
         val doc1 = MutableDocument("db-doc")
-        baseTestDb.save(doc1)
+        testDatabase.save(doc1)
         val doc2 = MutableDocument("other-db-doc")
-        otherDB.save(doc2)
+        targetDatabase.save(doc2)
 
         // start listener
         startListener()
 
         // replicator#1
-        val repl1 = createReplicator(otherDB, DatabaseEndpoint(baseTestDb))
+        val repl1 = createReplicator(targetDatabase, DatabaseEndpoint(testDatabase))
 
         // replicator#2
         Database.delete("db2")
@@ -187,10 +186,10 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         if (isDeleteDBs) {
             db2.delete()
-            otherDB.delete()
+            targetDatabase.delete()
         } else {
             db2.close()
-            otherDB.close()
+            targetDatabase.close()
         }
 
         // TODO: FIXME
@@ -207,7 +206,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val idleMutex = Mutex(true)
         val stopMutex = Mutex(true)
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         val listener1 = URLEndpointListener(config)
         val listener2 = URLEndpointListener(config)
 
@@ -216,13 +215,13 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         listener2.start()
 
         val doc1 = MutableDocument("db-doc")
-        baseTestDb.save(doc1)
+        testDatabase.save(doc1)
         val doc2 = MutableDocument("other-db-doc")
-        otherDB.save(doc2)
+        targetDatabase.save(doc2)
 
         // replicator
         val repl1 = createReplicator(
-            otherDB,
+            targetDatabase,
             listener1.localURLEndpoint,
             serverCert = listener1.tlsIdentity?.certs?.get(0)
         )
@@ -240,9 +239,9 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertTrue(idleMutex.lockWithTimeout(5.seconds))
 
         if (isDeleteDB) {
-            otherDB.delete()
+            targetDatabase.delete()
         } else {
-            otherDB.close()
+            targetDatabase.close()
         }
 
         assertTrue(stopMutex.lockWithTimeout(5.seconds))
@@ -259,7 +258,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testPort() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.port = wsPort
         listener = URLEndpointListener(config)
         assertNull(listener!!.port)
@@ -276,7 +275,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testEmptyPort() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         listener = URLEndpointListener(config)
         assertNull(listener!!.port)
 
@@ -294,11 +293,11 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         startListener()
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.port = listener!!.port
         val listener2 = URLEndpointListener(config)
 
-        assertThrowsCBL(CBLError.Domain.POSIX, EADDRINUSE) {
+        assertThrowsCBLException(CBLError.Domain.POSIX, EADDRINUSE) {
             listener2.start()
         }
     }
@@ -307,7 +306,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testURLs() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.port = wsPort
         listener = URLEndpointListener(config)
         assertTrue(listener!!.urls.isEmpty())
@@ -325,9 +324,9 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val doc = MutableDocument("doc-1")
-        otherDB.save(doc)
+        targetDatabase.save(doc)
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         val listener = URLEndpointListener(config)
         assertNull(listener.tlsIdentity)
         listener.start()
@@ -367,10 +366,10 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val doc = MutableDocument("doc-1")
-        otherDB.save(doc)
+        targetDatabase.save(doc)
 
         val tls = createTLSIdentity()
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.tlsIdentity = tls
         val listener = URLEndpointListener(config)
         assertNull(listener.tlsIdentity)
@@ -614,7 +613,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         val replicatorStop = Mutex(true)
         val pullFilterBusy = Mutex(true)
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.port = wsPort
         config.isTlsDisabled = true
         listener = URLEndpointListener(config)
@@ -627,11 +626,11 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertEquals(0, listener!!.status!!.activeConnectionCount)
 
         val doc1 = MutableDocument()
-        otherDB.save(doc1)
+        targetDatabase.save(doc1)
 
         var maxConnectionCount = 0
         var maxActiveCount = 0
-        val rConfig = ReplicatorConfiguration(baseTestDb, listener!!.localURLEndpoint)
+        val rConfig = ReplicatorConfiguration(testDatabase, listener!!.localURLEndpoint)
         rConfig.type = ReplicatorType.PULL
         rConfig.isContinuous = false
         rConfig.pullFilter = { _, _ ->
@@ -656,7 +655,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         assertEquals(1, maxConnectionCount)
         assertEquals(1, maxActiveCount)
-        assertEquals(1, otherDB.count)
+        assertEquals(1, targetDatabase.count)
 
         stopListener()
         assertEquals(0, listener!!.status!!.connectionCount)
@@ -667,14 +666,14 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testMultipleListenersOnSameDatabase() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         val listener1 = URLEndpointListener(config)
         val listener2 = URLEndpointListener(config)
 
         listener1.start()
         listener2.start()
 
-        createSingleDocInBaseTestDb("doc-1")
+        testDatabase.save(MutableDocument("doc-1"))
         run(
             listener1.localURLEndpoint,
             serverCert = listener1.tlsIdentity?.certs?.get(0)
@@ -683,7 +682,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         // since listener1 and listener2 are using same certificates, one listener only needs stop.
         listener2.stop()
         stopListener(listener1)
-        assertEquals(1, otherDB.count)
+        assertEquals(1, targetDatabase.count)
     }
 
     @Test
@@ -695,16 +694,16 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // listener
         val doc = MutableDocument()
-        otherDB.save(doc)
+        targetDatabase.save(doc)
         startListener()
 
-        // Replicator#1 (otherDB -> DB#1)
+        // Replicator#1 (targetDatabase -> DB#1)
         val doc1 = MutableDocument()
-        baseTestDb.save(doc1)
-        val target = DatabaseEndpoint(baseTestDb)
-        val repl1 = createReplicator(otherDB, target)
+        testDatabase.save(doc1)
+        val target = DatabaseEndpoint(testDatabase)
+        val repl1 = createReplicator(targetDatabase, target)
 
-        // Replicator#2 (DB#2 -> Listener(otherDB))
+        // Replicator#2 (DB#2 -> Listener(targetDatabase))
         Database.delete("db2")
         val db2 = Database("db2")
         val doc2 = MutableDocument()
@@ -719,7 +718,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             if (change.status.activityLevel == ReplicatorActivityLevel.IDLE &&
                 change.status.progress.completed == change.status.progress.total
             ) {
-                if (otherDB.count == 3L && baseTestDb.count == 3L && db2.count == 3L) {
+                if (targetDatabase.count == 3L && testDatabase.count == 3L && db2.count == 3L) {
                     change.replicator.stop()
                 }
             }
@@ -741,8 +740,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertTrue(mutex1.lockWithTimeout(10.seconds))
         assertTrue(mutex2.lockWithTimeout(10.seconds))
 
-        assertEquals(3, otherDB.count)
-        assertEquals(3, baseTestDb.count)
+        assertEquals(3, targetDatabase.count)
+        assertEquals(3, testDatabase.count)
         assertEquals(3, db2.count)
 
         repl1.removeChangeListener(token1)
@@ -759,7 +758,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         startListener()
 
         // Close database should also stop the listener:
-        otherDB.close()
+        targetDatabase.close()
 
         assertNull(listener!!.port)
         assertTrue(listener!!.urls.isEmpty())
@@ -788,15 +787,15 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             val target = URLEndpoint(url)
             val rConfig = ReplicatorConfiguration(db, target)
             rConfig.pinnedServerCertificate = listener?.tlsIdentity?.certs?.get(0)
-            run(rConfig)
+            rConfig.run()
 
             // remove the db
             db.delete()
         }
 
-        assertEquals(otherDB.count, notLinkLocal.size.toLong())
+        assertEquals(targetDatabase.count, notLinkLocal.size.toLong())
 
-        val q = QueryBuilder.select(SelectResult.all()).from(DataSource.database(otherDB))
+        val q = QueryBuilder.select(SelectResult.all()).from(DataSource.database(targetDatabase))
         val rs = q.execute()
         val result = mutableListOf<String>()
         for (res in rs.allResults()) {
@@ -816,7 +815,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         val doc = MutableDocument()
         doc.setString("species", "Tiger")
-        otherDB.save(doc)
+        targetDatabase.save(doc)
 
         // pushAndPull can cause race; so only push is validated
         validateMultipleReplicationsTo(listener!!, ReplicatorType.PUSH)
@@ -828,13 +827,13 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testMultipleReplicatorsToReadOnlyListener() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.isReadOnly = true
         startListener(config)
 
         val doc = MutableDocument()
         doc.setString("species", "Tiger")
-        otherDB.save(doc)
+        targetDatabase.save(doc)
 
         validateMultipleReplicationsTo(listener!!, ReplicatorType.PULL)
 
@@ -846,9 +845,9 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val doc1 = MutableDocument()
-        baseTestDb.save(doc1)
+        testDatabase.save(doc1)
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.isReadOnly = true
         startListener(config)
 
@@ -869,7 +868,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val listener = startListener()
 
         val serverCert = listener.tlsIdentity!!.certs[0]
-        val repl = createReplicator(otherDB, listener.localURLEndpoint, serverCert = serverCert)
+        val repl = createReplicator(targetDatabase, listener.localURLEndpoint, serverCert = serverCert)
         repl.addChangeListener { change ->
             val activity = change.status.activityLevel
             if (activity == ReplicatorActivityLevel.IDLE) {
@@ -906,7 +905,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val listener = startListener()
 
         var serverCert = listener.tlsIdentity!!.certs[0]
-        var repl = createReplicator(otherDB, listener.localURLEndpoint)
+        var repl = createReplicator(targetDatabase, listener.localURLEndpoint)
         repl.addChangeListener { change ->
             val activity = change.status.activityLevel
             if (activity == ReplicatorActivityLevel.STOPPED && change.status.error != null) {
@@ -929,7 +928,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val x2 = Mutex(true)
         serverCert = receivedServerCert
         repl = createReplicator(
-            otherDB,
+            targetDatabase,
             listener.localURLEndpoint,
             serverCert = serverCert
         )
@@ -966,7 +965,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val x2 = Mutex(true)
 
         val listener = startListener(false)
-        val repl = createReplicator(otherDB, listener.localURLEndpoint)
+        val repl = createReplicator(targetDatabase, listener.localURLEndpoint)
         repl.addChangeListener { change ->
             val activity = change.status.activityLevel
             if (activity == ReplicatorActivityLevel.IDLE) {
@@ -1070,7 +1069,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val identity = TLSIdentity.importIdentity(data, "123".toCharArray(), serverCertLabel)
         assertEquals(2, identity.certs.size)
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.tlsIdentity = identity
 
         try {
@@ -1082,13 +1081,13 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertNotNull(listener!!.tlsIdentity)
         assertEquals(identity, listener!!.tlsIdentity!!)
 
-        createSingleDocInBaseTestDb("doc-1")
-        assertEquals(0, otherDB.count)
+        testDatabase.save(MutableDocument("doc-1"))
+        assertEquals(0, targetDatabase.count)
         run(
             listener!!.localURLEndpoint,
             serverCert = listener!!.tlsIdentity?.certs?.get(0)
         )
-        assertEquals(1, otherDB.count)
+        assertEquals(1, targetDatabase.count)
 
         stopListener(listener!!)
         assertNull(listener!!.tlsIdentity)
@@ -1104,7 +1103,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // Start replicator:
         val target = listener.localURLEndpoint
-        val repl = createReplicator(otherDB, target)
+        val repl = createReplicator(targetDatabase, target)
         repl.addChangeListener { change ->
             val activity = change.status.activityLevel
             if (activity == ReplicatorActivityLevel.IDLE) {
@@ -1136,7 +1135,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val doc1 = MutableDocument()
-        otherDB.save(doc1)
+        targetDatabase.save(doc1)
 
         // Listener:
         val auth = ListenerPasswordAuthenticator { username, password ->
@@ -1197,7 +1196,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val identity = TLSIdentity.importIdentity(data, "123".toCharArray(), serverCertLabel)
         assertEquals(2, identity.certs.size)
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.tlsIdentity = identity
 
         try {
@@ -1234,7 +1233,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val identity = TLSIdentity.importIdentity(data, "123".toCharArray(), serverCertLabel)
         assertEquals(2, identity.certs.size)
 
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.tlsIdentity = identity
 
         try {
@@ -1243,8 +1242,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             // ignore
         }
 
-        createSingleDocInBaseTestDb("doc-1")
-        assertEquals(0, otherDB.count)
+        testDatabase.save(MutableDocument("doc-1"))
+        assertEquals(0, targetDatabase.count)
 
         // Reject the server with non-self-signed cert
         run(
@@ -1321,7 +1320,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
     @Test
     fun testSetListenerConfigurationProperties() {
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         val basic = ListenerPasswordAuthenticator { uname, pswd ->
             uname == "username" && pswd.concatToString() == "secret"
         }
@@ -1374,7 +1373,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
     @Test
     fun testDefaultListenerConfiguration() {
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
 
         assertFalse(config.isTlsDisabled)
         assertFalse(config.isDeltaSyncEnabled)
@@ -1387,7 +1386,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
     @Test
     fun testCopyingListenerConfiguration() {
-        val config1 = URLEndpointListenerConfiguration(otherDB)
+        val config1 = URLEndpointListenerConfiguration(targetDatabase)
 
         val basic = ListenerPasswordAuthenticator { uname, pswd ->
             uname == "username" && pswd.concatToString() == "secret"
