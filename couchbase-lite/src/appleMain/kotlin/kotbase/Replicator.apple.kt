@@ -109,8 +109,9 @@ internal constructor(
     }
 
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken {
-        return DelegatedListenerToken(
-            actual.addChangeListener(listener.convert(this))
+        return ReplicatorListenerToken(
+            actual.addChangeListener(listener.convert(this)),
+            actual
         )
     }
 
@@ -124,7 +125,7 @@ internal constructor(
             context[CoroutineDispatcher]?.asDispatchQueue(),
             listener.convert(this, scope)
         )
-        return SuspendListenerToken(scope, token)
+        return SuspendReplicatorListenerToken(scope, token, actual)
     }
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -139,8 +140,9 @@ internal constructor(
     }
 
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken {
-        return DelegatedListenerToken(
-            actual.addDocumentReplicationListener(listener.convert(this))
+        return ReplicatorListenerToken(
+            actual.addDocumentReplicationListener(listener.convert(this)),
+            actual
         )
     }
 
@@ -154,7 +156,7 @@ internal constructor(
             context[CoroutineDispatcher]?.asDispatchQueue(),
             listener.convert(this, scope)
         )
-        return SuspendListenerToken(scope, token)
+        return SuspendReplicatorListenerToken(scope, token, actual)
     }
 
     @OptIn(ExperimentalStdlibApi::class)

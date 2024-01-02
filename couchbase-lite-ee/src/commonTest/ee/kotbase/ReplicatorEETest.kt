@@ -31,9 +31,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     @Test
     fun testEmptyPush() {
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, false)
-        run(config)
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = false)
+        config.run()
     }
 
     @Test
@@ -41,39 +41,39 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("species", "Tiger")
         doc1.setString("pattern", "Hobbes")
-        baseTestDb.save(doc1)
+        testCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("species", "Tiger")
         doc2.setString("pattern", "striped")
-        baseTestDb.save(doc2)
+        testCollection.save(doc2)
 
         // Push:
-        val target = DatabaseEndpoint(otherDB)
-        var config = makeConfig(target, ReplicatorType.PUSH, false)
-        run(config)
+        val target = DatabaseEndpoint(targetDatabase)
+        var config = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = false)
+        config.run()
 
         // Pull:
-        config = makeConfig(target, ReplicatorType.PULL, false)
-        run(config)
+        config = makeSimpleReplConfig(target, type = ReplicatorType.PULL, continuous = false)
+        config.run()
 
-        assertEquals(2, baseTestDb.count)
+        assertEquals(2, testCollection.count)
 
-        var doc = baseTestDb.getDocument("doc1")!!
-        baseTestDb.purge(doc)
+        var doc = testCollection.getDocument("doc1")!!
+        testCollection.purge(doc)
 
-        doc = baseTestDb.getDocument("doc2")!!
-        baseTestDb.purge(doc)
+        doc = testCollection.getDocument("doc2")!!
+        testCollection.purge(doc)
 
-        assertEquals(0, baseTestDb.count)
+        assertEquals(0, testCollection.count)
 
         // Pull again, shouldn't have any new changes:
-        run(config)
-        assertEquals(0, baseTestDb.count)
+        config.run()
+        assertEquals(0, testCollection.count)
 
         // Reset and pull:
-        run(config, reset = true)
-        assertEquals(2, baseTestDb.count)
+        config.run(reset = true)
+        assertEquals(2, testCollection.count)
     }
 
     @Test
@@ -81,39 +81,39 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("species", "Tiger")
         doc1.setString("pattern", "Hobbes")
-        baseTestDb.save(doc1)
+        testCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("species", "Tiger")
         doc2.setString("pattern", "striped")
-        baseTestDb.save(doc2)
+        testCollection.save(doc2)
 
         // Push:
-        val target = DatabaseEndpoint(otherDB)
-        var config = makeConfig(target, ReplicatorType.PUSH, true)
-        run(config)
+        val target = DatabaseEndpoint(targetDatabase)
+        var config = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = true)
+        config.run()
 
         // Pull:
-        config = makeConfig(target, ReplicatorType.PULL, true)
-        run(config)
+        config = makeSimpleReplConfig(target, type = ReplicatorType.PULL, continuous = true)
+        config.run()
 
-        assertEquals(2, baseTestDb.count)
+        assertEquals(2, testCollection.count)
 
-        var doc = baseTestDb.getDocument("doc1")!!
-        baseTestDb.purge(doc)
+        var doc = testCollection.getDocument("doc1")!!
+        testCollection.purge(doc)
 
-        doc = baseTestDb.getDocument("doc2")!!
-        baseTestDb.purge(doc)
+        doc = testCollection.getDocument("doc2")!!
+        testCollection.purge(doc)
 
-        assertEquals(0, baseTestDb.count)
+        assertEquals(0, testCollection.count)
 
         // Pull again, shouldn't have any new changes:
-        run(config)
-        assertEquals(0, baseTestDb.count)
+        config.run()
+        assertEquals(0, testCollection.count)
 
         // Reset and pull:
-        run(config, reset = true)
-        assertEquals(2, baseTestDb.count)
+        config.run(reset = true)
+        assertEquals(2, testCollection.count)
     }
 
     @Test
@@ -121,27 +121,24 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("species", "Tiger")
         doc1.setString("pattern", "Hobbes")
-        baseTestDb.save(doc1)
+        testCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("species", "Tiger")
         doc2.setString("pattern", "Striped")
-        baseTestDb.save(doc2)
+        testCollection.save(doc2)
 
         // Push:
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, false)
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = false)
 
-        lateinit var replicator: Replicator
-        lateinit var token: ListenerToken
+        val replicator = config.testReplicator()
         val docs = mutableListOf<ReplicatedDocument>()
-        run(config) { r ->
-            replicator = r
-            token = r.addDocumentReplicationListener { replication ->
-                assertTrue(replication.isPush)
-                docs.addAll(replication.documents)
-            }
+        val token = replicator.addDocumentReplicationListener { replication ->
+            assertTrue(replication.isPush)
+            docs.addAll(replication.documents)
         }
+        replicator.run()
 
         // Check if getting two document replication events:
         assertEquals(2, docs.size)
@@ -159,10 +156,10 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val doc3 = MutableDocument("doc3")
         doc3.setString("species", "Tiger")
         doc3.setString("pattern", "Star")
-        baseTestDb.save(doc3)
+        testCollection.save(doc3)
 
         // Run the replicator again:
-        run(replicator)
+        replicator.run()
 
         // Check if getting a new document replication event:
         assertEquals(3, docs.size)
@@ -175,13 +172,13 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val doc4 = MutableDocument("doc4")
         doc4.setString("species", "Tiger")
         doc4.setString("pattern", "WhiteStriped")
-        baseTestDb.save(doc4)
+        testCollection.save(doc4)
 
         // Remove document replication listener:
-        replicator.removeChangeListener(token)
+        token.remove()
 
         // Run the replicator again:
-        run(replicator)
+        replicator.run()
 
         // Should not be getting a new document replication event:
         assertEquals(3, docs.size)
@@ -192,27 +189,24 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val doc1a = MutableDocument("doc1")
         doc1a.setString("species", "Tiger")
         doc1a.setString("pattern", "Star")
-        baseTestDb.save(doc1a)
+        testCollection.save(doc1a)
 
         val doc1b = MutableDocument("doc1")
         doc1b.setString("species", "Tiger")
         doc1b.setString("pattern", "Striped")
-        otherDB.save(doc1b)
+        targetCollection.save(doc1b)
 
         // Push:
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, false)
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = false)
 
-        lateinit var replicator: Replicator
-        lateinit var token: ListenerToken
+        val replicator = config.testReplicator()
         val docs = mutableListOf<ReplicatedDocument>()
-        run(config) { r ->
-            replicator = r
-            token = r.addDocumentReplicationListener { replication ->
-                assertTrue(replication.isPush)
-                docs.addAll(replication.documents)
-            }
+        val token = replicator.addDocumentReplicationListener { replication ->
+            assertTrue(replication.isPush)
+            docs.addAll(replication.documents)
         }
+        replicator.run()
 
         // Check:
         assertEquals(1, docs.size)
@@ -225,7 +219,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertFalse(docs[0].flags.contains(DocumentFlag.ACCESS_REMOVED))
 
         // Remove document replication listener:
-        replicator.removeChangeListener(token)
+        token.remove()
     }
 
     @Test
@@ -233,27 +227,24 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val doc1a = MutableDocument("doc1")
         doc1a.setString("species", "Tiger")
         doc1a.setString("pattern", "Star")
-        baseTestDb.save(doc1a)
+        testCollection.save(doc1a)
 
         val doc1b = MutableDocument("doc1")
         doc1b.setString("species", "Tiger")
         doc1b.setString("pattern", "Striped")
-        otherDB.save(doc1b)
+        targetCollection.save(doc1b)
 
         // Pull:
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PULL, false)
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(target, type = ReplicatorType.PULL, continuous = false)
 
-        lateinit var replicator: Replicator
-        lateinit var token: ListenerToken
+        val replicator = config.testReplicator()
         val docs = mutableListOf<ReplicatedDocument>()
-        run(config) { r ->
-            replicator = r
-            token = r.addDocumentReplicationListener { replication ->
-                assertFalse(replication.isPush)
-                docs.addAll(replication.documents)
-            }
+        val token = replicator.addDocumentReplicationListener { replication ->
+            assertFalse(replication.isPush)
+            docs.addAll(replication.documents)
         }
+        replicator.run()
 
         // Check:
         assertEquals(1, docs.size)
@@ -263,7 +254,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertFalse(docs[0].flags.contains(DocumentFlag.ACCESS_REMOVED))
 
         // Remove document replication listener:
-        replicator.removeChangeListener(token)
+        token.remove()
     }
 
     @Test
@@ -271,25 +262,22 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("species", "Tiger")
         doc1.setString("pattern", "Star")
-        baseTestDb.save(doc1)
+        testCollection.save(doc1)
 
         // Delete:
-        baseTestDb.delete(doc1)
+        testCollection.delete(doc1)
 
         // Push:
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, false)
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = false)
 
-        lateinit var replicator: Replicator
-        lateinit var token: ListenerToken
+        val replicator = config.testReplicator()
         val docs = mutableListOf<ReplicatedDocument>()
-        run(config) { r ->
-            replicator = r
-            token = r.addDocumentReplicationListener { replication ->
-                assertTrue(replication.isPush)
-                docs.addAll(replication.documents)
-            }
+        val token = replicator.addDocumentReplicationListener { replication ->
+            assertTrue(replication.isPush)
+            docs.addAll(replication.documents)
         }
+        replicator.run()
 
         // Check:
         assertEquals(1, docs.size)
@@ -299,16 +287,14 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertFalse(docs[0].flags.contains(DocumentFlag.ACCESS_REMOVED))
 
         // Remove document replication listener:
-        replicator.removeChangeListener(token)
+        token.remove()
     }
 
-    // Failing on Apple and jvm
     @Test
     fun testSingleShotPushFilter() {
         testPushFilter(false)
     }
 
-    // Failing on Apple and jvm
     @Test
     fun testContinuousPushFilter() {
         testPushFilter(true)
@@ -323,52 +309,53 @@ class ReplicatorEETest : BaseReplicatorTest() {
         doc1.setString("species", "Tiger")
         doc1.setString("pattern", "Hobbes")
         doc1.setBlob("photo", blob)
-        baseTestDb.save(doc1)
+        testCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("species", "Tiger")
         doc2.setString("pattern", "Striped")
         doc2.setBlob("photo", blob)
-        baseTestDb.save(doc2)
+        testCollection.save(doc2)
 
         val doc3 = MutableDocument("doc3")
         doc3.setString("species", "Tiger")
         doc3.setString("pattern", "Star")
         doc3.setBlob("photo", blob)
-        baseTestDb.save(doc3)
-        baseTestDb.delete(doc3)
+        testCollection.save(doc3)
+        testCollection.delete(doc3)
 
         // Create replicator with push filter:
         val docIds = mutableSetOf<String>()
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, isContinuous)
-        config.pushFilter = { doc, flags ->
-            assertNotNull(doc.id)
-            val isDeleted = flags.contains(DocumentFlag.DELETED)
-            assertTrue(if (doc.id == "doc3") isDeleted else !isDeleted)
-            if (!isDeleted) {
-                // Check content:
-                assertNotNull(doc.getValue("pattern"))
-                assertEquals("Tiger", doc.getString("species"))
+        val target = DatabaseEndpoint(targetDatabase)
+        val colConfig = CollectionConfiguration(
+            pushFilter = { doc, flags ->
+                assertNotNull(doc.id)
+                val isDeleted = flags.contains(DocumentFlag.DELETED)
+                assertTrue(if (doc.id == "doc3") isDeleted else !isDeleted)
+                if (!isDeleted) {
+                    // Check content:
+                    assertNotNull(doc.getValue("pattern"))
+                    assertEquals("Tiger", doc.getString("species"))
 
-                // Check blob:
-                val photo = doc.getBlob("photo")
-                assertNotNull(photo)
-                assertEquals(blob, photo)
-            } else {
-                assertEquals(emptyMap(), doc.toMap())
+                    // Check blob:
+                    val photo = doc.getBlob("photo")
+                    assertNotNull(photo)
+                    assertEquals(blob, photo)
+                } else {
+                    assertEquals(emptyMap(), doc.toMap())
+                }
+
+                // Gather document ID:
+                docIds.add(doc.id)
+
+                // Reject doc2:
+                doc.id != "doc2"
             }
+        )
+        val config = makeSimpleReplConfig(target, srcConfig = colConfig, type = ReplicatorType.PUSH, continuous = isContinuous)
 
-            // Gather document ID:
-            docIds.add(doc.id)
-
-            // Reject doc2:
-            doc.id != "doc2"
-        }
-
-        // Fails on Apple
         // Run the replicator:
-        run(config)
+        config.run()
 
         // Check documents passed to the filter:
         assertEquals(3, docIds.size)
@@ -377,9 +364,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertTrue(docIds.contains("doc3"))
 
         // Check replicated documents:
-        assertNotNull(otherDB.getDocument("doc1"))
-        assertNull(otherDB.getDocument("doc2"))
-        assertNull(otherDB.getDocument("doc3"))
+        assertNotNull(targetCollection.getDocument("doc1"))
+        assertNull(targetCollection.getDocument("doc2"))
+        assertNull(targetCollection.getDocument("doc3"))
     }
 
     // TODO: native C fails sometimes
@@ -390,7 +377,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Add a document to db database so that it can pull the deleted docs from:
         val doc0 = MutableDocument("doc0")
         doc0.setString("species", "Cat")
-        baseTestDb.save(doc0)
+        testCollection.save(doc0)
 
         // Create documents:
         val content = "I'm a tiger.".encodeToByteArray()
@@ -400,53 +387,55 @@ class ReplicatorEETest : BaseReplicatorTest() {
         doc1.setString("species", "Tiger")
         doc1.setString("pattern", "Hobbes")
         doc1.setBlob("photo", blob)
-        otherDB.save(doc1)
+        targetCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("species", "Tiger")
         doc2.setString("pattern", "Striped")
         doc2.setBlob("photo", blob)
-        otherDB.save(doc2)
+        targetCollection.save(doc2)
 
         val doc3 = MutableDocument("doc3")
         doc3.setString("species", "Tiger")
         doc3.setString("pattern", "Star")
         doc3.setBlob("photo", blob)
-        otherDB.save(doc3)
-        otherDB.delete(doc3)
+        targetCollection.save(doc3)
+        targetCollection.delete(doc3)
 
         // Create replicator with pull filter:
         val docIds = mutableSetOf<String>()
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PULL, false)
-        config.pullFilter = { doc, flags ->
-            assertNotNull(doc.id)
-            val isDeleted = flags.contains(DocumentFlag.DELETED)
-            assertTrue(if (doc.id == "doc3") isDeleted else !isDeleted)
-            if (!isDeleted) {
-                // Check content:
-                assertNotNull(doc.getValue("pattern"))
-                assertEquals("Tiger", doc.getString("species"))
+        val target = DatabaseEndpoint(targetDatabase)
+        val colConfig = CollectionConfiguration(
+            pullFilter = { doc, flags ->
+                assertNotNull(doc.id)
+                val isDeleted = flags.contains(DocumentFlag.DELETED)
+                assertTrue(if (doc.id == "doc3") isDeleted else !isDeleted)
+                if (!isDeleted) {
+                    // Check content:
+                    assertNotNull(doc.getValue("pattern"))
+                    assertEquals("Tiger", doc.getString("species"))
 
-                // Check blob:
-                val photo = doc.getBlob("photo")
-                assertNotNull(photo)
+                    // Check blob:
+                    val photo = doc.getBlob("photo")
+                    assertNotNull(photo)
 
-                // Note: Cannot access content because there is no actual blob file saved on disk.
-                // assertEquals(blob.content, photo.content)
-            } else {
-                assertEquals(emptyMap(), doc.toMap())
+                    // Note: Cannot access content because there is no actual blob file saved on disk.
+                    // assertEquals(blob.content, photo.content)
+                } else {
+                    assertEquals(emptyMap(), doc.toMap())
+                }
+
+                // Gather document ID:
+                docIds.add(doc.id)
+
+                // Reject doc2:
+                doc.id != "doc2"
             }
-
-            // Gather document ID:
-            docIds.add(doc.id)
-
-            // Reject doc2:
-            doc.id != "doc2"
-        }
+        )
+        val config = makeSimpleReplConfig(target, srcConfig = colConfig, type = ReplicatorType.PULL, continuous = false)
 
         // Run the replicator:
-        run(config)
+        config.run()
 
         // Check documents passed to the filter:
         assertEquals(3, docIds.size)
@@ -455,9 +444,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertTrue(docIds.contains("doc3"))
 
         // Check replicated documents:
-        assertNotNull(baseTestDb.getDocument("doc1"))
-        assertNull(baseTestDb.getDocument("doc2"))
-        assertNull(baseTestDb.getDocument("doc3"))
+        assertNotNull(testCollection.getDocument("doc1"))
+        assertNull(testCollection.getDocument("doc2"))
+        assertNull(testCollection.getDocument("doc3"))
     }
 
     @Test
@@ -465,37 +454,34 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val doc = MutableDocument("doc1")
         doc.setString("species", "Tiger")
         doc.setString("pattern", "Hobbes")
-        baseTestDb.save(doc)
+        testCollection.save(doc)
 
         val mutex = Mutex(true)
-        val docChangeToken = baseTestDb.addDocumentChangeListener(doc.id) { change ->
+        val docChangeToken = testCollection.addDocumentChangeListener(doc.id) { change ->
             assertEquals(change.documentID, doc.id)
-            if (baseTestDb.getDocument(doc.id) == null) {
+            if (testCollection.getDocument(doc.id) == null) {
                 mutex.unlock()
             }
         }
-        assertEquals(1, baseTestDb.count)
-        assertEquals(0, otherDB.count)
+        assertEquals(1, testCollection.count)
+        assertEquals(0, targetCollection.count)
 
         // Push:
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, false)
-        lateinit var replicator: Replicator
-        lateinit var docReplicationToken: ListenerToken
-        run(config) { r ->
-            replicator = r
-            docReplicationToken = r.addDocumentReplicationListener {
-                baseTestDb.setDocumentExpiration(doc.id, Clock.System.now())
-            }
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = false)
+        val replicator = config.testReplicator()
+        val docReplicationToken = replicator.addDocumentReplicationListener {
+            testCollection.setDocumentExpiration(doc.id, Clock.System.now())
         }
+        replicator.run()
 
         assertTrue(mutex.lockWithTimeout(5.seconds))
 
-        replicator.removeChangeListener(docReplicationToken)
-        baseTestDb.removeChangeListener(docChangeToken)
+        docReplicationToken.remove()
+        docChangeToken.remove()
 
-        assertEquals(0, baseTestDb.count)
-        assertEquals(1, otherDB.count)
+        assertEquals(0, testCollection.count)
+        assertEquals(1, targetCollection.count)
     }
 
     // Removed Doc with Filter
@@ -520,52 +506,54 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create documents:
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "pass")
-        otherDB.save(doc1)
+        targetCollection.save(doc1)
 
         val doc2 = MutableDocument("pass")
         doc2.setString("name", "pass")
-        otherDB.save(doc2)
+        targetCollection.save(doc2)
 
         // Create replicator with push filter:
         val docIds = mutableSetOf<String>()
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PULL, isContinuous)
-        config.pullFilter = { doc, flags ->
-            assertNotNull(doc.id)
+        val target = DatabaseEndpoint(targetDatabase)
+        val colConfig = CollectionConfiguration(
+            pullFilter = { doc, flags ->
+                assertNotNull(doc.id)
 
-            val isAccessRemoved = flags.contains(DocumentFlag.ACCESS_REMOVED)
-            if (isAccessRemoved) {
-                docIds.add(doc.id)
-                doc.id == "pass"
-            } else {
-                doc.getString("name") == "pass"
+                val isAccessRemoved = flags.contains(DocumentFlag.ACCESS_REMOVED)
+                if (isAccessRemoved) {
+                    docIds.add(doc.id)
+                    doc.id == "pass"
+                } else {
+                    doc.getString("name") == "pass"
+                }
             }
-        }
+        )
+        val config = makeSimpleReplConfig(target, srcConfig = colConfig, type = ReplicatorType.PULL, continuous = isContinuous)
 
         // Run the replicator:
-        run(config)
+        config.run()
         assertEquals(0, docIds.size)
 
-        assertNotNull(baseTestDb.getDocument("doc1"))
-        assertNotNull(baseTestDb.getDocument("pass"))
+        assertNotNull(testCollection.getDocument("doc1"))
+        assertNotNull(testCollection.getDocument("pass"))
 
-        val doc1Mutable = otherDB.getDocument("doc1")?.toMutable() ?: error("Docs must exists")
+        val doc1Mutable = targetCollection.getDocument("doc1")?.toMutable() ?: error("Docs must exists")
         doc1Mutable.setData(mapOf("_removed" to true))
-        otherDB.save(doc1Mutable)
+        targetCollection.save(doc1Mutable)
 
-        val doc2Mutable = otherDB.getDocument("pass")?.toMutable() ?: error("Docs must exists")
+        val doc2Mutable = targetCollection.getDocument("pass")?.toMutable() ?: error("Docs must exists")
         doc2Mutable.setData(mapOf("_removed" to true))
-        otherDB.save(doc2Mutable)
+        targetCollection.save(doc2Mutable)
 
-        run(config)
+        config.run()
 
         // Check documents passed to the filter:
         assertEquals(2, docIds.size)
         assertTrue(docIds.contains("doc1"))
         assertTrue(docIds.contains("pass"))
 
-        assertNotNull(baseTestDb.getDocument("doc1"))
-        assertNull(baseTestDb.getDocument("pass"))
+        assertNotNull(testCollection.getDocument("doc1"))
+        assertNull(testCollection.getDocument("pass"))
     }
 
     // Deleted Doc with Filter
@@ -603,148 +591,152 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create documents:
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "pass")
-        baseTestDb.save(doc1)
+        testCollection.save(doc1)
 
         val doc2 = MutableDocument("pass")
         doc2.setString("name", "pass")
-        baseTestDb.save(doc2)
+        testCollection.save(doc2)
 
         // Create replicator with push filter:
         val docIds = mutableSetOf<String>()
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, isContinuous)
-        config.pushFilter = { doc, flags ->
-            assertNotNull(doc.id)
+        val target = DatabaseEndpoint(targetDatabase)
+        val colConfig = CollectionConfiguration(
+            pushFilter = { doc, flags ->
+                assertNotNull(doc.id)
 
-            val isDeleted = flags.contains(DocumentFlag.DELETED)
-            if (isDeleted) {
-                docIds.add(doc.id)
-                doc.id == "pass"
-            } else {
-                doc.getString("name") == "pass"
+                val isDeleted = flags.contains(DocumentFlag.DELETED)
+                if (isDeleted) {
+                    docIds.add(doc.id)
+                    doc.id == "pass"
+                } else {
+                    doc.getString("name") == "pass"
+                }
             }
-        }
+        )
+        val config = makeSimpleReplConfig(target, srcConfig = colConfig, type = ReplicatorType.PUSH, continuous = isContinuous)
 
         // Run the replicator:
-        run(config)
+        config.run()
         assertEquals(0, docIds.size)
 
-        assertNotNull(otherDB.getDocument("doc1"))
-        assertNotNull(otherDB.getDocument("pass"))
+        assertNotNull(targetCollection.getDocument("doc1"))
+        assertNotNull(targetCollection.getDocument("pass"))
 
-        baseTestDb.delete(doc1)
-        baseTestDb.delete(doc2)
+        testCollection.delete(doc1)
+        testCollection.delete(doc2)
 
-        run(config)
+        config.run()
 
         // Check documents passed to the filter:
         assertEquals(2, docIds.size)
         assertTrue(docIds.contains("doc1"))
         assertTrue(docIds.contains("pass"))
 
-        assertNotNull(otherDB.getDocument("doc1"))
-        assertNull(otherDB.getDocument("pass"))
+        assertNotNull(targetCollection.getDocument("doc1"))
+        assertNull(targetCollection.getDocument("pass"))
     }
 
     private fun testPullDeletedDocWithFilter(isContinuous: Boolean) {
         // Create documents:
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "pass")
-        otherDB.save(doc1)
+        targetCollection.save(doc1)
 
         val doc2 = MutableDocument("pass")
         doc2.setString("name", "pass")
-        otherDB.save(doc2)
+        targetCollection.save(doc2)
 
         // Create replicator with push filter:
         val docIds = mutableSetOf<String>()
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PULL, isContinuous)
-        config.pullFilter = { doc, flags ->
-            assertNotNull(doc.id)
+        val target = DatabaseEndpoint(targetDatabase)
+        val colConfig = CollectionConfiguration(
+            pullFilter = { doc, flags ->
+                assertNotNull(doc.id)
 
-            val isDeleted = flags.contains(DocumentFlag.DELETED)
-            if (isDeleted) {
-                docIds.add(doc.id)
-                doc.id == "pass"
-            } else {
-                doc.getString("name") == "pass"
+                val isDeleted = flags.contains(DocumentFlag.DELETED)
+                if (isDeleted) {
+                    docIds.add(doc.id)
+                    doc.id == "pass"
+                } else {
+                    doc.getString("name") == "pass"
+                }
             }
-        }
+        )
+        val config = makeSimpleReplConfig(target, srcConfig = colConfig, type = ReplicatorType.PULL, continuous = isContinuous)
 
         // Run the replicator:
-        run(config)
+        config.run()
         assertEquals(0, docIds.size)
 
-        assertNotNull(baseTestDb.getDocument("doc1"))
-        assertNotNull(baseTestDb.getDocument("pass"))
+        assertNotNull(testCollection.getDocument("doc1"))
+        assertNotNull(testCollection.getDocument("pass"))
 
-        otherDB.delete(doc1)
-        otherDB.delete(doc2)
+        targetCollection.delete(doc1)
+        targetCollection.delete(doc2)
 
-        run(config)
+        config.run()
 
         // Check documents passed to the filter:
         assertEquals(2, docIds.size)
         assertTrue(docIds.contains("doc1"))
         assertTrue(docIds.contains("pass"))
 
-        assertNotNull(baseTestDb.getDocument("doc1"))
-        assertNull(baseTestDb.getDocument("pass"))
+        assertNotNull(testCollection.getDocument("doc1"))
+        assertNull(testCollection.getDocument("pass"))
     }
 
     // stop and restart replication with filter
 
-    // https://issues.couchbase.com/browse/CBL-1061
     @Test
     fun testStopAndRestartPushReplicationWithFilter() {
         // Create documents:
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "pass")
-        baseTestDb.save(doc1)
+        testCollection.save(doc1)
 
         // Create replicator with pull filter:
         val docIds = mutableSetOf<String>()
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, true)
-        config.pushFilter = { doc, _ ->
-            assertNotNull(doc.id)
-            docIds.add(doc.id)
-            doc.getString("name") == "pass"
-        }
+        val target = DatabaseEndpoint(targetDatabase)
+        val colConfig = CollectionConfiguration(
+            pushFilter = { doc, _ ->
+                assertNotNull(doc.id)
+                docIds.add(doc.id)
+                doc.getString("name") == "pass"
+            }
+        )
+        val config = makeSimpleReplConfig(target, srcConfig = colConfig, type = ReplicatorType.PUSH, continuous = true)
 
         // create a replicator
-        baseTestReplicator = Replicator(config)
-        run(baseTestReplicator!!)
+        val repl = config.testReplicator()
+        repl.run()
 
         assertEquals(1, docIds.size)
-        assertEquals(1, otherDB.count)
-        assertEquals(1, baseTestDb.count)
+        assertEquals(1, targetCollection.count)
+        assertEquals(1, testCollection.count)
 
         // make some more changes
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "pass")
-        baseTestDb.save(doc2)
+        testCollection.save(doc2)
 
         val doc3 = MutableDocument("doc3")
         doc3.setString("name", "donotpass")
-        baseTestDb.save(doc3)
+        testCollection.save(doc3)
 
         // restart the same replicator
         docIds.clear()
-        run(baseTestReplicator!!)
+        repl.run()
 
         // should use the same replicator filter.
         assertEquals(2, docIds.size)
         assertTrue(docIds.contains("doc3"))
         assertTrue(docIds.contains("doc2"))
 
-        assertNotNull(otherDB.getDocument("doc1"))
-        // Fails on jvm
-        assertNotNull(otherDB.getDocument("doc2"))
-        assertNull(otherDB.getDocument("doc3"))
-        assertEquals(3, baseTestDb.count)
-        assertEquals(2, otherDB.count)
+        assertNotNull(targetCollection.getDocument("doc1"))
+        assertNotNull(targetCollection.getDocument("doc2"))
+        assertNull(targetCollection.getDocument("doc3"))
+        assertEquals(3, testCollection.count)
+        assertEquals(2, targetCollection.count)
     }
 
     // TODO: native C fails sometimes
@@ -755,50 +747,51 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create documents:
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "pass")
-        otherDB.save(doc1)
+        targetCollection.save(doc1)
 
         // Create replicator with pull filter:
         val docIds = mutableSetOf<String>()
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PULL, true)
-        config.pullFilter = { doc, _ ->
-            assertNotNull(doc.id)
-            docIds.add(doc.id)
-            doc.getString("name") == "pass"
-        }
+        val target = DatabaseEndpoint(targetDatabase)
+        val colConfig = CollectionConfiguration(
+            pullFilter = { doc, _ ->
+                assertNotNull(doc.id)
+                docIds.add(doc.id)
+                doc.getString("name") == "pass"
+            }
+        )
+        val config = makeSimpleReplConfig(target, srcConfig = colConfig, type = ReplicatorType.PULL, continuous = true)
 
         // create a replicator
-        baseTestReplicator = Replicator(config)
-        run(baseTestReplicator!!)
+        val repl = config.testReplicator()
+        repl.run()
 
         assertEquals(1, docIds.size)
-        assertEquals(1, otherDB.count)
-        assertEquals(1, baseTestDb.count)
+        assertEquals(1, targetCollection.count)
+        assertEquals(1, testCollection.count)
 
         // make some more changes
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "pass")
-        otherDB.save(doc2)
+        targetCollection.save(doc2)
 
         val doc3 = MutableDocument("doc3")
         doc3.setString("name", "donotpass")
-        otherDB.save(doc3)
+        targetCollection.save(doc3)
 
         // restart the same replicator
         docIds.clear()
-        // fails on jvm
-        run(baseTestReplicator!!)
+        repl.run()
 
         // should use the same replicator filter.
         assertEquals(2, docIds.size)
         assertTrue(docIds.contains("doc3"))
         assertTrue(docIds.contains("doc2"))
 
-        assertNotNull(baseTestDb.getDocument("doc1"))
-        assertNotNull(baseTestDb.getDocument("doc2"))
-        assertNull(baseTestDb.getDocument("doc3"))
-        assertEquals(3, otherDB.count)
-        assertEquals(2, baseTestDb.count)
+        assertNotNull(testCollection.getDocument("doc1"))
+        assertNotNull(testCollection.getDocument("doc2"))
+        assertNull(testCollection.getDocument("doc3"))
+        assertEquals(3, targetCollection.count)
+        assertEquals(2, testCollection.count)
     }
 
     // ReplicatorTest+PendingDocIds.swift
@@ -818,286 +811,126 @@ class ReplicatorEETest : BaseReplicatorTest() {
         for (i in 0..<noOfDocument) {
             val doc = MutableDocument("doc-$i")
             doc.setValue(kActionKey, kCreateActionValue)
-            saveDocInBaseTestDb(doc)
+            saveDocInCollection(doc)
             docIds.add("doc-$i")
         }
         return docIds
     }
 
-    private fun validatePendingDocumentIDs(
-        docIds: Set<String>,
-        config: ReplicatorConfiguration? = null
-    ) = runBlocking {
-        val mutex = Mutex(true)
-        val replConfig = config ?: makeConfig(DatabaseEndpoint(otherDB), ReplicatorType.PUSH, false)
-        val replicator = Replicator(replConfig)
+    private fun validatePendingDocumentIDs(docIds: Set<String>, pushOnlyDocIds: Set<String>? = null) {
+        val colConfig = CollectionConfiguration()
+        if (pushOnlyDocIds?.isNotEmpty() == true) {
+            colConfig.pushFilter = { doc, _ ->
+                pushOnlyDocIds.contains(doc.id)
+            }
+        }
+        val replConfig = makeSimpleReplConfig(DatabaseEndpoint(targetDatabase), srcConfig = colConfig, type = ReplicatorType.PUSH, continuous = false)
+        val replicator = replConfig.testReplicator()
 
-        // verify before starting the replicator
-        assertEquals(docIds.size, replicator.getPendingDocumentIds().size)
-        assertEquals(docIds, replicator.getPendingDocumentIds())
+        // Check document pending:
+        var pendingIds = replicator.getPendingDocumentIds(testCollection)
 
-        var first = true
-        val token = replicator.addChangeListener { change ->
-            val pDocIds = change.replicator.getPendingDocumentIds()
+        if (pushOnlyDocIds?.isNotEmpty() == true) {
+            assertEquals(pendingIds.size, pushOnlyDocIds.size)
+        } else {
+            assertEquals(pendingIds.size, docIds.size)
+        }
 
-            // TODO: native C does not receive ReplicatorActivityLevel.CONNECTING
-            //if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
-            if (first) {
-                first = false
-                assertEquals(docIds, pDocIds)
-                assertEquals(docIds.size, pDocIds.size)
-            } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
-                assertEquals(0, pDocIds.size)
-                mutex.unlock()
+        for (docId in docIds) {
+            val willBePush = pushOnlyDocIds?.contains(docId) ?: true
+            if (willBePush) {
+                assertTrue(pendingIds.contains(docId))
+                assertTrue(replicator.isDocumentPending(docId, testCollection))
             }
         }
 
-        replicator.start()
-        assertTrue(mutex.lockWithTimeout(5.seconds))
-        replicator.removeChangeListener(token)
-    }
+        // Run replicator:
+        replicator.run()
 
-    /**
-     * expected: [docId: isPresent] e.g., @{"doc-1": true, "doc-2": false, "doc-3": false}
-     */
-    private fun validateIsDocumentPending(
-        expected: Map<String, Boolean>,
-        config: ReplicatorConfiguration? = null
-    ) = runBlocking {
-        val mutex = Mutex(true)
-        val replConfig = config ?: makeConfig(DatabaseEndpoint(otherDB), ReplicatorType.PUSH, false)
-        val replicator = Replicator(replConfig)
+        // Check document pending:
+        pendingIds = replicator.getPendingDocumentIds(testCollection)
+        assertEquals(0, pendingIds.size)
 
-        // verify before starting the replicator
-        for ((docId, present) in expected) {
-            assertEquals(present, replicator.isDocumentPending(docId))
+        for (docId in docIds) {
+            assertFalse(replicator.isDocumentPending(docId, testCollection))
         }
-
-        var first = true
-        val token = replicator.addChangeListener { change ->
-            // TODO: native C does not receive ReplicatorActivityLevel.CONNECTING
-            //if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
-            if (first) {
-                first = false
-                for ((docId, present) in expected) {
-                    assertEquals(present, replicator.isDocumentPending(docId))
-                }
-            } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
-                for ((docId, _) in expected) {
-                    assertFalse(replicator.isDocumentPending(docId))
-                }
-                mutex.unlock()
-            }
-        }
-
-        replicator.start()
-        assertTrue(mutex.lockWithTimeout(5.seconds))
-        replicator.removeChangeListener(token)
     }
 
     // Unit Tests
 
     @Test
     fun testPendingDocIDsPullOnlyException() = runBlocking {
-        val mutex = Mutex(true)
-        val target = DatabaseEndpoint(otherDB)
-        val replConfig = makeConfig(target, ReplicatorType.PULL, false)
-        val replicator = Replicator(replConfig)
+        val target = DatabaseEndpoint(targetDatabase)
+        val replConfig = makeSimpleReplConfig(target, type = ReplicatorType.PULL, continuous = false)
+        val replicator = replConfig.testReplicator()
 
-        var first = true
         var pullOnlyError: CouchbaseLiteException? = null
-        val token = replicator.addChangeListener { change ->
-            // TODO: native C does not receive ReplicatorActivityLevel.CONNECTING
-            //if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
-            if (first) {
-                first = false
-                try {
-                    replicator.getPendingDocumentIds()
-                } catch (e: CouchbaseLiteException) {
-                    pullOnlyError = e
-                }
-            } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
-                mutex.unlock()
-            }
+        try {
+            replicator.getPendingDocumentIds(testCollection)
+        } catch (e: CouchbaseLiteException) {
+            pullOnlyError = e
         }
-        replicator.start()
-        assertTrue(mutex.lockWithTimeout(5.seconds))
 
         assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.code)
-        replicator.removeChangeListener(token)
     }
 
-    // TODO: https://issues.couchbase.com/browse/CBL-2448
     @Test
     fun testPendingDocIDsWithCreate() {
         val docIds = createDocs()
         validatePendingDocumentIDs(docIds)
     }
 
-    // TODO: https://issues.couchbase.com/browse/CBL-2448
     @Test
     fun testPendingDocIDsWithUpdate() {
         createDocs()
 
-        val target = DatabaseEndpoint(otherDB)
-        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
-        run(replConfig)
+        val target = DatabaseEndpoint(targetDatabase)
+        val replConfig = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = false)
+        replConfig.run()
 
         val updatedIds = setOf("doc-2", "doc-4")
         for (docId in updatedIds) {
-            val doc = baseTestDb.getDocument(docId)!!.toMutable()
+            val doc = testCollection.getDocument(docId)!!.toMutable()
             doc.setString(kActionKey, kUpdateActionValue)
-            saveDocInBaseTestDb(doc)
+            saveDocInCollection(doc)
         }
 
         validatePendingDocumentIDs(updatedIds)
     }
 
-    // TODO: https://issues.couchbase.com/browse/CBL-2448
     @Test
     fun testPendingDocIdsWithDelete() {
         createDocs()
 
-        val target = DatabaseEndpoint(otherDB)
-        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
-        run(replConfig)
+        val target = DatabaseEndpoint(targetDatabase)
+        val replConfig = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = false)
+        replConfig.run()
 
         val deletedIds = setOf("doc-2", "doc-4")
         for (docId in deletedIds) {
-            val doc = baseTestDb.getDocument(docId)!!
-            baseTestDb.delete(doc)
+            val doc = testCollection.getDocument(docId)!!
+            testCollection.delete(doc)
         }
 
         validatePendingDocumentIDs(deletedIds)
     }
 
-    // TODO: https://issues.couchbase.com/browse/CBL-2448
     @Test
     fun testPendingDocIdsWithPurge() {
         val docs = createDocs()
 
-        baseTestDb.purge("doc-3")
+        testCollection.purge("doc-3")
         docs.remove("doc-3")
 
         validatePendingDocumentIDs(docs)
     }
 
-    // TODO: https://issues.couchbase.com/browse/CBL-2448
     @Test
     fun testPendingDocIdsWithFilter() {
-        createDocs()
+        val docIds = createDocs()
 
-        val target = DatabaseEndpoint(otherDB)
-        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
-        replConfig.pushFilter = { doc, _ ->
-            doc.id == "doc-3"
-        }
-
-        validatePendingDocumentIDs(setOf("doc-3"), replConfig)
-    }
-
-    // isDocumentPending
-
-    @Test
-    fun testIsDocumentPendingPullOnlyException() = runBlocking {
-        val mutex = Mutex(true)
-        val target = DatabaseEndpoint(otherDB)
-        val replConfig = makeConfig(target, ReplicatorType.PULL, false)
-        val replicator = Replicator(replConfig)
-
-        var first = true
-        var pullOnlyError: CouchbaseLiteException? = null
-        val token = replicator.addChangeListener { change ->
-            // TODO: native C does not receive ReplicatorActivityLevel.CONNECTING
-            //if (change.status.activityLevel == ReplicatorActivityLevel.CONNECTING) {
-            if (first) {
-                first = false
-                try {
-                    replicator.isDocumentPending("doc-1")
-                } catch (e: CouchbaseLiteException) {
-                    pullOnlyError = e
-                }
-            } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
-                mutex.unlock()
-            }
-        }
-
-        replicator.start()
-        assertTrue(mutex.lockWithTimeout(5.seconds))
-
-        assertEquals(CBLError.Code.UNSUPPORTED, pullOnlyError?.code)
-        replicator.removeChangeListener(token)
-    }
-
-    // TODO: https://issues.couchbase.com/browse/CBL-2575
-    @Test
-    fun testIsDocumentPendingWithCreate() {
-        noOfDocument = 2
-        createDocs()
-
-        validateIsDocumentPending(mapOf("doc-0" to true, "doc-1" to true, "doc-3" to false))
-    }
-
-    // TODO: https://issues.couchbase.com/browse/CBL-2575
-    @Test
-    fun testIsDocumentPendingWithUpdate() {
-        createDocs()
-
-        val target = DatabaseEndpoint(otherDB)
-        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
-        run(replConfig)
-
-        val updatedIds = setOf("doc-2", "doc-4")
-        for (docId in updatedIds) {
-            val doc = baseTestDb.getDocument(docId)!!.toMutable()
-            doc.setString(kActionKey, kUpdateActionValue)
-            saveDocInBaseTestDb(doc)
-        }
-
-        validateIsDocumentPending(mapOf("doc-2" to true, "doc-4" to true, "doc-1" to false))
-    }
-
-    // TODO: https://issues.couchbase.com/browse/CBL-2575
-    @Test
-    fun testIsDocumentPendingWithDelete() {
-        createDocs()
-
-        val target = DatabaseEndpoint(otherDB)
-        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
-        run(replConfig)
-
-        val deletedIds = setOf("doc-2", "doc-4")
-        for (docId in deletedIds) {
-            val doc = baseTestDb.getDocument(docId)!!
-            baseTestDb.delete(doc)
-        }
-
-        validateIsDocumentPending(mapOf("doc-2" to true, "doc-4" to true, "doc-1" to false))
-    }
-
-    // TODO: https://issues.couchbase.com/browse/CBL-2575
-    @Test
-    fun testIsDocumentPendingWithPurge() {
-        noOfDocument = 3
-        createDocs()
-
-        baseTestDb.purge("doc-1")
-
-        validateIsDocumentPending(mapOf("doc-0" to true, "doc-1" to false, "doc-2" to true))
-    }
-
-    // TODO: https://issues.couchbase.com/browse/CBL-2575
-    @Test
-    fun testIsDocumentPendingWithPushFilter() {
-        createDocs()
-
-        val target = DatabaseEndpoint(otherDB)
-        val replConfig = makeConfig(target, ReplicatorType.PUSH, false)
-        replConfig.pushFilter = { doc, _ ->
-            doc.id == "doc-3"
-        }
-
-        validateIsDocumentPending(mapOf("doc-3" to true, "doc-1" to false), replConfig)
+        val pushOnlyIds = setOf("doc-2", "doc-4")
+        validatePendingDocumentIDs(docIds, pushOnlyIds)
     }
 
     // ReplicatorTest+CustomConflict.swift
@@ -1108,21 +941,23 @@ class ReplicatorEETest : BaseReplicatorTest() {
     @Test
     fun testConflictResolverConfigProperty() {
         val target = URLEndpoint("wss://foo")
-        val pullConfig = makeConfig(target, ReplicatorType.PULL, false)
 
-        val conflictResolver = TestConflictResolver { conflict ->
-            conflict.remoteDocument
-        }
-        pullConfig.conflictResolver = conflictResolver
-        baseTestReplicator = Replicator(pullConfig)
+        val colConfig = CollectionConfiguration(
+            conflictResolver = { conflict ->
+                conflict.remoteDocument
+            }
+        )
+        val pullConfig = makeSimpleReplConfig(target, srcConfig = colConfig, type = ReplicatorType.PULL, continuous = false)
+        val repl = pullConfig.testReplicator()
 
-        assertNotNull(pullConfig.conflictResolver)
-        assertNotNull(baseTestReplicator!!.config.conflictResolver)
+        assertNotNull(pullConfig.getCollectionConfiguration(testCollection)!!.conflictResolver)
+        assertNotNull(repl.config.getCollectionConfiguration(testCollection)!!.conflictResolver)
     }
 
-    private fun getConfig(type: ReplicatorType): ReplicatorConfiguration {
-        val target = DatabaseEndpoint(otherDB)
-        return makeConfig(target, type, false)
+    private fun getConfig(type: ReplicatorType, conflictResolver: ConflictResolver? = null): ReplicatorConfiguration {
+        val target = DatabaseEndpoint(targetDatabase)
+        val colConfig = conflictResolver?.let { CollectionConfiguration(conflictResolver = it) }
+        return makeSimpleReplConfig(target, srcConfig = colConfig, type = type, continuous = false)
     }
 
     private fun makeConflict(
@@ -1132,27 +967,27 @@ class ReplicatorEETest : BaseReplicatorTest() {
     ) {
         // create doc
         val doc = MutableDocument(docID)
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
         // sync the doc in both DBs.
         val config = getConfig(ReplicatorType.PUSH)
-        run(config)
+        config.run()
 
         // Now make different changes in db and oDBs
         if (localData != null) {
-            val doc1a = baseTestDb.getDocument(docID)!!.toMutable()
+            val doc1a = testCollection.getDocument(docID)!!.toMutable()
             doc1a.setData(localData)
-            saveDocInBaseTestDb(doc1a)
+            saveDocInCollection(doc1a)
         } else {
-            baseTestDb.delete(baseTestDb.getDocument(docID)!!)
+            testCollection.delete(testCollection.getDocument(docID)!!)
         }
 
         if (remoteData != null) {
-            val doc1b = otherDB.getDocument(docID)!!.toMutable()
+            val doc1b = targetCollection.getDocument(docID)!!.toMutable()
             doc1b.setData(remoteData)
-            otherDB.save(doc1b)
+            targetCollection.save(doc1b)
         } else {
-            otherDB.delete(otherDB.getDocument(docID)!!)
+            targetCollection.delete(targetCollection.getDocument(docID)!!)
         }
     }
 
@@ -1162,16 +997,15 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val remoteData = mapOf("pattern" to "striped")
         makeConflict("doc", localData, remoteData)
 
-        val config = getConfig(ReplicatorType.PULL)
         val resolver = TestConflictResolver { conflict ->
             conflict.remoteDocument
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        config.run()
 
-        assertEquals(1, baseTestDb.count)
-        assertEquals(baseTestDb.getDocument("doc")!!, resolver.winner!!)
-        assertEquals(remoteData, baseTestDb.getDocument("doc")!!.toMap())
+        assertEquals(1, testCollection.count)
+        assertEquals(testCollection.getDocument("doc")!!, resolver.winner!!)
+        assertEquals(remoteData, testCollection.getDocument("doc")!!.toMap())
     }
 
     @Test
@@ -1180,16 +1014,15 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val remoteData = mapOf("pattern" to "striped")
         makeConflict("doc", localData, remoteData)
 
-        val config = getConfig(ReplicatorType.PULL)
         val resolver = TestConflictResolver { conflict ->
             conflict.localDocument
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        config.run()
 
-        assertEquals(1, baseTestDb.count)
-        assertEquals(baseTestDb.getDocument("doc")!!, resolver.winner!!)
-        assertEquals(localData, baseTestDb.getDocument("doc")!!.toMap())
+        assertEquals(1, testCollection.count)
+        assertEquals(testCollection.getDocument("doc")!!, resolver.winner!!)
+        assertEquals(localData, testCollection.getDocument("doc")!!.toMap())
     }
 
     @Test
@@ -1198,16 +1031,15 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val remoteData = mapOf("pattern" to "striped")
         makeConflict("doc", localData, remoteData)
 
-        val config = getConfig(ReplicatorType.PULL)
         val resolver = TestConflictResolver {
             null
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        config.run()
 
         assertNull(resolver.winner)
-        assertEquals(0, baseTestDb.count)
-        assertNull(baseTestDb.getDocument("doc"))
+        assertEquals(0, testCollection.count)
+        assertNull(testCollection.getDocument("doc"))
     }
 
     @Test
@@ -1215,18 +1047,17 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val remoteData = mapOf("key2" to "value2")
         makeConflict("doc", null, remoteData)
 
-        val config = getConfig(ReplicatorType.PULL)
         val resolver = TestConflictResolver { conflict ->
             assertNull(conflict.localDocument)
             assertNotNull(conflict.remoteDocument)
             null
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        config.run()
 
         assertNull(resolver.winner)
-        assertEquals(0, baseTestDb.count)
-        assertNull(baseTestDb.getDocument("doc"))
+        assertEquals(0, testCollection.count)
+        assertNull(testCollection.getDocument("doc"))
     }
 
     @Test
@@ -1234,18 +1065,17 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val localData = mapOf("key1" to "value1")
         makeConflict("doc", localData, null)
 
-        val config = getConfig(ReplicatorType.PULL)
         val resolver = TestConflictResolver { conflict ->
             assertNotNull(conflict.localDocument)
             assertNull(conflict.remoteDocument)
             null
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        config.run()
 
         assertNull(resolver.winner)
-        assertEquals(0, baseTestDb.count)
-        assertNull(baseTestDb.getDocument("doc"))
+        assertEquals(0, testCollection.count)
+        assertNull(testCollection.getDocument("doc"))
     }
 
     // TODO: native C fails
@@ -1256,7 +1086,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val docID = "doc"
         val localData = mapOf<String, Any?>("key1" to "value1")
         val remoteData = mapOf("key2" to "value2")
-        val config = getConfig(ReplicatorType.PULL)
 
         makeConflict(docID, localData, remoteData)
         var count = 0
@@ -1264,25 +1093,25 @@ class ReplicatorEETest : BaseReplicatorTest() {
             count += 1
 
             // update the doc will cause a second conflict
-            val savedDoc = baseTestDb.getDocument(docID)!!.toMutable()
+            val savedDoc = testCollection.getDocument(docID)!!.toMutable()
             if (!savedDoc["secondUpdate"].exists) {
                 savedDoc.setBoolean("secondUpdate", true)
-                baseTestDb.save(savedDoc)
+                testCollection.save(savedDoc)
             }
 
             val mDoc = conflict.localDocument!!.toMutable()
             mDoc.setString("edit", "local")
             mDoc
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        config.run()
 
         assertEquals(2, count)
-        assertEquals(1, baseTestDb.count)
+        assertEquals(1, testCollection.count)
         val expectedDocDict = localData.toMutableMap()
         expectedDocDict["edit"] = "local"
         expectedDocDict["secondUpdate"] = true
-        assertEquals(expectedDocDict, baseTestDb.getDocument(docID)!!.toMap())
+        assertEquals(expectedDocDict, testCollection.getDocument(docID)!!.toMap())
     }
 
     @Test
@@ -1290,7 +1119,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val docID = "doc"
         val localData = mapOf("key1" to "value1")
         val remoteData = mapOf("key2" to "value2")
-        val config = getConfig(ReplicatorType.PULL)
 
         // EDIT LOCAL DOCUMENT
         makeConflict(docID, localData, remoteData)
@@ -1299,12 +1127,13 @@ class ReplicatorEETest : BaseReplicatorTest() {
             doc?.setString("edit", "local")
             doc
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        config.run()
 
         var expectedDocDict = localData.toMutableMap()
         expectedDocDict["edit"] = "local"
-        assertEquals(expectedDocDict, baseTestDb.getDocument(docID)!!.toMap())
+        var value = testCollection.getDocument(docID)!!.toMap()
+        assertEquals(expectedDocDict, value)
 
         // EDIT REMOTE DOCUMENT
         makeConflict(docID, localData, remoteData)
@@ -1313,12 +1142,13 @@ class ReplicatorEETest : BaseReplicatorTest() {
             doc?.setString("edit", "remote")
             doc
         }
-        config.conflictResolver = resolver
-        run(config)
+        var colConfig = CollectionConfiguration(conflictResolver = resolver)
+        config.addCollection(testCollection, colConfig)
+        config.run()
 
         expectedDocDict = remoteData.toMutableMap()
         expectedDocDict["edit"] = "remote"
-        assertEquals(expectedDocDict, baseTestDb.getDocument(docID)!!.toMap())
+        assertEquals(expectedDocDict, testCollection.getDocument(docID)!!.toMap())
 
         // CREATE NEW DOCUMENT
         makeConflict(docID, localData, remoteData)
@@ -1327,22 +1157,23 @@ class ReplicatorEETest : BaseReplicatorTest() {
             doc.setString("docType", "new-with-same-ID")
             doc
         }
-        config.conflictResolver = resolver
-        run(config)
+        colConfig = CollectionConfiguration(conflictResolver = resolver)
+        config.addCollection(testCollection, colConfig)
+        config.run()
 
-        assertEquals(
-            mapOf("docType" to "new-with-same-ID"),
-            baseTestDb.getDocument(docID)!!.toMap()
-        )
+        value = testCollection.getDocument(docID)!!.toMap()
+        assertEquals(mapOf("docType" to "new-with-same-ID"), value)
     }
 
     @Test
     fun testDocumentReplicationEventForConflictedDocs() {
         // when resolution is skipped: here doc from oDB throws an exception & skips it
         var resolver = TestConflictResolver {
-            otherDB.getDocument("doc")
+            targetCollection.getDocument("doc")
         }
-        validateDocumentReplicationEventForConflictedDocs(resolver)
+        try {
+            validateDocumentReplicationEventForConflictedDocs(resolver)
+        } catch (ignored: Exception) {}
 
         // when resolution is successful but wrong docID
         resolver = TestConflictResolver {
@@ -1361,31 +1192,26 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val docID = "doc"
         val localData = mapOf("key1" to "value1")
         val remoteData = mapOf("key2" to "value2")
-        val config = getConfig(ReplicatorType.PULL)
-
-        config.conflictResolver = resolver
+        val config = getConfig(ReplicatorType.PULL, resolver)
 
         makeConflict(docID, localData, remoteData)
 
-        lateinit var token: ListenerToken
-        lateinit var replicator: Replicator
+        val replicator = config.testReplicator()
         val docIds = mutableListOf<String>()
-        run(config) { r ->
-            replicator = r
-            token = r.addDocumentReplicationListener { docRepl ->
-                for (doc in docRepl.documents) {
-                    docIds.add(doc.id)
-                }
+        val token = replicator.addDocumentReplicationListener { docRepl ->
+            for (doc in docRepl.documents) {
+                docIds.add(doc.id)
             }
         }
+        replicator.run()
 
         // make sure only single listener event is fired when conflict occured.
         assertEquals(1, docIds.size)
         assertEquals(docID, docIds.first())
-        replicator.removeChangeListener(token)
+        token.remove()
 
         // resolve any un-resolved conflict through pull replication.
-        run(getConfig(ReplicatorType.PULL))
+        getConfig(ReplicatorType.PULL).run()
     }
 
     @Test
@@ -1399,7 +1225,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val wrongDocID = "wrong-doc-id"
         val localData = mapOf("key1" to "value1")
         val remoteData = mapOf("key2" to "value2")
-        val config = getConfig(ReplicatorType.PULL)
 
         makeConflict(docID, localData, remoteData)
         val resolver = TestConflictResolver {
@@ -1407,28 +1232,25 @@ class ReplicatorEETest : BaseReplicatorTest() {
             mDoc.setString("edit", "update")
             mDoc
         }
-        config.conflictResolver = resolver
-        lateinit var token: ListenerToken
-        lateinit var replicator: Replicator
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        val replicator = config.testReplicator()
         val docIds = mutableSetOf<String>()
-        run(config) { repl ->
-            replicator = repl
-            token = repl.addDocumentReplicationListener { docRepl ->
-                if (docRepl.documents.isNotEmpty()) {
-                    assertEquals(1, docRepl.documents.size)
-                    docIds.add(docRepl.documents.first().id)
-                }
-
-                // shouldn't report an error from replicator
-                assertNull(docRepl.documents.firstOrNull()?.error)
+        val token = replicator.addDocumentReplicationListener { docRepl ->
+            if (docRepl.documents.isNotEmpty()) {
+                assertEquals(1, docRepl.documents.size)
+                docIds.add(docRepl.documents.first().id)
             }
+
+            // shouldn't report an error from replicator
+            assertNull(docRepl.documents.firstOrNull()?.error)
         }
-        replicator.removeChangeListener(token)
+        replicator.run()
+        token.remove()
 
         // validate wrong doc-id is resolved successfully
-        assertEquals(1, baseTestDb.count)
+        assertEquals(1, testCollection.count)
         assertTrue(docIds.contains(docID))
-        assertEquals(mapOf("edit" to "update"), baseTestDb.getDocument(docID)!!.toMap())
+        assertEquals(mapOf("edit" to "update"), testCollection.getDocument(docID)!!.toMap())
 
         // validate the warning log
         assertTrue(
@@ -1437,9 +1259,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
                         "is not matching with the document ID of the conflicting " +
                         "document '$docID'."
             ) || customLogger.lines.contains( // Java log
-                "[JAVA] The ID of the document produced by conflict resolution " +
-                        "for document ($wrongDocID) does not match the IDs of " +
-                        "the conflicting documents ($docID)"
+                "[JAVA] A conflict resolution for document for document " +
+                        "'$wrongDocID' produced a new document whose id not " +
+                        "match the ID of the conflicting documents ($docID)"
             ) || customLogger.lines.contains( // Native C log
                 "The document ID '$wrongDocID' of the resolved document is not " +
                         "matching with the document ID '$docID' of the conflicting document."
@@ -1454,26 +1276,24 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val docID = "doc"
         val localData = mapOf("key1" to "value1")
         val remoteData = mapOf("key2" to "value2")
-        val config = getConfig(ReplicatorType.PULL)
 
         makeConflict(docID, localData, remoteData)
         var resolver = TestConflictResolver {
-            otherDB.getDocument(docID) // doc from different DB!!
+            targetCollection.getDocument(docID) // doc from different DB!!
         }
-        config.conflictResolver = resolver
-        lateinit var token: ListenerToken
-        lateinit var replicator: Replicator
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        val replicator = config.testReplicator()
         var error: CouchbaseLiteException? = null
-
-        run(config) { repl ->
-            replicator = repl
-            token = repl.addDocumentReplicationListener { docRepl ->
-                val err = docRepl.documents.firstOrNull()?.error
-                if (err != null) {
-                    error = err
-                }
+        val token = replicator.addDocumentReplicationListener { docRepl ->
+            val err = docRepl.documents.firstOrNull()?.error
+            if (err != null) {
+                error = err
             }
         }
+
+        try {
+            replicator.run()
+        } catch (ignored: Exception) {}
         assertNotNull(error)
         assertTrue(
             error!!.code == CBLError.Code.UNEXPECTED_ERROR || // Java uses this code
@@ -1482,13 +1302,14 @@ class ReplicatorEETest : BaseReplicatorTest() {
         )
         assertEquals(CBLError.Domain.CBLITE, error!!.domain)
 
-        replicator.removeChangeListener(token)
+        token.remove()
         resolver = TestConflictResolver { conflict ->
             conflict.remoteDocument
         }
-        config.conflictResolver = resolver
-        run(config)
-        assertEquals(remoteData, baseTestDb.getDocument(docID)!!.toMap())
+        val colConfig = CollectionConfiguration(conflictResolver = resolver)
+        config.addCollection(testCollection, colConfig)
+        config.run()
+        assertEquals(remoteData, testCollection.getDocument(docID)!!.toMap())
     }
 
     /// disabling since, exceptions inside conflict handler will leak, since objc doesn't perform release
@@ -1502,37 +1323,37 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val docID = "doc"
         val localData = mapOf("key1" to "value1")
         val remoteData = mapOf("key2" to "value2")
-        val config = getConfig(ReplicatorType.PULL)
 
         makeConflict(docID, localData, remoteData)
         var resolver = TestConflictResolver {
             throw IllegalStateException("some exception happened inside custom conflict resolution")
         }
-        config.conflictResolver = resolver
-        lateinit var token: ListenerToken
-        lateinit var replicator: Replicator
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        val replicator = config.testReplicator()
         var error: CouchbaseLiteException? = null
-
-        run(config) { repl ->
-            replicator = repl
-            token = repl.addDocumentReplicationListener { docRepl ->
-                val err = docRepl.documents.firstOrNull()?.error
-                if (err != null) {
-                    error = err
-                }
+        val token = replicator.addDocumentReplicationListener { docRepl ->
+            val err = docRepl.documents.firstOrNull()?.error
+            if (err != null) {
+                error = err
             }
         }
+
+        try {
+            replicator.run()
+        } catch (ignored: Exception) {}
 
         assertNotNull(error)
         assertEquals(CBLError.Code.CONFLICT, error!!.code)
         assertEquals(CBLError.Domain.CBLITE, error!!.domain)
-        replicator.removeChangeListener(token)
+        token.remove()
         resolver = TestConflictResolver { conflict ->
             conflict.remoteDocument
         }
-        config.conflictResolver = resolver
-        run(config)
-        assertEquals(remoteData, baseTestDb.getDocument(docID)!!.toMap())
+        val colConfig = CollectionConfiguration(conflictResolver = resolver)
+        config.addCollection(testCollection, colConfig)
+
+        config.run()
+        assertEquals(remoteData, testCollection.getDocument(docID)!!.toMap())
     }
 
     @Test
@@ -1543,50 +1364,49 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // higher generation-id
         var docID = "doc1"
         makeConflict(docID, localData, remoteData)
-        var doc = baseTestDb.getDocument(docID)!!.toMutable()
+        var doc = testCollection.getDocument(docID)!!.toMutable()
         doc.setString("key3", "value3")
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
         // delete local
         docID = "doc2"
         makeConflict(docID, localData, remoteData)
-        baseTestDb.delete(baseTestDb.getDocument(docID)!!)
-        doc = otherDB.getDocument(docID)!!.toMutable()
+        testCollection.delete(testCollection.getDocument(docID)!!)
+        doc = targetCollection.getDocument(docID)!!.toMutable()
         doc.setString("key3", "value3")
-        otherDB.save(doc)
+        targetCollection.save(doc)
 
         // delete remote
         docID = "doc3"
         makeConflict(docID, localData, remoteData)
-        doc = baseTestDb.getDocument(docID)!!.toMutable()
+        doc = testCollection.getDocument(docID)!!.toMutable()
         doc.setString("key3", "value3")
-        baseTestDb.save(doc)
-        otherDB.delete(otherDB.getDocument(docID)!!)
+        testCollection.save(doc)
+        targetCollection.delete(targetCollection.getDocument(docID)!!)
 
         // delete local but higher remote generation
         docID = "doc4"
         makeConflict(docID, localData, remoteData)
-        baseTestDb.delete(baseTestDb.getDocument(docID)!!)
-        doc = otherDB.getDocument(docID)!!.toMutable()
+        testCollection.delete(testCollection.getDocument(docID)!!)
+        doc = targetCollection.getDocument(docID)!!.toMutable()
         doc.setString("key3", "value3")
-        otherDB.save(doc)
-        doc = otherDB.getDocument(docID)!!.toMutable()
+        targetCollection.save(doc)
+        doc = targetCollection.getDocument(docID)!!.toMutable()
         doc.setString("key4", "value4")
-        otherDB.save(doc)
+        targetCollection.save(doc)
 
-        val config = getConfig(ReplicatorType.PULL)
-        config.conflictResolver = ReplicatorConfiguration.DEFAULT_CONFLICT_RESOLVER
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, ReplicatorConfiguration.DEFAULT_CONFLICT_RESOLVER)
+        config.run()
 
         // validate saved doc includes the key3, which is the highest generation.
-        assertEquals("value3", baseTestDb.getDocument("doc1")?.getString("key3"))
+        assertEquals("value3", testCollection.getDocument("doc1")?.getString("key3"))
 
         // validates the deleted doc is chosen for its counterpart doc which saved
-        assertNull(baseTestDb.getDocument("doc2"))
-        assertNull(baseTestDb.getDocument("doc3"))
+        assertNull(testCollection.getDocument("doc2"))
+        assertNull(testCollection.getDocument("doc3"))
 
         // validates the deleted doc is chosen without considering the generation.
-        assertNull(baseTestDb.getDocument("doc4"))
+        assertNull(testCollection.getDocument("doc4"))
     }
 
     @Test
@@ -1595,7 +1415,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val content = "I am a blob".encodeToByteArray()
         var blob = Blob("text/plain", content)
 
-        val config = getConfig(ReplicatorType.PULL)
 
         // RESOLVE WITH REMOTE and BLOB data in LOCAL
         var localData = mapOf("key1" to "value1", "blob" to blob)
@@ -1604,22 +1423,24 @@ class ReplicatorEETest : BaseReplicatorTest() {
         var resolver = TestConflictResolver { conflict ->
             conflict.remoteDocument
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        config.run()
 
-        assertNull(baseTestDb.getDocument(docID)?.getBlob("blob"))
-        assertEquals(remoteData, baseTestDb.getDocument(docID)!!.toMap())
+        assertNull(testCollection.getDocument(docID)?.getBlob("blob"))
+        assertEquals(remoteData, testCollection.getDocument(docID)!!.toMap())
 
         // RESOLVE WITH LOCAL with BLOB data
         makeConflict(docID, localData, remoteData)
         resolver = TestConflictResolver { conflict ->
             conflict.localDocument
         }
-        config.conflictResolver = resolver
-        run(config)
+        var colConfig = CollectionConfiguration(conflictResolver = resolver)
+        config.addCollection(testCollection, colConfig)
 
-        assertEquals(blob, baseTestDb.getDocument(docID)?.getBlob("blob"))
-        assertEquals("value1", baseTestDb.getDocument(docID)?.getString("key1"))
+        config.run()
+
+        assertEquals(blob, testCollection.getDocument(docID)?.getBlob("blob"))
+        assertEquals("value1", testCollection.getDocument(docID)?.getString("key1"))
 
         // RESOLVE WITH LOCAL and BLOB data in REMOTE
         blob = Blob("text/plain", content)
@@ -1629,22 +1450,26 @@ class ReplicatorEETest : BaseReplicatorTest() {
         resolver = TestConflictResolver { conflict ->
             conflict.localDocument
         }
-        config.conflictResolver = resolver
-        run(config)
+        colConfig = CollectionConfiguration(conflictResolver = resolver)
+        config.addCollection(testCollection, colConfig)
 
-        assertNull(baseTestDb.getDocument(docID)?.getBlob("blob"))
-        assertEquals(localData, baseTestDb.getDocument(docID)!!.toMap())
+        config.run()
+
+        assertNull(testCollection.getDocument(docID)?.getBlob("blob"))
+        assertEquals(localData, testCollection.getDocument(docID)!!.toMap())
 
         // RESOLVE WITH REMOTE with BLOB data
         makeConflict(docID, localData, remoteData)
         resolver = TestConflictResolver { conflict ->
             conflict.remoteDocument
         }
-        config.conflictResolver = resolver
-        run(config)
+        colConfig = CollectionConfiguration(conflictResolver = resolver)
+        config.addCollection(testCollection, colConfig)
 
-        assertEquals(blob, baseTestDb.getDocument(docID)?.getBlob("blob"))
-        assertEquals("value2", baseTestDb.getDocument(docID)?.getString("key2"))
+        config.run()
+
+        assertEquals(blob, testCollection.getDocument(docID)?.getBlob("blob"))
+        assertEquals("value2", testCollection.getDocument(docID)?.getString("key2"))
     }
 
     // TODO: native C fails
@@ -1657,7 +1482,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val blob = Blob("text/plain", content)
         val localData = mapOf("key1" to "value1")
         val remoteData = mapOf("key2" to "value2", "blob" to blob)
-        val config = getConfig(ReplicatorType.PULL)
 
         // using remote document blob is okay to use!
         makeConflict(docID, localData, remoteData)
@@ -1666,36 +1490,35 @@ class ReplicatorEETest : BaseReplicatorTest() {
             mDoc?.setBlob("blob", conflict.remoteDocument?.getBlob("blob"))
             mDoc
         }
-        config.conflictResolver = resolver
-        lateinit var token: ListenerToken
-        lateinit var replicator: Replicator
-        run(config) { repl ->
-            replicator = repl
-            token = repl.addDocumentReplicationListener { docRepl ->
-                assertNull(docRepl.documents.firstOrNull()?.error)
-            }
+        val config = getConfig(ReplicatorType.PULL, resolver)
+        var replicator = config.testReplicator()
+        var token = replicator.addDocumentReplicationListener { docRepl ->
+            assertNull(docRepl.documents.firstOrNull()?.error)
         }
-        replicator.removeChangeListener(token)
+        replicator.run()
+        token.remove()
 
         // using blob from remote document of user's- which is a different database
-        val oDBDoc = otherDB.getDocument(docID)!!
+        val oDBDoc = targetCollection.getDocument(docID)!!
         makeConflict(docID, localData, remoteData)
         resolver = TestConflictResolver { conflict ->
             val mDoc = conflict.localDocument?.toMutable()
             mDoc?.setBlob("blob", oDBDoc.getBlob("blob"))
             mDoc
         }
-        config.conflictResolver = resolver
+        val colConfig = CollectionConfiguration(conflictResolver = resolver)
+        config.addCollection(testCollection, colConfig)
+        replicator = config.testReplicator()
         var error: CouchbaseLiteException? = null
-        run(config) { repl ->
-            replicator = repl
-            token = repl.addDocumentReplicationListener { docRepl ->
-                val err = docRepl.documents.firstOrNull()?.error
-                if (err != null) {
-                    error = err
-                }
+        token = replicator.addDocumentReplicationListener { docRepl ->
+            val err = docRepl.documents.firstOrNull()?.error
+            if (err != null) {
+                error = err
             }
         }
+        try {
+            replicator.run()
+        } catch (ignored: Exception) {}
         assertNotNull(error)
         assertEquals(CBLError.Code.UNEXPECTED_ERROR, error?.code)
         assertTrue(
@@ -1704,14 +1527,13 @@ class ReplicatorEETest : BaseReplicatorTest() {
                         "database. The save operation cannot complete."
             )
         )
-        replicator.removeChangeListener(token)
+        token.remove()
     }
 
     @Test
     fun testNonBlockingDatabaseOperationConflictResolver() {
         val localData = mapOf("key1" to "value1")
         val remoteData = mapOf("key2" to "value2")
-        val config = getConfig(ReplicatorType.PULL)
         makeConflict("doc1", localData, remoteData)
 
         var count = 0
@@ -1721,15 +1543,16 @@ class ReplicatorEETest : BaseReplicatorTest() {
             val timestamp = Clock.System.now().toString()
             val mDoc = MutableDocument("doc2", mapOf("timestamp" to timestamp))
             assertNotNull(mDoc)
-            assertTrue(baseTestDb.save(mDoc, ConcurrencyControl.FAIL_ON_CONFLICT))
+            assertTrue(testCollection.save(mDoc, ConcurrencyControl.FAIL_ON_CONFLICT))
 
-            val doc2 = baseTestDb.getDocument("doc2")
+            val doc2 = testCollection.getDocument("doc2")
             assertNotNull(doc2)
             assertEquals(timestamp, doc2.getString("timestamp"))
             conflict.remoteDocument
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+
+        config.run()
 
         assertEquals(1, count) // make sure, it entered the conflict resolver
     }
@@ -1745,7 +1568,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         makeConflict("doc1", localData, remoteData)
         makeConflict("doc2", localData, remoteData)
 
-        val config = getConfig(ReplicatorType.PULL)
         val order = mutableListOf<String>()
         val lock = reentrantLock()
         val resolver = TestConflictResolver { conflict ->
@@ -1766,8 +1588,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
             conflict.remoteDocument
         }
-        config.conflictResolver = resolver
-        run(config)
+        val config = getConfig(ReplicatorType.PULL, resolver)
+
+        config.run()
 
         assertTrue(mutex.lockWithTimeout(5.seconds))
 
@@ -1785,28 +1608,24 @@ class ReplicatorEETest : BaseReplicatorTest() {
         val docID = "doc"
         val localData = mapOf("key1" to "value1")
         val remoteData = mapOf("key2" to "value2")
-        val config = getConfig(ReplicatorType.PULL)
 
         makeConflict(docID, localData, remoteData)
         val resolver = TestConflictResolver { conflict ->
-            baseTestDb.purge(conflict.documentId)
+            testCollection.purge(conflict.documentId)
             conflict.remoteDocument
         }
-        config.conflictResolver = resolver
+        val config = getConfig(ReplicatorType.PULL, resolver)
         var error: CouchbaseLiteException? = null
-        lateinit var replicator: Replicator
-        lateinit var token: ListenerToken
-        run(config) { repl ->
-            replicator = repl
-            token = repl.addDocumentReplicationListener { docRepl ->
-                val err = docRepl.documents.firstOrNull()?.error
-                if (err != null) {
-                    error = err
-                }
+        val replicator = config.testReplicator()
+        val token = replicator.addDocumentReplicationListener { docRepl ->
+            val err = docRepl.documents.firstOrNull()?.error
+            if (err != null) {
+                error = err
             }
         }
+        replicator.run()
         assertNotNull(error)
         assertEquals(CBLError.Code.NOT_FOUND, error?.code)
-        replicator.removeChangeListener(token)
+        token.remove()
     }
 }

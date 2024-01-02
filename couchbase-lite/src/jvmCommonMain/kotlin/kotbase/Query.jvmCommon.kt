@@ -70,16 +70,12 @@ internal class DelegatedQuery(actual: CBLQuery) : DelegatedClass<CBLQuery>(actua
         }
     }
 
-    @Suppress("DEPRECATION")
     @Deprecated(
         "Use ListenerToken.remove()",
         ReplaceWith("token.remove()")
     )
     override fun removeChangeListener(token: ListenerToken) {
-        actual.removeChangeListener(token.actual)
-        if (token is SuspendListenerToken) {
-            token.scope.cancel()
-        }
+        token.remove()
     }
 }
 

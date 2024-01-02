@@ -18,7 +18,6 @@ package com.couchbase.lite
 import cocoapods.CouchbaseLite.*
 import kotbase.Collection
 import kotbase.ext.wrapCBLError
-import kotbase.internal.DelegatedClass
 
 internal actual fun Collection.getC4Document(id: String): C4Document {
     val doc = wrapCBLError { error ->
@@ -27,7 +26,7 @@ internal actual fun Collection.getC4Document(id: String): C4Document {
     return C4Document(doc?.c4Doc!!)
 }
 
-internal actual class C4Document(actual: CBLC4Document) : DelegatedClass<CBLC4Document>(actual) {
+internal actual class C4Document(private val actual: CBLC4Document) {
 
     actual fun isRevDeleted(): Boolean =
         (actual.revFlags and kRevDeleted.toUByte()) != 0.toUByte()

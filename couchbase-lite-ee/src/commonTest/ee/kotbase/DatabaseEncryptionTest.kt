@@ -16,7 +16,6 @@
 package kotbase
 
 import kotbase.internal.utils.FileUtils
-import kotbase.internal.utils.TestUtils.assertThrowsCBL
 import kotlin.test.*
 
 class DatabaseEncryptionTest : BaseDbTest() {
@@ -27,15 +26,14 @@ class DatabaseEncryptionTest : BaseDbTest() {
 
     @AfterTest
     fun tearDown() {
-        seekrit?.close()
+        eraseDb(seekrit)
         seekrit = null
-        Database.delete(SEEKRIT)
     }
 
     private fun openSeekrit(password: String?): Database {
         val config = DatabaseConfiguration()
         config.encryptionKey = if (password != null) EncryptionKey(password) else null
-        return Database(SEEKRIT, config)
+        return Database("seekrit", config)
     }
 
     @Test
@@ -43,18 +41,18 @@ class DatabaseEncryptionTest : BaseDbTest() {
         seekrit = openSeekrit(null)
 
         val doc = MutableDocument(mapOf("answer" to 42))
-        seekrit!!.save(doc)
+        seekrit!!.getDefaultCollection()!!.save(doc)
         seekrit!!.close()
         seekrit = null
 
         // Try to reopen with password (fails):
-        assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_A_DATABASE_FILE) {
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_A_DATABASE_FILE) {
             openSeekrit("wrong")
         }
 
         // Reopen with no password:
         seekrit = openSeekrit(null)
-        assertEquals(1, seekrit!!.count)
+        assertEquals(1, seekrit!!.getDefaultCollection()!!.count)
     }
 
     @Test
@@ -63,17 +61,17 @@ class DatabaseEncryptionTest : BaseDbTest() {
         seekrit = openSeekrit("letmein")
 
         val doc = MutableDocument(mapOf("answer" to 42))
-        seekrit!!.save(doc)
+        seekrit!!.getDefaultCollection()!!.save(doc)
         seekrit!!.close()
         seekrit = null
 
         // Reopen without password (fails):
-        assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_A_DATABASE_FILE) {
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_A_DATABASE_FILE) {
             openSeekrit(null)
         }
 
         // Reopen with wrong password (fails):
-        assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_A_DATABASE_FILE) {
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_A_DATABASE_FILE) {
             openSeekrit("wrong")
         }
 
@@ -91,18 +89,16 @@ class DatabaseEncryptionTest : BaseDbTest() {
 
         // Re-create database:
         seekrit = openSeekrit(null)
-        assertEquals(0, seekrit!!.count)
+        assertEquals(0, seekrit!!.getDefaultCollection()!!.count)
         seekrit!!.close()
-        seekrit = null
 
         // Make sure it doesn't need a password now:
         seekrit = openSeekrit(null)
-        assertEquals(0, seekrit!!.count)
+        assertEquals(0, seekrit!!.getDefaultCollection()!!.count)
         seekrit!!.close()
-        seekrit = null
 
         // Make sure old password doesn't work:
-        assertThrowsCBL(CBLError.Domain.CBLITE, CBLError.Code.NOT_A_DATABASE_FILE) {
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_A_DATABASE_FILE) {
             openSeekrit("letmein")
         }
     }
@@ -121,7 +117,7 @@ class DatabaseEncryptionTest : BaseDbTest() {
         val body = "This is a blob!".encodeToByteArray()
         var blob = Blob("text/plain", body)
         doc.setValue("blob", blob)
-        seekrit!!.save(doc)
+        seekrit!!.getDefaultCollection()!!.save(doc)
 
         // Read content from the raw blob file:
         blob = doc.getBlob("blob")!!
@@ -138,7 +134,7 @@ class DatabaseEncryptionTest : BaseDbTest() {
         }
 
         // Check blob content:
-        val savedDoc = seekrit!!.getDocument("att")
+        val savedDoc = seekrit!!.getDefaultCollection()!!.getDocument("att")
         assertNotNull(savedDoc)
         blob = savedDoc.getBlob("blob")!!
         assertNotNull(blob.digest)
@@ -150,66 +146,18 @@ class DatabaseEncryptionTest : BaseDbTest() {
     @Test
     fun testMultipleDatabases() {
         // Create encrypted database:
-        seekrit = openSeekrit(SEEKRIT)
+        seekrit = openSeekrit("seekrit")
 
         // Get another instance of the database:
-        val seekrit2 = openSeekrit(SEEKRIT)
+        val seekrit2 = openSeekrit("seekrit")
         seekrit2.close()
 
         // Try rekey:
         val newKey = EncryptionKey("foobar")
         seekrit!!.changeEncryptionKey(newKey)
-    }
 
-    fun rekey(oldPassword: String?, newPassword: String?) {
-        // First run the encryped blobs test to populate the database:
-        testEncryptedBlobs(oldPassword)
-
-        // Create some documents:
-        seekrit!!.inBatch {
-            for (i in 0..99) {
-                val doc = MutableDocument(mapOf("seq" to i))
-                save(doc)
-            }
-        }
-
-        // Rekey:
-        val newKey = if (newPassword != null) EncryptionKey(newPassword) else null
-        seekrit!!.changeEncryptionKey(newKey)
-
-        // Close & reopen seekrit:
-        seekrit!!.close()
-        seekrit = null
-
-        // Reopen the database with the new key:
-        val seekrit2 = openSeekrit(newPassword)
-        seekrit = seekrit2
-
-        // Check the document and its attachment
-        val doc = seekrit!!.getDocument("att")
-        assertNotNull(doc)
-        val blob = doc.getBlob("blob")!!
-        assertNotNull(blob.digest)
-        assertNotNull(blob.content)
-        val content = blob.content!!.decodeToString()
-        assertEquals("This is a blob!", content)
-
-        // Query documents:
-        val seq = Expression.property("seq")
-        val query = QueryBuilder
-            .select(SelectResult.expression(seq))
-            .from(DataSource.database(seekrit!!))
-            .where(seq.isValued())
-            .orderBy(Ordering.expression(seq))
-        val rs = query.execute()
-        assertEquals(100, rs.count())
-
-        for ((i, r) in rs.withIndex()) {
-            assertEquals(i, r.getInt(0))
-        }
-    }
-
-    companion object {
-        private const val SEEKRIT = "seekrit"
+        // Open with new password
+        val seekrit3 = openSeekrit("foobar")
+        seekrit3.close()
     }
 }

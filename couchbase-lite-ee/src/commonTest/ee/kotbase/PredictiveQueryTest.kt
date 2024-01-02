@@ -38,7 +38,7 @@ class PredictiveQueryTest : BaseQueryTest() {
     private fun createDocument(numbers: List<Int>): MutableDocument {
         val doc = MutableDocument()
         doc.setValue("numbers", numbers)
-        baseTestDb.save(doc)
+        testCollection.save(doc)
         return doc
     }
 
@@ -54,26 +54,25 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
         val q = QueryBuilder
             .select(SelectResult.expression(prediction))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
         // Query before registering the model:
-        assertThrowsCBL(CBLError.Domain.SQLITE, 1) {
+        assertThrowsCBLException(CBLError.Domain.SQLITE, 1) {
             q.execute()
         }
 
         val aggregateModel = AggregateModel()
         aggregateModel.registerModel()
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             val pred = r.getDictionary(0)!!
             assertEquals(15, pred.getInt("sum"))
         }
-        assertEquals(1, rows)
 
         aggregateModel.unregisterModel()
 
         // Query after unregistering the model:
-        assertThrowsCBL(CBLError.Domain.SQLITE, 1) {
+        assertThrowsCBLException(CBLError.Domain.SQLITE, 1) {
             q.execute()
         }
     }
@@ -90,26 +89,22 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
         val q = QueryBuilder
             .select(SelectResult.expression(prediction))
-            .from(DataSource.database(baseTestDb))
-        var rows = verifyQuery(q, false) { _, r ->
+            .from(DataSource.collection(testCollection))
+        verifyQuery(q, 1) { _, r ->
             val pred = r.getDictionary(0)!!
-            println("pred1 = ${pred.toJSON()}")
             assertEquals(15, pred.getInt("sum"))
         }
-        assertEquals(1, rows)
 
         // Register a new model with the same name:
         val echoModel = EchoModel()
         Database.prediction.registerModel(model, echoModel)
 
         // Query again should use the new model:
-        rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             val pred = r.getDictionary(0)!!
-            println("pred2 = ${pred.toJSON()}")
             assertNull(pred.getValue("sum"))
             assertIntContentEquals(listOf(1, 2, 3, 4, 5), pred.getArray("numbers")!!.toList())
         }
-        assertEquals(1, rows)
 
         Database.prediction.unregisterModel(model)
     }
@@ -124,7 +119,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         val doc = MutableDocument()
         doc.setString("name", "Daniel")
         doc.setInt("number", 2)
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
         // Create prediction function input:
         val date = Clock.System.nowMillis()
@@ -169,8 +164,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
         val q = QueryBuilder
             .select(SelectResult.expression(prediction))
-            .from(DataSource.database(baseTestDb))
-        val rows = verifyQuery(q, false) { _, r ->
+            .from(DataSource.collection(testCollection))
+        verifyQuery(q, 1) { _, r ->
             val pred = r.getDictionary(0)!!
             assertEquals(dict.size, pred.count)
             // Literal:
@@ -202,7 +197,6 @@ class PredictiveQueryTest : BaseQueryTest() {
             assertEquals(listOf("4", "5", "6"), pred.getArray("expr_value_array")!!.toList())
             assertEquals(4, pred.getInt("expr_power"))
         }
-        assertEquals(1, rows)
 
         echoModel.unregisterModel()
     }
@@ -217,7 +211,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         for (text in texts) {
             val doc = MutableDocument()
             doc.setBlob("text", blobForString(text))
-            baseTestDb.save(doc)
+            testCollection.save(doc)
         }
 
         val textModel = TextModel()
@@ -231,23 +225,22 @@ class PredictiveQueryTest : BaseQueryTest() {
             .select(
                 SelectResult.property("text"),
                 SelectResult.expression(prediction.propertyPath("wc")).`as`("wc")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("wc").greaterThan(Expression.value(15)))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             val blob = r.getBlob("text")!!
             val text = blob.content!!.decodeToString()
             assertEquals(texts[1], text)
             assertEquals(16, r.getInt("wc"))
         }
-        assertEquals(1, rows)
 
         textModel.unregisterModel()
     }
 
     @Test
     fun testPredictionWithBlobParameterInput() {
-        baseTestDb.save(MutableDocument())
+        testCollection.save(MutableDocument())
 
         val textModel = TextModel()
         textModel.registerModel()
@@ -258,7 +251,7 @@ class PredictiveQueryTest : BaseQueryTest() {
 
         val q = QueryBuilder
             .select(SelectResult.expression(prediction.propertyPath("wc")).`as`("wc"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
         val params = Parameters()
         params.setBlob(
@@ -267,17 +260,16 @@ class PredictiveQueryTest : BaseQueryTest() {
         )
         q.parameters = params
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             assertEquals(14, r.getInt(0))
         }
-        assertEquals(1, rows)
 
         textModel.unregisterModel()
     }
 
     @Test
     fun testPredictionWithNonSupportedInputTypes() {
-        baseTestDb.save(MutableDocument())
+        testCollection.save(MutableDocument())
 
         val echoModel = EchoModel()
         echoModel.registerModel()
@@ -288,9 +280,9 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
         val q = QueryBuilder
             .select(SelectResult.expression(prediction))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
-        assertThrowsCBL(CBLError.Domain.SQLITE, 1) {
+        assertThrowsCBLException(CBLError.Domain.SQLITE, 1) {
             q.execute()
         }
 
@@ -298,12 +290,12 @@ class PredictiveQueryTest : BaseQueryTest() {
         // Note: The code below will crash the test for Apple as Kotlin
         // cannot handle exception thrown by Objective-C
         //
-        //assertThrows<IllegalArgumentException> {
+        //assertFailsWith<IllegalArgumentException> {
         //    val input2 = Expression.value(mapOf("key" to this))
         //    val prediction2 = Function.prediction(model, input2)
         //    val q2 = QueryBuilder
         //        .select(SelectResult.expression(prediction2))
-        //        .from(DataSource.database(baseTestDb))
+        //        .from(DataSource.collection(testCollection))
         //    q2.execute()
         //}
 
@@ -323,9 +315,9 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
         val q = QueryBuilder
             .select(SelectResult.property("numbers"), SelectResult.expression(prediction))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 2) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
@@ -336,7 +328,6 @@ class PredictiveQueryTest : BaseQueryTest() {
             assertEquals(numbers.max().toInt(), pred.getInt("max"))
             assertEquals(numbers.average().toInt(), pred.getInt("avg"))
         }
-        assertEquals(2, rows)
 
         aggregateModel.unregisterModel()
     }
@@ -359,9 +350,9 @@ class PredictiveQueryTest : BaseQueryTest() {
                 SelectResult.expression(prediction.propertyPath("min")).`as`("min"),
                 SelectResult.expression(prediction.propertyPath("max")).`as`("max"),
                 SelectResult.expression(prediction.propertyPath("avg")).`as`("avg")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 2) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
@@ -381,7 +372,6 @@ class PredictiveQueryTest : BaseQueryTest() {
             assertEquals(numbers.max().toInt(), max)
             assertEquals(numbers.average().toInt(), avg)
         }
-        assertEquals(2, rows)
 
         aggregateModel.unregisterModel()
     }
@@ -404,10 +394,10 @@ class PredictiveQueryTest : BaseQueryTest() {
                 SelectResult.expression(prediction.propertyPath("min")).`as`("min"),
                 SelectResult.expression(prediction.propertyPath("max")).`as`("max"),
                 SelectResult.expression(prediction.propertyPath("avg")).`as`("avg")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
@@ -429,7 +419,6 @@ class PredictiveQueryTest : BaseQueryTest() {
             assertEquals(numbers.max().toInt(), max)
             assertEquals(numbers.average().toInt(), avg)
         }
-        assertEquals(1, rows)
 
         aggregateModel.unregisterModel()
     }
@@ -447,12 +436,12 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
         val q = QueryBuilder
             .select(SelectResult.expression(prediction.propertyPath("sum")).`as`("sum"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").greaterThan(Expression.value(1)))
             .orderBy(Ordering.expression(prediction.propertyPath("sum")).descending())
 
         val sums = mutableListOf<Int>()
-        val rows = verifyQuery(q, false) { _, r ->
+        val rows = verifyQueryWithEnumerator(q) { _, r ->
             sums.add(r.getInt(0))
         }
         assertEquals(2, rows)
@@ -467,7 +456,7 @@ class PredictiveQueryTest : BaseQueryTest() {
 
         val doc = MutableDocument()
         doc.setString("text", "Knox on fox in socks in box. Socks on Knox and Knox in box.")
-        saveDocInBaseTestDb(doc)
+        saveDocInCollection(doc)
 
         val aggregateModel = AggregateModel()
         aggregateModel.registerModel()
@@ -479,9 +468,9 @@ class PredictiveQueryTest : BaseQueryTest() {
             .select(
                 SelectResult.expression(prediction),
                 SelectResult.expression(prediction.propertyPath("sum")).`as`("sum")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
 
-        var rows = verifyQuery(q, false) { n, r ->
+        verifyQuery(q, 2) { n, r ->
             if (n == 1) {
                 assertNotNull(r.getDictionary(0))
                 assertEquals(15, r.getInt(1))
@@ -490,21 +479,19 @@ class PredictiveQueryTest : BaseQueryTest() {
                 assertNull(r.getValue(1))
             }
         }
-        assertEquals(2, rows)
 
         // Evaluate with nullOrMissing:
         q = QueryBuilder
             .select(
                 SelectResult.expression(prediction),
                 SelectResult.expression(prediction.propertyPath("sum")).`as`("sum")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
             .where(prediction.isValued())
 
-        rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             assertNotNull(r.getDictionary(0))
             assertEquals(15, r.getInt(1))
         }
-        assertEquals(1, rows)
     }
 
     @Test
@@ -519,24 +506,18 @@ class PredictiveQueryTest : BaseQueryTest() {
         val input = Expression.value(mapOf("numbers" to Expression.property("numbers")))
         val prediction = Function.prediction(model, input)
 
-        val index = IndexBuilder.valueIndex(
-            ValueIndexItem.expression(prediction.propertyPath("sum"))
-        )
-        baseTestDb.createIndex("SumIndex", index)
+        val index = IndexBuilder.valueIndex(ValueIndexItem.expression(prediction.propertyPath("sum")))
+        testCollection.createIndex("SumIndex", index)
 
         val q = QueryBuilder
-            .select(
-                SelectResult.property("numbers"),
-                SelectResult.expression(prediction.propertyPath("sum")).`as`("sum")
-            ).from(DataSource.database(baseTestDb))
+            .select(SelectResult.property("numbers"), SelectResult.expression(prediction.propertyPath("sum")).`as`("sum"))
+            .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         val explain = q.explain()
-        println("explain =")
-        println(explain)
         assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
@@ -544,7 +525,6 @@ class PredictiveQueryTest : BaseQueryTest() {
             val sum = r.getInt(1)
             assertEquals(numbers.sum(), sum)
         }
-        assertEquals(1, rows)
         assertEquals(2, aggregateModel.numberOfCalls)
     }
 
@@ -560,21 +540,17 @@ class PredictiveQueryTest : BaseQueryTest() {
         val input = Expression.value(mapOf("numbers" to Expression.property("numbers")))
         val prediction = Function.prediction(model, input)
 
-        val sumIndex = IndexBuilder.valueIndex(
-            ValueIndexItem.expression(prediction.propertyPath("sum"))
-        )
-        baseTestDb.createIndex("SumIndex", sumIndex)
+        val sumIndex = IndexBuilder.valueIndex(ValueIndexItem.expression(prediction.propertyPath("sum")))
+        testCollection.createIndex("SumIndex", sumIndex)
 
-        val avgIndex = IndexBuilder.valueIndex(
-            ValueIndexItem.expression(prediction.propertyPath("avg"))
-        )
-        baseTestDb.createIndex("AvgIndex", avgIndex)
+        val avgIndex = IndexBuilder.valueIndex(ValueIndexItem.expression(prediction.propertyPath("avg")))
+        testCollection.createIndex("AvgIndex", avgIndex)
 
         val q = QueryBuilder
             .select(
                 SelectResult.expression(prediction.propertyPath("sum")).`as`("sum"),
                 SelectResult.expression(prediction.propertyPath("avg")).`as`("avg")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
             .where(
                 prediction.propertyPath("sum").lessThanOrEqualTo(Expression.value(15)).or(
                     prediction.propertyPath("avg").equalTo(Expression.value(8))
@@ -585,10 +561,9 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
         assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 2) { _, r ->
             assertTrue(r.getInt(0) == 15 || r.getInt(1) == 8)
         }
-        assertEquals(2, rows)
     }
 
     @Test
@@ -607,13 +582,13 @@ class PredictiveQueryTest : BaseQueryTest() {
             ValueIndexItem.expression(prediction.propertyPath("sum")),
             ValueIndexItem.expression(prediction.propertyPath("avg"))
         )
-        baseTestDb.createIndex("SumAvgIndex", index)
+        testCollection.createIndex("SumAvgIndex", index)
 
         val q = QueryBuilder
             .select(
                 SelectResult.expression(prediction.propertyPath("sum")).`as`("sum"),
                 SelectResult.expression(prediction.propertyPath("avg")).`as`("avg")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
             .where(
                 prediction.propertyPath("sum").equalTo(Expression.value(15)).and(
                     prediction.propertyPath("avg").equalTo(Expression.value(3))
@@ -623,11 +598,10 @@ class PredictiveQueryTest : BaseQueryTest() {
         val explain = q.explain()
         assertNotEquals(-1, explain.indexOf("USING INDEX SumAvgIndex"))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             assertEquals(15, r.getInt(0))
             assertEquals(3, r.getInt(1))
         }
-        assertEquals(1, rows)
         assertEquals(4, aggregateModel.numberOfCalls)
     }
 
@@ -644,19 +618,19 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
 
         val index = IndexBuilder.predictiveIndex(model, input)
-        baseTestDb.createIndex("AggIndex", index)
+        testCollection.createIndex("AggIndex", index)
 
         val q = QueryBuilder
             .select(
                 SelectResult.property("numbers"),
                 SelectResult.expression(prediction.propertyPath("sum")).`as`("sum")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         val explain = q.explain()
         assertEquals(-1, explain.indexOf("USING INDEX AggIndex"))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
@@ -664,7 +638,6 @@ class PredictiveQueryTest : BaseQueryTest() {
             val sum = r.getInt(1)
             assertEquals(numbers.sum(), sum)
         }
-        assertEquals(1, rows)
         assertEquals(2, aggregateModel.numberOfCalls)
 
         aggregateModel.unregisterModel()
@@ -683,19 +656,19 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
 
         val index = IndexBuilder.predictiveIndex(model, input, listOf("sum"))
-        baseTestDb.createIndex("SumIndex", index)
+        testCollection.createIndex("SumIndex", index)
 
         val q = QueryBuilder
             .select(
                 SelectResult.property("numbers"),
                 SelectResult.expression(prediction.propertyPath("sum")).`as`("sum")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         val explain = q.explain()
         assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
@@ -703,7 +676,6 @@ class PredictiveQueryTest : BaseQueryTest() {
             val sum = r.getInt(1)
             assertEquals(numbers.sum(), sum)
         }
-        assertEquals(1, rows)
         assertEquals(2, aggregateModel.numberOfCalls)
 
         aggregateModel.unregisterModel()
@@ -722,16 +694,16 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
 
         val sumIndex = IndexBuilder.predictiveIndex(model, input, listOf("sum"))
-        baseTestDb.createIndex("SumIndex", sumIndex)
+        testCollection.createIndex("SumIndex", sumIndex)
 
         val avgIndex = IndexBuilder.predictiveIndex(model, input, listOf("avg"))
-        baseTestDb.createIndex("AvgIndex", avgIndex)
+        testCollection.createIndex("AvgIndex", avgIndex)
 
         val q = QueryBuilder
             .select(
                 SelectResult.expression(prediction.propertyPath("sum")).`as`("sum"),
                 SelectResult.expression(prediction.propertyPath("avg")).`as`("avg")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
             .where(
                 prediction.propertyPath("sum").lessThanOrEqualTo(Expression.value(15)).or(
                     prediction.propertyPath("avg").equalTo(Expression.value(8))
@@ -742,10 +714,9 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
         assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 2) { _, r ->
             assertTrue(r.getInt(0) == 15 || r.getInt(1) == 8)
         }
-        assertEquals(2, rows)
         assertEquals(aggregateModel.numberOfCalls, 2)
 
         aggregateModel.unregisterModel()
@@ -764,13 +735,13 @@ class PredictiveQueryTest : BaseQueryTest() {
         val prediction = Function.prediction(model, input)
 
         val index = IndexBuilder.predictiveIndex(model, input, listOf("sum", "avg"))
-        baseTestDb.createIndex("SumAvgIndex", index)
+        testCollection.createIndex("SumAvgIndex", index)
 
         val q = QueryBuilder
             .select(
                 SelectResult.expression(prediction.propertyPath("sum")).`as`("sum"),
                 SelectResult.expression(prediction.propertyPath("avg")).`as`("avg")
-            ).from(DataSource.database(baseTestDb))
+            ).from(DataSource.collection(testCollection))
             .where(
                 prediction.propertyPath("sum").equalTo(Expression.value(15)).and(
                     prediction.propertyPath("avg").equalTo(Expression.value(3))
@@ -780,11 +751,10 @@ class PredictiveQueryTest : BaseQueryTest() {
         val explain = q.explain()
         assertNotEquals(-1, explain.indexOf("USING INDEX SumAvgIndex"))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             assertEquals(r.getInt(0), 15)
             assertEquals(r.getInt(1), 3)
         }
-        assertEquals(1, rows)
         assertEquals(aggregateModel.numberOfCalls, 2)
 
         aggregateModel.unregisterModel()
@@ -804,37 +774,36 @@ class PredictiveQueryTest : BaseQueryTest() {
 
         // Index:
         val index = IndexBuilder.predictiveIndex(model, input, listOf("sum"))
-        baseTestDb.createIndex("SumIndex", index)
+        testCollection.createIndex("SumIndex", index)
 
         // Query with index:
         var q: Query = QueryBuilder
             .select(SelectResult.property("numbers"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
         var explain = q.explain()
         assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
 
-        var rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
         }
-        assertEquals(1, rows)
         assertEquals(aggregateModel.numberOfCalls, 2)
 
         // Delete SumIndex:
-        baseTestDb.deleteIndex("SumIndex")
+        testCollection.deleteIndex("SumIndex")
 
         // Query again:
         aggregateModel.reset()
         q = QueryBuilder
             .select(SelectResult.property("numbers"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
         explain = q.explain()
         assertEquals(-1, explain.indexOf("USING INDEX SumIndex"))
 
-        rows = verifyQuery(q, false) { _, r ->
+        val rows = verifyQueryWithEnumerator(q) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
@@ -859,20 +828,20 @@ class PredictiveQueryTest : BaseQueryTest() {
 
         // Create agg index:
         val aggIndex = IndexBuilder.predictiveIndex(model, input)
-        baseTestDb.createIndex("AggIndex", aggIndex)
+        testCollection.createIndex("AggIndex", aggIndex)
 
         // Create sum index:
         val sumIndex = IndexBuilder.predictiveIndex(model, input, listOf("sum"))
-        baseTestDb.createIndex("SumIndex", sumIndex)
+        testCollection.createIndex("SumIndex", sumIndex)
 
         // Create avg index:
         val avgIndex = IndexBuilder.predictiveIndex(model, input, listOf("avg"))
-        baseTestDb.createIndex("AvgIndex", avgIndex)
+        testCollection.createIndex("AvgIndex", avgIndex)
 
         // Query:
         var q: Query = QueryBuilder
             .select(SelectResult.property("numbers"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(
                 prediction.propertyPath("sum").lessThanOrEqualTo(Expression.value(15)).or(
                     prediction.propertyPath("avg").equalTo(Expression.value(8))
@@ -882,78 +851,74 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
         assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
 
-        var rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 2) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
         }
-        assertEquals(2, rows)
         assertEquals(2, aggregateModel.numberOfCalls)
 
         // Delete SumIndex:
-        baseTestDb.deleteIndex("SumIndex")
+        testCollection.deleteIndex("SumIndex")
 
         // Note: when having only one index, SQLite optimizer doesn't utilize the index
         //       when using OR expr. Hence, explicitly test each index with two queries:
         aggregateModel.reset()
         q = QueryBuilder
             .select(SelectResult.property("numbers"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         explain = q.explain()
         assertEquals(-1, explain.indexOf("USING INDEX SumIndex"))
 
-        rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
         }
-        assertEquals(1, rows)
         assertEquals(0, aggregateModel.numberOfCalls)
 
         aggregateModel.reset()
         q = QueryBuilder
             .select(SelectResult.property("numbers"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("avg").equalTo(Expression.value(8)))
         explain = q.explain()
         assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
 
-        rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
         }
-        assertEquals(1, rows)
         assertEquals(0, aggregateModel.numberOfCalls)
 
         // Delete AvgIndex
-        baseTestDb.deleteIndex("AvgIndex")
+        testCollection.deleteIndex("AvgIndex")
 
         aggregateModel.reset()
         q = QueryBuilder
             .select(SelectResult.property("numbers"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("avg").equalTo(Expression.value(8)))
         explain = q.explain()
         assertEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
 
-        rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
         }
-        assertEquals(1, rows)
         assertEquals(0, aggregateModel.numberOfCalls)
 
         // Delete AggIndex
-        baseTestDb.deleteIndex("AggIndex")
+        testCollection.deleteIndex("AggIndex")
 
         aggregateModel.reset()
         q = QueryBuilder
             .select(SelectResult.property("numbers"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
             .where(
                 prediction.propertyPath("sum").lessThanOrEqualTo(Expression.value(15)).or(
                     prediction.propertyPath("avg").equalTo(Expression.value(8))
@@ -963,12 +928,11 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertEquals(-1, explain.indexOf("USING INDEX SumIndex"))
         assertEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
 
-        rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, 2) { _, r ->
             @Suppress("UNCHECKED_CAST")
             val numbers = r.getArray(0)!!.toList() as List<Int>
             assertTrue(numbers.isNotEmpty())
         }
-        assertEquals(2, rows)
         assertTrue(aggregateModel.numberOfCalls > 0)
 
         aggregateModel.unregisterModel()
@@ -989,7 +953,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             doc.setValue("v1", test[0])
             doc.setValue("v2", test[1])
             doc.setValue("distance", test[2])
-            baseTestDb.save(doc)
+            testCollection.save(doc)
         }
 
         val distance = Function.euclideanDistance(
@@ -998,16 +962,15 @@ class PredictiveQueryTest : BaseQueryTest() {
         )
         val q = QueryBuilder
             .select(SelectResult.expression(distance), SelectResult.property("distance"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, tests.size) { _, r ->
             if (r.getValue(1) == null) {
                 assertNull(r.getValue(0))
             } else {
                 assertEquals(r.getInt(0), r.getInt(1))
             }
         }
-        assertEquals(rows, tests.size)
     }
 
     @Test
@@ -1025,7 +988,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             doc.setValue("v1", test[0])
             doc.setValue("v2", test[1])
             doc.setValue("distance", test[2])
-            baseTestDb.save(doc)
+            testCollection.save(doc)
         }
 
         val distance = Function.squaredEuclideanDistance(
@@ -1034,16 +997,15 @@ class PredictiveQueryTest : BaseQueryTest() {
         )
         val q = QueryBuilder
             .select(SelectResult.expression(distance), SelectResult.property("distance"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, tests.size) { _, r ->
             if (r.getValue(1) == null) {
                 assertNull(r.getValue(0))
             } else {
                 assertEquals(r.getInt(0), r.getInt(1))
             }
         }
-        assertEquals(rows, tests.size)
     }
 
     @Test
@@ -1062,7 +1024,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             doc.setValue("v1", test[0])
             doc.setValue("v2", test[1])
             doc.setValue("distance", test[2])
-            baseTestDb.save(doc)
+            testCollection.save(doc)
         }
 
         val distance = Function.cosineDistance(
@@ -1071,16 +1033,15 @@ class PredictiveQueryTest : BaseQueryTest() {
         )
         val q = QueryBuilder
             .select(SelectResult.expression(distance), SelectResult.property("distance"))
-            .from(DataSource.database(baseTestDb))
+            .from(DataSource.collection(testCollection))
 
-        val rows = verifyQuery(q, false) { _, r ->
+        verifyQuery(q, tests.size) { _, r ->
             if (r.getValue(1) == null) {
                 assertNull(r.getValue(0))
             } else {
                 assertEquals(r.getDouble(0), r.getDouble(1))
             }
         }
-        assertEquals(rows, tests.size)
     }
 }
 
