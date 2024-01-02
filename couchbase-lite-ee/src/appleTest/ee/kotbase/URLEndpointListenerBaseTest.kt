@@ -70,7 +70,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
         listener?.stop()
 
         // Listener:
-        val config = URLEndpointListenerConfiguration(otherDB)
+        val config = URLEndpointListenerConfiguration(targetDatabase)
         config.port = if (tls) wssPort else wsPort
         config.isTlsDisabled = !tls
         config.authenticator = auth
@@ -160,7 +160,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
             authenticator = auth
             pinnedServerCertificate = serverCert
         }
-        run(config, expectedError)
+        config.run(errCode = expectedError)
     }
 
     protected fun run(
@@ -182,7 +182,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
             serverCert,
             maxAttempts
         )
-        run(config, expectedError)
+        config.run(errCode = expectedError)
     }
 
     protected fun makeConfig(

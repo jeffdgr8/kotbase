@@ -157,7 +157,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         type: ReplicatorType,
         continuous: Boolean
     ): ReplicatorConfiguration {
-        val config = ReplicatorConfiguration(baseTestDb, target)
+        val config = ReplicatorConfiguration(testDatabase, target)
         config.type = type
         config.isContinuous = continuous
         return config
@@ -282,7 +282,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPushDoc() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        baseTestDb.save(doc1)
+        testDatabase.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
@@ -301,7 +301,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPullDoc() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        baseTestDb.save(doc1)
+        testDatabase.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
@@ -311,8 +311,8 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         val config = config(target, ReplicatorType.PULL, false)
         run(config)
 
-        assertEquals(2, baseTestDb.count)
-        val savedDoc = baseTestDb.getDocument("doc2")!!
+        assertEquals(2, testDatabase.count)
+        val savedDoc = testDatabase.getDocument("doc2")!!
         assertEquals("Cat", savedDoc.getString("name"))
     }
 
@@ -320,7 +320,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPushPullDoc() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        baseTestDb.save(doc1)
+        testDatabase.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
@@ -334,8 +334,8 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         val savedDoc1 = oDB.getDocument("doc1")!!
         assertEquals("Tiger", savedDoc1.getString("name"))
 
-        assertEquals(2, baseTestDb.count)
-        val savedDoc2 = baseTestDb.getDocument("doc2")!!
+        assertEquals(2, testDatabase.count)
+        val savedDoc2 = testDatabase.getDocument("doc2")!!
         assertEquals("Cat", savedDoc2.getString("name"))
     }
 
@@ -343,7 +343,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPushDocContinuous() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        baseTestDb.save(doc1)
+        testDatabase.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
@@ -362,7 +362,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPullDocContinuous() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        baseTestDb.save(doc1)
+        testDatabase.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
@@ -372,8 +372,8 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         val config = config(target, ReplicatorType.PULL, true)
         run(config)
 
-        assertEquals(2, baseTestDb.count)
-        val savedDoc = baseTestDb.getDocument("doc2")!!
+        assertEquals(2, testDatabase.count)
+        val savedDoc = testDatabase.getDocument("doc2")!!
         assertEquals("Cat", savedDoc.getString("name"))
     }
 
@@ -381,7 +381,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPushPullDocContinuous() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        baseTestDb.save(doc1)
+        testDatabase.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
@@ -395,8 +395,8 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         val savedDoc1 = oDB.getDocument("doc1")!!
         assertEquals("Tiger", savedDoc1.getString("name"))
 
-        assertEquals(2, baseTestDb.count)
-        val savedDoc2 = baseTestDb.getDocument("doc2")!!
+        assertEquals(2, testDatabase.count)
+        val savedDoc2 = testDatabase.getDocument("doc2")!!
         assertEquals("Cat", savedDoc2.getString("name"))
     }
 
@@ -414,8 +414,8 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
 //    }
 //
 //    private fun testCollectionsPushPullReplication(continuous: Boolean) {
-//        val col1a = baseTestDb.createCollection("colA", "scopeA")
-//        val col1b = baseTestDb.createCollection("colB", "scopeA")
+//        val col1a = testDatabase.createCollection("colA", "scopeA")
+//        val col1b = testDatabase.createCollection("colB", "scopeA")
 //
 //        val col2a = oDB.createCollection("colA", "scopeA")
 //        val col2b = oDB.createCollection("colB", "scopeA")
@@ -443,7 +443,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
 //
 //    @Test
 //    fun testMismatchedCollectionReplication() {
-//        val col1a = baseTestDb.createCollection("colA", "scopeA")
+//        val col1a = testDatabase.createCollection("colA", "scopeA")
 //        val col2b = oDB.createCollection("colB", "scopeA")
 //
 //        val target = MessageEndpoint("UID:123", null, ProtocolType.MESSAGE_STREAM, messageEndpointDelegate)
