@@ -17,11 +17,12 @@ package com.couchbase.lite
 
 import kotbase.Collection
 import kotbase.internal.DelegatedClass
+import com.couchbase.lite.internal.core.C4Document as CBLC4Document
 
 internal actual fun Collection.getC4Document(id: String): C4Document =
     C4Document(actual.getC4Document(id))
 
-internal actual class C4Document(actual: com.couchbase.lite.internal.core.C4Document) : DelegatedClass<com.couchbase.lite.internal.core.C4Document>(actual) {
+internal actual class C4Document(actual: CBLC4Document) : DelegatedClass<CBLC4Document>(actual) {
 
     actual fun isRevDeleted(): Boolean =
         actual.isRevDeleted
