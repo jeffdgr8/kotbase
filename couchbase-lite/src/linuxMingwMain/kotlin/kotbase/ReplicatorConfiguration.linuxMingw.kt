@@ -310,6 +310,34 @@ private constructor(
         addCollection(defaultCollection, updated)
     }
 
+    public override fun toString(): String {
+        return buildString {
+            append("ReplicatorConfig{(")
+            collectionConfigurations.keys.forEachIndexed { i, c ->
+                if (i != 0) append(", ")
+                append(c.fullName)
+            }
+            append(") ")
+
+            when (type) {
+                ReplicatorType.PULL, ReplicatorType.PUSH_AND_PULL -> append('<')
+                else -> {}
+            }
+
+            append(if (isContinuous) '*' else 'o')
+
+            when (type) {
+                ReplicatorType.PUSH, ReplicatorType.PUSH_AND_PULL -> append('>')
+                else -> {}
+            }
+
+            if (authenticator != null) append('@')
+            if (pinnedServerCertificate != null) append('^')
+
+            append(target).append('}')
+        }
+    }
+
     public actual companion object
 }
 
