@@ -20,7 +20,6 @@ import cocoapods.CouchbaseLite.isClosed
 import kotbase.ext.toByteArray
 import kotbase.ext.toSecCertificate
 import kotbase.internal.DelegatedClass
-import kotbase.internal.actuals
 import kotlinx.cinterop.convert
 import platform.Security.SecCertificateRef
 
@@ -326,6 +325,34 @@ private constructor(
         val updated = CollectionConfiguration(config)
         updated.updater()
         addCollection(defaultCollection, updated)
+    }
+
+    public override fun toString(): String {
+        return buildString {
+            append("ReplicatorConfig{(")
+            collectionConfigurations.keys.forEachIndexed { i, c ->
+                if (i != 0) append(", ")
+                append(c.fullName)
+            }
+            append(") ")
+
+            when (type) {
+                ReplicatorType.PULL, ReplicatorType.PUSH_AND_PULL -> append('<')
+                else -> {}
+            }
+
+            append(if (isContinuous) '*' else 'o')
+
+            when (type) {
+                ReplicatorType.PUSH, ReplicatorType.PUSH_AND_PULL -> append('>')
+                else -> {}
+            }
+
+            if (authenticator != null) append('@')
+            if (pinnedServerCertificate != null) append('^')
+
+            append(target).append('}')
+        }
     }
 
     public actual companion object

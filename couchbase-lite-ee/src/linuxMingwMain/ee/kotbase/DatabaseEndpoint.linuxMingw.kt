@@ -29,4 +29,7 @@ internal constructor(
         CBLEndpoint_CreateWithLocalDB(database.actual)!!,
         database
     )
+
+    public override fun toString(): String =
+        "DatabaseEndpoint{database=$database}"
 }
