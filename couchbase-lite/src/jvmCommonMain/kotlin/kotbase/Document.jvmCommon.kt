@@ -33,8 +33,7 @@ internal constructor(
         get() {
             if (collectionInternal == null) {
                 val actualCollection = actual.collection ?: return null
-                val db = actualCollection.database()
-                collectionInternal = actual.collection?.asCollection(db)
+                collectionInternal = Collection(actualCollection, actualCollection.database())
             }
             return collectionInternal
         }

@@ -15,7 +15,6 @@
  */
 package kotbase
 
-import kotbase.test.IgnoreApple
 import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -27,32 +26,28 @@ class DatabaseEETest : BaseReplicatorTest() {
 
     // DatabaseTest.swift
 
-    // TODO: https://issues.couchbase.com/browse/CBL-3526
-    // Hangs often on iOS (just recently)
-    // at mutex2.lock(), q2 listener never called
-    @IgnoreApple
     @Test
     fun testCloseWithActiveReplicators() = runBlocking {
         // Live Queries:
 
-        val mutex1 = Mutex(true)
-        val mutex2 = Mutex(true)
+        val change1 = Mutex(true)
+        val change2 = Mutex(true)
 
-        val ds = DataSource.database(baseTestDb)
+        val ds = DataSource.database(testDatabase)
 
         val q1 = QueryBuilder.select().from(ds)
-        q1.addChangeListener { mutex1.unlock() }
+        q1.addChangeListener { change1.unlock() }
 
         val q2 = QueryBuilder.select().from(ds)
-        q2.addChangeListener { mutex2.unlock() }
+        q2.addChangeListener { change2.unlock() }
 
-        assertTrue(mutex1.lockWithTimeout(5.seconds))
-        assertTrue(mutex2.lockWithTimeout(5.seconds))
+        assertTrue(change1.lockWithTimeout(5.seconds))
+        assertTrue(change2.lockWithTimeout(5.seconds))
 
         // Replicators:
 
-        val target = DatabaseEndpoint(otherDB)
-        val config = ReplicatorConfiguration(baseTestDb, target)
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = ReplicatorConfiguration(testDatabase, target)
         config.isContinuous = true
 
         config.type = ReplicatorType.PUSH
@@ -70,7 +65,7 @@ class DatabaseEETest : BaseReplicatorTest() {
         assertTrue(idle1.lockWithTimeout(5.seconds))
         assertTrue(idle2.lockWithTimeout(5.seconds))
 
-        baseTestDb.close()
+        testDatabase.close()
 
         assertTrue(stopped1.lockWithTimeout(5.seconds))
         assertTrue(stopped2.lockWithTimeout(5.seconds))
@@ -87,11 +82,10 @@ class DatabaseEETest : BaseReplicatorTest() {
         replicator.start()
     }
 
-    // TODO: https://issues.couchbase.com/browse/CBL-3526
     @Test
     fun testCloseWithActiveLiveQueriesAndReplicators() = runBlocking {
-        val target = DatabaseEndpoint(otherDB)
-        val config = ReplicatorConfiguration(baseTestDb, target)
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = ReplicatorConfiguration(testDatabase, target)
         config.isContinuous = true
 
         config.type = ReplicatorType.PUSH
@@ -109,7 +103,7 @@ class DatabaseEETest : BaseReplicatorTest() {
         assertTrue(idle1.lockWithTimeout(5.seconds))
         assertTrue(idle2.lockWithTimeout(5.seconds))
 
-        baseTestDb.close()
+        testDatabase.close()
 
         assertTrue(stopped1.lockWithTimeout(5.seconds))
         assertTrue(stopped2.lockWithTimeout(5.seconds))

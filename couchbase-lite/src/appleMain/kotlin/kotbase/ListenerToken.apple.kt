@@ -16,6 +16,7 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLListenerTokenProtocol
+import cocoapods.CouchbaseLite.CBLReplicator
 import kotbase.internal.DelegatedProtocol
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -46,6 +47,30 @@ internal class SuspendListenerToken(
     val scope: CoroutineScope,
     actual: CBLListenerTokenProtocol
 ) : ListenerToken(actual) {
+
+    override fun removeImpl() {
+        super.removeImpl()
+        scope.cancel()
+    }
+}
+
+// Workaround for CBLListenerToken.remove not working for Replicator.addDocumentReplicationListener
+// https://www.couchbase.com/forums/t/cbl-ios-adddocumentreplicationlistener-listenertoken-remove-fails-to-remove-listener/37695
+internal open class ReplicatorListenerToken(
+    actual: CBLListenerTokenProtocol,
+    private val replicator: CBLReplicator
+) : ListenerToken(actual) {
+
+    override fun removeImpl() {
+        replicator.removeChangeListenerWithToken(actual)
+    }
+}
+
+internal class SuspendReplicatorListenerToken(
+    val scope: CoroutineScope,
+    actual: CBLListenerTokenProtocol,
+    replicator: CBLReplicator
+) : ReplicatorListenerToken(actual, replicator) {
 
     override fun removeImpl() {
         super.removeImpl()

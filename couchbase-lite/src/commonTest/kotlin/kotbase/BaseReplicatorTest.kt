@@ -35,8 +35,9 @@ internal class ListenerAwaiter(
     companion object {
         private val STOP_STATES = setOf(
             ReplicatorActivityLevel.STOPPED,
-            ReplicatorActivityLevel.OFFLINE,
-            ReplicatorActivityLevel.IDLE
+            // behavior of ReplicatorTest.swift
+            //ReplicatorActivityLevel.OFFLINE,
+            //ReplicatorActivityLevel.IDLE
         )
     }
 
@@ -54,6 +55,15 @@ internal class ListenerAwaiter(
         Report.log("Test replicator state change: $level", e)
 
         if (e != null) err.compareAndSet(null, e)
+
+        // behavior of ReplicatorTest.swift
+        val replicator = change.replicator
+        if (replicator.config.isContinuous &&
+            status.activityLevel == ReplicatorActivityLevel.IDLE &&
+            status.progress.completed == status.progress.total
+        ) {
+            replicator.stop()
+        }
 
         if (stopStates.contains(level)) latch.countDown()
     }
@@ -201,19 +211,19 @@ abstract class BaseReplicatorTest : BaseDbTest() {
         return repl
     }
 
-    protected suspend fun ReplicatorConfiguration.run(reset: Boolean = false, errDomain: String? = null, errCode: Int = 0) =
+    protected fun ReplicatorConfiguration.run(reset: Boolean = false, errDomain: String? = null, errCode: Int = 0) =
         this.testReplicator().run(reset, errDomain, errCode)
 
-    protected suspend fun Replicator.run(reset: Boolean = false, errDomain: String? = null, errCode: Int = 0): Replicator {
-        val awaiter = ReplicatorAwaiter(this, testSerialCoroutineContext)
+    protected fun Replicator.run(reset: Boolean = false, errDomain: String? = null, errCode: Int = 0): Replicator = runBlocking {
+        val awaiter = ReplicatorAwaiter(this@run, testSerialCoroutineContext)
 
         Report.log("Test replicator starting: $config")
         var ok = false
         try {
-            this.start(reset)
+            this@run.start(reset)
             ok = awaiter.awaitCompletion(LONG_TIMEOUT_SEC.seconds)
         } finally {
-            this.stop()
+            this@run.stop()
             Report.log("Test replicator ${if (ok) "finished" else "timed out"}", awaiter.error)
         }
 
@@ -235,6 +245,19 @@ abstract class BaseReplicatorTest : BaseDbTest() {
             }
         }
 
-        return this
+        this@run
+    }
+}
+
+class TestConflictResolver(
+    // set this resolver, which will be used while resolving the conflict
+    val resolver: ConflictResolver
+) : ConflictResolver {
+
+    var winner: Document? = null
+
+    override fun invoke(conflict: Conflict): Document? {
+        winner = resolver(conflict)
+        return winner
     }
 }

@@ -148,16 +148,12 @@ internal constructor(
         }
     }
 
-    @Suppress("DEPRECATION")
     @Deprecated(
         "Use ListenerToken.remove",
         ReplaceWith("token.remove()")
     )
     public actual fun removeChangeListener(token: ListenerToken) {
-        actual.removeChangeListener(token.actual)
-        if (token is SuspendListenerToken) {
-            token.scope.cancel()
-        }
+        token.remove()
     }
 
     actual override fun close() {

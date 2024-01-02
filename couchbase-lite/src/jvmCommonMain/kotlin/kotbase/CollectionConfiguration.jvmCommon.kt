@@ -37,7 +37,7 @@ internal constructor(
             channels,
             documentIDs,
             pullFilter?.convert(),
-            pullFilter?.convert(),
+            pushFilter?.convert(),
             conflictResolver?.convert()
         ),
         pullFilter,
