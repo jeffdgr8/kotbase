@@ -22,7 +22,7 @@ import libcblite.*
 internal fun FLDict.toMap(ctxt: DbContext?): Map<String, Any?> {
     return buildMap {
         memScoped {
-            this@toMap.iterator(this).forEach {
+            this@toMap.keyValueIterator(this).forEach {
                 put(it.first, it.second.toObject(ctxt))
             }
         }
@@ -45,9 +45,8 @@ internal fun Map<String, String>.toFLDict(): FLDict {
 
 internal fun FLDict.keys(): List<String> {
     return memScoped {
-        iterator(this)
+        keyIterator(this)
             .asSequence()
-            .map { it.first }
             .toList()
     }
 }
