@@ -121,48 +121,56 @@ internal constructor(
             unsavedBlobs.remove(key)
         }
         updateUnsavedBlobContext()
+        mutate()
         return this
     }
 
     public actual fun setString(key: String, value: String?): MutableDictionary {
         actual.setString(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     public actual fun setNumber(key: String, value: Number?): MutableDictionary {
         actual.setNumber(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     public actual fun setInt(key: String, value: Int): MutableDictionary {
         actual.setInt(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     public actual fun setLong(key: String, value: Long): MutableDictionary {
         actual.setLong(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     public actual fun setFloat(key: String, value: Float): MutableDictionary {
         actual.setFloat(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     public actual fun setDouble(key: String, value: Double): MutableDictionary {
         actual.setDouble(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     public actual fun setBoolean(key: String, value: Boolean): MutableDictionary {
         actual.setBoolean(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
@@ -175,12 +183,14 @@ internal constructor(
             unsavedBlobs.remove(key)
         }
         updateUnsavedBlobContext()
+        mutate()
         return this
     }
 
     public actual fun setDate(key: String, value: Instant?): MutableDictionary {
         actual.setDate(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
@@ -190,6 +200,7 @@ internal constructor(
         if (value != null) {
             collectionMap[key] = value
         }
+        mutate()
         return this
     }
 
@@ -199,12 +210,14 @@ internal constructor(
         if (value != null) {
             collectionMap[key] = value
         }
+        mutate()
         return this
     }
 
     public actual fun remove(key: String): MutableDictionary {
         actual.remove(key)
         removeInternal(key)
+        mutate()
         return this
     }
 

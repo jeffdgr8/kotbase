@@ -105,16 +105,50 @@ internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Itera
     public actual open fun toJSON(): String =
         actual.toJSON()
 
-    actual override fun iterator(): Iterator<Any?> =
-        ArrayIterator(count)
+    private var mutations: Long = 0
 
-    private inner class ArrayIterator(private val count: Int) : Iterator<Any?> {
+    protected fun mutate() {
+        mutations++
+    }
+
+    private val isMutated: Boolean
+        get() = mutations > 0
+
+    actual override fun iterator(): Iterator<Any?> =
+        ArrayIterator(count, mutations)
+
+    private inner class ArrayIterator(
+        private val count: Int,
+        private val mutations: Long
+    ) : Iterator<Any?> {
 
         private var index = 0
 
         override fun hasNext(): Boolean = index < count
 
-        override fun next(): Any? = getValue(index++)
+        override fun next(): Any? {
+            if (this@Array.mutations != mutations) {
+                throw ConcurrentModificationException("Array modified during iteration")
+            }
+            return getValue(index++)
+        }
+    }
+
+    override fun toString(): String {
+        return buildString {
+            append("Array{(")
+            append(if (this@Array is MutableArray) '+' else '.')
+            append(if (isMutated) '!' else '.')
+            append(')')
+            val n = count
+            for (i in 0..<n) {
+                if (i > 0) {
+                    append(',')
+                }
+                append(getValue(i))
+            }
+            append('}')
+        }
     }
 }
 

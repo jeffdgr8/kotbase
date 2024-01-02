@@ -91,9 +91,52 @@ internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actu
     public actual operator fun contains(key: String): Boolean =
         actual.containsValueForKey(key)
 
+    private var mutations: Long = 0
+
+    protected fun mutate() {
+        mutations++
+    }
+
+    private val isMutated: Boolean
+        get() = mutations > 0
+
     @Suppress("UNCHECKED_CAST")
     actual override fun iterator(): Iterator<String> =
-        (actual.keys as List<String>).iterator()
+        DictionaryIterator((actual.keys as List<String>).iterator(), mutations)
+
+    private inner class DictionaryIterator(
+        private val iterator: Iterator<String>,
+        private val mutations: Long
+    ) : Iterator<String> {
+
+        override fun hasNext(): Boolean = iterator.hasNext()
+
+        override fun next(): String {
+            if (this@Dictionary.mutations != mutations) {
+                throw ConcurrentModificationException("Dictionary modified during iteration")
+            }
+            return iterator.next()
+        }
+    }
+
+    override fun toString(): String {
+        return buildString {
+            append("Dictionary{(")
+            append(if (this@Dictionary is MutableDictionary) '+' else '.')
+            append(if (isMutated) '!' else '.')
+            append(')')
+            var first = true
+            for (key in keys) {
+                if (first) {
+                    first = false
+                } else {
+                    append(',')
+                }
+                append(key).append("=>").append(getValue(key))
+            }
+            append('}')
+        }
+    }
 }
 
 internal fun CBLDictionary.asDictionary() = Dictionary(this)

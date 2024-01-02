@@ -51,6 +51,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         collectionMap.clear()
         actual.setData(data.actualIfDelegated())
         setBooleans(data)
+        mutate()
         return this
     }
 
@@ -63,6 +64,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)
         }
+        mutate()
         return this
     }
 
@@ -79,66 +81,77 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         } else {
             collectionMap.remove(key)
         }
+        mutate()
         return this
     }
 
     public actual fun setString(key: String, value: String?): MutableDictionary {
         actual.setString(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setNumber(key: String, value: Number?): MutableDictionary {
         actual.setNumber(value as NSNumber?, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setInt(key: String, value: Int): MutableDictionary {
         actual.setInteger(value.convert(), key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setLong(key: String, value: Long): MutableDictionary {
         actual.setLongLong(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setFloat(key: String, value: Float): MutableDictionary {
         actual.setFloat(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setDouble(key: String, value: Double): MutableDictionary {
         actual.setDouble(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setBoolean(key: String, value: Boolean): MutableDictionary {
         actual.setBoolean(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setBlob(key: String, value: Blob?): MutableDictionary {
         actual.setBlob(value?.actual, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setDate(key: String, value: Instant?): MutableDictionary {
         actual.setDate(value?.toNSDate(), key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setArray(key: String, value: Array?): MutableDictionary {
         actual.setArray(value?.actual, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
@@ -146,12 +159,14 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         checkSelf(value)
         actual.setDictionary(value?.actual, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun remove(key: String): MutableDictionary {
         actual.removeValueForKey(key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 

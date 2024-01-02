@@ -124,8 +124,32 @@ internal constructor(
     public actual operator fun contains(key: String): Boolean =
         keys.contains(key)
 
+    private var mutations: Long = 0
+
+    protected fun mutate() {
+        mutations++
+    }
+
+    private val isMutated: Boolean
+        get() = mutations > 0
+
     actual override fun iterator(): Iterator<String> =
-        keys.iterator()
+        DictionaryIterator(keys.iterator(), mutations)
+
+    private inner class DictionaryIterator(
+        private val iterator: Iterator<String>,
+        private val mutations: Long
+    ) : Iterator<String> {
+
+        override fun hasNext(): Boolean = iterator.hasNext()
+
+        override fun next(): String {
+            if (this@Dictionary.mutations != mutations) {
+                throw ConcurrentModificationException("Dictionary modified during iteration")
+            }
+            return iterator.next()
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -155,7 +179,7 @@ internal constructor(
         return buildString {
             append("Dictionary{(")
             append(if (this@Dictionary is MutableDictionary) '+' else '.')
-            //append(if (isMutated) '!' else '.')
+            append(if (isMutated) '!' else '.')
             append(')')
             var first = true
             for (key in keys) {
