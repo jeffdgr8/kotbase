@@ -20,10 +20,10 @@ import kotlinx.cinterop.alloc
 import kotlinx.cinterop.ptr
 import libcblite.*
 
-internal fun FLDict.iterator(memScope: MemScope): Iterator<Pair<String, FLValue>> =
-    FLDictKIterator(this, memScope)
+internal fun FLDict.keyValueIterator(memScope: MemScope): Iterator<Pair<String, FLValue>> =
+    FLDictKeyValueIterator(this, memScope)
 
-private class FLDictKIterator(
+private class FLDictKeyValueIterator(
     dict: FLDict,
     memScope: MemScope
 ) : Iterator<Pair<String, FLValue>> {
@@ -42,5 +42,29 @@ private class FLDictKIterator(
         val value = FLDictIterator_GetValue(itr.ptr)!!
         FLDictIterator_Next(itr.ptr)
         return Pair(key, value)
+    }
+}
+
+internal fun FLDict.keyIterator(memScope: MemScope): Iterator<String> =
+    FLDictKeyIterator(this, memScope)
+
+private class FLDictKeyIterator(
+    dict: FLDict,
+    memScope: MemScope
+) : Iterator<String> {
+
+    private val itr = memScope.alloc<FLDictIterator>()
+
+    init {
+        FLDictIterator_Begin(dict, itr.ptr)
+    }
+
+    override fun hasNext(): Boolean =
+        FLDictIterator_GetValue(itr.ptr) != null
+
+    override fun next(): String {
+        val key = FLDictIterator_GetKeyString(itr.ptr).toKString() ?: throw NoSuchElementException()
+        FLDictIterator_Next(itr.ptr)
+        return key
     }
 }
