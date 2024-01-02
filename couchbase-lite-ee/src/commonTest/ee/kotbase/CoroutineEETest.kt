@@ -27,9 +27,9 @@ import kotlin.time.Duration.Companion.seconds
 class CoroutineEETest : BaseCoroutineTest() {
 
     private fun runWithReplicator(test: (Replicator) -> Unit) {
-        val target = DatabaseEndpoint(otherDB)
-        val config = makeConfig(target, ReplicatorType.PUSH, true)
-        val replicator = testReplicator(config)
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = true)
+        val replicator = config.testReplicator()
         val stopped = Mutex(true)
         @OptIn(ExperimentalCoroutinesApi::class)
         replicator.addChangeListener(Dispatchers.Default.limitedParallelism(1)) {
@@ -57,7 +57,7 @@ class CoroutineEETest : BaseCoroutineTest() {
                 replicator.start()
             },
             change = {
-                saveDocInBaseTestDb(MutableDocument("newDoc"))
+                saveDocInCollection(MutableDocument("newDoc"))
             }
         )
     }
@@ -73,10 +73,7 @@ class CoroutineEETest : BaseCoroutineTest() {
                 }
             },
             change = {
-                saveDocInBaseTestDb(MutableDocument("newDoc"))
-            },
-            removeListener = { token ->
-                token.remove()
+                saveDocInCollection(MutableDocument("newDoc"))
             }
         )
     }
@@ -91,10 +88,10 @@ class CoroutineEETest : BaseCoroutineTest() {
                 replicator.start()
             },
             listenedChange = {
-                saveDocInBaseTestDb(MutableDocument("listenedDoc"))
+                saveDocInCollection(MutableDocument("listenedDoc"))
             },
             notListenedChange = {
-                saveDocInBaseTestDb(MutableDocument("notListenedDoc"))
+                saveDocInCollection(MutableDocument("notListenedDoc"))
             }
         )
     }
@@ -111,7 +108,7 @@ class CoroutineEETest : BaseCoroutineTest() {
                 replicator.start()
             },
             change = {
-                saveDocInBaseTestDb(MutableDocument("newDoc"))
+                saveDocInCollection(MutableDocument("newDoc"))
             }
         )
     }
@@ -127,10 +124,7 @@ class CoroutineEETest : BaseCoroutineTest() {
                 }
             },
             change = {
-                saveDocInBaseTestDb(MutableDocument("newDoc"))
-            },
-            removeListener = { token ->
-                token.remove()
+                saveDocInCollection(MutableDocument("newDoc"))
             }
         )
     }
@@ -145,10 +139,10 @@ class CoroutineEETest : BaseCoroutineTest() {
                 replicator.start()
             },
             listenedChange = {
-                saveDocInBaseTestDb(MutableDocument("listenedDoc"))
+                saveDocInCollection(MutableDocument("listenedDoc"))
             },
             notListenedChange = {
-                saveDocInBaseTestDb(MutableDocument("notListenedDoc"))
+                saveDocInCollection(MutableDocument("notListenedDoc"))
             }
         )
     }
