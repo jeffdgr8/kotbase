@@ -22,13 +22,11 @@ import kotbase.internal.wrapCBLError
 import kotbase.util.to
 import kotbase.util.toList
 import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import libcblite.*
 import kotlin.coroutines.CoroutineContext
@@ -92,6 +90,16 @@ private constructor(
     public actual val serverCertificates: List<ByteArray>?
         get() = null
 
+    private fun checkPullOnlyPendingDocIds() {
+        if (config.type == ReplicatorType.PULL) {
+            throw CouchbaseLiteException(
+                "Pending Document IDs are not supported on pull-only replicators.",
+                CBLError.Domain.CBLITE,
+                CBLError.Code.UNSUPPORTED
+            )
+        }
+    }
+
     @Suppress("DEPRECATION")
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
@@ -99,6 +107,7 @@ private constructor(
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {
+        checkPullOnlyPendingDocIds()
         config.database.mustBeOpen()
         return wrapCBLError { error ->
             val dict = CBLReplicator_PendingDocumentIDs(actual, error)
@@ -111,6 +120,7 @@ private constructor(
     @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(collection: Collection): Set<String> {
+        checkPullOnlyPendingDocIds()
         config.database.mustBeOpen()
         return wrapCBLError { error ->
             val dict = CBLReplicator_PendingDocumentIDs2(actual, collection.actual, error)
@@ -126,6 +136,7 @@ private constructor(
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun isDocumentPending(docId: String): Boolean {
+        checkPullOnlyPendingDocIds()
         return wrapCBLError { error ->
             memScoped {
                 CBLReplicator_IsDocumentPending(actual, docId.toFLString(this), error)
