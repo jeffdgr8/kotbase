@@ -51,6 +51,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         data.forEach { checkSelf(it) }
         actual.setData(data.actualIfDelegated())
         setBooleans(data)
+        mutate()
         return this
     }
 
@@ -63,6 +64,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)
         }
+        mutate()
         return this
     }
 
@@ -80,6 +82,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         } else {
             collectionMap.remove(index)
         }
+        mutate()
         return this
     }
 
@@ -87,6 +90,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.setString(value, index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 
@@ -94,6 +98,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.setNumber(value as NSNumber?, index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 
@@ -101,6 +106,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.setInteger(value.convert(), index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 
@@ -108,6 +114,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.setLongLong(value, index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 
@@ -115,6 +122,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.setFloat(value, index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 
@@ -122,6 +130,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.setDouble(value, index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 
@@ -129,6 +138,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.setBoolean(value, index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 
@@ -136,6 +146,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.setBlob(value?.actual, index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 
@@ -143,6 +154,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.setDate(value?.toNSDate(), index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 
@@ -155,6 +167,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         } else {
             collectionMap[index] = value
         }
+        mutate()
         return this
     }
 
@@ -166,6 +179,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         } else {
             collectionMap[index] = value
         }
+        mutate()
         return this
     }
 
@@ -177,51 +191,61 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
             is Boolean -> actual.addBoolean(value)
             else -> actual.addValue(value?.actualIfDelegated())
         }
+        mutate()
         return this
     }
 
     public actual fun addString(value: String?): MutableArray {
         actual.addString(value)
+        mutate()
         return this
     }
 
     public actual fun addNumber(value: Number?): MutableArray {
         actual.addNumber(value as NSNumber?)
+        mutate()
         return this
     }
 
     public actual fun addInt(value: Int): MutableArray {
         actual.addInteger(value.convert())
+        mutate()
         return this
     }
 
     public actual fun addLong(value: Long): MutableArray {
         actual.addLongLong(value)
+        mutate()
         return this
     }
 
     public actual fun addFloat(value: Float): MutableArray {
         actual.addFloat(value)
+        mutate()
         return this
     }
 
     public actual fun addDouble(value: Double): MutableArray {
         actual.addDouble(value)
+        mutate()
         return this
     }
 
     public actual fun addBoolean(value: Boolean): MutableArray {
         actual.addBoolean(value)
+        mutate()
         return this
     }
 
     public actual fun addBlob(value: Blob?): MutableArray {
         actual.addBlob(value?.actual)
+        mutate()
         return this
     }
 
     public actual fun addDate(value: Instant?): MutableArray {
         actual.addDate(value?.toNSDate())
+        mutate()
         return this
     }
 
@@ -231,6 +255,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         if (value != null) {
             collectionMap[count - 1] = value
         }
+        mutate()
         return this
     }
 
@@ -239,6 +264,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         if (value != null) {
             collectionMap[count - 1] = value
         }
+        mutate()
         return this
     }
 
@@ -255,6 +281,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         if (value is Array || value is Dictionary) {
             collectionMap[index] = value
         }
+        mutate()
         return this
     }
 
@@ -262,6 +289,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkInsertIndex(index)
         actual.insertString(value, index.convert())
         incrementAfter(index, collectionMap)
+        mutate()
         return this
     }
 
@@ -269,6 +297,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkInsertIndex(index)
         actual.insertNumber(value as NSNumber?, index.convert())
         incrementAfter(index, collectionMap)
+        mutate()
         return this
     }
 
@@ -276,6 +305,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkInsertIndex(index)
         actual.insertInteger(value.convert(), index.convert())
         incrementAfter(index, collectionMap)
+        mutate()
         return this
     }
 
@@ -283,6 +313,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkInsertIndex(index)
         actual.insertLongLong(value, index.convert())
         incrementAfter(index, collectionMap)
+        mutate()
         return this
     }
 
@@ -290,6 +321,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkInsertIndex(index)
         actual.insertFloat(value, index.convert())
         incrementAfter(index, collectionMap)
+        mutate()
         return this
     }
 
@@ -297,6 +329,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkInsertIndex(index)
         actual.insertDouble(value, index.convert())
         incrementAfter(index, collectionMap)
+        mutate()
         return this
     }
 
@@ -304,6 +337,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkInsertIndex(index)
         actual.insertBoolean(value, index.convert())
         incrementAfter(index, collectionMap)
+        mutate()
         return this
     }
 
@@ -311,6 +345,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkInsertIndex(index)
         actual.insertBlob(value?.actual, index.convert())
         incrementAfter(index, collectionMap)
+        mutate()
         return this
     }
 
@@ -318,6 +353,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkInsertIndex(index)
         actual.insertDate(value?.toNSDate(), index.convert())
         incrementAfter(index, collectionMap)
+        mutate()
         return this
     }
 
@@ -329,6 +365,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         if (value != null) {
             collectionMap[index] = value
         }
+        mutate()
         return this
     }
 
@@ -339,6 +376,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         if (value != null) {
             collectionMap[index] = value
         }
+        mutate()
         return this
     }
 
@@ -346,6 +384,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
         checkIndex(index)
         actual.removeValueAtIndex(index.convert())
         collectionMap.remove(index)
+        mutate()
         return this
     }
 

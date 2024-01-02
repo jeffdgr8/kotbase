@@ -127,7 +127,11 @@ internal constructor(
             is Array -> setArray(index, value)
             is Map<*, *> -> setDictionary(index, MutableDictionary(value as Map<String, Any?>))
             is Dictionary -> setDictionary(index, value)
-            null -> FLMutableArray_SetNull(actual, index.convert())
+            null -> {
+                FLMutableArray_SetNull(actual, index.convert())
+                removeInternal(index)
+                mutate()
+            }
             else -> invalidTypeError(value)
         }
         return this
@@ -143,6 +147,7 @@ internal constructor(
             FLMutableArray_SetNull(actual, index.convert())
         }
         removeInternal(index)
+        mutate()
         return this
     }
 
@@ -155,6 +160,7 @@ internal constructor(
             else -> FLMutableArray_SetInt(actual, index.convert(), value.toLong().convert())
         }
         removeInternal(index)
+        mutate()
         return this
     }
 
@@ -162,6 +168,7 @@ internal constructor(
         checkIndex(index)
         FLMutableArray_SetInt(actual, index.convert(), value.convert())
         removeInternal(index)
+        mutate()
         return this
     }
 
@@ -169,6 +176,7 @@ internal constructor(
         checkIndex(index)
         FLMutableArray_SetInt(actual, index.convert(), value.convert())
         removeInternal(index)
+        mutate()
         return this
     }
 
@@ -176,6 +184,7 @@ internal constructor(
         checkIndex(index)
         FLMutableArray_SetFloat(actual, index.convert(), value)
         removeInternal(index)
+        mutate()
         return this
     }
 
@@ -183,6 +192,7 @@ internal constructor(
         checkIndex(index)
         FLMutableArray_SetDouble(actual, index.convert(), value)
         removeInternal(index)
+        mutate()
         return this
     }
 
@@ -190,6 +200,7 @@ internal constructor(
         checkIndex(index)
         FLMutableArray_SetBool(actual, index.convert(), value)
         removeInternal(index)
+        mutate()
         return this
     }
 
@@ -207,6 +218,7 @@ internal constructor(
         }
         value?.checkSetDb(dbContext)
         updateUnsavedBlobContext()
+        mutate()
         return this
     }
 
@@ -220,6 +232,7 @@ internal constructor(
             FLMutableArray_SetNull(actual, index.convert())
         }
         removeInternal(index)
+        mutate()
         return this
     }
 
@@ -233,6 +246,7 @@ internal constructor(
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
+        mutate()
         return this
     }
 
@@ -245,6 +259,7 @@ internal constructor(
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
+        mutate()
         return this
     }
 
@@ -261,7 +276,10 @@ internal constructor(
             is Array -> addArray(value)
             is Map<*, *> -> addDictionary(MutableDictionary(value as Map<String, Any?>))
             is Dictionary -> addDictionary(value)
-            null -> FLMutableArray_AppendNull(actual)
+            null -> {
+                FLMutableArray_AppendNull(actual)
+                mutate()
+            }
             else -> invalidTypeError(value)
         }
         return this
@@ -275,6 +293,7 @@ internal constructor(
         } else {
             FLMutableArray_AppendNull(actual)
         }
+        mutate()
         return this
     }
 
@@ -285,31 +304,37 @@ internal constructor(
             null -> FLMutableArray_AppendNull(actual)
             else -> FLMutableArray_AppendInt(actual, value.toLong().convert())
         }
+        mutate()
         return this
     }
 
     public actual fun addInt(value: Int): MutableArray {
         FLMutableArray_AppendInt(actual, value.convert())
+        mutate()
         return this
     }
 
     public actual fun addLong(value: Long): MutableArray {
         FLMutableArray_AppendInt(actual, value.convert())
+        mutate()
         return this
     }
 
     public actual fun addFloat(value: Float): MutableArray {
         FLMutableArray_AppendFloat(actual, value)
+        mutate()
         return this
     }
 
     public actual fun addDouble(value: Double): MutableArray {
         FLMutableArray_AppendDouble(actual, value)
+        mutate()
         return this
     }
 
     public actual fun addBoolean(value: Boolean): MutableArray {
         FLMutableArray_AppendBool(actual, value)
+        mutate()
         return this
     }
 
@@ -323,6 +348,7 @@ internal constructor(
             FLMutableArray_AppendBlob(actual, value.actual)
         }
         value?.checkSetDb(dbContext)
+        mutate()
         return this
     }
 
@@ -334,6 +360,7 @@ internal constructor(
         } else {
             FLMutableArray_AppendNull(actual)
         }
+        mutate()
         return this
     }
 
@@ -345,6 +372,7 @@ internal constructor(
         } else {
             FLMutableArray_AppendNull(actual)
         }
+        mutate()
         return this
     }
 
@@ -355,6 +383,7 @@ internal constructor(
         } else {
             FLMutableArray_AppendNull(actual)
         }
+        mutate()
         return this
     }
 
@@ -441,6 +470,7 @@ internal constructor(
         checkIndex(index)
         FLMutableArray_Remove(actual, index.convert(), 1.convert())
         removeInternal(index)
+        mutate()
         return this
     }
 
