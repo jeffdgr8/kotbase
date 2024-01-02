@@ -1,5 +1,11 @@
+public final class kotbase/ktx/CollectionExtKt {
+	public static final fun documentFlow (Lkotbase/Collection;Ljava/lang/String;Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun documentFlow$default (Lkotbase/Collection;Ljava/lang/String;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
 public final class kotbase/ktx/DatabaseExtKt {
 	public static final fun documentFlow (Lkotbase/Database;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun documentFlow (Lkotbase/Database;Ljava/lang/String;Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class kotbase/ktx/DocumentBuilder {
@@ -32,7 +38,32 @@ public final class kotbase/ktx/DocumentExtensionsKt {
 public final class kotbase/ktx/ExpressionExtKt {
 	public static final fun between (Lkotbase/Expression;Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
 	public static final fun contains (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun div (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun div (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun div (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun div (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun div (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
+	public static final fun minus (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun minus (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun minus (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun minus (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun minus (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
 	public static final fun notContains (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun plus (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun plus (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun plus (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun plus (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun plus (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
+	public static final fun rem (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun rem (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun rem (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun rem (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun rem (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
+	public static final fun times (Lkotbase/Expression;D)Lkotbase/Expression;
+	public static final fun times (Lkotbase/Expression;F)Lkotbase/Expression;
+	public static final fun times (Lkotbase/Expression;I)Lkotbase/Expression;
+	public static final fun times (Lkotbase/Expression;J)Lkotbase/Expression;
+	public static final fun times (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
 }
 
 public final class kotbase/ktx/IndexBuilderExtKt {
@@ -69,6 +100,7 @@ public final class kotbase/ktx/QueryBuilderExtensionsKt {
 	public static final fun equalTo (Lkotbase/Expression;Ljava/util/Map;)Lkotbase/Expression;
 	public static final fun equalTo (Lkotbase/Expression;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
 	public static final fun equalTo (Lkotbase/Expression;Z)Lkotbase/Expression;
+	public static final fun from (Lkotbase/FromRouter;Lkotbase/Collection;)Lkotbase/From;
 	public static final fun from (Lkotbase/FromRouter;Lkotbase/Database;)Lkotbase/From;
 	public static final fun greaterThan (Lkotbase/Expression;D)Lkotbase/Expression;
 	public static final fun greaterThan (Lkotbase/Expression;F)Lkotbase/Expression;

@@ -1,7 +1,9 @@
 public final class kotbase/paging/QueryPagingSourceKt {
 	public static final fun QueryPagingSource (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
 	public static final fun QueryPagingSourceString (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
+	public static final fun QueryPagingSourceStringWithQuery (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Collection;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
 	public static final fun QueryPagingSourceStringWithQuery (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
+	public static final fun QueryPagingSourceWithQuery (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Collection;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
 	public static final fun QueryPagingSourceWithQuery (Lkotlin/coroutines/CoroutineContext;Lkotbase/Select;Lkotbase/Database;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Landroidx/paging/PagingSource;
 }
 
