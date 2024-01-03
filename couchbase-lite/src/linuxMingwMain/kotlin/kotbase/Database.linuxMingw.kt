@@ -438,6 +438,7 @@ private constructor(
             wrapCBLError { error ->
                 CBLDatabase_DeleteDocument(actual, document.actual, error)
             }
+            document.isDeleted = true
         }
     }
 
@@ -456,7 +457,7 @@ private constructor(
                         concurrencyControl.actual,
                         error
                     ).also {
-                        document.database = null
+                        document.isDeleted = true
                     }
                 }
             } catch (e: CouchbaseLiteException) {
