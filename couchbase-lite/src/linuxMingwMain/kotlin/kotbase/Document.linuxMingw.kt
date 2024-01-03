@@ -187,11 +187,13 @@ internal constructor(
         return result
     }
 
+    internal var isDeleted = false
+
     override fun toString(): String {
         val buf = StringBuilder("Document{").append(identityHashCodeHex())
             .append(id).append('@').append(revisionID)
             .append('(').append(if (this is MutableDocument) '+' else '.')
-        //    .append(if (isDeleted) '?' else '.').append("):")
+            .append(if (isDeleted) '?' else '.').append("):")
         var first = true
         for (key in keys) {
             if (first) {

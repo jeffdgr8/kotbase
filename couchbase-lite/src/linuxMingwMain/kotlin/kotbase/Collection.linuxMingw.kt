@@ -152,6 +152,7 @@ internal constructor(
         wrapCBLError { error ->
             CBLCollection_DeleteDocument(actual, document.actual, error)
         }
+        document.isDeleted = true
     }
 
     @Throws(CouchbaseLiteException::class)
@@ -164,7 +165,7 @@ internal constructor(
                     concurrencyControl.actual,
                     error
                 ).also {
-                    document.database = null
+                    document.isDeleted = true
                 }
             }
         } catch (e: CouchbaseLiteException) {
