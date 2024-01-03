@@ -160,6 +160,7 @@ private constructor(
                     }?.asScope(this@Database)?.let(::add)
                 }
             }
+            FLMutableArray_Release(names)
         }
     }
 
@@ -216,6 +217,7 @@ private constructor(
                         }?.asCollection(this@Database)?.let(::add)
                     }
                 }
+                FLMutableArray_Release(names)
             }
         }
     }
@@ -329,9 +331,8 @@ private constructor(
             wrapCBLError { error ->
                 memScoped {
                     CBLDatabase_GetDocument(actual, id.toFLString(this), error)
-                        ?.asDocument(this@Database)
                 }
-            }
+            }?.asDocument(this@Database)
         }
     }
 
@@ -693,9 +694,11 @@ private constructor(
     @Throws(CouchbaseLiteException::class)
     public actual fun getIndexes(): List<String> {
         return mustBeOpen {
+            val names = CBLDatabase_GetIndexNames(actual)
             @Suppress("UNCHECKED_CAST")
-            CBLDatabase_GetIndexNames(actual)
-                ?.toList(null) as List<String>? ?: emptyList()
+            (names?.toList(null) as List<String>?)?.also {
+                FLArray_Release(names)
+            } ?: emptyList()
         }
     }
 

@@ -1205,7 +1205,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
         replicator.run()
 
-        // make sure only single listener event is fired when conflict occured.
+        // make sure only single listener event is fired when conflict occurred.
         assertEquals(1, docIds.size)
         assertEquals(docID, docIds.first())
         token.remove()
