@@ -266,8 +266,7 @@ class DbCollectionsTest : BaseDbTest() {
 
     @Test
     fun testCreateThenGetCollectionFromDifferentDatabaseInstance() {
-        val otherDb = duplicateDb(testDatabase)
-        try {
+        duplicateDb(testDatabase).use { otherDb ->
             testDatabase.createCollection("testColl")
             val collection = otherDb.getCollection("testColl")
             assertNotNull(collection)
@@ -281,8 +280,6 @@ class DbCollectionsTest : BaseDbTest() {
             testDatabase.createCollection("testColl")
             val collectionRecreated = otherDb.getCollection("testColl")
             assertNotSame(collectionRecreated, collection)
-        } finally {
-            otherDb.close()
         }
     }
 
