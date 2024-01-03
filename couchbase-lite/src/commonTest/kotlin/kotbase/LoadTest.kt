@@ -226,7 +226,7 @@ class LoadTest : BaseDbTest() {
         Report.log("Load test $testName completed in $elapsedTime (${maxTimeMs}) on $device")
         assertTrue(
             elapsedTime < maxTimeMs,
-            "Load test $testName over time: $elapsedTime > $maxTimeMs"
+            "Load test $testName over time: $elapsedTime > $maxTimeMs (on $device)"
         )
     }
 }
