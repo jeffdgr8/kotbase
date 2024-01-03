@@ -36,7 +36,7 @@ actual abstract class PlatformTest {
 
     actual fun setupPlatform() {
         val console = Database.log.console
-        console.level = LogLevel.DEBUG
+        console.level = LogLevel.INFO
         console.domains = LogDomain.ALL_DOMAINS
     }
 
