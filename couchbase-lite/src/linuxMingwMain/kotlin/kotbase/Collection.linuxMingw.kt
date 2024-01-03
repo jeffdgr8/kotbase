@@ -317,9 +317,11 @@ internal constructor(
     @Throws(CouchbaseLiteException::class)
     public actual fun getIndexes(): Set<String> {
         return wrapCBLError { error ->
+            val names = CBLCollection_GetIndexNames(actual, error)
             @Suppress("UNCHECKED_CAST")
-            (CBLCollection_GetIndexNames(actual, error)
-                ?.toList(null) as List<String>?)?.toSet() ?: emptySet()
+            (names?.toList(null) as List<String>?)?.also {
+                FLMutableArray_Release(names)
+            }?.toSet() ?: emptySet()
         }
     }
 

@@ -111,9 +111,9 @@ private constructor(
         config.database.mustBeOpen()
         return wrapCBLError { error ->
             val dict = CBLReplicator_PendingDocumentIDs(actual, error)
-            dict?.keys()?.toSet()?.also {
+            dict?.keys()?.also {
                 FLDict_Release(dict)
-            } ?: emptySet()
+            }?.toSet() ?: emptySet()
         }
     }
 
@@ -124,9 +124,9 @@ private constructor(
         config.database.mustBeOpen()
         return wrapCBLError { error ->
             val dict = CBLReplicator_PendingDocumentIDs2(actual, collection.actual, error)
-            dict?.keys()?.toSet()?.also {
+            dict?.keys()?.also {
                 FLDict_Release(dict)
-            } ?: emptySet()
+            }?.toSet() ?: emptySet()
         }
     }
 

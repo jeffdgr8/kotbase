@@ -23,12 +23,20 @@ import kotbase.internal.wrapCBLError
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.memScoped
 import libcblite.*
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 public actual class Scope
 internal constructor(
     internal val actual: CPointer<CBLScope>,
     public actual val database: Database
 ) {
+
+    @OptIn(ExperimentalNativeApi::class)
+    @Suppress("unused")
+    private val cleaner = createCleaner(actual) {
+        CBLScope_Release(it)
+    }
 
     public actual val name: String
         get() = CBLScope_Name(actual).toKString()!!
@@ -46,6 +54,7 @@ internal constructor(
                     }?.asCollection(database)?.let(::add)
                 }
             }
+            FLMutableArray_Release(names)
         }
     }
 

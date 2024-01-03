@@ -41,7 +41,8 @@ internal constructor(
         FLDict_Retain(memory.properties)
     }
 
-    public open val actual: CPointer<CBLDocument> = actual
+    public open val actual: CPointer<CBLDocument>
+        get() = memory.actual
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
