@@ -61,14 +61,12 @@ class DatabaseTest : BaseDbTest() {
 
         // open db with same db name and default option
         val (otherDb, otherCollection) = duplicateTestDb()
-        try {
+        otherDb.use {
             assertNotSame(testDatabase, otherDb)
 
             // get doc from other DB.
             assertEquals(1, otherCollection.count)
             verifyDocInCollection(doc.id)
-        } finally {
-            otherDb.close()
         }
     }
 
@@ -164,7 +162,7 @@ class DatabaseTest : BaseDbTest() {
 
         // Create db with default
         val (otherDb, otherCollection) = duplicateTestDb()
-        try {
+        otherDb.use {
             assertNotSame(otherDb, testDatabase)
             assertNotSame(otherCollection, testCollection)
             assertEquals(n + 1, otherCollection.count)
@@ -172,8 +170,6 @@ class DatabaseTest : BaseDbTest() {
             // Attempt to save the doc in the wrong db
             doc.setValue(TEST_DOC_TAG_KEY, "bam!!!")
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.save(doc) }
-        } finally {
-            otherDb.close()
         }
     }
 
@@ -271,15 +267,13 @@ class DatabaseTest : BaseDbTest() {
         // Create db with same name:
         // Create db with default
         val (otherDb, otherCollection) = duplicateTestDb()
-        try {
+        otherDb.use {
             assertNotSame(otherDb, testDatabase)
             assertNotSame(otherCollection, testCollection)
             assertEquals(n + 1, testCollection.count)
 
             // Delete from the wrong db
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.delete(doc) }
-        } finally {
-            otherDb.close()
         }
     }
 
@@ -376,15 +370,13 @@ class DatabaseTest : BaseDbTest() {
 
         // Create db with default:
         val (otherDb, otherCollection) = duplicateTestDb()
-        try {
+        otherDb.use {
             assertNotSame(otherDb, testDatabase)
             assertNotSame(otherCollection, testCollection)
             assertEquals(n + 1, otherCollection.count)
 
             // purge document against other db instance:
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.purge(doc) }
-        } finally {
-            otherDb.close()
         }
     }
 
@@ -723,15 +715,13 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(FileUtils.dirExists(path))
 
         val (otherDb, otherCollection) = duplicateTestDb()
-        try {
+        otherDb.use {
             assertNotSame(testDatabase, otherDb)
             assertNotSame(testCollection, otherCollection)
             assertEquals(n, otherCollection.count)
 
             // delete db
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.BUSY) { testDatabase.delete() }
-        } finally {
-            otherDb.close()
         }
     }
 
@@ -903,8 +893,7 @@ class DatabaseTest : BaseDbTest() {
         collection.save(doc)
 
         // delete the collection in a different database
-        val otherDb = duplicateDb(testDatabase)
-        try {
+        duplicateDb(testDatabase).use { otherDb ->
             otherDb.deleteCollection("bobblehead", "horo")
             assertNull(testDatabase.getCollection("bobblehead", "horo"))
 
@@ -934,8 +923,6 @@ class DatabaseTest : BaseDbTest() {
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) {
                 collection.createIndex("index", IndexBuilder.valueIndex(ValueIndexItem.property("firstName")))
             }
-        } finally {
-            otherDb.close()
         }
     }
 
@@ -1119,8 +1106,7 @@ class DatabaseTest : BaseDbTest() {
         collectionNames.forEach { assertNotNull(testDatabase.getCollection(it, scope.name)) }
 
         // delete the collections from a different database
-        val otherDatabase = Database(testDatabase.name)
-        try {
+        Database(testDatabase.name).use { otherDatabase ->
             val otherScope = otherDatabase.getScope(scope.name)
             assertNotNull(otherScope!!)
 
@@ -1141,8 +1127,6 @@ class DatabaseTest : BaseDbTest() {
             val collections = scope.getCollections()
             assertNotNull(collections)
             assertTrue(collections.isEmpty())
-        } finally {
-            otherDatabase.close()
         }
     }
 
