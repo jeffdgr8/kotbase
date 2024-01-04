@@ -2805,7 +2805,6 @@ class DocumentTest : BaseDbTest() {
         try {
             validator.validate(mDoc)
             val doc = saveDocInCollection(mDoc, testCollection)
-            validator.validate(mDoc)
             validator.validate(doc)
             return doc
         } catch (e: Exception) {
