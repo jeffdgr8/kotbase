@@ -39,6 +39,7 @@ class LoadTest : BaseDbTest() {
             "shamu" to 200,
             "hammerhead" to 150,
             "occam" to 220,
+            "sdk_phone64_x86_64" to 370, // GitHub action runner
         )
     }
 
