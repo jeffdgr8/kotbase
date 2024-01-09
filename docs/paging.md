@@ -52,7 +52,7 @@ val queryProvider: From.() -> LimitRouter = {
 val pagingSource = QueryPagingSource(
     EmptyCoroutineContext,
     select,
-    database,
+    collection,
     mapper,
     queryProvider
 )

@@ -34,27 +34,27 @@ as well as other convenience functions for composing queries, observing change `
 The syntax for building a query is more straight-forward thanks to Kotlin's `infix` function support.
 
 ```kotlin
-select(all()) from database where { "type" equalTo "user" }
+select(all()) from collection where { "type" equalTo "user" }
 ```
 
 Or just a bunch of fields:
 
 ```kotlin
-select("name", "surname") from database where { "type" equalTo "user" }
+select("name", "surname") from collection where { "type" equalTo "user" }
 ```
 
 Or if you also want the document ID:
 
 ```kotlin
-select(Meta.id, all()) from database where { "type" equalTo "user" }
-select(Meta.id, "name", "surname") from database where { "type" equalTo "user" }
+select(Meta.id, all()) from collection where { "type" equalTo "user" }
+select(Meta.id, "name", "surname") from collection where { "type" equalTo "user" }
 ```
 
 You can even do more powerful querying:
 
 ```kotlin
 select("name", "type")
-    .from(database)
+    .from(collection)
     .where {
         (("type" equalTo "user") and ("name" equalTo "Damian")) or
         (("type" equalTo "pet") and ("name" like "Kitt"))
@@ -66,7 +66,7 @@ select("name", "type")
 There are also convenience extensions for performing `SELECT COUNT(*)` queries:
 
 ```kotlin
-val query = selectCount() from database where { "type" equalTo "user" }
+val query = selectCount() from collection where { "type" equalTo "user" }
 val count = query.execute().countResult()
 ```
 
@@ -83,7 +83,7 @@ val document = MutableDocument {
     "type" to "user"
 }
 
-database.save(document)
+collection.save(document)
 ```
 
 #### Collection creation functions
@@ -119,7 +119,7 @@ errors.
 
 ```kotlin
 select(all())
-    .from(database)
+    .from(collection)
     .where { "type" equalTo "user" }
     .asFlow()
     .collect { value: ResultSet -> 
@@ -129,11 +129,11 @@ select(all())
 
 #### Document Flow
 
-Unlike `Database.documentChangeFlow()`, which only emits `DocumentChange`s, `Database.documentFlow()` handles the common
-use case of getting the initial document state and observing changes from the database, enabling reactive UI patterns.
+Unlike `Collection.documentChangeFlow()`, which only emits `DocumentChange`s, `Collection.documentFlow()` handles the common
+use case of getting the initial document state and observing changes from the collection, enabling reactive UI patterns.
 
 ```kotlin
-database.documentFlow("userProfile")
+collection.documentFlow("userProfile")
     .collect { doc: Document? ->
         // consume Document
     }
@@ -192,8 +192,8 @@ val usersFlow: Flow<List<User>> = query.asObjectsFlow { json: String ->
 Kotbase KTX provides concise top-level functions for index creation:
 
 ```kotlin
-database.createIndex("typeNameIndex", valueIndex("type", "name"))
-database.createIndex("overviewFTSIndex", fullTextIndex("overview"))
+collection.createIndex("typeNameIndex", valueIndex("type", "name"))
+collection.createIndex("overviewFTSIndex", fullTextIndex("overview"))
 ```
 
 ### Replicator extensions
