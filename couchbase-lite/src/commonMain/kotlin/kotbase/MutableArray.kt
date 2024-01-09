@@ -29,8 +29,8 @@ public expect class MutableArray : Array {
 
     /**
      * Creates a new MutableArray with content from the passed List.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types.
      *
      * @param data the array content list
      */
@@ -45,8 +45,8 @@ public expect class MutableArray : Array {
 
     /**
      * Populate an array with content from a List.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types.
      * Setting the array content will replace the current data including
      * any existing Array and Dictionary objects.
      *
@@ -57,8 +57,8 @@ public expect class MutableArray : Array {
 
     /**
      * Populate an array with content from a JSON string.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types.
      * Setting the array content will replace the current data including
      * any existing Array and Dictionary objects.
      *
@@ -149,10 +149,10 @@ public expect class MutableArray : Array {
     public fun setBlob(index: Int, value: Blob?): MutableArray
 
     /**
-     * Sets a Date object at the given index.
+     * Sets an Instant date object at the given index.
      *
      * @param index the index. This value must not exceed the bounds of the array.
-     * @param value the Date object
+     * @param value the Instant date object
      * @return The self object
      */
     public fun setDate(index: Int, value: Instant?): MutableArray
@@ -248,9 +248,9 @@ public expect class MutableArray : Array {
     public fun addBlob(value: Blob?): MutableArray
 
     /**
-     * Adds a Date object to the end of the array.
+     * Adds an Instant date object to the end of the array.
      *
-     * @param value the Date object
+     * @param value the Instant date object
      * @return The self object
      */
     public fun addDate(value: Instant?): MutableArray
@@ -353,10 +353,10 @@ public expect class MutableArray : Array {
     public fun insertBlob(index: Int, value: Blob?): MutableArray
 
     /**
-     * Inserts a Date object at the given index.
+     * Inserts an Instant date object at the given index.
      *
      * @param index the index. This value must not exceed the bounds of the array.
-     * @param value the Date object
+     * @param value the Instant date object
      * @return The self object
      */
     public fun insertDate(index: Int, value: Instant?): MutableArray

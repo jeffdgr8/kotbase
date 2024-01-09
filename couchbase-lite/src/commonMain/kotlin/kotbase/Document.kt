@@ -159,7 +159,7 @@ public expect open class Document : Iterable<String> {
     public fun getBlob(key: String): Blob?
 
     /**
-     * Gets a property's value as a Date.
+     * Gets a property's value as an Instant date.
      * JSON does not directly support dates, so the actual property value must be a string, which is
      * then parsed according to the ISO-8601 date format (the default used in JSON.)
      * Returns null if the value doesn't exist, is not a string, or is not parsable as a date.
@@ -167,7 +167,7 @@ public expect open class Document : Iterable<String> {
      * without milliseconds.
      *
      * @param key the key
-     * @return the Date value or null.
+     * @return the Instant date value or null.
      */
     public fun getDate(key: String): Instant?
 
