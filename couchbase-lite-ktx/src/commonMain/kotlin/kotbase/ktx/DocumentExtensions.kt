@@ -232,7 +232,7 @@ public class DocumentBuilder internal constructor(id: String? = null) {
 
     /**
      * Set an object value by key. Allowed value types are List, Instant, Map, Number, null, String,
-     * Array, Blob, and Dictionary. If present, Lists, Maps and Dictionaries may contain only
+     * Array, Blob, and Dictionary. If present, Lists, Arrays, Maps and Dictionaries may contain only
      * the above types. An Instant date object will be converted to an ISO-8601 format string.
      *
      * @param key   the key.
