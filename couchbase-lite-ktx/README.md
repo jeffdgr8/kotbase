@@ -76,6 +76,26 @@ val document = MutableDocument {
 database.save(document)
 ```
 
+##### Collection creation functions
+
+You can create a `MutableArray` or `MutableDictionary` using idiomatic `vararg` functions:
+
+```kotlin
+mutableArrayOf("hello", 42, true)
+mutableDictOf("key1" to "value1", "key2" to 2, "key3" to null)
+```
+
+The similar `mutableDocOf` function allows nesting dictionary types, unlike the `MutableDocument` DSL:
+
+```kotlin
+mutableDocOf(
+    "string" to "hello",
+    "number" to 42,
+    "array" to mutableArrayOf(1, 2, 3),
+    "dict" to mutableDictOf("key" to "value")
+)
+```
+
 #### Flow support
 
 Supplementing the `Flow` APIs from [Couchbase Lite Android KTX](
