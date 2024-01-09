@@ -383,7 +383,7 @@ public expect class Database : AutoCloseable {
      * will be purged from the database at the set time.
      *
      * @param id         The ID of the Document
-     * @param expiration Nullable expiration timestamp as a Date, set timestamp to null
+     * @param expiration Nullable expiration timestamp as an Instant date, set timestamp to null
      * to remove expiration date time from doc.
      * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
      */

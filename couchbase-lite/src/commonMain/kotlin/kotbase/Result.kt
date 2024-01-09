@@ -111,11 +111,11 @@ public expect class Result : Iterable<String> {
     public fun getBlob(index: Int): Blob?
 
     /**
-     * The result at the given index interpreted as a Date.
+     * The result at the given index interpreted as an Instant date.
      * Returns null if the value cannot be so interpreted.
      *
      * @param index the index of the required value.
-     * @return a Date.
+     * @return an Instant date.
      */
     public fun getDate(index: Int): Instant?
 
@@ -232,11 +232,11 @@ public expect class Result : Iterable<String> {
     public fun getBlob(key: String): Blob?
 
     /**
-     * The result value for the given key as a Date
-     * Returns null if the key doesn't exist or if the value is not a Date
+     * The result value for the given key as an Instant date
+     * Returns null if the key doesn't exist or if the value is not a date
      *
      * @param key The select result key.
-     * @return The Date object.
+     * @return The Instant date object.
      */
     public fun getDate(key: String): Instant?
 

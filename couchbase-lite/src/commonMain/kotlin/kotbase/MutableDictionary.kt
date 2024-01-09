@@ -29,8 +29,8 @@ public expect class MutableDictionary : Dictionary {
 
     /**
      * Creates a new MutableDictionary with content from the passed Map.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types.
      *
      * @param data the dictionary content map.
      */
@@ -45,8 +45,8 @@ public expect class MutableDictionary : Dictionary {
 
     /**
      * Populate a dictionary with content from a Map.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types.
      * Setting the dictionary content will replace the current data including
      * any existing Array and Dictionary objects.
      *
@@ -67,8 +67,8 @@ public expect class MutableDictionary : Dictionary {
 
     /**
      * Set an object value by key.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types.
      *
      * @param key   the key.
      * @param value the object value.
@@ -149,10 +149,10 @@ public expect class MutableDictionary : Dictionary {
     public fun setBlob(key: String, value: Blob?): MutableDictionary
 
     /**
-     * Set a Date object for the given key.
+     * Set an Instant date object for the given key.
      *
      * @param key   The key
-     * @param value The Date object.
+     * @param value The Instant date object.
      * @return The self object.
      */
     public fun setDate(key: String, value: Instant?): MutableDictionary

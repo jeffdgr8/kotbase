@@ -41,8 +41,8 @@ public expect class MutableDocument : Document {
 
     /**
      * Creates a new Document with a new random UUID and the map as the content.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types.
      * The created document will be saved into a database when you call Database.save(Document)
      * with this document object.
      *
@@ -53,7 +53,7 @@ public expect class MutableDocument : Document {
     /**
      * Creates a new Document with a given ID and content from the passed Map.
      * If the id is null, the document will be created with a new random UUID.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
      * The List and Map must contain only the above types.
      * The created document will be saved into a database when you call
      * the Database's save(Document) method with the document object given.
@@ -83,8 +83,8 @@ public expect class MutableDocument : Document {
 
     /**
      * Populate a document with content from a Map.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.  Setting the
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types. Setting the
      * document content will replace the current data including the existing Array and Dictionary
      * objects.
      *
@@ -95,8 +95,8 @@ public expect class MutableDocument : Document {
 
     /**
      * Populate a document with content from a JSON string.
-     * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.  Setting the
+     * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types. Setting the
      * document content will replace the current data including the existing Array and Dictionary
      * objects.
      *
@@ -106,9 +106,9 @@ public expect class MutableDocument : Document {
     public fun setJSON(json: String): MutableDocument
 
     /**
-     * Set an object value by key. Allowed value types are List, Date, Map, Number, null, String,
+     * Set an object value by key. Allowed value types are List, Instant, Map, Number, null, String,
      * Array, Blob, and Dictionary. If present, Lists, Maps and Dictionaries may contain only
-     * the above types. A Date object will be converted to an ISO-8601 format string.
+     * the above types. An Instant date object will be converted to an ISO-8601 format string.
      *
      * @param key   the key.
      * @param value the Object value.
@@ -189,7 +189,7 @@ public expect class MutableDocument : Document {
     public fun setBlob(key: String, value: Blob?): MutableDocument
 
     /**
-     * Set a Date value for the given key
+     * Set an Instant date value for the given key
      *
      * @param key   the key.
      * @param value the Date value.
