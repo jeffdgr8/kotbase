@@ -1,3 +1,7 @@
+public final class kotbase/ktx/ArrayExtKt {
+	public static final fun mutableArrayOf ([Ljava/lang/Object;)Lkotbase/MutableArray;
+}
+
 public final class kotbase/ktx/CollectionExtKt {
 	public static final fun documentFlow (Lkotbase/Collection;Ljava/lang/String;Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun documentFlow$default (Lkotbase/Collection;Ljava/lang/String;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
@@ -8,10 +12,27 @@ public final class kotbase/ktx/DatabaseExtKt {
 	public static final fun documentFlow (Lkotbase/Database;Ljava/lang/String;Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/flow/Flow;
 }
 
+public final class kotbase/ktx/DictionaryExtKt {
+	public static final fun mutableDictOf ([Lkotlin/Pair;)Lkotbase/MutableDictionary;
+}
+
 public final class kotbase/ktx/DocumentBuilder {
 	public fun <init> ()V
+	public final fun contains (Ljava/lang/String;)Z
 	public final fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
+	public final fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
+	public final fun getBoolean (Ljava/lang/String;)Z
+	public final fun getCount ()I
+	public final fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
 	public final fun getDictionary (Ljava/lang/String;)Lkotbase/MutableDictionary;
+	public final fun getDouble (Ljava/lang/String;)D
+	public final fun getFloat (Ljava/lang/String;)F
+	public final fun getInt (Ljava/lang/String;)I
+	public final fun getKeys ()Ljava/util/List;
+	public final fun getLong (Ljava/lang/String;)J
+	public final fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
+	public final fun getString (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getValue (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun remove (Ljava/lang/String;)Lkotbase/MutableDocument;
 	public final fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDocument;
 	public final fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDocument;
@@ -28,6 +49,12 @@ public final class kotbase/ktx/DocumentBuilder {
 	public final fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDocument;
 	public final fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDocument;
 	public final fun to (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun toMap ()Ljava/util/Map;
+}
+
+public final class kotbase/ktx/DocumentExtKt {
+	public static final fun mutableDocOf (Ljava/lang/String;[Lkotlin/Pair;)Lkotbase/MutableDocument;
+	public static final fun mutableDocOf ([Lkotlin/Pair;)Lkotbase/MutableDocument;
 }
 
 public final class kotbase/ktx/DocumentExtensionsKt {
