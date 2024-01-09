@@ -31,14 +31,9 @@ public actual constructor(config: DatabaseConfiguration?) {
 
     public actual constructor() : this(null)
 
-    private val arena = Arena()
-
-    internal val actual: CPointer<CBLDatabaseConfiguration> =
-        arena.alloc<CBLDatabaseConfiguration>().ptr
-
     private val memory = object {
-        val arena = this@DatabaseConfiguration.arena
-        val actual = this@DatabaseConfiguration.actual
+        val arena = Arena()
+        val actual = arena.alloc<CBLDatabaseConfiguration>().ptr
     }
 
     @OptIn(ExperimentalNativeApi::class)
@@ -47,6 +42,9 @@ public actual constructor(config: DatabaseConfiguration?) {
         free(it.actual.pointed.directory.buf)
         it.arena.clear()
     }
+
+    internal val actual: CPointer<CBLDatabaseConfiguration>
+        get() = memory.actual
 
     public actual fun setDirectory(directory: String): DatabaseConfiguration {
         this.directory = directory

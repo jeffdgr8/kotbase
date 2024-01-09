@@ -26,13 +26,13 @@ import kotlin.native.ref.createCleaner
 @OptIn(ExperimentalStdlibApi::class)
 public actual class ResultSet
 internal constructor(
-    internal val actual: CPointer<CBLResultSet>,
+    actual: CPointer<CBLResultSet>,
     private val dbContext: DbContext? = null
 ) : Iterable<Result>, AutoCloseable {
 
     private val memory = object {
         var closeCalled = false
-        val actual = this@ResultSet.actual
+        val actual = actual
     }
 
     @OptIn(ExperimentalNativeApi::class)
@@ -42,6 +42,9 @@ internal constructor(
             CBLResultSet_Release(it.actual)
         }
     }
+
+    internal val actual: CPointer<CBLResultSet>
+        get() = memory.actual
 
     public actual operator fun next(): Result? {
         return if (CBLResultSet_Next(actual)) {

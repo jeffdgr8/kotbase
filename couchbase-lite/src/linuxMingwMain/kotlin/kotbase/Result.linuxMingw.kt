@@ -30,9 +30,9 @@ import kotlin.native.ref.createCleaner
 
 public actual class Result
 private constructor(
-    private val query: CPointer<CBLQuery>,
-    private val array: FLArray,
-    private val dict: FLDict,
+    query: CPointer<CBLQuery>,
+    array: FLArray,
+    dict: FLDict,
     private val dbContext: DbContext?
 ) : Iterable<String> {
 
@@ -44,9 +44,9 @@ private constructor(
     )
 
     private val memory = object {
-        val query = this@Result.query
-        val array = this@Result.array
-        val dict = this@Result.dict
+        val query = query
+        val array = array
+        val dict = dict
     }
 
     init {
@@ -62,6 +62,15 @@ private constructor(
         FLArray_Release(it.array)
         FLDict_Release(it.dict)
     }
+
+    private val query: CPointer<CBLQuery>
+        get() = memory.query
+
+    private val array: FLArray
+        get() = memory.array
+
+    private val dict: FLDict
+        get() = memory.dict
 
     public actual val count: Int
         get() = CBLQuery_ColumnCount(query).toInt()
