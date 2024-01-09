@@ -36,13 +36,13 @@ import kotlin.native.ref.createCleaner
 @OptIn(ExperimentalStdlibApi::class)
 public actual class Replicator
 private constructor(
-    internal val actual: CPointer<CBLReplicator>,
+    actual: CPointer<CBLReplicator>,
     private val immutableConfig: ImmutableReplicatorConfiguration
 ) : AutoCloseable {
 
     private val memory = object {
         var closeCalled = false
-        val actual = this@Replicator.actual
+        val actual = actual
     }
 
     @OptIn(ExperimentalNativeApi::class)
@@ -66,6 +66,9 @@ private constructor(
     )
 
     internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(config)
+
+    internal val actual: CPointer<CBLReplicator>
+        get() = memory.actual
 
     @Suppress("DEPRECATION")
     public actual fun start() {

@@ -54,7 +54,7 @@ private constructor(
     }
 
     private val memory = object {
-        var actual: CPointer<CBLBlob>? = actual
+        var actual = actual
     }
 
     @OptIn(ExperimentalNativeApi::class)
@@ -270,11 +270,11 @@ internal fun CPointer<CBLBlob>.asBlob(ctxt: DbContext?) = Blob(this, ctxt)
 private fun CPointer<CBLBlobReadStream>.asSource(): RawSource =
     BlobReadStreamSource(this)
 
-private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : RawSource {
+private class BlobReadStreamSource(actual: CPointer<CBLBlobReadStream>) : RawSource {
 
     private val memory = object {
         var closeCalled = false
-        val actual = this@BlobReadStreamSource.actual
+        val actual = actual
     }
 
     @OptIn(ExperimentalNativeApi::class)
@@ -284,6 +284,9 @@ private class BlobReadStreamSource(val actual: CPointer<CBLBlobReadStream>) : Ra
             CBLBlobReader_Close(it.actual)
         }
     }
+
+    val actual: CPointer<CBLBlobReadStream>
+        get() = memory.actual
 
     override fun close() {
         memory.closeCalled = true

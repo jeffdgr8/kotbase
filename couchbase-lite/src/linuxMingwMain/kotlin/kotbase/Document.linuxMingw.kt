@@ -32,8 +32,8 @@ internal constructor(
 ) : Iterable<String> {
 
     private val memory = object {
-        val actual: CPointer<CBLDocument> = actual
-        var properties: FLDict = CBLDocument_Properties(actual)!!
+        val actual = actual
+        var properties = CBLDocument_Properties(actual)!!
     }
 
     init {
@@ -41,15 +41,15 @@ internal constructor(
         FLDict_Retain(memory.properties)
     }
 
-    public open val actual: CPointer<CBLDocument>
-        get() = memory.actual
-
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         CBLDocument_Release(it.actual)
         FLDict_Release(it.properties)
     }
+
+    internal val actual: CPointer<CBLDocument>
+        get() = memory.actual
 
     internal var database: Database?
         get() = dbContext.database
