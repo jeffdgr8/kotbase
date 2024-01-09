@@ -59,7 +59,7 @@ public class DocumentBuilder internal constructor(id: String? = null) {
     /**
      * Determines the key-to-value relation between the receiver string and the provided [value].
      */
-    public infix fun <T> String.to(value: T) {
+    public infix fun String.to(value: Any?) {
         setValue(this, value)
     }
 
