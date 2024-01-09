@@ -184,7 +184,7 @@ public class DocumentBuilder internal constructor(id: String? = null) {
 
     /**
      * Set an object value by key. Allowed value types are List, Date, Map, Number, null, String,
-     * Array, Blob, and Dictionary. If present, Lists, Maps and Dictionaries may contain only
+     * Array, Blob, and Dictionary. If present, Lists, Arrays, Maps and Dictionaries may contain only
      * the above types. A Date object will be converted to an ISO-8601 format string.
      *
      * @param key   the key.
@@ -217,7 +217,7 @@ public class DocumentBuilder internal constructor(id: String? = null) {
     /**
      * Populate a document with content from a Map.
      * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.  Setting the
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types.  Setting the
      * document content will replace the current data including the existing Array and Dictionary
      * objects.
      *
@@ -230,7 +230,7 @@ public class DocumentBuilder internal constructor(id: String? = null) {
     /**
      * Populate a document with content from a JSON string.
      * Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary.
-     * If present, Lists, Maps and Dictionaries may contain only the above types.  Setting the
+     * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types.  Setting the
      * document content will replace the current data including the existing Array and Dictionary
      * objects.
      *
