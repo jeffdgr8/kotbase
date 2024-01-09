@@ -3,17 +3,15 @@ couchbase-lite-java = "3.1.3"
 couchbase-lite-objc = "3.1.3"
 couchbase-lite-c = "3.1.3"
 kotlinx-serialization = "1.6.2"
-# 1.13.4 breaks QueryExtensionKtTest on Android https://github.com/mockk/mockk/issues/1035
-# fixed in 1.13.8, but JVM source compatibility needs to be reverted to 1.8 https://github.com/mockk/mockk/pull/1161
-mockk = "1.13.3"
+mockk = "1.13.9"
 
 [plugins]
-android-library = { id = "com.android.library", version = "8.1.4" }
+android-library = { id = "com.android.library", version = "8.2.1" }
 dokka = { id = "org.jetbrains.dokka", version = "1.9.10" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.22" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.13.2" }
-kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.4" }
-vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.25.3" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.5" }
+vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.27.0" }
 
 [libraries]
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.6.2" }
@@ -36,4 +34,4 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 paging = { module = "app.cash.paging:paging-common", version = "3.3.0-alpha02-0.4.0" }
-stately = { module = "co.touchlab:stately-concurrent-collections", version = "2.0.5" }
+stately = { module = "co.touchlab:stately-concurrent-collections", version = "2.0.6" }
