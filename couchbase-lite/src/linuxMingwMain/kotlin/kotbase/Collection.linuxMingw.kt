@@ -36,22 +36,29 @@ import kotlin.native.ref.createCleaner
 @OptIn(ExperimentalStdlibApi::class)
 public actual class Collection
 internal constructor(
-    internal val actual: CPointer<CBLCollection>,
-    public actual val database: Database
+    actual: CPointer<CBLCollection>,
+    database: Database
 ) : AutoCloseable {
 
     private val memory = object {
         var closeCalled = false
-        val actual = this@Collection.actual
+        val actual = actual
+        val database = database
     }
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        if (!it.closeCalled) {
+        if (!it.closeCalled && !it.database.isClosed) {
             CBLCollection_Release(it.actual)
         }
     }
+
+    internal val actual: CPointer<CBLCollection>
+        get() = memory.actual
+
+    public actual val database: Database
+        get() = memory.database
 
     public actual val scope: Scope
         get() = CBLCollection_Scope(actual)!!.asScope(database)
@@ -384,7 +391,7 @@ internal constructor(
 
     actual override fun close() {
         memory.closeCalled = true
-        CBLCollection_Release(actual)
+        if (!database.isClosed) CBLCollection_Release(actual)
     }
 
     public override fun toString(): String =
