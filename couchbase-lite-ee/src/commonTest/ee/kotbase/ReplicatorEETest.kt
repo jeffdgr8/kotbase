@@ -935,12 +935,10 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // ReplicatorTest+CustomConflict.swift
 
-    // TODO: native C fails
-    //  IllegalArgumentException: Invalid URLEndpoint url 'wss://foo'
     @IgnoreLinuxMingw
     @Test
     fun testConflictResolverConfigProperty() {
-        val target = URLEndpoint("wss://foo")
+        val target = URLEndpoint("wss://foo/db")
 
         val colConfig = CollectionConfiguration(
             conflictResolver = { conflict ->
