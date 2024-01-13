@@ -20,8 +20,3 @@ https://www.couchbase.com/products/capella/app-services/) for cloud to edge data
 
 Kotbase provides full Enterprise and Community Edition API support for Android and JVM, native iOS and macOS, and
 experimental support for available APIs in native Linux and Windows.
-
-!!! note
-    The Community Edition is free and open source. The Enterprise Edition is free for development and testing, but
-    requires a [license](https://www.couchbase.com/pricing/#couchbase-mobile) for production use. [See Community vs
-    Enterprise Edition.](https://www.couchbase.com/products/editions/#couchbase_lite)
