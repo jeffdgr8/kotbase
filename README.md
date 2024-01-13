@@ -29,11 +29,6 @@ https://github.com/couchbase/couchbase-lite-java-ce-root)), native iOS and macOS
 https://github.com/couchbase/couchbase-lite-ios)), and experimental support for available APIs in native Linux and
 Windows ([via C SDK](https://github.com/couchbase/couchbase-lite-C)).
 
-> **Note**
-> The Community Edition is free and open source. The Enterprise Edition is free for development and testing, but
-> requires a [license](https://www.couchbase.com/pricing/#couchbase-mobile) for production use. [See Community vs
-> Enterprise Edition.](https://www.couchbase.com/products/editions/#couchbase_lite)
-
 ## Installation
 
 Add either the Community or Enterprise Edition dependency in the **commonMain** source set dependencies of your
@@ -51,6 +46,11 @@ kotlin {
     }
 }
 ```
+
+> **Note**
+> The Couchbase Lite Community Edition is free and open source. The Enterprise Edition is free for development and
+> testing, but requires a [license from Couchbase](https://www.couchbase.com/pricing/#couchbase-mobile) for production
+> use. [See Community vs Enterprise Edition.](https://www.couchbase.com/products/editions/#couchbase_lite)
 
 Kotbase is published to Maven Central. The Couchbase Lite Enterprise Edition dependency additionally requires the
 Couchbase Maven repository.
