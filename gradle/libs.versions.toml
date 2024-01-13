@@ -1,6 +1,6 @@
 [versions]
 couchbase-lite-java = "3.1.3"
-couchbase-lite-objc = "3.1.3"
+couchbase-lite-objc = "3.1.4"
 couchbase-lite-c = "3.1.3"
 kotlinx-serialization = "1.6.2"
 mockk = "1.13.9"
