@@ -37,9 +37,10 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
 // TODO: many tests fail with
-// CouchbaseLiteException{CouchbaseLite,22,'Couldn't add a certificate to the Keychain (SecItemAdd returned -25299)'}
-// or
-// kotlin.NullPointerException
+//  CouchbaseLiteException{CouchbaseLite,22,'Couldn't add a certificate to the Keychain (SecItemAdd returned -25299)'}
+//  or
+//  kotlin.NullPointerException
+//  https://youtrack.jetbrains.com/issue/KT-61470#focus=Comments-27-8789456.0-0 may be helpful
 // TODO: identities are not cleaned up in keychain in URLEndpointListenerBaseTest (should be in finally {} block)
 @Ignore
 @OptIn(ExperimentalStdlibApi::class)
