@@ -2,6 +2,7 @@ package dev.kotbase.gettingstarted.shared
 
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
 import kotbase.*
+import kotbase.Collection
 import kotbase.ktx.select
 import kotbase.ktx.all
 import kotbase.ktx.from
@@ -12,29 +13,37 @@ import kotlinx.coroutines.flow.emptyFlow
 class SharedDbWork {
 
     private var database: Database? = null
+    private var collection: Collection? = null
     private var replicator: Replicator? = null
 
     // Create a database
     fun createDb(dbName: String) {
         database = Database(dbName)
-        Log.i(TAG, "Database created: $dbName")
+        Log.i(TAG, "Database created: $database")
+    }
+
+    // Create a new named collection (like a SQL table)
+    // in the database's default scope.
+    fun createCollection(collName: String) {
+        collection = database!!.createCollection(collName)
+        Log.i(TAG, "Collection created: $collection")
     }
 
     // Create a new document (i.e. a record)
     // and save it in a collection in the database.
     fun createDoc(): String {
-        val mutableDoc = MutableDocument()
+        val mutableDocument = MutableDocument()
             .setFloat("version", 2.0f)
             .setString("language", "Kotlin")
             .setString("platform", getPlatform().name)
-        database?.save(mutableDoc)
-        return mutableDoc.id
+        collection?.save(mutableDocument)
+        return mutableDocument.id
     }
 
     // Retrieve immutable document and log the database generated
     // document ID and some document properties
     fun retrieveDoc(docId: String) {
-        database?.getDocument(docId)
+        collection?.getDocument(docId)
             ?.let {
                 Log.i(TAG, "Retrieved document:")
                 Log.i(TAG, "Document ID :: $docId")
@@ -45,8 +54,8 @@ class SharedDbWork {
 
     // Retrieve immutable document and set `input` property
     fun updateDoc(docId: String, inputValue: String) {
-        database?.getDocument(docId)?.let {
-            database?.save(
+        collection?.getDocument(docId)?.let {
+            collection?.save(
                 it.toMutable().setString("input", inputValue)
             )
         }
@@ -55,10 +64,10 @@ class SharedDbWork {
     // Create a query to fetch documents with language == Kotlin.
     @OptIn(ExperimentalStdlibApi::class)
     fun queryDocs() {
-        val database = database ?: return
+        val coll = collection ?: return
 
         var query: Query = QueryBuilder.select(SelectResult.all())
-            .from(DataSource.database(database))
+            .from(DataSource.collection(coll))
             .where(Expression.property("language").equalTo(Expression.string("Kotlin")))
         query.execute().use { rs ->
             Log.i(TAG, "Number of rows :: ${rs.allResults().size}")
@@ -66,7 +75,7 @@ class SharedDbWork {
 
         // KTX API
         query = select(Meta.id, all())
-            .from(database)
+            .from(coll)
             .where {
                 "language" equalTo "Kotlin"
             }
@@ -83,15 +92,18 @@ class SharedDbWork {
     // Be sure to hold a reference to the Replicator to prevent it from being GCed
     @NativeCoroutines
     fun replicate(): Flow<ReplicatorChange> {
-        val database = database ?: return emptyFlow()
+        val coll = collection ?: return emptyFlow()
+
+        val collConfig = CollectionConfiguration(
+            pullFilter = { doc, _ -> "Kotlin" == doc.getString("language") }
+        )
 
         val repl = Replicator(
             ReplicatorConfigurationFactory.newConfig(
                 target = URLEndpoint("ws://localhost:4984/getting-started-db"),
-                database = database,
+                collections = mapOf(setOf(coll) to collConfig),
                 type = ReplicatorType.PUSH_AND_PULL,
-                authenticator = BasicAuthenticator("sync-gateway", "password".toCharArray()),
-                pullFilter = { doc, _ -> "Kotlin" == doc.getString("language") }
+                authenticator = BasicAuthenticator("sync-gateway", "password".toCharArray())
             )
         )
 
