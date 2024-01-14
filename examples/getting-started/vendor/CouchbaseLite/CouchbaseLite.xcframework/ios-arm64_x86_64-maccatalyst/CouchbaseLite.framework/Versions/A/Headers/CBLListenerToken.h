@@ -25,6 +25,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol CBLListenerToken <NSObject>
 
+/// Remove the listener associated with the token.
+- (void) remove;
+
 @end
 
 NS_ASSUME_NONNULL_END

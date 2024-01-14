@@ -1,12 +1,12 @@
 [versions]
-activity-compose = "1.8.1"
-android-gradle-plugin = "8.1.4"
+activity-compose = "1.8.2"
+android-gradle-plugin = "8.2.1"
 androidx-appcompat = "1.6.1"
 androidx-core-ktx = "1.12.0"
 compose = "1.5.11"
-couchbase-lite-objc = "3.0.15"
-kotbase = "3.0.15-1.0.1"
-kotlin = "1.9.21"
+couchbase-lite-objc = "3.1.4"
+kotbase = "3.1.3-1.1.0-SNAPSHOT"
+kotlin = "1.9.22"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }

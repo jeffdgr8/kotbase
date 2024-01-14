@@ -19,6 +19,7 @@
 
 #import <Foundation/Foundation.h>
 @class CBLQueryExpression;
+@protocol CBLQueryIndexExpressionProtocol;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -35,7 +36,9 @@ NS_ASSUME_NONNULL_BEGIN
  @param indexName The full-text index name.
  @return The full-text rank function.
  */
-+ (CBLQueryExpression*) rank: (NSString*)indexName;
++ (CBLQueryExpression*) rank: (NSString*)indexName
+__deprecated_msg("Use [CBLQueryFullTextFunction rankWithIndex:] instead.")
+NS_SWIFT_NAME(rank(withIndexName:));
 
 /**
  Creates a full-text match expression with the given full-text index name and the query text
@@ -44,7 +47,31 @@ NS_ASSUME_NONNULL_BEGIN
  @param query The query string.
  @return The full-text match expression.
  */
-+ (CBLQueryExpression*) matchWithIndexName: (NSString*)indexName query: (NSString*)query;
++ (CBLQueryExpression*) matchWithIndexName: (NSString*)indexName query: (NSString*)query
+__deprecated_msg("Use [CBLQueryFullTextFunction matchWithIndex: query:] instead.")
+NS_SWIFT_NAME(match(withIndexName:query:));
+
+/**
+ Creates a full-text rank() function with the given full-text index expression.
+ 
+ The rank function indicates how well the current query result matches
+ the full-text query when performing the match comparison.
+ 
+ - Parameter index: The full-text index expression.
+ - Returns: The full-text rank function.
+ */
++ (CBLQueryExpression*) rankWithIndex: (id<CBLQueryIndexExpressionProtocol>)index
+NS_SWIFT_NAME(rank(withIndex:));
+
+/**
+ Creates a full-text match() function  with the given full-text index expression and the query text
+ 
+ - Parameter index: The full-text index expression.
+ - Parameter query: The query string.
+ - Returns: The full-text match() function expression.
+ */
++ (CBLQueryExpression*) matchWithIndex: (id<CBLQueryIndexExpressionProtocol>)index query: (NSString*)query
+NS_SWIFT_NAME(match(withIndex:query:));
 
 /** Not available */
 - (instancetype) init NS_UNAVAILABLE;

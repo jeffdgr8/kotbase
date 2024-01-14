@@ -20,29 +20,25 @@
 #import <Foundation/Foundation.h>
 #import <Security/SecCertificate.h>
 #import "CBLDocumentFlags.h"
+#import "CBLReplicatorTypes.h"
+
 @class CBLAuthenticator;
+@class CBLCollection;
+@class CBLCollectionConfiguration;
 @class CBLDatabase;
 @class CBLDocument;
-@protocol CBLEndpoint;
 @protocol CBLConflictResolver;
+@protocol CBLEndpoint;
 
 NS_ASSUME_NONNULL_BEGIN
-
-/** Replicator type. */
-typedef NS_ENUM(NSUInteger, CBLReplicatorType) {
-    kCBLReplicatorTypePushAndPull = 0,              ///< Bidirectional; both push and pull
-    kCBLReplicatorTypePush,                         ///< Pushing changes to the target
-    kCBLReplicatorTypePull                          ///< Pulling changes from the target
-};
-
-/** Replication Filter */
-typedef BOOL (^CBLReplicationFilter) (CBLDocument* document, CBLDocumentFlags flags);
 
 /** Replicator Configuration */
 @interface CBLReplicatorConfiguration: NSObject
 
 /** The local database to replicate with the target endpoint. */
-@property (nonatomic, readonly) CBLDatabase* database;
+
+@property (nonatomic, readonly) CBLDatabase* database
+__deprecated_msg(" Use config.collections instead");
 
 /**
  The replication endpoint to replicate with.
@@ -68,8 +64,10 @@ typedef BOOL (^CBLReplicationFilter) (CBLDocument* document, CBLDocumentFlags fl
 @property (nonatomic, nullable) CBLAuthenticator* authenticator;
 
 /**
- If this property is non-null, the server is required to have this exact SSL/TLS certificate,
- or the connection will fail.
+ The remote target's SSL certificate.
+ 
+ @Note: The pinned cert will be evaluated against any certs in a cert chain,
+ and the cert chain will be valid only if the cert chain contains the pinned cert.
  */
 @property (nonatomic, nullable) SecCertificateRef pinnedServerCertificate;
 
@@ -83,47 +81,59 @@ typedef BOOL (^CBLReplicationFilter) (CBLDocument* document, CBLDocumentFlags fl
  */
 @property (nonatomic, nullable) NSString* networkInterface;
 
+
 /**
  The option to remove the restriction that does not allow the replicator to save the parent-domain
  cookies, the cookies whose domains are the parent domain of the remote host, from the HTTP
  response. For example, when the option is set to true, the cookies whose domain are “.foo.com”
  returned by “bar.foo.com” host will be permitted to save.
       
- This option is disabled by default, which means that the parent-domain cookies are not permitted
- to save by default.
+ This option is disabled by default (See ``kCBLDefaultReplicatorAcceptParentCookies``)
+ which means that the parent-domain cookies are not permitted to save by default.
  */
 @property (nonatomic) BOOL acceptParentDomainCookies;
 
 /**
- A set of Sync Gateway channel names to pull from. Ignored for push replication.
- The default value is nil, meaning that all accessible channels will be pulled.
- Note: channels that are not accessible to the user will be ignored by Sync Gateway.
+ Channels filter when using init(database:target:) to configure the default collection
+ for the replication.
+ 
+ @Note: Channels are not supported in Peer-to-Peer and Database-to-Database replication.
  */
-@property (nonatomic, nullable) NSArray<NSString*>* channels;
+@property (nonatomic, nullable) NSArray<NSString*>* channels
+__deprecated_msg(" Use [... initWithTarget:] and [config addCollection: config:]" \
+                 " with a CBLCollectionConfiguration object instead");
 
 /**
- A set of document IDs to filter by: if not nil, only documents with these IDs will be pushed
- and/or pulled.
+ documentIDs filter when using init(database:target:) to configure the default collection
+ for the replication.
  */
-@property (nonatomic, nullable) NSArray<NSString*>* documentIDs;
+@property (nonatomic, nullable) NSArray<NSString*>* documentIDs
+__deprecated_msg(" Use [... initWithTarget:] and [config addCollection: config:]" \
+                 " with a CBLCollectionConfiguration object instead");
 
 /**
- Filter block for validating whether the documents can be pushed to the remote endpoint.
- Only documents for which the block returns true are replicated.
+ Push filter when using init(database:target:) to configure the default collection
+ for the replication.
  */
-@property (nonatomic, nullable) CBLReplicationFilter pushFilter;
+@property (nonatomic, nullable) CBLReplicationFilter pushFilter
+__deprecated_msg(" Use [... initWithTarget:] and [config addCollection: config:]" \
+                 " with a CBLCollectionConfiguration object instead");
 
 /**
- Filter block for validating whether the documents can be pulled from the remote endpoint.
- Only documents for which the block returns true are replicated.
+ Pull filter when using init(database:target:) to configure the default collection
+ for the replication.
  */
-@property (nonatomic, nullable) CBLReplicationFilter pullFilter;
+@property (nonatomic, nullable) CBLReplicationFilter pullFilter
+__deprecated_msg(" Use [... initWithTarget:] and [config addCollection: config:]" \
+                 " with a CBLCollectionConfiguration object instead");
 
 /**
- The custom conflict resolver object can be set here. If this value is not set, or set to nil,
- the default conflict resolver will be applied.
+ Conflict resolver when using init(database:target:) to configure the default collection
+ for the replication.
  */
-@property (nonatomic, nullable) id<CBLConflictResolver> conflictResolver;
+@property (nonatomic, nullable) id<CBLConflictResolver> conflictResolver
+__deprecated_msg(" Use [... initWithTarget:] and [config addCollection: config:]" \
+                 " with a CBLCollectionConfiguration object instead");
 
 #if TARGET_OS_IPHONE
 /**
@@ -140,30 +150,38 @@ typedef BOOL (^CBLReplicationFilter) (CBLDocument* document, CBLDocumentFlags fl
 /**
  The heartbeat interval in second.
 
- The interval when the replicator sends the ping message to check whether the other peer is still alive. Set the value to zero(by default)
- means using the default heartbeat of 300 seconds.
+ The interval when the replicator sends the ping message to check whether the other peer is still alive.
+ Default heartbeat is ``kCBLDefaultReplicatorHeartbeat`` seconds.
  
- Note: Setting the heartbeat to negative value will result in InvalidArgumentException being thrown.
+ @Note:
+ Setting the heartbeat to negative value will result in InvalidArgumentException being thrown.
+ For backward compatibility, setting to zero will result in default heartbeat internally.
  */
 @property (nonatomic) NSTimeInterval heartbeat;
 
 /**
- The maximum attempts to perform retry. The retry attempt will be reset when the replicator is able to connect and replicate with
- the remote server again.
+ The maximum attempts to perform retry. The retry attempt will be reset when the replicator is
+ able to connect and replicate with the remote server again.
  
- Setting the maxAttempts to zero(by default), the default maxAttempts of 10 times for single shot replicators and max-int times for
- continuous replicators will be applied and present to users. Settings the value to 1, will perform an initial request and
- if there is a transient error occurs, will stop will retrying.
+ Default maxAttempts is ``kCBLDefaultReplicatorMaxAttemptsSingleShot`` times
+ for single shot replicators and ``kCBLDefaultReplicatorMaxAttemptsContinuous`` times
+ for continuous replicators.
+ 
+ Settings the value to 1, will perform an initial request and
+ if there is a transient error occurs, will stop without retry.
+ 
+ @Note: For backward compatibility, setting it to zero will result in default maxAttempt internally.
  */
 @property (nonatomic) NSUInteger maxAttempts;
 
 /**
  Max wait time for the next attempt(retry).
  
- The exponential backoff for calculating the wait time will be used by default and cannot be customized. Set the value to zero(by default)
- means using the default max attempts of 300 seconds.
+ The exponential backoff for calculating the wait time will be used by default and cannot be customized.
+ Default max attempts is ``kCBLDefaultReplicatorMaxAttemptWaitTime`` seconds.
  
- Set the maxAttemptWaitTime to negative value will result in InvalidArgumentException being thrown.
+ @Note: Set the maxAttemptWaitTime to negative value will result in InvalidArgumentException being thrown.
+ For backward compatibility, setting it to zero will result in default maxAttemptWaitTime internally.
  */
 @property (nonatomic) NSTimeInterval maxAttemptWaitTime;
 
@@ -177,8 +195,13 @@ typedef BOOL (^CBLReplicationFilter) (CBLDocument* document, CBLDocumentFlags fl
  will be sent to any document listeners that are active on the replicator. For performance
  reasons, the document listeners must be added *before* the replicator is started or
  they will not receive the events.
+ 
+ @Note: Auto purge will not be performed when documentIDs filter is specified.
  */
 @property (nonatomic) BOOL enableAutoPurge;
+
+/** The collections used for the replication. */
+@property (nonatomic, readonly) NSArray<CBLCollection*>* collections;
 
 /** Not available */
 - (instancetype) init NS_UNAVAILABLE;
@@ -192,7 +215,20 @@ typedef BOOL (^CBLReplicationFilter) (CBLDocument* document, CBLDocumentFlags fl
  @return The CBLReplicatorConfiguration object.
  */
 - (instancetype) initWithDatabase: (CBLDatabase*)database
-                           target: (id <CBLEndpoint>)target;
+                           target: (id <CBLEndpoint>)target
+__deprecated_msg("Use [... initWithTarget:] instead.");
+
+/**
+ Create a ReplicatorConfiguration object with the target’s endpoint.
+ After the ReplicatorConfiguration object is created, use addCollection(_ collection:, config:)
+ or addCollections(_ collections:, config:) to specify and configure the collections used for
+ replicating with the target. If there are no collections specified, the replicator will fail
+ to start with a no collections specified error.
+ 
+ @param target The target endpoint.
+ @return The CBLReplicatorConfiguration object.
+ */
+- (instancetype) initWithTarget: (id <CBLEndpoint>)target;
 
 /**
  Initializes a CBLReplicatorConfiguration with the configuration object.
@@ -201,6 +237,44 @@ typedef BOOL (^CBLReplicationFilter) (CBLDocument* document, CBLDocumentFlags fl
  @return The CBLReplicatorConfiguration object.
  */
 - (instancetype) initWithConfig: (CBLReplicatorConfiguration*)config;
+
+/**
+ Add a collection used for the replication with an optional collection configuration.
+ If the collection has been added before, the previous added and its configuration if specified
+ will be replaced.
+ If a null configuration is specified, a default empty configuration will be applied.
+ 
+ @param collection The collection to be added.
+ @param config Configuration for the collection, if nil, default config */
+- (void) addCollection: (CBLCollection*)collection
+                config: (nullable CBLCollectionConfiguration*)config;
+
+/**
+ Add multiple collections used for the replication with an optional shared collection configuration.
+ If any of the collections have been added before, the previously added collections and their
+ configuration if specified will be replaced. Adding an empty collection array will be no-ops. if
+ specified will be replaced.
+ 
+ If a null configuration is specified, a default empty configuration will be applied.
+    
+ @param collections The collections to be added.
+ @param config Respective configuration for the collections, if nil, default config */
+- (void) addCollections: (NSArray*)collections
+                 config: (nullable CBLCollectionConfiguration*)config;
+
+/**
+ Remove the collection. If the collection doesn’t exist, this operation will be no ops.
+ 
+ @param collection The collection to be removed. */
+- (void) removeCollection: (CBLCollection*)collection;
+
+/**
+ Get a copy of the collection’s config. If the config needs to be changed for the collection, the
+ collection will need to be re-added with the updated config.
+ 
+ @param collection The collection whose config is needed.
+ @return The collection configuration, or nil if config doesn't exist */
+- (nullable CBLCollectionConfiguration*) collectionConfig: (CBLCollection*)collection;
 
 @end
 

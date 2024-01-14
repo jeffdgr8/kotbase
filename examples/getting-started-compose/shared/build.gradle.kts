@@ -44,6 +44,10 @@ kotlin {
     }
 }
 
+compose {
+    kotlinCompilerPlugin.set("1.5.7")
+}
+
 tasks.withType<KotlinCompile> {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
 }
