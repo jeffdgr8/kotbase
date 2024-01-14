@@ -105,6 +105,7 @@ private val sharedDbWork = SharedDbWork()
 private suspend fun databaseWork(inputValue: String, replicate: Boolean) {
     sharedDbWork.run {
         createDb("composeApp-db")
+        createCollection("example-coll")
         val docId = createDoc()
         Log.i(TAG, "Created document :: $docId")
         retrieveDoc(docId)

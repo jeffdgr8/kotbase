@@ -87,6 +87,7 @@ private let sharedDbWork = SharedDbWork()
 
 private func databaseWork(inputValue: String, replicate: Bool) async {
     sharedDbWork.createDb(dbName: "iosApp-db")
+    sharedDbWork.createCollection(collName: "example-coll")
     let docId = sharedDbWork.createDoc()
     Log().i(tag: tag, msg: "Created document :: \(docId)")
     sharedDbWork.retrieveDoc(docId: docId)

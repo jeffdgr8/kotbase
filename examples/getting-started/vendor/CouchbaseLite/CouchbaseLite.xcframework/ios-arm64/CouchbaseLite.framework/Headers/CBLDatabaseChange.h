@@ -19,8 +19,12 @@
 
 #import <Foundation/Foundation.h>
 @class CBLDatabase;
+@class CBLCollection;
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** Database Change information  */
+__deprecated
 @interface CBLDatabaseChange : NSObject
 
 /** The database. */
@@ -33,3 +37,5 @@
 - (instancetype) init NS_UNAVAILABLE;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -21,6 +21,7 @@
 #import "CBLDocumentFlags.h"
 @class CBLReplicator;
 @class CBLReplicatedDocument;
+@class CBLCollection;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -52,6 +53,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** The error if occurred */
 @property (nonatomic, readonly, nullable) NSError* error;
+
+/** Scope Name. */
+@property (nonatomic, readonly) NSString* scope;
+
+/** Collection Name. */
+@property (nonatomic, readonly) NSString* collection;
 
 /** Not available */
 - (instancetype) init NS_UNAVAILABLE;
