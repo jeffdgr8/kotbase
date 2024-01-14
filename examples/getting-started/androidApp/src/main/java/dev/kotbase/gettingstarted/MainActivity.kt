@@ -1,5 +1,6 @@
 package dev.kotbase.gettingstarted
 
+import SharedDbWork
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.os.Handler
@@ -9,8 +10,6 @@ import androidx.core.animation.doOnEnd
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import dev.kotbase.gettingstarted.databinding.ActivityMainBinding
-import dev.kotbase.gettingstarted.shared.Log
-import dev.kotbase.gettingstarted.shared.SharedDbWork
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 

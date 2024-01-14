@@ -1,21 +1,20 @@
 [versions]
 activity-compose = "1.8.2"
 android-gradle-plugin = "8.2.1"
-androidx-appcompat = "1.6.1"
-androidx-core-ktx = "1.12.0"
-compose = "1.5.11"
+compose = "1.5.4"
+compose-compiler = "1.5.7"
+compose-plugin = "1.5.11"
 couchbase-lite-objc = "3.1.4"
 kotbase = "3.1.3-1.1.0-SNAPSHOT"
 kotlin = "1.9.22"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
-android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
-jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
-androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
-androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 kotbase = { module = "dev.kotbase:couchbase-lite-ktx", version.ref = "kotbase" }
