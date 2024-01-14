@@ -9,7 +9,7 @@ dependencies {
 }
 
 compose {
-    kotlinCompilerPlugin.set("1.5.7")
+    kotlinCompilerPlugin.set(libs.versions.compose.compiler.get())
     desktop {
         application {
             mainClass = "MainKt"

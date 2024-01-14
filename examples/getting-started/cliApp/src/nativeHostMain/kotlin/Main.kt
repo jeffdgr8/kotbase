@@ -1,5 +1,3 @@
-import dev.kotbase.gettingstarted.shared.Log
-import dev.kotbase.gettingstarted.shared.SharedDbWork
 import kotbase.ReplicatorActivityLevel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.takeWhile
