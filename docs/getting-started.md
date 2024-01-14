@@ -21,24 +21,26 @@ the git repository under examples.
 <span id='figure-1'>**Figure 1: Example app output**</span>
 
 ```
-08-06 23:34:10.332 I/SHARED_KOTLIN: Database created: desktopApp-db
-08-06 23:34:10.347 I/DESKTOP_APP: Created document :: 6ee12f44-d619-4c06-a52d-14ffaa6e5bee
-08-06 23:34:10.350 I/SHARED_KOTLIN: Retrieved document:
-08-06 23:34:10.350 I/SHARED_KOTLIN: Document ID :: 6ee12f44-d619-4c06-a52d-14ffaa6e5bee
-08-06 23:34:10.350 I/SHARED_KOTLIN: Learning :: Kotlin
-08-06 23:34:10.353 I/DESKTOP_APP: Updated document :: 6ee12f44-d619-4c06-a52d-14ffaa6e5bee
-08-06 23:34:10.369 I/SHARED_KOTLIN: Number of rows :: 1
-08-06 23:34:10.371 I/SHARED_KOTLIN: Document ID :: 6ee12f44-d619-4c06-a52d-14ffaa6e5bee
-08-06 23:34:10.372 I/SHARED_KOTLIN: Document :: {"language":"Kotlin","version":2.0,"platform":"JVM 17.0.7","input":"Hello, Kotbase!"}
+01-13 11:35:03.733 I/SHARED_KOTLIN: Database created: Database{@@0x9645222: 'desktopApp-db'}
+01-13 11:35:03.742 I/SHARED_KOTLIN: Collection created: desktopApp-db@@x7fba7630dcb0._default.example-coll
+01-13 11:35:03.764 I/DESKTOP_APP: Created document :: 83b6acb4-21ba-4834-aee4-2419dcea1114
+01-13 11:35:03.767 I/SHARED_KOTLIN: Retrieved document:
+01-13 11:35:03.767 I/SHARED_KOTLIN: Document ID :: 83b6acb4-21ba-4834-aee4-2419dcea1114
+01-13 11:35:03.767 I/SHARED_KOTLIN: Learning :: Kotlin
+01-13 11:35:03.768 I/DESKTOP_APP: Updated document :: 83b6acb4-21ba-4834-aee4-2419dcea1114
+01-13 11:35:03.785 I/SHARED_KOTLIN: Number of rows :: 1
+01-13 11:35:03.789 I/SHARED_KOTLIN: Document ID :: 83b6acb4-21ba-4834-aee4-2419dcea1114
+01-13 11:35:03.790 I/SHARED_KOTLIN: Document :: {"language":"Kotlin","version":2.0,"platform":"JVM 21.0.1","input":"Hello, Kotbase!"}
 ```
 
 ## Getting Started App
 
 The Getting Started app [shows examples](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt)
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/SharedDbWork.kt)
 of the essential Couchbase Lite CRUD operations, including:
 
 * Create a database
+* Create a collection
 * Create a document
 * Retrieve a document
 * Update a document
@@ -53,9 +55,11 @@ Multiplatform.
 The [`getting-started`](https://github.com/jeffdgr8/kotbase/tree/main/examples/getting-started) version demonstrates
 using shared Kotlin code using Kotbase together with native app UIs.
 
+The Kotbase database examples are in the `shared` module, which is shared between each of the platform apps.
+
 ### Android App :fontawesome-brands-android:
 
-The Android app uses XML views.
+The Android app is in the `androidApp` module. It uses XML views for its UI.
 
 ??? info "Run"
 
@@ -74,7 +78,7 @@ The Android app uses XML views.
 
 ### iOS App :fontawesome-brands-apple:
 
-The iOS app uses SwiftUI.
+The iOS app is in the `iosApp` directory. It is an Xcode project and uses SwiftUI for its UI.
 
 ??? info "Run"
 
@@ -89,7 +93,7 @@ The iOS app uses SwiftUI.
 
 ### JVM Desktop App :fontawesome-brands-java:
 
-The JVM desktop app uses Compose UI.
+The JVM desktop app is in the `desktopApp` module. It uses Compose UI for its UI.
 
 ??? info "Run"
 
@@ -105,7 +109,7 @@ The JVM desktop app uses Compose UI.
 
 ### Native CLI App :fontawesome-brands-apple::fontawesome-brands-linux::fontawesome-brands-windows:
 
-The native app uses a command-line interface (CLI) on macOS, Linux, and Windows.
+The native app is in the `cliApp` module. It uses a command-line interface (CLI) on macOS, Linux, and Windows.
 
 The app takes two command-line arguments, first the "input" value, written to the document on update, and second true or
 false for whether to run the replicator. These arguments can also be passed as gradle properties.
@@ -135,6 +139,9 @@ The [`getting-started-compose`](https://github.com/jeffdgr8/kotbase/tree/main/ex
 demonstrates sharing the entirety of the application code in Kotlin, including the UI with [Compose Multiplatform](
 https://www.jetbrains.com/lp/compose-multiplatform/).
 
+The entire compose app is a single Kotlin multiplatform module, encompassing all platforms, with an additional Xcode
+project for the iOS app.
+
 ### Android App :fontawesome-brands-android:
 
 ??? info "Run"
@@ -146,7 +153,7 @@ https://www.jetbrains.com/lp/compose-multiplatform/).
     === "Command Line"
     
         ```title="Install"
-        ./gradlew :androidApp:installDebug
+        ./gradlew :composeApp:installDebug
         ```
         ```title="Start"
         adb shell am start -n dev.kotbase.gettingstarted.compose/.MainActivity
@@ -194,7 +201,7 @@ https://www.jetbrains.com/lp/compose-multiplatform/).
     === "Command Line"
     
         ```
-        ./gradlew :desktopApp:run
+        ./gradlew :composeApp:run
         ```
 
 ## Sync Gateway Replication
@@ -212,31 +219,31 @@ with the server's URL endpoint and authentication credentials.
 
 The apps utilize the Kotlin Multiplatform [`expect`/`actual` feature](
 https://kotlinlang.org/docs/multiplatform-connect-to-apis.html) to populate the created document with [the platform](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L29)
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/SharedDbWork.kt#L36)
 the app is running on.
 
 See common [`expect fun getPlatform()`](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.kt)
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/Platform.kt)
 and `actual fun getPlatform()` for [Android](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/androidMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.android.kt),
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/androidMain/kotlin/Platform.android.kt),
 [iOS](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/iosMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.ios.kt),
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/iosMain/kotlin/Platform.ios.kt),
 [JVM](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/jvmMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.jvm.kt),
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/jvmMain/kotlin/Platform.jvm.kt),
 [Linux](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/linuxMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.linux.kt),
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/linuxMain/kotlin/Platform.linux.kt),
 [macOS](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/macosMain/kotlin/dev/kotbase/gettingstarted/shared/Platform.macos.kt),
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/macosMain/kotlin/Platform.macos.kt),
 and [Windows](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/mingwX64Main/kotlin/dev/kotbase/gettingstarted/shared/Platform.mingwX64.kt).
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/mingwX64Main/kotlin/Platform.mingwX64.kt).
 
 ### Using Coroutines in Swift
 
 The `getting-started` app uses [KMP-NativeCoroutines](https://github.com/rickclephas/KMP-NativeCoroutines) to consume
 Kotlin `Flow`s in Swift. See [`@NativeCoroutines` annotation](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/dev/kotbase/gettingstarted/shared/SharedDbWork.kt#L84)
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/shared/src/commonMain/kotlin/SharedDbWork.kt#L91)
 in Kotlin and [`asyncSequence(for:)`](
-https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/iosApp/iosApp/ContentView.swift#L98) in Swift
+https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/iosApp/iosApp/ContentView.swift#L99) in Swift
 code.
 
 ## Kotbase Library Source
