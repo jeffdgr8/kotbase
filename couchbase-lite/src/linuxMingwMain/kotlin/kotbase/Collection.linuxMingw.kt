@@ -322,16 +322,18 @@ internal constructor(
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getIndexes(): Set<String> {
-        return wrapCBLError { error ->
-            val names = CBLCollection_GetIndexNames(actual, error)
-            @Suppress("UNCHECKED_CAST")
-            (names?.toList(null) as List<String>?)?.also {
-                FLMutableArray_Release(names)
-            }?.toSet() ?: emptySet()
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val indexes: Set<String>
+        get() {
+            return wrapCBLError { error ->
+                val names = CBLCollection_GetIndexNames(actual, error)
+                @Suppress("UNCHECKED_CAST")
+                (names?.toList(null) as List<String>?)?.also {
+                    FLMutableArray_Release(names)
+                }?.toSet() ?: emptySet()
+            }
         }
-    }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {

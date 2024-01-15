@@ -212,13 +212,15 @@ internal constructor(
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getIndexes(): Set<String> {
-        return wrapCBLError { error ->
-            @Suppress("UNCHECKED_CAST")
-            actual.indexes(error) as List<String>
-        }.toSet()
-    }
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val indexes: Set<String>
+        get() {
+            return wrapCBLError { error ->
+                @Suppress("UNCHECKED_CAST")
+                actual.indexes(error) as List<String>
+            }.toSet()
+        }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {

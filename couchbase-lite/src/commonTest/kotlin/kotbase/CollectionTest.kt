@@ -601,21 +601,21 @@ class CollectionTest : BaseDbTest() {
 
     @Test
     fun testCreateIndexInCollection() {
-        assertEquals(0, testCollection.getIndexes().size)
+        assertEquals(0, testCollection.indexes.size)
 
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-        assertEquals(1, testCollection.getIndexes().size)
+        assertEquals(1, testCollection.indexes.size)
 
         testCollection.createIndex("index2", FullTextIndexConfiguration("detail").ignoreAccents(true).setLanguage("es"))
-        assertEquals(2, testCollection.getIndexes().size)
+        assertEquals(2, testCollection.indexes.size)
 
-        assertContents(testCollection.getIndexes().toList(), "index1", "index2")
-        assertTrue(testCollection.getIndexes().contains("index2"))
+        assertContents(testCollection.indexes.toList(), "index1", "index2")
+        assertTrue(testCollection.indexes.contains("index2"))
     }
 
     @Test
     fun testCreateIndexInCollectionWithBuilder() {
-        assertEquals(0, testCollection.getIndexes().size.toLong())
+        assertEquals(0, testCollection.indexes.size.toLong())
         testCollection.createIndex(
             "index1",
             IndexBuilder.valueIndex(
@@ -623,16 +623,16 @@ class CollectionTest : BaseDbTest() {
                 ValueIndexItem.property("lastName")
             )
         )
-        assertEquals(1, testCollection.getIndexes().size.toLong())
+        assertEquals(1, testCollection.indexes.size.toLong())
 
         // Create FTS index:
         testCollection.createIndex("index2", IndexBuilder.fullTextIndex(FullTextIndexItem.property("detail")))
-        assertEquals(2, testCollection.getIndexes().size.toLong())
+        assertEquals(2, testCollection.indexes.size.toLong())
         testCollection.createIndex(
             "index3",
             IndexBuilder.fullTextIndex(FullTextIndexItem.property("es-detail")).ignoreAccents(true).setLanguage("es")
         )
-        assertEquals(3, testCollection.getIndexes().size.toLong())
+        assertEquals(3, testCollection.indexes.size.toLong())
 
         // Create value index with expression() instead of property()
         testCollection.createIndex(
@@ -642,19 +642,19 @@ class CollectionTest : BaseDbTest() {
                 ValueIndexItem.expression(Expression.property("lastName"))
             )
         )
-        assertEquals(4, testCollection.getIndexes().size.toLong())
-        assertContents(testCollection.getIndexes().toList(), "index1", "index2", "index3", "index4")
+        assertEquals(4, testCollection.indexes.size.toLong())
+        assertContents(testCollection.indexes.toList(), "index1", "index2", "index3", "index4")
     }
 
     @Test
     fun testCreateSameIndexTwice() {
         testCollection.createIndex("myindex", ValueIndexConfiguration("firstName", "lastName"))
-        assertEquals(1, testCollection.getIndexes().size)
+        assertEquals(1, testCollection.indexes.size)
 
         // Call create index again:
         testCollection.createIndex("myindex", ValueIndexConfiguration("firstName", "lastName"))
 
-        assertContents(testCollection.getIndexes().toList(), "myindex")
+        assertContents(testCollection.indexes.toList(), "myindex")
     }
 
     @Test
@@ -666,13 +666,13 @@ class CollectionTest : BaseDbTest() {
         testCollection.createIndex("myindex", ValueIndexConfiguration("lastName"))
 
         // Check:
-        assertContents(testCollection.getIndexes().toList(), "myindex")
+        assertContents(testCollection.indexes.toList(), "myindex")
 
         // Do it one more time
         testCollection.createIndex("myindex", ValueIndexConfiguration("detail"))
 
         // Check:
-        assertContents(testCollection.getIndexes().toList(), "myindex")
+        assertContents(testCollection.indexes.toList(), "myindex")
     }
 
     // Test create index from a deleted collection
@@ -717,7 +717,7 @@ class CollectionTest : BaseDbTest() {
     fun testGetIndexFromDeletedCollection() {
         // Delete collection
         testCollection.delete()
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.getIndexes() }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.indexes }
     }
 
     @Test
@@ -738,17 +738,17 @@ class CollectionTest : BaseDbTest() {
     @Test
     fun testGetIndexFromCollectionDeletedFromADifferentDBInstance() {
         duplicateDb(testDatabase).use { it.getSimilarCollection(testCollection).delete() }
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.getIndexes() }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.indexes }
     }
 
     // Test that getIndexes from collection in closed database causes CBLException
     @Test
     fun testGetIndexesFromCollectionFromClosedDatabase() {
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-        assertContents(testCollection.getIndexes().toList(), "index1")
+        assertContents(testCollection.indexes.toList(), "index1")
 
         closeDb(testDatabase)
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.getIndexes() }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.indexes }
     }
 
     // Test that getIndexes from collection in deleted database causes CBLException
@@ -756,25 +756,25 @@ class CollectionTest : BaseDbTest() {
     fun testGetIndexesFromCollectionFromDeletedDatabase() {
 
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-        assertContents(testCollection.getIndexes().toList(), "index1")
+        assertContents(testCollection.indexes.toList(), "index1")
 
         deleteDb(testDatabase)
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.getIndexes() }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.indexes }
     }
 
     @Test
     fun testDeleteIndex() {
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
         testCollection.createIndex("index2", FullTextIndexConfiguration("detail").ignoreAccents(true).setLanguage("es"))
-        assertContents(testCollection.getIndexes().toList(), "index1", "index2")
+        assertContents(testCollection.indexes.toList(), "index1", "index2")
 
         // Delete indexes:
         testCollection.deleteIndex("index2")
-        assertEquals(1, testCollection.getIndexes().size)
-        assertContents(testCollection.getIndexes().toList(), "index1")
+        assertEquals(1, testCollection.indexes.size)
+        assertContents(testCollection.indexes.toList(), "index1")
 
         testCollection.deleteIndex("index1")
-        assertTrue(testCollection.getIndexes().isEmpty())
+        assertTrue(testCollection.indexes.isEmpty())
     }
 
     // Test deleting an index twice
@@ -782,17 +782,17 @@ class CollectionTest : BaseDbTest() {
     fun testDeleteIndexTwice() {
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
         testCollection.createIndex("index2", FullTextIndexConfiguration("detail").ignoreAccents(true).setLanguage("es"))
-        assertContents(testCollection.getIndexes().toList(), "index1", "index2")
+        assertContents(testCollection.indexes.toList(), "index1", "index2")
 
         // Delete index2:
         testCollection.deleteIndex("index2")
-        assertEquals(1, testCollection.getIndexes().size)
-        assertTrue(testCollection.getIndexes().contains("index1"))
+        assertEquals(1, testCollection.indexes.size)
+        assertTrue(testCollection.indexes.contains("index1"))
 
         // Do it again
         testCollection.deleteIndex("index2")
-        assertEquals(1, testCollection.getIndexes().size)
-        assertTrue(testCollection.getIndexes().contains("index1"))
+        assertEquals(1, testCollection.indexes.size)
+        assertTrue(testCollection.indexes.contains("index1"))
     }
 
     // Test getting index from a deleted collection causes CBL exception
@@ -800,18 +800,18 @@ class CollectionTest : BaseDbTest() {
     fun testDeleteNonExistentIndex() {
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
         testCollection.createIndex("index2", FullTextIndexConfiguration("detail").ignoreAccents(true).setLanguage("es"))
-        assertContents(testCollection.getIndexes().toList(), "index1", "index2")
+        assertContents(testCollection.indexes.toList(), "index1", "index2")
 
         testCollection.deleteIndex("dummy")
 
-        assertContents(testCollection.getIndexes().toList(), "index1", "index2")
+        assertContents(testCollection.indexes.toList(), "index1", "index2")
     }
 
     // Test delete index from a deletedCollection
     @Test
     fun testDeleteIndexFromDeletedCollection() {
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-        assertContents(testCollection.getIndexes().toList(), "index1")
+        assertContents(testCollection.indexes.toList(), "index1")
 
         // Delete collection
         testCollection.delete()
@@ -826,7 +826,7 @@ class CollectionTest : BaseDbTest() {
     @Test
     fun testDeleteIndexFromCollectionDeletedInDifferentDbInstance() {
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-        assertContents(testCollection.getIndexes().toList(), "index1")
+        assertContents(testCollection.indexes.toList(), "index1")
 
         duplicateDb(testDatabase).use { it.getSimilarCollection(testCollection).delete() }
 
@@ -841,7 +841,7 @@ class CollectionTest : BaseDbTest() {
     @Test
     fun testDeleteIndexInCollectionInClosedDatabase() {
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-        assertContents(testCollection.getIndexes().toList(), "index1")
+        assertContents(testCollection.indexes.toList(), "index1")
 
         closeDb(testDatabase)
         assertThrowsCBLException(
@@ -854,7 +854,7 @@ class CollectionTest : BaseDbTest() {
     @Test
     fun testDeleteIndexInCollectionInDeletedDatabase() {
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-        assertContents(testCollection.getIndexes().toList(), "index1")
+        assertContents(testCollection.indexes.toList(), "index1")
 
         deleteDb(testDatabase)
         assertThrowsCBLException(

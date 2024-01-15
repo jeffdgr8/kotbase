@@ -146,9 +146,9 @@ internal constructor(
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getIndexes(): Set<String> =
-        actual.indexes
+    @get:Throws(CouchbaseLiteException::class)
+    public actual val indexes: Set<String>
+        get() = actual.indexes
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
