@@ -28,7 +28,7 @@ class DbCollectionsTest : BaseDbTest() {
     fun testGetDefaultScope() {
         val scope = testDatabase.getDefaultScope()
         assertNotNull(scope)
-        assertTrue(testDatabase.getScopes().contains(scope))
+        assertTrue(testDatabase.scopes.contains(scope))
         assertEquals(Scope.DEFAULT_NAME, scope.name)
         assertEquals(1, scope.collectionCount)
         assertNotNull(scope.getCollection(Collection.DEFAULT_NAME))
@@ -187,7 +187,7 @@ class DbCollectionsTest : BaseDbTest() {
 
     @Test
     fun testGetScopes() {
-        val scopes = testDatabase.getScopes()
+        val scopes = testDatabase.scopes
         assertEquals(2, scopes.size)
 
         var scope = scopes.first { it.name == Scope.DEFAULT_NAME }
@@ -199,12 +199,12 @@ class DbCollectionsTest : BaseDbTest() {
 
     @Test
     fun testDeleteCollectionFromNamedScope() {
-        var scopes = testDatabase.getScopes()
+        var scopes = testDatabase.scopes
         assertEquals(2, scopes.size)
 
         testDatabase.deleteCollection(testCollection.name, testCollection.scope.name)
 
-        scopes = testDatabase.getScopes()
+        scopes = testDatabase.scopes
         assertEquals(1, scopes.size)
 
         val recreateCol = testDatabase.createCollection(testCollection.name, testCollection.scope.name)
@@ -213,7 +213,7 @@ class DbCollectionsTest : BaseDbTest() {
 
     @Test
     fun testDeleteDefaultCollection() {
-        val scopes = testDatabase.getScopes()
+        val scopes = testDatabase.scopes
 
         // scopes should have a default scope and a non default test scope created in BaseDbTest
         assertEquals(2, scopes.size)
@@ -236,7 +236,7 @@ class DbCollectionsTest : BaseDbTest() {
     fun testDeleteAllCollectionsInNamedScope() {
         testDatabase.deleteCollection(testCollection.name, testCollection.scope.name)
         assertNull(testDatabase.getScope(testCollection.name))
-        assertEquals(setOf(testDatabase.getDefaultScope()), testDatabase.getScopes())
+        assertEquals(setOf(testDatabase.getDefaultScope()), testDatabase.scopes)
     }
 
     @Test

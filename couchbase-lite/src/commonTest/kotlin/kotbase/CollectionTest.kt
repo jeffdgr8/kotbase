@@ -1177,7 +1177,7 @@ class CollectionTest : BaseDbTest() {
         assertNotNull(scope)
         assertEquals(Scope.DEFAULT_NAME, scope.name)
 
-        val scopes = testDatabase.getScopes()
+        val scopes = testDatabase.scopes
         assertTrue(scopes.contains(scope))
 
         val scope1 = testDatabase.getScope(Scope.DEFAULT_NAME)
@@ -1211,7 +1211,7 @@ class CollectionTest : BaseDbTest() {
         val scope = testDatabase.getDefaultScope()
         assertEquals(Scope.DEFAULT_NAME, scope.name)
 
-        val scopes = testDatabase.getScopes()
+        val scopes = testDatabase.scopes
         assertTrue(scopes.contains(scope))
     }
 }

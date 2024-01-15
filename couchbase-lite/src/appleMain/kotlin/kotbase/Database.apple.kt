@@ -107,13 +107,15 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getScopes(): Set<Scope> {
-        return wrapCBLError { error ->
-            @Suppress("UNCHECKED_CAST")
-            actual.scopes(error) as List<CBLScope>
-        }.asScopes(this)
-    }
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val scopes: Set<Scope>
+        get() {
+            return wrapCBLError { error ->
+                @Suppress("UNCHECKED_CAST")
+                actual.scopes(error) as List<CBLScope>
+            }.asScopes(this)
+        }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getScope(name: String): Scope? {

@@ -124,8 +124,9 @@ public expect class Database : AutoCloseable {
      * Note: the default scope is exceptional as it will always be listed even though there are no collections
      * under it.
      */
-    @Throws(CouchbaseLiteException::class)
-    public fun getScopes(): Set<Scope>
+    @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET")
+    @get:Throws(CouchbaseLiteException::class)
+    public val scopes: Set<Scope>
 
     /**
      * Get a scope object by name. As the scope cannot exist by itself without having a collection,
