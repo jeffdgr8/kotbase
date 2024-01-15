@@ -83,8 +83,9 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
         "Use getPendingDocumentIds(Collection)",
         ReplaceWith("getPendingDocumentIds(config.database.defaultCollection)")
     )
-    @Throws(CouchbaseLiteException::class)
-    public fun getPendingDocumentIds(): Set<String>
+    @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET")
+    @get:Throws(CouchbaseLiteException::class)
+    public val pendingDocumentIds: Set<String>
 
     /**
      * Get a best effort list of documents in the passed collection that are still pending replication.
