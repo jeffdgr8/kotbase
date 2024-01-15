@@ -175,16 +175,18 @@ private constructor(
         }?.asScope(this)
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getDefaultScope(): Scope {
-        return wrapCBLError { error ->
-            CBLDatabase_DefaultScope(actual, error)
-        }!!.asScope(this)
-    }
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val defaultScope: Scope
+        get() {
+            return wrapCBLError { error ->
+                CBLDatabase_DefaultScope(actual, error)
+            }!!.asScope(this)
+        }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createCollection(name: String): Collection =
-        createCollection(name, getDefaultScope().name)
+        createCollection(name, defaultScope.name)
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createCollection(collectionName: String, scopeName: String?): Collection {
@@ -202,7 +204,7 @@ private constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollections(): Set<Collection> =
-        getCollections(getDefaultScope().name)
+        getCollections(defaultScope.name)
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollections(scopeName: String?): Set<Collection> {
@@ -226,7 +228,7 @@ private constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollection(name: String): Collection? =
-        getCollection(name, getDefaultScope().name)
+        getCollection(name, defaultScope.name)
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollection(collectionName: String, scopeName: String?): Collection? {
@@ -252,7 +254,7 @@ private constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteCollection(name: String) {
-        deleteCollection(name, getDefaultScope().name)
+        deleteCollection(name, defaultScope.name)
     }
 
     @Throws(CouchbaseLiteException::class)

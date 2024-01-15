@@ -26,7 +26,7 @@ class DbCollectionsTest : BaseDbTest() {
 
     @Test
     fun testGetDefaultScope() {
-        val scope = testDatabase.getDefaultScope()
+        val scope = testDatabase.defaultScope
         assertNotNull(scope)
         assertTrue(testDatabase.scopes.contains(scope))
         assertEquals(Scope.DEFAULT_NAME, scope.name)
@@ -56,7 +56,7 @@ class DbCollectionsTest : BaseDbTest() {
         testDatabase.createCollection("6hintz")
         testDatabase.createCollection("-Ch1ntz")
 
-        val scope = testDatabase.getDefaultScope()
+        val scope = testDatabase.defaultScope
         assertEquals(5, scope.collectionCount)
         assertNotNull(scope.getCollection("chintz"))
         assertNotNull(scope.getCollection("Chintz"))
@@ -112,7 +112,7 @@ class DbCollectionsTest : BaseDbTest() {
         testDatabase.createCollection("chintz", "3icro")
         testDatabase.createCollection("chintz", "-micro")
 
-        var scope: Scope? = testDatabase.getDefaultScope()
+        var scope: Scope? = testDatabase.defaultScope
         assertEquals(1, scope?.collectionCount)
 
         // get non-existing collection returns null
@@ -218,7 +218,7 @@ class DbCollectionsTest : BaseDbTest() {
         // scopes should have a default scope and a non default test scope created in BaseDbTest
         assertEquals(2, scopes.size)
 
-        val scope = testDatabase.getDefaultScope()
+        val scope = testDatabase.defaultScope
         assertEquals(1, scope.collectionCount)
 
         assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
@@ -227,7 +227,7 @@ class DbCollectionsTest : BaseDbTest() {
 
         // Creating the default collection just returns it
         assertEquals(
-            testDatabase.getDefaultScope().getCollection(Collection.DEFAULT_NAME),
+            testDatabase.defaultScope.getCollection(Collection.DEFAULT_NAME),
             testDatabase.createCollection(Collection.DEFAULT_NAME, Scope.DEFAULT_NAME))
     }
 
@@ -236,7 +236,7 @@ class DbCollectionsTest : BaseDbTest() {
     fun testDeleteAllCollectionsInNamedScope() {
         testDatabase.deleteCollection(testCollection.name, testCollection.scope.name)
         assertNull(testDatabase.getScope(testCollection.name))
-        assertEquals(setOf(testDatabase.getDefaultScope()), testDatabase.scopes)
+        assertEquals(setOf(testDatabase.defaultScope), testDatabase.scopes)
     }
 
     @Test

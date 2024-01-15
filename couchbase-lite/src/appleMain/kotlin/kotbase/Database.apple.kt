@@ -124,12 +124,14 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }?.asScope(this)
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getDefaultScope(): Scope {
-        return wrapCBLError { error ->
-            actual.defaultScope(error)
-        }!!.asScope(this)
-    }
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val defaultScope: Scope
+        get() {
+            return wrapCBLError { error ->
+                actual.defaultScope(error)
+            }!!.asScope(this)
+        }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createCollection(name: String): Collection {
