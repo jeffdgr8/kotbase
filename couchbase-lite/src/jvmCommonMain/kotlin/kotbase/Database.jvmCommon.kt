@@ -125,13 +125,10 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     public actual fun getCollection(collectionName: String, scopeName: String?): Collection? =
         actual.getCollection(collectionName, scopeName)?.asCollection(this)
 
-    private val _defaultCollection: Collection by lazy {
+    @get:Throws(CouchbaseLiteException::class)
+    public actual val defaultCollection: Collection by lazy {
         actual.defaultCollection!!.asCollection(this)
     }
-
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getDefaultCollection(): Collection =
-        _defaultCollection
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteCollection(name: String) {
@@ -159,24 +156,24 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().count",
-        ReplaceWith("getDefaultCollection()!!.count")
+        "Use defaultCollection.count",
+        ReplaceWith("defaultCollection.count")
     )
     public actual val count: Long
         get() = actual.count
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().getDocument()",
-        ReplaceWith("getDefaultCollection()!!.getDocument(id)")
+        "Use defaultCollection.getDocument()",
+        ReplaceWith("defaultCollection.getDocument(id)")
     )
     public actual fun getDocument(id: String): Document? =
-        actual.getDocument(id)?.asDocument(getDefaultCollection())
+        actual.getDocument(id)?.asDocument(defaultCollection)
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document)")
+        "Use defaultCollection.save()",
+        ReplaceWith("defaultCollection.save(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
@@ -185,8 +182,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document, concurrencyControl)")
+        "Use defaultCollection.save()",
+        ReplaceWith("defaultCollection.save(document, concurrencyControl)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(
@@ -197,17 +194,17 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document, conflictHandler)")
+        "Use defaultCollection.save()",
+        ReplaceWith("defaultCollection.save(document, conflictHandler)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean =
-        actual.save(document.actual, conflictHandler.convert(getDefaultCollection()))
+        actual.save(document.actual, conflictHandler.convert(defaultCollection))
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().delete()",
-        ReplaceWith("getDefaultCollection().delete(document)")
+        "Use defaultCollection.delete()",
+        ReplaceWith("defaultCollection.delete(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
@@ -216,8 +213,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().delete()",
-        ReplaceWith("getDefaultCollection().delete(document, concurrencyControl)")
+        "Use defaultCollection.delete()",
+        ReplaceWith("defaultCollection.delete(document, concurrencyControl)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean =
@@ -225,8 +222,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().purge()",
-        ReplaceWith("getDefaultCollection().purge(document)")
+        "Use defaultCollection.purge()",
+        ReplaceWith("defaultCollection.purge(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
@@ -235,8 +232,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().purge()",
-        ReplaceWith("getDefaultCollection().purge(id)")
+        "Use defaultCollection.purge()",
+        ReplaceWith("defaultCollection.purge(id)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
@@ -245,8 +242,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().setDocumentExpiration()",
-        ReplaceWith("getDefaultCollection().setDocumentExpiration(id, expiration)")
+        "Use defaultCollection.setDocumentExpiration()",
+        ReplaceWith("defaultCollection.setDocumentExpiration(id, expiration)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
@@ -255,8 +252,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().getDocumentExpiration()",
-        ReplaceWith("getDefaultCollection().getDocumentExpiration(id)")
+        "Use defaultCollection.getDocumentExpiration()",
+        ReplaceWith("defaultCollection.getDocumentExpiration(id)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocumentExpiration(id: String): Instant? =
@@ -264,8 +261,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().addChangeListener()",
-        ReplaceWith("getDefaultCollection().addChangeListener(listener)")
+        "Use defaultCollection.addChangeListener()",
+        ReplaceWith("defaultCollection.addChangeListener(listener)")
     )
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken =
         DelegatedListenerToken(actual.addChangeListener(listener.convert(this)))
@@ -273,8 +270,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
-        "Use getDefaultCollection().addChangeListener()",
-        ReplaceWith("getDefaultCollection().addChangeListener(context, listener)")
+        "Use defaultCollection.addChangeListener()",
+        ReplaceWith("defaultCollection.addChangeListener(context, listener)")
     )
     public actual fun addChangeListener(
         context: CoroutineContext,
@@ -288,8 +285,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
-        "Use getDefaultCollection().addChangeListener()",
-        ReplaceWith("getDefaultCollection().addChangeListener(scope, listener)")
+        "Use defaultCollection.addChangeListener()",
+        ReplaceWith("defaultCollection.addChangeListener(scope, listener)")
     )
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         val token = actual.addChangeListener(
@@ -303,17 +300,17 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().addDocumentChangeListener()",
-        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, listener)")
+        "Use defaultCollection.addDocumentChangeListener()",
+        ReplaceWith("defaultCollection.addDocumentChangeListener(id, listener)")
     )
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken =
-        DelegatedListenerToken(actual.addDocumentChangeListener(id, listener.convert(getDefaultCollection())))
+        DelegatedListenerToken(actual.addDocumentChangeListener(id, listener.convert(defaultCollection)))
 
     @Suppress("DEPRECATION")
     @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
-        "Use getDefaultCollection().addDocumentChangeListener()",
-        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, context, listener)")
+        "Use defaultCollection.addDocumentChangeListener()",
+        ReplaceWith("defaultCollection.addDocumentChangeListener(id, context, listener)")
     )
     public actual fun addDocumentChangeListener(
         id: String,
@@ -324,7 +321,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         val token = actual.addDocumentChangeListener(
             id,
             context[CoroutineDispatcher]?.asExecutor(),
-            listener.convert(getDefaultCollection(), scope)
+            listener.convert(defaultCollection, scope)
         )
         return SuspendListenerToken(scope, token)
     }
@@ -332,8 +329,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     @Suppress("DEPRECATION")
     @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
-        "Use getDefaultCollection().addDocumentChangeListener()",
-        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, scope, listener)")
+        "Use defaultCollection.addDocumentChangeListener()",
+        ReplaceWith("defaultCollection.addDocumentChangeListener(id, scope, listener)")
     )
     public actual fun addDocumentChangeListener(
         id: String,
@@ -343,7 +340,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         val token = actual.addDocumentChangeListener(
             id,
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
-            listener.convert(getDefaultCollection(), scope)
+            listener.convert(defaultCollection, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
             token.remove()
@@ -360,8 +357,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().indexes",
-        ReplaceWith("getDefaultCollection().indexes")
+        "Use defaultCollection.indexes",
+        ReplaceWith("defaultCollection.indexes")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getIndexes(): List<String> =
@@ -369,8 +366,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().createIndex()",
-        ReplaceWith("getDefaultCollection().createIndex(name, index)")
+        "Use defaultCollection.createIndex()",
+        ReplaceWith("defaultCollection.createIndex(name, index)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
@@ -379,8 +376,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().createIndex()",
-        ReplaceWith("getDefaultCollection().createIndex(name, config)")
+        "Use defaultCollection.createIndex()",
+        ReplaceWith("defaultCollection.createIndex(name, config)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
@@ -389,8 +386,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().deleteIndex()",
-        ReplaceWith("getDefaultCollection().deleteIndex(name)")
+        "Use defaultCollection.deleteIndex()",
+        ReplaceWith("defaultCollection.deleteIndex(name)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {

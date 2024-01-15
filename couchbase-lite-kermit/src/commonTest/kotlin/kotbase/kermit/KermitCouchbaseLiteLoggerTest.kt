@@ -118,7 +118,7 @@ class KermitCouchbaseLiteLoggerTest : BaseTest() {
         logWriter.checkLog(Severity.Info, CBL_DATABASE, "Instantiated")
         logWriter.clearCache()
 
-        database.getDefaultCollection()!!.save(MutableDocument("doc-1", """{"foo":"bar","baz":42}"""))
+        database.defaultCollection.save(MutableDocument("doc-1", """{"foo":"bar","baz":42}"""))
         logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "{DB#", "begin transaction")
         logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "{DB#", "Saved 'doc-1' rev #1-", "as seq 1")
         logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "{DB#", "commit transaction")

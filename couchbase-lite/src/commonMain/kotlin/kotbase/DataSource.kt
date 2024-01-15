@@ -44,7 +44,7 @@ public expect open class DataSource {
          */
         @Deprecated(
             "Use DataSource.collection(Collection)",
-            ReplaceWith("collection(database.getDefaultCollection()!!)")
+            ReplaceWith("collection(database.defaultCollection)")
         )
         public fun database(database: Database): As
 

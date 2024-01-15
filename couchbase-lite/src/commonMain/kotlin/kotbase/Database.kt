@@ -202,11 +202,10 @@ public expect class Database : AutoCloseable {
 
     /**
      * Get the default collection.
-     *
-     * @return the default collection.
      */
-    @Throws(CouchbaseLiteException::class)
-    public fun getDefaultCollection(): Collection
+    @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET")
+    @get:Throws(CouchbaseLiteException::class)
+    public val defaultCollection: Collection
 
     /**
      * Delete a collection by name  in the default scope. If the collection doesn't exist, the operation
@@ -252,8 +251,8 @@ public expect class Database : AutoCloseable {
      * The number of documents in the default collection, 0 if database is closed.
      */
     @Deprecated(
-        "Use getDefaultCollection().count",
-        ReplaceWith("getDefaultCollection()!!.count")
+        "Use defaultCollection.count",
+        ReplaceWith("defaultCollection.count")
     )
     public val count: Long
 
@@ -268,8 +267,8 @@ public expect class Database : AutoCloseable {
      * @throws IllegalStateException when the database is closed or the default collection has been deleted
      */
     @Deprecated(
-        "Use getDefaultCollection().getDocument()",
-        ReplaceWith("getDefaultCollection()!!.getDocument(id)")
+        "Use defaultCollection.getDocument()",
+        ReplaceWith("defaultCollection.getDocument(id)")
     )
     public fun getDocument(id: String): Document?
 
@@ -282,8 +281,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException on error
      */
     @Deprecated(
-        "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection()!!.save(document)")
+        "Use defaultCollection.save()",
+        ReplaceWith("defaultCollection.save(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun save(document: MutableDocument)
@@ -300,8 +299,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException on error
      */
     @Deprecated(
-        "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document, concurrencyControl)")
+        "Use defaultCollection.save()",
+        ReplaceWith("defaultCollection.save(document, concurrencyControl)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun save(document: MutableDocument, concurrencyControl: ConcurrencyControl): Boolean
@@ -315,8 +314,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException on error
      */
     @Deprecated(
-        "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document, conflictHandler)")
+        "Use defaultCollection.save()",
+        ReplaceWith("defaultCollection.save(document, conflictHandler)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean
@@ -330,8 +329,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException on error
      */
     @Deprecated(
-        "Use getDefaultCollection().delete()",
-        ReplaceWith("getDefaultCollection().delete(document)")
+        "Use defaultCollection.delete()",
+        ReplaceWith("defaultCollection.delete(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun delete(document: Document)
@@ -346,8 +345,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException on error
      */
     @Deprecated(
-        "Use getDefaultCollection().delete()",
-        ReplaceWith("getDefaultCollection().delete(document, concurrencyControl)")
+        "Use defaultCollection.delete()",
+        ReplaceWith("defaultCollection.delete(document, concurrencyControl)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean
@@ -359,8 +358,8 @@ public expect class Database : AutoCloseable {
      * @param document the document to be purged.
      */
     @Deprecated(
-        "Use getDefaultCollection().purge()",
-        ReplaceWith("getDefaultCollection().purge(document)")
+        "Use defaultCollection.purge()",
+        ReplaceWith("defaultCollection.purge(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun purge(document: Document)
@@ -372,8 +371,8 @@ public expect class Database : AutoCloseable {
      * @param id the document ID
      */
     @Deprecated(
-        "Use getDefaultCollection().purge()",
-        ReplaceWith("getDefaultCollection().purge(id)")
+        "Use defaultCollection.purge()",
+        ReplaceWith("defaultCollection.purge(id)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun purge(id: String)
@@ -388,8 +387,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
      */
     @Deprecated(
-        "Use getDefaultCollection().setDocumentExpiration()",
-        ReplaceWith("getDefaultCollection().setDocumentExpiration(id, expiration)")
+        "Use defaultCollection.setDocumentExpiration()",
+        ReplaceWith("defaultCollection.setDocumentExpiration(id, expiration)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun setDocumentExpiration(id: String, expiration: Instant?)
@@ -403,8 +402,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException Throws an exception if any error occurs during the operation.
      */
     @Deprecated(
-        "Use getDefaultCollection().getDocumentExpiration()",
-        ReplaceWith("getDefaultCollection().getDocumentExpiration(id)")
+        "Use defaultCollection.getDocumentExpiration()",
+        ReplaceWith("defaultCollection.getDocumentExpiration(id)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun getDocumentExpiration(id: String): Instant?
@@ -423,8 +422,8 @@ public expect class Database : AutoCloseable {
      */
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().addChangeListener()",
-        ReplaceWith("getDefaultCollection().addChangeListener(listener)")
+        "Use defaultCollection.addChangeListener()",
+        ReplaceWith("defaultCollection.addChangeListener(listener)")
     )
     public fun addChangeListener(listener: DatabaseChangeListener): ListenerToken
 
@@ -442,8 +441,8 @@ public expect class Database : AutoCloseable {
      */
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().addChangeListener()",
-        ReplaceWith("getDefaultCollection().addChangeListener(context, listener)")
+        "Use defaultCollection.addChangeListener()",
+        ReplaceWith("defaultCollection.addChangeListener(context, listener)")
     )
     public fun addChangeListener(context: CoroutineContext, listener: DatabaseChangeSuspendListener): ListenerToken
 
@@ -458,8 +457,8 @@ public expect class Database : AutoCloseable {
      */
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().addChangeListener()",
-        ReplaceWith("getDefaultCollection().addChangeListener(scope, listener)")
+        "Use defaultCollection.addChangeListener()",
+        ReplaceWith("defaultCollection.addChangeListener(scope, listener)")
     )
     public fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener)
 
@@ -476,8 +475,8 @@ public expect class Database : AutoCloseable {
      * @see ListenerToken.remove
      */
     @Deprecated(
-        "Use getDefaultCollection().addDocumentChangeListener()",
-        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, listener)")
+        "Use defaultCollection.addDocumentChangeListener()",
+        ReplaceWith("defaultCollection.addDocumentChangeListener(id, listener)")
     )
     public fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken
 
@@ -494,8 +493,8 @@ public expect class Database : AutoCloseable {
      * @see ListenerToken.remove
      */
     @Deprecated(
-        "Use getDefaultCollection().addDocumentChangeListener()",
-        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, context, listener)")
+        "Use defaultCollection.addDocumentChangeListener()",
+        ReplaceWith("defaultCollection.addDocumentChangeListener(id, context, listener)")
     )
     public fun addDocumentChangeListener(
         id: String,
@@ -513,8 +512,8 @@ public expect class Database : AutoCloseable {
      * @param listener callback
      */
     @Deprecated(
-        "Use getDefaultCollection().addDocumentChangeListener()",
-        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, scope, listener)")
+        "Use defaultCollection.addDocumentChangeListener()",
+        ReplaceWith("defaultCollection.addDocumentChangeListener(id, scope, listener)")
     )
     public fun addDocumentChangeListener(id: String, scope: CoroutineScope, listener: DocumentChangeSuspendListener)
 
@@ -536,8 +535,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException on failure
      */
     @Deprecated(
-        "Use getDefaultCollection().indexes",
-        ReplaceWith("getDefaultCollection().indexes")
+        "Use defaultCollection.indexes",
+        ReplaceWith("defaultCollection.indexes")
     )
     @Throws(CouchbaseLiteException::class)
     public fun getIndexes(): List<String>
@@ -550,8 +549,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException on failure
      */
     @Deprecated(
-        "Use getDefaultCollection().createIndex()",
-        ReplaceWith("getDefaultCollection().createIndex(name, index)")
+        "Use defaultCollection.createIndex()",
+        ReplaceWith("defaultCollection.createIndex(name, index)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun createIndex(name: String, index: Index)
@@ -564,8 +563,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException on failure
      */
     @Deprecated(
-        "Use getDefaultCollection().createIndex()",
-        ReplaceWith("getDefaultCollection().createIndex(name, config)")
+        "Use defaultCollection.createIndex()",
+        ReplaceWith("defaultCollection.createIndex(name, config)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun createIndex(name: String, config: IndexConfiguration)
@@ -577,8 +576,8 @@ public expect class Database : AutoCloseable {
      * @throws CouchbaseLiteException on failure
      */
     @Deprecated(
-        "Use getDefaultCollection().deleteIndex()",
-        ReplaceWith("getDefaultCollection().deleteIndex(name)")
+        "Use defaultCollection.deleteIndex()",
+        ReplaceWith("defaultCollection.deleteIndex(name)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun deleteIndex(name: String)
@@ -596,8 +595,8 @@ public expect class Database : AutoCloseable {
  * @param key The key.
  */
 @Deprecated(
-    "Use getDefaultCollection().get()",
-    ReplaceWith("getDefaultCollection()[key]")
+    "Use defaultCollection.get()",
+    ReplaceWith("defaultCollection[key]")
 )
 @Suppress("DEPRECATION")
 public operator fun Database.get(key: String): DocumentFragment =

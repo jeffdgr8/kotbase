@@ -32,7 +32,7 @@ private constructor(
     @Suppress("DEPRECATION")
     @Deprecated(
         "Use URLEndpointListenerConfiguration(Collections)",
-        ReplaceWith("URLEndpointListenerConfiguration(setOf(database.getDefaultCollection()!!), networkInterface, port, disableTls, identity, authenticator, readOnly, enableDeltaSync)")
+        ReplaceWith("URLEndpointListenerConfiguration(setOf(database.defaultCollection), networkInterface, port, disableTls, identity, authenticator, readOnly, enableDeltaSync)")
     )
     public actual constructor(
         database: Database,
@@ -45,7 +45,7 @@ private constructor(
         enableDeltaSync: Boolean
     ) : this(
         database,
-        setOf(database.getDefaultCollection()),
+        setOf(database.defaultCollection),
         identity,
         authenticator,
         CBLURLEndpointListenerConfiguration(database.actual).apply {

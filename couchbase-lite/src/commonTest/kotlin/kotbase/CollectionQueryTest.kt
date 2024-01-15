@@ -32,7 +32,7 @@ class CollectionQueryTest : BaseQueryTest() {
     // Ensure that the result set has one result, and the data is { "first" : "Abe"}.
     @Test
     fun testQueryDefaultCollectionA() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
         loadJSONResourceIntoCollection("names_100.json", collection = defaultCollection)
 
@@ -55,7 +55,7 @@ class CollectionQueryTest : BaseQueryTest() {
     // Ensure that the result set has one result, and the data is { "first" : "Abe"}.
     @Test
     fun testQueryDefaultCollectionB() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
         loadJSONResourceIntoCollection("names_100.json", collection = defaultCollection)
         verifyQuery(
@@ -76,7 +76,7 @@ class CollectionQueryTest : BaseQueryTest() {
     // Ensure that the result set has one result, and the data is { "first" : "Abe"}.
     @Test
     fun testQueryDefaultCollectionC() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
         loadJSONResourceIntoCollection("names_100.json", collection = defaultCollection)
         val query = QueryBuilder.createQuery(
@@ -304,7 +304,7 @@ class CollectionQueryTest : BaseQueryTest() {
     //     <index-name>
     @Test
     fun testFTSQueryWithFullTextIndexInDefaultCollectionA() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
 
         loadJSONResourceIntoCollection("sentences.json", collection = defaultCollection)
@@ -332,7 +332,7 @@ class CollectionQueryTest : BaseQueryTest() {
     //     _.<index-name>
     @Test
     fun testFTSQueryWithFullTextIndexInDefaultCollectionB() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
 
         loadJSONResourceIntoCollection("sentences.json", collection = defaultCollection)
@@ -360,7 +360,7 @@ class CollectionQueryTest : BaseQueryTest() {
     //     _default.<index-name>
     @Test
     fun testFTSQueryWithFullTextIndexInDefaultCollectionC() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
 
         loadJSONResourceIntoCollection("sentences.json", collection = defaultCollection)
@@ -388,7 +388,7 @@ class CollectionQueryTest : BaseQueryTest() {
     //     <database-name>.<index-name>
     @Test
     fun testFTSQueryWithFullTextIndexInDefaultCollectionD() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
 
         loadJSONResourceIntoCollection("sentences.json", collection = defaultCollection)
@@ -416,7 +416,7 @@ class CollectionQueryTest : BaseQueryTest() {
     //     <collection-alias-name>.<index-name>
     @Test
     fun testFTSQueryWithFullTextIndexInDefaultCollectionE() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
 
         loadJSONResourceIntoCollection("sentences.json", collection = defaultCollection)
@@ -618,7 +618,7 @@ class CollectionQueryTest : BaseQueryTest() {
     //     SELECT * FROM db => “db”
     @Test
     fun testSelectAllResultKeyA() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
 
         var doc = MutableDocument()
@@ -644,7 +644,7 @@ class CollectionQueryTest : BaseQueryTest() {
     //     SELECT * FROM _ => “_”
     @Test
     fun testSelectAllResultKeyB() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
 
         var doc = MutableDocument()
@@ -670,7 +670,7 @@ class CollectionQueryTest : BaseQueryTest() {
     //     SELECT * FROM _default._default => “_default”
     @Test
     fun testSelectAllResultKeyC() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
 
         var doc = MutableDocument()
@@ -751,7 +751,7 @@ class CollectionQueryTest : BaseQueryTest() {
     // Ensure that the result set has one result, and the data is {"first" : "Abe"}.
     @Test
     fun testQueryBuilderWithDefaultCollectionAsDataSource() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
         loadJSONResourceIntoCollection("names_100.json", collection = defaultCollection)
 
@@ -907,7 +907,7 @@ class CollectionQueryTest : BaseQueryTest() {
     //     SELECT * FROM _default._default => “_default”
     @Test
     fun testBuilderSelectAllResultKeyC() {
-        val defaultCollection = testDatabase.getDefaultCollection()
+        val defaultCollection = testDatabase.defaultCollection
         assertNotNull(defaultCollection!!)
 
         var doc = MutableDocument()

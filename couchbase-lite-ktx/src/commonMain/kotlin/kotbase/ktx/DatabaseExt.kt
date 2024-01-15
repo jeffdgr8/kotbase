@@ -33,8 +33,8 @@ import kotlin.coroutines.CoroutineContext
  */
 @Suppress("DEPRECATION")
 @Deprecated(
-    "Use getDefaultCollection().documentFlow()",
-    ReplaceWith("getDefaultCollection()!!.documentFlow(id)")
+    "Use defaultCollection.documentFlow()",
+    ReplaceWith("defaultCollection.documentFlow(id)")
 )
 public fun Database.documentFlow(id: String): Flow<Document?> = documentFlow(id, Dispatchers.IO)
 
@@ -48,8 +48,8 @@ public fun Database.documentFlow(id: String): Flow<Document?> = documentFlow(id,
  */
 @Suppress("DEPRECATION")
 @Deprecated(
-    "Use getDefaultCollection().documentFlow()",
-    ReplaceWith("getDefaultCollection()!!.documentFlow(id, fetchContext)")
+    "Use defaultCollection.documentFlow()",
+    ReplaceWith("defaultCollection.documentFlow(id, fetchContext)")
 )
 public fun Database.documentFlow(
     id: String,

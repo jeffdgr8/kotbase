@@ -81,7 +81,7 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
      */
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
-        ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection()!!)")
+        ReplaceWith("getPendingDocumentIds(config.database.defaultCollection)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun getPendingDocumentIds(): Set<String>
@@ -102,7 +102,7 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
      */
     @Deprecated(
         "Use isDocumentPending(String, Collection)",
-        ReplaceWith("isDocumentPending(docId, config.database.getDefaultCollection()!!)")
+        ReplaceWith("isDocumentPending(docId, config.database.defaultCollection)")
     )
     @Throws(CouchbaseLiteException::class)
     public fun isDocumentPending(docId: String): Boolean

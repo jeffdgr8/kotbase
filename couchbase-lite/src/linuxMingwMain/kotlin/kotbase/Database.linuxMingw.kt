@@ -240,15 +240,13 @@ private constructor(
         }?.asCollection(this)
     }
 
-    private val _defaultCollection: Collection by lazy {
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val defaultCollection: Collection by lazy {
         wrapCBLError { error ->
             CBLDatabase_DefaultCollection(actual, error)
         }!!.asCollection(this)
     }
-
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getDefaultCollection(): Collection =
-        _defaultCollection
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteCollection(name: String) {
@@ -316,15 +314,15 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().count",
-        ReplaceWith("getDefaultCollection().count")
+        "Use defaultCollection.count",
+        ReplaceWith("defaultCollection.count")
     )
     public actual val count: Long
         get() = CBLDatabase_Count(actual).toLong()
 
     @Deprecated(
-        "Use getDefaultCollection().getDocument()",
-        ReplaceWith("getDefaultCollection().getDocument(id)")
+        "Use defaultCollection.getDocument()",
+        ReplaceWith("defaultCollection.getDocument(id)")
     )
     public actual fun getDocument(id: String): Document? {
         return mustBeOpen {
@@ -337,8 +335,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document)")
+        "Use defaultCollection.save()",
+        ReplaceWith("defaultCollection.save(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
@@ -352,8 +350,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document, concurrencyControl)")
+        "Use defaultCollection.save()",
+        ReplaceWith("defaultCollection.save(document, concurrencyControl)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(
@@ -387,8 +385,8 @@ private constructor(
     private var conflictHandler: StableRef<ConflictHandlerWrapper>? = null
 
     @Deprecated(
-        "Use getDefaultCollection().save()",
-        ReplaceWith("getDefaultCollection().save(document, conflictHandler)")
+        "Use defaultCollection.save()",
+        ReplaceWith("defaultCollection.save(document, conflictHandler)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
@@ -429,8 +427,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().delete()",
-        ReplaceWith("getDefaultCollection().delete(document)")
+        "Use defaultCollection.delete()",
+        ReplaceWith("defaultCollection.delete(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document) {
@@ -443,8 +441,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().delete()",
-        ReplaceWith("getDefaultCollection().delete(document, concurrencyControl)")
+        "Use defaultCollection.delete()",
+        ReplaceWith("defaultCollection.delete(document, concurrencyControl)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun delete(document: Document, concurrencyControl: ConcurrencyControl): Boolean {
@@ -472,8 +470,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().purge()",
-        ReplaceWith("getDefaultCollection().purge(document)")
+        "Use defaultCollection.purge()",
+        ReplaceWith("defaultCollection.purge(document)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(document: Document) {
@@ -492,8 +490,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().purge()",
-        ReplaceWith("getDefaultCollection().purge(id)")
+        "Use defaultCollection.purge()",
+        ReplaceWith("defaultCollection.purge(id)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun purge(id: String) {
@@ -507,8 +505,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().setDocumentExpiration()",
-        ReplaceWith("getDefaultCollection().setDocumentExpiration(id, expiration)")
+        "Use defaultCollection.setDocumentExpiration()",
+        ReplaceWith("defaultCollection.setDocumentExpiration(id, expiration)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun setDocumentExpiration(id: String, expiration: Instant?) {
@@ -527,8 +525,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().getDocumentExpiration()",
-        ReplaceWith("getDefaultCollection().getDocumentExpiration(id)")
+        "Use defaultCollection.getDocumentExpiration()",
+        ReplaceWith("defaultCollection.getDocumentExpiration(id)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocumentExpiration(id: String): Instant? {
@@ -543,8 +541,8 @@ private constructor(
 
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().addChangeListener()",
-        ReplaceWith("getDefaultCollection().addChangeListener(listener)")
+        "Use defaultCollection.addChangeListener()",
+        ReplaceWith("defaultCollection.addChangeListener(listener)")
     )
     public actual fun addChangeListener(listener: DatabaseChangeListener): ListenerToken {
         return mustBeOpen {
@@ -555,8 +553,8 @@ private constructor(
 
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().addChangeListener()",
-        ReplaceWith("getDefaultCollection().addChangeListener(context, listener)")
+        "Use defaultCollection.addChangeListener()",
+        ReplaceWith("defaultCollection.addChangeListener(context, listener)")
     )
     public actual fun addChangeListener(
         context: CoroutineContext,
@@ -572,8 +570,8 @@ private constructor(
 
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
     @Deprecated(
-        "Use getDefaultCollection().addChangeListener()",
-        ReplaceWith("getDefaultCollection().addChangeListener(scope, listener)")
+        "Use defaultCollection.addChangeListener()",
+        ReplaceWith("defaultCollection.addChangeListener(scope, listener)")
     )
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         mustBeOpen {
@@ -607,8 +605,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().addDocumentChangeListener()",
-        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, listener)")
+        "Use defaultCollection.addDocumentChangeListener()",
+        ReplaceWith("defaultCollection.addDocumentChangeListener(id, listener)")
     )
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken {
         return mustBeOpen {
@@ -618,8 +616,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().addDocumentChangeListener()",
-        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, context, listener)")
+        "Use defaultCollection.addDocumentChangeListener()",
+        ReplaceWith("defaultCollection.addDocumentChangeListener(id, context, listener)")
     )
     public actual fun addDocumentChangeListener(
         id: String,
@@ -635,8 +633,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().addDocumentChangeListener()",
-        ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, scope, listener)")
+        "Use defaultCollection.addDocumentChangeListener()",
+        ReplaceWith("defaultCollection.addDocumentChangeListener(id, scope, listener)")
     )
     public actual fun addDocumentChangeListener(
         id: String,
@@ -669,7 +667,7 @@ private constructor(
     private fun nativeDocumentChangeListener(): CBLDocumentChangeListener {
         return staticCFunction { ref, _, docId ->
             with(ref.to<DocumentChangeListenerHolder>()) {
-                val change = DocumentChange(database.getDefaultCollection(), docId.toKString()!!)
+                val change = DocumentChange(database.defaultCollection, docId.toKString()!!)
                 when (this) {
                     is DocumentChangeDefaultListenerHolder -> listener(change)
                     is DocumentChangeSuspendListenerHolder -> scope.launch {
@@ -689,8 +687,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().indexes",
-        ReplaceWith("getDefaultCollection().indexes")
+        "Use defaultCollection.indexes",
+        ReplaceWith("defaultCollection.indexes")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getIndexes(): List<String> {
@@ -704,8 +702,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().createIndex()",
-        ReplaceWith("getDefaultCollection().createIndex(name, index)")
+        "Use defaultCollection.createIndex()",
+        ReplaceWith("defaultCollection.createIndex(name, index)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, index: Index) {
@@ -734,8 +732,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().createIndex()",
-        ReplaceWith("getDefaultCollection().createIndex(name, config)")
+        "Use defaultCollection.createIndex()",
+        ReplaceWith("defaultCollection.createIndex(name, config)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
@@ -763,8 +761,8 @@ private constructor(
     }
 
     @Deprecated(
-        "Use getDefaultCollection().deleteIndex()",
-        ReplaceWith("getDefaultCollection().deleteIndex(name)")
+        "Use defaultCollection.deleteIndex()",
+        ReplaceWith("defaultCollection.deleteIndex(name)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteIndex(name: String) {

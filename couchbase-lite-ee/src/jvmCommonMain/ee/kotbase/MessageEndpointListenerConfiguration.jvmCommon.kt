@@ -29,7 +29,7 @@ internal constructor(
     @Suppress("DEPRECATION")
     @Deprecated(
         "Use MessageEndpointListener(Collection, ProtocolType)",
-        ReplaceWith("MessageEndpointListener(setOf(database.getDefaultCollection()!!), protocolType)")
+        ReplaceWith("MessageEndpointListener(setOf(database.defaultCollection), protocolType)")
     )
     public actual constructor(
         database: Database,
@@ -37,7 +37,7 @@ internal constructor(
     ) : this(
         CBLMessageEndpointListenerConfiguration(database.actual, protocolType),
         database,
-        setOf(database.getDefaultCollection())
+        setOf(database.defaultCollection)
     )
 
     public actual constructor(collections: Set<Collection>, protocolType: ProtocolType) : this(

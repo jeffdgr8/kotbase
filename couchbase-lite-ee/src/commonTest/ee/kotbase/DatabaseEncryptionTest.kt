@@ -41,7 +41,7 @@ class DatabaseEncryptionTest : BaseDbTest() {
         seekrit = openSeekrit(null)
 
         val doc = MutableDocument(mapOf("answer" to 42))
-        seekrit!!.getDefaultCollection()!!.save(doc)
+        seekrit!!.defaultCollection.save(doc)
         seekrit!!.close()
         seekrit = null
 
@@ -52,7 +52,7 @@ class DatabaseEncryptionTest : BaseDbTest() {
 
         // Reopen with no password:
         seekrit = openSeekrit(null)
-        assertEquals(1, seekrit!!.getDefaultCollection()!!.count)
+        assertEquals(1, seekrit!!.defaultCollection.count)
     }
 
     @Test
@@ -61,7 +61,7 @@ class DatabaseEncryptionTest : BaseDbTest() {
         seekrit = openSeekrit("letmein")
 
         val doc = MutableDocument(mapOf("answer" to 42))
-        seekrit!!.getDefaultCollection()!!.save(doc)
+        seekrit!!.defaultCollection.save(doc)
         seekrit!!.close()
         seekrit = null
 
@@ -89,12 +89,12 @@ class DatabaseEncryptionTest : BaseDbTest() {
 
         // Re-create database:
         seekrit = openSeekrit(null)
-        assertEquals(0, seekrit!!.getDefaultCollection()!!.count)
+        assertEquals(0, seekrit!!.defaultCollection.count)
         seekrit!!.close()
 
         // Make sure it doesn't need a password now:
         seekrit = openSeekrit(null)
-        assertEquals(0, seekrit!!.getDefaultCollection()!!.count)
+        assertEquals(0, seekrit!!.defaultCollection.count)
         seekrit!!.close()
 
         // Make sure old password doesn't work:
@@ -117,7 +117,7 @@ class DatabaseEncryptionTest : BaseDbTest() {
         val body = "This is a blob!".encodeToByteArray()
         var blob = Blob("text/plain", body)
         doc.setValue("blob", blob)
-        seekrit!!.getDefaultCollection()!!.save(doc)
+        seekrit!!.defaultCollection.save(doc)
 
         // Read content from the raw blob file:
         blob = doc.getBlob("blob")!!
@@ -134,7 +134,7 @@ class DatabaseEncryptionTest : BaseDbTest() {
         }
 
         // Check blob content:
-        val savedDoc = seekrit!!.getDefaultCollection()!!.getDocument("att")
+        val savedDoc = seekrit!!.defaultCollection.getDocument("att")
         assertNotNull(savedDoc)
         blob = savedDoc.getBlob("blob")!!
         assertNotNull(blob.digest)

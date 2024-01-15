@@ -36,7 +36,7 @@ class DbCollectionsTest : BaseDbTest() {
 
     @Test
     fun testGetDefaultCollection() {
-        val col = testDatabase.getDefaultCollection()
+        val col = testDatabase.defaultCollection
         assertNotNull(col)
         assertEquals(Collection.DEFAULT_NAME, col.name)
         assertEquals(col, testDatabase.getCollection(Collection.DEFAULT_NAME))

@@ -82,11 +82,11 @@ class DeprecatedConfigFactoryTest : BaseDbTest() {
     @Test
     fun testReplicatorConfigFromCollectionWithDefault() {
         val config1 = ReplicatorConfigurationFactory
-            .newConfig(testEndpoint, mapOf(listOf(testDatabase.getDefaultCollection()!!) to CollectionConfiguration()))
+            .newConfig(testEndpoint, mapOf(listOf(testDatabase.defaultCollection) to CollectionConfiguration()))
         val config2 = config1.newConfig()
         assertNotSame(config1, config2)
         assertEquals(config1.database, config2.database)
-        assertEquals(setOf(testCollection.database.getDefaultCollection()), config2.collections)
+        assertEquals(setOf(testCollection.database.defaultCollection), config2.collections)
     }
 
     // Create from a source with default collection, explicitly specifying a non-default collection
@@ -103,7 +103,7 @@ class DeprecatedConfigFactoryTest : BaseDbTest() {
         assertEquals(config1.database, config2.database)
 
         val db = config1.database
-        val defaultCollection = db.getDefaultCollection()!!
+        val defaultCollection = db.defaultCollection
 
         assertEquals(setOf(defaultCollection), config2.collections)
         assertEquals(filter, config2.getCollectionConfiguration(defaultCollection)?.pushFilter)
@@ -115,7 +115,7 @@ class DeprecatedConfigFactoryTest : BaseDbTest() {
         val config = ReplicatorConfigurationFactory.newConfig(testDatabase, testEndpoint, channels = listOf("boop"))
         assertEquals(testDatabase, config.database)
         assertEquals(testEndpoint, config.target)
-        assertEquals(listOf("boop"), config.getCollectionConfiguration(testDatabase.getDefaultCollection()!!)!!.channels)
+        assertEquals(listOf("boop"), config.getCollectionConfiguration(testDatabase.defaultCollection)!!.channels)
     }
 
     // Create a collection style config from one built with the legacy call
@@ -127,7 +127,7 @@ class DeprecatedConfigFactoryTest : BaseDbTest() {
         assertEquals(testEndpoint, config2.target)
         val colls = config2.collections
         assertEquals(1, colls.size)
-        val defaultCollection = testDatabase.getDefaultCollection()!!
+        val defaultCollection = testDatabase.defaultCollection
         assertTrue(colls.contains(defaultCollection))
         assertEquals(listOf("boop"), config2.getCollectionConfiguration(defaultCollection)!!.channels)
     }
