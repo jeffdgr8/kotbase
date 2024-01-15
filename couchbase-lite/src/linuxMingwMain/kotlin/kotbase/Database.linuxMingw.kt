@@ -147,22 +147,24 @@ private constructor(
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getScopes(): Set<Scope> {
-        val names = wrapCBLError { error ->
-            CBLDatabase_ScopeNames(actual, error)
-        }
-        return buildSet {
-            memScoped {
-                names?.iterator(this)?.forEach {
-                    wrapCBLError { error ->
-                        CBLDatabase_Scope(actual, FLValue_AsString(it), error)
-                    }?.asScope(this@Database)?.let(::add)
-                }
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val scopes: Set<Scope>
+        get() {
+            val names = wrapCBLError { error ->
+                CBLDatabase_ScopeNames(actual, error)
             }
-            FLMutableArray_Release(names)
+            return buildSet {
+                memScoped {
+                    names?.iterator(this)?.forEach {
+                        wrapCBLError { error ->
+                            CBLDatabase_Scope(actual, FLValue_AsString(it), error)
+                        }?.asScope(this@Database)?.let(::add)
+                    }
+                }
+                FLMutableArray_Release(names)
+            }
         }
-    }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getScope(name: String): Scope? {

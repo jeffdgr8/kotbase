@@ -89,9 +89,9 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         actual.delete()
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getScopes(): Set<Scope> =
-        actual.scopes.asScopes(this)
+    @get:Throws(CouchbaseLiteException::class)
+    public actual val scopes: Set<Scope>
+        get () = actual.scopes.asScopes(this)
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getScope(name: String): Scope? =
