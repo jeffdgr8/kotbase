@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="321px" preserveAspectRatio="none" style="width:647px;height:321px;" version="1.1" viewBox="0 0 647 321" width="647px" zoomAndPan="magnify"><defs><filter height="300%" id="f1ryowljvgsu9s" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[5221ba25a3dc59a7507dde998bd6bfc2]
+cluster db1--><path d="M6,16 C6,6 119,6 119,6 C119,6 232,6 232,16 L232,189 C232,199 119,199 119,199 C119,199 6,199 6,189 L6,16 " fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" style="stroke:#000000;stroke-width:1.5;"/><path d="M6,16 C6,26 119,26 119,26 C119,26 232,26 232,16 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="174" x="32" y="41.9999">Couchbase Lite database</text><!--MD5=[f43fca00aa43789a98b7c21452a09aa9]
+cluster dfs1--><polygon fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" points="30,74,40,64,208,64,208,165,198,175,30,175,30,74" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="198" x2="208" y1="74" y2="64"/><line style="stroke:#000000;stroke-width:1.5;" x1="30" x2="198" y1="74" y2="74"/><line style="stroke:#000000;stroke-width:1.5;" x1="198" x2="198" y1="74" y2="175"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="102" x="64" y="90.9999">_default scope</text><!--MD5=[282a3878cc296f19e6c6417b026e89f6]
+cluster db2--><path d="M256,16 C256,6 448,6 448,6 C448,6 640,6 640,16 L640,304 C640,314 448,314 448,314 C448,314 256,314 256,304 L256,16 " fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" style="stroke:#000000;stroke-width:1.5;"/><path d="M256,16 C256,26 448,26 448,26 C448,26 640,26 640,16 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="174" x="361" y="41.9999">Couchbase Lite database</text><!--MD5=[8870a6bfd5a2c941426e7d041021a96b]
+cluster dfs2--><polygon fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" points="438,74,448,64,616,64,616,280,606,290,438,290,438,74" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="606" x2="616" y1="74" y2="64"/><line style="stroke:#000000;stroke-width:1.5;" x1="438" x2="606" y1="74" y2="74"/><line style="stroke:#000000;stroke-width:1.5;" x1="606" x2="606" y1="74" y2="290"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="102" x="472" y="90.9999">_default scope</text><!--MD5=[9c3b55bfdb31ed7903f5c88713059761]
+cluster scopeA--><polygon fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" points="280,74,290,64,414,64,414,280,404,290,280,290,280,74" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="404" x2="414" y1="74" y2="64"/><line style="stroke:#000000;stroke-width:1.5;" x1="280" x2="404" y1="74" y2="74"/><line style="stroke:#000000;stroke-width:1.5;" x1="404" x2="404" y1="74" y2="290"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="58" x="314" y="90.9999">Scope A</text><!--MD5=[ae1d9982ce549b41eff4dd492d093032]
+entity dfc1--><polygon fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" points="49,104,95,104,102,125,189,125,189,158.7999,49,158.7999,49,104" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="49" x2="102" y1="125" y2="125"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110" x="59" y="145.9999">_default collection</text><!--MD5=[9c2bbdf706430c89be3cfdb45039fd9f]
+entity dfc2--><polygon fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" points="457,219,503,219,510,240,597,240,597,273.7999,457,273.7999,457,219" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="457" x2="510" y1="240" y2="240"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110" x="467" y="260.9999">_default collection</text><!--MD5=[c7d8ae8e2320b9756a276bd1a777d39a]
+entity collectionA--><polygon fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" points="476,104,522,104,529,125,578,125,578,158.7999,476,158.7999,476,104" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="476" x2="529" y1="125" y2="125"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="72" x="486" y="145.9999">Collection A</text><!--MD5=[79a0558e6fc6031c711661e098accf9f]
+entity collectionA2--><polygon fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" points="296,104,342,104,349,125,398,125,398,158.7999,296,158.7999,296,104" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="296" x2="349" y1="125" y2="125"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="72" x="306" y="145.9999">Collection A</text><!--MD5=[e0072e533ab2e9383d94f483950e3248]
+entity collectionB--><polygon fill="#FFFFFF" filter="url(#f1ryowljvgsu9s)" points="296,219,342,219,349,240,398,240,398,273.7999,296,273.7999,296,219" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="296" x2="349" y1="240" y2="240"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="72" x="306" y="260.9999">Collection B</text><!--MD5=[04e979ca06f3f6fab9d0cf0901510e68]
+link collectionA2 to collectionB--><!--MD5=[7f036a2de6a4c12f67d09e6277df9e37]
+link collectionA to dfc2--><!--MD5=[b61b8b4ef8a92c7339e6a2da59f26b30]
+@startuml
+database "Couchbase Lite database" as db1 {
+
+      node "_default scope" as dfs1 {
+
+        folder "_default collection" as dfc1 {
+
+        }
+      }
+
+}
+
+database "Couchbase Lite database" as db2 {
+
+
+    node "_default scope" as dfs2 {
+
+      folder "_default collection" as dfc2 {
+
+      }
+
+        folder "Collection A" as collectionA {
+
+        }
+    }
+
+    node "Scope A" as scopeA {
+
+      folder "Collection A" as collectionA2 {
+
+      }
+
+        folder "Collection B" as collectionB {
+
+        }
+    }
+
+}
+
+collectionA2 -D[hidden]-> collectionB
+collectionA -D[hidden]-> dfc2
+@enduml
+
+PlantUML version 1.2021.16(Wed Dec 08 17:25:22 GMT 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
