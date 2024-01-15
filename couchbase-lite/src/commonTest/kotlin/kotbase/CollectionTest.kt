@@ -1173,7 +1173,7 @@ class CollectionTest : BaseDbTest() {
 
     @Test
     fun testDefaultScopeExists() {
-        val scope = testDatabase.getDefaultScope()
+        val scope = testDatabase.defaultScope
         assertNotNull(scope)
         assertEquals(Scope.DEFAULT_NAME, scope.name)
 
@@ -1208,7 +1208,7 @@ class CollectionTest : BaseDbTest() {
             testDatabase.deleteCollection(Collection.DEFAULT_NAME)
         }
 
-        val scope = testDatabase.getDefaultScope()
+        val scope = testDatabase.defaultScope
         assertEquals(Scope.DEFAULT_NAME, scope.name)
 
         val scopes = testDatabase.scopes

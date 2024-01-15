@@ -97,9 +97,9 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     public actual fun getScope(name: String): Scope? =
         actual.getScope(name)?.asScope(this)
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getDefaultScope(): Scope =
-        Scope(actual.defaultScope, this)
+    @get:Throws(CouchbaseLiteException::class)
+    public actual val defaultScope: Scope
+        get() = Scope(actual.defaultScope, this)
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createCollection(name: String): Collection =
