@@ -41,22 +41,24 @@ internal constructor(
     public actual val name: String
         get() = CBLScope_Name(actual).toKString()!!
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getCollections(): Set<Collection> {
-        val names = wrapCBLError { error ->
-            CBLScope_CollectionNames(actual, error)
-        }
-        return buildSet {
-            memScoped {
-                names?.iterator(this)?.forEach {
-                    wrapCBLError { error ->
-                        CBLScope_Collection(actual, FLValue_AsString(it), error)
-                    }?.asCollection(database)?.let(::add)
-                }
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val collections: Set<Collection>
+        get() {
+            val names = wrapCBLError { error ->
+                CBLScope_CollectionNames(actual, error)
             }
-            FLMutableArray_Release(names)
+            return buildSet {
+                memScoped {
+                    names?.iterator(this)?.forEach {
+                        wrapCBLError { error ->
+                            CBLScope_Collection(actual, FLValue_AsString(it), error)
+                        }?.asCollection(database)?.let(::add)
+                    }
+                }
+                FLMutableArray_Release(names)
+            }
         }
-    }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollection(collectionName: String): Collection? {
