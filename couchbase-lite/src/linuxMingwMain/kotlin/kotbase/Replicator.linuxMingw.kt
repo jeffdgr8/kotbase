@@ -103,22 +103,23 @@ private constructor(
         }
     }
 
-    @Suppress("DEPRECATION")
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
         ReplaceWith("getPendingDocumentIds(config.database.defaultCollection)")
     )
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getPendingDocumentIds(): Set<String> {
-        checkPullOnlyPendingDocIds()
-        config.database.mustBeOpen()
-        return wrapCBLError { error ->
-            val dict = CBLReplicator_PendingDocumentIDs(actual, error)
-            dict?.keys()?.also {
-                FLDict_Release(dict)
-            }?.toSet() ?: emptySet()
+    @Suppress("DEPRECATION", "ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val pendingDocumentIds: Set<String>
+        get() {
+            checkPullOnlyPendingDocIds()
+            config.database.mustBeOpen()
+            return wrapCBLError { error ->
+                val dict = CBLReplicator_PendingDocumentIDs(actual, error)
+                dict?.keys()?.also {
+                    FLDict_Release(dict)
+                }?.toSet() ?: emptySet()
+            }
         }
-    }
 
     @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)

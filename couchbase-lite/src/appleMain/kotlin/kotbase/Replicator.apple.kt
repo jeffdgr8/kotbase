@@ -64,19 +64,20 @@ internal constructor(
     public actual val serverCertificates: List<ByteArray>?
         get() = actual.serverCertificate?.toByteArray()?.let { listOf(it) }
 
-    @Suppress("DEPRECATION")
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
         ReplaceWith("getPendingDocumentIds(config.database.defaultCollection)")
     )
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getPendingDocumentIds(): Set<String> {
-        config.database.mustBeOpen()
-        return wrapCBLError { error ->
-            @Suppress("UNCHECKED_CAST")
-            actual.pendingDocumentIDs(error) as Set<String>
+    @Suppress("DEPRECATION", "ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val pendingDocumentIds: Set<String>
+        get() {
+            config.database.mustBeOpen()
+            return wrapCBLError { error ->
+                @Suppress("UNCHECKED_CAST")
+                actual.pendingDocumentIDs(error) as Set<String>
+            }
         }
-    }
 
     @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)

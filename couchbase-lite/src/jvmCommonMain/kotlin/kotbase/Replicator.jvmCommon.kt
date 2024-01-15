@@ -70,9 +70,9 @@ internal constructor(
         "Use getPendingDocumentIds(Collection)",
         ReplaceWith("getPendingDocumentIds(config.database.defaultCollection)")
     )
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getPendingDocumentIds(): Set<String> =
-        actual.pendingDocumentIds
+    @get:Throws(CouchbaseLiteException::class)
+    public actual val pendingDocumentIds: Set<String>
+        get() = actual.pendingDocumentIds
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(collection: Collection): Set<String> =
