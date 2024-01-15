@@ -240,14 +240,14 @@ private constructor(
         }?.asCollection(this)
     }
 
-    private val _defaultCollection: Collection? by lazy {
+    private val _defaultCollection: Collection by lazy {
         wrapCBLError { error ->
             CBLDatabase_DefaultCollection(actual, error)
-        }?.asCollection(this)
+        }!!.asCollection(this)
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun getDefaultCollection(): Collection? =
+    public actual fun getDefaultCollection(): Collection =
         _defaultCollection
 
     @Throws(CouchbaseLiteException::class)
@@ -669,7 +669,7 @@ private constructor(
     private fun nativeDocumentChangeListener(): CBLDocumentChangeListener {
         return staticCFunction { ref, _, docId ->
             with(ref.to<DocumentChangeListenerHolder>()) {
-                val change = DocumentChange(database.getDefaultCollectionNotNull(), docId.toKString()!!)
+                val change = DocumentChange(database.getDefaultCollection(), docId.toKString()!!)
                 when (this) {
                     is DocumentChangeDefaultListenerHolder -> listener(change)
                     is DocumentChangeSuspendListenerHolder -> scope.launch {

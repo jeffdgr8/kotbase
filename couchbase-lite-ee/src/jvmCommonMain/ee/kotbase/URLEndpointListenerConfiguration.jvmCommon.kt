@@ -45,7 +45,7 @@ private constructor(
         enableDeltaSync: Boolean
     ) : this(
         database,
-        setOf(database.getDefaultCollectionNotNull()),
+        setOf(database.getDefaultCollection()),
         identity,
         authenticator,
         CBLURLEndpointListenerConfiguration(database.actual).apply {

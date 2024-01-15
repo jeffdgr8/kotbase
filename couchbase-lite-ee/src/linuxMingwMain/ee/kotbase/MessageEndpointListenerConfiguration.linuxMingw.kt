@@ -31,7 +31,7 @@ internal constructor(
         protocolType: ProtocolType
     ) : this(
         database,
-        setOf(database.getDefaultCollectionNotNull()),
+        setOf(database.getDefaultCollection()),
         protocolType
     )
 

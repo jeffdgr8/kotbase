@@ -25,7 +25,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asExecutor
-import kotlinx.coroutines.cancel
 import kotlinx.datetime.Instant
 import java.io.File
 import kotlin.coroutines.CoroutineContext
@@ -126,12 +125,12 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     public actual fun getCollection(collectionName: String, scopeName: String?): Collection? =
         actual.getCollection(collectionName, scopeName)?.asCollection(this)
 
-    private val _defaultCollection: Collection? by lazy {
-        actual.defaultCollection?.asCollection(this)
+    private val _defaultCollection: Collection by lazy {
+        actual.defaultCollection!!.asCollection(this)
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun getDefaultCollection(): Collection? =
+    public actual fun getDefaultCollection(): Collection =
         _defaultCollection
 
     @Throws(CouchbaseLiteException::class)
@@ -172,7 +171,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         ReplaceWith("getDefaultCollection()!!.getDocument(id)")
     )
     public actual fun getDocument(id: String): Document? =
-        actual.getDocument(id)?.asDocument(getDefaultCollectionNotNull())
+        actual.getDocument(id)?.asDocument(getDefaultCollection())
 
     @Suppress("DEPRECATION")
     @Deprecated(
@@ -203,7 +202,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean =
-        actual.save(document.actual, conflictHandler.convert(getDefaultCollectionNotNull()))
+        actual.save(document.actual, conflictHandler.convert(getDefaultCollection()))
 
     @Suppress("DEPRECATION")
     @Deprecated(
@@ -308,7 +307,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         ReplaceWith("getDefaultCollection().addDocumentChangeListener(id, listener)")
     )
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken =
-        DelegatedListenerToken(actual.addDocumentChangeListener(id, listener.convert(getDefaultCollectionNotNull())))
+        DelegatedListenerToken(actual.addDocumentChangeListener(id, listener.convert(getDefaultCollection())))
 
     @Suppress("DEPRECATION")
     @OptIn(ExperimentalStdlibApi::class)
@@ -325,7 +324,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         val token = actual.addDocumentChangeListener(
             id,
             context[CoroutineDispatcher]?.asExecutor(),
-            listener.convert(getDefaultCollectionNotNull(), scope)
+            listener.convert(getDefaultCollection(), scope)
         )
         return SuspendListenerToken(scope, token)
     }
@@ -344,7 +343,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         val token = actual.addDocumentChangeListener(
             id,
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
-            listener.convert(getDefaultCollectionNotNull(), scope)
+            listener.convert(getDefaultCollection(), scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
             token.remove()

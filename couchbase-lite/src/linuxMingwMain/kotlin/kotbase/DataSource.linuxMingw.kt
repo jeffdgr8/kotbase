@@ -46,7 +46,7 @@ private constructor(
             ReplaceWith("collection(database.getDefaultCollection()!!)")
         )
         public actual fun database(database: Database): As =
-            As(database.getDefaultCollectionNotNull()).apply {
+            As(database.getDefaultCollection()).apply {
                 `as`(database.name)
             }
 
