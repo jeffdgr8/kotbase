@@ -267,7 +267,7 @@ public expect class Database : AutoCloseable {
      *
      * @param id the document ID
      * @return the Document object or null
-     * @throws IllegalStateException when the database is closed or the default collection has been deleted
+     * @throws IllegalStateException when the database is closed
      */
     @Deprecated(
         "Use defaultCollection.getDocument()",
@@ -541,8 +541,9 @@ public expect class Database : AutoCloseable {
         "Use defaultCollection.indexes",
         ReplaceWith("defaultCollection.indexes")
     )
-    @Throws(CouchbaseLiteException::class)
-    public fun getIndexes(): List<String>
+    @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET")
+    @get:Throws(CouchbaseLiteException::class)
+    public val indexes: List<String>
 
     /**
      * Add an index to the default collection.

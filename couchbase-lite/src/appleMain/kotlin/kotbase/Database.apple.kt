@@ -510,13 +510,15 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         "Use defaultCollection.indexes",
         ReplaceWith("defaultCollection.indexes")
     )
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getIndexes(): List<String> {
-        return mustBeOpen {
-            @Suppress("UNCHECKED_CAST")
-            actual.indexes as List<String>
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val indexes: List<String>
+        get() {
+            return mustBeOpen {
+                @Suppress("UNCHECKED_CAST")
+                actual.indexes as List<String>
+            }
         }
-    }
 
     @Deprecated(
         "Use defaultCollection.createIndex()",

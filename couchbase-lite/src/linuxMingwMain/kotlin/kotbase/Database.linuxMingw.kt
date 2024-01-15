@@ -695,16 +695,18 @@ private constructor(
         "Use defaultCollection.indexes",
         ReplaceWith("defaultCollection.indexes")
     )
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getIndexes(): List<String> {
-        return mustBeOpen {
-            val names = CBLDatabase_GetIndexNames(actual)
-            @Suppress("UNCHECKED_CAST")
-            (names?.toList(null) as List<String>?)?.also {
-                FLArray_Release(names)
-            } ?: emptyList()
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val indexes: List<String>
+        get() {
+            return mustBeOpen {
+                val names = CBLDatabase_GetIndexNames(actual)
+                @Suppress("UNCHECKED_CAST")
+                (names?.toList(null) as List<String>?)?.also {
+                    FLArray_Release(names)
+                } ?: emptyList()
+            }
         }
-    }
 
     @Deprecated(
         "Use defaultCollection.createIndex()",
