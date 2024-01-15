@@ -3,8 +3,8 @@ reduce bandwidth use_
 
 ## Overview
 
-Couchbase Lite supports pre-built databases. You can pre-load your app with data instead of syncing it from Sync Gateway
-during startup to minimize consumer wait time (arising from data setup) on initial install and launch of the
+_Couchbase Lite_ supports pre-built databases. You can pre-load your app with data instead of syncing it from _Sync
+Gateway_ during startup to minimize consumer wait time (arising from data setup) on initial install and launch of the
 application.
 
 Avoiding an initial bulk sync reduces startup time and network transfer costs.
@@ -21,14 +21,14 @@ incorporation into the app, updating the database.
 !!! abstract "To use a prebuilt database:"
 
     1. Create a new Couchbase Lite database with the required dataset — see [Creating Pre-built
-       database](#creating-pre-built-database)
+       Database](#creating-pre-built-database)
     2. Incorporate the pre-built database with your app bundle as an asset/resource — see [Bundle a Database with an
        Application](#bundle-a-database-with-an-application)
     3. Adjust the start-up logic of your app to check for the presence of the required database.  
        If the database doesn’t already exist, create one using the bundled pre-built database. Initiate a sync to update
        the data — see [Using Pre-built Database on App Launch](#using-pre-built-database-on-app-launch)
 
-## Creating Pre-built database
+## Creating Pre-built Database
 
 These steps should form part of your build and release process:
 

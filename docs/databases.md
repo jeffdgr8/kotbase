@@ -1,5 +1,55 @@
 _Working with Couchbase Lite databases_
 
+## Database Concepts
+
+Databases created on Couchbase Lite can share the same hierarchical structure as Couchbase Server or Capella databases.
+This makes it easier to sync data between mobile applications and applications built using Couchbase Server or Capella.
+
+<figure markdown id='figure-1'>
+  ![Figure 1](assets/images/database-hierarchy.svg){ loading=lazy }
+  <figcaption>Figure 1. Couchbase Lite Database Hierarchy</figcaption>
+</figure>
+
+Although the terminology is different, the structure can be mapped to relational database terms:
+
+**Table 1. Relational Database → Couchbase**
+
+| Relational database | Couchbase  |
+|:--------------------|:-----------|
+| Database            | Database   |
+| Schema              | Scope      |
+| Table               | Collection |
+
+This structure gives you plenty of choices when it comes to partitioning your data. The most basic structure is to use
+the single default scope with a single default collection; or you could opt for a structure that allows you to split
+your collections into logical scopes.
+
+<figure markdown id='figure-2'>
+  ![Figure 2](assets/images/database-examples.svg){ loading=lazy }
+  <figcaption>Figure 2. Couchbase Lite Examples</figcaption>
+</figure>
+
+!!! note "Storing local configuration"
+
+    You may not need to sync all the data related for a particular application. You can set up a scope that syncs data,
+    and a second scope that doesn’t.
+    
+    One reason for doing this is to store local configuration data (such as the preferred screen orientation or keyboard
+    layout). Since this information only relates to a particular device, there is no need to sync it:
+    
+    <!-- can't have no headers in markdown table, so using raw html -->
+    <table><tbody>
+    <tr>
+    <th>local data scope</th>
+    <td>Contains information pertaining to the device.</td>
+    </tr>
+    <tr>
+    <th>syncing data scope</th>
+    <td>Contains information pertaining to the user, which can be synced back to the cloud for use on the web or another
+    device.</td>
+    </tr>
+    </tbody></table>
+
 ## Create or Open Database
 
 You can create a new database and-or open an existing database, using the [`Database`](
