@@ -169,8 +169,9 @@ public expect class Database : AutoCloseable {
     /**
      * Get all collections in the default scope.
      */
-    @Throws(CouchbaseLiteException::class)
-    public fun getCollections(): Set<Collection>
+    @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET")
+    @get:Throws(CouchbaseLiteException::class)
+    public val collections: Set<Collection>
 
     /**
      * Get all collections in the named scope.

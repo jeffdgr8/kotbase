@@ -202,9 +202,10 @@ private constructor(
         }!!.asCollection(this)
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getCollections(): Set<Collection> =
-        getCollections(defaultScope.name)
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val collections: Set<Collection>
+        get() = getCollections(defaultScope.name)
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollections(scopeName: String?): Set<Collection> {

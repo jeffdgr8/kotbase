@@ -109,9 +109,9 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     public actual fun createCollection(collectionName: String, scopeName: String?): Collection =
         Collection(actual.createCollection(collectionName, scopeName), this)
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getCollections(): Set<Collection> =
-        actual.collections.asCollections(this)
+    @get:Throws(CouchbaseLiteException::class)
+    public actual val collections: Set<Collection>
+        get() = actual.collections.asCollections(this)
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollections(scopeName: String?): Set<Collection> =

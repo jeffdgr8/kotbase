@@ -147,13 +147,15 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }!!.asCollection(this)
     }
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getCollections(): Set<Collection> {
-        return wrapCBLError { error ->
-            @Suppress("UNCHECKED_CAST")
-            actual.collections(null, error) as List<CBLCollection>
-        }.asCollections(this)
-    }
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val collections: Set<Collection>
+        get() {
+            return wrapCBLError { error ->
+                @Suppress("UNCHECKED_CAST")
+                actual.collections(null, error) as List<CBLCollection>
+            }.asCollections(this)
+        }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollections(scopeName: String?): Set<Collection> {
