@@ -873,7 +873,7 @@ class DatabaseTest : BaseDbTest() {
 
         assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.purge(doc.id) }
 
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.getIndexes() }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.indexes }
 
         assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.deleteIndex("foo") }
 
@@ -916,7 +916,7 @@ class DatabaseTest : BaseDbTest() {
 
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.purge(doc.id) }
 
-            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.getIndexes() }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.indexes }
 
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.deleteIndex("foo") }
 
@@ -1259,7 +1259,7 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testCreateIndex() {
-        assertEquals(0, testCollection.getIndexes().size)
+        assertEquals(0, testCollection.indexes.size)
 
         testCollection.createIndex(
             "index1",
@@ -1268,17 +1268,17 @@ class DatabaseTest : BaseDbTest() {
                 ValueIndexItem.property("lastName")
             )
         )
-        assertEquals(1, testCollection.getIndexes().size)
+        assertEquals(1, testCollection.indexes.size)
 
         // Create FTS index:
         testCollection.createIndex("index2", IndexBuilder.fullTextIndex(FullTextIndexItem.property("detail")))
-        assertEquals(2, testCollection.getIndexes().size)
+        assertEquals(2, testCollection.indexes.size)
 
         testCollection.createIndex(
             "index3",
             IndexBuilder.fullTextIndex(FullTextIndexItem.property("es-detail")).ignoreAccents(true).setLanguage("es")
         )
-        assertEquals(3, testCollection.getIndexes().size)
+        assertEquals(3, testCollection.indexes.size)
 
         // Create value index with expression() instead of property()
         testCollection.createIndex(
@@ -1288,25 +1288,25 @@ class DatabaseTest : BaseDbTest() {
                 ValueIndexItem.expression(Expression.property("lastName"))
             )
         )
-        assertEquals(4, testCollection.getIndexes().size)
+        assertEquals(4, testCollection.indexes.size)
 
-        assertContents(testCollection.getIndexes(), "index1", "index2", "index3", "index4")
+        assertContents(testCollection.indexes, "index1", "index2", "index3", "index4")
     }
 
     @Test
     fun testCreateIndexWithConfig() {
-        assertEquals(0, testCollection.getIndexes().size)
+        assertEquals(0, testCollection.indexes.size)
 
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-        assertEquals(1, testCollection.getIndexes().size)
+        assertEquals(1, testCollection.indexes.size)
 
         testCollection.createIndex(
             "index2",
             FullTextIndexConfiguration("detail").ignoreAccents(true).setLanguage("es")
         )
-        assertEquals(2, testCollection.getIndexes().size)
+        assertEquals(2, testCollection.indexes.size)
 
-        assertContents(testCollection.getIndexes(), "index1", "index2")
+        assertContents(testCollection.indexes, "index1", "index2")
     }
 
     @Test
@@ -1324,32 +1324,32 @@ class DatabaseTest : BaseDbTest() {
         // Create index with first name:
         val index: Index = IndexBuilder.valueIndex(ValueIndexItem.property("firstName"))
         testCollection.createIndex("myindex", index)
-        assertEquals(1, testCollection.getIndexes().size)
+        assertEquals(1, testCollection.indexes.size)
 
         // Call create index again:
         testCollection.createIndex("myindex", index)
-        assertEquals(1, testCollection.getIndexes().size)
+        assertEquals(1, testCollection.indexes.size)
 
-        assertContents(testCollection.getIndexes(), "myindex")
+        assertContents(testCollection.indexes, "myindex")
     }
 
     @Test
     fun testCreateSameNameIndexes() {
         // Create value index with first name:
         testCollection.createIndex("myindex", IndexBuilder.valueIndex(ValueIndexItem.property("firstName")))
-        assertEquals(1, testCollection.getIndexes().size)
+        assertEquals(1, testCollection.indexes.size)
 
         // Create value index with last name:
         testCollection.createIndex("myindex", IndexBuilder.valueIndex(ValueIndexItem.property("lastName")))
-        assertEquals(1, testCollection.getIndexes().size)
+        assertEquals(1, testCollection.indexes.size)
 
-        assertContents(testCollection.getIndexes(), "myindex")
+        assertContents(testCollection.indexes, "myindex")
 
         // Create FTS index:
         testCollection.createIndex("myindex", IndexBuilder.fullTextIndex(FullTextIndexItem.property("detail")))
-        assertEquals(1, testCollection.getIndexes().size)
+        assertEquals(1, testCollection.indexes.size)
 
-        assertContents(testCollection.getIndexes(), "myindex")
+        assertContents(testCollection.indexes, "myindex")
     }
 
     @Test
@@ -1358,20 +1358,20 @@ class DatabaseTest : BaseDbTest() {
 
         // Delete indexes:
         testCollection.deleteIndex("index4")
-        assertEquals(3, testCollection.getIndexes().size)
-        assertContents(testCollection.getIndexes(), "index1", "index2", "index3")
+        assertEquals(3, testCollection.indexes.size)
+        assertContents(testCollection.indexes, "index1", "index2", "index3")
 
         testCollection.deleteIndex("index1")
-        assertEquals(2, testCollection.getIndexes().size)
-        assertContents(testCollection.getIndexes(), "index2", "index3")
+        assertEquals(2, testCollection.indexes.size)
+        assertContents(testCollection.indexes, "index2", "index3")
 
         testCollection.deleteIndex("index2")
-        assertEquals(1, testCollection.getIndexes().size)
-        assertContents(testCollection.getIndexes(), "index3")
+        assertEquals(1, testCollection.indexes.size)
+        assertContents(testCollection.indexes, "index3")
 
         testCollection.deleteIndex("index3")
-        assertEquals(0, testCollection.getIndexes().size)
-        assertTrue(testCollection.getIndexes().isEmpty())
+        assertEquals(0, testCollection.indexes.size)
+        assertTrue(testCollection.indexes.isEmpty())
     }
 
     @Test
@@ -1385,13 +1385,13 @@ class DatabaseTest : BaseDbTest() {
     @Test
     fun testDeleteDeletedIndexes() {
         createTestIndexes()
-        assertEquals(4, testCollection.getIndexes().size)
+        assertEquals(4, testCollection.indexes.size)
 
         testCollection.deleteIndex("index1")
         testCollection.deleteIndex("index2")
         testCollection.deleteIndex("index3")
         testCollection.deleteIndex("index4")
-        assertEquals(0, testCollection.getIndexes().size)
+        assertEquals(0, testCollection.indexes.size)
 
         // Delete deleted indexes:
         testCollection.deleteIndex("index1")

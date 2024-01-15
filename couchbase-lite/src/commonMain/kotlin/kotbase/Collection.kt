@@ -258,8 +258,9 @@ public expect class Collection : AutoCloseable {
      * @return the list of index names
      * @throws CouchbaseLiteException on failure
      */
-    @Throws(CouchbaseLiteException::class)
-    public fun getIndexes(): Set<String>
+    @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET")
+    @get:Throws(CouchbaseLiteException::class)
+    public val indexes: Set<String>
 
     /**
      * Add an index to the collection.
