@@ -29,14 +29,16 @@ internal constructor(
     public actual val name: String
         get() = actual.name
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getCollections(): Set<Collection> {
-        @Suppress("UNCHECKED_CAST")
-        val collections = wrapCBLError { error ->
-            actual.collections(error) as List<CBLCollection>
-        }.asCollections(database)
-        return collections.toSet()
-    }
+    @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
+    //@get:Throws(CouchbaseLiteException::class)
+    public actual val collections: Set<Collection>
+        get() {
+            @Suppress("UNCHECKED_CAST")
+            val collections = wrapCBLError { error ->
+                actual.collections(error) as List<CBLCollection>
+            }.asCollections(database)
+            return collections.toSet()
+        }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollection(collectionName: String): Collection? {

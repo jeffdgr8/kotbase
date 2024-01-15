@@ -938,10 +938,10 @@ class DatabaseTest : BaseDbTest() {
 
         val scope = testDatabase.getScope("horo")
         assertNotNull(scope!!)
-        assertNotNull(scope.getCollections())
+        assertNotNull(scope.collections)
 
         testDatabase.close()
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { scope.getCollections() }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { scope.collections }
     }
 
     @Test
@@ -950,7 +950,7 @@ class DatabaseTest : BaseDbTest() {
 
         val scope = testDatabase.getScope("horo")
         assertNotNull(scope!!)
-        assertNotNull(scope.getCollections())
+        assertNotNull(scope.collections)
 
         testDatabase.close()
         assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { scope.getCollection("bobblehead") }
@@ -968,10 +968,10 @@ class DatabaseTest : BaseDbTest() {
         val scope = testDatabase.getScope("horo")
 
         assertNotNull(scope!!)
-        assertNotNull(scope.getCollections())
+        assertNotNull(scope.collections)
 
         testDatabase.delete()
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { scope.getCollections() }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { scope.collections }
     }
 
     @Test
@@ -980,7 +980,7 @@ class DatabaseTest : BaseDbTest() {
         val scope = testDatabase.getScope("horo")
 
         assertNotNull(scope!!)
-        assertNotNull(scope.getCollections())
+        assertNotNull(scope.collections)
 
         testDatabase.delete()
         assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { scope.getCollection("bobblehead") }
@@ -1064,7 +1064,7 @@ class DatabaseTest : BaseDbTest() {
         (0..4).map { StringUtils.getUniqueName("test-collection", 4) }
             .forEach { testDatabase.createCollection(it, scope.name) }
 
-        val collectionNames = scope.getCollections().map { it.name }
+        val collectionNames = scope.collections.map { it.name }
         assertEquals(6, collectionNames.size)
 
         // verify that the collections exist
@@ -1076,7 +1076,7 @@ class DatabaseTest : BaseDbTest() {
         // verify that the collections no longer exist
         collectionNames.forEach { assertNull(scope.getCollection(it)) }
 
-        val collections = scope.getCollections()
+        val collections = scope.collections
         assertNotNull(collections)
         assertTrue(collections.isEmpty())
     }
@@ -1099,7 +1099,7 @@ class DatabaseTest : BaseDbTest() {
         (0..4).map { StringUtils.getUniqueName("test-collection", 4) }
             .forEach { testDatabase.createCollection(it, scope.name) }
 
-        val collectionNames = scope.getCollections().map { it.name }
+        val collectionNames = scope.collections.map { it.name }
         assertEquals(6, collectionNames.size)
 
         // verify that the collections exist
@@ -1118,13 +1118,13 @@ class DatabaseTest : BaseDbTest() {
 
             // verify that the collections no longer exist in the other db
             collectionNames.forEach { assertNull(otherDatabase.getCollection(it, otherScope.name)) }
-            val otherCollections = otherScope.getCollections()
+            val otherCollections = otherScope.collections
             assertNotNull(otherCollections)
             assertTrue(otherCollections.isEmpty())
 
             // verify that the collections no longer exist in the original db
             collectionNames.forEach { assertNull(scope.getCollection(it)) }
-            val collections = scope.getCollections()
+            val collections = scope.collections
             assertNotNull(collections)
             assertTrue(collections.isEmpty())
         }

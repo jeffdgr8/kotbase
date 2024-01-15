@@ -27,9 +27,9 @@ internal constructor(
     public actual val name: String
         get() = actual.name
 
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getCollections(): Set<Collection> =
-        actual.collections.asCollections(database)
+    @get:Throws(CouchbaseLiteException::class)
+    public actual val collections: Set<Collection>
+        get() = actual.collections.asCollections(database)
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollection(collectionName: String): Collection? =

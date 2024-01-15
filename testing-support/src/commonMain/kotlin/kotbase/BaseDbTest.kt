@@ -28,7 +28,7 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
 val Scope.collectionCount
-    get() = this.getCollections().size
+    get() = this.collections.size
 
 fun Database.createTestCollection(name: String = "coll_", scope: String = "scope_"): Collection {
     val uname = BaseTest.getUniqueName(name)

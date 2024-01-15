@@ -41,8 +41,9 @@ public expect class Scope {
      *
      * @return a set of all collections in the scope
      */
-    @Throws(CouchbaseLiteException::class)
-    public fun getCollections(): Set<Collection>
+    @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET")
+    @get:Throws(CouchbaseLiteException::class)
+    public val collections: Set<Collection>
 
     /**
      * Get the named collection for the scope.
