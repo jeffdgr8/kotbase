@@ -360,9 +360,9 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         "Use defaultCollection.indexes",
         ReplaceWith("defaultCollection.indexes")
     )
-    @Throws(CouchbaseLiteException::class)
-    public actual fun getIndexes(): List<String> =
-        actual.indexes
+    @get:Throws(CouchbaseLiteException::class)
+    public actual val indexes: List<String>
+        get() = actual.indexes
 
     @Suppress("DEPRECATION")
     @Deprecated(
