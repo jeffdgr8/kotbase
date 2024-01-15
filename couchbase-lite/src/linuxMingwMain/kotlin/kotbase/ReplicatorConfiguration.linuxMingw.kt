@@ -36,7 +36,7 @@ private constructor(
         ReplaceWith("ReplicatorConfiguration(target)")
     )
     public actual constructor(database: Database, target: Endpoint) : this(target, database) {
-        addCollection(database.getDefaultCollectionNotNull(), null)
+        addCollection(database.getDefaultCollection(), null)
     }
 
     public actual constructor(target: Endpoint) : this(target, null)

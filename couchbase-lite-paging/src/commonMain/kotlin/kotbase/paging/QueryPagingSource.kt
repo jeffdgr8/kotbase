@@ -135,7 +135,7 @@ public fun <RowType : Any> QueryPagingSource(
     mapper: (Map<String, Any?>) -> RowType
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
-    database.getDefaultCollectionNotNull(),
+    database.getDefaultCollection(),
     { this },
     context,
     mapMapper = mapper
@@ -174,7 +174,7 @@ public fun <RowType : Any> QueryPagingSource(
     mapper: (String) -> RowType
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
-    database.getDefaultCollectionNotNull(),
+    database.getDefaultCollection(),
     { this },
     context,
     jsonStringMapper = mapper
@@ -214,7 +214,7 @@ public fun <RowType : Any> QueryPagingSource(
     queryProvider: From.() -> LimitRouter
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
-    database.getDefaultCollectionNotNull(),
+    database.getDefaultCollection(),
     queryProvider,
     context,
     mapMapper = mapper
@@ -254,11 +254,11 @@ public fun <RowType : Any> QueryPagingSource(
     queryProvider: From.() -> LimitRouter
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
-    database.getDefaultCollectionNotNull(),
+    database.getDefaultCollection(),
     queryProvider,
     context,
     jsonStringMapper = mapper
 )
 
-private fun Database.getDefaultCollectionNotNull(): Collection =
+private fun Database.getDefaultCollection(): Collection =
     requireNotNull(getDefaultCollection()) { "Default collection must exist" }

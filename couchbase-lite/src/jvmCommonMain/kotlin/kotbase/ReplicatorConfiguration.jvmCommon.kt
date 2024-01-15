@@ -39,7 +39,7 @@ private constructor(
         target,
         database
     ) {
-        addCollection(database.getDefaultCollectionNotNull(), null)
+        addCollection(database.getDefaultCollection(), null)
     }
 
     public actual constructor(target: Endpoint) : this(

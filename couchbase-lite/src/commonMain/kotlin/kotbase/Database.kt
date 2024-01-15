@@ -201,12 +201,12 @@ public expect class Database : AutoCloseable {
     public fun getCollection(collectionName: String, scopeName: String?): Collection?
 
     /**
-     * Get the default collection. If the default collection has been deleted the function will return null.
+     * Get the default collection.
      *
-     * @return the default collection or null if it does not exist.
+     * @return the default collection.
      */
     @Throws(CouchbaseLiteException::class)
-    public fun getDefaultCollection(): Collection?
+    public fun getDefaultCollection(): Collection
 
     /**
      * Delete a collection by name  in the default scope. If the collection doesn't exist, the operation
@@ -602,12 +602,3 @@ public expect class Database : AutoCloseable {
 @Suppress("DEPRECATION")
 public operator fun Database.get(key: String): DocumentFragment =
     DocumentFragment(getDocument(key))
-
-@Throws(CouchbaseLiteException::class)
-internal fun Database.getDefaultCollectionNotNull(): Collection {
-    return runCatching {
-        getDefaultCollection()!!
-    }.getOrElse {
-        throw IllegalStateException("Attempt to perform an operation on a closed database or a deleted collection.", it)
-    }
-}

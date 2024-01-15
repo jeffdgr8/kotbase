@@ -36,7 +36,7 @@ internal constructor(
     ) : this(
         CBLMessageEndpointListenerConfiguration(database.actual, protocolType.actual),
         database,
-        setOf(database.getDefaultCollectionNotNull())
+        setOf(database.getDefaultCollection())
     )
 
     public actual constructor(collections: Set<Collection>, protocolType: ProtocolType) : this(

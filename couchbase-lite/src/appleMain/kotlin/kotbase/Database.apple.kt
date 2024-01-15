@@ -173,14 +173,14 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }?.asCollection(this)
     }
 
-    private val _defaultCollection: Collection? by lazy {
+    private val _defaultCollection: Collection by lazy {
         wrapCBLError { error ->
             actual.defaultCollection(error)
-        }?.asCollection(this)
+        }!!.asCollection(this)
     }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun getDefaultCollection(): Collection? =
+    public actual fun getDefaultCollection(): Collection =
         _defaultCollection
 
     @Throws(CouchbaseLiteException::class)
@@ -234,7 +234,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     )
     public actual fun getDocument(id: String): Document? {
         return mustBeOpen {
-            actual.documentWithID(id)?.asDocument(getDefaultCollectionNotNull())
+            actual.documentWithID(id)?.asDocument(getDefaultCollection())
         }
     }
 
@@ -282,7 +282,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         return mustBeOpen {
             wrapCBLError { error ->
                 try {
-                    actual.saveDocument(document.actual, conflictHandler.convert(getDefaultCollectionNotNull()), error)
+                    actual.saveDocument(document.actual, conflictHandler.convert(getDefaultCollection()), error)
                 } catch (e: Exception) {
                     if (e !is CouchbaseLiteException) {
                         throw CouchbaseLiteException(
@@ -446,7 +446,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken {
         return DelegatedListenerToken(
             mustBeOpen {
-                actual.addDocumentChangeListenerWithID(id, listener.convert(getDefaultCollectionNotNull()))
+                actual.addDocumentChangeListenerWithID(id, listener.convert(getDefaultCollection()))
             }
         )
     }
@@ -466,7 +466,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
             val token = actual.addDocumentChangeListenerWithID(
                 id,
                 context[CoroutineDispatcher]?.asDispatchQueue(),
-                listener.convert(getDefaultCollectionNotNull(), scope)
+                listener.convert(getDefaultCollection(), scope)
             )
             SuspendListenerToken(scope, token)
         }
@@ -486,7 +486,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
             val token = actual.addDocumentChangeListenerWithID(
                 id,
                 scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
-                listener.convert(getDefaultCollectionNotNull(), scope)
+                listener.convert(getDefaultCollection(), scope)
             )
             scope.coroutineContext[Job]?.invokeOnCompletion {
                 actual.removeChangeListenerWithToken(token)

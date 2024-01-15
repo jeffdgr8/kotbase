@@ -21,9 +21,11 @@ import kotlin.test.*
 
 @OptIn(ExperimentalStdlibApi::class)
 class CollectionTest : BaseDbTest() {
+
     //---------------------------------------------
     //  Get Document
     //---------------------------------------------
+
     @Test
     fun testGetNonExistingDocWithID() {
         assertNull(testCollection.getDocument("doesnt-exist"))
@@ -138,9 +140,9 @@ class CollectionTest : BaseDbTest() {
         assertEquals(0, testCollection.count)
     }
 
-//---------------------------------------------
-//  Save Document
-//---------------------------------------------
+    //---------------------------------------------
+    //  Save Document
+    //---------------------------------------------
 
     @Test
     fun saveNewDocInCollectionWithIdTest() {
@@ -220,27 +222,39 @@ class CollectionTest : BaseDbTest() {
     @Test
     fun testSaveDocToDeletedCollection() {
         testCollection.delete()
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.save(MutableDocument()) }
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_OPEN
+        ) { testCollection.save(MutableDocument()) }
     }
 
     @Test
     fun testSaveDocToCollectionDeletedInDifferentDBInstance() {
         duplicateDb(testDatabase).use { it.getSimilarCollection(testCollection).delete() }
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.save(MutableDocument()) }
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_OPEN
+        ) { testCollection.save(MutableDocument()) }
     }
 
     // Test saving document in a collection of a closed database causes CBLException
     @Test
     fun testSaveDocToCollectionInClosedDB() {
         closeDb(testDatabase)
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.save(MutableDocument()) }
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_OPEN
+        ) { testCollection.save(MutableDocument()) }
     }
 
     // Test saving document in a collection of a deleted database causes CBLException
     @Test
     fun testSaveDocToCollectionInDeletedDB() {
         deleteDb(testDatabase)
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.save(MutableDocument()) }
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_OPEN
+        ) { testCollection.save(MutableDocument()) }
     }
 
     @Test
@@ -289,9 +303,9 @@ class CollectionTest : BaseDbTest() {
         assertEquals(1, col4.count)
     }
 
-//---------------------------------------------
-//  Delete Document
-//---------------------------------------------
+    //---------------------------------------------
+    //  Delete Document
+    //---------------------------------------------
 
     @Test
     fun testDeleteDocument() {
@@ -741,8 +755,8 @@ class CollectionTest : BaseDbTest() {
     @Test
     fun testGetIndexesFromCollectionFromDeletedDatabase() {
 
-            testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-            assertContents(testCollection.getIndexes().toList(), "index1")
+        testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
+        assertContents(testCollection.getIndexes().toList(), "index1")
 
         deleteDb(testDatabase)
         assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.getIndexes() }
@@ -796,50 +810,63 @@ class CollectionTest : BaseDbTest() {
     // Test delete index from a deletedCollection
     @Test
     fun testDeleteIndexFromDeletedCollection() {
-            testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-            assertContents(testCollection.getIndexes().toList(), "index1")
+        testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
+        assertContents(testCollection.getIndexes().toList(), "index1")
 
         // Delete collection
         testCollection.delete()
 
         // delete index
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.deleteIndex("index1") }
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_OPEN
+        ) { testCollection.deleteIndex("index1") }
     }
 
     @Test
     fun testDeleteIndexFromCollectionDeletedInDifferentDbInstance() {
-            testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-            assertContents(testCollection.getIndexes().toList(), "index1")
+        testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
+        assertContents(testCollection.getIndexes().toList(), "index1")
 
         duplicateDb(testDatabase).use { it.getSimilarCollection(testCollection).delete() }
 
         // delete index
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.deleteIndex("index1") }
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_OPEN
+        ) { testCollection.deleteIndex("index1") }
     }
 
     // Test that deletedIndex in collection in closed database causes CBLException
     @Test
     fun testDeleteIndexInCollectionInClosedDatabase() {
-            testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-            assertContents(testCollection.getIndexes().toList(), "index1")
+        testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
+        assertContents(testCollection.getIndexes().toList(), "index1")
 
         closeDb(testDatabase)
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.deleteIndex("index1") }
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_OPEN
+        ) { testCollection.deleteIndex("index1") }
     }
 
     // Test that deleteIndex in collection in deleted causes CBLException
     @Test
     fun testDeleteIndexInCollectionInDeletedDatabase() {
-            testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
-            assertContents(testCollection.getIndexes().toList(), "index1")
+        testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
+        assertContents(testCollection.getIndexes().toList(), "index1")
 
         deleteDb(testDatabase)
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.deleteIndex("index1") }
+        assertThrowsCBLException(
+            CBLError.Domain.CBLITE,
+            CBLError.Code.NOT_OPEN
+        ) { testCollection.deleteIndex("index1") }
     }
 
     //---------------------------------------------
     //  Operations with Conflict
     //---------------------------------------------
+
     @Test
     fun testSaveDocWithConflictLastWriteWins() {
         val mDoc = createDocInCollection()
@@ -996,6 +1023,109 @@ class CollectionTest : BaseDbTest() {
         assertEquals(2, doc1a.sequence)
     }
 
+    // 3.1 TestGetFullNameFromDefaultCollection
+    //    Get the default collection from the database.
+    //    Get the full-name from the default collection.
+    //    Check that the full-name is “_default._default”.
+    @Test
+    fun testGetFullNameFromDefaultCollection() {
+        assertEquals("_default._default", testDatabase.getDefaultCollection().fullName)
+    }
+
+    // 3.2 TestGetFullNameFromNewCollectionInDefaultScope
+    //    Create a new collection in the default scope.
+    //    Get the full-name from the collection.
+    //    Check that the full-name is “_default.<collection-name>”
+    @Test
+    fun testGetFullNameFromNewCollectionInDefaultScope() {
+        val collectionName = getUniqueName("dry_flies")
+        val collection = testDatabase.createCollection(collectionName)
+        assertEquals("_default.${collectionName}", collection.fullName)
+    }
+
+    // 3.3 TestGetFullNameFromNewCollectionInCustomScope
+    //    Create a new collection in a custom scope.
+    //    Get the full-name from the collection.
+    //    Check that the full-name is “<scope-name>.<collection-name>”
+    @Test
+    fun testGetFullNameFromNewCollectionInCustomScope() {
+        val scopeName = getUniqueName("oscilli")
+        val collectionName = getUniqueName("dry_flies")
+        val collection = testDatabase.createCollection(collectionName, scopeName)
+        assertEquals("${scopeName}.${collectionName}", collection.fullName)
+    }
+
+    // 3.4 TestGetFullNameFromExistingCollectionInDefaultScope
+    //    Create a new collection in the default scope.
+    //    Get the created collection in step 1 from the database
+    //    Get the full-name from the collection obtained in step 2.
+    //    Check that the full-name is “_default.<collection-name>”
+    @Test
+    fun testGetFullNameFromExistingCollectionInDefaultScope() {
+        val collectionName = getUniqueName("dry_flies")
+        testDatabase.createCollection(collectionName)
+        assertEquals("_default.${collectionName}", testDatabase.getCollection(collectionName)?.fullName)
+    }
+
+    // 3.5 TestGetFullNameFromExistingCollectionInCustomScope
+    //    Create a new collection in a custom scope.
+    //    Get the created collection in step 1 from the database
+    //    Get the full-name from the collection obtained in step 2.
+    //    Check that the full-name is “<scope-name>.<collection-name>”
+    @Test
+    fun testGetFullNameFromExistingCollectionInCustomScope() {
+        val scopeName = getUniqueName("oscilli")
+        val collectionName = getUniqueName("dry_flies")
+        testDatabase.createCollection(collectionName, scopeName)
+        assertEquals("${scopeName}.${collectionName}", testDatabase.getCollection(collectionName, scopeName)?.fullName)
+    }
+
+    // 3.1 TestGetDatabaseFromNewCollection
+    //    Create a collection from a database.
+    //    Get the database from the created collection.
+    //    Verify that the database is the same instance as the database used for creating the collection.
+    @Test
+    fun testGetDatabaseFromNewCollection() {
+        val collectionName = getUniqueName("dry_flies")
+        testDatabase.createCollection(collectionName)
+        assertEquals(testDatabase, testDatabase.getCollection(collectionName)?.database)
+    }
+
+    // 3.2 TestGetDatabaseFromExistingCollection
+    //    Get an existing collection from a database.
+    //    Get the database from the created collection.
+    //    Verify that the database is the same instance as the database used for getting the collection.
+    @Test
+    fun testGetDatabaseFromExistingCollection() {
+        val collectionName = getUniqueName("marbles")
+        testDatabase.createCollection(collectionName)
+        assertEquals(testDatabase, testDatabase.getCollection(collectionName)?.database)
+    }
+
+    // 3.3 TestGetDatabaseFromScopeObtainedFromCollection
+    //    Create a collection in a database.
+    //    Get the scope object from the collection.
+    //    Get the database from the scope.
+    //    Verify that the database is the same instance as the database used for creating the collection.
+    @Test
+    fun testGetDatabaseFromScopeObtainedFromCollection() {
+        val collectionName = getUniqueName("dry_flies")
+        val collection = testDatabase.createCollection(collectionName)
+        assertEquals(testDatabase, collection.scope.database)
+    }
+
+    // 3.4 TestGetDatabaseFromScopeObtainedFromDatabase
+    //    Create a collection in a database.
+    //    Get the collection’s scope object from the database.
+    //    Get the database from the scope.
+    //    Verify that the database is the same instance as the database used for obtaining the scope.
+    @Test
+    fun testGetDatabaseFromScopeObtainedFromDatabase() {
+        val collectionName = getUniqueName("marbles")
+        testDatabase.createCollection(collectionName)
+        assertEquals(testDatabase, testDatabase.getCollection(collectionName)?.database)
+    }
+
     //---------------------------------------------
     //  Operations on deleted collections
     //---------------------------------------------
@@ -1019,5 +1149,69 @@ class CollectionTest : BaseDbTest() {
         val collectionName = testCollection.name
         testCollection.delete()
         assertEquals(collectionName, testCollection.name)
+    }
+
+    //---------------------------------------------
+    // Default Scope/Collection
+    //---------------------------------------------
+
+    @Test
+    fun testDefaultCollectionExists() {
+        val collection = testDatabase.getDefaultCollection()
+        assertEquals(collection.name, Collection.DEFAULT_NAME)
+
+        val cols = testDatabase.getCollections()
+        assertTrue(cols.contains(collection))
+
+        val scope = collection.scope
+        assertNotNull(scope)
+        assertEquals(Scope.DEFAULT_NAME, scope.name)
+
+        val col1 = testDatabase.getCollection(Collection.DEFAULT_NAME)
+        assertEquals(col1, collection)
+    }
+
+    @Test
+    fun testDefaultScopeExists() {
+        val scope = testDatabase.getDefaultScope()
+        assertNotNull(scope)
+        assertEquals(Scope.DEFAULT_NAME, scope.name)
+
+        val scopes = testDatabase.getScopes()
+        assertTrue(scopes.contains(scope))
+
+        val scope1 = testDatabase.getScope(Scope.DEFAULT_NAME)
+        assertNotNull(scope1)
+        assertEquals(Scope.DEFAULT_NAME, scope1.name)
+    }
+
+    @Test
+    fun testDeleteDefaultCollection() {
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+            testDatabase.deleteCollection(Collection.DEFAULT_NAME)
+        }
+
+        var collection = testDatabase.getDefaultCollection()
+        assertNotNull(collection)
+        assertEquals(Collection.DEFAULT_NAME, collection.name)
+        assertEquals(Scope.DEFAULT_NAME, collection.scope.name)
+
+        collection = testDatabase.createCollection(Collection.DEFAULT_NAME)
+        assertNotNull(collection)
+        assertEquals(Collection.DEFAULT_NAME, collection.name)
+        assertEquals(Scope.DEFAULT_NAME, collection.scope.name)
+    }
+
+    @Test
+    fun testGetDefaultScopeAfterDeleteDefaultCollection() {
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+            testDatabase.deleteCollection(Collection.DEFAULT_NAME)
+        }
+
+        val scope = testDatabase.getDefaultScope()
+        assertEquals(Scope.DEFAULT_NAME, scope.name)
+
+        val scopes = testDatabase.getScopes()
+        assertTrue(scopes.contains(scope))
     }
 }
