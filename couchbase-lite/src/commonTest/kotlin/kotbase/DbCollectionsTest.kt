@@ -40,7 +40,7 @@ class DbCollectionsTest : BaseDbTest() {
         assertNotNull(col)
         assertEquals(Collection.DEFAULT_NAME, col.name)
         assertEquals(col, testDatabase.getCollection(Collection.DEFAULT_NAME))
-        assertTrue(testDatabase.getCollections().contains(col))
+        assertTrue(testDatabase.collections.contains(col))
         assertNotNull(col.scope)
         assertEquals(Scope.DEFAULT_NAME, col.scope.name)
         assertEquals(0, col.count)

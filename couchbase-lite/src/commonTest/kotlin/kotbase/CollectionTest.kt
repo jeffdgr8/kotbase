@@ -1160,7 +1160,7 @@ class CollectionTest : BaseDbTest() {
         val collection = testDatabase.defaultCollection
         assertEquals(collection.name, Collection.DEFAULT_NAME)
 
-        val cols = testDatabase.getCollections()
+        val cols = testDatabase.collections
         assertTrue(cols.contains(collection))
 
         val scope = collection.scope
