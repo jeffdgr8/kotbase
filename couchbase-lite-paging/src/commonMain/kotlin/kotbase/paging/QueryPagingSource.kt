@@ -126,7 +126,7 @@ public fun <RowType : Any> QueryPagingSource(
  */
 @Deprecated(
     "Use collection instead of database",
-    ReplaceWith("QueryPagingSource(context, select, database.getDefaultCollection()!!, mapper) { this }")
+    ReplaceWith("QueryPagingSource(context, select, database.defaultCollection, mapper) { this }")
 )
 public fun <RowType : Any> QueryPagingSource(
     context: CoroutineContext,
@@ -135,7 +135,7 @@ public fun <RowType : Any> QueryPagingSource(
     mapper: (Map<String, Any?>) -> RowType
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
-    database.getDefaultCollection(),
+    database.defaultCollection,
     { this },
     context,
     mapMapper = mapper
@@ -164,7 +164,7 @@ public fun <RowType : Any> QueryPagingSource(
  */
 @Deprecated(
     "Use collection instead of database",
-    ReplaceWith("QueryPagingSource(context, select, database.getDefaultCollection()!!, mapper) { this }")
+    ReplaceWith("QueryPagingSource(context, select, database.defaultCollection, mapper) { this }")
 )
 @JvmName("QueryPagingSourceString")
 public fun <RowType : Any> QueryPagingSource(
@@ -174,7 +174,7 @@ public fun <RowType : Any> QueryPagingSource(
     mapper: (String) -> RowType
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
-    database.getDefaultCollection(),
+    database.defaultCollection,
     { this },
     context,
     jsonStringMapper = mapper
@@ -203,7 +203,7 @@ public fun <RowType : Any> QueryPagingSource(
  */
 @Deprecated(
     "Use collection instead of database",
-    ReplaceWith("QueryPagingSource(context, select, database.getDefaultCollection()!!, mapper, queryProvider)")
+    ReplaceWith("QueryPagingSource(context, select, database.defaultCollection, mapper, queryProvider)")
 )
 @JvmName("QueryPagingSourceWithQuery")
 public fun <RowType : Any> QueryPagingSource(
@@ -214,7 +214,7 @@ public fun <RowType : Any> QueryPagingSource(
     queryProvider: From.() -> LimitRouter
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
-    database.getDefaultCollection(),
+    database.defaultCollection,
     queryProvider,
     context,
     mapMapper = mapper
@@ -243,7 +243,7 @@ public fun <RowType : Any> QueryPagingSource(
  */
 @Deprecated(
     "Use collection instead of database",
-    ReplaceWith("QueryPagingSource(context, select, database.getDefaultCollection()!!, mapper, queryProvider)")
+    ReplaceWith("QueryPagingSource(context, select, database.defaultCollection, mapper, queryProvider)")
 )
 @JvmName("QueryPagingSourceStringWithQuery")
 public fun <RowType : Any> QueryPagingSource(
@@ -254,11 +254,8 @@ public fun <RowType : Any> QueryPagingSource(
     queryProvider: From.() -> LimitRouter
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
-    database.getDefaultCollection(),
+    database.defaultCollection,
     queryProvider,
     context,
     jsonStringMapper = mapper
 )
-
-private fun Database.getDefaultCollection(): Collection =
-    requireNotNull(getDefaultCollection()) { "Default collection must exist" }

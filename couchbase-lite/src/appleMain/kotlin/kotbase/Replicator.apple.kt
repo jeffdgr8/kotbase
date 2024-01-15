@@ -67,7 +67,7 @@ internal constructor(
     @Suppress("DEPRECATION")
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
-        ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection()!!)")
+        ReplaceWith("getPendingDocumentIds(config.database.defaultCollection)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(): Set<String> {
@@ -90,7 +90,7 @@ internal constructor(
 
     @Deprecated(
         "Use isDocumentPending(String, Collection)",
-        ReplaceWith("isDocumentPending(docId, config.database.getDefaultCollection()!!)")
+        ReplaceWith("isDocumentPending(docId, config.database.defaultCollection)")
     )
     @Throws(CouchbaseLiteException::class)
     public actual fun isDocumentPending(docId: String): Boolean {

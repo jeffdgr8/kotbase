@@ -167,7 +167,7 @@ public fun ReplicatorConfiguration?.newConfig(
         database ?: this?.database ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify a database"),
         target ?: this?.target ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify an endpoint")
     ).apply {
-        val origDefaultConfig = orig?.database?.getDefaultCollection()?.let { orig.getCollectionConfiguration(it) }
+        val origDefaultConfig = orig?.database?.defaultCollection?.let { orig.getCollectionConfiguration(it) }
         (type ?: orig?.type)?.let { this.type = it }
         (continuous ?: orig?.isContinuous)?.let { this.isContinuous = it }
         this.authenticator = authenticator ?: orig?.authenticator

@@ -106,7 +106,7 @@ public fun Query.queryChangeFlow(coroutineContext: CoroutineContext? = null): Fl
 @Suppress("DEPRECATION")
 @Deprecated(
     "Use Collection.collectionChangeFlow()",
-    ReplaceWith("getDefaultCollection()!!.collectionChangeFlow(coroutineContext)")
+    ReplaceWith("defaultCollection.collectionChangeFlow(coroutineContext)")
 )
 public fun Database.databaseChangeFlow(
     coroutineContext: CoroutineContext? = null
@@ -127,7 +127,7 @@ public fun Database.databaseChangeFlow(
 @Suppress("DEPRECATION")
 @Deprecated(
     "Use Collection.documentChangeFlow()",
-    ReplaceWith("getDefaultCollection()!!.documentChangeFlow(documentId, coroutineContext)")
+    ReplaceWith("defaultCollection.documentChangeFlow(documentId, coroutineContext)")
 )
 public fun Database.documentChangeFlow(
     documentId: String,

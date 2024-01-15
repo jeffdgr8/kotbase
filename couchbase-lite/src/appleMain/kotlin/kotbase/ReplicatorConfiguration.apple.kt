@@ -41,7 +41,7 @@ private constructor(
         target,
         database
     ) {
-        addCollection(database.getDefaultCollection(), null)
+        addCollection(database.defaultCollection, null)
     }
 
     public actual constructor(target: Endpoint) : this(
@@ -309,7 +309,7 @@ private constructor(
 
     @Suppress("DEPRECATION")
     private val defaultCollection: Collection by lazy {
-        database.getDefaultCollection()
+        database.defaultCollection
             ?: throw IllegalArgumentException("Cannot use legacy parameters when there is no default collection")
     }
 

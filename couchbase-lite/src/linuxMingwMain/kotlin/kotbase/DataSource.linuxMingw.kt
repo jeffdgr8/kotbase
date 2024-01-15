@@ -43,10 +43,10 @@ private constructor(
 
         @Deprecated(
             "Use DataSource.collection(Collection)",
-            ReplaceWith("collection(database.getDefaultCollection()!!)")
+            ReplaceWith("collection(database.defaultCollection)")
         )
         public actual fun database(database: Database): As =
-            As(database.getDefaultCollection()).apply {
+            As(database.defaultCollection).apply {
                 `as`(database.name)
             }
 

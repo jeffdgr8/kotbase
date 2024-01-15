@@ -1029,7 +1029,7 @@ class CollectionTest : BaseDbTest() {
     //    Check that the full-name is “_default._default”.
     @Test
     fun testGetFullNameFromDefaultCollection() {
-        assertEquals("_default._default", testDatabase.getDefaultCollection().fullName)
+        assertEquals("_default._default", testDatabase.defaultCollection.fullName)
     }
 
     // 3.2 TestGetFullNameFromNewCollectionInDefaultScope
@@ -1157,7 +1157,7 @@ class CollectionTest : BaseDbTest() {
 
     @Test
     fun testDefaultCollectionExists() {
-        val collection = testDatabase.getDefaultCollection()
+        val collection = testDatabase.defaultCollection
         assertEquals(collection.name, Collection.DEFAULT_NAME)
 
         val cols = testDatabase.getCollections()
@@ -1191,7 +1191,7 @@ class CollectionTest : BaseDbTest() {
             testDatabase.deleteCollection(Collection.DEFAULT_NAME)
         }
 
-        var collection = testDatabase.getDefaultCollection()
+        var collection = testDatabase.defaultCollection
         assertNotNull(collection)
         assertEquals(Collection.DEFAULT_NAME, collection.name)
         assertEquals(Scope.DEFAULT_NAME, collection.scope.name)

@@ -3014,7 +3014,7 @@ class QueryTest : BaseQueryTest() {
 
     @Test
     fun testN1QLSelectStarFromDefault() {
-        loadDocuments(100, testDatabase.getDefaultCollection())
+        loadDocuments(100, testDatabase.defaultCollection)
         verifyQuery(
             testDatabase.createQuery("SELECT * FROM _default"),
             100
@@ -3049,7 +3049,7 @@ class QueryTest : BaseQueryTest() {
 
     @Test
     fun testN1QLSelectStarFromUnderscore() {
-        loadDocuments(100, testDatabase.getDefaultCollection())
+        loadDocuments(100, testDatabase.defaultCollection)
         verifyQuery(
             testDatabase.createQuery("SELECT * FROM _"),
             100

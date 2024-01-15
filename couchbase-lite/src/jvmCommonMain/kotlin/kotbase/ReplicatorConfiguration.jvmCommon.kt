@@ -39,7 +39,7 @@ private constructor(
         target,
         database
     ) {
-        addCollection(database.getDefaultCollection(), null)
+        addCollection(database.defaultCollection, null)
     }
 
     public actual constructor(target: Endpoint) : this(
@@ -288,23 +288,19 @@ private constructor(
         }
 
     @Suppress("DEPRECATION")
-    private val defaultCollection: Collection by lazy {
-        database.getDefaultCollection()
-            ?: throw IllegalArgumentException("Cannot use legacy parameters when there is no default collection")
-    }
-
     private fun getDefaultCollectionConfiguration(): CollectionConfiguration {
-        return collectionConfigurations[defaultCollection]
+        return collectionConfigurations[database.defaultCollection]
             ?: throw IllegalArgumentException(
                 "Cannot use legacy parameters when the default collection has no configuration"
             )
     }
 
+    @Suppress("DEPRECATION")
     private fun updateDefaultConfig(updater: CollectionConfiguration.() -> Unit) {
         val config = getDefaultCollectionConfiguration()
         val updated = CollectionConfiguration(config)
         updated.updater()
-        addCollection(defaultCollection, updated)
+        addCollection(database.defaultCollection, updated)
     }
 
     public actual companion object

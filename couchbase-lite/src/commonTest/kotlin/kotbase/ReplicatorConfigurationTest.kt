@@ -125,7 +125,7 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
         val replConfig = ReplicatorConfiguration(testDatabase, mockURLEndpoint)
         val collections = replConfig.collections
         assertEquals(1, collections.size)
-        assertTrue(collections.contains(testDatabase.getDefaultCollection()!!))
+        assertTrue(collections.contains(testDatabase.defaultCollection))
         assertEquals(testDatabase, replConfig.database)
     }
 
@@ -144,7 +144,7 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
     @Test
     fun testCreateConfigWithDatabaseB() {
         val collectionConfig = ReplicatorConfiguration(testDatabase, mockURLEndpoint)
-            .getCollectionConfiguration(testDatabase.getDefaultCollection()!!)
+            .getCollectionConfiguration(testDatabase.defaultCollection)
         assertNotNull(collectionConfig)
         assertNull(collectionConfig.conflictResolver)
         assertNull(collectionConfig.pushFilter)
@@ -169,7 +169,7 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
         val resolver = localResolver
         val replConfig = ReplicatorConfiguration(testDatabase, mockURLEndpoint).setConflictResolver(resolver)
         assertEquals(resolver, replConfig.conflictResolver)
-        val collectionConfig = replConfig.getCollectionConfiguration(testDatabase.getDefaultCollection()!!)
+        val collectionConfig = replConfig.getCollectionConfiguration(testDatabase.defaultCollection)
         assertNotNull(collectionConfig)
         assertEquals(resolver, collectionConfig.conflictResolver)
     }
@@ -202,13 +202,13 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
         val replConfig = ReplicatorConfiguration(testDatabase, mockURLEndpoint).setConflictResolver(resolver)
         assertEquals(
             replConfig.conflictResolver,
-            replConfig.getCollectionConfiguration(testDatabase.getDefaultCollection()!!)?.conflictResolver
+            replConfig.getCollectionConfiguration(testDatabase.defaultCollection)?.conflictResolver
         )
         val resolver2 = localResolver
         replConfig.conflictResolver = resolver2
         assertEquals(
             resolver2,
-            replConfig.getCollectionConfiguration(testDatabase.getDefaultCollection()!!)?.conflictResolver
+            replConfig.getCollectionConfiguration(testDatabase.defaultCollection)?.conflictResolver
         )
     }
 
@@ -237,7 +237,7 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
         assertContentEquals(arrayOf("CNBC", "ABC"), replConfig1.channels?.toTypedArray())
         assertContentEquals(arrayOf("doc1", "doc2"), replConfig1.documentIDs?.toTypedArray())
 
-        val collectionConfig1 = replConfig1.getCollectionConfiguration(testDatabase.getDefaultCollection()!!)
+        val collectionConfig1 = replConfig1.getCollectionConfiguration(testDatabase.defaultCollection)
         assertNotNull(collectionConfig1)
         assertEquals(pushFilter1, collectionConfig1.pushFilter)
         assertEquals(pullFilter1, collectionConfig1.pullFilter)
@@ -284,7 +284,7 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
         assertContentEquals(arrayOf("CNBC", "ABC"), replConfig1.channels?.toTypedArray())
         assertContentEquals(arrayOf("doc1", "doc2"), replConfig1.documentIDs?.toTypedArray())
 
-        val collectionConfig1 = replConfig1.getCollectionConfiguration(testDatabase.getDefaultCollection()!!)
+        val collectionConfig1 = replConfig1.getCollectionConfiguration(testDatabase.defaultCollection)
         assertNotNull(collectionConfig1)
         assertEquals(pushFilter1, collectionConfig1.pushFilter)
         assertEquals(pullFilter1, collectionConfig1.pullFilter)
@@ -303,7 +303,7 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
         assertContentEquals(arrayOf("CNBC", "ABC"), collectionConfig1.channels?.toTypedArray())
         assertContentEquals(arrayOf("doc1", "doc2"), collectionConfig1.documentIDs?.toTypedArray())
 
-        val collectionConfig2 = replConfig1.getCollectionConfiguration(testDatabase.getDefaultCollection()!!)
+        val collectionConfig2 = replConfig1.getCollectionConfiguration(testDatabase.defaultCollection)
         assertNotNull(collectionConfig2)
         assertEquals(pushFilter2, collectionConfig2.pushFilter)
         assertEquals(pullFilter2, collectionConfig2.pullFilter)
@@ -348,7 +348,7 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
         assertContentEquals(arrayOf("CNBC", "ABC"), replConfig1.channels?.toTypedArray())
         assertContentEquals(arrayOf("doc1", "doc2"), replConfig1.documentIDs?.toTypedArray())
 
-        val collectionConfig1 = replConfig1.getCollectionConfiguration(testDatabase.getDefaultCollection()!!)
+        val collectionConfig1 = replConfig1.getCollectionConfiguration(testDatabase.defaultCollection)
         assertNotNull(collectionConfig1)
         assertEquals(pushFilter1, collectionConfig1.pushFilter)
         assertEquals(pullFilter1, collectionConfig1.pullFilter)
@@ -362,14 +362,14 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
             .setPullFilter(pullFilter2)
             .setChannels(listOf("Peacock", "History"))
             .setDocumentIDs(listOf("doc3"))
-        replConfig1.addCollection(testDatabase.getDefaultCollection()!!, collectionConfig2)
+        replConfig1.addCollection(testDatabase.defaultCollection, collectionConfig2)
 
         assertEquals(pushFilter2, replConfig1.pushFilter)
         assertEquals(pullFilter2, replConfig1.pullFilter)
         assertContentEquals(arrayOf("Peacock", "History"), replConfig1.channels?.toTypedArray())
         assertContentEquals(arrayOf("doc3"), replConfig1.documentIDs?.toTypedArray())
 
-        val collectionConfig3 = replConfig1.getCollectionConfiguration(testDatabase.getDefaultCollection()!!)
+        val collectionConfig3 = replConfig1.getCollectionConfiguration(testDatabase.defaultCollection)
         assertNotNull(collectionConfig3)
         assertEquals(pushFilter2, collectionConfig3.pushFilter)
         assertEquals(pullFilter2, collectionConfig3.pullFilter)
@@ -658,7 +658,7 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
     @Suppress("DEPRECATION")
     @Test
     fun testUpdateCollectionConfigB() {
-        val defaultCollection = testDatabase.getDefaultCollection()!!
+        val defaultCollection = testDatabase.defaultCollection
         val collectionA = testDatabase.createCollection("colA", "scopeA")
 
         val filter: ReplicationFilter = { _, _ -> true }

@@ -315,7 +315,7 @@ class NotificationTest : BaseDbTest() {
 //    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
 //    @Test
 //    fun testLegacyChangeAPI() = runBlocking {
-//        val defaultCollection = testDatabase.getDefaultCollection()
+//        val defaultCollection = testDatabase.defaultCollection
 //
 //        val latch1 = CountDownLatch(1)
 //        val dbListener: DatabaseChangeListener = { latch1.countDown() }

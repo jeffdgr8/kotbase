@@ -40,7 +40,7 @@ public inline fun all(): SelectResult.From = SelectResult.all()
 @Suppress("DEPRECATION")
 @Deprecated(
     "Use from(Collection)",
-    ReplaceWith("from(database.getDefaultCollection()!!)")
+    ReplaceWith("from(database.defaultCollection)")
 )
 public inline infix fun FromRouter.from(database: Database): From = from(DataSource.database(database))
 

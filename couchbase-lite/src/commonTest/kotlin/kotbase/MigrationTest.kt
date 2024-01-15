@@ -51,7 +51,7 @@ class MigrationTest : BaseTest() {
         ZipUtils.unzip(PlatformUtils.getAsset("replacedb/android140-sqlite.cblite2.zip")!!, dbDir)
 
         migrationTestDb = openDatabase()
-        val migrationTestCollection = migrationTestDb!!.getDefaultCollection()
+        val migrationTestCollection = migrationTestDb!!.defaultCollection
         assertNotNull(migrationTestCollection)
         assertEquals(2, migrationTestCollection.count)
         for (i in 1..2) {
@@ -76,7 +76,7 @@ class MigrationTest : BaseTest() {
         ZipUtils.unzip(PlatformUtils.getAsset("replacedb/android140-sqlite-noattachment.cblite2.zip")!!, dbDir)
 
         migrationTestDb = openDatabase()
-        val migrationTestCollection = migrationTestDb!!.getDefaultCollection()
+        val migrationTestCollection = migrationTestDb!!.defaultCollection
         assertNotNull(migrationTestCollection)
 
         assertEquals(2, migrationTestCollection.count)
@@ -92,7 +92,7 @@ class MigrationTest : BaseTest() {
         ZipUtils.unzip(PlatformUtils.getAsset("replacedb/android200-sqlite.cblite2.zip")!!, dbDir)
 
         migrationTestDb = openDatabase()
-        val migrationTestCollection = migrationTestDb!!.getDefaultCollection()
+        val migrationTestCollection = migrationTestDb!!.defaultCollection
         assertNotNull(migrationTestCollection)
 
         assertEquals(2, migrationTestCollection.count)
