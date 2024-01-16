@@ -211,8 +211,8 @@ public expect class Database : AutoCloseable {
     public val defaultCollection: Collection
 
     /**
-     * Delete a collection by name  in the default scope. If the collection doesn't exist, the operation
-     * will be no-ops. Note: the default collection can be deleted but cannot be recreated.
+     * Delete a collection by name in the default scope. If the collection doesn't exist, the operation
+     * will be no-ops. Note: the default collection cannot be deleted.
      *
      * @param name the collection to be deleted
      * @throws CouchbaseLiteException on failure
@@ -221,8 +221,8 @@ public expect class Database : AutoCloseable {
     public fun deleteCollection(name: String)
 
     /**
-     * Delete a collection by name  in the specified scope. If the collection doesn't exist, the operation
-     * will be no-ops. Note: the default collection can be deleted but cannot be recreated.
+     * Delete a collection by name in the specified scope. If the collection doesn't exist, the operation
+     * will be no-ops. Note: the default collection cannot be deleted.
      *
      * @param collectionName the collection to be deleted
      * @param scopeName      the scope from which to delete the collection
@@ -262,8 +262,8 @@ public expect class Database : AutoCloseable {
     /**
      * Gets an existing Document with the given ID from the default collection.
      * If the document with the given ID doesn't exist in the default collection,
-     * the method will return null.  If the default collection does not exist or if
-     * the database is closed, the method will throw an IllegalStateException
+     * the method will return null. If the database is closed the method will
+     * throw an IllegalStateException.
      *
      * @param id the document ID
      * @return the Document object or null

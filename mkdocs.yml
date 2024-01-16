@@ -105,6 +105,7 @@ nav:
   - Documentation:
     - Databases: databases.md
     - Pre-built Database: prebuilt-database.md
+    - Scopes and Collections: scopes-and-collections.md
     - Documents: documents.md
     - Blobs: blobs.md
     - Query:
