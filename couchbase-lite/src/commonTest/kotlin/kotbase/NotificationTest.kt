@@ -329,7 +329,7 @@ class NotificationTest : BaseDbTest() {
 //
 //        val latch3 = CountDownLatch(2)
 //        testDatabase.addChangeListener { latch3.countDown() }.use { ignore1 ->
-//            defaultCollection!!.addChangeListener { latch3.countDown() }.use {
+//            defaultCollection.addChangeListener { latch3.countDown() }.use {
 //                assertEquals(2, defaultCollection.getCollectionListenerCount())
 //                saveDocsInCollection(createTestDocs(1000, 10), defaultCollection)
 //                assertTrue(latch3.await(STD_TIMEOUT_SEC.seconds))
@@ -339,7 +339,7 @@ class NotificationTest : BaseDbTest() {
 //
 //        val latch4 = CountDownLatch(2)
 //        testDatabase.addChangeListener { latch4.countDown() }.use {
-//            defaultCollection!!.addChangeListener { latch4.countDown() }.use {
+//            defaultCollection.addChangeListener { latch4.countDown() }.use {
 //                assertEquals(2, defaultCollection.getCollectionListenerCount())
 //                saveDocsInCollection(createTestDocs(2000, 10), defaultCollection)
 //                assertTrue(latch4.await(STD_TIMEOUT_SEC.seconds))

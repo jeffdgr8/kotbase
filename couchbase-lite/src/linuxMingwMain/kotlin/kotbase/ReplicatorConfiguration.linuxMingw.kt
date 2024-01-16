@@ -292,22 +292,18 @@ private constructor(
         }
 
     @Suppress("DEPRECATION")
-    private val defaultCollection: Collection by lazy {
-        database.defaultCollection
-            ?: throw IllegalArgumentException("Cannot use legacy parameters when there is no default collection")
-    }
-
     private fun getDefaultCollectionConfiguration(): CollectionConfiguration =
-        collectionConfigurations[defaultCollection]
+        collectionConfigurations[database.defaultCollection]
             ?: throw IllegalArgumentException(
                 "Cannot use legacy parameters when the default collection has no configuration"
             )
 
+    @Suppress("DEPRECATION")
     private fun updateDefaultConfig(updater: CollectionConfiguration.() -> Unit) {
         val config = getDefaultCollectionConfiguration()
         val updated = CollectionConfiguration(config)
         updated.updater()
-        addCollection(defaultCollection, updated)
+        addCollection(database.defaultCollection, updated)
     }
 
     public override fun toString(): String {
