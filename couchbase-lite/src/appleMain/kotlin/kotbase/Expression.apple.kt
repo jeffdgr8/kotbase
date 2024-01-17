@@ -95,61 +95,61 @@ internal constructor(actual: CBLQueryExpression) : DelegatedClass<CBLQueryExpres
         ) : DelegatedProtocol<A>(actual), IndexExpression
     }
 
-    public actual fun multiply(expression: Expression): Expression =
+    public actual infix fun multiply(expression: Expression): Expression =
         Expression(actual.multiply(expression.actual))
 
-    public actual fun divide(expression: Expression): Expression =
+    public actual infix fun divide(expression: Expression): Expression =
         Expression(actual.divide(expression.actual))
 
-    public actual fun modulo(expression: Expression): Expression =
+    public actual infix fun modulo(expression: Expression): Expression =
         Expression(actual.modulo(expression.actual))
 
-    public actual fun add(expression: Expression): Expression =
+    public actual infix fun add(expression: Expression): Expression =
         Expression(actual.add(expression.actual))
 
-    public actual fun subtract(expression: Expression): Expression =
+    public actual infix fun subtract(expression: Expression): Expression =
         Expression(actual.subtract(expression.actual))
 
-    public actual fun lessThan(expression: Expression): Expression =
+    public actual infix fun lessThan(expression: Expression): Expression =
         Expression(actual.lessThan(expression.actual))
 
-    public actual fun lessThanOrEqualTo(expression: Expression): Expression =
+    public actual infix fun lessThanOrEqualTo(expression: Expression): Expression =
         Expression(actual.lessThanOrEqualTo(expression.actual))
 
-    public actual fun greaterThan(expression: Expression): Expression =
+    public actual infix fun greaterThan(expression: Expression): Expression =
         Expression(actual.greaterThan(expression.actual))
 
-    public actual fun greaterThanOrEqualTo(expression: Expression): Expression =
+    public actual infix fun greaterThanOrEqualTo(expression: Expression): Expression =
         Expression(actual.greaterThanOrEqualTo(expression.actual))
 
-    public actual fun equalTo(expression: Expression): Expression =
+    public actual infix fun equalTo(expression: Expression): Expression =
         Expression(actual.equalTo(expression.actual))
 
-    public actual fun notEqualTo(expression: Expression): Expression =
+    public actual infix fun notEqualTo(expression: Expression): Expression =
         Expression(actual.notEqualTo(expression.actual))
 
-    public actual fun and(expression: Expression): Expression =
+    public actual infix fun and(expression: Expression): Expression =
         Expression(actual.andExpression(expression.actual))
 
-    public actual fun or(expression: Expression): Expression =
+    public actual infix fun or(expression: Expression): Expression =
         Expression(actual.orExpression(expression.actual))
 
-    public actual fun like(expression: Expression): Expression =
+    public actual infix fun like(expression: Expression): Expression =
         Expression(actual.like(expression.actual))
 
-    public actual fun regex(expression: Expression): Expression =
+    public actual infix fun regex(expression: Expression): Expression =
         Expression(actual.regex(expression.actual))
 
-    public actual fun `is`(expression: Expression): Expression =
+    public actual infix fun `is`(expression: Expression): Expression =
         Expression(actual.`is`(expression.actual))
 
-    public actual fun isNot(expression: Expression): Expression =
+    public actual infix fun isNot(expression: Expression): Expression =
         Expression(actual.isNot(expression.actual))
 
     public actual fun between(expression1: Expression, expression2: Expression): Expression =
         Expression(actual.between(expression1.actual, expression2.actual))
 
-    public actual fun collate(collation: Collation): Expression =
+    public actual infix fun collate(collation: Collation): Expression =
         Expression(actual.collate(collation.actual))
 
     public actual fun `in`(vararg expressions: Expression): Expression =

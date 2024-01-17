@@ -312,55 +312,55 @@ public actual open class Expression {
         }
     }
 
-    public actual fun multiply(expression: Expression): Expression =
+    public actual infix fun multiply(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_MULTIPLY)
 
-    public actual fun divide(expression: Expression): Expression =
+    public actual infix fun divide(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_DIVIDE)
 
-    public actual fun modulo(expression: Expression): Expression =
+    public actual infix fun modulo(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_MODULO)
 
-    public actual fun add(expression: Expression): Expression =
+    public actual infix fun add(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_ADD)
 
-    public actual fun subtract(expression: Expression): Expression =
+    public actual infix fun subtract(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_SUBTRACT)
 
-    public actual fun lessThan(expression: Expression): Expression =
+    public actual infix fun lessThan(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_LESS)
 
-    public actual fun lessThanOrEqualTo(expression: Expression): Expression =
+    public actual infix fun lessThanOrEqualTo(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_LESS_OR_EQUAL)
 
-    public actual fun greaterThan(expression: Expression): Expression =
+    public actual infix fun greaterThan(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_GREATER)
 
-    public actual fun greaterThanOrEqualTo(expression: Expression): Expression =
+    public actual infix fun greaterThanOrEqualTo(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_GREATER_OR_EQUAL)
 
-    public actual fun equalTo(expression: Expression): Expression =
+    public actual infix fun equalTo(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_EQUALS)
 
-    public actual fun notEqualTo(expression: Expression): Expression =
+    public actual infix fun notEqualTo(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_NOT_EQUAL)
 
-    public actual fun and(expression: Expression): Expression =
+    public actual infix fun and(expression: Expression): Expression =
         CompoundExpression(listOf(this, expression), CompoundExpression.OP_AND)
 
-    public actual fun or(expression: Expression): Expression =
+    public actual infix fun or(expression: Expression): Expression =
         CompoundExpression(listOf(this, expression), CompoundExpression.OP_OR)
 
-    public actual fun like(expression: Expression): Expression =
+    public actual infix fun like(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_LIKE)
 
-    public actual fun regex(expression: Expression): Expression =
+    public actual infix fun regex(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_REGEX_LIKE)
 
-    public actual fun `is`(expression: Expression): Expression =
+    public actual infix fun `is`(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_IS)
 
-    public actual fun isNot(expression: Expression): Expression =
+    public actual infix fun isNot(expression: Expression): Expression =
         BinaryExpression(this, expression, BinaryExpression.OP_IS_NOT)
 
     public actual fun between(expression1: Expression, expression2: Expression): Expression {
@@ -368,7 +368,7 @@ public actual open class Expression {
         return BinaryExpression(this, aggr, BinaryExpression.OP_BETWEEN)
     }
 
-    public actual fun collate(collation: Collation): Expression =
+    public actual infix fun collate(collation: Collation): Expression =
         CollationExpression(this, collation)
 
     public actual fun `in`(vararg expressions: Expression): Expression {

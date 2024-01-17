@@ -170,7 +170,7 @@ public expect open class Expression {
      * @param expression the expression to multiply by.
      * @return a multiply expression.
      */
-    public fun multiply(expression: Expression): Expression
+    public infix fun multiply(expression: Expression): Expression
 
     /**
      * Create a divide expression to divide the current expression by the given expression.
@@ -178,7 +178,7 @@ public expect open class Expression {
      * @param expression the expression to divide by.
      * @return a divide expression.
      */
-    public fun divide(expression: Expression): Expression
+    public infix fun divide(expression: Expression): Expression
 
     /**
      * Create a modulo expression to modulo the current expression by the given expression.
@@ -186,7 +186,7 @@ public expect open class Expression {
      * @param expression the expression to modulo by.
      * @return a modulo expression.
      */
-    public fun modulo(expression: Expression): Expression
+    public infix fun modulo(expression: Expression): Expression
 
     /**
      * Create an add expression to add the given expression to the current expression
@@ -194,7 +194,7 @@ public expect open class Expression {
      * @param expression an expression to add to the current expression.
      * @return an add expression.
      */
-    public fun add(expression: Expression): Expression
+    public infix fun add(expression: Expression): Expression
 
     /**
      * Create a subtract expression to subtract the given expression from the current expression.
@@ -202,7 +202,7 @@ public expect open class Expression {
      * @param expression an expression to subtract from the current expression.
      * @return a subtract expression.
      */
-    public fun subtract(expression: Expression): Expression
+    public infix fun subtract(expression: Expression): Expression
 
     /**
      * Create a less than expression that evaluates whether or not the current expression
@@ -211,7 +211,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return a less than expression.
      */
-    public fun lessThan(expression: Expression): Expression
+    public infix fun lessThan(expression: Expression): Expression
 
     /**
      * Create a less than or equal to expression that evaluates whether or not the current
@@ -220,7 +220,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return a less than or equal to expression.
      */
-    public fun lessThanOrEqualTo(expression: Expression): Expression
+    public infix fun lessThanOrEqualTo(expression: Expression): Expression
 
     /**
      * Create a greater than expression that evaluates whether or not the current expression
@@ -229,7 +229,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return a greater than expression.
      */
-    public fun greaterThan(expression: Expression): Expression
+    public infix fun greaterThan(expression: Expression): Expression
 
     /**
      * Create a greater than or equal to expression that evaluates whether or not the current
@@ -238,7 +238,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return a greater than or equal to expression.
      */
-    public fun greaterThanOrEqualTo(expression: Expression): Expression
+    public infix fun greaterThanOrEqualTo(expression: Expression): Expression
 
     /**
      * Create an equal to expression that evaluates whether or not the current expression
@@ -247,7 +247,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public fun equalTo(expression: Expression): Expression
+    public infix fun equalTo(expression: Expression): Expression
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -256,7 +256,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public fun notEqualTo(expression: Expression): Expression
+    public infix fun notEqualTo(expression: Expression): Expression
 
     /**
      * Create a logical AND expression that performs logical AND operation with
@@ -265,7 +265,7 @@ public expect open class Expression {
      * @param expression the expression to AND with the current expression.
      * @return a logical AND expression.
      */
-    public fun and(expression: Expression): Expression
+    public infix fun and(expression: Expression): Expression
 
     /**
      * Create a logical OR expression that performs logical OR operation with
@@ -274,7 +274,7 @@ public expect open class Expression {
      * @param expression the expression to OR with the current expression.
      * @return a logical OR expression.
      */
-    public fun or(expression: Expression): Expression
+    public infix fun or(expression: Expression): Expression
 
     /**
      * Create a Like expression that evaluates whether or not the current expression is LIKE
@@ -283,7 +283,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return a Like expression.
      */
-    public fun like(expression: Expression): Expression
+    public infix fun like(expression: Expression): Expression
 
     /**
      * Create a regex match expression that evaluates whether or not the current expression
@@ -292,7 +292,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return a regex match expression.
      */
-    public fun regex(expression: Expression): Expression
+    public infix fun regex(expression: Expression): Expression
 
     /**
      * Create an IS expression that evaluates whether or not the current expression is equal to
@@ -301,7 +301,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return an IS expression.
      */
-    public fun `is`(expression: Expression): Expression
+    public infix fun `is`(expression: Expression): Expression
 
     /**
      * Create an IS NOT expression that evaluates whether or not the current expression is not
@@ -310,7 +310,7 @@ public expect open class Expression {
      * @param expression the expression to compare with the current expression.
      * @return an IS NOT expression.
      */
-    public fun isNot(expression: Expression): Expression
+    public infix fun isNot(expression: Expression): Expression
 
     /**
      * Create a between expression that evaluates whether or not the current expression is
@@ -330,7 +330,7 @@ public expect open class Expression {
      * @param collation 　The collation object.
      * @return A Collate expression.
      */
-    public fun collate(collation: Collation): Expression
+    public infix fun collate(collation: Collation): Expression
 
     /**
      * Create an IN expression that evaluates whether or not the current expression is in the
