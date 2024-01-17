@@ -182,7 +182,7 @@ class LoadTest : BaseDbTest() {
         var mDoc = MutableDocument()
         timeTest("testSaveRevisions1", 42) {
             testDatabase.inBatch {
-                for (i in 0 until ITERATIONS) {
+                for (i in 0 ..< ITERATIONS) {
                     mDoc.setValue("count", i)
                     testCollection.save(mDoc)
                     mDoc = testCollection.getDocument(mDoc.id)!!.toMutable()
@@ -197,7 +197,7 @@ class LoadTest : BaseDbTest() {
         val mDoc = MutableDocument()
         timeTest("testSaveRevisions2", 24) {
             testDatabase.inBatch {
-                for (i in 0 until ITERATIONS) {
+                for (i in 0 ..< ITERATIONS) {
                     mDoc.setValue("count", i)
                     testCollection.save(mDoc)
                 }
