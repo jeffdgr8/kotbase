@@ -24,7 +24,7 @@ private constructor(actual: CBLDataSource) : DelegatedClass<CBLDataSource>(actua
     public actual class As
     internal constructor(override val actual: CBLDataSource.As) : DataSource(actual) {
 
-        public actual fun `as`(alias: String): DataSource {
+        public actual infix fun `as`(alias: String): DataSource {
             actual.`as`(alias)
             return this
         }

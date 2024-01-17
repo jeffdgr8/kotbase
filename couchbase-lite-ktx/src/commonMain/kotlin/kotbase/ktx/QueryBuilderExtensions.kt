@@ -23,9 +23,10 @@
  * - Add from Collection DataSource API
  * - Make functions infix
  * - Add docs
+ * - Remove insignificant inlines
  */
 
-@file:Suppress("NOTHING_TO_INLINE", "unused", "KotlinRedundantDiagnosticSuppress")
+//@file:Suppress("NOTHING_TO_INLINE", "unused", "KotlinRedundantDiagnosticSuppress")
 
 package kotbase.ktx
 
@@ -41,7 +42,7 @@ import kotlin.Array
  * @param results The SelectResult objects for specifying the returned values.
  * @return A Select object.
  */
-public inline fun select(vararg results: SelectResult): Select = QueryBuilder.select(*results)
+public fun select(vararg results: SelectResult): Select = QueryBuilder.select(*results)
 
 /**
  * Create a SELECT statement instance that you can use further
@@ -50,7 +51,7 @@ public inline fun select(vararg results: SelectResult): Select = QueryBuilder.se
  * @param properties The properties for specifying the returned values.
  * @return A Select object.
  */
-public inline fun select(vararg properties: String): Select = QueryBuilder.select(*properties.map(SelectResult::property).toTypedArray())
+public fun select(vararg properties: String): Select = QueryBuilder.select(*properties.map(SelectResult::property).toTypedArray())
 
 /**
  * Creates a SelectResult that contains values for all properties matching the query.
@@ -58,7 +59,7 @@ public inline fun select(vararg properties: String): Select = QueryBuilder.selec
  *
  * @return a SelectResult.From that can be used to alias the property.
  */
-public inline fun all(): SelectResult.From = SelectResult.all()
+public fun all(): SelectResult.From = SelectResult.all()
 
 /**
  * Create and chain a FROM component for specifying the query's data source.
@@ -71,7 +72,7 @@ public inline fun all(): SelectResult.From = SelectResult.all()
     "Use from(Collection)",
     ReplaceWith("from(database.defaultCollection)")
 )
-public inline infix fun FromRouter.from(database: Database): From = from(DataSource.database(database))
+public infix fun FromRouter.from(database: Database): From = from(DataSource.database(database))
 
 /**
  * Create and chain a FROM component for specifying the query's data source.
@@ -79,7 +80,7 @@ public inline infix fun FromRouter.from(database: Database): From = from(DataSou
  * @param collection the collection source.
  * @return the From component.
  */
-public inline infix fun FromRouter.from(collection: Collection): From = from(DataSource.collection(collection))
+public infix fun FromRouter.from(collection: Collection): From = from(DataSource.collection(collection))
 
 /**
  * Create and chain a WHERE component for specifying the WHERE clause of the query.
@@ -87,7 +88,7 @@ public inline infix fun FromRouter.from(collection: Collection): From = from(Dat
  * @param builder a WhereBuilder block specifying the WHERE clause expression.
  * @return the WHERE component.
  */
-public inline infix fun WhereRouter.where(builder: WhereBuilder.() -> Expression): Where = where(WhereBuilder().builder())
+public infix fun WhereRouter.where(builder: WhereBuilder.() -> Expression): Where = where(WhereBuilder().builder())
 
 /**
  * Create and chain an ORDER BY component for specifying the ORDER BY clause of the query.
@@ -105,7 +106,7 @@ public infix fun OrderByRouter.orderBy(builder: OrderByBuilder.() -> Unit): Orde
  * @param offset The offset value.
  * @return The Limit object that represents the LIMIT clause of the query.
  */
-public inline fun LimitRouter.limit(limit: Int, offset: Int? = null): Limit = limit(Expression.intValue(limit), offset?.let(Expression::intValue))
+public fun LimitRouter.limit(limit: Int, offset: Int? = null): Limit = limit(Expression.intValue(limit), offset?.let(Expression::intValue))
 
 /**
  * Create a negated expression to represent the negated result of the given expression.
@@ -113,7 +114,7 @@ public inline fun LimitRouter.limit(limit: Int, offset: Int? = null): Limit = li
  * @param expression the expression to be negated.
  * @return a negated expression.
  */
-public inline fun not(expression: Expression): Expression = Expression.not(expression)
+public fun not(expression: Expression): Expression = Expression.not(expression)
 
 /**
  * Create a property expression representing the value of the given property.
@@ -121,7 +122,7 @@ public inline fun not(expression: Expression): Expression = Expression.not(expre
  * @param property the name of the property in the form of a key path.
  * @return a property expression.
  */
-public inline fun property(property: String): PropertyExpression = Expression.property(property)
+public fun property(property: String): PropertyExpression = Expression.property(property)
 
 /**
  * Create a less than expression that evaluates whether or not the current expression
@@ -130,7 +131,7 @@ public inline fun property(property: String): PropertyExpression = Expression.pr
  * @param string the string expression to compare with the current expression.
  * @return a less than expression.
  */
-public inline infix fun Expression.lessThan(string: String): Expression = lessThan(Expression.string(string))
+public infix fun Expression.lessThan(string: String): Expression = lessThan(Expression.string(string))
 
 /**
  * Create a less than expression that evaluates whether or not the current expression
@@ -139,7 +140,7 @@ public inline infix fun Expression.lessThan(string: String): Expression = lessTh
  * @param int the int expression to compare with the current expression.
  * @return a less than expression.
  */
-public inline infix fun Expression.lessThan(int: Int): Expression = lessThan(Expression.intValue(int))
+public infix fun Expression.lessThan(int: Int): Expression = lessThan(Expression.intValue(int))
 
 /**
  * Create a less than expression that evaluates whether or not the current expression
@@ -148,7 +149,7 @@ public inline infix fun Expression.lessThan(int: Int): Expression = lessThan(Exp
  * @param long the long expression to compare with the current expression.
  * @return a less than expression.
  */
-public inline infix fun Expression.lessThan(long: Long): Expression = lessThan(Expression.longValue(long))
+public infix fun Expression.lessThan(long: Long): Expression = lessThan(Expression.longValue(long))
 
 /**
  * Create a less than expression that evaluates whether or not the current expression
@@ -157,7 +158,7 @@ public inline infix fun Expression.lessThan(long: Long): Expression = lessThan(E
  * @param float the float expression to compare with the current expression.
  * @return a less than expression.
  */
-public inline infix fun Expression.lessThan(float: Float): Expression = lessThan(Expression.floatValue(float))
+public infix fun Expression.lessThan(float: Float): Expression = lessThan(Expression.floatValue(float))
 
 /**
  * Create a less than expression that evaluates whether or not the current expression
@@ -166,7 +167,7 @@ public inline infix fun Expression.lessThan(float: Float): Expression = lessThan
  * @param double the double expression to compare with the current expression.
  * @return a less than expression.
  */
-public inline infix fun Expression.lessThan(double: Double): Expression = lessThan(Expression.doubleValue(double))
+public infix fun Expression.lessThan(double: Double): Expression = lessThan(Expression.doubleValue(double))
 
 /**
  * Create a less than expression that evaluates whether or not the current expression
@@ -175,7 +176,7 @@ public inline infix fun Expression.lessThan(double: Double): Expression = lessTh
  * @param boolean the boolean expression to compare with the current expression.
  * @return a less than expression.
  */
-public inline infix fun Expression.lessThan(boolean: Boolean): Expression = lessThan(Expression.booleanValue(boolean))
+public infix fun Expression.lessThan(boolean: Boolean): Expression = lessThan(Expression.booleanValue(boolean))
 
 /**
  * Create a less than expression that evaluates whether or not the current expression
@@ -184,7 +185,7 @@ public inline infix fun Expression.lessThan(boolean: Boolean): Expression = less
  * @param date the date expression to compare with the current expression.
  * @return a less than expression.
  */
-public inline infix fun Expression.lessThan(date: Instant): Expression = lessThan(Expression.date(date))
+public infix fun Expression.lessThan(date: Instant): Expression = lessThan(Expression.date(date))
 
 /**
  * Create a less than or equal to expression that evaluates whether or not the current
@@ -193,7 +194,7 @@ public inline infix fun Expression.lessThan(date: Instant): Expression = lessTha
  * @param string the string expression to compare with the current expression.
  * @return a less than or equal to expression.
  */
-public inline infix fun Expression.lessThanOrEqualTo(string: String): Expression = lessThanOrEqualTo(Expression.string(string))
+public infix fun Expression.lessThanOrEqualTo(string: String): Expression = lessThanOrEqualTo(Expression.string(string))
 
 /**
  * Create a less than or equal to expression that evaluates whether or not the current
@@ -202,7 +203,7 @@ public inline infix fun Expression.lessThanOrEqualTo(string: String): Expression
  * @param int the int expression to compare with the current expression.
  * @return a less than or equal to expression.
  */
-public inline infix fun Expression.lessThanOrEqualTo(int: Int): Expression = lessThanOrEqualTo(Expression.intValue(int))
+public infix fun Expression.lessThanOrEqualTo(int: Int): Expression = lessThanOrEqualTo(Expression.intValue(int))
 
 /**
  * Create a less than or equal to expression that evaluates whether or not the current
@@ -211,7 +212,7 @@ public inline infix fun Expression.lessThanOrEqualTo(int: Int): Expression = les
  * @param long the long expression to compare with the current expression.
  * @return a less than or equal to expression.
  */
-public inline infix fun Expression.lessThanOrEqualTo(long: Long): Expression = lessThanOrEqualTo(Expression.longValue(long))
+public infix fun Expression.lessThanOrEqualTo(long: Long): Expression = lessThanOrEqualTo(Expression.longValue(long))
 
 /**
  * Create a less than or equal to expression that evaluates whether or not the current
@@ -220,7 +221,7 @@ public inline infix fun Expression.lessThanOrEqualTo(long: Long): Expression = l
  * @param float the float expression to compare with the current expression.
  * @return a less than or equal to expression.
  */
-public inline infix fun Expression.lessThanOrEqualTo(float: Float): Expression = lessThanOrEqualTo(Expression.floatValue(float))
+public infix fun Expression.lessThanOrEqualTo(float: Float): Expression = lessThanOrEqualTo(Expression.floatValue(float))
 
 /**
  * Create a less than or equal to expression that evaluates whether or not the current
@@ -229,7 +230,7 @@ public inline infix fun Expression.lessThanOrEqualTo(float: Float): Expression =
  * @param double the double expression to compare with the current expression.
  * @return a less than or equal to expression.
  */
-public inline infix fun Expression.lessThanOrEqualTo(double: Double): Expression = lessThanOrEqualTo(Expression.doubleValue(double))
+public infix fun Expression.lessThanOrEqualTo(double: Double): Expression = lessThanOrEqualTo(Expression.doubleValue(double))
 
 /**
  * Create a less than or equal to expression that evaluates whether or not the current
@@ -238,7 +239,7 @@ public inline infix fun Expression.lessThanOrEqualTo(double: Double): Expression
  * @param boolean the boolean expression to compare with the current expression.
  * @return a less than or equal to expression.
  */
-public inline infix fun Expression.lessThanOrEqualTo(boolean: Boolean): Expression = lessThanOrEqualTo(Expression.booleanValue(boolean))
+public infix fun Expression.lessThanOrEqualTo(boolean: Boolean): Expression = lessThanOrEqualTo(Expression.booleanValue(boolean))
 
 /**
  * Create a less than or equal to expression that evaluates whether or not the current
@@ -247,7 +248,7 @@ public inline infix fun Expression.lessThanOrEqualTo(boolean: Boolean): Expressi
  * @param date the date expression to compare with the current expression.
  * @return a less than or equal to expression.
  */
-public inline infix fun Expression.lessThanOrEqualTo(date: Instant): Expression = lessThanOrEqualTo(Expression.date(date))
+public infix fun Expression.lessThanOrEqualTo(date: Instant): Expression = lessThanOrEqualTo(Expression.date(date))
 
 /**
  * Create a greater than expression that evaluates whether or not the current expression
@@ -256,7 +257,7 @@ public inline infix fun Expression.lessThanOrEqualTo(date: Instant): Expression 
  * @param string the string expression to compare with the current expression.
  * @return a greater than expression.
  */
-public inline infix fun Expression.greaterThan(string: String): Expression = greaterThan(Expression.string(string))
+public infix fun Expression.greaterThan(string: String): Expression = greaterThan(Expression.string(string))
 
 /**
  * Create a greater than expression that evaluates whether or not the current expression
@@ -265,7 +266,7 @@ public inline infix fun Expression.greaterThan(string: String): Expression = gre
  * @param int the int expression to compare with the current expression.
  * @return a greater than expression.
  */
-public inline infix fun Expression.greaterThan(int: Int): Expression = greaterThan(Expression.intValue(int))
+public infix fun Expression.greaterThan(int: Int): Expression = greaterThan(Expression.intValue(int))
 
 /**
  * Create a greater than expression that evaluates whether or not the current expression
@@ -274,7 +275,7 @@ public inline infix fun Expression.greaterThan(int: Int): Expression = greaterTh
  * @param long the long expression to compare with the current expression.
  * @return a greater than expression.
  */
-public inline infix fun Expression.greaterThan(long: Long): Expression = greaterThan(Expression.longValue(long))
+public infix fun Expression.greaterThan(long: Long): Expression = greaterThan(Expression.longValue(long))
 
 /**
  * Create a greater than expression that evaluates whether or not the current expression
@@ -283,7 +284,7 @@ public inline infix fun Expression.greaterThan(long: Long): Expression = greater
  * @param float the float expression to compare with the current expression.
  * @return a greater than expression.
  */
-public inline infix fun Expression.greaterThan(float: Float): Expression = greaterThan(Expression.floatValue(float))
+public infix fun Expression.greaterThan(float: Float): Expression = greaterThan(Expression.floatValue(float))
 
 /**
  * Create a greater than expression that evaluates whether or not the current expression
@@ -292,7 +293,7 @@ public inline infix fun Expression.greaterThan(float: Float): Expression = great
  * @param double the double expression to compare with the current expression.
  * @return a greater than expression.
  */
-public inline infix fun Expression.greaterThan(double: Double): Expression = greaterThan(Expression.doubleValue(double))
+public infix fun Expression.greaterThan(double: Double): Expression = greaterThan(Expression.doubleValue(double))
 
 /**
  * Create a greater than expression that evaluates whether or not the current expression
@@ -301,7 +302,7 @@ public inline infix fun Expression.greaterThan(double: Double): Expression = gre
  * @param boolean the boolean expression to compare with the current expression.
  * @return a greater than expression.
  */
-public inline infix fun Expression.greaterThan(boolean: Boolean): Expression = greaterThan(Expression.booleanValue(boolean))
+public infix fun Expression.greaterThan(boolean: Boolean): Expression = greaterThan(Expression.booleanValue(boolean))
 
 /**
  * Create a greater than expression that evaluates whether or not the current expression
@@ -310,7 +311,7 @@ public inline infix fun Expression.greaterThan(boolean: Boolean): Expression = g
  * @param date the date expression to compare with the current expression.
  * @return a greater than expression.
  */
-public inline infix fun Expression.greaterThan(date: Instant): Expression = greaterThan(Expression.date(date))
+public infix fun Expression.greaterThan(date: Instant): Expression = greaterThan(Expression.date(date))
 
 /**
  * Create a greater than or equal to expression that evaluates whether or not the current
@@ -319,7 +320,7 @@ public inline infix fun Expression.greaterThan(date: Instant): Expression = grea
  * @param string the string expression to compare with the current expression.
  * @return a greater than or equal to expression.
  */
-public inline infix fun Expression.greaterThanOrEqualTo(string: String): Expression = greaterThanOrEqualTo(Expression.string(string))
+public infix fun Expression.greaterThanOrEqualTo(string: String): Expression = greaterThanOrEqualTo(Expression.string(string))
 
 /**
  * Create a greater than or equal to expression that evaluates whether or not the current
@@ -328,7 +329,7 @@ public inline infix fun Expression.greaterThanOrEqualTo(string: String): Express
  * @param int the int expression to compare with the current expression.
  * @return a greater than or equal to expression.
  */
-public inline infix fun Expression.greaterThanOrEqualTo(int: Int): Expression = greaterThanOrEqualTo(Expression.value(int))
+public infix fun Expression.greaterThanOrEqualTo(int: Int): Expression = greaterThanOrEqualTo(Expression.value(int))
 
 /**
  * Create a greater than or equal to expression that evaluates whether or not the current
@@ -337,7 +338,7 @@ public inline infix fun Expression.greaterThanOrEqualTo(int: Int): Expression = 
  * @param long the long expression to compare with the current expression.
  * @return a greater than or equal to expression.
  */
-public inline infix fun Expression.greaterThanOrEqualTo(long: Long): Expression = greaterThanOrEqualTo(Expression.longValue(long))
+public infix fun Expression.greaterThanOrEqualTo(long: Long): Expression = greaterThanOrEqualTo(Expression.longValue(long))
 
 /**
  * Create a greater than or equal to expression that evaluates whether or not the current
@@ -346,7 +347,7 @@ public inline infix fun Expression.greaterThanOrEqualTo(long: Long): Expression 
  * @param float the float expression to compare with the current expression.
  * @return a greater than or equal to expression.
  */
-public inline infix fun Expression.greaterThanOrEqualTo(float: Float): Expression = greaterThanOrEqualTo(Expression.floatValue(float))
+public infix fun Expression.greaterThanOrEqualTo(float: Float): Expression = greaterThanOrEqualTo(Expression.floatValue(float))
 
 /**
  * Create a greater than or equal to expression that evaluates whether or not the current
@@ -355,7 +356,7 @@ public inline infix fun Expression.greaterThanOrEqualTo(float: Float): Expressio
  * @param double the double expression to compare with the current expression.
  * @return a greater than or equal to expression.
  */
-public inline infix fun Expression.greaterThanOrEqualTo(double: Double): Expression = greaterThanOrEqualTo(Expression.doubleValue(double))
+public infix fun Expression.greaterThanOrEqualTo(double: Double): Expression = greaterThanOrEqualTo(Expression.doubleValue(double))
 
 /**
  * Create a greater than or equal to expression that evaluates whether or not the current
@@ -364,7 +365,7 @@ public inline infix fun Expression.greaterThanOrEqualTo(double: Double): Express
  * @param boolean the boolean expression to compare with the current expression.
  * @return a greater than or equal to expression.
  */
-public inline infix fun Expression.greaterThanOrEqualTo(boolean: Boolean): Expression = greaterThanOrEqualTo(Expression.booleanValue(boolean))
+public infix fun Expression.greaterThanOrEqualTo(boolean: Boolean): Expression = greaterThanOrEqualTo(Expression.booleanValue(boolean))
 
 /**
  * Create a greater than or equal to expression that evaluates whether or not the current
@@ -373,7 +374,7 @@ public inline infix fun Expression.greaterThanOrEqualTo(boolean: Boolean): Expre
  * @param date the date expression to compare with the current expression.
  * @return a greater than or equal to expression.
  */
-public inline infix fun Expression.greaterThanOrEqualTo(date: Instant): Expression = greaterThanOrEqualTo(Expression.date(date))
+public infix fun Expression.greaterThanOrEqualTo(date: Instant): Expression = greaterThanOrEqualTo(Expression.date(date))
 
 /**
  * Create an equal to expression that evaluates whether or not the current expression
@@ -382,7 +383,7 @@ public inline infix fun Expression.greaterThanOrEqualTo(date: Instant): Expressi
  * @param string the string expression to compare with the current expression.
  * @return an equal to expression.
  */
-public inline infix fun Expression.equalTo(string: String): Expression = equalTo(Expression.string(string))
+public infix fun Expression.equalTo(string: String): Expression = equalTo(Expression.string(string))
 
 /**
  * Create an equal to expression that evaluates whether or not the current expression
@@ -391,7 +392,7 @@ public inline infix fun Expression.equalTo(string: String): Expression = equalTo
  * @param int the int expression to compare with the current expression.
  * @return an equal to expression.
  */
-public inline infix fun Expression.equalTo(int: Int): Expression = equalTo(Expression.intValue(int))
+public infix fun Expression.equalTo(int: Int): Expression = equalTo(Expression.intValue(int))
 
 /**
  * Create an equal to expression that evaluates whether or not the current expression
@@ -400,7 +401,7 @@ public inline infix fun Expression.equalTo(int: Int): Expression = equalTo(Expre
  * @param long the long expression to compare with the current expression.
  * @return an equal to expression.
  */
-public inline infix fun Expression.equalTo(long: Long): Expression = equalTo(Expression.longValue(long))
+public infix fun Expression.equalTo(long: Long): Expression = equalTo(Expression.longValue(long))
 
 /**
  * Create an equal to expression that evaluates whether or not the current expression
@@ -409,7 +410,7 @@ public inline infix fun Expression.equalTo(long: Long): Expression = equalTo(Exp
  * @param float the float expression to compare with the current expression.
  * @return an equal to expression.
  */
-public inline infix fun Expression.equalTo(float: Float): Expression = equalTo(Expression.floatValue(float))
+public infix fun Expression.equalTo(float: Float): Expression = equalTo(Expression.floatValue(float))
 
 /**
  * Create an equal to expression that evaluates whether or not the current expression
@@ -418,7 +419,7 @@ public inline infix fun Expression.equalTo(float: Float): Expression = equalTo(E
  * @param double the double expression to compare with the current expression.
  * @return an equal to expression.
  */
-public inline infix fun Expression.equalTo(double: Double): Expression = equalTo(Expression.doubleValue(double))
+public infix fun Expression.equalTo(double: Double): Expression = equalTo(Expression.doubleValue(double))
 
 /**
  * Create an equal to expression that evaluates whether or not the current expression
@@ -427,7 +428,7 @@ public inline infix fun Expression.equalTo(double: Double): Expression = equalTo
  * @param boolean the boolean expression to compare with the current expression.
  * @return an equal to expression.
  */
-public inline infix fun Expression.equalTo(boolean: Boolean): Expression = equalTo(Expression.booleanValue(boolean))
+public infix fun Expression.equalTo(boolean: Boolean): Expression = equalTo(Expression.booleanValue(boolean))
 
 /**
  * Create an equal to expression that evaluates whether or not the current expression
@@ -436,7 +437,7 @@ public inline infix fun Expression.equalTo(boolean: Boolean): Expression = equal
  * @param date the date expression to compare with the current expression.
  * @return an equal to expression.
  */
-public inline infix fun Expression.equalTo(date: Instant): Expression = equalTo(Expression.date(date))
+public infix fun Expression.equalTo(date: Instant): Expression = equalTo(Expression.date(date))
 
 /**
  * Create an equal to expression that evaluates whether or not the current expression
@@ -445,7 +446,7 @@ public inline infix fun Expression.equalTo(date: Instant): Expression = equalTo(
  * @param map the map expression to compare with the current expression.
  * @return an equal to expression.
  */
-public inline infix fun Expression.equalTo(map: Map<String, Any?>): Expression = equalTo(Expression.map(map))
+public infix fun Expression.equalTo(map: Map<String, Any?>): Expression = equalTo(Expression.map(map))
 
 /**
  * Create an equal to expression that evaluates whether or not the current expression
@@ -454,7 +455,7 @@ public inline infix fun Expression.equalTo(map: Map<String, Any?>): Expression =
  * @param list the list expression to compare with the current expression.
  * @return an equal to expression.
  */
-public inline infix fun Expression.equalTo(list: List<Any>): Expression = equalTo(Expression.list(list))
+public infix fun Expression.equalTo(list: List<Any>): Expression = equalTo(Expression.list(list))
 
 /**
  * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -463,7 +464,7 @@ public inline infix fun Expression.equalTo(list: List<Any>): Expression = equalT
  * @param string the string expression to compare with the current expression.
  * @return a NOT equal to expression.
  */
-public inline infix fun Expression.notEqualTo(string: String): Expression = notEqualTo(Expression.string(string))
+public infix fun Expression.notEqualTo(string: String): Expression = notEqualTo(Expression.string(string))
 
 /**
  * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -472,7 +473,7 @@ public inline infix fun Expression.notEqualTo(string: String): Expression = notE
  * @param int the int expression to compare with the current expression.
  * @return a NOT equal to expression.
  */
-public inline infix fun Expression.notEqualTo(int: Int): Expression = notEqualTo(Expression.intValue(int))
+public infix fun Expression.notEqualTo(int: Int): Expression = notEqualTo(Expression.intValue(int))
 
 /**
  * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -481,7 +482,7 @@ public inline infix fun Expression.notEqualTo(int: Int): Expression = notEqualTo
  * @param long the long expression to compare with the current expression.
  * @return a NOT equal to expression.
  */
-public inline infix fun Expression.notEqualTo(long: Long): Expression = notEqualTo(Expression.longValue(long))
+public infix fun Expression.notEqualTo(long: Long): Expression = notEqualTo(Expression.longValue(long))
 
 /**
  * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -490,7 +491,7 @@ public inline infix fun Expression.notEqualTo(long: Long): Expression = notEqual
  * @param float the float expression to compare with the current expression.
  * @return a NOT equal to expression.
  */
-public inline infix fun Expression.notEqualTo(float: Float): Expression = notEqualTo(Expression.floatValue(float))
+public infix fun Expression.notEqualTo(float: Float): Expression = notEqualTo(Expression.floatValue(float))
 
 /**
  * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -499,7 +500,7 @@ public inline infix fun Expression.notEqualTo(float: Float): Expression = notEqu
  * @param double the double expression to compare with the current expression.
  * @return a NOT equal to expression.
  */
-public inline infix fun Expression.notEqualTo(double: Double): Expression = notEqualTo(Expression.doubleValue(double))
+public infix fun Expression.notEqualTo(double: Double): Expression = notEqualTo(Expression.doubleValue(double))
 
 /**
  * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -508,7 +509,7 @@ public inline infix fun Expression.notEqualTo(double: Double): Expression = notE
  * @param boolean the boolean expression to compare with the current expression.
  * @return a NOT equal to expression.
  */
-public inline infix fun Expression.notEqualTo(boolean: Boolean): Expression = notEqualTo(Expression.booleanValue(boolean))
+public infix fun Expression.notEqualTo(boolean: Boolean): Expression = notEqualTo(Expression.booleanValue(boolean))
 
 /**
  * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -517,7 +518,7 @@ public inline infix fun Expression.notEqualTo(boolean: Boolean): Expression = no
  * @param date the date expression to compare with the current expression.
  * @return a NOT equal to expression.
  */
-public inline infix fun Expression.notEqualTo(date: Instant): Expression = notEqualTo(Expression.date(date))
+public infix fun Expression.notEqualTo(date: Instant): Expression = notEqualTo(Expression.date(date))
 
 /**
  * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -526,7 +527,7 @@ public inline infix fun Expression.notEqualTo(date: Instant): Expression = notEq
  * @param map the map expression to compare with the current expression.
  * @return a NOT equal to expression.
  */
-public inline infix fun Expression.notEqualTo(map: Map<String, Any?>): Expression = notEqualTo(Expression.map(map))
+public infix fun Expression.notEqualTo(map: Map<String, Any?>): Expression = notEqualTo(Expression.map(map))
 
 /**
  * Create a NOT equal to expression that evaluates whether or not the current expression
@@ -535,7 +536,7 @@ public inline infix fun Expression.notEqualTo(map: Map<String, Any?>): Expressio
  * @param list the list expression to compare with the current expression.
  * @return a NOT equal to expression.
  */
-public inline infix fun Expression.notEqualTo(list: List<Any>): Expression = notEqualTo(Expression.list(list))
+public infix fun Expression.notEqualTo(list: List<Any>): Expression = notEqualTo(Expression.list(list))
 
 /**
  * Create a Like expression that evaluates whether or not the current expression is LIKE
@@ -544,7 +545,7 @@ public inline infix fun Expression.notEqualTo(list: List<Any>): Expression = not
  * @param string the string expression to compare with the current expression.
  * @return a Like expression.
  */
-public inline infix fun Expression.like(string: String): Expression = like(Expression.string(string))
+public infix fun Expression.like(string: String): Expression = like(Expression.string(string))
 
 /**
  * Create a Like expression that evaluates whether or not the current expression is LIKE
@@ -553,7 +554,7 @@ public inline infix fun Expression.like(string: String): Expression = like(Expre
  * @param int the int expression to compare with the current expression.
  * @return a Like expression.
  */
-public inline infix fun Expression.like(int: Int): Expression = like(Expression.intValue(int))
+public infix fun Expression.like(int: Int): Expression = like(Expression.intValue(int))
 
 /**
  * Create a Like expression that evaluates whether or not the current expression is LIKE
@@ -562,7 +563,7 @@ public inline infix fun Expression.like(int: Int): Expression = like(Expression.
  * @param long the long expression to compare with the current expression.
  * @return a Like expression.
  */
-public inline infix fun Expression.like(long: Long): Expression = like(Expression.longValue(long))
+public infix fun Expression.like(long: Long): Expression = like(Expression.longValue(long))
 
 /**
  * Create a Like expression that evaluates whether or not the current expression is LIKE
@@ -571,7 +572,7 @@ public inline infix fun Expression.like(long: Long): Expression = like(Expressio
  * @param float the float expression to compare with the current expression.
  * @return a Like expression.
  */
-public inline infix fun Expression.like(float: Float): Expression = like(Expression.floatValue(float))
+public infix fun Expression.like(float: Float): Expression = like(Expression.floatValue(float))
 
 /**
  * Create a Like expression that evaluates whether or not the current expression is LIKE
@@ -580,7 +581,7 @@ public inline infix fun Expression.like(float: Float): Expression = like(Express
  * @param double the double expression to compare with the current expression.
  * @return a Like expression.
  */
-public inline infix fun Expression.like(double: Double): Expression = like(Expression.doubleValue(double))
+public infix fun Expression.like(double: Double): Expression = like(Expression.doubleValue(double))
 
 /**
  * Create a Like expression that evaluates whether or not the current expression is LIKE
@@ -589,7 +590,7 @@ public inline infix fun Expression.like(double: Double): Expression = like(Expre
  * @param boolean the boolean expression to compare with the current expression.
  * @return a Like expression.
  */
-public inline infix fun Expression.like(boolean: Boolean): Expression = like(Expression.booleanValue(boolean))
+public infix fun Expression.like(boolean: Boolean): Expression = like(Expression.booleanValue(boolean))
 
 /**
  * Create a Like expression that evaluates whether or not the current expression is LIKE
@@ -598,7 +599,7 @@ public inline infix fun Expression.like(boolean: Boolean): Expression = like(Exp
  * @param date the date expression to compare with the current expression.
  * @return a Like expression.
  */
-public inline infix fun Expression.like(date: Instant): Expression = like(Expression.date(date))
+public infix fun Expression.like(date: Instant): Expression = like(Expression.date(date))
 
 public class WhereBuilder {
 
@@ -609,7 +610,7 @@ public class WhereBuilder {
      * @param expression the expression to compare with the current expression.
      * @return a less than expression.
      */
-    public inline infix fun String.lessThan(expression: Expression): Expression = property(this).lessThan(expression)
+    public infix fun String.lessThan(expression: Expression): Expression = property(this).lessThan(expression)
 
     /**
      * Create a less than expression that evaluates whether or not the current property
@@ -618,7 +619,7 @@ public class WhereBuilder {
      * @param string the string expression to compare with the current expression.
      * @return a less than expression.
      */
-    public inline infix fun String.lessThan(string: String): Expression = property(this).lessThan(string)
+    public infix fun String.lessThan(string: String): Expression = property(this).lessThan(string)
 
     /**
      * Create a less than expression that evaluates whether or not the current property
@@ -627,7 +628,7 @@ public class WhereBuilder {
      * @param int the int expression to compare with the current expression.
      * @return a less than expression.
      */
-    public inline infix fun String.lessThan(int: Int): Expression = property(this).lessThan(int)
+    public infix fun String.lessThan(int: Int): Expression = property(this).lessThan(int)
 
     /**
      * Create a less than expression that evaluates whether or not the current property
@@ -636,7 +637,7 @@ public class WhereBuilder {
      * @param long the long expression to compare with the current expression.
      * @return a less than expression.
      */
-    public inline infix fun String.lessThan(long: Long): Expression = property(this).lessThan(long)
+    public infix fun String.lessThan(long: Long): Expression = property(this).lessThan(long)
 
     /**
      * Create a less than expression that evaluates whether or not the current property
@@ -645,7 +646,7 @@ public class WhereBuilder {
      * @param float the float expression to compare with the current expression.
      * @return a less than expression.
      */
-    public inline infix fun String.lessThan(float: Float): Expression = property(this).lessThan(float)
+    public infix fun String.lessThan(float: Float): Expression = property(this).lessThan(float)
 
     /**
      * Create a less than expression that evaluates whether or not the current property
@@ -654,7 +655,7 @@ public class WhereBuilder {
      * @param double the double expression to compare with the current expression.
      * @return a less than expression.
      */
-    public inline infix fun String.lessThan(double: Double): Expression = property(this).lessThan(double)
+    public infix fun String.lessThan(double: Double): Expression = property(this).lessThan(double)
 
     /**
      * Create a less than expression that evaluates whether or not the current property
@@ -663,7 +664,7 @@ public class WhereBuilder {
      * @param boolean the boolean expression to compare with the current expression.
      * @return a less than expression.
      */
-    public inline infix fun String.lessThan(boolean: Boolean): Expression = property(this).lessThan(boolean)
+    public infix fun String.lessThan(boolean: Boolean): Expression = property(this).lessThan(boolean)
 
     /**
      * Create a less than expression that evaluates whether or not the current property
@@ -672,7 +673,7 @@ public class WhereBuilder {
      * @param date the date expression to compare with the current expression.
      * @return a less than expression.
      */
-    public inline infix fun String.lessThan(date: Instant): Expression = property(this).lessThan(date)
+    public infix fun String.lessThan(date: Instant): Expression = property(this).lessThan(date)
 
     /**
      * Create a less than or equal to expression that evaluates whether or not the current
@@ -681,7 +682,7 @@ public class WhereBuilder {
      * @param expression the expression to compare with the current expression.
      * @return a less than or equal to expression.
      */
-    public inline infix fun String.lessThanOrEqualTo(expression: Expression): Expression = property(this).lessThanOrEqualTo(expression)
+    public infix fun String.lessThanOrEqualTo(expression: Expression): Expression = property(this).lessThanOrEqualTo(expression)
 
     /**
      * Create a less than or equal to expression that evaluates whether or not the current
@@ -690,7 +691,7 @@ public class WhereBuilder {
      * @param string the string expression to compare with the current expression.
      * @return a less than or equal to expression.
      */
-    public inline infix fun String.lessThanOrEqualTo(string: String): Expression = property(this).lessThanOrEqualTo(string)
+    public infix fun String.lessThanOrEqualTo(string: String): Expression = property(this).lessThanOrEqualTo(string)
 
     /**
      * Create a less than or equal to expression that evaluates whether or not the current
@@ -699,7 +700,7 @@ public class WhereBuilder {
      * @param int the int expression to compare with the current expression.
      * @return a less than or equal to expression.
      */
-    public inline infix fun String.lessThanOrEqualTo(int: Int): Expression = property(this).lessThanOrEqualTo(int)
+    public infix fun String.lessThanOrEqualTo(int: Int): Expression = property(this).lessThanOrEqualTo(int)
 
     /**
      * Create a less than or equal to expression that evaluates whether or not the current
@@ -708,7 +709,7 @@ public class WhereBuilder {
      * @param long the long expression to compare with the current expression.
      * @return a less than or equal to expression.
      */
-    public inline infix fun String.lessThanOrEqualTo(long: Long): Expression = property(this).lessThanOrEqualTo(long)
+    public infix fun String.lessThanOrEqualTo(long: Long): Expression = property(this).lessThanOrEqualTo(long)
 
     /**
      * Create a less than or equal to expression that evaluates whether or not the current
@@ -717,7 +718,7 @@ public class WhereBuilder {
      * @param float the float expression to compare with the current expression.
      * @return a less than or equal to expression.
      */
-    public inline infix fun String.lessThanOrEqualTo(float: Float): Expression = property(this).lessThanOrEqualTo(float)
+    public infix fun String.lessThanOrEqualTo(float: Float): Expression = property(this).lessThanOrEqualTo(float)
 
     /**
      * Create a less than or equal to expression that evaluates whether or not the current
@@ -726,7 +727,7 @@ public class WhereBuilder {
      * @param double the double expression to compare with the current expression.
      * @return a less than or equal to expression.
      */
-    public inline infix fun String.lessThanOrEqualTo(double: Double): Expression = property(this).lessThanOrEqualTo(double)
+    public infix fun String.lessThanOrEqualTo(double: Double): Expression = property(this).lessThanOrEqualTo(double)
 
     /**
      * Create a less than or equal to expression that evaluates whether or not the current
@@ -735,7 +736,7 @@ public class WhereBuilder {
      * @param boolean the boolean expression to compare with the current expression.
      * @return a less than or equal to expression.
      */
-    public inline infix fun String.lessThanOrEqualTo(boolean: Boolean): Expression = property(this).lessThanOrEqualTo(boolean)
+    public infix fun String.lessThanOrEqualTo(boolean: Boolean): Expression = property(this).lessThanOrEqualTo(boolean)
 
     /**
      * Create a less than or equal to expression that evaluates whether or not the current
@@ -744,7 +745,7 @@ public class WhereBuilder {
      * @param date the date expression to compare with the current expression.
      * @return a less than or equal to expression.
      */
-    public inline infix fun String.lessThanOrEqualTo(date: Instant): Expression = property(this).lessThanOrEqualTo(date)
+    public infix fun String.lessThanOrEqualTo(date: Instant): Expression = property(this).lessThanOrEqualTo(date)
 
     /**
      * Create a greater than expression that evaluates whether or not the current property
@@ -753,7 +754,7 @@ public class WhereBuilder {
      * @param expression the expression to compare with the current expression.
      * @return a greater than expression.
      */
-    public inline infix fun String.greaterThan(expression: Expression): Expression = property(this).greaterThan(expression)
+    public infix fun String.greaterThan(expression: Expression): Expression = property(this).greaterThan(expression)
 
     /**
      * Create a greater than expression that evaluates whether or not the current property
@@ -762,7 +763,7 @@ public class WhereBuilder {
      * @param string the string expression to compare with the current expression.
      * @return a greater than expression.
      */
-    public inline infix fun String.greaterThan(string: String): Expression = property(this).greaterThan(string)
+    public infix fun String.greaterThan(string: String): Expression = property(this).greaterThan(string)
 
     /**
      * Create a greater than expression that evaluates whether or not the current property
@@ -771,7 +772,7 @@ public class WhereBuilder {
      * @param int the int expression to compare with the current expression.
      * @return a greater than expression.
      */
-    public inline infix fun String.greaterThan(int: Int): Expression = property(this).greaterThan(int)
+    public infix fun String.greaterThan(int: Int): Expression = property(this).greaterThan(int)
 
     /**
      * Create a greater than expression that evaluates whether or not the current property
@@ -780,7 +781,7 @@ public class WhereBuilder {
      * @param long the long expression to compare with the current expression.
      * @return a greater than expression.
      */
-    public inline infix fun String.greaterThan(long: Long): Expression = property(this).greaterThan(long)
+    public infix fun String.greaterThan(long: Long): Expression = property(this).greaterThan(long)
 
     /**
      * Create a greater than expression that evaluates whether or not the current property
@@ -789,7 +790,7 @@ public class WhereBuilder {
      * @param float the float expression to compare with the current expression.
      * @return a greater than expression.
      */
-    public inline infix fun String.greaterThan(float: Float): Expression = property(this).greaterThan(float)
+    public infix fun String.greaterThan(float: Float): Expression = property(this).greaterThan(float)
 
     /**
      * Create a greater than expression that evaluates whether or not the current property
@@ -798,7 +799,7 @@ public class WhereBuilder {
      * @param double the double expression to compare with the current expression.
      * @return a greater than expression.
      */
-    public inline infix fun String.greaterThan(double: Double): Expression = property(this).greaterThan(double)
+    public infix fun String.greaterThan(double: Double): Expression = property(this).greaterThan(double)
 
     /**
      * Create a greater than expression that evaluates whether or not the current property
@@ -807,7 +808,7 @@ public class WhereBuilder {
      * @param boolean the boolean expression to compare with the current expression.
      * @return a greater than expression.
      */
-    public inline infix fun String.greaterThan(boolean: Boolean): Expression = property(this).greaterThan(boolean)
+    public infix fun String.greaterThan(boolean: Boolean): Expression = property(this).greaterThan(boolean)
 
     /**
      * Create a greater than expression that evaluates whether or not the current property
@@ -816,7 +817,7 @@ public class WhereBuilder {
      * @param date the date expression to compare with the current expression.
      * @return a greater than expression.
      */
-    public inline infix fun String.greaterThan(date: Instant): Expression = property(this).greaterThan(date)
+    public infix fun String.greaterThan(date: Instant): Expression = property(this).greaterThan(date)
 
     /**
      * Create a greater than or equal to expression that evaluates whether or not the current
@@ -825,7 +826,7 @@ public class WhereBuilder {
      * @param expression the expression to compare with the current expression.
      * @return a greater than or equal to expression.
      */
-    public inline infix fun String.greaterThanOrEqualTo(expression: Expression): Expression = property(this).greaterThanOrEqualTo(expression)
+    public infix fun String.greaterThanOrEqualTo(expression: Expression): Expression = property(this).greaterThanOrEqualTo(expression)
 
     /**
      * Create a greater than or equal to expression that evaluates whether or not the current
@@ -834,7 +835,7 @@ public class WhereBuilder {
      * @param string the string expression to compare with the current expression.
      * @return a greater than or equal to expression.
      */
-    public inline infix fun String.greaterThanOrEqualTo(string: String): Expression = property(this).greaterThanOrEqualTo(string)
+    public infix fun String.greaterThanOrEqualTo(string: String): Expression = property(this).greaterThanOrEqualTo(string)
 
     /**
      * Create a greater than or equal to expression that evaluates whether or not the current
@@ -843,7 +844,7 @@ public class WhereBuilder {
      * @param int the int expression to compare with the current expression.
      * @return a greater than or equal to expression.
      */
-    public inline infix fun String.greaterThanOrEqualTo(int: Int): Expression = property(this).greaterThanOrEqualTo(int)
+    public infix fun String.greaterThanOrEqualTo(int: Int): Expression = property(this).greaterThanOrEqualTo(int)
 
     /**
      * Create a greater than or equal to expression that evaluates whether or not the current
@@ -852,7 +853,7 @@ public class WhereBuilder {
      * @param long the long expression to compare with the current expression.
      * @return a greater than or equal to expression.
      */
-    public inline infix fun String.greaterThanOrEqualTo(long: Long): Expression = property(this).greaterThanOrEqualTo(long)
+    public infix fun String.greaterThanOrEqualTo(long: Long): Expression = property(this).greaterThanOrEqualTo(long)
 
     /**
      * Create a greater than or equal to expression that evaluates whether or not the current
@@ -861,7 +862,7 @@ public class WhereBuilder {
      * @param float the float expression to compare with the current expression.
      * @return a greater than or equal to expression.
      */
-    public inline infix fun String.greaterThanOrEqualTo(float: Float): Expression = property(this).greaterThanOrEqualTo(float)
+    public infix fun String.greaterThanOrEqualTo(float: Float): Expression = property(this).greaterThanOrEqualTo(float)
 
     /**
      * Create a greater than or equal to expression that evaluates whether or not the current
@@ -870,7 +871,7 @@ public class WhereBuilder {
      * @param double the double expression to compare with the current expression.
      * @return a greater than or equal to expression.
      */
-    public inline infix fun String.greaterThanOrEqualTo(double: Double): Expression = property(this).greaterThanOrEqualTo(double)
+    public infix fun String.greaterThanOrEqualTo(double: Double): Expression = property(this).greaterThanOrEqualTo(double)
 
     /**
      * Create a greater than or equal to expression that evaluates whether or not the current
@@ -879,7 +880,7 @@ public class WhereBuilder {
      * @param boolean the boolean expression to compare with the current expression.
      * @return a greater than or equal to expression.
      */
-    public inline infix fun String.greaterThanOrEqualTo(boolean: Boolean): Expression = property(this).greaterThanOrEqualTo(boolean)
+    public infix fun String.greaterThanOrEqualTo(boolean: Boolean): Expression = property(this).greaterThanOrEqualTo(boolean)
 
     /**
      * Create a greater than or equal to expression that evaluates whether or not the current
@@ -888,7 +889,7 @@ public class WhereBuilder {
      * @param date the date expression to compare with the current expression.
      * @return a greater than or equal to expression.
      */
-    public inline infix fun String.greaterThanOrEqualTo(date: Instant): Expression = property(this).greaterThanOrEqualTo(date)
+    public infix fun String.greaterThanOrEqualTo(date: Instant): Expression = property(this).greaterThanOrEqualTo(date)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -897,7 +898,7 @@ public class WhereBuilder {
      * @param expression the expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(expression: Expression): Expression = property(this).equalTo(expression)
+    public infix fun String.equalTo(expression: Expression): Expression = property(this).equalTo(expression)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -906,7 +907,7 @@ public class WhereBuilder {
      * @param string the string expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(string: String): Expression = property(this).equalTo(string)
+    public infix fun String.equalTo(string: String): Expression = property(this).equalTo(string)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -915,7 +916,7 @@ public class WhereBuilder {
      * @param int the int expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(int: Int): Expression = property(this).equalTo(int)
+    public infix fun String.equalTo(int: Int): Expression = property(this).equalTo(int)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -924,7 +925,7 @@ public class WhereBuilder {
      * @param long the long expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(long: Long): Expression = property(this).equalTo(long)
+    public infix fun String.equalTo(long: Long): Expression = property(this).equalTo(long)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -933,7 +934,7 @@ public class WhereBuilder {
      * @param float the float expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(float: Float): Expression = property(this).equalTo(float)
+    public infix fun String.equalTo(float: Float): Expression = property(this).equalTo(float)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -942,7 +943,7 @@ public class WhereBuilder {
      * @param double the double expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(double: Double): Expression = property(this).equalTo(double)
+    public infix fun String.equalTo(double: Double): Expression = property(this).equalTo(double)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -951,7 +952,7 @@ public class WhereBuilder {
      * @param boolean the boolean expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(boolean: Boolean): Expression = property(this).equalTo(boolean)
+    public infix fun String.equalTo(boolean: Boolean): Expression = property(this).equalTo(boolean)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -960,7 +961,7 @@ public class WhereBuilder {
      * @param date the date expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(date: Instant): Expression = property(this).equalTo(date)
+    public infix fun String.equalTo(date: Instant): Expression = property(this).equalTo(date)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -969,7 +970,7 @@ public class WhereBuilder {
      * @param map the map expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(map: Map<String, Any?>): Expression = property(this).equalTo(map)
+    public infix fun String.equalTo(map: Map<String, Any?>): Expression = property(this).equalTo(map)
 
     /**
      * Create an equal to expression that evaluates whether or not the current property
@@ -978,7 +979,7 @@ public class WhereBuilder {
      * @param list the list expression to compare with the current expression.
      * @return an equal to expression.
      */
-    public inline infix fun String.equalTo(list: List<Any>): Expression = property(this).equalTo(list)
+    public infix fun String.equalTo(list: List<Any>): Expression = property(this).equalTo(list)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -987,7 +988,7 @@ public class WhereBuilder {
      * @param expression the expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(expression: Expression): Expression = property(this).notEqualTo(expression)
+    public infix fun String.notEqualTo(expression: Expression): Expression = property(this).notEqualTo(expression)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -996,7 +997,7 @@ public class WhereBuilder {
      * @param string the string expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(string: String): Expression = property(this).notEqualTo(string)
+    public infix fun String.notEqualTo(string: String): Expression = property(this).notEqualTo(string)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -1005,7 +1006,7 @@ public class WhereBuilder {
      * @param int the int expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(int: Int): Expression = property(this).notEqualTo(int)
+    public infix fun String.notEqualTo(int: Int): Expression = property(this).notEqualTo(int)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -1014,7 +1015,7 @@ public class WhereBuilder {
      * @param long the long expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(long: Long): Expression = property(this).notEqualTo(long)
+    public infix fun String.notEqualTo(long: Long): Expression = property(this).notEqualTo(long)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -1023,7 +1024,7 @@ public class WhereBuilder {
      * @param float the float expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(float: Float): Expression = property(this).notEqualTo(float)
+    public infix fun String.notEqualTo(float: Float): Expression = property(this).notEqualTo(float)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -1032,7 +1033,7 @@ public class WhereBuilder {
      * @param double the double expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(double: Double): Expression = property(this).notEqualTo(double)
+    public infix fun String.notEqualTo(double: Double): Expression = property(this).notEqualTo(double)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -1041,7 +1042,7 @@ public class WhereBuilder {
      * @param boolean the boolean expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(boolean: Boolean): Expression = property(this).notEqualTo(boolean)
+    public infix fun String.notEqualTo(boolean: Boolean): Expression = property(this).notEqualTo(boolean)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -1050,7 +1051,7 @@ public class WhereBuilder {
      * @param date the date expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(date: Instant): Expression = property(this).notEqualTo(date)
+    public infix fun String.notEqualTo(date: Instant): Expression = property(this).notEqualTo(date)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -1059,7 +1060,7 @@ public class WhereBuilder {
      * @param map the map expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(map: Map<String, Any?>): Expression = property(this).notEqualTo(map)
+    public infix fun String.notEqualTo(map: Map<String, Any?>): Expression = property(this).notEqualTo(map)
 
     /**
      * Create a NOT equal to expression that evaluates whether or not the current property
@@ -1068,7 +1069,7 @@ public class WhereBuilder {
      * @param list the list expression to compare with the current expression.
      * @return a NOT equal to expression.
      */
-    public inline infix fun String.notEqualTo(list: List<Any>): Expression = property(this).notEqualTo(list)
+    public infix fun String.notEqualTo(list: List<Any>): Expression = property(this).notEqualTo(list)
 
     /**
      * Create a Like expression that evaluates whether or not the current property is LIKE
@@ -1077,7 +1078,7 @@ public class WhereBuilder {
      * @param expression the expression to compare with the current expression.
      * @return a Like expression.
      */
-    public inline infix fun String.like(expression: Expression): Expression = property(this).like(expression)
+    public infix fun String.like(expression: Expression): Expression = property(this).like(expression)
 
     /**
      * Create a Like expression that evaluates whether or not the current property is LIKE
@@ -1086,7 +1087,7 @@ public class WhereBuilder {
      * @param string the string expression to compare with the current expression.
      * @return a Like expression.
      */
-    public inline infix fun String.like(string: String): Expression = property(this).like(string)
+    public infix fun String.like(string: String): Expression = property(this).like(string)
 
     /**
      * Create a Like expression that evaluates whether or not the current property is LIKE
@@ -1095,7 +1096,7 @@ public class WhereBuilder {
      * @param int the int expression to compare with the current expression.
      * @return a Like expression.
      */
-    public inline infix fun String.like(int: Int): Expression = property(this).like(int)
+    public infix fun String.like(int: Int): Expression = property(this).like(int)
 
     /**
      * Create a Like expression that evaluates whether or not the current property is LIKE
@@ -1104,7 +1105,7 @@ public class WhereBuilder {
      * @param long the long expression to compare with the current expression.
      * @return a Like expression.
      */
-    public inline infix fun String.like(long: Long): Expression = property(this).like(long)
+    public infix fun String.like(long: Long): Expression = property(this).like(long)
 
     /**
      * Create a Like expression that evaluates whether or not the current property is LIKE
@@ -1113,7 +1114,7 @@ public class WhereBuilder {
      * @param float the float expression to compare with the current expression.
      * @return a Like expression.
      */
-    public inline infix fun String.like(float: Float): Expression = property(this).like(float)
+    public infix fun String.like(float: Float): Expression = property(this).like(float)
 
     /**
      * Create a Like expression that evaluates whether or not the current property is LIKE
@@ -1122,7 +1123,7 @@ public class WhereBuilder {
      * @param double the double expression to compare with the current expression.
      * @return a Like expression.
      */
-    public inline infix fun String.like(double: Double): Expression = property(this).like(double)
+    public infix fun String.like(double: Double): Expression = property(this).like(double)
 
     /**
      * Create a Like expression that evaluates whether or not the current property is LIKE
@@ -1131,7 +1132,7 @@ public class WhereBuilder {
      * @param boolean the boolean expression to compare with the current expression.
      * @return a Like expression.
      */
-    public inline infix fun String.like(boolean: Boolean): Expression = property(this).like(boolean)
+    public infix fun String.like(boolean: Boolean): Expression = property(this).like(boolean)
 
     /**
      * Create a Like expression that evaluates whether or not the current property is LIKE
@@ -1140,7 +1141,7 @@ public class WhereBuilder {
      * @param date the date expression to compare with the current expression.
      * @return a Like expression.
      */
-    public inline infix fun String.like(date: Instant): Expression = property(this).like(date)
+    public infix fun String.like(date: Instant): Expression = property(this).like(date)
 }
 
 public class OrderByBuilder {
