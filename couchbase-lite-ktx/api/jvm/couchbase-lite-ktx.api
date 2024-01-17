@@ -194,6 +194,7 @@ public final class kotbase/ktx/QueryBuilderExtensionsKt {
 public final class kotbase/ktx/QueryExtKt {
 	public static final fun asObjectsFlow (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun asObjectsFlow (Lkotbase/Query;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final synthetic fun asObjectsFlow$default (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun mapToObjects (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 }
 
@@ -202,6 +203,7 @@ public final class kotbase/ktx/QueryExtensionsKt {
 	public static synthetic fun asFlow$default (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun asObjectsFlow (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun asObjectsFlow (Lkotbase/Query;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final synthetic fun asObjectsFlow$default (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun mapToObjects (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 }
 
