@@ -35,7 +35,7 @@ private constructor(override var actual: CBLQueryDataSource) : DelegatedClass<CB
         }
     ) {
 
-        public actual fun `as`(alias: String): DataSource {
+        public actual infix fun `as`(alias: String): DataSource {
             actual = if (collection != null) {
                 CBLQueryDataSource.collection(collection, alias)
             } else {

@@ -24,7 +24,7 @@ private constructor(
     public actual class As
     internal constructor(collection: Collection) : DataSource(collection) {
 
-        public actual fun `as`(alias: String): DataSource {
+        public actual infix fun `as`(alias: String): DataSource {
             this.alias = alias
             return this
         }
