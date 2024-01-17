@@ -35,6 +35,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmSynthetic
 
 /**
  * Returns a [Flow] that emits the Query [ResultSet] every time the underlying
@@ -71,6 +73,16 @@ public fun <T : Any> Query.asObjectsFlow(
     coroutineContext: CoroutineContext?,
     factory: (Map<String, Any?>) -> T?
 ): Flow<List<T>> = asQueryFlow(coroutineContext).mapToObjects(factory)
+
+@Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
+@JvmSynthetic
+@JvmName("asObjectsFlow\$default")
+public fun <T : Any> Query.asObjectsFlow(
+    coroutineContext: CoroutineContext?,
+    factory: (Map<String, Any?>) -> T?,
+    flags: Int,
+    @Suppress("UNUSED_PARAMETER") obj: Any?
+): Flow<List<T>> = asObjectsFlow(if (flags and 1 != 0) null else coroutineContext, factory)
 
 /**
  * Returns a [Flow] that maps the Query [ResultSet] to instances of a class
