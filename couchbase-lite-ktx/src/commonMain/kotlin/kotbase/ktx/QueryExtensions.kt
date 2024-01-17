@@ -63,12 +63,38 @@ public fun Query.asFlow(coroutineContext: CoroutineContext? = null): Flow<Result
  *
  * Using Kotlin Map delegation for creating such instances is a great shorthand.
  *
+ * @param coroutineContext optional CoroutineContext on which to run the change listener:
+ * default is the flow collector's CoroutineContext
  * @param factory the lambda used for creating object instances.
  */
 public fun <T : Any> Query.asObjectsFlow(
-    coroutineContext: CoroutineContext? = null,
+    coroutineContext: CoroutineContext?,
     factory: (Map<String, Any?>) -> T?
 ): Flow<List<T>> = asQueryFlow(coroutineContext).mapToObjects(factory)
+
+/**
+ * Returns a [Flow] that maps the Query [ResultSet] to instances of a class
+ * that can be created using the given [factory] lambda.
+ *
+ * Example of usage:
+ *
+ * ```
+ * class User(map: Map<String, Any?>) {
+ *   val name: String by map
+ *   val surname: String by map
+ *   val age: Int by map
+ * }
+ *
+ * val users: Flow<List<User>> = query.asObjectsFlow(::User)
+ * ```
+ *
+ * Using Kotlin Map delegation for creating such instances is a great shorthand.
+ *
+ * @param factory the lambda used for creating object instances.
+ */
+public fun <T : Any> Query.asObjectsFlow(
+    factory: (Map<String, Any?>) -> T?
+): Flow<List<T>> = asQueryFlow(null).mapToObjects(factory)
 
 public fun <T : Any> Flow<QueryChange>.mapToObjects(
     factory: (Map<String, Any?>) -> T?
