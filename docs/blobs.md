@@ -32,7 +32,7 @@ store, indexed by the digest property — see [Using Blobs](#using-blobs).
 The Blob API lets you access the blob’s data content as in-memory data (a `ByteArray`) or as a `Source` input stream.
 
 The code in [Example 1](#example-1) shows how you might add a blob to a document and save it to the database. Here we
-use _avatar_ as the property key and a jpeg file as the blob data.
+use `avatar` as the property key and a jpeg file as the blob data.
 
 !!! example "<span id='example-1'>Example 1. Working with blobs</span>"
 
@@ -45,15 +45,15 @@ use _avatar_ as the property key and a jpeg file as the blob data.
     
     getAsset("avatar.jpg")?.use { source ->
       mDoc.setBlob("avatar", Blob("image/jpeg", source))
-      database.save(mDoc)
+      collection.save(mDoc)
     }
     
-    val doc = database.getDocument(mDoc.id)
+    val doc = collection.getDocument(mDoc.id)
     val bytes = doc?.getBlob("avatar")?.content
     ```
 
 1. Prepare a document to use for the example.
-2. Create the blob using the retrieved image and set `image/jpg` as the blob MIME type.
+2. Create the blob using the retrieved image and set `image/jpeg` as the blob MIME type.
 3. Add the blob to a document, using `avatar` as the property key.
 4. Saving the document generates a random access key for each blob stored in `digest` a SHA-1 encrypted property — see
    [Figure 1](#figure-1).
