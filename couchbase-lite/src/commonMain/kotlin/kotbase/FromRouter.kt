@@ -23,5 +23,5 @@ public interface FromRouter : Query {
      * @param dataSource the data source.
      * @return the From component.
      */
-    public fun from(dataSource: DataSource): From
+    public infix fun from(dataSource: DataSource): From
 }

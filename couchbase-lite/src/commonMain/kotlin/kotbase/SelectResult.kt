@@ -31,7 +31,7 @@ public expect open class SelectResult {
          * @param alias The data source alias name.
          * @return The SelectResult object with the data source alias name specified.
          */
-        public fun from(alias: String): SelectResult
+        public infix fun from(alias: String): SelectResult
     }
 
     /**
@@ -46,7 +46,7 @@ public expect open class SelectResult {
          * @param alias The alias name.
          * @return The SelectResult object with the alias name specified.
          */
-        public fun `as`(alias: String): As
+        public infix fun `as`(alias: String): As
     }
 
     public companion object {

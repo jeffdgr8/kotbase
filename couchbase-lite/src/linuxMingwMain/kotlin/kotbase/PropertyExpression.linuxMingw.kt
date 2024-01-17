@@ -21,7 +21,7 @@ internal constructor(
     private val fromAlias: String? = null
 ) : Expression() {
 
-    public actual fun from(fromAlias: String): Expression =
+    public actual infix fun from(fromAlias: String): Expression =
         PropertyExpression(keyPath, fromAlias)
 
     override fun asJSON(): Any =

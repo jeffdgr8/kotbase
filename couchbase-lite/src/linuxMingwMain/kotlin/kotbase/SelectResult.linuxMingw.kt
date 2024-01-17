@@ -35,14 +35,14 @@ private constructor(
     public actual class From
     internal constructor(override val expression: PropertyExpression) : SelectResult(expression) {
 
-        public actual fun from(alias: String): SelectResult =
+        public actual infix fun from(alias: String): SelectResult =
             SelectResult(expression.from(alias))
     }
 
     public actual class As
     internal constructor(expression: Expression) : SelectResult(expression) {
 
-        public actual fun `as`(alias: String): As {
+        public actual infix fun `as`(alias: String): As {
             this.alias = alias
             return this
         }
