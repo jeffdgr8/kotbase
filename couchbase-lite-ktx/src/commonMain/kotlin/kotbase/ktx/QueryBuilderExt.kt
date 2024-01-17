@@ -16,6 +16,7 @@
 package kotbase.ktx
 
 import kotbase.*
+import kotbase.Collection
 import kotbase.Function
 
 /**
@@ -78,3 +79,20 @@ public fun selectCount(alias: String = ""): Select {
     }
     return QueryBuilder.select(selectAs)
 }
+
+public inline infix fun String.from(fromAlias: String): Expression =
+    Expression.property(this).from(fromAlias)
+
+public inline infix fun Expression.`as`(alias: String): SelectResult.As =
+    SelectResult.expression(this).`as`(alias)
+
+@Suppress("DEPRECATION")
+@Deprecated(
+    "Use Collection.`as`(String)",
+    ReplaceWith("defaultCollection.`as`(alias)")
+)
+public inline infix fun Database.`as`(alias: String): DataSource =
+    DataSource.database(this).`as`(alias)
+
+public inline infix fun Collection.`as`(alias: String): DataSource =
+    DataSource.collection(this).`as`(alias)
