@@ -90,7 +90,7 @@ public fun select(expression: Expression, result: SelectResult, vararg results: 
  * @param results The array of the SelectResult object for specifying the returned values.
  * @return A Select distinct object.
  */
-public inline fun selectDistinct(vararg results: SelectResult): Select =
+public fun selectDistinct(vararg results: SelectResult): Select =
     QueryBuilder.selectDistinct(*results)
 
 /**
@@ -100,7 +100,7 @@ public inline fun selectDistinct(vararg results: SelectResult): Select =
  * @param properties The properties for specifying the returned values.
  * @return A Select distinct object.
  */
-public inline fun selectDistinct(vararg properties: String): Select =
+public fun selectDistinct(vararg properties: String): Select =
     QueryBuilder.selectDistinct(*properties.map(SelectResult::property).toTypedArray())
 
 /**
@@ -175,7 +175,7 @@ public fun selectCount(alias: String = ""): Select {
  * @param fromAlias The alias name of the data source.
  * @return The property Expression with the given data source alias name.
  */
-public inline infix fun String.from(fromAlias: String): Expression =
+public infix fun String.from(fromAlias: String): Expression =
     Expression.property(this).from(fromAlias)
 
 /**
@@ -184,7 +184,7 @@ public inline infix fun String.from(fromAlias: String): Expression =
  * @param alias The alias name.
  * @return The SelectResult object with the alias name specified.
  */
-public inline infix fun Expression.`as`(alias: String): SelectResult.As =
+public infix fun Expression.`as`(alias: String): SelectResult.As =
     SelectResult.expression(this).`as`(alias)
 
 /**
@@ -198,7 +198,7 @@ public inline infix fun Expression.`as`(alias: String): SelectResult.As =
     "Use Collection.`as`(String)",
     ReplaceWith("defaultCollection.`as`(alias)")
 )
-public inline infix fun Database.`as`(alias: String): DataSource =
+public infix fun Database.`as`(alias: String): DataSource =
     DataSource.database(this).`as`(alias)
 
 /**
@@ -207,7 +207,7 @@ public inline infix fun Database.`as`(alias: String): DataSource =
  * @param alias the alias to set.
  * @return the data source object with the given alias set.
  */
-public inline infix fun Collection.`as`(alias: String): DataSource =
+public infix fun Collection.`as`(alias: String): DataSource =
     DataSource.collection(this).`as`(alias)
 
 /**
