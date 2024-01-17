@@ -17,5 +17,5 @@ package kotbase
 
 public interface FullTextIndexExpression : IndexExpression {
 
-    public fun from(alias: String): IndexExpression
+    public infix fun from(alias: String): IndexExpression
 }
