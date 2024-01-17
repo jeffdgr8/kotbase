@@ -24,7 +24,7 @@ private constructor(actual: CBLSelectResult) : DelegatedClass<CBLSelectResult>(a
     public actual class From
     internal constructor(override val actual: CBLSelectResult.From) : SelectResult(actual) {
 
-        public actual fun from(alias: String): SelectResult {
+        public actual infix fun from(alias: String): SelectResult {
             actual.from(alias)
             return this
         }
@@ -33,7 +33,7 @@ private constructor(actual: CBLSelectResult) : DelegatedClass<CBLSelectResult>(a
     public actual class As
     internal constructor(override val actual: CBLSelectResult.As) : SelectResult(actual) {
 
-        public actual fun `as`(alias: String): As {
+        public actual infix fun `as`(alias: String): As {
             actual.`as`(alias)
             return this
         }

@@ -24,7 +24,7 @@ private constructor(actual: CBLQuerySelectResult) : DelegatedClass<CBLQuerySelec
     public actual class From
     internal constructor(private val all: (String?) -> CBLQuerySelectResult) : SelectResult(all(null)) {
 
-        public actual fun from(alias: String): SelectResult =
+        public actual infix fun from(alias: String): SelectResult =
             SelectResult(all(alias))
     }
 
@@ -44,7 +44,7 @@ private constructor(actual: CBLQuerySelectResult) : DelegatedClass<CBLQuerySelec
             ): As = As(function as (Any, String?) -> CBLQuerySelectResult, param1 as Any)
         }
 
-        public actual fun `as`(alias: String): As {
+        public actual infix fun `as`(alias: String): As {
             return As(function, param1, alias)
         }
     }

@@ -31,7 +31,7 @@ public expect open class DataSource {
          * @param alias the alias to set.
          * @return the data source object with the given alias set.
          */
-        public fun `as`(alias: String): DataSource
+        public infix fun `as`(alias: String): DataSource
     }
 
     public companion object {

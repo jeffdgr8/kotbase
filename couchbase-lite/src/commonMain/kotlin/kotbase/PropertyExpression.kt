@@ -26,5 +26,5 @@ public expect class PropertyExpression : Expression {
      * @param fromAlias The alias name of the data source.
      * @return The property Expression with the given data source alias name.
      */
-    public fun from(fromAlias: String): Expression
+    public infix fun from(fromAlias: String): Expression
 }

@@ -26,5 +26,5 @@ public expect class MetaExpression : Expression {
      * @param fromAlias The data source alias name.
      * @return The Meta expression with the given alias name specified.
      */
-    public fun from(fromAlias: String): Expression
+    public infix fun from(fromAlias: String): Expression
 }
