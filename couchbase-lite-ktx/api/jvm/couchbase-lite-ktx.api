@@ -104,20 +104,28 @@ public final class kotbase/ktx/OrderByBuilder {
 	public final fun ascending (Lkotbase/Expression;)V
 	public final fun descending (Ljava/lang/String;)V
 	public final fun descending (Lkotbase/Expression;)V
-	public final fun orderings ()[Lkotbase/Ordering;
 }
 
 public final class kotbase/ktx/QueryBuilderExtKt {
+	public static final fun as (Lkotbase/Collection;Ljava/lang/String;)Lkotbase/DataSource;
+	public static final fun as (Lkotbase/Database;Ljava/lang/String;)Lkotbase/DataSource;
+	public static final fun as (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/SelectResult$As;
+	public static final fun from (Ljava/lang/String;Ljava/lang/String;)Lkotbase/Expression;
+	public static final fun groupBy (Lkotbase/GroupByRouter;[Ljava/lang/String;)Lkotbase/GroupBy;
 	public static final fun select (Lkotbase/Expression;Ljava/lang/String;[Ljava/lang/String;)Lkotbase/Select;
 	public static final fun select (Lkotbase/Expression;Lkotbase/SelectResult;[Lkotbase/SelectResult;)Lkotbase/Select;
 	public static final fun select (Lkotbase/Expression;[Lkotbase/Expression;)Lkotbase/Select;
 	public static final fun selectCount (Ljava/lang/String;)Lkotbase/Select;
 	public static synthetic fun selectCount$default (Ljava/lang/String;ILjava/lang/Object;)Lkotbase/Select;
+	public static final fun selectDistinct (Lkotbase/Expression;Ljava/lang/String;[Ljava/lang/String;)Lkotbase/Select;
+	public static final fun selectDistinct (Lkotbase/Expression;Lkotbase/SelectResult;[Lkotbase/SelectResult;)Lkotbase/Select;
+	public static final fun selectDistinct (Lkotbase/Expression;[Lkotbase/Expression;)Lkotbase/Select;
+	public static final fun selectDistinct ([Ljava/lang/String;)Lkotbase/Select;
+	public static final fun selectDistinct ([Lkotbase/SelectResult;)Lkotbase/Select;
 }
 
 public final class kotbase/ktx/QueryBuilderExtensionsKt {
 	public static final fun all ()Lkotbase/SelectResult$From;
-	public static final fun and (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
 	public static final fun equalTo (Lkotbase/Expression;D)Lkotbase/Expression;
 	public static final fun equalTo (Lkotbase/Expression;F)Lkotbase/Expression;
 	public static final fun equalTo (Lkotbase/Expression;I)Lkotbase/Expression;
@@ -176,7 +184,6 @@ public final class kotbase/ktx/QueryBuilderExtensionsKt {
 	public static final fun notEqualTo (Lkotbase/Expression;Ljava/util/Map;)Lkotbase/Expression;
 	public static final fun notEqualTo (Lkotbase/Expression;Lkotlinx/datetime/Instant;)Lkotbase/Expression;
 	public static final fun notEqualTo (Lkotbase/Expression;Z)Lkotbase/Expression;
-	public static final fun or (Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
 	public static final fun orderBy (Lkotbase/OrderByRouter;Lkotlin/jvm/functions/Function1;)Lkotbase/OrderBy;
 	public static final fun property (Ljava/lang/String;)Lkotbase/PropertyExpression;
 	public static final fun select ([Ljava/lang/String;)Lkotbase/Select;
@@ -186,7 +193,7 @@ public final class kotbase/ktx/QueryBuilderExtensionsKt {
 
 public final class kotbase/ktx/QueryExtKt {
 	public static final fun asObjectsFlow (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun asObjectsFlow$default (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun asObjectsFlow (Lkotbase/Query;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun mapToObjects (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 }
 
@@ -194,7 +201,7 @@ public final class kotbase/ktx/QueryExtensionsKt {
 	public static final fun asFlow (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun asFlow$default (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun asObjectsFlow (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun asObjectsFlow$default (Lkotbase/Query;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun asObjectsFlow (Lkotbase/Query;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun mapToObjects (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 }
 
