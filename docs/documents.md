@@ -4,8 +4,8 @@ _Couchbase Lite concepts — Data model — Documents_
 
 ### Document Structure
 
-In Couchbase Lite the term 'document' refers to an entry in the database. You can compare it to a record, or a row in a
-table.
+In _Couchbase Lite_ the term 'document' refers to an entry in the database. You can compare it to a record, or a row in
+a table.
 
 Each document has an ID or unique identifier. This ID is similar to a primary key in other databases.
 
@@ -13,11 +13,12 @@ You can specify the ID programmatically. If you omit it, it will be automaticall
 
 !!! note
 
-    The ID must be unique within the database. You cannot change it after you have written the document.
+    Couchbase documents are assigned to a [Collection](databases.md#database-concepts). The ID of a document must be
+    unique within the Collection it is written to. You cannot change it after you have written the document.
 
-The document also has a value which contains the actual application data. This value is stored as a dictionary
-collection of key-value (k-v) pairs. The values can be made of up several different [Data Types](#data-types) such as
-numbers, strings, arrays, and nested objects.
+The document also has a value which contains the actual application data. This value is stored as a dictionary of
+key-value (k-v) pairs. The values can be made of up several different [Data Types](#data-types) such as numbers,
+strings, arrays, and nested objects.
 
 ### Data Encoding
 
@@ -91,11 +92,16 @@ hotel: {
 
 First open your database. If the database does not already exist, Couchbase Lite will create it for you.
 
+Couchbase documents are assigned to a [Collection](databases.md#database-concepts). All the CRUD examples in this
+document operate on a `collection` object.
+
 ```kotlin
 // Get the database (and create it if it doesn’t exist).
 val config = DatabaseConfiguration()
 config.directory = "path/to/db"
 val database = Database("getting-started", config)
+val collection = database.getCollection("myCollection")
+    ?: throw IllegalStateException("collection not found")
 ```
 
 See [Databases](databases.md) for more information
@@ -130,6 +136,21 @@ address.setString("country", "USA")
 address.setString("code", "90210")
 ```
 
+!!! tip
+
+    The Kotbase [KTX extensions](ktx.md#collection-creation-functions) provide an idiomatic `MutableDictionary` creation
+    function:
+    
+    ```kotlin
+    val address = mutableDictOf(
+        "street" to "1 Main st.",
+        "city" to "San Francisco",
+        "state" to "CA",
+        "country" to "USA",
+        "code" to "90210"
+    )
+    ```
+
 Learn more about [Using Dictionaries](#using-dictionaries).
 
 ### Create an Array
@@ -142,6 +163,18 @@ val phones = MutableArray()
 phones.addString("650-000-0000")
 phones.addString("650-000-0001")
 ```
+
+!!! tip
+
+    The Kotbase [KTX extensions](ktx.md#collection-creation-functions) provide an idiomatic `MutableArray` creation
+    function:
+    
+    ```kotlin
+    val phones = mutableArrayOf(
+        "650-000-0000",
+        "650-000-0001"
+    )
+    ```
 
 Learn more about [Using Arrays](#using-arrays).
 
@@ -178,7 +211,7 @@ Now persist the populated document to your Couchbase Lite database. This will au
 
 ```kotlin
 // Save the document changes 
-database.save(mutableDoc)
+collection.save(mutableDoc)
 ```
 
 ### Close the Database
@@ -227,7 +260,7 @@ them, so the convention is to store them as strings in ISO-8601 format.
 
     ```kotlin
     // NOTE: No error handling, for brevity (see getting started)
-    val document = database.getDocument("doc1")
+    val document = collection.getDocument("doc1")
     
     // Getting a dictionary from the document's properties
     val dict = document?.getDictionary("address")
@@ -241,7 +274,7 @@ them, so the convention is to store them as strings in ISO-8601 format.
     }
     
     // Create a mutable copy
-    val mutableDict = dict.toMutable()
+    val mutableDict = dict?.toMutable()
     ```
 
 !!! example "Example 3. Mutable"
@@ -257,7 +290,7 @@ them, so the convention is to store them as strings in ISO-8601 format.
     // Add the dictionary to a document's properties and save the document
     val mutableDoc = MutableDocument("doc1")
     mutableDoc.setDictionary("address", mutableDict)
-    database.save(mutableDoc)
+    collection.save(mutableDoc)
     ```
 
 ### Using Arrays
@@ -272,20 +305,20 @@ them, so the convention is to store them as strings in ISO-8601 format.
     ```kotlin
     // NOTE: No error handling, for brevity (see getting started)
     
-    val document = database.getDocument("doc1")
+    val document = collection.getDocument("doc1")
     
     // Getting a phones array from the document's properties
     val array = document?.getArray("phones")
     
     // Get element count
-    val count = array?.count()
+    val count = array?.count
     
     // Access an array element by index
     val phone = array?.getString(1)
     
     // Iterate array
     array?.forEachIndexed { index, item ->
-        println("Row  $index = $item")
+        println("Row $index = $item")
     }
     
     // Create a mutable copy
@@ -305,7 +338,7 @@ them, so the convention is to store them as strings in ISO-8601 format.
     // Set the array to document's properties and save the document
     val mutableDoc = MutableDocument("doc1")
     mutableDoc.setArray("phones", mutableArray)
-    database.save(mutableDoc)
+    collection.save(mutableDoc)
     ```
 
 ### Using Blobs
@@ -320,9 +353,9 @@ You can use the following methods/initializers:
   create a new document where the document ID is randomly generated by the database.
 * Use the [`MutableDocument(id: String?)`](/api/couchbase-lite-ee/kotbase/-mutable-document/-mutable-document.html)
   initializer to create a new document with a specific ID.
-* Use the [`Database.getDocument()`](/api/couchbase-lite-ee/kotbase/-database/get-document.html) method to get a
-  document. If the document doesn’t exist in the database, the method will return null. You can use this behavior to
-  check if a document with a given ID already exists in the database.
+* Use the [`Collection.getDocument()`](/api/couchbase-lite-ee/kotbase/-collection/get-document.html) method to get a
+  document. If the document doesn’t exist in the collection, the method will return `null`. You can use this behavior to
+  check if a document with a given ID already exists in the collection.
 
 !!! example "Example 6. Persist a document"
 
@@ -332,6 +365,19 @@ You can use the following methods/initializers:
         setString("type", "task")
         setString("owner", "todo")
         setDate("createdAt", Clock.System.now())
+    }
+    collection.save(doc)
+    ```
+
+!!! tip
+
+    The Kotbase [KTX extensions](ktx.md#document-builder-dsl) provide a document builder DSL:
+    
+    ```kotlin
+    val doc = MutableDocument {
+        "type" to "task"
+        "owner" to "todo"
+        "createdAt" to Clock.System.now()
     }
     database.save(doc)
     ```
@@ -346,9 +392,9 @@ By default, a document is immutable when it is read from the database. Use [`Doc
     Changes to the document are persisted to the database when the `save` method is called.
 
     ```kotlin
-    database.getDocument("xyz")?.toMutable()?.let {
+    collection.getDocument("xyz")?.toMutable()?.let {
         it.setString("name", "apples")
-        database.save(it)
+        collection.save(it)
     }
     ```
 
@@ -374,7 +420,7 @@ persists a few documents in batch.
                 setValue("name", "user $i")
                 setBoolean("admin", false)
             }
-            save(doc)
+            collection.save(doc)
             println("saved user document: ${doc.getString("name")}")
         }
     }
@@ -393,8 +439,8 @@ and prints the `verified_account` property when a change is detected.
 !!! example "Example 9. Document change events"
 
     ```kotlin
-    database.addDocumentChangeListener("user.john") { change ->
-        database.getDocument(change.documentID)?.let {
+    collection.addDocumentChangeListener("user.john") { change ->
+        collection.getDocument(change.documentID)?.let {
             println("Status: ${it.getString("verified_account")}")
         }
     }
@@ -404,22 +450,22 @@ and prints the `verified_account` property when a change is detected.
 
 Kotlin users can also take advantage of `Flow`s to monitor for changes.
 
-The following methods show how to watch for document changes in a given database or for changes to a specific document.
+The following methods show how to watch for document changes in a given collection or for changes to a specific document.
 
-=== "Database Changes"
+=== "Collection Changes"
 
     ```kotlin
-    val dbChanges: Flow<List<String>> = database.databaseChangeFlow()
+    val collChanges: Flow<List<String>> = collection.collectionChangeFlow()
         .map { it.documentIDs }
     ```
 
 === "Document Changes"
 
     ```kotlin
-    val docChanges: Flow<DocumentChange> = database.documentChangeFlow("1001")
+    val docChanges: Flow<DocumentChange> = collection.documentChangeFlow("1001")
         .mapNotNull { change ->
             change.takeUnless {
-                database.getDocument(it.documentID)?.getString("owner").equals(owner)
+                collection.getDocument(it.documentID)?.getString("owner").equals(owner)
             }
         }
     ```
@@ -435,18 +481,18 @@ the database. The purge is not replicated to Sync Gateway.
 
     ```kotlin
     // Purge the document one day from now
-    database.setDocumentExpiration(
+    collection.setDocumentExpiration(
         "doc123",
         Clock.System.now() + 1.days
     )
     
     // Reset expiration
-    database.setDocumentExpiration("doc1", null)
+    collection.setDocumentExpiration("doc1", null)
     
     // Query documents that will be expired in less than five minutes
     val query = QueryBuilder
         .select(SelectResult.expression(Meta.id))
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
             Meta.expiration.lessThan(
                 Expression.longValue((Clock.System.now() + 5.minutes).toEpochMilliseconds())
@@ -514,15 +560,15 @@ Additionally, you can:
     val mArray = MutableArray(jsonString)
 
     // Create and save new document using the array
-    for (i in 0 until mArray.count) {
+    for (i in 0 ..< mArray.count) {
         mArray.getDictionary(i)?.apply {
             println(getString("name") ?: "unknown")
-            database.save(MutableDocument(getString("id"), toMap()))
+            collection.save(MutableDocument(getString("id"), toMap()))
         }
     }
 
     // Get an array from the document as a JSON string
-    database.getDocument("1002")?.getArray("features")?.apply {
+    collection.getDocument("1002")?.getArray("features")?.apply {
         // Print its elements
         for (feature in toList()) {
             println("$feature")
@@ -545,7 +591,7 @@ Note that the blob object must first be saved to the database (generating the re
 !!! example "<span id='example-13'>Example 13. Blobs as JSON strings</span>"
 
     ```kotlin
-    val thisBlob = database.getDocument("thisdoc-id")!!.toMap()
+    val thisBlob = collection.getDocument("thisdoc-id")!!.toMap()
     if (!Blob.isBlob(thisBlob)) {
         return
     }
@@ -599,15 +645,15 @@ Additionally, you can:
     ```kotlin
     QueryBuilder
         .select(SelectResult.expression(Meta.id).`as`("metaId"))
-        .from(DataSource.database(database))
+        .from(DataSource.collection(srcColl))
         .execute()
         .forEach {
             it.getString("metaId")?.let { thisId ->
-                database.getDocument(thisId)?.toJSON()?.let { json ->
+                srcColl.getDocument(thisId)?.toJSON()?.let { json ->
                     println("JSON String = $json")
                     val hotelFromJSON = MutableDocument(thisId, json)
-                    database.save(hotelFromJSON)
-                    database.getDocument(thisId)?.toMap()?.forEach { e ->
+                    dstColl.save(hotelFromJSON)
+                    dstColl.getDocument(thisId)?.toMap()?.forEach { e ->
                         println("${e.key} => ${e.value}")
                     }
                 }
@@ -637,7 +683,7 @@ https://github.com/Kotlin/kotlinx.serialization).
             SelectResult.property("type"),
             SelectResult.property("name")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
 
     query.execute().use { rs ->
         rs.forEach {
