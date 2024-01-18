@@ -127,7 +127,7 @@ You can configure a Peer-to-Peer synchronization with just a short amount of cod
     ```kotlin
     val listener = URLEndpointListener(
         URLEndpointListenerConfigurationFactory.newConfig(
-            database = database,
+            collections = db.collections,
             authenticator = ListenerPasswordAuthenticator { user, pwd ->
                 (user == "daniel") && (pwd.concatToString() == "123")
             }
@@ -151,7 +151,7 @@ You can configure a Peer-to-Peer synchronization with just a short amount of cod
     val listenerEndpoint = URLEndpoint("wss://10.0.2.2:4984/db") 
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
+            collections = mapOf(collections to null),
             target = listenerEndpoint,
             authenticator = BasicAuthenticator("valid.user", "valid.password.string".toCharArray()),
             acceptOnlySelfSignedServerCertificate = true
@@ -163,13 +163,13 @@ You can configure a Peer-to-Peer synchronization with just a short amount of cod
 
 1. Get the listener’s endpoint. Here we use a known URL, but it could be a URL established dynamically in a discovery
    phase.
-2. Initialize the replicator configuration with the database to be synchronized and the listener it is to synchronize
-   with
-3. Configure the replicator to expect a self-signed certificate from the listener
+2. Initialize the replicator configuration with the collections of the database to be synchronized and the listener it
+   is to synchronize with.
+3. Configure the replicator to expect a self-signed certificate from the listener.
 4. Configure the replicator to present basic authentication credentials if the listener prompts for them (client
-   authentication is optional)
-5. Initialize the replicator
-6. Start the replicator
+   authentication is optional).
+5. Initialize the replicator.
+6. Start the replicator.
 
 ## API Highlights
 

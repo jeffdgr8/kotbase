@@ -7,7 +7,7 @@ _How to set up a replicator to connect with a listener and replicate changes usi
     To use cleartext, un-encrypted, network traffic (`http://` and-or `ws://`), include
     `android:usesCleartextTraffic="true"` in the `application` element of the manifest as shown on
     [developer.android.com](https://developer.android.com/training/articles/security-config#CleartextTrafficPermitted).  
-    **This not recommended in production.**
+    **This is not recommended in production.**
 
 !!! warning "Use Background Threads"
 
@@ -54,9 +54,13 @@ You should configure and initialize a replicator for each Couchbase Lite databas
     val repl = Replicator(
         // initialize the replicator configuration
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
-    
             target = URLEndpoint("wss://listener.com:8954"),
+    
+            collections = mapOf(
+                collections to CollectionConfiguration(
+                    conflictResolver = ReplicatorConfiguration.DEFAULT_CONFLICT_RESOLVER
+                )
+            ),
     
             // Set replicator type
             type = ReplicatorType.PUSH_AND_PULL,
@@ -70,9 +74,7 @@ You should configure and initialize a replicator for each Couchbase Lite databas
     
             // Configure the credentials the
             // client will provide if prompted
-            authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray()),
-    
-            conflictResolver = ReplicatorConfiguration.DEFAULT_CONFLICT_RESOLVER
+            authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
         )
     )
     
@@ -91,15 +93,18 @@ You should configure and initialize a replicator for each Couchbase Lite databas
     this.token = token
     ```
 
-1. Configure how the client will authenticate the server. Here we say connect only to servers presenting a self-signed
+1. Get the listener’s endpoint. Here we use a known URL, but it could be a URL established dynamically in a discovery
+   phase.
+2. Identify the collections from the local database to be used.
+3. Configure how the replication should perform [Conflict Resolution](#conflict-resolution).
+4. Configure how the client will authenticate the server. Here we say connect only to servers presenting a self-signed
    certificate. By default, clients accept only servers presenting certificates that can be verified using the OS
    bundled Root CA Certificates — see [Authenticating the Listener](#authenticating-the-listener).
-2. Configure the credentials the client will present to the server. Here we say to provide _Basic Authentication_
+5. Configure the credentials the client will present to the server. Here we say to provide _Basic Authentication_
    credentials. Other options are available — see [Example 7](#example-7).
-3. Configure how the replication should perform [Conflict Resolution](#conflict-resolution).
-4. Initialize the replicator using your configuration object.
-5. Register an observer, which will notify you of changes to the replication status.
-6. Start the replicator.
+6. Initialize the replicator using your configuration object.
+7. Register an observer, which will notify you of changes to the replication status.
+8. Start the replicator.
 
 ## Device Discovery
 
@@ -123,28 +128,32 @@ as [Network Service Discovery on Android](https://developer.android.com/training
 Initialize and define the replication configuration with local and remote database locations using the
 [`ReplicatorConfiguration`](/api/couchbase-lite-ee/kotbase/-replicator-configuration/) object.
 
-The constructor provides:
+The constructor provides the server’s URL (including the port number and the name of the remote database to sync with).
 
-* The name of the local database to be sync’d
-* The server’s URL (including the port number and the name of the remote database to sync with)<br><br>
-  It is expected that the app will identify the IP address and URL and append the remote database name to the URL
-  endpoint, producing for example: `wss://10.0.2.2:4984/travel-sample`<br><br>
-  The URL scheme for WebSocket URLs uses `ws:` (non-TLS) or `wss:` (SSL/TLS) prefixes.
+It is expected that the app will identify the IP address and URL and append the remote database name to the URL
+endpoint, producing for example: `wss://10.0.2.2:4984/travel-sample`.
+
+The URL scheme for WebSocket URLs uses `ws:` (non-TLS) or `wss:` (SSL/TLS) prefixes.
 
 !!! note
 
     On the Android platform, to use cleartext, un-encrypted, network traffic (`http://` and-or `ws://`), include
     `android:usesCleartextTraffic="true"` in the `application` element of the manifest as shown on
     [developer.android.com](https://developer.android.com/training/articles/security-config#CleartextTrafficPermitted).  
-    **This not recommended in production.**
+    **This is not recommended in production.**
+
+Add the database collections to sync along with the [`CollectionConfiguration`](
+/api/couchbase-lite-ee/kotbase/-collection-configuration/) for each to the `ReplicatorConfiguration`. Multiple
+collections can use the same configuration, or each their own as needed. A null configuration will use the default
+configuration values, found in [`Defaults.Replicator`](/api/couchbase-lite-ee/kotbase/-defaults/-replicator/).
 
 !!! example "Example 2. Add Target to Configuration"
 
     ```kotlin
     // initialize the replicator configuration
     val config = ReplicatorConfigurationFactory.newConfig(
-        database = database,
         target = URLEndpoint("wss://10.0.2.2:8954/travel-sample"),
+        collections = mapOf(collections to null)
     )
     ```
 
@@ -212,8 +221,8 @@ When necessary you can adjust any or all of those configurable values — see [E
     ```kotlin
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
+            collections = mapOf(collections to null),
             //  other config params as required . .
             heartbeat = 150, 
             maxAttempts = 20,
@@ -359,9 +368,9 @@ starting the replicator running using [`start()`](/api/couchbase-lite-ee/kotbase
     val repl = Replicator(
         // initialize the replicator configuration
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
+            target = URLEndpoint("wss://listener.com:8954"),
     
-            target = URLEndpoint("wss://listener.com:8954"), 
+            collections = mapOf(collections to null),
     
             // Set replicator type
             type = ReplicatorType.PUSH_AND_PULL,
@@ -546,13 +555,13 @@ methods:
     ```kotlin
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
+            collections = mapOf(setOf(collection) to null),
             type = ReplicatorType.PUSH
         )
     )
     
-    val pendingDocs = repl.getPendingDocumentIds()
+    val pendingDocs = repl.getPendingDocumentIds(collection)
     
     // iterate and report on previously
     // retrieved pending docIds 'list'
