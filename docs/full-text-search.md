@@ -19,7 +19,7 @@ SQL++ provides a configuration object to define Full Text Search indexes — `Fu
 !!! example "Example 1. Using SQL++'s FullTextIndexConfiguration"
 
     ```kotlin
-    database.createIndex(
+    collection.createIndex(
         "overviewFTSIndex",
         FullTextIndexConfiguration("overview")
     )
@@ -59,7 +59,7 @@ The following example creates an FTS index on the `overview` property.
 !!! example "Example 3. Using the IndexBuilder method"
 
     ```kotlin
-    database.createIndex(
+    collection.createIndex(
         "overviewFTSIndex",
         IndexBuilder.fullTextIndex(FullTextIndexItem.property("overview"))
     )
@@ -79,7 +79,7 @@ The following example finds all hotels mentioning _Michigan_ in their `overview`
             SelectResult.expression(Meta.id),
             SelectResult.property("overview")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(FullTextFunction.match("overviewFTSIndex", "michigan"))
     
     ftsQuery.execute().use { rs ->
