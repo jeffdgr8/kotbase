@@ -183,13 +183,11 @@ the default conflict resolution will be applied.
 !!! example "Example 3. A Conflict Resolver"
 
     ```kotlin
+    val collectionConfig = CollectionConfigurationFactory.newConfig(conflictResolver = localWinsResolver)
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
-            conflictResolver = { conflict ->
-                conflict.localDocument
-            }
+            collections = mapOf(srcCollections to collectionConfig)
         )
     )
     
@@ -210,8 +208,8 @@ try to update a document that’s been updated since you read it.
 
     1. Your code reads the document’s current properties, and constructs a modified copy to save.
     2. Another thread (perhaps the replicator) updates the document, creating a new revision with different properties.
-    3. Your code updates the document with its modified properties, for example using [`Database.save(MutableDocument)`](
-       /api/couchbase-lite-ee/kotbase/-database/save.html).
+    3. Your code updates the document with its modified properties, for example using
+       [`Collection.save(MutableDocument)`](/api/couchbase-lite-ee/kotbase/-collection/save.html).
 
 ### Automatic Conflict Resolution
 
@@ -220,13 +218,13 @@ database. The Last-Write-Win (LWW) algorithm is used to pick the winning update.
 would be overwritten and lost.
 
 If the probability of update conflicts is high in your app, and you wish to avoid the possibility of overwritten data,
-the [`save()`](/api/couchbase-lite-ee/kotbase/-database/save.html) and [`delete()`](
-/api/couchbase-lite-ee/kotbase/-database/delete.html) APIs provide additional method signatures with concurrency
+the [`save()`](/api/couchbase-lite-ee/kotbase/-collection/save.html) and [`delete()`](
+/api/couchbase-lite-ee/kotbase/-collection/delete.html) APIs provide additional method signatures with concurrency
 control:
 
 **Save operations**
 
-[`Database.save(MutableDocument, ConcurrencyControl)`](/api/couchbase-lite-ee/kotbase/-database/save.html) —
+[`Collection.save(MutableDocument, ConcurrencyControl)`](/api/couchbase-lite-ee/kotbase/-collection/save.html) —
 attempts to save the document with a concurrency control.
 
 The [`ConcurrencyControl`](/api/couchbase-lite-ee/kotbase/-concurrency-control/) parameter has two possible values:
@@ -241,9 +239,9 @@ The [`ConcurrencyControl`](/api/couchbase-lite-ee/kotbase/-concurrency-control/)
 As with save operations, delete operations also have two method signatures, which specify how to handle a possible
 conflict:
 
-* [`Database.delete(Document)`](/api/couchbase-lite-ee/kotbase/-database/delete.html): The last write will win if
+* [`Collection.delete(Document)`](/api/couchbase-lite-ee/kotbase/-collection/delete.html): The last write will win if
   there is a conflict.
-* [`Database.delete(Document, ConcurrencyControl)`](/api/couchbase-lite-ee/kotbase/-database/delete.html): attempts
+* [`Collection.delete(Document, ConcurrencyControl)`](/api/couchbase-lite-ee/kotbase/-collection/delete.html): attempts
   to delete the document with a concurrency control, with the same options described above.
 
 ### Custom Conflict Handlers
@@ -252,7 +250,7 @@ Developers can hook a conflict handler when saving a document, so they can easil
 method call.
 
 To implement custom conflict resolution when saving a document, apps must call the save method with a conflict handler
-block ([`Database.save(MutableDocument, ConflictHandler)`](/api/couchbase-lite-ee/kotbase/-database/save.html)).
+block ([`Collection.save(MutableDocument, ConflictHandler)`](/api/couchbase-lite-ee/kotbase/-collection/save.html)).
 
 The following code snippet shows an example of merging properties from the existing document (`curDoc`) into the one
 being saved (`newDoc`). In the event of conflicting keys, it will pick the key value from `newDoc`.
@@ -260,9 +258,9 @@ being saved (`newDoc`). In the event of conflicting keys, it will pick the key v
 !!! example "Example 5. Merging document properties"
 
     ```kotlin
-    val mutableDocument = database.getDocument("xyz")?.toMutable() ?: return
+    val mutableDocument = collection.getDocument("xyz")?.toMutable() ?: return
     mutableDocument.setString("name", "apples")
-    database.save(mutableDocument) { newDoc, curDoc ->
+    collection.save(mutableDocument) { newDoc, curDoc ->
         if (curDoc == null) {
             return@save false
         }

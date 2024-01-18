@@ -73,7 +73,7 @@ receiver’s values with the passed parameters.
     ```kotlin
     val replicator = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
+            collections = mapOf(db.collections to null),
             target = URLEndpoint("ws://localhost:4984/getting-started-db"),
             type = ReplicatorType.PUSH_AND_PULL,
             authenticator = BasicAuthenticator("sync-gateway", "password".toCharArray())
@@ -85,20 +85,15 @@ receiver’s values with the passed parameters.
 
     ```kotlin
     val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
-    
-    fun ReplicatorConfiguration?.newConfig(
-        database: Database? = null,
+
+    public fun ReplicatorConfiguration?.newConfig(
         target: Endpoint? = null,
+        collections: Map<out kotlin.collections.Collection<Collection>, CollectionConfiguration?>? = null,
         type: ReplicatorType? = null,
         continuous: Boolean? = null,
         authenticator: Authenticator? = null,
         headers: Map<String, String>? = null,
         pinnedServerCertificate: ByteArray? = null,
-        channels: List<String>? = null,
-        documentIDs: List<String>? = null,
-        pushFilter: ReplicationFilter? = null,
-        pullFilter: ReplicationFilter? = null,
-        conflictResolver: ConflictResolver? = null,
         maxAttempts: Int? = null,
         maxAttemptWaitTime: Int? = null,
         heartbeat: Int? = null,
@@ -117,7 +112,7 @@ overriding the receiver’s values with the passed parameters.
 === "In Use"
 
     ```kotlin
-    database.createIndex(
+    collection.createIndex(
         "overviewFTSIndex",
         FullTextIndexConfigurationFactory.newConfig("overview")
     )
@@ -144,7 +139,7 @@ receiver’s values with the passed parameters.
 === "In Use"
 
     ```kotlin
-    database.createIndex(
+    collection.createIndex(
         "TypeNameIndex",
         ValueIndexConfigurationFactory.newConfig("type", "name")
     )
@@ -195,16 +190,16 @@ values with the passed parameters.
 
 These wrappers use [Flows](https://kotlinlang.org/docs/flow.html) to monitor for changes.
 
-### Database Change Flow
+### Collection Change Flow
 
-Use the [`Database.databaseChangeFlow()`](/api/couchbase-lite-ee/kotbase/database-change-flow.html) to monitor database
-change events.
+Use the [`Collection.collectionChangeFlow()`](/api/couchbase-lite-ee/kotbase/collection-change-flow.html) to monitor
+collection change events.
 
 === "In Use"
 
     ```kotlin
     scope.launch {
-        database.databaseChangeFlow()
+        collection.collectionChangeFlow()
             .map { it.documentIDs }
             .collect { docIds: List<String> ->
                 // handle changes
@@ -215,21 +210,21 @@ change events.
 === "Definition"
 
     ```kotlin
-    fun Database.databaseChangeFlow(
+    fun Collection.collectionChangeFlow(
         coroutineContext: CoroutineContext? = null
-    ): Flow<DatabaseChange>
+    ): Flow<CollectionChange>
     ```
 
 ### Document Change Flow
 
-Use [`Database.documentChangeFlow()`]() to monitor changes to a document.
+Use [`Collection.documentChangeFlow()`](/api/couchbase-lite-ee/kotbase/document-change-flow.html) to monitor changes to a document.
 
 === "In Use"
 
     ```kotlin
     scope.launch {
-        database.documentChangeFlow("1001")
-            .map { it.database.getDocument(it.documentID)?.getString("lastModified") }
+        collection.documentChangeFlow("1001")
+            .map { it.collection.getDocument(it.documentID)?.getString("lastModified") }
             .collect { lastModified: String? ->
                 // handle document changes
             }
@@ -239,7 +234,7 @@ Use [`Database.documentChangeFlow()`]() to monitor changes to a document.
 === "Definition"
 
     ```kotlin
-    fun Database.documentChangeFlow(
+    fun Collection.documentChangeFlow(
         documentId: String, 
         coroutineContext: CoroutineContext? = null
     ): Flow<DocumentChange>
@@ -328,9 +323,9 @@ Use [`Query.queryChangeFlow()`](/api/couchbase-lite-ee/kotbase/query-change-flow
 
 Kotbase uses Kotlin's [indexed access operator](
 https://kotlinlang.org/docs/operator-overloading.html#indexed-access-operator) to implement Couchbase Lite's
-[`Fragment`](/api/couchbase-lite-ee/kotbase/-fragment/) subscript APIs for `Database`, `Document`, `Array`,
-`Dictionary`, and `Result`, for concise, type-safe, and null-safe access to arbitrary values in a nested JSON object.
-`MutableDocument`, `MutableArray`, and `MutableDictionary` also support the [`MutableFragment`](
+[`Fragment`](/api/couchbase-lite-ee/kotbase/-fragment/) subscript APIs for `Database`, `Collection`, `Document`,
+`Array`, `Dictionary`, and `Result`, for concise, type-safe, and null-safe access to arbitrary values in a nested JSON
+object. `MutableDocument`, `MutableArray`, and `MutableDictionary` also support the [`MutableFragment`](
 /api/couchbase-lite-ee/kotbase/-mutable-fragment/) APIs for mutating values.
 
 Supported types can [get `Fragment` or `MutableFragment`](/api/couchbase-lite-ee/kotbase/get.html) objects by either
@@ -344,14 +339,15 @@ Finally, the typed optional value at the end of a key path can be accessed or se
 
     ```kotlin
     val db = Database("db")
-    val doc = db["doc-id"]         // DocumentFragment
+    val coll = db.defaultCollection
+    val doc = coll["doc-id"]       // DocumentFragment
     doc.exists                     // true or false
     doc.document                   // "doc-id" Document from Database
     doc["array"].array             // Array value from "array" key
     doc["array"][0].string         // String value from first Array item
     doc["dict"].dictionary         // Dictionary value from "dict" key
     doc["dict"]["num"].int         // Int value from Dictionary "num" key
-    db["milk"]["exp"].date         // Instant value from "exp" key from "milk" Document
+    coll["milk"]["exp"].date       // Instant value from "exp" key from "milk" Document
     val newDoc = MutableDocument("new-id")
     newDoc["name"].value = "Sally" // set "name" value
     ```
