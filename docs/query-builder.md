@@ -30,10 +30,10 @@ https://docs.couchbase.com/server/current/learn/data/n1ql-versus-sql.html).
 | Component                                 | Description                                                                                                            |
 |:------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------|
 | [SELECT statement](#select-statement)     | The document properties that will be returned in the result set                                                        |
-| FROM                                      | The data source to query the documents from - the collection of the database.                                          |
+| FROM                                      | The data source to query the documents from — the collection of the database                                           |
 | [WHERE statement](#where-statement)       | The query criteria<br>The `SELECT`ed properties of documents matching this criteria will be returned in the result set |
 | [JOIN statement](#join-statement)         | The criteria for joining multiple documents                                                                            |
-| [GROUP BY statement](#groub-by-statement) | The criteria used to group returned items in the result set                                                            |
+| [GROUP BY statement](#group-by-statement) | The criteria used to group returned items in the result set                                                            |
 | [ORDER BY statement](#order-by-statement) | The criteria used to order the items in the result set                                                                 |
 
 !!! tip
@@ -41,6 +41,12 @@ https://docs.couchbase.com/server/current/learn/data/n1ql-versus-sql.html).
     We recommend working through the query section of the [Couchbase Mobile Workshop](
     https://docs.couchbase.com/tutorials/mobile-travel-tutorial/introduction.html) tutorial as a good way to build your
     skills in this area.
+
+!!! tip
+
+    The examples in the documentation use the official Couchbase Lite query builder APIs, available in the Kotbase core
+    artifacts. Many queries can take advantage of the concise `infix` function query builder APIs available in the
+    [Kotbase KTX extensions](ktx.md#querybuilder-extensions).
 
 ## SELECT statement
 
@@ -59,12 +65,12 @@ Use the `SelectResult.all()` method to return all the properties of selected doc
 
 !!! example "<span id='example-2'>Example 2. Using SELECT to Retrieve All Properties</span>"
 
-    This query shows how to retrieve all properties from all documents in your database.
+    This query shows how to retrieve all properties from all documents in a collection.
 
     ```kotlin
     val queryAll = QueryBuilder
         .select(SelectResult.all())
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(Expression.property("type").equalTo(Expression.string("hotel")))
     ```
 
@@ -118,7 +124,7 @@ in the select statement of your query — see [Example 4](#example-4).
             SelectResult.property("name"),
             SelectResult.property("type")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(Expression.property("type").equalTo(Expression.string("hotel")))
         .orderBy(Ordering.expression(Meta.id))
     
@@ -188,7 +194,7 @@ where the `type` property equals "hotel".
     ```kotlin
     val query = QueryBuilder
         .select(SelectResult.all())
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(Expression.property("type").equalTo(Expression.string("hotel")))
         .limit(Expression.intValue(10))
     
@@ -229,7 +235,7 @@ where the `public_likes` array property contains a value equal to "Armani Langwo
             SelectResult.property("name"),
             SelectResult.property("public_likes")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
             Expression.property("type").equalTo(Expression.string("hotel"))
                 .and(
@@ -255,7 +261,7 @@ for documents whose `first`, `last`, or `username` property value equals "Armani
 
     ```kotlin
     val query = QueryBuilder.select(SelectResult.all())
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
             Expression.string("Armani").`in`(
                 Expression.property("first"),
@@ -299,7 +305,7 @@ how it is capitalized (so, it selects "royal engineers museum", "ROYAL ENGINEERS
             SelectResult.property("country"),
             SelectResult.property("name")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
             Expression.property("type").equalTo(Expression.string("landmark"))
                 .and(
@@ -337,7 +343,7 @@ Notice that the matches may span word boundaries.
             SelectResult.property("country"),
             SelectResult.property("name")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
             Expression.property("type").equalTo(Expression.string("landmark"))
                 .and(
@@ -369,7 +375,7 @@ string that begins with "eng" followed by exactly 4 wildcard characters and endi
             SelectResult.property("country"),
             SelectResult.property("name")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
             Expression.property("type").equalTo(Expression.string("landmark"))
                 .and(
@@ -391,7 +397,7 @@ fuzziness in your search string — see the code shown in [Example 12](#example-
 
 !!! note
 
-    The regex operator is case sensitive, use `upper` or `lower` functions to mitigate this if required.
+    The `regex` operator is case sensitive, use `upper` or `lower` functions to mitigate this if required.
 
 !!! example "<span id='example-12'>Example 12. Using Regular Expressions</span>"
 
@@ -405,7 +411,7 @@ fuzziness in your search string — see the code shown in [Example 12](#example-
             SelectResult.property("country"),
             SelectResult.property("name")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
             Expression.property("type").equalTo(Expression.string("landmark"))
                 .and(
@@ -439,7 +445,7 @@ You can query documents that have been deleted (tombstones) as shown in [Example
     // Query documents that have been deleted
     val query = QueryBuilder
         .select(SelectResult.expression(Meta.id))
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(Meta.deleted)
     ```
 
@@ -463,9 +469,9 @@ The `JOIN` clause enables you to select data from multiple documents that have b
             SelectResult.expression(Expression.property("stops").from("route")),
             SelectResult.expression(Expression.property("airline").from("route"))
         )
-        .from(DataSource.database(database).`as`("airline"))
+        .from(DataSource.collection(airlineCollection).`as`("airline"))
         .join(
-            Join.join(DataSource.database(database).`as`("route"))
+            Join.join(DataSource.collection(routeCollection).`as`("route"))
                 .on(
                     Meta.id.from("airline")
                         .equalTo(Expression.property("airlineid").from("route"))
@@ -518,7 +524,7 @@ country and timezone.
             SelectResult.property("country"),
             SelectResult.property("tz")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
             Expression.property("type").equalTo(Expression.string("airport"))
                 .and(Expression.property("geo.alt").greaterThanOrEqualTo(Expression.intValue(300)))
@@ -563,7 +569,7 @@ It is possible to sort the results of a query based on a given expression result
             SelectResult.expression(Meta.id),
             SelectResult.property("name")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(Expression.property("type").equalTo(Expression.string("hotel")))
         .orderBy(Ordering.property("name").ascending())
         .limit(Expression.intValue(10))
@@ -652,7 +658,7 @@ criteria — see [Example 17](#example-17).
 
     ```kotlin
     val query = QueryBuilder.select(SelectResult.all())
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
     ```
 
 #### Result Set Format
@@ -740,7 +746,7 @@ see [Example 20](#example-20).
             SelectResult.property("country"),
             SelectResult.property("name")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
     ```
 
 #### Result Set Format
@@ -795,7 +801,7 @@ of memory and-or processing time — see [Example 23](#example-23).
         .select(
             SelectResult.expression(Meta.id).`as`("hotelId")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
     ```
 
 #### Result Set Format
@@ -831,7 +837,7 @@ database — see [Example 25](#example-25).
             it.getString("hotelId")?.let { hotelId ->
                 println("hotel id -> $hotelId")
                 // use the ID to get the document from the database
-                val doc = database.getDocument(hotelId)
+                val doc = collection.getDocument(hotelId)
             }
         }
     }
@@ -848,7 +854,7 @@ database — see [Example 25](#example-25).
         .select(
             SelectResult.expression(Function.count(Expression.string("*"))).`as`("mycount")
         ) 
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
     ```
 
     The alias name, `mycount`, is used to access the count value.
@@ -897,7 +903,7 @@ feature, to return a defined number of results starting from a given offset — 
     val thisLimit = 20
     val query = QueryBuilder
         .select(SelectResult.all())
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .limit(
             Expression.intValue(thisLimit),
             Expression.intValue(thisOffset)
@@ -905,6 +911,13 @@ feature, to return a defined number of results starting from a given offset — 
     ```
 
     Return a maximum of limit results starting from result number offset.
+
+!!! tip
+
+    The [Kotbase paging extensions](paging.md) provide a [`PagingSource`](
+    https://developer.android.com/reference/kotlin/androidx/paging/PagingSource) to use with [AndroidX Paging](
+    https://developer.android.com/topic/libraries/architecture/paging/v3-overview) to assist loading and displaying
+    pages of data in your app.
 
 !!! tip
 
@@ -934,7 +947,7 @@ working example using [kotlinx-serialization](https://github.com/Kotlin/kotlinx.
             SelectResult.property("type"),
             SelectResult.property("name")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
 
     query.execute().use { rs ->
         rs.forEach {
@@ -1071,11 +1084,11 @@ predictive results and creates a value index from that cache when the predictive
     Here we create a predictive index from the `label` value of the prediction result.
 
     ```kotlin
-    val inputMap: MutableMap<String, Any> = mutableMapOf()
-    inputMap["numbers"] = Expression.property("photo")
-    val input: Expression = Expression.map(inputMap)
-    val index: PredictiveIndex = IndexBuilder.predictiveIndex("ImageClassifier", input, null)
-    database.createIndex("predictive-index-image-classifier", index)
+    val inputMap: Map<String, Any?> = mapOf("numbers" to Expression.property("photo"))
+    collection.createIndex(
+        "predictive-index-image-classifier",
+        IndexBuilder.predictiveIndex("ImageClassifier", Expression.map(inputMap), null)
+    )
     ```
 
 ### Run a Prediction Query
@@ -1085,21 +1098,26 @@ The code below creates a query that calls the prediction function to return the 
 !!! example "Example 35. Creating a value index"
 
     ```kotlin
+    val inputMap: Map<String, Any?> = mapOf("photo" to Expression.property("photo"))
     val prediction: PredictionFunction = Function.prediction(
         ImageClassifierModel.name,
-        Expression.map(mutableMapOf("photo" to Expression.property("photo")) as Map<String, Any>?) 
+        Expression.map(inputMap)
     )
     
-    val rs = QueryBuilder
+    val query = QueryBuilder
         .select(SelectResult.all())
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
-            prediction.property("label").equalTo(Expression.string("car"))
-                .and(prediction.property("probability").greaterThanOrEqualTo(Expression.doubleValue(0.8)))
+            prediction.propertyPath("label").equalTo(Expression.string("car"))
+                .and(
+                    prediction.propertyPath("probability")
+                        .greaterThanOrEqualTo(Expression.doubleValue(0.8))
+                )
         )
-        .execute()
     
-    println("Number of rows: ${rs.allResults().size}")
+    query.execute().use {
+        println("Number of rows: ${it.allResults().size}")
+    }
     ```
 
     The `PredictiveModel.predict()` method returns a constructed `PredictionFunction` object which can be used further
