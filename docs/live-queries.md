@@ -18,7 +18,7 @@ change is detected the query automatically runs, and posts the new query result 
     ```kotlin
     val query = QueryBuilder
         .select(SelectResult.all())
-        .from(DataSource.database(database)) 
+        .from(DataSource.collection(collection)) 
     
     // Adds a query change listener.
     // Changes will be posted on the main queue.
@@ -39,7 +39,7 @@ change is detected the query automatically runs, and posts the new query result 
 !!! example "<span id='example-2'>Example 2. Stop a Live Query</span>"
 
     ```kotlin
-    query.removeChangeListener(token)
+    token.remove()
     ```
 
 Here we use the change lister token from [Example 1](#example-1) to remove the listener. Doing so stops the live query.

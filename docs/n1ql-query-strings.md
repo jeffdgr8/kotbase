@@ -153,10 +153,19 @@ FROM dataSource
       (optional JOIN joinClause )
 ```
 
+### Datasource
+
+A datasource can be:
+
+* < database-name > : default collection
+* _ (underscore) : default collection
+* < scope-name >.< collection-name > : a collection in a scope
+* < collection-name > : a collection in the default scope
+
 ### Arguments
 
-1. Here `dataSource` is the database name against which the query is to run. Use `AS` to give the database an alias you
-   can use within the query.  
+1. Here `dataSource` is the database name against which the query is to run or the <scope>.<collection>. Use `AS` to
+   give the database an alias you can use within the query.  
    To use the current database, without specifying a name, use `_` as the datasource.
 2. `JOIN joinclause` — use this optional argument to link data sources — see [`JOIN` statement](#join-statement).
 
@@ -166,6 +175,7 @@ FROM dataSource
 
     ```sql
     SELECT name FROM db
+    SELECT name FROM scope.collection
     SELECT store.name FROM db AS store
     SELECT store.name FROM db store
     SELECT name FROM _

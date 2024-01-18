@@ -14,7 +14,7 @@ embed the call inside your app (see [Example 1](#example-1)), or use it interact
     ```kotlin
     val query = QueryBuilder
         .select(SelectResult.all())
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(Expression.property("type").equalTo(Expression.string("university")))
         .groupBy(Expression.property("country"))
         .orderBy(Ordering.property("name").descending()) 
@@ -185,7 +185,7 @@ method of `Scan Table`.
     ```kotlin
     val query = QueryBuilder
         .select(SelectResult.all())
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
         .where(
             Expression.property("type").like(Expression.string("%hotel%"))
                 .and(Expression.property("name").like(Expression.string("%royal%")))
@@ -235,7 +235,7 @@ function on an indexed property.
 ```kotlin title="Query"
 val query = QueryBuilder
     .select(SelectResult.all())
-    .from(DataSource.database(database))
+    .from(DataSource.collection(collection))
     .where(Function.lower(Expression.property("type")).equalTo(Expression.string("hotel")))
 println(query.explain())
 ```
