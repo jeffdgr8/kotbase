@@ -43,7 +43,7 @@ The code to create the index will look something like this:
 !!! example "<span id='example-2'>Example 2. Create index</span>"
 
     ```kotlin
-    database.createIndex(
+    collection.createIndex(
         "TypeNameIndex",
         ValueIndexConfiguration("type", "name")
     )
@@ -60,7 +60,7 @@ The code to create the index will look something like this:
 !!! example "Example 3. Create index with QueryBuilder"
 
     ```kotlin
-    database.createIndex(
+    collection.createIndex(
         "TypeNameIndex",
         IndexBuilder.valueIndex(
             ValueIndexItem.property("type"),
