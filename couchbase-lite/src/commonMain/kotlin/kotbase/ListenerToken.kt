@@ -21,7 +21,13 @@ package kotbase
 @OptIn(ExperimentalStdlibApi::class)
 public expect sealed class ListenerToken : AutoCloseable {
 
+    /**
+     * Remove the change listener.
+     */
     override fun close()
 
+    /**
+     * Remove the change listener.
+     */
     public fun remove()
 }
