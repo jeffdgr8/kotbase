@@ -169,7 +169,7 @@ Access the required document properties by retrieving the document from the data
             it.getString("id")?.let { hotelId ->
                 println("hotel id -> $hotelId")
                 // use the ID to get the document from the database
-                val doc = database.getDocument(hotelId)
+                val doc = collection.getDocument(hotelId)
             }
         }
     }
@@ -214,7 +214,7 @@ working example using [kotlinx-serialization](https://github.com/Kotlin/kotlinx.
             SelectResult.property("type"),
             SelectResult.property("name")
         )
-        .from(DataSource.database(database))
+        .from(DataSource.collection(collection))
 
     query.execute().use { rs ->
         rs.forEach {
