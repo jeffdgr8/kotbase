@@ -7,7 +7,7 @@ _How to set up a listener to accept a replicator connection and sync using peer-
     To use cleartext, un-encrypted, network traffic (`http://` and-or `ws://`), include
     `android:usesCleartextTraffic="true"` in the `application` element of the manifest as shown on
     [developer.android.com](https://developer.android.com/training/articles/security-config#CleartextTrafficPermitted).  
-    **This not recommended in production.**
+    **This is not recommended in production.**
 
 !!! warning "iOS Restrictions"
 
@@ -59,7 +59,7 @@ configuration process.
     ```kotlin
     val listener = URLEndpointListener(
         URLEndpointListenerConfigurationFactory.newConfig(
-            database = database,
+            collections = collections,
             port = 55990,
             networkInterface = "wlan0",
     
@@ -83,8 +83,8 @@ configuration process.
     listener.start()
     ```
 
-1. Identify the local database to be used — see [Initialize the Listener Configuration
-   ](#initialize-the-listener-configuration)
+1. Identify the collections from the local database to be used — see [Initialize the Listener
+   Configuration](#initialize-the-listener-configuration)
 2. Optionally, choose a port to use. By default, the system will automatically assign a port — to override this, see
    [Set Port and Network Interface](#set-port-and-network-interface)
 3. Optionally, choose a network interface to use. By default, the system will listen on all network interfaces — to
@@ -116,8 +116,8 @@ the Passive Peer has authenticated and accepted an Active Peer’s invitation.
 
 ## Initialize the Listener Configuration
 
-Initialize the listener configuration with the local database — see [Example 2](#example-2). All other configuration
-values take their default setting.
+Initialize the listener configuration with the collections to sync from the local database — see [Example 
+2](#example-2). All other configuration values take their default setting.
 
 Each listener instance serves one Couchbase Lite database. Couchbase sets no hard limit on the number of listeners you
 can initialize.
@@ -125,7 +125,7 @@ can initialize.
 !!! example "<span id='example-2'>Example 2. Specify Local Database</span>"
 
     ```kotlin
-    database = database,
+    collections = collections,
     ```
 
 Set the local database using the [`URLEndpointListenerConfiguration`](
@@ -199,7 +199,7 @@ TLS Identity — see [Configure TLS Identity for Listener](#configure-tls-identi
     On the Android platform, to use cleartext, un-encrypted, network traffic (`http://` and-or `ws://`), include
     `android:usesCleartextTraffic="true"` in the `application` element of the manifest as shown on
     [developer.android.com](https://developer.android.com/training/articles/security-config#CleartextTrafficPermitted).  
-    **This not recommended in production.**
+    **This is not recommended in production.**
 
 You can use [`URLEndpointListenerConfiguration`](
 /api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/)'s [`isTlsDisabled`](
@@ -441,7 +441,7 @@ There are two ways to authenticate a client:
     val listener = URLEndpointListener(
         URLEndpointListenerConfigurationFactory.newConfig(
             // get the identity 
-            database = database,
+            collections = collections,
             identity = validId,
             authenticator = ListenerCertificateAuthenticator(validId.certs)
         )
@@ -513,7 +513,7 @@ running — see [Example 13](#example-13).
     // Initialize the listener
     val listener = URLEndpointListener(
         URLEndpointListenerConfigurationFactory.newConfig(
-            database = database,
+            collections = collections,
             port = 55990,
             networkInterface = "wlan0",
     

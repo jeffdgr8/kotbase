@@ -7,7 +7,7 @@ _Couchbase Lite — Synchronizing data changes between local and remote database
     To use cleartext, un-encrypted, network traffic (`http://` and-or `ws://`), include
     `android:usesCleartextTraffic="true"` in the `application` element of the manifest as shown on
     [developer.android.com](https://developer.android.com/training/articles/security-config#CleartextTrafficPermitted).  
-    **This not recommended in production.**
+    **This is not recommended in production.**
 
 !!! warning "Use Background Threads"
 
@@ -36,6 +36,24 @@ and remote databases into sync.
 
 Subsequent sections provide additional details and examples for the main configuration options.
 
+## Replication Concepts
+
+Couchbase Lite allows for one database for each application running on the mobile device. This database can contain one
+or more scopes. Each scope can contain one or more collections.
+
+To learn about Scopes and Collections, see [Databases](databases.md).
+
+You can set up a replication scheme across these data levels:
+
+**Database**  
+The `_default` collection is synced.
+
+**Collection**  
+A specific collection or a set of collections is synced.
+
+As part of the syncing setup, the Sync Gateway has to map the Couchbase Lite database to the Couchbase Server or Capella
+database being synced.
+
 ## Replication Protocol
 
 ### Scheme
@@ -48,10 +66,59 @@ URL should specify WebSockets as the URL scheme (see the [Configure Target](#con
 To optimize for speed, the replication protocol doesn’t guarantee that documents will be received in a particular order.
 So we don’t recommend to rely on that when using the replication or database change listeners for example.
 
+## Scopes and Collections
+
+Scopes and Collections allow you to organize your documents in Couchbase Lite.
+
+When syncing, you can configure the collections to be synced.
+
+The collections specified in the Couchbase Lite replicator setup must exist (both scope and collection name must be
+identical) on the Sync Gateway side, otherwise starting the Couchbase Lite replicator will result in an error.
+
+During replication:
+
+1. If Sync Gateway config (or server) is updated to remove a collection that is being synced, the client replicator will
+   be offline and will be stopped after the first retry. An error will be reported.
+2. If Sync Gateway config is updated to add a collection to a scope that is being synchronized, the replication will
+   ignore the collection. The added collection will not automatically sync until the Couchbase Lite replicator’s
+   configuration is updated.
+
+### Default Collection
+
+When upgrading Couchbase Lite to 3.1, the existing documents in the database will be automatically migrated to the
+default collection.
+
+For backward compatibility with the code prior to 3.1, when you set up the replicator with the database, the default
+collection will be set up to sync with the default collection on Sync Gateway.
+
+**Sync Couchbase Lite database with the default collection on Sync Gateway**
+![database sync](assets/images/replication-scopes-collections-1.png){ loading=lazy }
+
+**Sync Couchbase Lite default collection with default collection on Sync Gateway**
+![default collection sync](assets/images/replication-scopes-collections-2.png){ loading=lazy }
+
+### User-Defined Collections
+
+The user-defined collections specified in the Couchbase Lite replicator setup must exist (and be identical) on the Sync Gateway side to sync.
+
+**Syncing scope with user-defined collections**
+![scope sync](assets/images/replication-scopes-collections-3.png){ loading=lazy }
+
+**Syncing scope with user-defined collections. Couchbase Lite has more collections than the Sync Gateway configuration
+(with collection filters)**
+![scope sync excluding collections](assets/images/replication-scopes-collections-4.png){ loading=lazy }
+
 ## Configuration Summary
 
 You should configure and initialize a replicator for each Couchbase Lite database instance you want to sync. [Example
 1](#example-1) shows the configuration and initialization process.
+
+!!! note
+
+    You need Couchbase Lite 3.1+ and Sync Gateway 3.1+ to use `custom` Scopes and Collections.  
+    If you’re using Capella App Services or Sync Gateway releases that are older than version 3.1, you won’t be able to
+    access `custom` Scopes and Collections. To use Couchbase Lite 3.1+ with these older versions, you can use the
+    `default` Collection as a backup option.
 
 !!! example "<span id='example-1'>Example 1. Replication configuration and initialization</span>"
 
@@ -59,8 +126,9 @@ You should configure and initialize a replicator for each Couchbase Lite databas
     val repl = Replicator(
         // initialize the replicator configuration
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
-            target = URLEndpoint(URI("wss://listener.com:8954")), 
+            target = URLEndpoint("wss://listener.com:8954"),
+    
+            collections = mapOf(collections to null),
     
             // Set replicator type
             type = ReplicatorType.PUSH_AND_PULL,
@@ -74,27 +142,24 @@ You should configure and initialize a replicator for each Couchbase Lite databas
     
             // Configure Server Authentication --
             // only accept self-signed certs
-            acceptOnlySelfSignedServerCertificate = true, 
+            acceptOnlySelfSignedServerCertificate = true,
     
             // Configure the credentials the
             // client will provide if prompted
-            authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray()), 
-    
-            /* Optionally set custom conflict resolver call back */
-            conflictResolver = null 
+            authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
         )
     )
     
-    // Optionally add a change listener 
+    // Optionally add a change listener
     val token = repl.addChangeListener { change ->
         val err: CouchbaseLiteException? = change.status.error
         if (err != null) {
-            println("Error code :: ${err.code}\n$err")
+            println("Error code ::  ${err.code}\n$err")
         }
     }
     
     // Start replicator
-    repl.start(false) 
+    repl.start(false)
     
     this.replicator = repl
     this.token = token
@@ -104,9 +169,9 @@ You should configure and initialize a replicator for each Couchbase Lite databas
 
 1. Get endpoint for target database.
 2. Use the [`ReplicatorConfiguration`](/api/couchbase-lite-ee/kotbase/-replicator-configuration/) class’s constructor —
-   [`ReplicatorConfiguration(Database, Endpoint)`](
+   [`ReplicatorConfiguration(Endpoint)`](
    /api/couchbase-lite-ee/kotbase/-replicator-configuration/-replicator-configuration.html) — to initialize the
-   replicator configuration with the local database — see also [Configure Target](#configure-target).
+   replicator configuration — see also [Configure Target](#configure-target).
 3. The default is to auto-purge documents that this user no longer has access to — see [Auto-purge on Channel Access
    Revocation](#auto-purge-on-channel-access-revocation). Here we override this behavior by setting its flag to false.
 4. Configure how the client will authenticate the server. Here we say connect only to servers presenting a self-signed
@@ -134,32 +199,35 @@ Authorization](#user-authorization) | [Server Authentication](#server-authentica
 
 ### Configure Target
 
-Use the Initialize and define the replication configuration with local and remote database locations using the
+Initialize and define the replication configuration with local and remote database locations using the
 [`ReplicatorConfiguration`](/api/couchbase-lite-ee/kotbase/-replicator-configuration/) object.
 
-The constructor provides:
+The constructor provides the server’s URL (including the port number and the name of the remote database to sync with).
 
-* the name of the local database to be sync’d
-* the server’s URL (including the port number and the name of the remote database to sync with)<br>
-  <br>
-  It is expected that the app will identify the IP address and URL and append the remote database name to the URL
-  endpoint, producing for example: `wss://10.0.2.2:4984/travel-sample`<br>
-  <br>
-  The URL scheme for web socket URLs uses `ws:` (non-TLS) or `wss:` (SSL/TLS) prefixes.<br>
-  <br>
-  On the Android platform, to use cleartext, un-encrypted, network traffic (`http://` and-or `ws://`), include
-  `android:usesCleartextTraffic="true"` in the `application` element of the manifest as shown on [developer.android.com
-  ](https://developer.android.com/training/articles/security-config#CleartextTrafficPermitted).  
-  **This not recommended in production.**
+It is expected that the app will identify the IP address and URL and append the remote database name to the URL
+endpoint, producing for example: `wss://10.0.2.2:4984/travel-sample`.
+
+The URL scheme for web socket URLs uses `ws:` (non-TLS) or `wss:` (SSL/TLS) prefixes.
+
+!!! note
+
+    On the Android platform, to use cleartext, un-encrypted, network traffic (`http://` and-or `ws://`), include
+    `android:usesCleartextTraffic="true"` in the `application` element of the manifest as shown on
+    [developer.android.com](https://developer.android.com/training/articles/security-config#CleartextTrafficPermitted).  
+    **This is not recommended in production.**
+
+Add the database collections to sync along with the [`CollectionConfiguration`](
+/api/couchbase-lite-ee/kotbase/-collection-configuration/) for each to the `ReplicatorConfiguration`. Multiple
+collections can use the same configuration, or each their own as needed. A null configuration will use the default
+configuration values, found in [`Defaults.Replicator`](/api/couchbase-lite-ee/kotbase/-defaults/-replicator/).
 
 !!! example "Example 2. Add Target to Configuration"
 
     ```kotlin
     // initialize the replicator configuration
     val config = ReplicatorConfiguration(
-        database,
         URLEndpoint("wss://10.0.2.2:8954/travel-sample")
-    )
+    ).addCollections(collections, null)
     ```
 
     Note use of the scheme prefix (`wss://` to ensure TLS encryption — strongly recommended in production — or `ws://`)
@@ -226,8 +294,8 @@ When necessary you can adjust any or all of those configurable values — see [E
     ```kotlin
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
+            collections = mapOf(collections to null),
             //  other config params as required . .
             heartbeat = 150, 
             maxAttempts = 20,
@@ -350,8 +418,8 @@ shows how to initiate a one-shot replication as the user **username** with the p
     // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
+            collections = mapOf(collections to null),
             authenticator = BasicAuthenticator("username", "password".toCharArray())
         )
     )
@@ -379,8 +447,8 @@ endpoint.
     // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
+            collections = mapOf(collections to null),
             authenticator = SessionAuthenticator("904ac010862f37c8dd99015a33ab5a3565fd8447")
         )
     )
@@ -401,8 +469,8 @@ done by a proxy server (between Couchbase Lite and Sync Gateway) — see [Exampl
     // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
+            collections = mapOf(collections to null),
             headers = mapOf("CustomHeaderName" to "Value")
         )
     )
@@ -421,15 +489,17 @@ The push filter allows an app to push a subset of a database to the server. This
 high-priority documents could be pushed first, or documents in a "draft" state could be skipped.
 
 ```kotlin
+val collectionConfig = CollectionConfigurationFactory.newConfig(
+    pushFilter = { _, flags -> flags.contains(DocumentFlag.DELETED) }
+)
+
 // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
 val repl = Replicator(
     ReplicatorConfigurationFactory.newConfig(
-        database = database,
         target = URLEndpoint("ws://localhost:4984/mydatabase"),
-        pushFilter = { _, flags -> flags.contains(DocumentFlag.DELETED) }
+        collections = mapOf(collections to collectionConfig)
     )
 )
-
 repl.start()
 this.replicator = repl
 ```
@@ -450,15 +520,17 @@ important security mechanism in a peer-to-peer topology with peers that are not 
     on the server) whereas a pull replication filter is applied to a document once it has been downloaded.
 
 ```kotlin
+val collectionConfig = CollectionConfigurationFactory.newConfig(
+    pullFilter = { document, _ -> "draft" == document.getString("type") }
+)
+
 // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
 val repl = Replicator(
     ReplicatorConfigurationFactory.newConfig(
-        database = database,
         target = URLEndpoint("ws://localhost:4984/mydatabase"),
-        pullFilter = { document, _ -> "draft" == document.getString("type") }
+        collections = mapOf(collections to collectionConfig)
     )
 )
-
 repl.start()
 this.replicator = repl
 ```
@@ -698,9 +770,9 @@ replicator running using [`start()`](/api/couchbase-lite-ee/kotbase/-replicator/
     
         // initialize the replicator configuration
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
-    
             target = URLEndpoint("wss://listener.com:8954"),
+    
+            collections = mapOf(collections to null),
     
             // Set replicator type
             type = ReplicatorType.PUSH_AND_PULL,
@@ -781,8 +853,8 @@ Use the [`Replicator`](/api/couchbase-lite-ee/kotbase/-replicator/) class to add
 [`Replicator.addChangeListener()`](/api/couchbase-lite-ee/kotbase/-replicator/add-change-listener.html) — see [Example
 13](#example-13). You will then be asynchronously notified of state changes.
 
-You can remove a change listener with [`removeChangeListener(ListenerToken)`](
-/api/couchbase-lite-ee/kotbase/-replicator/remove-change-listener.html).
+You can remove a change listener with [`ListenerToken.remove()`](
+/api/couchbase-lite-ee/kotbase/-listener-token/remove.html).
 
 #### Using Kotlin Flows
 
@@ -925,7 +997,7 @@ sent. Stop the listener as shown in [Example 15](#example-15).
     This code snippet shows how to stop the document listener using the token from the previous example.
 
     ```kotlin
-    repl.removeChangeListener(token)
+    token.remove()
     ```
 
 #### Document Access Removal Behavior
@@ -957,8 +1029,8 @@ methods:
     ```kotlin
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
             target = URLEndpoint("ws://localhost:4984/mydatabase"),
+            collections = mapOf(setOf(collection) to null),
             type = ReplicatorType.PUSH
         )
     )
@@ -1118,8 +1190,8 @@ This example loads the certificate from the application sandbox, then converts i
     ```kotlin
     val repl = Replicator(
         ReplicatorConfigurationFactory.newConfig(
-            database = database,
             target = URLEndpoint("wss://localhost:4984/mydatabase"),
+            collections = mapOf(collections to null),
             pinnedServerCertificate = PlatformUtils.getAsset("cert.cer")?.readByteArray()
         )
     )
