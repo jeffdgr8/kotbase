@@ -8,7 +8,7 @@ mockk = "1.13.9"
 [plugins]
 android-library = { id = "com.android.library", version = "8.2.1" }
 dokka = { id = "org.jetbrains.dokka", version = "1.9.10" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.22" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "2.0.0-Beta2" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.13.2" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.5" }
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.27.0" }
