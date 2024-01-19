@@ -14,7 +14,7 @@ kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.5" }
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.27.0" }
 
 [libraries]
-androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.6.2" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.7.0" }
 androidx-startup = { module = "androidx.startup:startup-runtime", version = "1.1.1" }
 androidx-test-core-ktx = { module = "androidx.test:core-ktx", version = "1.5.0" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.5.2" }
