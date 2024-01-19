@@ -21,3 +21,6 @@ Multiplatform.
 
 This `getting-started-compose` version demonstrates sharing the entirety of the application code in Kotlin, including
 the UI with [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/).
+
+The entire compose app is a single Kotlin multiplatform module, encompassing all platforms, with an additional Xcode
+project for the iOS app.
