@@ -39,9 +39,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // Community Edition
-            implementation("dev.kotbase:couchbase-lite:3.0.15-1.0.1")
+            implementation("dev.kotbase:couchbase-lite:3.1.3-1.1.0")
             // or Enterprise Edition
-            implementation("dev.kotbase:couchbase-lite-ee:3.0.15-1.0.1")
+            implementation("dev.kotbase:couchbase-lite-ee:3.1.3-1.1.0")
         }
     }
 }
@@ -120,9 +120,9 @@ as well as other convenience functions for composing queries, observing change `
 
 ```kotlin
 // Community Edition
-implementation("dev.kotbase:couchbase-lite-ktx:3.0.15-1.0.1")
+implementation("dev.kotbase:couchbase-lite-ktx:3.1.3-1.1.0")
 // or Enterprise Edition
-implementation("dev.kotbase:couchbase-lite-ee-ktx:3.0.15-1.0.1")
+implementation("dev.kotbase:couchbase-lite-ee-ktx:3.1.3-1.1.0")
 ```
 
 ### Kotbase Kermit
@@ -134,9 +134,9 @@ https://kermit.touchlab.co/). Kermit can direct its logs to any number of log ou
 
 ```kotlin
 // Community Edition
-implementation("dev.kotbase:couchbase-lite-kermit:3.0.15-1.0.1")
+implementation("dev.kotbase:couchbase-lite-kermit:3.1.3-1.1.0")
 // or Enterprise Edition
-implementation("dev.kotbase:couchbase-lite-ee-kermit:3.0.15-1.0.1")
+implementation("dev.kotbase:couchbase-lite-ee-kermit:3.1.3-1.1.0")
 ```
 
 ### Kotbase Paging
@@ -151,9 +151,9 @@ performs limit/offset paging queries based on a user-supplied database query.
 
 ```kotlin
 // Community Edition
-implementation("dev.kotbase:couchbase-lite-paging:3.0.15-1.0.1")
+implementation("dev.kotbase:couchbase-lite-paging:3.1.3-1.1.0")
 // or Enterprise Edition
-implementation("dev.kotbase:couchbase-lite-ee-paging:3.0.15-1.0.1")
+implementation("dev.kotbase:couchbase-lite-ee-paging:3.1.3-1.1.0")
 ```
 
 ## Roadmap
