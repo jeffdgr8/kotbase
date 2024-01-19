@@ -45,9 +45,9 @@ You can even do more powerful querying:
 ```kotlin
 select("name", "type")
     .from(collection)
-    .where { 
-        ("type" equalTo "user" and "name" equalTo "Damian") or
-        ("type" equalTo "pet" and "name" like "Kitt") 
+    .where {
+        (("type" equalTo "user") and ("name" equalTo "Damian")) or
+        (("type" equalTo "pet") and ("name" like "Kitt"))
     }
     .orderBy { "name".ascending() }
     .limit(10)

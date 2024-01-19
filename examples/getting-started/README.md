@@ -21,6 +21,8 @@ Multiplatform.
 
 This `getting-started` version demonstrates using shared Kotlin code using Kotbase together with native app UIs.
 
+The Kotbase database examples are in the `shared` module, which is shared between each of the platform apps.
+
 * The Android app uses XML views.
 * The iOS app uses SwiftUI.
 * The JVM desktop app uses Compose UI.
