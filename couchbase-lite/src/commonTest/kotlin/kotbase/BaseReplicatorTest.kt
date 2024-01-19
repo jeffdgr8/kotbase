@@ -77,7 +77,7 @@ internal class ListenerAwaiter(
 }
 
 internal class ReplicatorAwaiter(repl: Replicator, coroutineContext: CoroutineContext) : ReplicatorChangeListener {
-    private val awaiter = ListenerAwaiter(repl.addChangeListener(coroutineContext, this))
+    private val awaiter: ListenerAwaiter = ListenerAwaiter(repl.addChangeListener(coroutineContext, this))
 
     val error: Throwable?
         get() = awaiter.error
