@@ -17,9 +17,11 @@ kotlin {
         commonMain.dependencies {
             api(projects.couchbaseLite)
             api(libs.kotlin.test)
-            api(libs.kotlin.test.junit)
             api(libs.kotlinx.serialization.json)
             api(libs.kotlinx.atomicfu)
+        }
+        jvmCommonMain.dependencies {
+            api(libs.kotlin.test.junit)
         }
         androidMain.dependencies {
             api(libs.androidx.test.core.ktx)
