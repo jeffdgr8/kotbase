@@ -255,7 +255,6 @@ public expect class Collection : AutoCloseable {
     /**
      * Get a list of the names of indices in the collection.
      *
-     * @return the list of index names
      * @throws CouchbaseLiteException on failure
      */
     @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET")

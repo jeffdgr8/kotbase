@@ -120,9 +120,14 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
             }.asScopes(this)
         }
 
+    /**
+     * Get scope names that have at least one collection.
+     * Note: the default scope is exceptional as it will always be listed even though there are no collections
+     * under it.
+     */
     // For Objective-C/Swift throws
     @Throws(CouchbaseLiteException::class)
-    public fun getScopes(): Set<Scope> = scopes
+    public fun scopes(): Set<Scope> = scopes
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getScope(name: String): Scope? {
@@ -142,9 +147,12 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
             }!!.asScope(this)
         }
 
+    /**
+     * Get the default scope.
+     */
     // For Objective-C/Swift throws
     @Throws(CouchbaseLiteException::class)
-    public fun getDefaultScope(): Scope = defaultScope
+    public fun defaultScope(): Scope = defaultScope
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createCollection(name: String): Collection {
@@ -172,9 +180,12 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
             }.asCollections(this)
         }
 
+    /**
+     * Get all collections in the default scope.
+     */
     // For Objective-C/Swift throws
     @Throws(CouchbaseLiteException::class)
-    public fun getCollections(): Set<Collection> = collections
+    public fun collections(): Set<Collection> = collections
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollections(scopeName: String?): Set<Collection> {
@@ -208,9 +219,12 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }!!.asCollection(this)
     }
 
+    /**
+     * Get the default collection.
+     */
     // For Objective-C/Swift throws
     @Throws(CouchbaseLiteException::class)
-    public fun getDefaultCollection(): Collection = defaultCollection
+    public fun defaultCollection(): Collection = defaultCollection
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteCollection(name: String) {
@@ -547,14 +561,19 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
             }
         }
 
+    /**
+     * Get a list of the names of indices on the default collection.
+     *
+     * @throws CouchbaseLiteException on failure
+     */
     // For Objective-C/Swift throws
     @Suppress("DEPRECATION")
     @Deprecated(
-        "Use defaultCollection.getIndexes()",
-        ReplaceWith("defaultCollection.getIndexes()")
+        "Use defaultCollection().indexes()",
+        ReplaceWith("defaultCollection().indexes()")
     )
     @Throws(CouchbaseLiteException::class)
-    public fun getIndexes(): List<String> = indexes
+    public fun indexes(): List<String> = indexes
 
     @Deprecated(
         "Use defaultCollection.createIndex()",

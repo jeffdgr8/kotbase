@@ -75,9 +75,7 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
     public val serverCertificates: List<ByteArray>?
 
     /**
-     * Get a best effort list of documents in the default collection, that are still pending replication.
-     *
-     * @return a set of ids for documents in the default collection still awaiting replication.
+     * Get a best effort set of document IDs in the default collection, that are still pending replication.
      */
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",

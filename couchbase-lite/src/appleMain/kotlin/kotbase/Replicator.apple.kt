@@ -82,14 +82,17 @@ internal constructor(
             }
         }
 
+    /**
+     * Get a best effort set of document IDs in the default collection, that are still pending replication.
+     */
     // For Objective-C/Swift throws
     @Suppress("DEPRECATION")
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
-        ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection())")
+        ReplaceWith("getPendingDocumentIds(config.database.defaultCollection())")
     )
     @Throws(CouchbaseLiteException::class)
-    public fun getPendingDocumentIds(): Set<String> = pendingDocumentIds
+    public fun pendingDocumentIds(): Set<String> = pendingDocumentIds
 
     @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
