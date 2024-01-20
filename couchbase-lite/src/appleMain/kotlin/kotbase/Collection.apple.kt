@@ -225,9 +225,14 @@ internal constructor(
             }.toSet()
         }
 
+    /**
+     * Get a list of the names of indices in the collection.
+     *
+     * @throws CouchbaseLiteException on failure
+     */
     // For Objective-C/Swift throws
     @Throws(CouchbaseLiteException::class)
-    public fun getIndexes(): Set<String> = indexes
+    public fun indexes(): Set<String> = indexes
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {

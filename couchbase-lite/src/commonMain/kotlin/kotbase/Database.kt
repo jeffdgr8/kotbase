@@ -534,7 +534,6 @@ public expect class Database : AutoCloseable {
     /**
      * Get a list of the names of indices on the default collection.
      *
-     * @return the list of index names
      * @throws CouchbaseLiteException on failure
      */
     @Deprecated(

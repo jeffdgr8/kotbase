@@ -38,8 +38,6 @@ public expect class Scope {
 
     /**
      * Get all collections in the scope.
-     *
-     * @return a set of all collections in the scope
      */
     @Suppress("WRONG_ANNOTATION_TARGET_WITH_USE_SITE_TARGET")
     @get:Throws(CouchbaseLiteException::class)

@@ -43,9 +43,12 @@ internal constructor(
             return collections.toSet()
         }
 
+    /**
+     * Get all collections in the scope.
+     */
     // For Objective-C/Swift throws
     @Throws(CouchbaseLiteException::class)
-    public fun getCollections(): Set<Collection> = collections
+    public fun collections(): Set<Collection> = collections
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollection(collectionName: String): Collection? {
