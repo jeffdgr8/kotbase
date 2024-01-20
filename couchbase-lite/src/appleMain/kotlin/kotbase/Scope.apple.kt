@@ -19,6 +19,7 @@ import cocoapods.CouchbaseLite.CBLCollection
 import cocoapods.CouchbaseLite.CBLScope
 import kotbase.ext.wrapCBLError
 import kotbase.internal.DelegatedClass
+import kotlin.experimental.ExperimentalObjCRefinement
 
 public actual class Scope
 internal constructor(
@@ -29,6 +30,8 @@ internal constructor(
     public actual val name: String
         get() = actual.name
 
+    @OptIn(ExperimentalObjCRefinement::class)
+    @HiddenFromObjC
     @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
     //@get:Throws(CouchbaseLiteException::class)
     public actual val collections: Set<Collection>
@@ -39,6 +42,10 @@ internal constructor(
             }.asCollections(database)
             return collections.toSet()
         }
+
+    // For Objective-C/Swift throws
+    @Throws(CouchbaseLiteException::class)
+    public fun getCollections(): Set<Collection> = collections
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollection(collectionName: String): Collection? {

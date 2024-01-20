@@ -25,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
+import kotlin.experimental.ExperimentalObjCRefinement
 
 @OptIn(ExperimentalStdlibApi::class)
 public actual class Replicator
@@ -64,6 +65,8 @@ internal constructor(
     public actual val serverCertificates: List<ByteArray>?
         get() = actual.serverCertificate?.toByteArray()?.let { listOf(it) }
 
+    @OptIn(ExperimentalObjCRefinement::class)
+    @HiddenFromObjC
     @Deprecated(
         "Use getPendingDocumentIds(Collection)",
         ReplaceWith("getPendingDocumentIds(config.database.defaultCollection)")
@@ -78,6 +81,15 @@ internal constructor(
                 actual.pendingDocumentIDs(error) as Set<String>
             }
         }
+
+    // For Objective-C/Swift throws
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use getPendingDocumentIds(Collection)",
+        ReplaceWith("getPendingDocumentIds(config.database.getDefaultCollection())")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun getPendingDocumentIds(): Set<String> = pendingDocumentIds
 
     @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)

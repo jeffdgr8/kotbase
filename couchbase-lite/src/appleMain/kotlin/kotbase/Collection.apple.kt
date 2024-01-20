@@ -27,6 +27,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import kotlin.coroutines.CoroutineContext
+import kotlin.experimental.ExperimentalObjCRefinement
 
 @OptIn(ExperimentalStdlibApi::class)
 public actual class Collection
@@ -212,6 +213,8 @@ internal constructor(
         }
     }
 
+    @OptIn(ExperimentalObjCRefinement::class)
+    @HiddenFromObjC
     @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
     //@get:Throws(CouchbaseLiteException::class)
     public actual val indexes: Set<String>
@@ -221,6 +224,10 @@ internal constructor(
                 actual.indexes(error) as List<String>
             }.toSet()
         }
+
+    // For Objective-C/Swift throws
+    @Throws(CouchbaseLiteException::class)
+    public fun getIndexes(): Set<String> = indexes
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
