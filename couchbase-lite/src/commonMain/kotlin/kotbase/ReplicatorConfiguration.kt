@@ -30,7 +30,7 @@ public expect class ReplicatorConfiguration {
      */
     @Deprecated(
         "Use ReplicatorConfiguration(Endpoint)",
-        ReplaceWith("ReplicatorConfiguration(target)")
+        ReplaceWith("ReplicatorConfiguration(target).addCollection(database.defaultCollection, null)")
     )
     public constructor(database: Database, target: Endpoint)
 
