@@ -33,7 +33,7 @@ private constructor(
 
     @Deprecated(
         "Use ReplicatorConfiguration(Endpoint)",
-        ReplaceWith("ReplicatorConfiguration(target)")
+        ReplaceWith("ReplicatorConfiguration(target).addCollection(database.defaultCollection, null)")
     )
     public actual constructor(database: Database, target: Endpoint) : this(target, database) {
         addCollection(database.defaultCollection, null)
