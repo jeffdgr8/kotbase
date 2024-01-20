@@ -29,6 +29,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import kotlin.coroutines.CoroutineContext
+import kotlin.experimental.ExperimentalObjCRefinement
 
 @OptIn(ExperimentalStdlibApi::class)
 public actual class Database
@@ -107,6 +108,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }
     }
 
+    @OptIn(ExperimentalObjCRefinement::class)
+    @HiddenFromObjC
     @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
     //@get:Throws(CouchbaseLiteException::class)
     public actual val scopes: Set<Scope>
@@ -117,6 +120,10 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
             }.asScopes(this)
         }
 
+    // For Objective-C/Swift throws
+    @Throws(CouchbaseLiteException::class)
+    public fun getScopes(): Set<Scope> = scopes
+
     @Throws(CouchbaseLiteException::class)
     public actual fun getScope(name: String): Scope? {
         return wrapCBLError { error ->
@@ -124,6 +131,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }?.asScope(this)
     }
 
+    @OptIn(ExperimentalObjCRefinement::class)
+    @HiddenFromObjC
     @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
     //@get:Throws(CouchbaseLiteException::class)
     public actual val defaultScope: Scope
@@ -132,6 +141,10 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
                 actual.defaultScope(error)
             }!!.asScope(this)
         }
+
+    // For Objective-C/Swift throws
+    @Throws(CouchbaseLiteException::class)
+    public fun getDefaultScope(): Scope = defaultScope
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createCollection(name: String): Collection {
@@ -147,6 +160,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }!!.asCollection(this)
     }
 
+    @OptIn(ExperimentalObjCRefinement::class)
+    @HiddenFromObjC
     @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
     //@get:Throws(CouchbaseLiteException::class)
     public actual val collections: Set<Collection>
@@ -156,6 +171,10 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
                 actual.collections(null, error) as List<CBLCollection>
             }.asCollections(this)
         }
+
+    // For Objective-C/Swift throws
+    @Throws(CouchbaseLiteException::class)
+    public fun getCollections(): Set<Collection> = collections
 
     @Throws(CouchbaseLiteException::class)
     public actual fun getCollections(scopeName: String?): Set<Collection> {
@@ -179,6 +198,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }?.asCollection(this)
     }
 
+    @OptIn(ExperimentalObjCRefinement::class)
+    @HiddenFromObjC
     @Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
     //@get:Throws(CouchbaseLiteException::class)
     public actual val defaultCollection: Collection by lazy {
@@ -186,6 +207,10 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
             actual.defaultCollection(error)
         }!!.asCollection(this)
     }
+
+    // For Objective-C/Swift throws
+    @Throws(CouchbaseLiteException::class)
+    public fun getDefaultCollection(): Collection = defaultCollection
 
     @Throws(CouchbaseLiteException::class)
     public actual fun deleteCollection(name: String) {
@@ -506,6 +531,8 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         token.remove()
     }
 
+    @OptIn(ExperimentalObjCRefinement::class)
+    @HiddenFromObjC
     @Deprecated(
         "Use defaultCollection.indexes",
         ReplaceWith("defaultCollection.indexes")
@@ -519,6 +546,15 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
                 actual.indexes as List<String>
             }
         }
+
+    // For Objective-C/Swift throws
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "Use defaultCollection.getIndexes()",
+        ReplaceWith("defaultCollection.getIndexes()")
+    )
+    @Throws(CouchbaseLiteException::class)
+    public fun getIndexes(): List<String> = indexes
 
     @Deprecated(
         "Use defaultCollection.createIndex()",
