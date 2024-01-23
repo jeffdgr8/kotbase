@@ -1157,7 +1157,7 @@ public class WhereBuilder {
     public infix fun String.like(date: Instant): Expression = property(this).like(date)
 }
 
-public class OrderByBuilder {
+public class OrderByBuilder internal constructor() {
 
     private val orderings = mutableListOf<Ordering>()
 
