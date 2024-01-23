@@ -23,6 +23,7 @@ import kotlinx.io.asSource
 import kotlinx.io.buffered
 import java.io.File
 import java.net.MalformedURLException
+import java.net.URI
 import java.net.URL
 import com.couchbase.lite.Blob as CBLBlob
 
@@ -70,8 +71,11 @@ internal fun CBLBlob.asBlob() = Blob(this)
 
 private fun String.toFileUrl(): URL {
     return try {
-        URL(this)
-    } catch (e: MalformedURLException) {
-        File(this).toURI().toURL()
+        URI(this).toURL()
+    } catch (e: Exception) {
+        when (e) {
+            is MalformedURLException, is IllegalArgumentException -> File(this).toURI().toURL()
+            else -> throw e
+        }
     }
 }
