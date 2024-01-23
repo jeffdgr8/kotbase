@@ -74,7 +74,8 @@ private fun String.toFileUrl(): URL {
         URI(this).toURL()
     } catch (e: Exception) {
         when (e) {
-            is MalformedURLException, is IllegalArgumentException -> File(this).toURI().toURL()
+            is MalformedURLException,
+            is IllegalArgumentException -> File(this).toURI().toURL()
             else -> throw e
         }
     }
