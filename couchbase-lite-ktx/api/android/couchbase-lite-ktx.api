@@ -99,7 +99,6 @@ public final class kotbase/ktx/IndexBuilderExtKt {
 }
 
 public final class kotbase/ktx/OrderByBuilder {
-	public fun <init> ()V
 	public final fun ascending (Ljava/lang/String;)V
 	public final fun ascending (Lkotbase/Expression;)V
 	public final fun descending (Ljava/lang/String;)V
