@@ -9,7 +9,7 @@ as well as other convenience functions for composing queries, observing change `
     kotlin {
         sourceSets {
             commonMain.dependencies {
-                implementation("dev.kotbase:couchbase-lite-ee-ktx:{{ version }}")
+                implementation("dev.kotbase:couchbase-lite-ee-ktx:{{ version_full }}")
             }
         }
     }
@@ -21,7 +21,7 @@ as well as other convenience functions for composing queries, observing change `
     kotlin {
         sourceSets {
             commonMain.dependencies {
-                implementation("dev.kotbase:couchbase-lite-ktx:{{ version }}")
+                implementation("dev.kotbase:couchbase-lite-ktx:{{ version_full }}")
             }
         }
     }

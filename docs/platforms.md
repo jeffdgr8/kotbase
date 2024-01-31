@@ -62,7 +62,7 @@ Kotbase's API in Kotlin familiar.
 Binaries need to link with the correct version of the `CouchbaseLite` XCFramework, which can be downloaded [here](
 https://www.couchbase.com/downloads/?family=couchbase-lite) or added via [Carthage or CocoaPods](
 https://docs.couchbase.com/couchbase-lite/current/objc/gs-install.html#lbl-install-tabs). The version should match the
-major and minor version of Kotbase, e.g. CouchbaseLite {{ version_short }}.x for Kotbase {{ version }}.
+major and minor version of Kotbase, e.g. CouchbaseLite {{ version_short }}.x for Kotbase {{ version_full }}.
 
 The [Kotlin CocoaPods Gradle plugin](https://kotlinlang.org/docs/native-cocoapods.html) can also be used to generate a
 [Podspec](https://guides.cocoapods.org/syntax/podspec.html) for your project that includes the `CouchbaseLite`
@@ -127,7 +127,7 @@ throw an `UnsupportedOperationException` if these APIs are called from these pla
 Binaries need to link with the correct version of the native platform `libcblite` binary, which can be downloaded
 [here](https://docs.couchbase.com/couchbase-lite/current/c/gs-downloads.html) or [here](
 https://www.couchbase.com/downloads/?family=couchbase-lite). The version should match the major and minor version of
-Kotbase, e.g. libcblite {{ version_short }}.x for Kotbase {{ version }}.
+Kotbase, e.g. libcblite {{ version_short }}.x for Kotbase {{ version_full }}.
 
 ### Linux
 

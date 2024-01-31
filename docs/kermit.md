@@ -9,7 +9,7 @@ its logs to any number of log outputs, including the console.
     kotlin {
         sourceSets {
             commonMain.dependencies {
-                implementation("dev.kotbase:couchbase-lite-ee-kermit:{{ version }}")
+                implementation("dev.kotbase:couchbase-lite-ee-kermit:{{ version_full }}")
             }
         }
     }
@@ -21,7 +21,7 @@ its logs to any number of log outputs, including the console.
     kotlin {
         sourceSets {
             commonMain.dependencies {
-                implementation("dev.kotbase:couchbase-lite-kermit:{{ version }}")
+                implementation("dev.kotbase:couchbase-lite-kermit:{{ version_full }}")
             }
         }
     }

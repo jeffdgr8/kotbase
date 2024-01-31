@@ -12,7 +12,7 @@ based on a user-supplied database query.
     kotlin {
         sourceSets {
             commonMain.dependencies {
-                implementation("dev.kotbase:couchbase-lite-ee-paging:{{ version }}")
+                implementation("dev.kotbase:couchbase-lite-ee-paging:{{ version_full }}")
             }
         }
     }
@@ -24,7 +24,7 @@ based on a user-supplied database query.
     kotlin {
         sourceSets {
             commonMain.dependencies {
-                implementation("dev.kotbase:couchbase-lite-paging:{{ version }}")
+                implementation("dev.kotbase:couchbase-lite-paging:{{ version_full }}")
             }
         }
     }
