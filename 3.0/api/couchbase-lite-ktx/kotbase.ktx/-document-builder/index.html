@@ -1,0 +1,355 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>DocumentBuilder</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            kotbase
+                    </a>            </div>
+            <div class="library-version">3.0.15-1.0.1
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="couchbase-lite-ktx::kotbase.ktx/DocumentBuilder///PointingToDeclaration//-506987211">
+  <div class="breadcrumbs"><a href="../../index.html">couchbase-lite-ktx</a><span class="delimiter">/</span><a href="../index.html">kotbase.ktx</a><span class="delimiter">/</span><span class="current">DocumentBuilder</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Document</span><wbr><span><span>Builder</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">DocumentBuilder</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ktx/src/commonMain/kotlin/kotbase/ktx/DocumentExtensions.kt#L53">source</a>)</span></span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1389802650%2FFunctions%2F-506987211" anchor-label="getArray" id="-1389802650%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-array.html"><span>get</span><wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1389802650%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-array.html"><span class="token function">getArray</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-array/index.html">MutableArray</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get a property's value as an Array, which is a mapping object of an array value. Returns null if the property doesn't exist, or its value is not an array.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2087228201%2FFunctions%2F-506987211" anchor-label="getDictionary" id="-2087228201%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-dictionary.html"><span>get</span><wbr><span><span>Dictionary</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2087228201%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-dictionary.html"><span class="token function">getDictionary</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-dictionary/index.html">MutableDictionary</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get a property's value as a Dictionary, which is a mapping object of a dictionary value. Returns null if the property doesn't exist, or its value is not a dictionary.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-403000953%2FFunctions%2F-506987211" anchor-label="remove" id="-403000953%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="remove.html"><span><span>remove</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-403000953%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="remove.html"><span class="token function">remove</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Removes the mapping for a key from this Dictionary</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="352863538%2FFunctions%2F-506987211" anchor-label="setArray" id="352863538%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-array.html"><span>set</span><wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="352863538%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-array.html"><span class="token function">setArray</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-array/index.html">Array</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set an Array value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-191495912%2FFunctions%2F-506987211" anchor-label="setBlob" id="-191495912%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-blob.html"><span>set</span><wbr><span><span>Blob</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-191495912%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-blob.html"><span class="token function">setBlob</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-blob/index.html">Blob</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set a Blob value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="100597115%2FFunctions%2F-506987211" anchor-label="setBoolean" id="100597115%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-boolean.html"><span>set</span><wbr><span><span>Boolean</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="100597115%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-boolean.html"><span class="token function">setBoolean</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set a boolean value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="537282757%2FFunctions%2F-506987211" anchor-label="setData" id="537282757%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-data.html"><span>set</span><wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="537282757%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-data.html"><span class="token function">setData</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">data<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Populate a document with content from a Map. Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary. If present, Lists, Maps and Dictionaries may contain only the above types.  Setting the document content will replace the current data including the existing Array and Dictionary objects.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1176475964%2FFunctions%2F-506987211" anchor-label="setDate" id="-1176475964%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-date.html"><span>set</span><wbr><span><span>Date</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1176475964%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-date.html"><span class="token function">setDate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set a Date value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="410173322%2FFunctions%2F-506987211" anchor-label="setDictionary" id="410173322%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-dictionary.html"><span>set</span><wbr><span><span>Dictionary</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="410173322%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-dictionary.html"><span class="token function">setDictionary</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-dictionary/index.html">Dictionary</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set a Dictionary value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1123757187%2FFunctions%2F-506987211" anchor-label="setDouble" id="1123757187%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-double.html"><span>set</span><wbr><span><span>Double</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1123757187%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-double.html"><span class="token function">setDouble</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set a double value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1173041171%2FFunctions%2F-506987211" anchor-label="setFloat" id="1173041171%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-float.html"><span>set</span><wbr><span><span>Float</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1173041171%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-float.html"><span class="token function">setFloat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set a float value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1035496211%2FFunctions%2F-506987211" anchor-label="setInt" id="-1035496211%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-int.html"><span>set</span><wbr><span><span>Int</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1035496211%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-int.html"><span class="token function">setInt</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set an integer value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1511629077%2FFunctions%2F-506987211" anchor-label="setJSON" id="1511629077%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-j-s-o-n.html"><span>set</span><wbr><span><span>JSON</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1511629077%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-j-s-o-n.html"><span class="token function">setJSON</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">json<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Populate a document with content from a JSON string. Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary. If present, Lists, Maps and Dictionaries may contain only the above types.  Setting the document content will replace the current data including the existing Array and Dictionary objects.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="315349411%2FFunctions%2F-506987211" anchor-label="setLong" id="315349411%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-long.html"><span>set</span><wbr><span><span>Long</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="315349411%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-long.html"><span class="token function">setLong</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set a long value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1216546429%2FFunctions%2F-506987211" anchor-label="setNumber" id="-1216546429%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-number.html"><span>set</span><wbr><span><span>Number</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1216546429%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-number.html"><span class="token function">setNumber</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set a Number value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="775996547%2FFunctions%2F-506987211" anchor-label="setString" id="775996547%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-string.html"><span>set</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="775996547%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-string.html"><span class="token function">setString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set a String value for the given key</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="202424597%2FFunctions%2F-506987211" anchor-label="setValue" id="202424597%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-value.html"><span>set</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="202424597%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-value.html"><span class="token function">setValue</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../couchbase-lite/kotbase/-mutable-document/index.html">MutableDocument</a></div><div class="brief "><p class="paragraph">Set an object value by key. Allowed value types are List, Date, Map, Number, null, String, Array, Blob, and Dictionary. If present, Lists, Maps and Dictionaries may contain only the above types. A Date object will be converted to an ISO-8601 format string.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="734136874%2FFunctions%2F-506987211" anchor-label="to" id="734136874%2FFunctions%2F-506987211" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to.html"><span><span>to</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="734136874%2FFunctions%2F-506987211"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ktx:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">infix </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="to.html">T</a><span class="token operator">&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="to.html"><span class="token function">to</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="to.html">T</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Determines the key-to-value relation between the receiver string and the provided <a href="to.html">value</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
