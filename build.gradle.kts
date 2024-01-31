@@ -1,7 +1,14 @@
+import org.jetbrains.dokka.versioning.VersioningConfiguration
+import org.jetbrains.dokka.versioning.VersioningPlugin
+
 plugins {
     id(libs.plugins.dokka.get().pluginId)
     id(libs.plugins.kotlinx.kover.get().pluginId)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
+}
+
+dependencies {
+    dokkaHtmlMultiModulePlugin(libs.dokka.versioning)
 }
 
 allprojects {
@@ -11,14 +18,42 @@ allprojects {
     version = "$cblVersion-$kotbaseVersion"
 }
 
-val apiDocsDir = projectDir.resolve("docs/api")
-tasks.register<Delete>("cleanApiDocs") {
-    group = JavaBasePlugin.DOCUMENTATION_GROUP
-    description = "Deletes current API docs from docs site"
-    delete(apiDocsDir)
-}
 tasks.dokkaHtmlMultiModule {
+    val apiDocsDir = projectDir.resolve("docs/api")
+    val olderDir = apiDocsDir.resolve("older")
+    val tempOlderDir = apiDocsDir.parentFile.resolve("older")
+
+    val shortVersion = """\d+\.\d+""".toRegex()
+        .find(version.toString())!!
+        .groupValues.first()
+
+    doFirst {
+        olderDir.renameTo(tempOlderDir)
+
+        val versionJson = apiDocsDir.resolve("version.json")
+        if (versionJson.exists()) {
+            val currentDocsVersion = """"version"\s*:\s*"(\d+\.\d+)"""".toRegex()
+                .find(versionJson.readText())!!
+                .groupValues[1]
+
+            if (currentDocsVersion != shortVersion) {
+                val archiveDir = tempOlderDir.resolve(currentDocsVersion)
+                apiDocsDir.renameTo(archiveDir)
+            }
+        }
+
+        apiDocsDir.deleteRecursively()
+    }
     outputDirectory.set(apiDocsDir)
+
+    pluginConfiguration<VersioningPlugin, VersioningConfiguration> {
+        olderVersionsDir = tempOlderDir
+        version = shortVersion
+    }
+
+    doLast {
+        tempOlderDir.deleteRecursively()
+    }
 }
 
 apiValidation {
