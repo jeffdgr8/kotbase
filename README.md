@@ -168,6 +168,7 @@ implementation("dev.kotbase:couchbase-lite-ee-paging:3.1.3-1.1.0")
     * [x] [Getting Started Compose Multiplatform](examples/getting-started-compose)
 * [x] Couchbase Lite [3.1 API](https://docs.couchbase.com/couchbase-lite/3.1/cbl-whatsnew.html) - Scopes and Collections
 * [x] Versioned docs
+* [ ] Async coroutines API
 
 ## Development
 
