@@ -1,4 +1,5 @@
 import com.vanniktech.maven.publish.SonatypeHost
+import org.gradle.accessors.dm.LibrariesForLibs
 import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -9,6 +10,11 @@ plugins {
     org.jetbrains.dokka
     id("com.vanniktech.maven.publish")
     org.jetbrains.kotlinx.kover
+}
+
+val libs = the<LibrariesForLibs>()
+dependencies {
+    dokkaHtmlPlugin(libs.dokka.versioning)
 }
 
 kotlin {
