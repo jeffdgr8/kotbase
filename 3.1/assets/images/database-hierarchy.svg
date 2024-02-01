@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="380px" preserveAspectRatio="none" style="width:444px;height:380px;" version="1.1" viewBox="0 0 444 380" width="444px" zoomAndPan="magnify"><defs><filter height="300%" id="f1ah5yzr7bbcl9" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[7468467f3b6b392f1d176d828c753b77]
+entity db--><path d="M134,21.5 C134,11.5 174,11.5 174,11.5 C174,11.5 214,11.5 214,21.5 L214,47.2999 C214,57.2999 174,57.2999 174,57.2999 C174,57.2999 134,57.2999 134,47.2999 L134,21.5 " fill="#FEFECE" filter="url(#f1ah5yzr7bbcl9)" style="stroke:#000000;stroke-width:1.5;"/><path d="M134,21.5 C134,31.5 174,31.5 174,31.5 C174,31.5 214,31.5 214,21.5 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="60" x="144" y="49.4999">Database</text><!--MD5=[c8a1f054d404df0a65fc25cf7fbed36b]
+entity scope--><rect fill="#FEFECE" filter="url(#f1ah5yzr7bbcl9)" height="36.7999" style="stroke:#000000;stroke-width:1.5;" width="58" x="145" y="123"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="38" x="155" y="146.9999">Scope</text><!--MD5=[e8144009250fefa8de7ab17e8fe20380]
+entity collection--><polygon fill="#FEFECE" filter="url(#f1ah5yzr7bbcl9)" points="129.5,221,175.5,221,182.5,242,218.5,242,218.5,275.7999,129.5,275.7999,129.5,221" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="129.5" x2="182.5" y1="242" y2="242"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="59" x="139.5" y="262.9999">Collection</text><!--MD5=[ab1e5baf85ed143b76d3e76a48078bed]
+entity document1--><polygon fill="#FEFECE" filter="url(#f1ah5yzr7bbcl9)" points="16,337,16,373.7999,98,373.7999,98,347,88,337,16,337" style="stroke:#000000;stroke-width:1.5;"/><path d="M88,337 L88,347 L98,347 " fill="#FEFECE" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="26" y="360.9999">Document</text><!--MD5=[dd1bebfa84e2488b3127885c5b41e328]
+entity document2--><polygon fill="#FEFECE" filter="url(#f1ah5yzr7bbcl9)" points="133,337,133,373.7999,215,373.7999,215,347,205,337,133,337" style="stroke:#000000;stroke-width:1.5;"/><path d="M205,337 L205,347 L215,347 " fill="#FEFECE" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="143" y="360.9999">Document</text><!--MD5=[a05b76816b6fc3abd39e436261e75b4c]
+entity document3--><polygon fill="#FEFECE" filter="url(#f1ah5yzr7bbcl9)" points="250,337,250,373.7999,332,373.7999,332,347,322,337,250,337" style="stroke:#000000;stroke-width:1.5;"/><path d="M322,337 L322,347 L332,347 " fill="#FEFECE" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62" x="260" y="360.9999">Document</text><path d="M254,220 L254,244.5 L218.82,248.5 L254,252.5 L254,276.8 A0,0 0 0 0 254,276.8 L434,276.8 A0,0 0 0 0 434,276.8 L434,230 L424,220 L254,220 A0,0 0 0 0 254,220 " fill="#FBFB77" filter="url(#f1ah5yzr7bbcl9)" style="stroke:#A80036;stroke-width:1.0;"/><path d="M424,220 L424,230 L434,230 L424,220 " fill="#FBFB77" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="0" x="263" y="238"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="159" x="260" y="253.6">Maximum of 1000 per scope</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="0" x="263" y="269.2"/><path d="M249,6 L249,30.5 L214.03,34.5 L249,38.5 L249,62.8 A0,0 0 0 0 249,62.8 L435,62.8 A0,0 0 0 0 435,62.8 L435,16 L425,6 L249,6 A0,0 0 0 0 249,6 " fill="#FBFB77" filter="url(#f1ah5yzr7bbcl9)" style="stroke:#A80036;stroke-width:1.0;"/><path d="M425,6 L425,16 L435,16 L425,6 " fill="#FBFB77" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="0" x="258" y="24"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="165" x="255" y="39.6">One database per application</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="0" x="258" y="55.2"/><!--MD5=[e293808c0784fccce01dd238b6671f62]
+link db to scope--><path d="M174,57.51 C174,75.06 174,99.56 174,117.39 " fill="none" id="db-to-scope" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="174,122.7,178,113.7,174,117.7,170,113.7,174,122.7" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[bd95b2d60b83b38d7618f2ab0aa9393c]
+link scope to collection--><path d="M174,160.31 C174,175.5 174,197.7 174,215.9 " fill="none" id="scope-to-collection" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="174,220.92,178.0257,211.9315,174.0143,215.92,170.0257,211.9086,174,220.92" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[ab43a1f600bfb89b9c5121b3602da514]
+link collection to document1--><path d="M144.17,276.27 C124.53,293.89 99.17,316.66 80.87,333.08 " fill="none" id="collection-to-document1" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="76.84,336.69,86.212,333.6624,80.5636,333.3531,80.8729,327.7047,76.84,336.69" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[93f8c9cb5046ebd87d3059498af61558]
+link collection to document2--><path d="M174,276.27 C174,293.3 174,315.13 174,331.4 " fill="none" id="collection-to-document2" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="174,336.69,178,327.69,174,331.69,170,327.69,174,336.69" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[fb180569bd3efdcd43513d540660e130]
+link collection to document3--><path d="M203.83,276.27 C223.47,293.89 248.83,316.66 267.13,333.08 " fill="none" id="collection-to-document3" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="271.16,336.69,267.1271,327.7047,267.4364,333.3531,261.788,333.6624,271.16,336.69" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[20f3077b6c7727380cedf482047a66f1]
+@startuml
+database "Database" as db
+
+rectangle "Scope" as scope
+
+folder "Collection" as collection
+
+
+
+file "Document" as document1
+file "Document" as document2
+file "Document" as document3
+
+db - -> scope
+scope - -> collection
+collection - -> document1
+collection - -> document2
+collection - -> document3
+
+
+
+
+note right of collection
+
+  Maximum of 1000 per scope
+
+end note
+
+note right of db
+
+  One database per application
+
+end note
+@enduml
+
+PlantUML version 1.2021.16(Wed Dec 08 17:25:22 GMT 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
