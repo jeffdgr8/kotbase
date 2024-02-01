@@ -7,9 +7,6 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3g -Dorg.gradle.parallel=false -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
-
 jobs:
   macos-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
@@ -80,7 +77,7 @@ jobs:
           distribution: zulu
           java-version: 17
       - name: Run tests
-        run: ./gradlew check "-Dorg.gradle.jvmargs=-Xmx1g -XX:MaxMetaspaceSize=500m"
+        run: ./gradlew check
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: failure()
