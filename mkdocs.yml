@@ -7,6 +7,7 @@ copyright: "&copy; 2023 Jeff Lockhart"
 repo_name: Kotbase
 repo_url: https://github.com/jeffdgr8/kotbase
 remote_branch: gh-pages
+docs_dir: 'docs/site'
 theme:
   name: material
   logo: assets/images/couchbase-logo.svg
