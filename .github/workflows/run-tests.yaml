@@ -14,7 +14,7 @@ jobs:
   macos-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     name: Run macOS tests
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -91,7 +91,7 @@ jobs:
   android-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     name: Run Android tests
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - name: Checkout
         uses: actions/checkout@v3
