@@ -41,8 +41,12 @@
 <a class="library-name--link" href="../../../index.html">
                             kotbase
                     </a>            </div>
-            <div class="library-version">3.0.15-1.0.1
-            </div>
+            <div class="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kotbase/-from-router/index.html&quot;}"><div class="versions-dropdown">
+  <div class="versions-dropdown-button">3.1</div>
+  <div class="versions-dropdown-data"><a href="index.html">3.1</a><a href="../../../older/3.0/couchbase-lite/kotbase/-from-router/index.html">3.0</a></div>
+</div>
+</dokka-template-command>            </div>
         </div>
         <div class="filter-section" id="filter-section">
                 <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite:dokkaHtmlPartial/commonMain">common</button>
@@ -79,7 +83,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../-query/parameters.html">parameters</a><span class="token operator">: </span><a href="../-parameters/index.html">Parameters</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns a copies of the current parameters.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../-query/parameters.html">parameters</a><span class="token operator">: </span><a href="../-parameters/index.html">Parameters</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">A copy of the current parameters.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -113,7 +117,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-query/execute.html"><span class="token function">execute</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-result-set/index.html">ResultSet</a></div><div class="brief "><p class="paragraph">Executes the query. The returning a result set that enumerates result rows one at a time. You can run the query any number of times, and you can even have multiple ResultSet active at once.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-query/execute.html"><span class="token function">execute</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-result-set/index.html">ResultSet</a></div><div class="brief "><p class="paragraph">Executes the query returning a result set that enumerates result rows one at a time. You can run the query any number of times, and you can even have multiple ResultSet active at once.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -143,7 +147,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="from.html"><span class="token function">from</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dataSource<span class="token operator">: </span><a href="../-data-source/index.html">DataSource</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-from/index.html">From</a></div><div class="brief "><p class="paragraph">Create and chain a FROM component for specifying the data source of the query.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">infix </span><span class="token keyword">fun </span><a href="from.html"><span class="token function">from</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dataSource<span class="token operator">: </span><a href="../-data-source/index.html">DataSource</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-from/index.html">From</a></div><div class="brief "><p class="paragraph">Create and chain a FROM component for specifying the query's data source.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -173,7 +177,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-query/remove-change-listener.html"><span class="token function">removeChangeListener</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">token<span class="token operator">: </span><a href="../-listener-token/index.html">ListenerToken</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Removes a change listener wih the given listener token.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-query/remove-change-listener.html"><span class="token function"><strike>removeChangeListener</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">token<span class="token operator">: </span><a href="../-listener-token/index.html">ListenerToken</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Removes a change listener wih the given listener token.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -184,7 +188,7 @@
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
             </div>
         </div>
