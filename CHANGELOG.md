@@ -9,8 +9,8 @@
     * [Java SDK v3.1.3](https://docs.couchbase.com/couchbase-lite/3.1/java/releasenotes.html#maint-3-1-3)
     * [Objective-C SDK v3.1.4](https://docs.couchbase.com/couchbase-lite/3.1/objc/releasenotes.html#maint-3-1-4)
     * [C SDK v3.1.3](https://docs.couchbase.com/couchbase-lite/3.1/c/releasenotes.html#maint-3-1-3)
-* Update to Kotlin 1.9.22 ([1b1ba2e](
-  https://github.com/jeffdgr8/kotbase/commit/1b1ba2e1b850006d425a5c1ea25a0e4f54a96870))
+* Update to Kotlin 1.9.22 ([8546e4b](
+  https://github.com/jeffdgr8/kotbase/commit/8546e4ba1ffacacfd05194da7deaec8e47851700))
 * Handle empty log domain set ([00db837](
   https://github.com/jeffdgr8/kotbase/commit/00db8379c5657a8c3719c897811c43540f517378))
 * **Source-incompatible change:** Convert `@Throws` getter functions to properties ([#12](
