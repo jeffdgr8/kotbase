@@ -78,7 +78,7 @@ download it from [GitHub](https://github.com/unicode-org/icu/releases).
 
 Kotbase documentation can be found at [kotbase.dev](https://kotbase.dev/), including [getting started examples](
 https://kotbase.dev/current/getting-started/), [usage guide](https://kotbase.dev/current/databases/), and [API reference](
-https://kotbase.dev/current/api/).
+https://kotbase.dev/api/).
 
 ## Differences from Java SDK
 
