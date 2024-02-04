@@ -65,7 +65,7 @@ repositories {
 ### Native Platforms
 
 Native platform targets should additionally link to the Couchbase Lite dependency native binary. See [Supported
-Platforms](https://kotbase.dev/platforms/) for more details.
+Platforms](https://kotbase.dev/current/platforms/) for more details.
 
 ### Linux
 
@@ -77,8 +77,8 @@ download it from [GitHub](https://github.com/unicode-org/icu/releases).
 ## Documentation
 
 Kotbase documentation can be found at [kotbase.dev](https://kotbase.dev/), including [getting started examples](
-https://kotbase.dev/getting-started/), [usage guide](https://kotbase.dev/databases/), and [API reference](
-https://kotbase.dev/api/).
+https://kotbase.dev/current/getting-started/), [usage guide](https://kotbase.dev/current/databases/), and [API reference](
+https://kotbase.dev/current/api/).
 
 ## Differences from Java SDK
 
@@ -102,7 +102,7 @@ https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-i
   deserve addressing.
 * Some deprecated APIs are omitted.
 * While not available in the Java SDK, as Java doesn't support operator overloading, [`Fragment` subscript APIs](
-  https://kotbase.dev/kotlin-extensions/#fragment-subscripts) are available in Kotbase, similar to [Swift](
+  https://kotbase.dev/current/kotlin-extensions/#fragment-subscripts) are available in Kotbase, similar to [Swift](
   https://docs.couchbase.com/mobile/3.1.4/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
   https://docs.couchbase.com/mobile/3.1.4/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
   https://docs.couchbase.com/mobile/3.1.3/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).

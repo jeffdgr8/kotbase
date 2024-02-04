@@ -3,7 +3,7 @@
 ## 3.1.3-1.1.0
 > 1 Feb 2023
 
-* [Scopes and Collections](https://kotbase.dev/scopes-and-collections/) — Couchbase Lite [3.1 API](
+* [Scopes and Collections](https://kotbase.dev/current/scopes-and-collections/) — Couchbase Lite [3.1 API](
   https://docs.couchbase.com/couchbase-lite/3.1/cbl-whatsnew.html) ([#11](https://github.com/jeffdgr8/kotbase/pull/11))
     * [Android SDK v3.1.3](https://docs.couchbase.com/couchbase-lite/3.1/android/releasenotes.html#maint-3-1-3)
     * [Java SDK v3.1.3](https://docs.couchbase.com/couchbase-lite/3.1/java/releasenotes.html#maint-3-1-3)
