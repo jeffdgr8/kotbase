@@ -13,7 +13,7 @@ plugins {
 
 val libs = the<LibrariesForLibs>()
 dependencies {
-    dokkaHtmlPlugin(libs.dokka.versioning)
+    dokkaPlugin(libs.dokka.versioning)
 }
 
 kotlin {
