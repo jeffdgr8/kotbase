@@ -3,7 +3,6 @@ import org.jetbrains.dokka.versioning.VersioningPlugin
 
 plugins {
     id(libs.plugins.dokka.get().pluginId)
-    id(libs.plugins.kotlinx.kover.get().pluginId)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
 }
 

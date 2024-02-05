@@ -9,7 +9,6 @@ plugins {
     id("base-convention")
     org.jetbrains.dokka
     id("com.vanniktech.maven.publish")
-    org.jetbrains.kotlinx.kover
 }
 
 val libs = the<LibrariesForLibs>()

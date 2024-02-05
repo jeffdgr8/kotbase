@@ -31,7 +31,6 @@ limitations under the License.
 * [kotlinx-coroutines](https://github.com/Kotlin/kotlinx.coroutines/blob/master/LICENSE.txt)
 * [kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime/blob/master/LICENSE.txt)
 * [kotlinx-io](https://github.com/Kotlin/kotlinx-io/blob/master/LICENSE)
-* [kotlinx-kover](https://github.com/Kotlin/kotlinx-kover/blob/main/LICENSE.TXT)
 * [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization/blob/master/LICENSE.txt)
 * [Material for MkDocs](https://github.com/squidfunk/mkdocs-material/blob/master/LICENSE)
 * [Mike](https://github.com/jimporter/mike/blob/master/LICENSE)
