@@ -76,6 +76,10 @@ android {
         minSdk = 22
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        targetSdk = 34
+    }
     // required by coroutines 1.7.0+ to avoid errors:
     // 6 files found with path 'META-INF/LICENSE.md'.
     packaging.resources.pickFirsts += "META-INF/**"
