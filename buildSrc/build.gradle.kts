@@ -15,7 +15,6 @@ dependencies {
     implementation(plugin(libs.plugins.android.library))
     implementation(plugin(libs.plugins.dokka))
     implementation(libs.dokka.versioning)
-    implementation(plugin(libs.plugins.kotlinx.kover))
     implementation(plugin(libs.plugins.vanniktech.maven.publish))
 }
 
