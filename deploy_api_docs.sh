@@ -32,6 +32,7 @@ cp -r ../docs/api api
 git add .
 
 git commit -m "Publish API docs"
+git push origin $PAGES_BRANCH
 
 cd ..
 rm -rf $TEMP_DIR
