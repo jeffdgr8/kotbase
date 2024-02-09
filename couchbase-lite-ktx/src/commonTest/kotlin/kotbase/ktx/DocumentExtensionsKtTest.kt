@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2020 MOLO17
+ * Copyright 2022-2023 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +25,6 @@
 package kotbase.ktx
 
 import kotbase.BaseTest
-import kotbase.Database
 import kotbase.ext.nowMillis
 import kotlinx.datetime.Clock
 import kotlin.test.Test

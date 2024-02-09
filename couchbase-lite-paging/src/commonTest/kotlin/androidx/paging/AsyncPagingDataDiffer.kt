@@ -1,5 +1,6 @@
 /*
  * Copyright 2019 The Android Open Source Project
+ * Copyright 2022-2023 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
  */
 
 /*
- * Copied from https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:paging/paging-runtime/src/main/java/androidx/paging/AsyncPagingDataDiffer.kt
+ * From https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:paging/paging-runtime/src/main/java/androidx/paging/AsyncPagingDataDiffer.kt
  * Modified by Jeff Lockhart
  * - Use Multiplatform Paging
  * - Replace JVM AtomicInteger
