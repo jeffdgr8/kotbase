@@ -42,6 +42,8 @@ sync data.
 * Create user `<username>` in Sync Gateway.
     * Set the password.
     * Set collection access for `user-<username>.notes` with `"admin_channels": ["user=<username>.notes"]`.
+* Configure the Sync Gateway URL for the app in the [dependency injection `domainModule`](
+  https://github.com/jeffdgr8/kotbase/blob/main/examples/kotbase-notes/kotbase-notes/src/commonMain/kotlin/di/DomainModule.kt).
 
 ## Roadmap
 
