@@ -55,10 +55,11 @@ class NoteRepository(
             .from(dbCollection)
 
         val query = if (searchTerms.isNotBlank()) {
+            val lowercaseTerms = searchTerms.lowercase()
             if (useFts) {
-                baseQuery.ftsWhereAndOrder(searchTerms)
+                baseQuery.ftsWhereAndOrder(lowercaseTerms)
             } else {
-                baseQuery.whereAndOrder(searchTerms)
+                baseQuery.whereAndOrder(lowercaseTerms)
             }
         } else {
             baseQuery.orderBy { "info.modified".descending() }
