@@ -18,7 +18,7 @@ class ReplicationService(
 ) {
 
     init {
-        dbProvider.writeScope.launch(Dispatchers.Default) {
+        dbProvider.scope.launch(Dispatchers.Default) {
             userRepository.user.collect { user ->
                 replicator?.stop()
                 replicatorFlow.value = if (user?.userId?.isNotBlank() == true) {
@@ -52,7 +52,7 @@ class ReplicationService(
                 ?: flowOf(null)
         }
         .map { it?.status }
-        .stateIn(dbProvider.writeScope, SharingStarted.Lazily, null)
+        .stateIn(dbProvider.scope, SharingStarted.Lazily, null)
 
     private var started = false
 

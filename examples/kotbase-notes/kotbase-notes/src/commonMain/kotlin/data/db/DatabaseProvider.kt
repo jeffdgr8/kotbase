@@ -5,11 +5,10 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class DatabaseProvider(
+    val readContext: CoroutineContext = CoroutineName("db-read") + Dispatchers.IO,
     @OptIn(ExperimentalCoroutinesApi::class)
-    val writeScope: CoroutineScope = CoroutineScope(
-        CoroutineName("db-write") + Dispatchers.IO.limitedParallelism(1)
-    ),
-    val readContext: CoroutineContext = CoroutineName("db-read") + Dispatchers.IO
+    val writeContext: CoroutineContext = CoroutineName("db-write") + Dispatchers.IO.limitedParallelism(1),
+    val scope: CoroutineScope = CoroutineScope(writeContext)
 ) {
 
     val database by lazy { Database(DB_NAME) }
