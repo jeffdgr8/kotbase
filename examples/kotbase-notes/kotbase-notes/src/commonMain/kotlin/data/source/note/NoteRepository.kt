@@ -38,7 +38,7 @@ class NoteRepository(
 ) {
 
     init {
-        dbProvider.writeScope.launch {
+        dbProvider.scope.launch {
             userRepository.user
                 .filterNot { it?.userId.isNullOrBlank() }
                 .collect {
@@ -116,7 +116,7 @@ class NoteRepository(
     }
 
     init {
-        dbProvider.writeScope.launch {
+        dbProvider.scope.launch {
             @OptIn(FlowPreview::class)
             saveChannel.receiveAsFlow()
                 .debounce(500.milliseconds)
@@ -150,7 +150,7 @@ class NoteRepository(
     }
 
     fun delete(note: Note) {
-        dbProvider.writeScope.launch {
+        dbProvider.scope.launch {
             val coll = dbCollection
             coll.getDocument(note.id)?.let {
                 coll.delete(it)

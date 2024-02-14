@@ -25,7 +25,7 @@ class AuthService(
                 else -> AuthStatus.LoggedIn
             }
         }
-        .stateIn(dbProvider.writeScope, SharingStarted.Eagerly, AuthStatus.Unknown)
+        .stateIn(dbProvider.scope, SharingStarted.Eagerly, AuthStatus.Unknown)
 
     suspend fun authenticateUser(username: String, password: String): Boolean {
         val result = HttpClient()

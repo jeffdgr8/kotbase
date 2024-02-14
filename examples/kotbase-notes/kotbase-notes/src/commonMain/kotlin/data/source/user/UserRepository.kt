@@ -16,13 +16,13 @@ class UserRepository(
     val user: StateFlow<UserDoc?> =
         dbCollection.documentFlow(USER_DOC_ID, dbProvider.readContext)
             .map(::decodeDocument)
-            .stateIn(dbProvider.writeScope, SharingStarted.Eagerly, UserDoc())
+            .stateIn(dbProvider.scope, SharingStarted.Eagerly, UserDoc())
 
     val userId: String?
         get() = user.value?.userId?.ifBlank { null }
 
     suspend fun saveUser(userId: String, password: String): Boolean {
-        withContext(dbProvider.writeScope.coroutineContext) {
+        withContext(dbProvider.writeContext) {
             val doc = UserDoc(userId, password)
                 .toMutableDocument(USER_DOC_ID)
             dbCollection.save(doc)
@@ -31,7 +31,7 @@ class UserRepository(
     }
 
     fun deleteUser() {
-        dbProvider.writeScope.launch {
+        dbProvider.scope.launch {
             dbCollection.getDocument(USER_DOC_ID)?.let {
                 dbCollection.delete(it)
             }
