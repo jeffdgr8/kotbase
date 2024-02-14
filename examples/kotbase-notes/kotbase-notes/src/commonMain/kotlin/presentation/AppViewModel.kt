@@ -1,7 +1,7 @@
 package presentation
 
-import data.source.user.AuthStatus
-import data.source.user.UserRepository
+import domain.replication.AuthService
+import domain.replication.AuthStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 class AppViewModel(
     scope: CoroutineScope,
-    private val userRepository: UserRepository
+    private val authService: AuthService
 ) {
 
     private val _screen = MutableStateFlow<Screen>(Screen.Splash)
@@ -17,7 +17,7 @@ class AppViewModel(
 
     init {
         scope.launch {
-            userRepository.authStatus.collect {
+            authService.authStatus.collect {
                 _screen.value = when (it) {
                     AuthStatus.LoggedIn -> Screen.Main
                     AuthStatus.LoggedOut -> Screen.Login
