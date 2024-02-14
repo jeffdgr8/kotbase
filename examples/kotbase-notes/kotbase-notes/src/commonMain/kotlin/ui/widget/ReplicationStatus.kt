@@ -1,0 +1,23 @@
+package ui.widget
+
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import kotbase.ReplicatorActivityLevel
+import kotbase.ReplicatorStatus
+
+@Composable
+fun ReplicationStatus(
+    status: ReplicatorStatus?
+) {
+    when (status?.activityLevel) {
+        ReplicatorActivityLevel.CONNECTING -> CircularProgressIndicator(modifier = Modifier.size(24.dp))
+        ReplicatorActivityLevel.BUSY -> CircularProgressIndicator(
+            progress = with(status.progress) { completed.toFloat() / total },
+            modifier = Modifier.size(24.dp)
+        )
+        else -> {}
+    }
+}
