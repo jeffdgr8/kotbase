@@ -18,16 +18,6 @@ class UserRepository(
             .map(::decodeDocument)
             .stateIn(dbProvider.writeScope, SharingStarted.Eagerly, UserDoc())
 
-    val authStatus: StateFlow<AuthStatus> =
-        user.map {
-            when {
-                it == null -> AuthStatus.LoggedOut
-                it.userId.isBlank() -> AuthStatus.Unknown
-                else -> AuthStatus.LoggedIn
-            }
-        }
-        .stateIn(dbProvider.writeScope, SharingStarted.Eagerly, AuthStatus.Unknown)
-
     val userId: String?
         get() = user.value?.userId?.ifBlank { null }
 
@@ -51,8 +41,4 @@ class UserRepository(
     companion object {
         private const val USER_DOC_ID = "user"
     }
-}
-
-enum class AuthStatus {
-    LoggedIn, LoggedOut, Unknown
 }
