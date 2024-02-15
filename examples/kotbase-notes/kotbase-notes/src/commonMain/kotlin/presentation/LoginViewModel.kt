@@ -43,7 +43,13 @@ class LoginViewModel(
         if (!isLoginButtonEnabled.value) return
         _isLoginButtonEnabled.value = false
         scope.launch {
-            if (!authService.authenticateUser(username.value, password.value)) {
+            val result = authService.authenticateUser(username.value, password.value)
+                .getOrElse {
+                    _isLoginButtonEnabled.value = true
+                    messageChannel.send("Error: ${it.message}")
+                    return@launch
+                }
+            if (!result) {
                 _isLoginButtonEnabled.value = true
                 messageChannel.send("Invalid credentials")
             }
