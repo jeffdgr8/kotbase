@@ -246,6 +246,20 @@ in Kotlin and [`asyncSequence(for:)`](
 https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/iosApp/iosApp/ContentView.swift#L99) in Swift
 code.
 
+## Going Further
+
+For an example of a full-featured MVVM architected Kotlin Multiplatform app, see the [Kotbase Notes app](
+https://github.com/jeffdgr8/kotbase/tree/main/examples/kotbase-notes). This example includes:
+
+* Support for Android, iOS, and JVM desktop platforms.
+* Shared data, domain, presentation, and UI logic.
+* Platform-specific utility functions via `expect`/`actual`.
+* Platform-specific lifecycle management for data sync.
+* Dependency injection via [Koin](https://github.com/InsertKoinIO/koin).
+* JSON serialization via [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization).
+* HTTP client via [Ktor](https://github.com/ktorio/ktor).
+* Enhanced Swift interoperability via [SKIE](https://github.com/touchlab/SKIE).
+
 ## Kotbase Library Source
 
 The apps can get the Kotbase library dependency either from its published Maven artifact or build the library locally

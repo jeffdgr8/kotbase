@@ -12,6 +12,8 @@ hide:
     * [x] [Getting Started](https://github.com/jeffdgr8/kotbase/tree/main/examples/getting-started)
     * [x] [Getting Started Compose Multiplatform](
       https://github.com/jeffdgr8/kotbase/tree/main/examples/getting-started-compose)
+    * [x] [Kotbase Notes](https://github.com/jeffdgr8/kotbase/tree/main/examples/kotbase-notes)
+    * [ ] SwiftUI for Kotbase Notes
 * [x] Couchbase Lite [3.1 API](https://docs.couchbase.com/couchbase-lite/3.1/cbl-whatsnew.html) - Scopes and Collections
 * [x] Versioned docs
 * [ ] Async coroutines API
