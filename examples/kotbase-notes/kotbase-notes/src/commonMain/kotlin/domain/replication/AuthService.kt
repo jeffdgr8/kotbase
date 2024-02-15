@@ -27,18 +27,19 @@ class AuthService(
         }
         .stateIn(dbProvider.scope, SharingStarted.Eagerly, AuthStatus.Unknown)
 
-    suspend fun authenticateUser(username: String, password: String): Boolean {
-        val result = HttpClient()
-            .get(syncGateway.httpEndpoint) {
+    suspend fun authenticateUser(username: String, password: String): Result<Boolean> {
+        val result = runCatching {
+            HttpClient().get(syncGateway.httpEndpoint) {
                 basicAuth(username, password)
             }
             .status == HttpStatusCode.OK
+        }.getOrElse { return Result.failure(it) }
 
         if (result) {
             userRepository.saveUser(username, password)
         }
 
-        return result
+        return Result.success(result)
     }
 
     fun logout() {
