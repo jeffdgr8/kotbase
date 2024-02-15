@@ -4,9 +4,20 @@ The Kotbase Notes app is a full-featured MVVM Kotlin Multiplatform app using Kot
 connects to [Couchbase Sync Gateway](https://www.couchbase.com/products/sync-gateway/) to authenticate a user and
 synchronize data to a [Couchbase Server](https://www.couchbase.com/products/server/) backend database and between devices.
 
-The app targets Android, iOS, and JVM Desktop platforms.
+## Features
 
-* `/kotbase-notes` is for code that will be shared across the Compose Multiplatform application.
+* Support for Android, iOS, and JVM desktop platforms.
+* Shared data, domain, presentation, and UI logic.
+* Platform-specific utility functions via `expect`/`actual`.
+* Platform-specific lifecycle management for data sync.
+* Dependency injection via [Koin](https://github.com/InsertKoinIO/koin).
+* JSON serialization via [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization).
+* HTTP client via [Ktor](https://github.com/ktorio/ktor).
+* Enhanced Swift interoperability via [SKIE](https://github.com/touchlab/SKIE).
+
+## Source Directories
+
+* `/kotbase-notes` is for code shared across the Compose Multiplatform application.
   It contains several subfolders:
   - `commonMain` is for code that’s common for all targets.
   - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
@@ -30,15 +41,15 @@ sync data.
 * Create a `notes` collection within this scope.
 * Configure the database `kotbase-notes` in Sync Gateway for the user's scope and collection.
     * Use this sync function:
-    ```javascript
-    function(doc, oldDoc, meta) {
-        channelId = "user=<username>.notes";
-        // Assign document to channel
-        channel(channelId);
-        // Grant user access to channel
-        access("<username>", channelId);
-    }
-    ```
+      ```javascript
+      function(doc, oldDoc, meta) {
+          channelId = "user=<username>.notes";
+          // Assign document to channel
+          channel(channelId);
+          // Grant user access to channel
+          access("<username>", channelId);
+      }
+      ```
 * Create user `<username>` in Sync Gateway.
     * Set the password.
     * Set collection access for `user-<username>.notes` with `"admin_channels": ["user=<username>.notes"]`.
