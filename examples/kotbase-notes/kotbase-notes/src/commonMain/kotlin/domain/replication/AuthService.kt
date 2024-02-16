@@ -29,10 +29,16 @@ class AuthService(
 
     suspend fun authenticateUser(username: String, password: String): Result<Boolean> {
         val result = runCatching {
-            HttpClient().get(syncGateway.httpEndpoint) {
+            val status = HttpClient().get(syncGateway.httpEndpoint) {
                 basicAuth(username, password)
             }
-            .status == HttpStatusCode.OK
+            .status
+
+            when (status) {
+                HttpStatusCode.OK -> true
+                HttpStatusCode.Unauthorized -> false
+                else -> return Result.failure(Exception(status.description))
+            }
         }.getOrElse { return Result.failure(it) }
 
         if (result) {

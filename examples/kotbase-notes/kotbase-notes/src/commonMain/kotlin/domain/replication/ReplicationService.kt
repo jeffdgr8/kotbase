@@ -52,6 +52,13 @@ class ReplicationService(
                 ?: flowOf(null)
         }
         .map { it?.status }
+        .onEach {
+            it?.error?.run {
+                if (domain == CBLError.Domain.CBLITE && code == CBLError.Code.HTTP_AUTH_REQUIRED) {
+                    userRepository.deleteUser()
+                }
+            }
+        }
         .stateIn(dbProvider.scope, SharingStarted.Lazily, null)
 
     private var started = false

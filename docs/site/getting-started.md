@@ -248,8 +248,8 @@ code.
 
 ## Going Further
 
-For an example of a full-featured MVVM architected Kotlin Multiplatform app, see the [Kotbase Notes app](
-https://github.com/jeffdgr8/kotbase/tree/main/examples/kotbase-notes). This example includes:
+For an example of a full-featured MVVM architected Kotlin Multiplatform app, including data synchronization, see the
+[Kotbase Notes app](https://github.com/jeffdgr8/kotbase/tree/main/examples/kotbase-notes). This example includes:
 
 * Support for Android, iOS, and JVM desktop platforms.
 * Shared data, domain, presentation, and UI logic.
