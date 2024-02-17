@@ -6,8 +6,3 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrains.compose) apply false
 }
-
-allprojects {
-    group = "dev.kotbase.gettingstarted"
-    version = "1.0"
-}

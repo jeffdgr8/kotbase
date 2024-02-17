@@ -1,20 +1,17 @@
 [versions]
-agp = "8.2.2"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
-androidx-activity-compose = "1.8.2"
 compose = "1.6.1"
 compose-plugin = "1.5.12"
-coroutines = "1.7.3"
+coroutines = "1.8.0"
 couchbase-lite-objc = "3.1.4"
 koin = "3.5.3"
 kotlin = "1.9.22"
 ktor = "2.3.8"
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
+android-application = { id = "com.android.application", version = "8.2.2" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
@@ -22,7 +19,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 skie = { id = "co.touchlab.skie", version = "0.6.1" }
 
 [libraries]
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.8.2" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
