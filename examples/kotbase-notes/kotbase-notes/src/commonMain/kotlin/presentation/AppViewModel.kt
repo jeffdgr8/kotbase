@@ -31,12 +31,8 @@ class AppViewModel(
         _screen.value = Screen.Edit(id)
     }
 
-    fun returnToMain() {
-        _screen.value = Screen.Main
-    }
-
     val backHandlerEnabled: Boolean
-        get() = screen.value != Screen.Main
+        get() = screen.value is Screen.Edit
 
     fun backPressed() {
         when (screen.value) {

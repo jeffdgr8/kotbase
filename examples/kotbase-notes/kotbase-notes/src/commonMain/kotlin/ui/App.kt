@@ -33,7 +33,7 @@ fun App() {
                 )
                 is Screen.Edit -> EditScreen(
                     noteId = screen.noteId,
-                    onClose = viewModel::returnToMain
+                    onClose = viewModel::backPressed
                 )
             }
         }
