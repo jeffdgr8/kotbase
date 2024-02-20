@@ -59,7 +59,7 @@ class ReplicationService(
                 }
             }
         }
-        .stateIn(dbProvider.scope, SharingStarted.Lazily, null)
+        .stateIn(dbProvider.scope, SharingStarted.Eagerly, null)
 
     private var started = false
 
