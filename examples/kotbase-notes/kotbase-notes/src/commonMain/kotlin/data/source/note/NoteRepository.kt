@@ -21,10 +21,7 @@ import kotbase.ktx.select
 import kotbase.ktx.where
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
@@ -34,17 +31,16 @@ import kotlin.time.Duration.Companion.milliseconds
 class NoteRepository(
     private val dbProvider: DatabaseProvider,
     private val userScopeProvider: UserScopeProvider,
-    private val userRepository: UserRepository
+    userRepository: UserRepository
 ) {
 
     init {
-        dbProvider.scope.launch {
-            userRepository.user
-                .filterNot { it?.userId.isNullOrBlank() }
-                .collect {
-                    dbCollection.createIndex(FTS_INDEX, FullTextIndexConfiguration("title", "text"))
-                }
-        }
+        userRepository.user
+            .filterNot { it?.userId.isNullOrBlank() }
+            .onEach {
+                dbCollection.createIndex(FTS_INDEX, FullTextIndexConfiguration("title", "text"))
+            }
+            .launchIn(dbProvider.scope)
     }
 
     val dbCollection: Collection
@@ -116,37 +112,36 @@ class NoteRepository(
     }
 
     init {
-        dbProvider.scope.launch {
-            @OptIn(FlowPreview::class)
-            saveChannel.receiveAsFlow()
-                .debounce(500.milliseconds)
-                .collect { note ->
+        @OptIn(FlowPreview::class)
+        saveChannel.receiveAsFlow()
+            .debounce(500.milliseconds)
+            .onEach { note ->
 
-                    val coll = dbCollection
-                    val doc = coll.getDocument(note.id)
-                        ?.let(::decodeDocument)
-                        ?: run {
-                            val userId = userScopeProvider.userId ?: userNotLoggedInError()
-                            NoteDoc(
-                                info = NoteDoc.Info(
-                                    author = userId,
-                                    created = note.modified
-                                )
+                val coll = dbCollection
+                val doc = coll.getDocument(note.id)
+                    ?.let(::decodeDocument)
+                    ?: run {
+                        val userId = userScopeProvider.userId ?: userNotLoggedInError()
+                        NoteDoc(
+                            info = NoteDoc.Info(
+                                author = userId,
+                                created = note.modified
                             )
-                        }
+                        )
+                    }
 
-                    val updated = doc.copy(
-                        title = note.title,
-                        text = note.text,
-                        info = doc.info.copy(modified = note.modified)
-                    )
+                val updated = doc.copy(
+                    title = note.title,
+                    text = note.text,
+                    info = doc.info.copy(modified = note.modified)
+                )
 
-                    val json = Json.encodeToString(updated)
-                    val mutableDoc = MutableDocument(note.id, json)
+                val json = Json.encodeToString(updated)
+                val mutableDoc = MutableDocument(note.id, json)
 
-                    coll.save(mutableDoc)
-                }
-        }
+                coll.save(mutableDoc)
+            }
+            .launchIn(dbProvider.scope)
     }
 
     fun delete(note: Note) {

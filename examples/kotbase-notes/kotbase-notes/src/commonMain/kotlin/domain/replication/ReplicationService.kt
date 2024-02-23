@@ -4,11 +4,8 @@ import data.db.DatabaseProvider
 import data.source.note.NoteRepository
 import data.source.user.UserRepository
 import kotbase.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ReplicationService(
     dbProvider: DatabaseProvider,
@@ -18,15 +15,15 @@ class ReplicationService(
 ) {
 
     init {
-        dbProvider.scope.launch(Dispatchers.Default) {
-            userRepository.user.collect { user ->
+        userRepository.user
+            .onEach { user ->
                 replicator?.stop()
                 replicatorFlow.value = if (user?.userId?.isNotBlank() == true) {
                     createReplicator(user.userId, user.password)
                 } else null
                 checkStart()
             }
-        }
+            .launchIn(dbProvider.scope + Dispatchers.Default)
     }
 
     private val replicatorFlow = MutableStateFlow<Replicator?>(null)

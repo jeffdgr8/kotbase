@@ -45,7 +45,7 @@ fun LoginScreen() {
             .collect { message ->
                 message?.let { snackbarHostState.showSnackbar(it) }
             }
-        }
+    }
 
     Scaffold(
         snackbarHost = {
