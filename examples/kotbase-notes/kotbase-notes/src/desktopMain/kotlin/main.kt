@@ -4,7 +4,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import androidx.compose.ui.window.singleWindowApplication
 import di.appModules
 import ui.App
 import ui.screen.NotesGrid
@@ -35,7 +34,7 @@ fun main() = application {
                     else startReplication()
                 }
             }
-    
+
             App()
         }
     }

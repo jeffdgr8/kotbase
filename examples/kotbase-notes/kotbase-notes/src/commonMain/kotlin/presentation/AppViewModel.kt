@@ -5,7 +5,8 @@ import domain.replication.AuthStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class AppViewModel(
     scope: CoroutineScope,
@@ -16,15 +17,15 @@ class AppViewModel(
     val screen: StateFlow<Screen> get() = _screen
 
     init {
-        scope.launch {
-            authService.authStatus.collect {
+        authService.authStatus
+            .onEach {
                 _screen.value = when (it) {
                     AuthStatus.LoggedIn -> Screen.Main
                     AuthStatus.LoggedOut -> Screen.Login
                     AuthStatus.Unknown -> Screen.Splash
                 }
             }
-        }
+            .launchIn(scope)
     }
 
     fun selectNote(id: String) {
