@@ -1,6 +1,7 @@
 package presentation
 
 import data.source.note.NoteRepository
+import domain.model.Note
 import domain.replication.AuthService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,15 +28,22 @@ class MainViewModel(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val notes = combine(searchText, useFts) { searchText, useFts ->
+    val notes: StateFlow<NotesState> =
+        combine(searchText, useFts) { searchText, useFts ->
             Pair(searchText, useFts)
         }
-        .flatMapLatest { (searchText, useFts) ->
-            noteRepository.getNotesFlow(searchText, useFts)
-        }
-        .stateIn(scope, SharingStarted.Eagerly, emptyList())
+            .flatMapLatest { (searchText, useFts) ->
+                noteRepository.getNotesFlow(searchText, useFts)
+            }
+            .map { NotesState.Notes(it) }
+            .stateIn(scope, SharingStarted.Eagerly, NotesState.Loading)
 
     fun logout() {
         authService.logout()
     }
+}
+
+sealed interface NotesState {
+    data object Loading : NotesState
+    data class Notes(val notes: List<Note>) : NotesState
 }

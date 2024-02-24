@@ -4,6 +4,7 @@ import data.db.DatabaseProvider
 import data.db.UserScopeProvider
 import data.source.user.UserRepository
 import domain.model.Note
+import domain.model.User
 import kotbase.Collection
 import kotbase.Expression
 import kotbase.From
@@ -36,7 +37,7 @@ class NoteRepository(
 
     init {
         userRepository.user
-            .filterNot { it?.userId.isNullOrBlank() }
+            .filterIsInstance<User.Authenticated>()
             .onEach {
                 dbCollection.createIndex(FTS_INDEX, FullTextIndexConfiguration("title", "text"))
             }

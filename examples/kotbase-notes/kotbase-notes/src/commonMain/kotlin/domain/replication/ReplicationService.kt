@@ -3,6 +3,7 @@ package domain.replication
 import data.db.DatabaseProvider
 import data.source.note.NoteRepository
 import data.source.user.UserRepository
+import domain.model.User
 import kotbase.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -18,9 +19,10 @@ class ReplicationService(
         userRepository.user
             .onEach { user ->
                 replicator?.stop()
-                replicatorFlow.value = if (user?.userId?.isNotBlank() == true) {
-                    createReplicator(user.userId, user.password)
-                } else null
+                replicatorFlow.value = when (user) {
+                    is User.Authenticated -> createReplicator(user.userId, user.password)
+                    else -> null
+                }
                 checkStart()
             }
             .launchIn(dbProvider.scope + Dispatchers.Default)

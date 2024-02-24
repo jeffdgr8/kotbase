@@ -2,6 +2,7 @@ package domain.replication
 
 import data.db.DatabaseProvider
 import data.source.user.UserRepository
+import domain.model.User
 import io.ktor.client.HttpClient
 import io.ktor.client.request.basicAuth
 import io.ktor.client.request.get
@@ -19,10 +20,10 @@ class AuthService(
 
     val authStatus: StateFlow<AuthStatus> =
         userRepository.user.map {
-            when {
-                it == null -> AuthStatus.LoggedOut
-                it.userId.isBlank() -> AuthStatus.Unknown
-                else -> AuthStatus.LoggedIn
+            when (it) {
+                is User.Authenticated -> AuthStatus.LoggedIn
+                User.None -> AuthStatus.LoggedOut
+                User.Unknown -> AuthStatus.Unknown
             }
         }
         .stateIn(dbProvider.scope, SharingStarted.Eagerly, AuthStatus.Unknown)

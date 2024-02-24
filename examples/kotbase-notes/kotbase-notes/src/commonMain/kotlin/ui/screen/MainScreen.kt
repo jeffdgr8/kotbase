@@ -30,11 +30,14 @@ import domain.randomNanoId
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import presentation.MainViewModel
+import presentation.NotesState
 import ui.widget.ReplicationStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onNoteSelected: (String) -> Unit) {
+fun MainScreen(
+    onNoteSelected: (String) -> Unit
+) {
     val scope = rememberCoroutineScope()
     val viewModel: MainViewModel = koinInject { parametersOf(scope) }
     val notes by viewModel.notes.collectAsState()
@@ -81,7 +84,10 @@ fun MainScreen(onNoteSelected: (String) -> Unit) {
                 onTextChange = viewModel::updateSearchText,
                 modifier = Modifier.fillMaxWidth()
             )
-            NotesGrid(notes, onNoteSelected)
+            when (val state = notes) {
+                NotesState.Loading -> LoadingIndicator()
+                is NotesState.Notes -> NotesGrid(state.notes, onNoteSelected)
+            }
         }
     }
 }
@@ -130,6 +136,17 @@ fun FtsSwitch(
             onCheckedChange = onFtsToggled
         )
         Text("FTS")
+    }
+}
+
+@Composable
+fun LoadingIndicator(
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.weight(1F))
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        Spacer(modifier = Modifier.weight(1F))
     }
 }
 

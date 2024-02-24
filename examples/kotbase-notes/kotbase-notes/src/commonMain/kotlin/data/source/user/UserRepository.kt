@@ -1,6 +1,7 @@
 package data.source.user
 
 import data.db.DatabaseProvider
+import domain.model.User
 import kotbase.Collection
 import kotbase.ktx.documentFlow
 import kotlinx.coroutines.*
@@ -13,13 +14,21 @@ class UserRepository(
     private val dbCollection: Collection
         get() = dbProvider.database.defaultCollection
 
-    val user: StateFlow<UserDoc?> =
+    val user: StateFlow<User> =
         dbCollection.documentFlow(USER_DOC_ID, dbProvider.readContext)
             .map(::decodeDocument)
-            .stateIn(dbProvider.scope, SharingStarted.Eagerly, UserDoc())
+            .map { userDoc ->
+                userDoc?.let {
+                    User.Authenticated(it.userId, it.password)
+                } ?: User.None
+            }
+            .stateIn(dbProvider.scope, SharingStarted.Eagerly, User.Unknown)
 
     val userId: String?
-        get() = user.value?.userId?.ifBlank { null }
+        get() = when (val user = user.value) {
+            is User.Authenticated -> user.userId
+            else -> null
+        }
 
     suspend fun saveUser(userId: String, password: String): Boolean {
         withContext(dbProvider.writeContext) {
