@@ -87,7 +87,8 @@ fun LoginScreen() {
 fun UsernameField(
     value: String,
     onValueChange: (String) -> Unit,
-    onEnterPressed: () -> Unit
+    onEnterPressed: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -97,7 +98,7 @@ fun UsernameField(
         label = { Text("Username") },
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        modifier = Modifier.onPreviewKeyEvent(tabFocus(focusManager, FocusDirection.Next))
+        modifier = modifier.onPreviewKeyEvent(tabFocus(focusManager, FocusDirection.Next))
             .onPreviewKeyEvent(handleEnter(onEnterPressed))
     )
 }
@@ -106,7 +107,8 @@ fun UsernameField(
 fun PasswordField(
     value: String,
     onValueChange: (String) -> Unit,
-    onEnterPressed: () -> Unit
+    onEnterPressed: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var showPassword by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -127,7 +129,7 @@ fun PasswordField(
         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Go),
         keyboardActions = KeyboardActions(onGo = { onEnterPressed() }),
-        modifier = Modifier.onPreviewKeyEvent(tabFocus(focusManager, FocusDirection.Next))
+        modifier = modifier.onPreviewKeyEvent(tabFocus(focusManager, FocusDirection.Next))
             .onPreviewKeyEvent(handleEnter(onEnterPressed))
     )
 }

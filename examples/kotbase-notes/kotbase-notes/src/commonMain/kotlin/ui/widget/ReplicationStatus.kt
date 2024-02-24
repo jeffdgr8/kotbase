@@ -1,5 +1,6 @@
 package ui.widget
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -10,14 +11,15 @@ import kotbase.ReplicatorStatus
 
 @Composable
 fun ReplicationStatus(
-    status: ReplicatorStatus?
+    status: ReplicatorStatus?,
+    modifier: Modifier = Modifier
 ) {
     when (status?.activityLevel) {
-        ReplicatorActivityLevel.CONNECTING -> CircularProgressIndicator(modifier = Modifier.size(24.dp))
+        ReplicatorActivityLevel.CONNECTING -> CircularProgressIndicator(modifier = modifier.size(24.dp))
         ReplicatorActivityLevel.BUSY -> CircularProgressIndicator(
             progress = with(status.progress) { completed.toFloat() / total },
-            modifier = Modifier.size(24.dp)
+            modifier = modifier.size(24.dp)
         )
-        else -> {}
+        else -> Spacer(modifier = modifier.size(24.dp))
     }
 }
