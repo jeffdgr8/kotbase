@@ -3,6 +3,8 @@ package presentation
 import data.source.note.NoteRepository
 import domain.model.Note
 import domain.replication.AuthService
+import domain.replication.ReplicationService
+import kotbase.ReplicatorStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -10,8 +12,12 @@ import kotlinx.coroutines.flow.*
 class MainViewModel(
     scope: CoroutineScope,
     private val noteRepository: NoteRepository,
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val replicationService: ReplicationService
 ) {
+
+    val replicationStatus: StateFlow<ReplicatorStatus?>
+        get() = replicationService.replicationStatus
 
     private val _searchText = MutableStateFlow("")
     val searchText: StateFlow<String> get() = _searchText

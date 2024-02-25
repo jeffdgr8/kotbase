@@ -51,11 +51,11 @@ fun LoginScreen() {
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         }
-    ) {
+    ) { contentPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth().padding(12.dp)
+            modifier = Modifier.padding(contentPadding).fillMaxWidth().padding(12.dp)
         ) {
             Spacer(modifier = Modifier.weight(1F))
 
