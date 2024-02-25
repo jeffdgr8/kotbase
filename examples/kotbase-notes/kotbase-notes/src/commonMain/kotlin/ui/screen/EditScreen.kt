@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import domain.replication.ReplicationService
 import kotlinx.coroutines.Dispatchers
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
@@ -35,11 +34,10 @@ fun EditScreen(
 ) {
     val scope = rememberCoroutineScope()
     val viewModel: EditViewModel = koinInject { parametersOf(scope, noteId) }
+
     val isLoading by viewModel.isLoading.collectAsState()
     val note by viewModel.note.collectAsState(Dispatchers.Main.immediate)
-
-    val replicationService: ReplicationService = koinInject()
-    val replicationStatus by replicationService.replicationStatus.collectAsState()
+    val replicationStatus by viewModel.replicationStatus.collectAsState()
 
     Scaffold(
         topBar = {
@@ -63,9 +61,9 @@ fun EditScreen(
                 }
             )
         }
-    ) {
+    ) { contentPadding ->
         Box(
-            modifier = Modifier.padding(horizontal = 12.dp).padding(top = it.calculateTopPadding(), bottom = 12.dp)
+            modifier = Modifier.padding(contentPadding).padding(horizontal = 12.dp).padding(bottom = 12.dp)
         ) {
             if (isLoading) {
                 CircularProgressIndicator(

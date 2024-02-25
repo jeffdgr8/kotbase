@@ -246,6 +246,10 @@ in Kotlin and [`asyncSequence(for:)`](
 https://github.com/jeffdgr8/kotbase/blob/main/examples/getting-started/iosApp/iosApp/ContentView.swift#L99) in Swift
 code.
 
+[SKIE](https://github.com/touchlab/SKIE) is another solution, which generates Swift code for enhanced Swift–Kotlin
+interop, including coroutines. It's used in the [Kotbase Notes](
+https://github.com/jeffdgr8/kotbase/tree/main/examples/kotbase-notes) example app [described below](#going-further).
+
 ## Going Further
 
 For an example of a full-featured MVVM architected Kotlin Multiplatform app, including data synchronization, see the

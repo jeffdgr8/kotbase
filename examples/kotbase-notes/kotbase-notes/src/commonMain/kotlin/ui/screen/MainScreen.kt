@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import domain.replication.ReplicationService
 import domain.model.Note
 import kotlinx.coroutines.Dispatchers
 import domain.randomNanoId
@@ -40,12 +39,11 @@ fun MainScreen(
 ) {
     val scope = rememberCoroutineScope()
     val viewModel: MainViewModel = koinInject { parametersOf(scope) }
+
     val notes by viewModel.notes.collectAsState()
     val searchText by viewModel.searchText.collectAsState(Dispatchers.Main.immediate)
-    val useFts by viewModel.useFts.collectAsState()
-
-    val replicationService: ReplicationService = koinInject()
-    val replicationStatus by replicationService.replicationStatus.collectAsState()
+    val useFts by viewModel.useFts.collectAsState(Dispatchers.Main.immediate)
+    val replicationStatus by viewModel.replicationStatus.collectAsState()
 
     Scaffold(
         topBar = {
@@ -74,10 +72,10 @@ fun MainScreen(
                 Icon(Icons.Filled.Add, "new note")
             }
         }
-    ) {
+    ) { contentPadding ->
         Column(
-            modifier = Modifier.padding(horizontal = 8.dp).padding(top = it.calculateTopPadding(), bottom = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(contentPadding).padding(horizontal = 12.dp).padding(bottom = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             SearchBar(
                 text = searchText,
@@ -159,8 +157,8 @@ fun NotesGrid(
     if (notes.isNotEmpty()) {
         LazyVerticalStaggeredGrid(
             columns = StaggeredGridCells.Adaptive(minSize = 200.dp),
-            verticalItemSpacing = 8.dp,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalItemSpacing = 12.dp,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = modifier
         ) {
             items(notes) { note ->
