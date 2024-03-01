@@ -2,10 +2,11 @@
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
-compose = "1.6.1"
-compose-plugin = "1.5.12"
+compose = "1.6.2"
+compose-plugin = "1.6.0"
 coroutines = "1.8.0"
 couchbase-lite-objc = "3.1.4"
+kotbase = "3.1.3-1.1.0"
 koin = "3.5.3"
 kotlin = "1.9.22"
 ktor = "2.3.8"
@@ -26,7 +27,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version = "1.1.2" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-kotbase = { module = "dev.kotbase:couchbase-lite-ktx", version = "3.1.3-1.1.0" }
+kotbase = { module = "dev.kotbase:couchbase-lite-ktx", version.ref = "kotbase" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.6.3" }

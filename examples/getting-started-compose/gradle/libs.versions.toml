@@ -1,8 +1,8 @@
 [versions]
 activity-compose = "1.8.2"
 android-gradle-plugin = "8.2.2"
-compose = "1.6.1"
-compose-plugin = "1.5.12"
+compose = "1.6.2"
+compose-plugin = "1.6.0"
 couchbase-lite-objc = "3.1.4"
 kotbase = "3.1.3-1.1.0"
 kotlin = "1.9.22"
