@@ -6,7 +6,8 @@ import domain.model.User
 import io.ktor.client.HttpClient
 import io.ktor.client.request.basicAuth
 import io.ktor.client.request.get
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
+import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -29,18 +30,20 @@ class AuthService(
         .stateIn(dbProvider.scope, SharingStarted.Eagerly, AuthStatus.Unknown)
 
     suspend fun authenticateUser(username: String, password: String): Result<Boolean> {
-        val result = runCatching {
+        val result = try {
             val status = HttpClient().get(syncGateway.httpEndpoint) {
                 basicAuth(username, password)
             }
             .status
 
-            when (status) {
-                HttpStatusCode.OK -> true
-                HttpStatusCode.Unauthorized -> false
-                else -> return Result.failure(Exception(status.description))
+            when {
+                status.isSuccess() -> true
+                status == HttpStatusCode.Unauthorized -> false
+                else -> return Result.failure(IllegalStateException(status.description))
             }
-        }.getOrElse { return Result.failure(it) }
+        } catch (e: IOException) {
+            return Result.failure(e)
+        }
 
         if (result) {
             userRepository.saveUser(username, password)
