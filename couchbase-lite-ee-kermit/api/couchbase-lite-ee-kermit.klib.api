@@ -1,0 +1,18 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.kotbase:couchbase-lite-ee-kermit>
+final class kotbase.kermit/KermitCouchbaseLiteLogger : kotbase/Logger { // kotbase.kermit/KermitCouchbaseLiteLogger|null[0]
+    constructor <init>(co.touchlab.kermit/Logger, kotbase/LogLevel =...) // kotbase.kermit/KermitCouchbaseLiteLogger.<init>|<init>(co.touchlab.kermit.Logger;kotbase.LogLevel){}[0]
+    final fun log(kotbase/LogLevel, kotbase/LogDomain, kotlin/String) // kotbase.kermit/KermitCouchbaseLiteLogger.log|log(kotbase.LogLevel;kotbase.LogDomain;kotlin.String){}[0]
+    final fun setDomains(kotlin/Array<out kotbase/LogDomain>...) // kotbase.kermit/KermitCouchbaseLiteLogger.setDomains|setDomains(kotlin.Array<out|kotbase.LogDomain>...){}[0]
+    final val level // kotbase.kermit/KermitCouchbaseLiteLogger.level|{}level[0]
+        final fun <get-level>(): kotbase/LogLevel // kotbase.kermit/KermitCouchbaseLiteLogger.level.<get-level>|<get-level>(){}[0]
+    final var domains // kotbase.kermit/KermitCouchbaseLiteLogger.domains|<get-domains>(){}[0]
+        final fun <get-domains>(): kotlin.collections/Set<kotbase/LogDomain> // kotbase.kermit/KermitCouchbaseLiteLogger.domains.<get-domains>|<get-domains>(){}[0]
+        final fun <set-domains>(kotlin.collections/Set<kotbase/LogDomain>) // kotbase.kermit/KermitCouchbaseLiteLogger.domains.<set-domains>|<set-domains>(kotlin.collections.Set<kotbase.LogDomain>){}[0]
+}

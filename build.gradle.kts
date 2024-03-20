@@ -1,3 +1,4 @@
+import kotlinx.validation.ExperimentalBCVApi
 import org.jetbrains.dokka.versioning.VersioningConfiguration
 import org.jetbrains.dokka.versioning.VersioningPlugin
 
@@ -63,6 +64,8 @@ apiValidation {
         "dev.kotbase.paging.BuildConfig",
         "dev.kotbase.kermit.BuildConfig"
     )
+    @OptIn(ExperimentalBCVApi::class)
+    klib.enabled = true
 }
 
 tasks.register<Delete>(BasePlugin.CLEAN_TASK_NAME) {
