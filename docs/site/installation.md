@@ -29,7 +29,7 @@ your shared module's **build.gradle.kts**:
 !!! note
     The Couchbase Lite Community Edition is free and open source. The Enterprise Edition is free for development and
     testing, but requires a [license from Couchbase](https://www.couchbase.com/pricing/#couchbase-mobile) for production
-    use. [See Community vs Enterprise Edition.](https://www.couchbase.com/products/editions/#couchbase_lite)
+    use. [See Community vs Enterprise Edition.](https://www.couchbase.com/products/editions/mobile/)
 
 Kotbase is published to Maven Central. The Couchbase Lite Enterprise Edition dependency additionally requires the
 Couchbase Maven repository.

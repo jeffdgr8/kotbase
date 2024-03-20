@@ -83,7 +83,7 @@ server on launch.
 
 ## Database Encryption
 
-!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
 
 If you are using an encrypted database, [`Database.copy()`](
 /api/couchbase-lite-ee/kotbase/-database/-companion/copy.html) does not change the encryption key. The encryption key

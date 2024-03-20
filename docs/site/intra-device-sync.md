@@ -2,7 +2,7 @@ _Couchbase Lite Database Sync - Synchronize changes between databases on the sam
 
 ## Overview
 
-!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
 
 Couchbase Lite supports replication between two local databases at the database, scope, or collection level. This allows
 a Couchbase Lite replicator to store data on secondary storage. It is useful in scenarios when a user’s device is
