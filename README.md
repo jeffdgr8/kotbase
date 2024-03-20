@@ -13,7 +13,7 @@ https://kotlinlang.slack.com/messages/couchbase/)
 
 ## Introduction
 
-Kotbase pairs [Kotlin Multiplatform](https://kotlinlang.org/lp/multiplatform/) with [Couchbase Lite](
+Kotbase pairs [Kotlin Multiplatform](https://www.jetbrains.com/kotlin-multiplatform/) with [Couchbase Lite](
 https://www.couchbase.com/products/lite/), an embedded NoSQL JSON document database. Couchbase Lite can be used as a
 standalone client database, or paired with [Couchbase Server](https://www.couchbase.com/products/server/) and [Sync
 Gateway](https://www.couchbase.com/products/sync-gateway/) or [Capella App Services](
@@ -50,7 +50,7 @@ kotlin {
 > **Note**
 > The Couchbase Lite Community Edition is free and open source. The Enterprise Edition is free for development and
 > testing, but requires a [license from Couchbase](https://www.couchbase.com/pricing/#couchbase-mobile) for production
-> use. [See Community vs Enterprise Edition.](https://www.couchbase.com/products/editions/#couchbase_lite)
+> use. [See Community vs Enterprise Edition.](https://www.couchbase.com/products/editions/mobile/)
 
 Kotbase is published to Maven Central. The Couchbase Lite Enterprise Edition dependency additionally requires the
 Couchbase Maven repository.

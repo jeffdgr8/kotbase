@@ -3,7 +3,7 @@ centralized cloud-server resources_
 
 ## Introduction
 
-!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
 
 Couchbase Lite’s Peer-to-Peer synchronization solution offers secure storage and bidirectional data synchronization
 between edge devices without needing a centralized cloud-based control point.

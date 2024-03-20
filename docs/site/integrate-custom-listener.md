@@ -2,7 +2,7 @@ _Couchbase Lite database peer-to-peer sync — integrate a custom-built listener
 
 ## Overview
 
-!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
 
 This content covers how to integrate a custom [`MessageEndpointListener`](
 /api/couchbase-lite-ee/kotbase/-message-endpoint-listener/) solution with Couchbase Lite to handle the data transfer,

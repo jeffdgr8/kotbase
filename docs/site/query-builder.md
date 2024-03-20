@@ -994,7 +994,7 @@ If your query selects a sub-set of available properties then the JSON format wil
 
 ## Predictive Query
 
-!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
 
 Predictive Query enables Couchbase Lite queries to use machine learning, by providing query functions that can process
 document data (properties or blobs) via trained ML models.

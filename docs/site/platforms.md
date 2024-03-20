@@ -1,6 +1,7 @@
-Kotbase provides a common [Kotlin Multiplatform](https://kotlinlang.org/lp/multiplatform/) API for Couchbase Lite,
-allowing you to develop a single Kotlin shared library, which compiles to native binaries that can be consumed by native
-apps on each of the supported platforms: Android, JVM, iOS, macOS, Linux, and Windows.
+Kotbase provides a common [Kotlin Multiplatform](https://www.jetbrains.com/kotlin-multiplatform/) API for [Couchbase
+Lite](https://www.couchbase.com/products/lite/), allowing you to develop a single Kotlin shared library, which compiles
+to native binaries that can be consumed by native apps on each of the supported platforms: Android, JVM, iOS, macOS,
+Linux, and Windows.
 
 ## Android :fontawesome-brands-android: + JVM :fontawesome-brands-java:
 

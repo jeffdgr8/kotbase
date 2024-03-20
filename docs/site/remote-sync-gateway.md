@@ -735,7 +735,7 @@ of removed docs.
 
 ### Delta Sync
 
-!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
 
 With Delta Sync, only the changed parts of a Couchbase document are replicated. This can result in significant savings
 in bandwidth consumption as well as throughput improvements, especially when network bandwidth is typically constrained.

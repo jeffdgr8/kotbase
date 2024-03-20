@@ -7,7 +7,7 @@ hide:
 
 ## Introduction
 
-Kotbase pairs [Kotlin Multiplatform](https://kotlinlang.org/lp/multiplatform/) with [Couchbase Lite](
+Kotbase pairs [Kotlin Multiplatform](https://www.jetbrains.com/kotlin-multiplatform/) with [Couchbase Lite](
 https://www.couchbase.com/products/lite/), an embedded NoSQL JSON document database. Couchbase Lite can be used as a
 standalone client database, or paired with [Couchbase Server](https://www.couchbase.com/products/server/) and [Sync
 Gateway](https://www.couchbase.com/products/sync-gateway/) or [Capella App Services](

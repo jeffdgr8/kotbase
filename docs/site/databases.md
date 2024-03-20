@@ -108,7 +108,7 @@ Closing a database is simple, just use [`Database.close()`](/api/couchbase-lite-
 
 ## Database Encryption
 
-!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions) feature."
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
 
 Kotbase includes the ability to encrypt Couchbase Lite databases. This allows mobile applications to secure the data at
 rest, when it is being stored on the device. The algorithm used to encrypt the database is 256-bit AES.
