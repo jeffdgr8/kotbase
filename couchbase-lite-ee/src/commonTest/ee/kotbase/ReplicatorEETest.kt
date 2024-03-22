@@ -1257,9 +1257,9 @@ class ReplicatorEETest : BaseReplicatorTest() {
                         "is not matching with the document ID of the conflicting " +
                         "document '$docID'."
             ) || customLogger.lines.contains( // Java log
-                "[JAVA] A conflict resolution for document for document " +
-                        "'$wrongDocID' produced a new document whose id not " +
-                        "match the ID of the conflicting documents ($docID)"
+                "[JAVA] Conflict resolution for a document produced a new document " +
+                        "with ID '$wrongDocID', which does not match " +
+                        "the IDs of the conflicting document ($docID)"
             ) || customLogger.lines.contains( // Native C log
                 "The document ID '$wrongDocID' of the resolved document is not " +
                         "matching with the document ID '$docID' of the conflicting document."
