@@ -4,6 +4,11 @@ The Kotbase Notes app is a full-featured MVVM Kotlin Multiplatform app using Kot
 connects to [Couchbase Sync Gateway](https://www.couchbase.com/products/sync-gateway/) to authenticate a user and
 synchronize data to a [Couchbase Server](https://www.couchbase.com/products/server/) backend database and between devices.
 
+## Demo
+
+This example app was developed for a Couchbase online meetup event. You can watch the demo presentation [here](
+https://youtu.be/4DTAb04m0UU).
+
 ## Features
 
 * Support for Android, iOS, and JVM desktop platforms.
