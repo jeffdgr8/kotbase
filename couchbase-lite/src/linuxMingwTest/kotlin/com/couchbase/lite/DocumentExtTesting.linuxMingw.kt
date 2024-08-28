@@ -37,8 +37,8 @@ internal val Document.c4Doc: CPointer<C4Document>?
         // C4Document* is 2nd field (CBLDatabase* is 1st, both pointers)
         // found to be at index 12 for Windows and 8 for Linux (1st is index 3 for both)
         val offset = when (Platform.osFamily) {
-            OsFamily.LINUX -> 8
-            OsFamily.WINDOWS -> 12
+            OsFamily.LINUX -> 9
+            OsFamily.WINDOWS -> 13
             else -> error("Unhandled OS: ${Platform.osFamily}")
         }
         val ptrs = actual.reinterpret<LongVar>()
