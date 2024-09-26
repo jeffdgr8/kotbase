@@ -97,10 +97,11 @@ dependencies {
 }
 
 // work around native compiler and linker warnings in tests
+// duplicate library name: org.jetbrains.kotlinx:kotlinx-serialization-core
 // https://youtrack.jetbrains.com/issue/KT-51110
 // (leave off by default, enable to avoid warnings)
 /*
-configurations.all {
+configurations.configureEach {
     resolutionStrategy.eachDependency {
         if (requested.group == "org.jetbrains.kotlinx" && requested.name == "kotlinx-serialization-core") {
             val libs = the<org.gradle.accessors.dm.LibrariesForLibs>()
