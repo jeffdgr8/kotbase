@@ -3,36 +3,37 @@ couchbase-lite-java = "3.1.9"
 couchbase-lite-objc = "3.1.9"
 couchbase-lite-c = "3.1.9"
 dokka = "1.9.20"
-kotlinx-serialization = "1.6.3"
-mockk = "1.13.10"
+kotlinx-serialization = "1.7.3"
+mockk = "1.13.12"
 
 [plugins]
 android-library = { id = "com.android.library", version = "8.2.2" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.23" }
-kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.15.0-Beta.1" }
-vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.27.0" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "1.9.25" }
+kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.16.3" }
+vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.29.0" }
 
 [libraries]
-androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.7.0" }
-androidx-startup = { module = "androidx.startup:startup-runtime", version = "1.1.1" }
-androidx-test-core-ktx = { module = "androidx.test:core-ktx", version = "1.5.0" }
-androidx-test-runner = { module = "androidx.test:runner", version = "1.5.2" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.8.6" }
+androidx-startup = { module = "androidx.startup:startup-runtime", version = "1.2.0" }
+androidx-test-core-ktx = { module = "androidx.test:core-ktx", version = "1.6.1" }
+androidx-test-runner = { module = "androidx.test:runner", version = "1.6.2" }
 couchbase-lite-android = { module = "com.couchbase.lite:couchbase-lite-android", version.ref = "couchbase-lite-java" }
 couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-android-ee", version.ref = "couchbase-lite-java" }
 couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", version.ref = "couchbase-lite-java" }
 couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
 dokka-versioning = { module = "org.jetbrains.dokka:versioning-plugin", version.ref = "dokka" }
-kermit = { module = "co.touchlab:kermit", version = "2.0.3" }
+kermit = { module = "co.touchlab:kermit", version = "2.0.4" }
 korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.10" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
-kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.23.2" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.8.0" }
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.25.0" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.9.0" }
+# kotlinx-datetime v0.6.0 introduces https://github.com/Kotlin/kotlinx-datetime/issues/439
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.5.0" }
-kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version = "0.3.2" }
+kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version = "0.5.4" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 paging = { module = "app.cash.paging:paging-common", version = "3.3.0-alpha02-0.5.1" }
-stately = { module = "co.touchlab:stately-concurrent-collections", version = "2.0.6" }
+stately = { module = "co.touchlab:stately-concurrent-collections", version = "2.1.0" }
