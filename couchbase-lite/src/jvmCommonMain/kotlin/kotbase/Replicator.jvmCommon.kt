@@ -22,11 +22,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asExecutor
-import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Replicator as CBLReplicator
 
-@Suppress("ACTUAL_WITHOUT_EXPECT") // https://youtrack.jetbrains.com/issue/KTIJ-27834
 public actual class Replicator
 internal constructor(
     actual: CBLReplicator,

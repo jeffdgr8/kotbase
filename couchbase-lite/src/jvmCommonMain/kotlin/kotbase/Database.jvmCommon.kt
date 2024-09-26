@@ -31,7 +31,6 @@ import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Database as CBLDatabase
 import com.couchbase.lite.DatabaseConfiguration as CBLDatabaseConfiguration
 
-@Suppress("ACTUAL_WITHOUT_EXPECT") // https://youtrack.jetbrains.com/issue/KTIJ-27834
 public actual class Database
 internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual), AutoCloseable {
 

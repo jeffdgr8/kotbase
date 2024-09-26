@@ -20,7 +20,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import com.couchbase.lite.ListenerToken as CBLListenerToken
 
-@Suppress("ACTUAL_WITHOUT_EXPECT") // https://youtrack.jetbrains.com/issue/KTIJ-27834
 public actual sealed class ListenerToken(
     actual: CBLListenerToken
 ) : DelegatedClass<CBLListenerToken>(actual), AutoCloseable {
