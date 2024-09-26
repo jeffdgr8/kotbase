@@ -7,6 +7,11 @@
 
 // Library unique name: <dev.kotbase:couchbase-lite-ktx>
 final class kotbase.ktx/DocumentBuilder { // kotbase.ktx/DocumentBuilder|null[0]
+    final val count // kotbase.ktx/DocumentBuilder.count|{}count[0]
+        final fun <get-count>(): kotlin/Int // kotbase.ktx/DocumentBuilder.count.<get-count>|<get-count>(){}[0]
+    final val keys // kotbase.ktx/DocumentBuilder.keys|{}keys[0]
+        final fun <get-keys>(): kotlin.collections/List<kotlin/String> // kotbase.ktx/DocumentBuilder.keys.<get-keys>|<get-keys>(){}[0]
+
     final fun (kotlin/String).to(kotlin/Any?) // kotbase.ktx/DocumentBuilder.to|to@kotlin.String(kotlin.Any?){}[0]
     final fun contains(kotlin/String): kotlin/Boolean // kotbase.ktx/DocumentBuilder.contains|contains(kotlin.String){}[0]
     final fun getArray(kotlin/String): kotbase/MutableArray? // kotbase.ktx/DocumentBuilder.getArray|getArray(kotlin.String){}[0]
@@ -37,19 +42,18 @@ final class kotbase.ktx/DocumentBuilder { // kotbase.ktx/DocumentBuilder|null[0]
     final fun setString(kotlin/String, kotlin/String?): kotbase/MutableDocument // kotbase.ktx/DocumentBuilder.setString|setString(kotlin.String;kotlin.String?){}[0]
     final fun setValue(kotlin/String, kotlin/Any?): kotbase/MutableDocument // kotbase.ktx/DocumentBuilder.setValue|setValue(kotlin.String;kotlin.Any?){}[0]
     final fun toMap(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // kotbase.ktx/DocumentBuilder.toMap|toMap(){}[0]
-    final val count // kotbase.ktx/DocumentBuilder.count|{}count[0]
-        final fun <get-count>(): kotlin/Int // kotbase.ktx/DocumentBuilder.count.<get-count>|<get-count>(){}[0]
-    final val keys // kotbase.ktx/DocumentBuilder.keys|{}keys[0]
-        final fun <get-keys>(): kotlin.collections/List<kotlin/String> // kotbase.ktx/DocumentBuilder.keys.<get-keys>|<get-keys>(){}[0]
 }
+
 final class kotbase.ktx/OrderByBuilder { // kotbase.ktx/OrderByBuilder|null[0]
     final fun (kotbase/Expression).ascending() // kotbase.ktx/OrderByBuilder.ascending|ascending@kotbase.Expression(){}[0]
     final fun (kotbase/Expression).descending() // kotbase.ktx/OrderByBuilder.descending|descending@kotbase.Expression(){}[0]
     final fun (kotlin/String).ascending() // kotbase.ktx/OrderByBuilder.ascending|ascending@kotlin.String(){}[0]
     final fun (kotlin/String).descending() // kotbase.ktx/OrderByBuilder.descending|descending@kotlin.String(){}[0]
 }
+
 final class kotbase.ktx/WhereBuilder { // kotbase.ktx/WhereBuilder|null[0]
     constructor <init>() // kotbase.ktx/WhereBuilder.<init>|<init>(){}[0]
+
     final fun (kotlin/String).equalTo(kotbase/Expression): kotbase/Expression // kotbase.ktx/WhereBuilder.equalTo|equalTo@kotlin.String(kotbase.Expression){}[0]
     final fun (kotlin/String).equalTo(kotlin.collections/List<kotlin/Any>): kotbase/Expression // kotbase.ktx/WhereBuilder.equalTo|equalTo@kotlin.String(kotlin.collections.List<kotlin.Any>){}[0]
     final fun (kotlin/String).equalTo(kotlin.collections/Map<kotlin/String, kotlin/Any?>): kotbase/Expression // kotbase.ktx/WhereBuilder.equalTo|equalTo@kotlin.String(kotlin.collections.Map<kotlin.String,kotlin.Any?>){}[0]
@@ -111,8 +115,9 @@ final class kotbase.ktx/WhereBuilder { // kotbase.ktx/WhereBuilder|null[0]
     final fun (kotlin/String).notEqualTo(kotlin/String): kotbase/Expression // kotbase.ktx/WhereBuilder.notEqualTo|notEqualTo@kotlin.String(kotlin.String){}[0]
     final fun (kotlin/String).notEqualTo(kotlinx.datetime/Instant): kotbase/Expression // kotbase.ktx/WhereBuilder.notEqualTo|notEqualTo@kotlin.String(kotlinx.datetime.Instant){}[0]
 }
+
 final fun (kotbase/Collection).kotbase.ktx/as(kotlin/String): kotbase/DataSource // kotbase.ktx/as|as@kotbase.Collection(kotlin.String){}[0]
-final fun (kotbase/Collection).kotbase.ktx/documentFlow(kotlin/String, kotlin.coroutines/CoroutineContext =...): kotlinx.coroutines.flow/Flow<kotbase/Document?> // kotbase.ktx/documentFlow|documentFlow@kotbase.Collection(kotlin.String;kotlin.coroutines.CoroutineContext){}[0]
+final fun (kotbase/Collection).kotbase.ktx/documentFlow(kotlin/String, kotlin.coroutines/CoroutineContext = ...): kotlinx.coroutines.flow/Flow<kotbase/Document?> // kotbase.ktx/documentFlow|documentFlow@kotbase.Collection(kotlin.String;kotlin.coroutines.CoroutineContext){}[0]
 final fun (kotbase/Database).kotbase.ktx/as(kotlin/String): kotbase/DataSource // kotbase.ktx/as|as@kotbase.Database(kotlin.String){}[0]
 final fun (kotbase/Database).kotbase.ktx/documentFlow(kotlin/String): kotlinx.coroutines.flow/Flow<kotbase/Document?> // kotbase.ktx/documentFlow|documentFlow@kotbase.Database(kotlin.String){}[0]
 final fun (kotbase/Database).kotbase.ktx/documentFlow(kotlin/String, kotlin.coroutines/CoroutineContext): kotlinx.coroutines.flow/Flow<kotbase/Document?> // kotbase.ktx/documentFlow|documentFlow@kotbase.Database(kotlin.String;kotlin.coroutines.CoroutineContext){}[0]
@@ -198,9 +203,9 @@ final fun (kotbase/Expression).kotbase.ktx/times(kotlin/Long): kotbase/Expressio
 final fun (kotbase/FromRouter).kotbase.ktx/from(kotbase/Collection): kotbase/From // kotbase.ktx/from|from@kotbase.FromRouter(kotbase.Collection){}[0]
 final fun (kotbase/FromRouter).kotbase.ktx/from(kotbase/Database): kotbase/From // kotbase.ktx/from|from@kotbase.FromRouter(kotbase.Database){}[0]
 final fun (kotbase/GroupByRouter).kotbase.ktx/groupBy(kotlin/Array<out kotlin/String>...): kotbase/GroupBy // kotbase.ktx/groupBy|groupBy@kotbase.GroupByRouter(kotlin.Array<out|kotlin.String>...){}[0]
-final fun (kotbase/LimitRouter).kotbase.ktx/limit(kotlin/Int, kotlin/Int? =...): kotbase/Limit // kotbase.ktx/limit|limit@kotbase.LimitRouter(kotlin.Int;kotlin.Int?){}[0]
+final fun (kotbase/LimitRouter).kotbase.ktx/limit(kotlin/Int, kotlin/Int? = ...): kotbase/Limit // kotbase.ktx/limit|limit@kotbase.LimitRouter(kotlin.Int;kotlin.Int?){}[0]
 final fun (kotbase/OrderByRouter).kotbase.ktx/orderBy(kotlin/Function1<kotbase.ktx/OrderByBuilder, kotlin/Unit>): kotbase/OrderBy // kotbase.ktx/orderBy|orderBy@kotbase.OrderByRouter(kotlin.Function1<kotbase.ktx.OrderByBuilder,kotlin.Unit>){}[0]
-final fun (kotbase/Query).kotbase.ktx/asFlow(kotlin.coroutines/CoroutineContext? =...): kotlinx.coroutines.flow/Flow<kotbase/ResultSet> // kotbase.ktx/asFlow|asFlow@kotbase.Query(kotlin.coroutines.CoroutineContext?){}[0]
+final fun (kotbase/Query).kotbase.ktx/asFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/ResultSet> // kotbase.ktx/asFlow|asFlow@kotbase.Query(kotlin.coroutines.CoroutineContext?){}[0]
 final fun (kotbase/WhereRouter).kotbase.ktx/where(kotlin/Function1<kotbase.ktx/WhereBuilder, kotbase/Expression>): kotbase/Where // kotbase.ktx/where|where@kotbase.WhereRouter(kotlin.Function1<kotbase.ktx.WhereBuilder,kotbase.Expression>){}[0]
 final fun (kotlin/String).kotbase.ktx/from(kotlin/String): kotbase/Expression // kotbase.ktx/from|from@kotlin.String(kotlin.String){}[0]
 final fun <#A: kotlin/Any> (kotbase/Query).kotbase.ktx/asObjectsFlow(kotlin.coroutines/CoroutineContext?, kotlin/Function1<kotlin.collections/Map<kotlin/String, kotlin/Any?>, #A?>): kotlinx.coroutines.flow/Flow<kotlin.collections/List<#A>> // kotbase.ktx/asObjectsFlow|asObjectsFlow@kotbase.Query(kotlin.coroutines.CoroutineContext?;kotlin.Function1<kotlin.collections.Map<kotlin.String,kotlin.Any?>,0:0?>){0§<kotlin.Any>}[0]
@@ -226,7 +231,7 @@ final fun kotbase.ktx/select(kotbase/Expression, kotlin/Array<out kotbase/Expres
 final fun kotbase.ktx/select(kotbase/Expression, kotlin/String, kotlin/Array<out kotlin/String>...): kotbase/Select // kotbase.ktx/select|select(kotbase.Expression;kotlin.String;kotlin.Array<out|kotlin.String>...){}[0]
 final fun kotbase.ktx/select(kotlin/Array<out kotbase/SelectResult>...): kotbase/Select // kotbase.ktx/select|select(kotlin.Array<out|kotbase.SelectResult>...){}[0]
 final fun kotbase.ktx/select(kotlin/Array<out kotlin/String>...): kotbase/Select // kotbase.ktx/select|select(kotlin.Array<out|kotlin.String>...){}[0]
-final fun kotbase.ktx/selectCount(kotlin/String =...): kotbase/Select // kotbase.ktx/selectCount|selectCount(kotlin.String){}[0]
+final fun kotbase.ktx/selectCount(kotlin/String = ...): kotbase/Select // kotbase.ktx/selectCount|selectCount(kotlin.String){}[0]
 final fun kotbase.ktx/selectDistinct(kotbase/Expression, kotbase/SelectResult, kotlin/Array<out kotbase/SelectResult>...): kotbase/Select // kotbase.ktx/selectDistinct|selectDistinct(kotbase.Expression;kotbase.SelectResult;kotlin.Array<out|kotbase.SelectResult>...){}[0]
 final fun kotbase.ktx/selectDistinct(kotbase/Expression, kotlin/Array<out kotbase/Expression>...): kotbase/Select // kotbase.ktx/selectDistinct|selectDistinct(kotbase.Expression;kotlin.Array<out|kotbase.Expression>...){}[0]
 final fun kotbase.ktx/selectDistinct(kotbase/Expression, kotlin/String, kotlin/Array<out kotlin/String>...): kotbase/Select // kotbase.ktx/selectDistinct|selectDistinct(kotbase.Expression;kotlin.String;kotlin.Array<out|kotlin.String>...){}[0]
