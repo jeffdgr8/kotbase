@@ -23,7 +23,6 @@ import kotlinx.datetime.Instant
 import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Collection as CBLCollection
 
-@Suppress("ACTUAL_WITHOUT_EXPECT") // https://youtrack.jetbrains.com/issue/KTIJ-27834
 public actual class Collection
 internal constructor(
     actual: CBLCollection,
