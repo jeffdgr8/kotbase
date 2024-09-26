@@ -770,7 +770,7 @@ class DocumentTest : BaseDbTest() {
     fun testSetDate() {
         var mDoc = MutableDocument("doc1")
 
-        val date = Clock.System.now()
+        val date = Clock.System.nowMillis()
         val dateStr = date.toStringMillis()
         assertTrue(dateStr.isNotEmpty())
         mDoc.setValue("date", date)
