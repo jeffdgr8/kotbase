@@ -15,6 +15,7 @@
  */
 package kotbase
 
+import kotbase.ext.nowMillis
 import kotlinx.datetime.Clock
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,7 +25,7 @@ class JSONTest {
     // Verify that round trip String -> Date -> String doesn't alter the string (#1611)
     @Test
     fun testJSONDateRoundTrip() {
-        val now = Clock.System.now()
+        val now = Clock.System.nowMillis()
         // internally calls the relevant JSONUtils.toJSONString() and JSONUtils.toDate()
         val array = MutableArray()
         val dateStr = array.addDate(now).getString(0)

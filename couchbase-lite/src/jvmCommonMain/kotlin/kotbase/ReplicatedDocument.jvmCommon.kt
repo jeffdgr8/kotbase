@@ -22,10 +22,10 @@ public actual class ReplicatedDocument
 internal constructor(actual: CBLReplicatedDocument) : DelegatedClass<CBLReplicatedDocument>(actual) {
 
     public actual val scope: String
-        get() = actual.collectionScope
+        get() = actual.scope
 
     public actual val collection: String
-        get() = actual.collectionName
+        get() = actual.collection
 
     public actual val id: String
         get() = actual.id

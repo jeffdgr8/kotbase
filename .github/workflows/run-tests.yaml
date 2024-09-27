@@ -19,12 +19,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v2
+        uses: gradle/actions/wrapper-validation@v4
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           distribution: zulu
-          java-version: 17
+          java-version: 21
       - name: Run tests
         run: ./gradlew check
       - name: Upload test results
@@ -42,20 +42,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v2
+        uses: gradle/actions/wrapper-validation@v4
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           distribution: zulu
-          java-version: 17
+          java-version: 21
       - name: Install libicu
         run: |
-          wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2.1_amd64.deb
-          sudo dpkg -i libicu66_66.1-2ubuntu2.1_amd64.deb
-          rm libicu66_66.1-2ubuntu2.1_amd64.deb
-          wget https://launchpad.net/ubuntu/+source/icu/71.1-2/+build/23579523/+files/libicu71_71.1-2_amd64.deb
-          sudo dpkg -i libicu71_71.1-2_amd64.deb
-          rm libicu71_71.1-2_amd64.deb
+          wget https://launchpadlibrarian.net/626467203/libicu71_71.1-3ubuntu1_amd64.deb
+          sudo dpkg -i libicu71_71.1-3ubuntu1_amd64.deb
+          rm libicu71_71.1-3ubuntu1_amd64.deb
       - name: Run tests
         run: ./gradlew check
       - name: Upload test results
@@ -73,12 +70,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v2
+        uses: gradle/actions/wrapper-validation@v4
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           distribution: zulu
-          java-version: 17
+          java-version: 21
       - name: Run tests
         run: ./gradlew check
       - name: Upload test results
@@ -96,12 +93,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v2
+        uses: gradle/actions/wrapper-validation@v4
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           distribution: zulu
-          java-version: 17
+          java-version: 21
       - name: Enable KVM group perms
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -110,7 +107,7 @@ jobs:
       - name: Run connected tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 33
+          api-level: 35
           arch: x86_64
           script: ./gradlew connectedCheck
       - name: Upload test results
