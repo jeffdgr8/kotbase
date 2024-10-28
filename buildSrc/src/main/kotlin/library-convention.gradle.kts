@@ -48,7 +48,7 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
 }
 
 mavenPublishing {
-    publishToMavenCentral(SonatypeHost.S01)
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
 
     @Suppress("UnstableApiUsage")
