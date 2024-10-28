@@ -11,7 +11,7 @@ as well as other convenience functions for composing queries, observing change `
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.kotbase:couchbase-lite-ee-ktx:3.1.3-1.1.0")
+            implementation("dev.kotbase:couchbase-lite-ee-ktx:3.1.9-1.1.1")
         }
     }
 }

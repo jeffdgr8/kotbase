@@ -1,5 +1,15 @@
 # Change Log
 
+## 3.1.9-1.1.1
+> 28 Oct 2024
+
+* Update Couchbase Lite dependency to 3.1.9 ([#29](https://github.com/jeffdgr8/kotbase/pull/29))
+    * [Android SDK](https://docs.couchbase.com/couchbase-lite/3.1/android/releasenotes.html#maint-3-1-9)
+    * [Java SDK](https://docs.couchbase.com/couchbase-lite/3.1/java/releasenotes.html#maint-3-1-9)
+    * [Objective-C SDK](https://docs.couchbase.com/couchbase-lite/3.1/objc/releasenotes.html#maint-3-1-9)
+    * [C SDK](https://docs.couchbase.com/couchbase-lite/3.1/c/releasenotes.html#maint-3-1-9)
+* Update dependencies ([#30](https://github.com/jeffdgr8/kotbase/pull/30))
+
 ## 3.1.3-1.1.0
 > 1 Feb 2023
 

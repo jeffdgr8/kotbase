@@ -3,7 +3,7 @@ site_name: Kotbase
 site_url: https://kotbase.dev/
 site_description: Kotlin Multiplatform library for Couchbase Lite—a lightweight, embedded, syncable, NoSQL database
 site_author: Jeff Lockhart
-copyright: "&copy; 2023 Jeff Lockhart"
+copyright: "&copy; 2024 Jeff Lockhart"
 repo_name: Kotbase
 repo_url: https://github.com/jeffdgr8/kotbase
 remote_branch: gh-pages
@@ -81,8 +81,8 @@ extra:
   version:
     provider: mike
     default: current
-  version_full: 3.1.3-1.1.0
-  version_objc: 3.1.4
+  version_full: 3.1.9-1.1.1
+  version_objc: 3.1.9
   generator: false
   social:
     - icon: simple/github

@@ -24,6 +24,6 @@ as straightforward as changing the import package from `com.couchbase.lite` to `
 * Some deprecated APIs are omitted.
 * While not available in the Java SDK, as Java doesn't support operator overloading, [`Fragment` subscript APIs](
   kotlin-extensions.md#fragment-subscripts) are available in Kotbase, similar to [Swift](
-  https://docs.couchbase.com/mobile/3.1.4/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
-  https://docs.couchbase.com/mobile/3.1.4/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
-  https://docs.couchbase.com/mobile/3.1.3/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
+  https://docs.couchbase.com/mobile/3.1.9/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
+  https://docs.couchbase.com/mobile/3.1.9/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
+  https://docs.couchbase.com/mobile/3.1.9/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
