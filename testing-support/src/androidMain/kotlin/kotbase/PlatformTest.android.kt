@@ -41,9 +41,9 @@ actual abstract class PlatformTest {
             try {
                 Runtime.getRuntime()
                     .exec("logcat -P '" + android.os.Process.myPid() + "'").waitFor()
-            } catch (e: InterruptedException) {
+            } catch (_: InterruptedException) {
                 android.util.Log.w("TEST", "Failed adding to chatty whitelist")
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 android.util.Log.w("TEST", "Failed adding to chatty whitelist")
             }
         }

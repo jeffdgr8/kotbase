@@ -23,8 +23,6 @@
  * Copyright 2016-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-@file:Suppress("unused", "RedundantUnitReturnType", "RedundantVisibilityModifier", "Reformat", "MayBeConstant")
-
 package kotlinx.coroutines
 
 import kotlinx.atomicfu.atomic
@@ -35,14 +33,13 @@ import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.test.assertTrue
-import kotlin.test.expect
 import kotlin.test.fail
 
-public val isStressTest: Boolean = false
-public val stressTestMultiplier: Int = 1
-public val stressTestMultiplierSqrt: Int = 1
+public const val isStressTest: Boolean = false
+public const val stressTestMultiplier: Int = 1
+public const val stressTestMultiplierSqrt: Int = 1
 
-public val isNative = true
+public const val isNative = true
 
 /**
  * The result of a multiplatform asynchronous test.

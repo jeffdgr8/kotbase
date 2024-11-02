@@ -92,7 +92,7 @@ class DbCollectionsTest : BaseDbTest() {
             try {
                 testDatabase.createCollection(colName)
                 fail("Expect CBL Exception for collection : $colName")
-            } catch (ignore: CouchbaseLiteException) {
+            } catch (_: CouchbaseLiteException) {
             }
         }
     }
@@ -246,7 +246,7 @@ class DbCollectionsTest : BaseDbTest() {
             try {
                 testDatabase.createCollection("col", scopeName)
                 fail("Expect CBL Exception for scope : $scopeName")
-            } catch (ignore: CouchbaseLiteException) {
+            } catch (_: CouchbaseLiteException) {
             }
         }
     }
