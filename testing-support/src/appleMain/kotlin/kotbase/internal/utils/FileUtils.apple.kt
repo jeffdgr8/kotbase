@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
+@file:Suppress("INVISIBLE_REFERENCE")
 
 package kotbase.internal.utils
 
@@ -122,7 +122,7 @@ actual object FileUtils {
             wrapError(NSError::toException) { error ->
                 fm.removeItemAtPath(file, error)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }

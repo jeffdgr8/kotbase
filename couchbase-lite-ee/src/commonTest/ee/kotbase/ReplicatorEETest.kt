@@ -837,7 +837,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
 
         for (docId in docIds) {
-            val willBePush = pushOnlyDocIds?.contains(docId) ?: true
+            val willBePush = pushOnlyDocIds?.contains(docId) != false
             if (willBePush) {
                 assertTrue(pendingIds.contains(docId))
                 assertTrue(replicator.isDocumentPending(docId, testCollection))
@@ -1171,7 +1171,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
         try {
             validateDocumentReplicationEventForConflictedDocs(resolver)
-        } catch (ignored: Exception) {}
+        } catch (_: Exception) {}
 
         // when resolution is successful but wrong docID
         resolver = TestConflictResolver {
@@ -1291,14 +1291,14 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
         try {
             replicator.run()
-        } catch (ignored: Exception) {}
+        } catch (_: Exception) {}
         assertNotNull(error)
         assertTrue(
-            error!!.code == CBLError.Code.UNEXPECTED_ERROR || // Java uses this code
-                    error!!.code == CBLError.Code.CONFLICT || // iOS uses this code
-                    error!!.code == CBLError.Code.INVALID_PARAMETER // Native C uses this code
+            error.code == CBLError.Code.UNEXPECTED_ERROR || // Java uses this code
+                    error.code == CBLError.Code.CONFLICT || // iOS uses this code
+                    error.code == CBLError.Code.INVALID_PARAMETER // Native C uses this code
         )
-        assertEquals(CBLError.Domain.CBLITE, error!!.domain)
+        assertEquals(CBLError.Domain.CBLITE, error.domain)
 
         token.remove()
         resolver = TestConflictResolver { conflict ->
@@ -1338,11 +1338,11 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
         try {
             replicator.run()
-        } catch (ignored: Exception) {}
+        } catch (_: Exception) {}
 
         assertNotNull(error)
-        assertEquals(CBLError.Code.CONFLICT, error!!.code)
-        assertEquals(CBLError.Domain.CBLITE, error!!.domain)
+        assertEquals(CBLError.Code.CONFLICT, error.code)
+        assertEquals(CBLError.Domain.CBLITE, error.domain)
         token.remove()
         resolver = TestConflictResolver { conflict ->
             conflict.remoteDocument
@@ -1516,11 +1516,11 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
         try {
             replicator.run()
-        } catch (ignored: Exception) {}
+        } catch (_: Exception) {}
         assertNotNull(error)
-        assertEquals(CBLError.Code.UNEXPECTED_ERROR, error?.code)
+        assertEquals(CBLError.Code.UNEXPECTED_ERROR, error.code)
         assertTrue(
-            error!!.message!!.contains(
+            error.message!!.contains(
                 "A document contains a blob that was saved to a different " +
                         "database. The save operation cannot complete."
             )
@@ -1623,7 +1623,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         }
         replicator.run()
         assertNotNull(error)
-        assertEquals(CBLError.Code.NOT_FOUND, error?.code)
+        assertEquals(CBLError.Code.NOT_FOUND, error.code)
         token.remove()
     }
 }

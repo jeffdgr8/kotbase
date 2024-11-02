@@ -30,7 +30,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
 internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Query {

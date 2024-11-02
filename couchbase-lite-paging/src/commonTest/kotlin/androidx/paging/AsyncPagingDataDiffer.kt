@@ -23,8 +23,6 @@
  * - Removed Android-specific functions and annotations
  */
 
-@file:Suppress("TYPE_MISMATCH", "UNRESOLVED_REFERENCE", "NOTHING_TO_OVERRIDE", "ABSTRACT_CLASS_MEMBER_NOT_IMPLEMENTED", "NO_VALUE_FOR_PARAMETER")
-
 package androidx.paging
 
 import androidx.recyclerview.widget.DiffUtil
@@ -169,7 +167,7 @@ constructor(
     @Suppress("MemberVisibilityCanBePrivate") // synthetic access
     internal var inGetItem: Boolean = false
 
-    private val differBase = object : PagingDataDiffer<T>(differCallback, mainDispatcher) {
+    private val differBase = object : PagingDataDiffer<T>(differCallback, mainDispatcher, null) {
         override suspend fun presentNewList(
             previousList: NullPaddedList<T>,
             newList: NullPaddedList<T>,

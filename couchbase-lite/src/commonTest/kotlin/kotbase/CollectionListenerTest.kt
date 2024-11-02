@@ -442,8 +442,8 @@ class CollectionListenerTest : BaseDbTest() {
         collectionA.save(MutableDocument(doc1Id))
 
         // wait twice the average time to notify
-        assertFalse(latch?.await(((t * 2) / 3).milliseconds) ?: false)
-        assertTrue(changes1?.isEmpty() ?: false)
-        assertTrue(changes2?.isEmpty() ?: false)
+        assertFalse(latch.await(((t * 2) / 3).milliseconds))
+        assertTrue(changes1.isEmpty())
+        assertTrue(changes2.isEmpty())
     }
 }

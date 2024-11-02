@@ -16,9 +16,9 @@
 package kotbase
 
 /**
- * The logging interface for Couchbase Lite.  An application that wishes
+ * The logging interface for Couchbase Lite. An application that wishes
  * to route log messages to an arbitrary endpoint can do so by
- * installing an implementation of this interface with [Log.setCustom].
+ * installing an implementation of this interface with [Log.custom].
  */
 public interface Logger {
 
