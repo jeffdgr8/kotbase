@@ -170,7 +170,8 @@ implementation("dev.kotbase:couchbase-lite-ee-paging:3.1.9-1.1.1")
     * [ ] SwiftUI for Kotbase Notes
 * [x] Couchbase Lite [3.1 API](https://docs.couchbase.com/couchbase-lite/3.1/cbl-whatsnew.html) - Scopes and Collections
 * [x] Versioned docs
-* [ ] Couchbase Lite 3.2 API - [Vector Search](https://www.couchbase.com/products/vector-search/)
+* [ ] Couchbase Lite [3.2 API](https://docs.couchbase.com/couchbase-lite/3.2/cbl-whatsnew.html) - [Vector Search](
+  https://www.couchbase.com/products/vector-search/)
 * [ ] Async coroutines API
 
 ## Development
