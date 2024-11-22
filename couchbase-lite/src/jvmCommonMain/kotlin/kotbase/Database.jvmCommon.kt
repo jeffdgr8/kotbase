@@ -126,7 +126,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @get:Throws(CouchbaseLiteException::class)
     public actual val defaultCollection: Collection by lazy {
-        actual.defaultCollection!!.asCollection(this)
+        actual.defaultCollection.asCollection(this)
     }
 
     @Throws(CouchbaseLiteException::class)
