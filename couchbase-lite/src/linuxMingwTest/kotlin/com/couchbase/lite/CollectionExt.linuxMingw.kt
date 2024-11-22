@@ -20,11 +20,10 @@ import kotbase.Document
 
 // TODO: implement native C getC4Document()
 
-internal actual fun Collection.getC4Document(id: String): C4Document =
-    C4Document(getDocument(id))
+internal actual fun Collection.getC4Document(id: String): C4Document? =
+    getDocument(id)?.let(::C4Document)
 
-internal actual class C4Document(private val doc: Document?) {
+internal actual class C4Document(private val doc: Document) {
 
-    actual fun isRevDeleted(): Boolean =
-        doc == null
+    actual fun isRevDeleted(): Boolean = false
 }

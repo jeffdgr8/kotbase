@@ -17,7 +17,7 @@ package com.couchbase.lite
 
 import kotbase.Collection
 
-internal expect fun Collection.getC4Document(id: String): C4Document
+internal expect fun Collection.getC4Document(id: String): C4Document?
 
 internal expect class C4Document {
 
