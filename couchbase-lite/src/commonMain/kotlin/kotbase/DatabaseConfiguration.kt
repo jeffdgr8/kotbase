@@ -46,4 +46,25 @@ public expect class DatabaseConfiguration {
      * then it is the system default.
      */
     public var directory: String
+
+    /**
+     * As Couchbase Lite normally configures its databases, there is a very small (though non-zero) chance that a
+     * power failure at just the wrong time could cause the most recently committed transaction's changes to be lost.
+     * This would cause the database to appear as it did immediately before that transaction. Setting this mode true
+     * ensures that an operating system crash or power failure will not cause the loss of any data. Full sync mode is
+     * very safe, but it is also **dramatically** slower.
+     *
+     * @param isFullSync true if full sync should be enabled
+     * @return this
+     */
+    public fun setFullSync(isFullSync: Boolean): DatabaseConfiguration
+
+    /**
+     * As Couchbase Lite normally configures its databases, there is a very small (though non-zero) chance that a
+     * power failure at just the wrong time could cause the most recently committed transaction's changes to be lost.
+     * This would cause the database to appear as it did immediately before that transaction. Setting this mode true
+     * ensures that an operating system crash or power failure will not cause the loss of any data. Full sync mode is
+     * very safe, but it is also **dramatically** slower.
+     */
+    public var isFullSync: Boolean
 }
