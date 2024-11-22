@@ -45,6 +45,24 @@ namespace cbl {
     using ConflictHandler = std::function<bool(MutableDocument documentBeingSaved,
                                                Document conflictingDocument)>;
 
+    
+#ifdef COUCHBASE_ENTERPRISE
+    /** ENTERPRISE EDITION ONLY
+     
+        Couchbase Lite  Extension. */
+    class Extension {
+    public:
+        /** Enables Vector Search extension by specifying the extension path to search for the Vector Search extension library.
+            This function must be called before opening a database that intends to use the vector search extension.
+            @param path The file system path of the directory that contains the Vector Search extension library.
+            @note Must be called before opening a database that intends to use the vector search extension. */
+        static void enableVectorSearch(slice path) {
+            CBLError error {};
+            RefCounted::check(CBL_EnableVectorSearch(path, &error), error);
+        }
+    };
+#endif
+
     /** Couchbase Lite Database. */
     class Database : private RefCounted {
     public:
@@ -186,10 +204,7 @@ namespace cbl {
             @param collectionName  The name of the collection.
             @param scopeName  The name of the scope.
             @return A \ref Collection instance, or NULL if the collection doesn't exist, or throws if an error occurred. */
-        inline Collection getCollection(slice collectionName, slice scopeName =kCBLDefaultScopeName) const {
-            CBLError error {};
-            return Collection::adopt(CBLDatabase_Collection(ref(), collectionName, scopeName, &error), &error) ;
-        }
+        inline Collection getCollection(slice collectionName, slice scopeName =kCBLDefaultScopeName) const;
         
         /** Create a new collection.
             The naming rules of the collections and scopes are as follows:
@@ -201,10 +216,7 @@ namespace cbl {
             @param collectionName  The name of the collection.
             @param scopeName  The name of the scope.
             @return A \ref Collection instance, or throws if an error occurred. */
-        inline Collection createCollection(slice collectionName, slice scopeName =kCBLDefaultScopeName) {
-            CBLError error {};
-            return Collection::adopt(CBLDatabase_CreateCollection(ref(), collectionName, scopeName, &error), &error) ;
-        }
+        inline Collection createCollection(slice collectionName, slice scopeName =kCBLDefaultScopeName);
         
         /** Delete an existing collection.
             @note The default collection cannot be deleted.
@@ -216,10 +228,7 @@ namespace cbl {
         }
         
         /** Returns the default collection. */
-        inline Collection getDefaultCollection() const {
-            CBLError error {};
-            return Collection::adopt(CBLDatabase_DefaultCollection(ref(), &error), &error) ;
-        }
+        inline Collection getDefaultCollection() const;
         
         // Documents:
 
@@ -446,6 +455,12 @@ namespace cbl {
         ~Database() {
             clear();
         }
+        
+    protected:
+        friend class Collection;
+        friend class Scope;
+        
+        CBL_REFCOUNTED_WITHOUT_COPY_MOVE_BOILERPLATE(Database, RefCounted, CBLDatabase)
 
     private:
         void open(slice& name, const CBLDatabaseConfiguration* _cbl_nullable config) {
@@ -491,8 +506,6 @@ namespace cbl {
         }
         
         std::shared_ptr<NotificationsReadyCallbackAccess> _notificationReadyCallbackAccess;
-        
-        CBL_REFCOUNTED_WITHOUT_COPY_MOVE_BOILERPLATE(Database, RefCounted, CBLDatabase)
         
     public:
         Database(const Database &other) noexcept
@@ -573,7 +586,6 @@ namespace cbl {
 
         CBLDatabase* _cbl_nullable _db = nullptr;
     };
-
 }
 
 CBL_ASSUME_NONNULL_END
