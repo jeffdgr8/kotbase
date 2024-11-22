@@ -16,7 +16,6 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLDocument
-import com.couchbase.lite.database
 import kotbase.ext.asNumber
 import kotbase.internal.DelegatedClass
 import kotlinx.datetime.Instant
@@ -34,7 +33,7 @@ internal constructor(
         get() {
             if (collectionInternal == null) {
                 val actualCollection = actual.collection ?: return null
-                val db = actualCollection.database()
+                val db = Database(actualCollection.database)
                 collectionInternal = actual.collection?.asCollection(db)
             }
             return collectionInternal

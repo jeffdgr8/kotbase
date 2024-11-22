@@ -20,11 +20,11 @@ import kotbase.Collection
 import kotbase.ext.wrapCBLError
 import kotbase.internal.DelegatedClass
 
-internal actual fun Collection.getC4Document(id: String): C4Document {
+internal actual fun Collection.getC4Document(id: String): C4Document? {
     val doc = wrapCBLError { error ->
         CBLDocument.create(actual, id, true, error)
     }
-    return C4Document(doc?.c4Doc!!)
+    return doc?.c4Doc?.let(::C4Document)
 }
 
 internal actual class C4Document(actual: CBLC4Document) : DelegatedClass<CBLC4Document>(actual) {
