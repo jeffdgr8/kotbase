@@ -58,8 +58,8 @@ public actual constructor(config: DatabaseConfiguration?) {
             setActualDirectory(value)
         }
 
-    public actual fun setFullSync(isFullSync: Boolean): DatabaseConfiguration {
-        actual.pointed.fullSync = isFullSync
+    public actual fun setFullSync(fullSync: Boolean): DatabaseConfiguration {
+        actual.pointed.fullSync = fullSync
         return this
     }
 
@@ -67,6 +67,17 @@ public actual constructor(config: DatabaseConfiguration?) {
         get() = actual.pointed.fullSync
         set(value) {
             actual.pointed.fullSync = value
+        }
+
+    public actual fun setMMapEnabled(mmapEnabled: Boolean): DatabaseConfiguration {
+        actual.pointed.mmapDisabled = !mmapEnabled
+        return this
+    }
+
+    public actual var isMMapEnabled: Boolean
+        get() = !actual.pointed.mmapDisabled
+        set(value) {
+            actual.pointed.mmapDisabled = !value
         }
 
     init {
@@ -86,8 +97,8 @@ public actual constructor(config: DatabaseConfiguration?) {
             directory.toKString()!!.dropLastWhile { it == SystemPathSeparator }
         }
 
-    public actual fun setFullSync(isFullSync: Boolean): DatabaseConfiguration {
-        this.isFullSync = isFullSync
+    public actual fun setFullSync(fullSync: Boolean): DatabaseConfiguration {
+        this.isFullSync = fullSync
         return this
     }
 

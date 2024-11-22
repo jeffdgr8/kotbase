@@ -32,11 +32,15 @@ public expect class DatabaseConfiguration {
     /**
      * Set the canonical path of the directory in which to store the database.
      * If the directory doesn't already exist it will be created.
-     * If it cannot be created an IllegalStateException will be thrown.
+     * If it cannot be created a CouchbaseLiteError will be thrown.
+     *
+     * Note: The directory set by this method is the canonical path to the
+     * directory whose path is passed. It is *NOT* necessarily the case that
+     * `directory == config.setDirectory(directory).directory`
      *
      * @param directory the directory
      * @return this.
-     * @throws IllegalStateException if the directory does not exist and cannot be created
+     * @throws CouchbaseLiteError if the directory does not exist and cannot be created
      */
     public fun setDirectory(directory: String): DatabaseConfiguration
 
@@ -44,6 +48,10 @@ public expect class DatabaseConfiguration {
      * The path to the directory that contains the database.
      * If this path has not been set explicitly (see: `setDirectory` below),
      * then it is the system default.
+     *
+     * Note: The directory set by this method is the canonical path to the
+     * directory whose path is passed. It is *NOT* necessarily the case that
+     * `directory == config.setDirectory(directory).directory`
      */
     public var directory: String
 
@@ -57,7 +65,7 @@ public expect class DatabaseConfiguration {
      * @param isFullSync true if full sync should be enabled
      * @return this
      */
-    public fun setFullSync(isFullSync: Boolean): DatabaseConfiguration
+    public fun setFullSync(fullSync: Boolean): DatabaseConfiguration
 
     /**
      * As Couchbase Lite normally configures its databases, there is a very small (though non-zero) chance that a
@@ -67,4 +75,21 @@ public expect class DatabaseConfiguration {
      * very safe, but it is also **dramatically** slower.
      */
     public var isFullSync: Boolean
+
+    /**
+     * Advises Core to enable or disable memory-mapped Database files, if possible.
+     * Memory-mapped database files are, currently, enabled by default, except on macOS
+     * where they **cannot** be enabled at all.
+     *
+     * @param mmapEnabled true if memory-mapped database files should be enabled
+     * @return this
+     */
+    public fun setMMapEnabled(mmapEnabled: Boolean): DatabaseConfiguration
+
+    /**
+     * Advises Core to enable or disable memory-mapped Database files, if possible.
+     * Memory-mapped database files are, currently, enabled by default, except on macOS
+     * where they **cannot** be enabled at all.
+     */
+    public var isMMapEnabled: Boolean
 }

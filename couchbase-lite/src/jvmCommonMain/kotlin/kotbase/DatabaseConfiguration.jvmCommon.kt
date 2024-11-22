@@ -36,8 +36,8 @@ internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatab
             actual.directory = value
         }
 
-    public actual fun setFullSync(isFullSync: Boolean): DatabaseConfiguration {
-        actual.isFullSync = isFullSync
+    public actual fun setFullSync(fullSync: Boolean): DatabaseConfiguration {
+        actual.isFullSync = fullSync
         return this
     }
 
@@ -45,6 +45,17 @@ internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatab
         get() = actual.isFullSync
         set(value) {
             actual.isFullSync = value
+        }
+
+    public actual fun setMMapEnabled(mmapEnabled: Boolean): DatabaseConfiguration {
+        actual.isMMapEnabled = mmapEnabled
+        return this
+    }
+
+    public actual var isMMapEnabled: Boolean
+        get() = actual.isMMapEnabled
+        set(value) {
+            actual.isMMapEnabled = value
         }
 
     private companion object {
