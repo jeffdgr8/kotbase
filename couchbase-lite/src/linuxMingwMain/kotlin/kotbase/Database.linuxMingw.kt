@@ -811,10 +811,12 @@ private constructor(
     }
 
     public override fun toString(): String {
-        return ("Database{@${identityHashCodeHex()}"
-                + ": '$name"
-                + (if (config.isFullSync) "!" else "")
-                + "'}")
+        return buildString {
+            append("Database{@${identityHashCodeHex()}: '$name")
+            if (config.isFullSync) append("!")
+            if (config.isMMapEnabled) append("*")
+            append("'}")
+        }
     }
 
     public override fun hashCode(): Int =
