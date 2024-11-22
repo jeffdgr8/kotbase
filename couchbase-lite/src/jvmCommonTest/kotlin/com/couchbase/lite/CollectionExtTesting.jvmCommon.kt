@@ -19,8 +19,8 @@ import kotbase.Collection
 import kotbase.internal.DelegatedClass
 import com.couchbase.lite.internal.core.C4Document as CBLC4Document
 
-internal actual fun Collection.getC4Document(id: String): C4Document =
-    C4Document(actual.getC4Document(id))
+internal actual fun Collection.getC4Document(id: String): C4Document? =
+    actual.getC4Document(id)?.let(::C4Document)
 
 internal actual class C4Document(actual: CBLC4Document) : DelegatedClass<CBLC4Document>(actual) {
 
