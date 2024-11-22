@@ -58,6 +58,17 @@ public actual constructor(config: DatabaseConfiguration?) {
             setActualDirectory(value)
         }
 
+    public actual fun setFullSync(isFullSync: Boolean): DatabaseConfiguration {
+        actual.pointed.fullSync = isFullSync
+        return this
+    }
+
+    public actual var isFullSync: Boolean
+        get() = actual.pointed.fullSync
+        set(value) {
+            actual.pointed.fullSync = value
+        }
+
     init {
         setActualDirectory(directory)
     }

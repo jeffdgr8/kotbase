@@ -36,6 +36,17 @@ internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatab
             actual.directory = value
         }
 
+    public actual fun setFullSync(isFullSync: Boolean): DatabaseConfiguration {
+        actual.isFullSync = isFullSync
+        return this
+    }
+
+    public actual var isFullSync: Boolean
+        get() = actual.isFullSync
+        set(value) {
+            actual.isFullSync = value
+        }
+
     private companion object {
 
         init {
