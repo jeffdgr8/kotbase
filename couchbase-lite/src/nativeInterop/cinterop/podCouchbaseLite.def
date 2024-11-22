@@ -57,7 +57,6 @@ typedef struct C4Document {
 
 @interface CBLDocument ()
 @property (atomic, nullable) CBLC4Document* c4Doc;
-@property (nonatomic, readonly) NSUInteger generation;
 - (nullable instancetype) initWithCollection: (CBLCollection*)collection
                                   documentID: (NSString*)documentID
                               includeDeleted: (BOOL)includeDeleted
@@ -66,10 +65,6 @@ typedef struct C4Document {
 
 @interface CBLDatabase ()
 - (BOOL) isClosed;
-@end
-
-@interface CBLCollection ()
-@property (nonatomic, readonly, weak) CBLDatabase* db;
 @end
 
 @interface CBLQueryExpression ()
