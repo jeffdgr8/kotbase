@@ -16,6 +16,7 @@
 package kotbase
 
 import com.couchbase.lite.internal.CouchbaseLiteInternal
+import com.couchbase.lite.internal.utils.Internal
 import kotlinx.atomicfu.atomic
 import java.io.File
 import com.couchbase.lite.CouchbaseLite as CBLCouchbaseLite
@@ -33,10 +34,10 @@ public object CouchbaseLite {
      * `CouchbaseLite.init()` will be called automatically by default.
      *
      * This method expects the current directory to be writeable
-     * and will throw an `IllegalStateException` if it is not.
+     * and will throw a `CouchbaseLiteError` if it is not.
      * Use `init(boolean, File, File)` to specify alternative root and scratch directories.
      *
-     * @throws IllegalStateException on initialization failure
+     * @throws CouchbaseLiteError on initialization failure
      */
     public fun init() {
         if (initCalled.getAndSet(true)) return
@@ -50,12 +51,16 @@ public object CouchbaseLite {
      * `CouchbaseLite.init()` will be called automatically by default.
      *
      * This method expects the current directory to be writeable
-     * and will throw an `IllegalStateException` if it is not.
+     * and will throw a `CouchbaseLiteError` if it is not.
      * Use `init(boolean, File, File)` to specify alternative root and scratch directories.
      *
-     * @param debug true if debugging
-     * @throws IllegalStateException on initialization failure
+     * Debugging mode is not supported for client code.  Please use it only when advised to do
+     * so by Couchbase Support Engineering
+     *
+     * @param debug true if debugging (Unsupported)
+     * @throws CouchbaseLiteError on initialization failure
      */
+    @Internal("This interface is not part of the public API")
     public fun init(debug: Boolean) {
         if (initCalled.getAndSet(true)) return
         resetInit()
@@ -71,11 +76,15 @@ public object CouchbaseLite {
      * and the scratch directory used for temporary files (the native library, etc.).
      * Both directories must be writable by this process.
      *
-     * @param debug      true if debugging
+     * Debugging mode is not supported for client code.  Please use it only when advised to do
+     * so by Couchbase Support Engineering
+     *
+     * @param debug      true if debugging (Unsupported)
      * @param rootDir    default directory for databases
      * @param scratchDir scratch directory for SQLite
-     * @throws IllegalStateException on initialization failure
+     * @throws CouchbaseLiteError on initialization failure
      */
+    @Internal("This interface is not part of the public API")
     public fun init(debug: Boolean, rootDir: File, scratchDir: File) {
         if (initCalled.getAndSet(true)) return
         resetInit()
