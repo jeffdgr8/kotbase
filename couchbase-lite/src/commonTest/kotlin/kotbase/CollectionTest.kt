@@ -19,7 +19,6 @@ import com.couchbase.lite.content
 import kotbase.test.IgnoreLinuxMingw
 import kotlin.test.*
 
-@OptIn(ExperimentalStdlibApi::class)
 class CollectionTest : BaseDbTest() {
 
     //---------------------------------------------
