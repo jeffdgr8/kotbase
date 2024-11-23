@@ -18,6 +18,7 @@ package kotbase
 import android.content.Context
 import com.couchbase.lite.BuildConfig
 import com.couchbase.lite.internal.CouchbaseLiteInternal
+import com.couchbase.lite.internal.utils.Internal
 import kotlinx.atomicfu.atomic
 import java.io.File
 import com.couchbase.lite.CouchbaseLite as CBLCouchbaseLite
@@ -35,7 +36,7 @@ public object CouchbaseLite {
      * `CouchbaseLite.init(Context)` will be called automatically by androidx-startup.
      *
      * @param ctxt the ApplicationContext.
-     * @throws IllegalStateException on initialization failure
+     * @throws CouchbaseLiteError on initialization failure
      */
     public fun init(ctxt: Context) {
         init(ctxt, BuildConfig.CBL_DEBUG)
@@ -46,9 +47,13 @@ public object CouchbaseLite {
      * this method is optional to call before using CouchbaseLite. The single-parameter
      * `CouchbaseLite.init(Context)` will be called automatically by androidx-startup.
      *
-     * @param debug true to enable debugging
-     * @throws IllegalStateException on initialization failure
+     * Debugging mode is not supported for client code.  Please use it only when advised to do
+     * so by Couchbase Support Engineering
+     *
+     * @param debug true to enable debugging (Unsupported)
+     * @throws CouchbaseLiteError on initialization failure
      */
+    @Internal("This interface is not part of the public API")
     public fun init(ctxt: Context, debug: Boolean) {
         init(
             ctxt,
@@ -63,16 +68,21 @@ public object CouchbaseLite {
 
     /**
      * Initialize CouchbaseLite library.
+     *
+     * Debugging mode is not supported for client code.  Please use it only when advised to do
+     * so by Couchbase Support Engineering
+     *
      * This method allows specifying a default root directory for database files,
      * and the scratch directory used for SQLite temporary files.
      * Use it with great caution.
      *
      * @param ctxt       Application context
-     * @param debug      to enable debugging
+     * @param debug      to enable debugging (Unsupported)
      * @param rootDbDir  default directory for databases
      * @param scratchDir scratch directory for SQLite
-     * @throws IllegalStateException on initialization failure
+     * @throws CouchbaseLiteError on initialization failure
      */
+    @Internal("This interface is not part of the public API")
     public fun init(ctxt: Context, debug: Boolean, rootDbDir: File, scratchDir: File) {
         if (initCalled.getAndSet(true)) return
         resetInit()
