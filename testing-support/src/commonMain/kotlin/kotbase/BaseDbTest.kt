@@ -109,7 +109,6 @@ fun assertSameContent(mDoc: MutableDocument, doc: Document?) {
     assertEquals(mDoc.toMap(), doc.toMap())
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 fun readJSONResource(name: String): String {
     return buildString {
         PlatformUtils.getAsset(name)?.use { src ->
@@ -121,7 +120,6 @@ fun readJSONResource(name: String): String {
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 abstract class BaseDbTest : BaseTest() {
 
     protected val testDatabase: Database
