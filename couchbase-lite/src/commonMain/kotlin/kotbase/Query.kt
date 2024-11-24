@@ -28,9 +28,9 @@ public interface Query {
      *
      * Setting new parameters will re-execute a query if there is at least one listener listening for changes.
      *
-     * @throws IllegalStateException    on failure to create the query (e.g., database closed)
-     * @throws IllegalArgumentException on failure to encode the parameters (e.g., parameter value not supported)
+     * @throws CouchbaseLiteException on failure to encode the parameters (e.g., parameter value not supported)
      */
+    @set:Throws(CouchbaseLiteException::class)
     public var parameters: Parameters?
 
     /**
@@ -74,7 +74,7 @@ public interface Query {
      *
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
-     * @throws IllegalStateException on failure to create the query (e.g., database closed)
+     * @throws CouchbaseLiteError on failure to create the query (e.g., database closed)
      */
     public fun addChangeListener(listener: QueryChangeListener): ListenerToken
 
@@ -86,7 +86,7 @@ public interface Query {
      * @param context coroutine context in which the listener will run
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
-     * @throws IllegalStateException on failure to create the query (e.g., database closed)
+     * @throws CouchbaseLiteError on failure to create the query (e.g., database closed)
      */
     public fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken
 
@@ -97,7 +97,7 @@ public interface Query {
      * @param scope coroutine scope in which the listener will run
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
-     * @throws IllegalStateException on failure to create the query (e.g., database closed)
+     * @throws CouchbaseLiteError on failure to create the query (e.g., database closed)
      */
     public fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
 
