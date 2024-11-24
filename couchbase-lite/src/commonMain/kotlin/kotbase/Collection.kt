@@ -41,11 +41,11 @@ import kotlin.coroutines.CoroutineContext
  *
  * `Collection` objects are only valid during the time the database that
  * contains them is open.  An attempt to use a collection that belongs to a closed
- * database will throw an `IllegalStateException`.
+ * database will throw a `CouchbaseLiteError`.
  * An application can hold references to multiple instances of a single database.
  * Under these circumstances, it is possible that a collection will be deleted in
  * one instance before an attempt to use it in another.  Such an attempt will
- * also cause an `IllegalStateException` to be thrown.
+ * also cause a `CouchbaseLiteError` to be thrown.
  *
  * `Collection`s are `AutoCloseable`.  While garbage
  * collection will manage them correctly, developers are strongly encouraged to
@@ -252,7 +252,7 @@ public expect class Collection : AutoCloseable {
     public fun addDocumentChangeListener(id: String, scope: CoroutineScope, listener: DocumentChangeSuspendListener)
 
     /**
-     * Get a list of the names of indices in the collection.
+     * Get the set of the names of indices in the collection.
      *
      * @throws CouchbaseLiteException on failure
      */
