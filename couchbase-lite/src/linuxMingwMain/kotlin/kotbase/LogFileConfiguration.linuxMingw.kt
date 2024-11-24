@@ -67,7 +67,7 @@ public actual constructor(public actual val directory: String) {
         return this
     }
 
-    public actual var usesPlaintext: Boolean = Defaults.LogFile.USE_PLAIN_TEXT
+    public actual var usesPlaintext: Boolean = Defaults.LogFile.USE_PLAINTEXT
         set(value) {
             checkReadOnly()
             field = value
