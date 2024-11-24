@@ -36,6 +36,7 @@ internal class DelegatedQuery(actual: CBLQuery) : DelegatedClass<CBLQuery>(actua
 
     override var parameters: Parameters?
         get() = actual.parameters?.asParameters()
+        @Throws(CouchbaseLiteException::class)
         set(value) {
             actual.parameters = value?.actual
         }
