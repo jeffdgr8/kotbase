@@ -45,11 +45,18 @@ public expect open class Document : Iterable<String> {
     public val revisionID: String?
 
     /**
+     * Get the document's timestamp.
+     *
+     * @return the document's timestamp
+     */
+    public val timestamp: Long
+
+    /**
      * The sequence number of the document in the database.
      * The sequence number indicates how recently the document has been changed. Every time a document
      * is updated, the database assigns it the next sequential sequence number. Thus, when a document's
      * sequence number changes it means that the document been updated (on-disk). If one document's sequence
-     * is different than another's, the document with the larger sequence number was changed more recently.
+     * is different from another's, the document with the larger sequence number was changed more recently.
      * Sequence numbers are not available for documents obtained from a replication filter. This method
      * will always return 0 for such documents.
      */
@@ -172,7 +179,7 @@ public expect open class Document : Iterable<String> {
     public fun getDate(key: String): Instant?
 
     /**
-     * Get a property's value as a Array.
+     * Get a property's value as an Array.
      * Returns null if the property doesn't exist, or its value is not an Array.
      *
      * @param key the key
@@ -227,3 +234,7 @@ public operator fun Document.get(key: String): Fragment =
 
 internal inline fun <reified T : Any> Document.getInternalCollection(key: String): T? =
     T::class.safeCast(collectionMap[key])
+
+internal fun Document.compareAge(target: Document): Int {
+    return timestamp.compareTo(target.timestamp)
+}
