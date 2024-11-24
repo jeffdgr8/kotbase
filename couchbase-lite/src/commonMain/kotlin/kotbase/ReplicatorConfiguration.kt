@@ -15,8 +15,6 @@
  */
 package kotbase
 
-import com.couchbase.lite.generation
-
 /**
  * Configuration for a Replicator
  */
@@ -387,8 +385,8 @@ public val ReplicatorConfiguration.Companion.DISABLE_HEARTBEAT: Int
 
 /**
  * The default conflict resolution strategy.
- * Deletion always wins.  A newer doc always beats an older one.
- * Otherwise one of the two document is chosen randomly but deterministically.
+ * Deletion always wins. A newer doc always beats an older one.
+ * Otherwise, one of the two document is chosen randomly but deterministically.
  */
 public val ReplicatorConfiguration.Companion.DEFAULT_CONFLICT_RESOLVER: ConflictResolver
     get() = defaultConflictResolver
@@ -401,11 +399,10 @@ private val defaultConflictResolver: ConflictResolver by lazy {
         if (localDoc == null || remoteDoc == null) return@cr null
 
         // if one of the docs is newer, return it
-        val localGen = localDoc.generation
-        val remoteGen = remoteDoc.generation
-        if (localGen > remoteGen) {
+        val cmp = localDoc.compareAge(remoteDoc)
+        if (cmp > 0) {
             return@cr localDoc
-        } else if (localGen < remoteGen) {
+        } else if (cmp < 0) {
             return@cr remoteDoc
         }
 
