@@ -224,7 +224,7 @@ private constructor(
             field = value
         }
 
-    public actual var maxAttemptWaitTime: Int = Defaults.Replicator.MAX_ATTEMPT_WAIT_TIME
+    public actual var maxAttemptWaitTime: Int = Defaults.Replicator.MAX_ATTEMPTS_WAIT_TIME
         set(value) {
             if (value < 0) throw IllegalArgumentException("max attempt wait time must be >=0")
             field = value
