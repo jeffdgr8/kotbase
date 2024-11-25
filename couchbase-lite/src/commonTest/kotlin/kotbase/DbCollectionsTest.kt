@@ -17,6 +17,7 @@ package kotbase
 
 import kotlin.test.*
 
+@OptIn(ExperimentalStdlibApi::class)
 class DbCollectionsTest : BaseDbTest() {
     private val invalidChars = charArrayOf(
         '!', '@', '#', '$', '^', '&', '*', '(', ')', '+', '.', '<', '>', '?',
