@@ -26,6 +26,7 @@ import kotlinx.datetime.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalStdlibApi::class)
 class ConcurrencyTest : BaseDbTest() {
 
     // TODO: native C fails sometimes

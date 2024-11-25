@@ -23,6 +23,7 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalStdlibApi::class)
 class NotificationTest : BaseDbTest() {
 
     @Test
