@@ -20,6 +20,7 @@ package kotbase
  * The representation of a query result. The result set is an iterator over
  * [Result] objects.
  */
+@OptIn(ExperimentalStdlibApi::class)
 public expect class ResultSet : Iterable<Result>, AutoCloseable {
 
     /**
