@@ -27,6 +27,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
 
 // There are other blob tests in test suites...
+@OptIn(ExperimentalStdlibApi::class)
 class BlobTest : BaseDbTest() {
 
     private lateinit var localBlobContent: String

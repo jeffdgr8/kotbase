@@ -35,6 +35,7 @@ import kotlin.time.Duration.Companion.seconds
 // testDatabase is managed by the superclass
 // If a test creates a new database it guarantees that it is deleted.
 // If a test opens a copy of the testDatabase, it closes (but does NOT delete) it
+@OptIn(ExperimentalStdlibApi::class)
 class DatabaseTest : BaseDbTest() {
 
     //---------------------------------------------

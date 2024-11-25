@@ -37,6 +37,7 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalStdlibApi::class)
 class QueryTest : BaseQueryTest() {
 
     private class MathFn(val name: String, val expr: Expression, val expected: Double)

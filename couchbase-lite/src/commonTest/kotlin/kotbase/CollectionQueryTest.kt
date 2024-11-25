@@ -20,6 +20,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.fail
 
+@OptIn(ExperimentalStdlibApi::class)
 class CollectionQueryTest : BaseQueryTest() {
 
     // Section 8.11

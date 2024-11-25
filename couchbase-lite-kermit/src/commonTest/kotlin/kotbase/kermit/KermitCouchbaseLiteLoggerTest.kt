@@ -21,6 +21,7 @@ import co.touchlab.kermit.Message
 import kotbase.*
 import kotlin.test.*
 
+@OptIn(ExperimentalStdlibApi::class)
 class KermitCouchbaseLiteLoggerTest : BaseTest() {
 
     class TestLogWriter(
