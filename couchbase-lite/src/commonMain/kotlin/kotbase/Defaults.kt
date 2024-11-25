@@ -57,41 +57,6 @@ public object Defaults {
         public const val IGNORE_ACCENTS: Boolean = false
     }
 
-    public object VectorIndex {
-        /**
-         * Vectors are not lazily indexed, by default
-         */
-        public const val IS_LAZY: Boolean = false
-
-        /**
-         * Vectors are encoded by using 8-bit Scalar Quantizer encoding, by default
-         */
-        public val ENCODING: VectorEncoding.ScalarQuantizerType = VectorEncoding.ScalarQuantizerType.SQ8
-
-        /**
-         * By default, vectors are compared using squared Euclidean metrics
-         */
-        public val DISTANCE_METRIC: VectorIndexConfiguration.DistanceMetric =
-            VectorIndexConfiguration.DistanceMetric.EUCLIDEAN_SQUARED
-
-        /**
-         * By default, the value will be determined based on the number of centroids, encoding types, and the
-         * encoding parameters.
-         */
-        public const val MIN_TRAINING_SIZE: Long = 0
-
-        /**
-         * By default, the value will be determined based on the number of centroids, encoding types, and the
-         * encoding parameters
-         */
-        public const val MAX_TRAINING_SIZE: Long = 0
-
-        /**
-         * By default, the value will be determined based on the number of centroids.
-         */
-        public const val NUM_PROBES: Long = 0
-    }
-
     public object Replicator {
         /**
          * Perform bidirectional replication
@@ -142,27 +107,5 @@ public object Defaults {
          * Whether or not a replicator only accepts cookies for the sender's parent domains
          */
         public const val ACCEPT_PARENT_COOKIES: Boolean = false
-    }
-
-    public object Listener {
-        /**
-         * No port specified, the OS will assign one
-         */
-        public const val PORT: Int = 0
-
-        /**
-         * TLS is enabled on the connection
-         */
-        public const val DISABLE_TLS: Boolean = false
-
-        /**
-         * The listener will allow database writes
-         */
-        public const val READ_ONLY: Boolean = false
-
-        /**
-         * Delta sync is disabled for the listener
-         */
-        public const val ENABLE_DELTA_SYNC: Boolean = false
     }
 }
