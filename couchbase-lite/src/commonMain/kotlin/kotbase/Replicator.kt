@@ -24,6 +24,7 @@ import kotlin.coroutines.CoroutineContext
  * or continuous. The replicator runs asynchronously, so observe the status to
  * be notified of progress.
  */
+@OptIn(ExperimentalStdlibApi::class)
 public expect class Replicator
 
 /**

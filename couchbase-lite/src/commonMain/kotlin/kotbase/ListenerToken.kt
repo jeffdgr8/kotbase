@@ -18,6 +18,7 @@ package kotbase
 /**
  * Base class for a removable subscription to an observable.
  */
+@OptIn(ExperimentalStdlibApi::class)
 public expect sealed class ListenerToken : AutoCloseable {
 
     /**

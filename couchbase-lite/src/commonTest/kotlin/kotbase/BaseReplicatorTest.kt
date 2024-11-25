@@ -27,6 +27,7 @@ import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalStdlibApi::class)
 internal class ListenerAwaiter(
     private val token: ListenerToken,
     private val stopStates: kotlin.collections.Collection<ReplicatorActivityLevel> = STOP_STATES
