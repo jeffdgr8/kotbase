@@ -146,6 +146,11 @@ internal constructor(
         get() = actual.indexes
 
     @Throws(CouchbaseLiteException::class)
+    public actual fun getIndex(name: String): QueryIndex? {
+        return actual.getIndex(name)?.asQueryIndex(this)
+    }
+
+    @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
         actual.createIndex(name, config.actual)
     }
