@@ -18,7 +18,7 @@ package kotbase
 import com.couchbase.lite.BasicAuthenticator as CBLBasicAuthenticator
 
 public actual class BasicAuthenticator
-internal constructor(
+private constructor(
     override val actual: CBLBasicAuthenticator
 ) : Authenticator(actual) {
 

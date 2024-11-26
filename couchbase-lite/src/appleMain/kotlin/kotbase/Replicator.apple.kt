@@ -189,8 +189,15 @@ internal constructor(
         token.remove()
     }
 
+    private var isClosedInternal = false
+
     actual override fun close() {
         // no close() in Objective-C SDK
         // https://github.com/couchbase/couchbase-lite-ios/blob/b1eca5996b06564e65ae1c0a1a8bb55db28f37f5/Objective-C/CBLReplicator.mm#L122
+        isClosedInternal = true
+        stop()
     }
+
+    public actual val isClosed: Boolean
+        get() = isClosedInternal
 }

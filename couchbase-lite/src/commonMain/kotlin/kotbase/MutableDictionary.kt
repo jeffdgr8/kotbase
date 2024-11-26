@@ -23,7 +23,7 @@ import kotlinx.datetime.Instant
 public expect class MutableDictionary : Dictionary {
 
     /**
-     * Construct a new empty Dictionary object.
+     * Construct a new empty MutableDictionary.
      */
     public constructor()
 
