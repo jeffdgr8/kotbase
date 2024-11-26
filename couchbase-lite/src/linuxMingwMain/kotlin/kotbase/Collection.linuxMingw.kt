@@ -335,6 +335,15 @@ internal constructor(
         }
 
     @Throws(CouchbaseLiteException::class)
+    public actual fun getIndex(name: String): QueryIndex? {
+        return wrapCBLError { error ->
+            memScoped {
+                CBLCollection_GetIndex(actual, name.toFLString(this), error)?.asQueryIndex(this)
+            }
+        }
+    }
+
+    @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
         wrapCBLError { error ->
             memScoped {

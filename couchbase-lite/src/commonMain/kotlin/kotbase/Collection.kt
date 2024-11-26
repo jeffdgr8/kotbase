@@ -262,6 +262,15 @@ public expect class Collection : AutoCloseable {
     public val indexes: Set<String>
 
     /**
+     * Get a query index object by name.
+     *
+     * @param name index name
+     * @return the QueryIndex or null if it does not exist
+     */
+    @Throws(CouchbaseLiteException::class)
+    public fun getIndex(name: String): QueryIndex?
+
+    /**
      * Add an index to the collection.
      *
      * @param name   index name
