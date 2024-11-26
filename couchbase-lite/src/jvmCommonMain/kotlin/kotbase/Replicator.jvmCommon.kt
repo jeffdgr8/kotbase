@@ -157,4 +157,7 @@ internal constructor(
     actual override fun close() {
         actual.close()
     }
+
+    public actual val isClosed: Boolean
+        get() = actual.isClosed
 }
