@@ -176,6 +176,12 @@ public expect open class Dictionary : Iterable<String> {
      */
     public fun toMap(): Map<String, Any?>
 
+    /**
+     * Encode a Dictionary as a JSON string
+     *
+     * @return JSON encoded representation of the Dictionary
+     * @throws CouchbaseLiteException on encoder failure.
+     */
     public fun toJSON(): String
 
     /**
