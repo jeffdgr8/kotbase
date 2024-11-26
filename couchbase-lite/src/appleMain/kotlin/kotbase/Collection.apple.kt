@@ -230,6 +230,13 @@ internal constructor(
     public fun indexes(): Set<String> = indexes
 
     @Throws(CouchbaseLiteException::class)
+    public actual fun getIndex(name: String): QueryIndex? {
+        return wrapCBLError { error ->
+            actual.indexWithName(name, error)?.asQueryIndex(this)
+        }
+    }
+
+    @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
         wrapCBLError { error ->
             actual.createIndexWithName(name, config.actual, error)
