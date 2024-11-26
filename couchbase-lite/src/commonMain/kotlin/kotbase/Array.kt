@@ -158,6 +158,12 @@ public expect open class Array : Iterable<Any?> {
      */
     public fun toList(): List<Any?>
 
+    /**
+     * Encode an Array as a JSON string
+     *
+     * @return JSON encoded representation of the Array
+     * @throws CouchbaseLiteException on encoder failure.
+     */
     public fun toJSON(): String
 
     /**

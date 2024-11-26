@@ -23,7 +23,7 @@ import kotlinx.datetime.Instant
 public expect class MutableArray : Array {
 
     /**
-     * Construct a new empty Array object.
+     * Construct a new empty MutableArray.
      */
     public constructor()
 

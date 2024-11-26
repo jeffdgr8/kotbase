@@ -36,7 +36,7 @@ internal constructor(
         get() = actual.name
 
     public actual val fullName: String
-        get() = "${actual.scope.name}.$name"
+        get() = actual.fullName
 
     public actual val count: Long
         get() = actual.count

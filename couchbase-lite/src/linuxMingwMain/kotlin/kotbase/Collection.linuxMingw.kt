@@ -66,7 +66,7 @@ internal constructor(
         get() = CBLCollection_Name(actual).toKString()!!
 
     public actual val fullName: String
-        get() = "${scope.name}.$name"
+        get() = CBLCollection_FullName(actual).toKString()!!
 
     public actual val count: Long
         get() = database.withLock {
