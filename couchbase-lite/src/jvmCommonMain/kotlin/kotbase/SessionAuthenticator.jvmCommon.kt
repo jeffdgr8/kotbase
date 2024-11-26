@@ -18,7 +18,7 @@ package kotbase
 import com.couchbase.lite.SessionAuthenticator as CBLSessionAuthenticator
 
 public actual class SessionAuthenticator
-internal constructor(
+private constructor(
     override val actual: CBLSessionAuthenticator
 ) : Authenticator(actual) {
 

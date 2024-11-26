@@ -43,9 +43,12 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
 
     /**
      * Start the replicator.
+     *
      * This method does not wait for the replicator to start.
      * The replicator runs asynchronously and reports its progress
      * through replicator change notifications.
+     *
+     * Note: Replicators **cannot** be started from within a `Database.inBatch()` block.
      */
     public fun start(resetCheckpoint: Boolean)
 
@@ -212,5 +215,18 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
     )
     public fun removeChangeListener(token: ListenerToken)
 
+    /**
+     * Immediately close the replicator and free its resources.
+     * We recommend the use of this method on Replicators that are in the STOPPED state.  If the
+     * replicator is not stopped, this method will make a best effort attempt to stop it but
+     * will not wait to confirm that it was stopped cleanly.
+     * Any attempt to restart a closed replicator will result in a CouchbaseLiteError.
+     * This includes calls to getPendingDocIds and isDocPending.
+     */
     override fun close()
+
+    /**
+     * Determine whether this replicator has been closed.
+     */
+    public val isClosed: Boolean
 }
