@@ -92,7 +92,7 @@ as straightforward as changing the import package from `com.couchbase.lite` to `
 * `Date` APIs use [kotlinx-datetime's `Instant`](
 https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/).
 * `InputStream` APIs use [kotlinx-io's `Source`](
-  https://fzhinkin.github.io/kotlinx-io-dokka-docs-preview/kotlinx-io-core/kotlinx.io/-source/).
+  https://kotlinlang.org/api/kotlinx-io/kotlinx-io-core/kotlinx.io/-source/).
 * `Executor` APIs use Kotlin's `CoroutineContext`.
 * Certificate APIs are available as raw `ByteArray`s or in platform-specific code.
 * There's no need to explicitly call `CouchbaseLite.init()`. Initialization functions can still be called with custom

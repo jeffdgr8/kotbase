@@ -133,8 +133,8 @@ collection.documentFlow("userProfile")
 
 ##### Map delegation
 
-Thanks to [`Map` delegation](https://kotlinlang.org/docs/delegated-properties.html#delegating-to-another-property),
-mapping a `ResultSet` to a Kotlin class has never been so easy.
+Thanks to [`Map` delegation](https://kotlinlang.org/docs/delegated-properties.html#storing-properties-in-a-map), mapping
+a `ResultSet` to a Kotlin class has never been so easy.
 
 The library provides the `ResultSet.toObjects()` and `Query.asObjectsFlow()` extensions for helping to map results given
 a factory lambda.
