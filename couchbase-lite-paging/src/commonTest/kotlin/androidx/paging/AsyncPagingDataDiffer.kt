@@ -28,7 +28,6 @@ package androidx.paging
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import app.cash.paging.*
-import app.cash.paging.LoadType.REFRESH
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -51,14 +50,14 @@ class AsyncPagingDataDiffer<T : Any>
  * Construct an [AsyncPagingDataDiffer].
  *
  * @param diffCallback Callback for calculating the diff between two non-disjoint lists on
- * [REFRESH]. Used as a fallback for item-level diffing when Paging is unable to find a faster
+ * [LoadType.REFRESH]. Used as a fallback for item-level diffing when Paging is unable to find a faster
  * path for generating the UI events required to display the new list.
  * @param updateCallback [ListUpdateCallback] which receives UI events dispatched by this
  * [AsyncPagingDataDiffer] as items are loaded.
  * @param mainDispatcher [CoroutineContext] where UI events are dispatched. Typically, this should
  * be [Dispatchers.Main].
  * @param workerDispatcher [CoroutineContext] where the work to generate UI events is dispatched,
- * for example when diffing lists on [REFRESH]. Typically, this should dispatch on a background
+ * for example when diffing lists on [LoadType.REFRESH]. Typically, this should dispatch on a background
  * thread; [Dispatchers.Default] by default.
  */
 @JvmOverloads
@@ -75,7 +74,7 @@ constructor(
      * Construct an [AsyncPagingDataDiffer].
      *
      * @param diffCallback Callback for calculating the diff between two non-disjoint lists on
-     * [REFRESH]. Used as a fallback for item-level diffing when Paging is unable to find a faster
+     * [LoadType.REFRESH]. Used as a fallback for item-level diffing when Paging is unable to find a faster
      * path for generating the UI events required to display the new list.
      * @param updateCallback [ListUpdateCallback] which receives UI events dispatched by this
      * [AsyncPagingDataDiffer] as items are loaded.
@@ -106,14 +105,14 @@ constructor(
      * Construct an [AsyncPagingDataDiffer].
      *
      * @param diffCallback Callback for calculating the diff between two non-disjoint lists on
-     * [REFRESH]. Used as a fallback for item-level diffing when Paging is unable to find a faster
+     * [LoadType.REFRESH]. Used as a fallback for item-level diffing when Paging is unable to find a faster
      * path for generating the UI events required to display the new list.
      * @param updateCallback [ListUpdateCallback] which receives UI events dispatched by this
      * [AsyncPagingDataDiffer] as items are loaded.
      * @param mainDispatcher [CoroutineDispatcher] where UI events are dispatched. Typically,
      * this should be [Dispatchers.Main].
      * @param workerDispatcher [CoroutineDispatcher] where the work to generate UI events is
-     * dispatched, for example when diffing lists on [REFRESH]. Typically, this should dispatch on a
+     * dispatched, for example when diffing lists on [LoadType.REFRESH]. Typically, this should dispatch on a
      * background thread; [Dispatchers.Default] by default.
      */
     @Deprecated(
@@ -254,7 +253,7 @@ constructor(
      *
      * [refresh] triggers the creation of a new [PagingData] with a new instance of [PagingSource]
      * to represent an updated snapshot of the backing dataset. If a [RemoteMediator] is set,
-     * calling [refresh] will also trigger a call to [RemoteMediator.load] with [LoadType] [REFRESH]
+     * calling [refresh] will also trigger a call to [RemoteMediator.load] with [LoadType] [LoadType.REFRESH]
      * to allow [RemoteMediator] to check for updates to the dataset backing [PagingSource].
      *
      * Note: This API is intended for UI-driven refresh signals, such as swipe-to-refresh.
