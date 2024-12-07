@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
@@ -24,7 +23,6 @@ kotlin {
         osx.deploymentTarget = "10.14"
     }
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
 
     sourceSets.configureEach {
