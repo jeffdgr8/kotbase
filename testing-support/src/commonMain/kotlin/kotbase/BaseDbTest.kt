@@ -38,7 +38,7 @@ fun Database.createTestCollection(name: String = "coll_", scope: String = "scope
         assertNotNull(coll)
         return coll
     } catch (e: Exception) {
-        throw AssertionError("Failed creating collection ${uname}.${uscope} in database ${this}", e)
+        throw AssertionError("Failed creating collection ${uname}.${uscope} in database $this", e)
     }
 }
 
@@ -78,7 +78,7 @@ fun Document.delete() {
     assertNotNull(coll)
     try {
         coll.delete(this)
-    } catch (e: CouchbaseLiteException) {
+    } catch (_: CouchbaseLiteException) {
         throw AssertionError("Failed deleting document ${this.id} from collection $coll")
     }
 }
@@ -94,7 +94,7 @@ fun <T : Comparable<T>> assertContents(l1: Set<T>, vararg contents: T) {
 suspend fun CountDownLatch.stdWait(): Boolean {
     return try {
         await(BaseTest.STD_TIMEOUT_SEC.seconds)
-    } catch (e: CancellationException) {
+    } catch (_: CancellationException) {
         false
     }
 }

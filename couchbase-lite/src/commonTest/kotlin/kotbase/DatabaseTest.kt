@@ -1677,7 +1677,7 @@ class DatabaseTest : BaseDbTest() {
             try {
                 db = Database(dbName)
                 fail("DB open should have thrown an exception")
-            } catch (ignore: CouchbaseLiteException) {
+            } catch (_: CouchbaseLiteException) {
             }
 
             // the (un-copyable) 2.8.0 db should still exist

@@ -101,7 +101,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
         try {
             // TODO: private API
             //URLEndpointListener.deleteAnonymousIdentities()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             //ignore
         }
     }

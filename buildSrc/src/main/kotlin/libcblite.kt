@@ -24,10 +24,8 @@ import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
 fun KotlinMultiplatformExtension.linkLibcblite(delegate: DelegatingProjectDependency) =
-    linkLibcblite(delegate.dependencyProject)
+    linkLibcblite(project.project(delegate.path))
 
-// TODO: use context receiver to provide ProjectDelegate receiver to access project
-@Suppress("INVISIBLE_MEMBER")
 fun KotlinMultiplatformExtension.linkLibcblite(fromProject: Project = project) {
     with(project) {
         targets.withType<KotlinNativeTarget>().configureEach {

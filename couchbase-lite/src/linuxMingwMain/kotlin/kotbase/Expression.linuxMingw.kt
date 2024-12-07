@@ -89,23 +89,23 @@ public actual open class Expression {
     ) : Expression() {
 
         companion object {
-            val OP_ADD = "+"
-            val OP_BETWEEN = "BETWEEN"
-            val OP_DIVIDE = "/"
-            val OP_EQUALS = "="
-            val OP_GREATER = ">"
-            val OP_GREATER_OR_EQUAL = ">="
-            val OP_IN = "IN"
-            val OP_IS = "IS"
-            val OP_IS_NOT = "IS NOT"
-            val OP_LESS = "<"
-            val OP_LESS_OR_EQUAL = "<="
-            val OP_LIKE = "LIKE"
-            val OP_MODULO = "%"
-            val OP_MULTIPLY = "*"
-            val OP_NOT_EQUAL = "!="
-            val OP_SUBTRACT = "-"
-            val OP_REGEX_LIKE = "regexp_like()"
+            const val OP_ADD = "+"
+            const val OP_BETWEEN = "BETWEEN"
+            const val OP_DIVIDE = "/"
+            const val OP_EQUALS = "="
+            const val OP_GREATER = ">"
+            const val OP_GREATER_OR_EQUAL = ">="
+            const val OP_IN = "IN"
+            const val OP_IS = "IS"
+            const val OP_IS_NOT = "IS NOT"
+            const val OP_LESS = "<"
+            const val OP_LESS_OR_EQUAL = "<="
+            const val OP_LIKE = "LIKE"
+            const val OP_MODULO = "%"
+            const val OP_MULTIPLY = "*"
+            const val OP_NOT_EQUAL = "!="
+            const val OP_SUBTRACT = "-"
+            const val OP_REGEX_LIKE = "regexp_like()"
         }
 
         override fun asJSON(): Any {
@@ -131,9 +131,9 @@ public actual open class Expression {
     ) : Expression() {
 
         companion object {
-            val OP_AND = "AND"
-            val OP_OR = "OR"
-            val OP_NOT = "NOT"
+            const val OP_AND = "AND"
+            const val OP_OR = "OR"
+            const val OP_NOT = "NOT"
         }
 
         override fun asJSON(): Any {

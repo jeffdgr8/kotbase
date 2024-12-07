@@ -34,7 +34,7 @@ actual object FileUtils {
     actual fun dirExists(dir: String): Boolean {
         val path = Path(dir)
         val fs = SystemFileSystem
-        return fs.exists(path) && fs.metadataOrNull(path)?.isDirectory ?: false
+        return fs.exists(path) && fs.metadataOrNull(path)?.isDirectory == true
     }
 
     actual fun listFiles(dir: String): List<String> {
@@ -124,7 +124,7 @@ actual object FileUtils {
         return try {
             SystemFileSystem.delete(Path(file), true)
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }

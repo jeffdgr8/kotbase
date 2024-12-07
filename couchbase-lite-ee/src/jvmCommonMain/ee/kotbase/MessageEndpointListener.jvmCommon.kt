@@ -21,7 +21,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asExecutor
-import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.MessageEndpointListener as CBLMessageEndpointListener
 

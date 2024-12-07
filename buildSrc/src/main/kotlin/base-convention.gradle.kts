@@ -23,13 +23,7 @@ kotlin {
         osx.deploymentTarget = "10.14"
     }
 
-    targets.configureEach {
-        compilations.configureEach {
-            compileTaskProvider.configure {
-                compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
-            }
-        }
-    }
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
 
     sourceSets.configureEach {
         languageSettings {

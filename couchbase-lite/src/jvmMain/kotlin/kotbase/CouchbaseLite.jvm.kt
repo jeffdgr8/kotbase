@@ -16,7 +16,6 @@
 package kotbase
 
 import com.couchbase.lite.internal.CouchbaseLiteInternal
-import kotbase.CouchbaseLite.init
 import kotlinx.atomicfu.atomic
 import java.io.File
 import com.couchbase.lite.CouchbaseLite as CBLCouchbaseLite

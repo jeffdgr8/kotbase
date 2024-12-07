@@ -568,7 +568,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         try {
             run(listener.localURLEndpoint, auth = auth, serverCert = serverCert)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -601,7 +601,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
                 serverCert = serverCert,
                 expectedError = CBLErrorTLSClientCertRejected.toInt()
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -1008,7 +1008,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
                 acceptSelfSignedOnly = false,
                 expectedError = CBLErrorTLSCertUnknownRoot.toInt()
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -1018,7 +1018,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
                 listener.localURLEndpoint,
                 acceptSelfSignedOnly = true
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -1042,7 +1042,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
                 acceptSelfSignedOnly = false,
                 expectedError = CBLErrorTLSCertUnknownRoot.toInt()
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -1054,7 +1054,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
                 acceptSelfSignedOnly = false,
                 serverCert = serverCert
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -1077,7 +1077,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         try {
             startListener(config)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -1204,7 +1204,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         try {
             startListener(config)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -1241,7 +1241,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         try {
             startListener(config)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -1278,7 +1278,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
                 serverCert = dummyTLSIdentity?.certs?.get(0),
                 expectedError = CBLErrorTLSCertUnknownRoot.toInt()
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 
@@ -1288,7 +1288,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
                 listener.localURLEndpoint,
                 serverCert = listener.tlsIdentity?.certs?.get(0)
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
 

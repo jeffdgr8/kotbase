@@ -15,14 +15,12 @@
  */
 package kotbase
 
-import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.CountDownLatch
-import kotlinx.coroutines.sync.Mutex
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -288,7 +286,7 @@ class FlowTest : BaseReplicatorTest() {
                         if (v != null) {
                             allResults.addAll(v)
                         }
-                        if (allResults.size > 0) {
+                        if (allResults.isNotEmpty()) {
                             latch.countDown()
                         }
                     }

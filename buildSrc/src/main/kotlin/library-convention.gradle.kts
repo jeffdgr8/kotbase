@@ -42,8 +42,7 @@ tasks.withType<AbstractDokkaLeafTask>().configureEach {
             url = "https://kotlinlang.org/api/kotlinx-datetime/",
             packageListUrl = "https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/package-list"
         )
-        // TODO: Update URL when kotlinx-io docs are published
-        externalDocumentationLink("https://fzhinkin.github.io/kotlinx-io-dokka-docs-preview/")
+        externalDocumentationLink("https://kotlinlang.org/api/kotlinx-io/")
     }
 }
 
@@ -51,7 +50,6 @@ mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
 
-    @Suppress("UnstableApiUsage")
     pom {
         name.set(project.name)
         afterEvaluate { this@pom.description.set(this@afterEvaluate.description) }

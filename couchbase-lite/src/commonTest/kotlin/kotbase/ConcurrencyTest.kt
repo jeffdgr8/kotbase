@@ -417,7 +417,7 @@ class ConcurrencyTest : BaseDbTest() {
         var ok = false
         try {
             ok = latch.await(STD_TIMEOUT_SEC.seconds)
-        } catch (ignore: CancellationException) { }
+        } catch (_: CancellationException) { }
         checkForFailure(error)
         assertTrue(ok)
     }
@@ -472,6 +472,6 @@ class ConcurrencyTest : BaseDbTest() {
     private suspend fun delay() {
         try {
             delay(2)
-        } catch (ignore: CancellationException) { }
+        } catch (_: CancellationException) { }
     }
 }

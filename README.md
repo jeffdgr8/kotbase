@@ -1,6 +1,6 @@
 [![Maven Central](https://img.shields.io/maven-central/v/dev.kotbase/couchbase-lite)](
 https://central.sonatype.com/namespace/dev.kotbase)
-[![Kotlin](https://img.shields.io/badge/kotlin-1.9.25-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.1.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![GitHub License](https://img.shields.io/github/license/jeffdgr8/kotbase)](LICENSE)
 [![Couchbase Community](https://img.shields.io/badge/couchbase-community-ea2328?logo=couchbase&logoColor=ea2328)](
 https://www.couchbase.com/developers/community/)
@@ -92,7 +92,7 @@ as straightforward as changing the import package from `com.couchbase.lite` to `
 * `Date` APIs use [kotlinx-datetime's `Instant`](
 https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/).
 * `InputStream` APIs use [kotlinx-io's `Source`](
-  https://fzhinkin.github.io/kotlinx-io-dokka-docs-preview/kotlinx-io-core/kotlinx.io/-source/).
+  https://kotlinlang.org/api/kotlinx-io/kotlinx-io-core/kotlinx.io/-source/).
 * `Executor` APIs use Kotlin's `CoroutineContext`.
 * Certificate APIs are available as raw `ByteArray`s or in platform-specific code.
 * There's no need to explicitly call `CouchbaseLite.init()`. Initialization functions can still be called with custom
@@ -170,7 +170,8 @@ implementation("dev.kotbase:couchbase-lite-ee-paging:3.1.9-1.1.1")
     * [ ] SwiftUI for Kotbase Notes
 * [x] Couchbase Lite [3.1 API](https://docs.couchbase.com/couchbase-lite/3.1/cbl-whatsnew.html) - Scopes and Collections
 * [x] Versioned docs
-* [ ] Couchbase Lite 3.2 API - [Vector Search](https://www.couchbase.com/products/vector-search/)
+* [ ] Couchbase Lite [3.2 API](https://docs.couchbase.com/couchbase-lite/3.2/cbl-whatsnew.html) - [Vector Search](
+  https://www.couchbase.com/products/vector-search/)
 * [ ] Async coroutines API
 
 ## Development

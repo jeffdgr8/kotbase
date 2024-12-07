@@ -69,7 +69,7 @@ public object CouchbaseLite {
      *
      * @param ctxt       Application context
      * @param debug      to enable debugging
-     * @param rootDir    default directory for databases
+     * @param rootDbDir  default directory for databases
      * @param scratchDir scratch directory for SQLite
      * @throws IllegalStateException on initialization failure
      */
