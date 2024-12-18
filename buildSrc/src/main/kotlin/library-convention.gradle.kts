@@ -1,9 +1,7 @@
 import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.accessors.dm.LibrariesForLibs
-import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
-import java.net.URI
 
 plugins {
     id("base-convention")
@@ -27,22 +25,28 @@ kotlin {
     }
 }
 
-tasks.withType<AbstractDokkaLeafTask>().configureEach {
+dokka {
     dokkaSourceSets.configureEach {
         includes.from("README.md")
 
         sourceLink {
             localDirectory.set(projectDir.resolve("src"))
-            remoteUrl.set(URI("https://github.com/jeffdgr8/kotbase/tree/main/${project.name}/src").toURL())
+            remoteUrl("https://github.com/jeffdgr8/kotbase/tree/main/${project.name}/src")
             remoteLineSuffix.set("#L")
         }
 
-        externalDocumentationLink("https://kotlinlang.org/api/kotlinx.coroutines/")
-        externalDocumentationLink(
-            url = "https://kotlinlang.org/api/kotlinx-datetime/",
-            packageListUrl = "https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/package-list"
-        )
-        externalDocumentationLink("https://kotlinlang.org/api/kotlinx-io/")
+        externalDocumentationLinks {
+            register("kotlinx.coroutines") {
+                url("https://kotlinlang.org/api/kotlinx.coroutines/")
+            }
+            register("kotlinx-datetime") {
+                url("https://kotlinlang.org/api/kotlinx-datetime/")
+                packageListUrl("https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/package-list")
+            }
+            register("kotlinx-io") {
+                url("https://kotlinlang.org/api/kotlinx-io/")
+            }
+        }
     }
 }
 
