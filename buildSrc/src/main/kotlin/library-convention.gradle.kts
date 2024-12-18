@@ -2,6 +2,7 @@ import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.accessors.dm.LibrariesForLibs
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import java.time.LocalDate
 
 plugins {
     id("base-convention")
@@ -47,6 +48,11 @@ dokka {
                 url("https://kotlinlang.org/api/kotlinx-io/")
             }
         }
+    }
+
+    pluginsConfiguration.html {
+        customAssets.from(rootProject.projectDir.resolve("docs/site/assets/images/logo-icon.svg"))
+        footerMessage = "© 2022-${LocalDate.now().year} Jeff Lockhart"
     }
 }
 
