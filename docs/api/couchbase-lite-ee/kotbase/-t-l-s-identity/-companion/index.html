@@ -25,295 +25,363 @@
 <link href="../../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../../styles/logo-styles.css" rel="Stylesheet">
 <link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../ui-kit/ui-kit.min.js" defer></script>
 <script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
-<link href="../../../../styles/multimodule.css" rel="Stylesheet"></head>
+<link href="../../../../styles/multimodule.css" rel="Stylesheet">
+<link href="../../../../images/logo-icon.svg"></head>
 <body>
     <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
 <a class="library-name--link" href="../../../../index.html">
-                            kotbase
-                    </a>            </div>
-            <div class="library-version">
-<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kotbase/-t-l-s-identity/-companion/index.html&quot;}"><div class="versions-dropdown">
-  <div class="versions-dropdown-button">3.1</div>
-  <div class="versions-dropdown-data"><a href="index.html">3.1</a><a href="../../../../older/3.0/couchbase-lite-ee/kotbase/-t-l-s-identity/-companion/index.html">3.0</a></div>
+                    kotbase
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kotbase/-t-l-s-identity/-companion/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">3.1</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.1</a></div>
+    <div><a href="../../../../older/3.0/couchbase-lite-ee/kotbase/-t-l-s-identity/-companion/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.0</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
 </div>
-</dokka-template-command>            </div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":couchbase-lite-ee/androidMain">android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee/appleMain">apple</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee/commonMain">common</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":couchbase-lite-ee/jvmMain">jvm</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee/linuxMingwMain">linuxMingw</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/androidMain" data-filter=":couchbase-lite-ee/androidMain">
+                                <span class="checkbox--icon"></span>
+                                android
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/appleMain" data-filter=":couchbase-lite-ee/appleMain">
+                                <span class="checkbox--icon"></span>
+                                apple
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/commonMain" data-filter=":couchbase-lite-ee/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/jvmMain" data-filter=":couchbase-lite-ee/jvmMain">
+                                <span class="checkbox--icon"></span>
+                                jvm
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/linuxMingwMain" data-filter=":couchbase-lite-ee/linuxMingwMain">
+                                <span class="checkbox--icon"></span>
+                                linuxMingw
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
         </div>
-        <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button>
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain">jvm</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain">linuxMingw</button>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
         </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
+    </nav>
         <div id="container">
             <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    kotbase
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="couchbase-lite-ee::kotbase/TLSIdentity.Companion///PointingToDeclaration//-2026731870">
+<div class="main-content" data-page-type="classlike" id="content" pageids="couchbase-lite-ee::kotbase/TLSIdentity.Companion///PointingToDeclaration//-1060967032">
   <div class="breadcrumbs"><a href="../../../index.html">couchbase-lite-ee</a><span class="delimiter">/</span><a href="../../index.html">kotbase</a><span class="delimiter">/</span><a href="../index.html">TLSIdentity</a><span class="delimiter">/</span><span class="current">Companion</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Companion</span></span></h1>
     <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain">linuxMingw</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">object </span><a href="index.html">Companion</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/commonMain/ee/kotbase/TLSIdentity.kt#L35">source</a>)</span></span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">object </span><a href="index.html">Companion</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/jvmMain/ee/kotbase/TLSIdentity.jvm.kt#L36">source</a>)</span></span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">object </span><a href="index.html">Companion</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/linuxMingwMain/ee/kotbase/TLSIdentity.linuxMingw.kt#L28">source</a>)</span></span></div></div>    </div>
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/androidMain" data-filterable-set=":couchbase-lite-ee/androidMain" data-active="" data-toggle=":couchbase-lite-ee/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/appleMain" data-filterable-set=":couchbase-lite-ee/appleMain" data-toggle=":couchbase-lite-ee/appleMain">apple</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain" data-toggle=":couchbase-lite-ee/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/jvmMain" data-filterable-set=":couchbase-lite-ee/jvmMain" data-toggle=":couchbase-lite-ee/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/linuxMingwMain" data-filterable-set=":couchbase-lite-ee/linuxMingwMain" data-toggle=":couchbase-lite-ee/linuxMingwMain">linuxMingw</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/androidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">object </span><a href="index.html">Companion</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/androidMain/ee/kotbase/TLSIdentity.android.kt#L35">source</a>)</span></span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/appleMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">object </span><a href="index.html">Companion</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/appleMain/ee/kotbase/TLSIdentity.apple.kt#L39">source</a>)</span></span></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">object </span><a href="index.html">Companion</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/commonMain/ee/kotbase/TLSIdentity.kt#L35">source</a>)</span></span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">object </span><a href="index.html">Companion</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/jvmMain/ee/kotbase/TLSIdentity.jvm.kt#L36">source</a>)</span></span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/linuxMingwMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">object </span><a href="index.html">Companion</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/linuxMingwMain/ee/kotbase/TLSIdentity.linuxMingw.kt#L28">source</a>)</span></span></div></div>    </div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
     <div class="tabs-section-body">
       <div data-togglable="EXTENSION_PROPERTY">
         <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-1779691925%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_COMMON_NAME" id="-1779691925%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+        <div class="table"><a data-name="-1779691925%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_COMMON_NAME" id="-1779691925%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-c-o-m-m-o-n_-n-a-m-e.html"><span><span>CERT_ATTRIBUTE_COMMON_NAME</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1779691925%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-c-o-m-m-o-n_-n-a-m-e.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>COMMON_</span><wbr><span>NAME</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1779691925%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-c-o-m-m-o-n_-n-a-m-e.html">CERT_ATTRIBUTE_COMMON_NAME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-c-o-m-m-o-n_-n-a-m-e.html">CERT_ATTRIBUTE_COMMON_NAME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1472691138%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_COUNTRY" id="1472691138%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="1472691138%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_COUNTRY" id="1472691138%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-c-o-u-n-t-r-y.html"><span><span>CERT_ATTRIBUTE_COUNTRY</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1472691138%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-c-o-u-n-t-r-y.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>COUNTRY</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1472691138%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-c-o-u-n-t-r-y.html">CERT_ATTRIBUTE_COUNTRY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-c-o-u-n-t-r-y.html">CERT_ATTRIBUTE_COUNTRY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-82631203%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_EMAIL_ADDRESS" id="-82631203%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-82631203%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_EMAIL_ADDRESS" id="-82631203%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-e-m-a-i-l_-a-d-d-r-e-s-s.html"><span><span>CERT_ATTRIBUTE_EMAIL_ADDRESS</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-82631203%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-e-m-a-i-l_-a-d-d-r-e-s-s.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>EMAIL_</span><wbr><span>ADDRESS</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-82631203%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-e-m-a-i-l_-a-d-d-r-e-s-s.html">CERT_ATTRIBUTE_EMAIL_ADDRESS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-e-m-a-i-l_-a-d-d-r-e-s-s.html">CERT_ATTRIBUTE_EMAIL_ADDRESS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1450559853%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_GIVEN_NAME" id="-1450559853%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-1450559853%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_GIVEN_NAME" id="-1450559853%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-g-i-v-e-n_-n-a-m-e.html"><span><span>CERT_ATTRIBUTE_GIVEN_NAME</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1450559853%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-g-i-v-e-n_-n-a-m-e.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>GIVEN_</span><wbr><span>NAME</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1450559853%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-g-i-v-e-n_-n-a-m-e.html">CERT_ATTRIBUTE_GIVEN_NAME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-g-i-v-e-n_-n-a-m-e.html">CERT_ATTRIBUTE_GIVEN_NAME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1637330777%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_HOSTNAME" id="1637330777%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="1637330777%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_HOSTNAME" id="1637330777%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-h-o-s-t-n-a-m-e.html"><span><span>CERT_ATTRIBUTE_HOSTNAME</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1637330777%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-h-o-s-t-n-a-m-e.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>HOSTNAME</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1637330777%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-h-o-s-t-n-a-m-e.html">CERT_ATTRIBUTE_HOSTNAME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-h-o-s-t-n-a-m-e.html">CERT_ATTRIBUTE_HOSTNAME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1339500574%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_IP_ADDRESS" id="-1339500574%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-1339500574%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_IP_ADDRESS" id="-1339500574%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-i-p_-a-d-d-r-e-s-s.html"><span><span>CERT_ATTRIBUTE_IP_ADDRESS</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1339500574%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-i-p_-a-d-d-r-e-s-s.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>IP_</span><wbr><span>ADDRESS</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1339500574%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-i-p_-a-d-d-r-e-s-s.html">CERT_ATTRIBUTE_IP_ADDRESS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-i-p_-a-d-d-r-e-s-s.html">CERT_ATTRIBUTE_IP_ADDRESS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1789889673%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_LOCALITY" id="1789889673%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="1789889673%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_LOCALITY" id="1789889673%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-l-o-c-a-l-i-t-y.html"><span><span>CERT_ATTRIBUTE_LOCALITY</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1789889673%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-l-o-c-a-l-i-t-y.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>LOCALITY</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1789889673%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-l-o-c-a-l-i-t-y.html">CERT_ATTRIBUTE_LOCALITY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-l-o-c-a-l-i-t-y.html">CERT_ATTRIBUTE_LOCALITY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="931099097%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_ORGANIZATION" id="931099097%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="931099097%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_ORGANIZATION" id="931099097%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-o-r-g-a-n-i-z-a-t-i-o-n.html"><span><span>CERT_ATTRIBUTE_ORGANIZATION</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="931099097%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-o-r-g-a-n-i-z-a-t-i-o-n.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span><span>ORGANIZATION</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="931099097%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-o-r-g-a-n-i-z-a-t-i-o-n.html">CERT_ATTRIBUTE_ORGANIZATION</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-o-r-g-a-n-i-z-a-t-i-o-n.html">CERT_ATTRIBUTE_ORGANIZATION</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="370712092%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_ORGANIZATION_UNIT" id="370712092%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="370712092%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_ORGANIZATION_UNIT" id="370712092%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-o-r-g-a-n-i-z-a-t-i-o-n_-u-n-i-t.html"><span><span>CERT_ATTRIBUTE_ORGANIZATION_UNIT</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="370712092%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-o-r-g-a-n-i-z-a-t-i-o-n_-u-n-i-t.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>ORGANIZATION_</span><wbr><span>UNIT</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="370712092%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-o-r-g-a-n-i-z-a-t-i-o-n_-u-n-i-t.html">CERT_ATTRIBUTE_ORGANIZATION_UNIT</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-o-r-g-a-n-i-z-a-t-i-o-n_-u-n-i-t.html">CERT_ATTRIBUTE_ORGANIZATION_UNIT</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="617009670%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_POSTAL_ADDRESS" id="617009670%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="617009670%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_POSTAL_ADDRESS" id="617009670%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-o-s-t-a-l_-a-d-d-r-e-s-s.html"><span><span>CERT_ATTRIBUTE_POSTAL_ADDRESS</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="617009670%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-o-s-t-a-l_-a-d-d-r-e-s-s.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>POSTAL_</span><wbr><span>ADDRESS</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="617009670%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-o-s-t-a-l_-a-d-d-r-e-s-s.html">CERT_ATTRIBUTE_POSTAL_ADDRESS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-o-s-t-a-l_-a-d-d-r-e-s-s.html">CERT_ATTRIBUTE_POSTAL_ADDRESS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="37782893%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_POSTAL_CODE" id="37782893%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="37782893%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_POSTAL_CODE" id="37782893%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-o-s-t-a-l_-c-o-d-e.html"><span><span>CERT_ATTRIBUTE_POSTAL_CODE</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="37782893%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-o-s-t-a-l_-c-o-d-e.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>POSTAL_</span><wbr><span>CODE</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="37782893%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-o-s-t-a-l_-c-o-d-e.html">CERT_ATTRIBUTE_POSTAL_CODE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-o-s-t-a-l_-c-o-d-e.html">CERT_ATTRIBUTE_POSTAL_CODE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-2035882384%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_PSEUDONYM" id="-2035882384%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-2035882384%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_PSEUDONYM" id="-2035882384%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-s-e-u-d-o-n-y-m.html"><span><span>CERT_ATTRIBUTE_PSEUDONYM</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2035882384%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-s-e-u-d-o-n-y-m.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>PSEUDONYM</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2035882384%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-s-e-u-d-o-n-y-m.html">CERT_ATTRIBUTE_PSEUDONYM</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-p-s-e-u-d-o-n-y-m.html">CERT_ATTRIBUTE_PSEUDONYM</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-504911740%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_REGISTERED_ID" id="-504911740%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-504911740%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_REGISTERED_ID" id="-504911740%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-r-e-g-i-s-t-e-r-e-d_-i-d.html"><span><span>CERT_ATTRIBUTE_REGISTERED_ID</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-504911740%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-r-e-g-i-s-t-e-r-e-d_-i-d.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>REGISTERED_</span><wbr><span>ID</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-504911740%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-r-e-g-i-s-t-e-r-e-d_-i-d.html">CERT_ATTRIBUTE_REGISTERED_ID</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-r-e-g-i-s-t-e-r-e-d_-i-d.html">CERT_ATTRIBUTE_REGISTERED_ID</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1848365622%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_STATE_OR_PROVINCE" id="-1848365622%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-1848365622%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_STATE_OR_PROVINCE" id="-1848365622%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-s-t-a-t-e_-o-r_-p-r-o-v-i-n-c-e.html"><span><span>CERT_ATTRIBUTE_STATE_OR_PROVINCE</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1848365622%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-s-t-a-t-e_-o-r_-p-r-o-v-i-n-c-e.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>STATE_</span><wbr><span>OR_</span><wbr><span>PROVINCE</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1848365622%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-s-t-a-t-e_-o-r_-p-r-o-v-i-n-c-e.html">CERT_ATTRIBUTE_STATE_OR_PROVINCE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-s-t-a-t-e_-o-r_-p-r-o-v-i-n-c-e.html">CERT_ATTRIBUTE_STATE_OR_PROVINCE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-428609721%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_SURNAME" id="-428609721%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-428609721%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_SURNAME" id="-428609721%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-s-u-r-n-a-m-e.html"><span><span>CERT_ATTRIBUTE_SURNAME</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-428609721%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-s-u-r-n-a-m-e.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>SURNAME</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-428609721%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-s-u-r-n-a-m-e.html">CERT_ATTRIBUTE_SURNAME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-s-u-r-n-a-m-e.html">CERT_ATTRIBUTE_SURNAME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-2056892837%2FProperties%2F-848713996" anchor-label="CERT_ATTRIBUTE_URL" id="-2056892837%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-2056892837%2FProperties%2F-934490742" anchor-label="CERT_ATTRIBUTE_URL" id="-2056892837%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-u-r-l.html"><span><span>CERT_ATTRIBUTE_URL</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2056892837%2FProperties%2F-848713996"></span>
+                  <div><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-u-r-l.html"><span>CERT_</span><wbr><span>ATTRIBUTE_</span><wbr><span>URL</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2056892837%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-u-r-l.html">CERT_ATTRIBUTE_URL</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">TLSIdentity.Companion</a><span class="token punctuation">.</span><a href="../../-c-e-r-t_-a-t-t-r-i-b-u-t-e_-u-r-l.html">CERT_ATTRIBUTE_URL</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
                 </div>
               </div>
             </div>
@@ -322,70 +390,87 @@
       </div>
       <div data-togglable="FUNCTION">
         <h2 class="">Functions</h2>
-        <div class="table"><a data-name="1467676719%2FFunctions%2F-2026731870" anchor-label="createIdentity" id="1467676719%2FFunctions%2F-2026731870" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/jvmMain,:couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/jvmMain,:couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/jvmMain,:couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain">
+        <div class="table"><a data-name="248669599%2FFunctions%2F-1060967032" anchor-label="createIdentity" id="248669599%2FFunctions%2F-1060967032" data-filterable-set=":couchbase-lite-ee/appleMain,:couchbase-lite-ee/commonMain,:couchbase-lite-ee/androidMain,:couchbase-lite-ee/jvmMain,:couchbase-lite-ee/linuxMingwMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/appleMain,:couchbase-lite-ee/commonMain,:couchbase-lite-ee/androidMain,:couchbase-lite-ee/jvmMain,:couchbase-lite-ee/linuxMingwMain" data-filterable-set=":couchbase-lite-ee/appleMain,:couchbase-lite-ee/commonMain,:couchbase-lite-ee/androidMain,:couchbase-lite-ee/jvmMain,:couchbase-lite-ee/linuxMingwMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="create-identity.html"><span>create</span><wbr><span><span>Identity</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1467676719%2FFunctions%2F-2026731870"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="248669599%2FFunctions%2F-1060967032"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain">linuxMingw</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div><div class="brief "><p class="paragraph">Create self-signed certificate and private key, store them in the canonical keystore, and return an identity backed by the new entry. The identity will be stored in the secure storage using the specified alias and can be recovered using that alias, after this method returns.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">keyStore<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/security/KeyStore.html">KeyStore</a><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">keyPassword<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-char-array/index.html">CharArray</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div><div class="brief "><p class="paragraph">Create a self-signed certificate TLSIdentity object. The generated private key will be stored in the KeyStore along with its self-signed certificate.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/androidMain" data-filterable-set=":couchbase-lite-ee/androidMain" data-active="" data-toggle=":couchbase-lite-ee/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/appleMain" data-filterable-set=":couchbase-lite-ee/appleMain" data-toggle=":couchbase-lite-ee/appleMain">apple</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain" data-toggle=":couchbase-lite-ee/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/jvmMain" data-filterable-set=":couchbase-lite-ee/jvmMain" data-toggle=":couchbase-lite-ee/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/linuxMingwMain" data-filterable-set=":couchbase-lite-ee/linuxMingwMain" data-toggle=":couchbase-lite-ee/linuxMingwMain">linuxMingw</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/androidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">identity<span class="token operator">: </span><span data-unresolved-link="platform.Security/SecIdentityRef///PointingToDeclaration/">SecIdentityRef</span><span class="token punctuation">, </span></span><span class="parameter ">certs<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="platform.Security/SecCertificateRef///PointingToDeclaration/">SecCertificateRef</span><span class="token operator">&gt;</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div><div class="brief "><p class="paragraph">Get an identity with a SecIdentity object. Any intermediate or root certificates required to identify the certificate but not present in the system-wide set of trusted anchor certificates need to be specified in the optional certs parameter. In addition, the specified SecIdentity object is required to be present in the KeyChain, otherwise an exception will be thrown.</p></div><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div><div class="brief "><p class="paragraph">Create self-signed certificate and private key, store them in the canonical keystore, and return an identity backed by the new entry. The identity will be stored in the secure storage using the specified alias and can be recovered using that alias, after this method returns.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">keyStore<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/security/KeyStore.html">KeyStore</a><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">keyPassword<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-char-array/index.html">CharArray</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div><div class="brief "><p class="paragraph">Create a self-signed certificate TLSIdentity object. The generated private key will be stored in the KeyStore along with its self-signed certificate.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/linuxMingwMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="create-identity.html"><span class="token function">createIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isServer<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">attributes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">expiration<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/index.html">Instant</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1369311562%2FFunctions%2F-2026731870" anchor-label="deleteIdentity" id="-1369311562%2FFunctions%2F-2026731870" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/jvmMain,:couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/jvmMain,:couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/jvmMain,:couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain">
+<a data-name="-1369311562%2FFunctions%2F-1060967032" anchor-label="deleteIdentity" id="-1369311562%2FFunctions%2F-1060967032" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/androidMain,:couchbase-lite-ee/appleMain,:couchbase-lite-ee/jvmMain,:couchbase-lite-ee/linuxMingwMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/androidMain,:couchbase-lite-ee/appleMain,:couchbase-lite-ee/jvmMain,:couchbase-lite-ee/linuxMingwMain" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/androidMain,:couchbase-lite-ee/appleMain,:couchbase-lite-ee/jvmMain,:couchbase-lite-ee/linuxMingwMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="delete-identity.html"><span>delete</span><wbr><span><span>Identity</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1369311562%2FFunctions%2F-2026731870"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1369311562%2FFunctions%2F-1060967032"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain">linuxMingw</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="delete-identity.html"><span class="token function">deleteIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Delete the identity in the keystore with the given alias.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="delete-identity.html"><span class="token function">deleteIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="delete-identity.html"><span class="token function">deleteIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/androidMain" data-filterable-set=":couchbase-lite-ee/androidMain" data-active="" data-toggle=":couchbase-lite-ee/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/appleMain" data-filterable-set=":couchbase-lite-ee/appleMain" data-toggle=":couchbase-lite-ee/appleMain">apple</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain" data-toggle=":couchbase-lite-ee/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/jvmMain" data-filterable-set=":couchbase-lite-ee/jvmMain" data-toggle=":couchbase-lite-ee/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/linuxMingwMain" data-filterable-set=":couchbase-lite-ee/linuxMingwMain" data-toggle=":couchbase-lite-ee/linuxMingwMain">linuxMingw</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/androidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="delete-identity.html"><span class="token function">deleteIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/appleMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="delete-identity.html"><span class="token function">deleteIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="delete-identity.html"><span class="token function">deleteIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Delete the identity in the keystore with the given alias.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="delete-identity.html"><span class="token function">deleteIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/linuxMingwMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="delete-identity.html"><span class="token function">deleteIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1946685143%2FFunctions%2F-2026731870" anchor-label="getIdentity" id="1946685143%2FFunctions%2F-2026731870" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/jvmMain,:couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/jvmMain,:couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/jvmMain,:couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain">
+<a data-name="1946685143%2FFunctions%2F-1060967032" anchor-label="getIdentity" id="1946685143%2FFunctions%2F-1060967032" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/androidMain,:couchbase-lite-ee/appleMain,:couchbase-lite-ee/jvmMain,:couchbase-lite-ee/linuxMingwMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/androidMain,:couchbase-lite-ee/appleMain,:couchbase-lite-ee/jvmMain,:couchbase-lite-ee/linuxMingwMain" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/androidMain,:couchbase-lite-ee/appleMain,:couchbase-lite-ee/jvmMain,:couchbase-lite-ee/linuxMingwMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="get-identity.html"><span>get</span><wbr><span><span>Identity</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1946685143%2FFunctions%2F-2026731870"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1946685143%2FFunctions%2F-1060967032"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain">linuxMingw</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get a TLSIdentity backed by the information for the passed alias.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">keyStore<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/security/KeyStore.html">KeyStore</a><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">keyPassword<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-char-array/index.html">CharArray</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get a TLSIdentity object from the give KeyStore, key alias, and key password. The KeyStore must contain the private key along with the certificate chain at the given key alias and password, otherwise null will be returned.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/linuxMingwMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/androidMain" data-filterable-set=":couchbase-lite-ee/androidMain" data-active="" data-toggle=":couchbase-lite-ee/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/appleMain" data-filterable-set=":couchbase-lite-ee/appleMain" data-toggle=":couchbase-lite-ee/appleMain">apple</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain" data-toggle=":couchbase-lite-ee/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/jvmMain" data-filterable-set=":couchbase-lite-ee/jvmMain" data-toggle=":couchbase-lite-ee/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/linuxMingwMain" data-filterable-set=":couchbase-lite-ee/linuxMingwMain" data-toggle=":couchbase-lite-ee/linuxMingwMain">linuxMingw</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/androidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/appleMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get a TLSIdentity backed by the information for the passed alias.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">keyStore<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/security/KeyStore.html">KeyStore</a><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">keyPassword<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-char-array/index.html">CharArray</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get a TLSIdentity object from the give KeyStore, key alias, and key password. The KeyStore must contain the private key along with the certificate chain at the given key alias and password, otherwise null will be returned.</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/linuxMingwMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="get-identity.html"><span class="token function">getIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a><span class="token operator">?</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-78799792%2FFunctions%2F566317442" anchor-label="useKeyStore" id="-78799792%2FFunctions%2F566317442" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain">
+<a data-name="-864409617%2FFunctions%2F-1347183412" anchor-label="importIdentity" id="-864409617%2FFunctions%2F-1347183412" data-filterable-set=":couchbase-lite-ee/appleMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/appleMain" data-filterable-set=":couchbase-lite-ee/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="use-key-store.html"><span>use</span><wbr><span>Key</span><wbr><span><span>Store</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-78799792%2FFunctions%2F566317442"></span>
+                  <div><a href="import-identity.html"><span>import</span><wbr><span><span>Identity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-864409617%2FFunctions%2F-1347183412"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain">jvm</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="use-key-store.html"><span class="token function">useKeyStore</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">keyStore<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/security/KeyStore.html">KeyStore</a><span class="token punctuation">, </span></span><span class="parameter ">keyPassword<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-char-array/index.html">CharArray</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Register a KeyStore and key password to use in common APIs.</p></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/appleMain" data-filterable-set=":couchbase-lite-ee/appleMain" data-active="" data-toggle=":couchbase-lite-ee/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="import-identity.html"><span class="token function">importIdentity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">data<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">, </span></span><span class="parameter ">password<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-char-array/index.html">CharArray</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">alias<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html">TLSIdentity</a></div><div class="brief "><p class="paragraph">Imports and creates an identity from the given PKCS12 Data. The imported identity will be stored in the Keychain with the given alias.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-78799792%2FFunctions%2F-868595156" anchor-label="useKeyStore" id="-78799792%2FFunctions%2F-868595156" data-filterable-set=":couchbase-lite-ee/jvmMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/jvmMain" data-filterable-set=":couchbase-lite-ee/jvmMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="use-key-store.html"><span>use</span><wbr><span>Key</span><wbr><span><span>Store</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-78799792%2FFunctions%2F-868595156"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/jvmMain" data-filterable-set=":couchbase-lite-ee/jvmMain" data-active="" data-toggle=":couchbase-lite-ee/jvmMain">jvm</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/jvmMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="use-key-store.html"><span class="token function">useKeyStore</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">keyStore<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/security/KeyStore.html">KeyStore</a><span class="token punctuation">, </span></span><span class="parameter ">keyPassword<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-char-array/index.html">CharArray</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Register a KeyStore and key password to use in common APIs.</p></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -395,12 +480,18 @@
     </div>
   </div>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2022-2024 Jeff Lockhart</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-

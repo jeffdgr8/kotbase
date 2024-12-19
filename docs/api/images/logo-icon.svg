@@ -1,14 +1,10 @@
-<!--
-  - Copyright 2014-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
-  -->
-
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M64 64H0V0H64L31.3373 31.5369L64 64Z" fill="url(#paint0_radial)"/>
+<svg width="53" height="53" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 119.7 119.7">
     <defs>
-        <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(61.8732 2.63097) scale(73.3111)">
-            <stop offset="0.00343514" stop-color="#EF4857"/>
-            <stop offset="0.4689" stop-color="#D211EC"/>
-            <stop offset="1" stop-color="#7F52FF"/>
-        </radialGradient>
+        <style>
+            .cls-1 {
+            fill: #ea2328;
+            }
+        </style>
     </defs>
+    <path id="Logo-Icon" class="cls-1" d="M98.5,70.2a7.21,7.21,0,0,1-6.1,7.4c-6.9,1.2-21.5,2-33.7,2S32,78.9,25,77.6a7.12,7.12,0,0,1-6-7.4V47.1a7.71,7.71,0,0,1,6-7.4A72.67,72.67,0,0,1,35.6,39a2.69,2.69,0,0,1,2.6,2.8V57.9c7.2,0,13.4-.4,20.6-.4s13.4.4,20.6.4V41.8A2.56,2.56,0,0,1,81.9,39a73.73,73.73,0,0,1,10.6.7,7.8,7.8,0,0,1,6.1,7.4V70.2ZM58.7.7C26.3.7,0,27.2,0,59.9A58.87,58.87,0,0,0,58.7,119c32.4,0,58.7-26.5,58.7-59.1S91.2.7,58.7.7Z" />
 </svg>

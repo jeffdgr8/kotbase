@@ -25,46 +25,91 @@
 <link href="../../styles/prism.css" rel="Stylesheet">
 <link href="../../styles/logo-styles.css" rel="Stylesheet">
 <link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
 <script type="text/javascript" src="../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script>
 <script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
-<link href="../../styles/multimodule.css" rel="Stylesheet"></head>
+<link href="../../styles/multimodule.css" rel="Stylesheet">
+<link href="../../images/logo-icon.svg"></head>
 <body>
     <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
 <a class="library-name--link" href="../../index.html">
-                            kotbase
-                    </a>            </div>
-            <div class="library-version">
-<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kotbase.ext/index.html&quot;}"><div class="versions-dropdown">
-  <div class="versions-dropdown-button">3.1</div>
-  <div class="versions-dropdown-data"><a href="index.html">3.1</a><a href="../../older/3.0/couchbase-lite/kotbase.ext/index.html">3.0</a></div>
+                    kotbase
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kotbase.ext/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">3.1</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.1</a></div>
+    <div><a href="../../older/3.0/couchbase-lite/kotbase.ext/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.0</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
 </div>
-</dokka-template-command>            </div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite/appleMain">apple</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite/jvmCommonMain">jvmCommon</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite/appleMain" data-filter=":couchbase-lite/appleMain">
+                                <span class="checkbox--icon"></span>
+                                apple
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite/jvmCommonMain" data-filter=":couchbase-lite/jvmCommonMain">
+                                <span class="checkbox--icon"></span>
+                                jvmCommon
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
         </div>
-        <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite:dokkaHtmlPartial/appleMain">apple</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain">jvmCommon</button>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
         </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
+    </nav>
         <div id="container">
             <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    kotbase
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="package" id="content" pageids="couchbase-lite::kotbase.ext////PointingToDeclaration//-1382019760">
+<div class="main-content" data-page-type="package" id="content" pageids="couchbase-lite::kotbase.ext////PointingToDeclaration//-1921083606">
   <div class="breadcrumbs"><a href="../index.html">couchbase-lite</a><span class="delimiter">/</span><span class="current">kotbase.ext</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
@@ -74,19 +119,19 @@
     <div class="tabs-section-body">
       <div data-togglable="TYPE">
         <h2 class="">Types</h2>
-        <div class="table"><a data-name="-1407966166%2FClasslikes%2F109896409" anchor-label="NSErrorException" id="-1407966166%2FClasslikes%2F109896409" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain">
+        <div class="table"><a data-name="-1407966166%2FClasslikes%2F1053936713" anchor-label="NSErrorException" id="-1407966166%2FClasslikes%2F1053936713" data-filterable-set=":couchbase-lite/appleMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-n-s-error-exception/index.html"><span>NSError</span><wbr><span><span>Exception</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1407966166%2FClasslikes%2F109896409"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1407966166%2FClasslikes%2F1053936713"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-n-s-error-exception/index.html">NSErrorException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>nsError<span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span></span></span><span class="token punctuation">)</span> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain" data-active="" data-toggle=":couchbase-lite/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/appleMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-n-s-error-exception/index.html">NSErrorException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>nsError<span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span></span></span><span class="token punctuation">)</span> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -95,155 +140,155 @@
       </div>
       <div data-togglable="FUNCTION">
         <h2 class="">Functions</h2>
-        <div class="table"><a data-name="1603655079%2FFunctions%2F-1382019760" anchor-label="toByteArray" id="1603655079%2FFunctions%2F-1382019760" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain,:couchbase-lite:dokkaHtmlPartial/appleMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain,:couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain,:couchbase-lite:dokkaHtmlPartial/appleMain">
+        <div class="table"><a data-name="1603655079%2FFunctions%2F-1921083606" anchor-label="toByteArray" id="1603655079%2FFunctions%2F-1921083606" data-filterable-set=":couchbase-lite/jvmCommonMain,:couchbase-lite/appleMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite/jvmCommonMain,:couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/jvmCommonMain,:couchbase-lite/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-byte-array.html"><span>to</span><wbr><span>Byte</span><wbr><span><span>Array</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1603655079%2FFunctions%2F-1382019760"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1603655079%2FFunctions%2F-1921083606"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/appleMain">apple</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain" data-toggle=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain">jvmCommon</button></div>
-<div class="content sourceset-dependent-content" data-togglable=":couchbase-lite:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="platform.CoreFoundation/CFDataRef///PointingToDeclaration/">CFDataRef</span><span class="token punctuation">.</span><a href="to-byte-array.html"><span class="token function">toByteArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="platform.Security/SecCertificateRef///PointingToDeclaration/">SecCertificateRef</span><span class="token punctuation">.</span><a href="to-byte-array.html"><span class="token function">toByteArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="platform.Foundation/NSData///PointingToDeclaration/">NSData</span><span class="token punctuation">.</span><a href="to-byte-array.html"><span class="token function">toByteArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">.</span><a href="to-byte-array.html"><span class="token function">toByteArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain" data-active="" data-toggle=":couchbase-lite/appleMain">apple</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite/jvmCommonMain" data-filterable-set=":couchbase-lite/jvmCommonMain" data-toggle=":couchbase-lite/jvmCommonMain">jvmCommon</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":couchbase-lite/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="platform.CoreFoundation/CFDataRef///PointingToDeclaration/">CFDataRef</span><span class="token punctuation">.</span><a href="to-byte-array.html"><span class="token function">toByteArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="platform.Security/SecCertificateRef///PointingToDeclaration/">SecCertificateRef</span><span class="token punctuation">.</span><a href="to-byte-array.html"><span class="token function">toByteArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="platform.Foundation/NSData///PointingToDeclaration/">NSData</span><span class="token punctuation">.</span><a href="to-byte-array.html"><span class="token function">toByteArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/jvmCommonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token punctuation">.</span><a href="to-byte-array.html"><span class="token function">toByteArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1175025360%2FFunctions%2F133058301" anchor-label="toCertificate" id="-1175025360%2FFunctions%2F133058301" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain">
+<a data-name="-1175025360%2FFunctions%2F-483735443" anchor-label="toCertificate" id="-1175025360%2FFunctions%2F-483735443" data-filterable-set=":couchbase-lite/jvmCommonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite/jvmCommonMain" data-filterable-set=":couchbase-lite/jvmCommonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-certificate.html"><span>to</span><wbr><span><span>Certificate</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1175025360%2FFunctions%2F133058301"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1175025360%2FFunctions%2F-483735443"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain">jvmCommon</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">.</span><a href="to-certificate.html"><span class="token function">toCertificate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">certFactory<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator"> = </span>CertificateFactory.getInstance("X.509")</span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/jvmCommonMain" data-filterable-set=":couchbase-lite/jvmCommonMain" data-active="" data-toggle=":couchbase-lite/jvmCommonMain">jvmCommon</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/jvmCommonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">.</span><a href="to-certificate.html"><span class="token function">toCertificate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">certFactory<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator"> = </span>CertificateFactory.getInstance("X.509")</span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1685552445%2FFunctions%2F133058301" anchor-label="toCertificates" id="-1685552445%2FFunctions%2F133058301" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain">
+<a data-name="-1685552445%2FFunctions%2F-483735443" anchor-label="toCertificates" id="-1685552445%2FFunctions%2F-483735443" data-filterable-set=":couchbase-lite/jvmCommonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite/jvmCommonMain" data-filterable-set=":couchbase-lite/jvmCommonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-certificates.html"><span>to</span><wbr><span><span>Certificates</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1685552445%2FFunctions%2F133058301"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1685552445%2FFunctions%2F-483735443"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain">jvmCommon</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/jvmCommonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="to-certificates.html"><span class="token function">toCertificates</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">certFactory<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator"> = </span>CertificateFactory.getInstance("X.509")</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/jvmCommonMain" data-filterable-set=":couchbase-lite/jvmCommonMain" data-active="" data-toggle=":couchbase-lite/jvmCommonMain">jvmCommon</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/jvmCommonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="to-certificates.html"><span class="token function">toCertificates</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">certFactory<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator"> = </span>CertificateFactory.getInstance("X.509")</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&gt;</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-810858555%2FFunctions%2F109896409" anchor-label="toCFData" id="-810858555%2FFunctions%2F109896409" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain">
+<a data-name="-810858555%2FFunctions%2F1053936713" anchor-label="toCFData" id="-810858555%2FFunctions%2F1053936713" data-filterable-set=":couchbase-lite/appleMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-c-f-data.html"><span>to</span><wbr><span><span>CFData</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-810858555%2FFunctions%2F109896409"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-810858555%2FFunctions%2F1053936713"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">.</span><a href="to-c-f-data.html"><span class="token function">toCFData</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.CoreFoundation/CFDataRef///PointingToDeclaration/">CFDataRef</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain" data-active="" data-toggle=":couchbase-lite/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">.</span><a href="to-c-f-data.html"><span class="token function">toCFData</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.CoreFoundation/CFDataRef///PointingToDeclaration/">CFDataRef</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="2113597218%2FFunctions%2F109896409" anchor-label="toException" id="2113597218%2FFunctions%2F109896409" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain">
+<a data-name="2113597218%2FFunctions%2F1053936713" anchor-label="toException" id="2113597218%2FFunctions%2F1053936713" data-filterable-set=":couchbase-lite/appleMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-exception.html"><span>to</span><wbr><span><span>Exception</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2113597218%2FFunctions%2F109896409"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2113597218%2FFunctions%2F1053936713"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token punctuation">.</span><a href="to-exception.html"><span class="token function">toException</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain" data-active="" data-toggle=":couchbase-lite/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token punctuation">.</span><a href="to-exception.html"><span class="token function">toException</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1190993315%2FFunctions%2F109896409" anchor-label="toNSData" id="1190993315%2FFunctions%2F109896409" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain">
+<a data-name="1190993315%2FFunctions%2F1053936713" anchor-label="toNSData" id="1190993315%2FFunctions%2F1053936713" data-filterable-set=":couchbase-lite/appleMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-n-s-data.html"><span>to</span><wbr><span><span>NSData</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1190993315%2FFunctions%2F109896409"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1190993315%2FFunctions%2F1053936713"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">.</span><a href="to-n-s-data.html"><span class="token function">toNSData</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSData///PointingToDeclaration/">NSData</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain" data-active="" data-toggle=":couchbase-lite/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">.</span><a href="to-n-s-data.html"><span class="token function">toNSData</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSData///PointingToDeclaration/">NSData</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1761107147%2FFunctions%2F109896409" anchor-label="toNSError" id="1761107147%2FFunctions%2F109896409" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain">
+<a data-name="1761107147%2FFunctions%2F1053936713" anchor-label="toNSError" id="1761107147%2FFunctions%2F1053936713" data-filterable-set=":couchbase-lite/appleMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-n-s-error.html"><span>to</span><wbr><span><span>NSError</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1761107147%2FFunctions%2F109896409"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1761107147%2FFunctions%2F1053936713"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">.</span><a href="to-n-s-error.html"><span class="token function">toNSError</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain" data-active="" data-toggle=":couchbase-lite/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">.</span><a href="to-n-s-error.html"><span class="token function">toNSError</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1906870508%2FFunctions%2F109896409" anchor-label="toSecCertificate" id="1906870508%2FFunctions%2F109896409" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain">
+<a data-name="1906870508%2FFunctions%2F1053936713" anchor-label="toSecCertificate" id="1906870508%2FFunctions%2F1053936713" data-filterable-set=":couchbase-lite/appleMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-sec-certificate.html"><span>to</span><wbr><span>Sec</span><wbr><span><span>Certificate</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1906870508%2FFunctions%2F109896409"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1906870508%2FFunctions%2F1053936713"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">.</span><a href="to-sec-certificate.html"><span class="token function">toSecCertificate</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Security/SecCertificateRef///PointingToDeclaration/">SecCertificateRef</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain" data-active="" data-toggle=":couchbase-lite/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">.</span><a href="to-sec-certificate.html"><span class="token function">toSecCertificate</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Security/SecCertificateRef///PointingToDeclaration/">SecCertificateRef</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-2136411964%2FFunctions%2F109896409" anchor-label="wrapError" id="-2136411964%2FFunctions%2F109896409" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain">
+<a data-name="-2136411964%2FFunctions%2F1053936713" anchor-label="wrapError" id="-2136411964%2FFunctions%2F1053936713" data-filterable-set=":couchbase-lite/appleMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="wrap-error.html"><span>wrap</span><wbr><span><span>Error</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2136411964%2FFunctions%2F109896409"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2136411964%2FFunctions%2F1053936713"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":couchbase-lite:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="wrap-error.html">R</a><span class="token operator">&gt; </span><a href="wrap-error.html"><span class="token function">wrapError</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span class="token punctuation">(</span>error<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlinx.cinterop/-c-pointer/index.html">CPointer</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlinx.cinterop/-obj-c-object-var/index.html">ObjCObjectVar</a><span class="token operator">&lt;</span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="wrap-error.html">R</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="wrap-error.html">R</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="wrap-error.html">R</a><span class="token punctuation">, </span><a href="wrap-error.html">E</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a><span class="token operator">&gt; </span><a href="wrap-error.html"><span class="token function">wrapError</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">exceptionFactory<span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="wrap-error.html">E</a><span class="token punctuation">, </span></span><span class="parameter ">action<span class="token operator">: </span><span class="token punctuation">(</span>error<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlinx.cinterop/-c-pointer/index.html">CPointer</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlinx.cinterop/-obj-c-object-var/index.html">ObjCObjectVar</a><span class="token operator">&lt;</span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="wrap-error.html">R</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="wrap-error.html">R</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite/appleMain" data-filterable-set=":couchbase-lite/appleMain" data-active="" data-toggle=":couchbase-lite/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="wrap-error.html">R</a><span class="token operator">&gt; </span><a href="wrap-error.html"><span class="token function">wrapError</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span class="token punctuation">(</span>error<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-pointer/index.html">CPointer</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-obj-c-object-var/index.html">ObjCObjectVar</a><span class="token operator">&lt;</span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="wrap-error.html">R</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="wrap-error.html">R</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="wrap-error.html">R</a><span class="token punctuation">, </span><a href="wrap-error.html">E</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="token operator">&gt; </span><a href="wrap-error.html"><span class="token function">wrapError</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">exceptionFactory<span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="wrap-error.html">E</a><span class="token punctuation">, </span></span><span class="parameter ">action<span class="token operator">: </span><span class="token punctuation">(</span>error<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-c-pointer/index.html">CPointer</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlinx.cinterop/-obj-c-object-var/index.html">ObjCObjectVar</a><span class="token operator">&lt;</span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="wrap-error.html">R</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="wrap-error.html">R</a></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -253,12 +298,18 @@
     </div>
   </div>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2022-2024 Jeff Lockhart</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-

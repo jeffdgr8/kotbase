@@ -1,14 +1,19 @@
 import kotlinx.validation.ExperimentalBCVApi
-import org.jetbrains.dokka.versioning.VersioningConfiguration
-import org.jetbrains.dokka.versioning.VersioningPlugin
 
 plugins {
-    id(libs.plugins.dokka.get().pluginId)
+    `dokka-convention`
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
 }
 
 dependencies {
-    dokkaHtmlMultiModulePlugin(libs.dokka.versioning)
+    dokka(projects.couchbaseLite)
+    dokka(projects.couchbaseLiteEe)
+    dokka(projects.couchbaseLiteKtx)
+    dokka(projects.couchbaseLiteEeKtx)
+    dokka(projects.couchbaseLiteKermit)
+    dokka(projects.couchbaseLiteEeKermit)
+    dokka(projects.couchbaseLitePaging)
+    dokka(projects.couchbaseLiteEePaging)
 }
 
 allprojects {
@@ -18,10 +23,11 @@ allprojects {
     version = "$cblVersion-$kotbaseVersion"
 }
 
-tasks.dokkaHtmlMultiModule {
+tasks.dokkaGeneratePublicationHtml {
     val apiDocsDir = projectDir.resolve("docs/api")
     val olderDir = apiDocsDir.resolve("older")
     val tempOlderDir = apiDocsDir.parentFile.resolve("older")
+    tempOlderDir.mkdir()
 
     val shortVersion = """\d+\.\d+""".toRegex()
         .find(version.toString())!!
@@ -46,7 +52,7 @@ tasks.dokkaHtmlMultiModule {
     }
     outputDirectory.set(apiDocsDir)
 
-    pluginConfiguration<VersioningPlugin, VersioningConfiguration> {
+    dokka.pluginsConfiguration.versioning {
         olderVersionsDir = tempOlderDir
         version = shortVersion
     }
@@ -66,11 +72,6 @@ apiValidation {
     )
     @OptIn(ExperimentalBCVApi::class)
     klib.enabled = true
-}
-
-tasks.register<Delete>(BasePlugin.CLEAN_TASK_NAME) {
-    group = BasePlugin.BUILD_GROUP
-    delete(rootProject.layout.buildDirectory)
 }
 
 // Workaround to avoid potential configuration error.

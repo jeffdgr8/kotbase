@@ -10,8 +10,8 @@ remote_branch: gh-pages
 docs_dir: 'docs/site'
 theme:
   name: material
-  logo: assets/images/couchbase-logo.svg
-  favicon: assets/images/couchbase-logo.svg
+  logo: assets/images/logo-icon.svg
+  favicon: assets/images/logo-icon.svg
   font:
     text: DM Sans
   palette:
