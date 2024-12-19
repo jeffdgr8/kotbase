@@ -1,18 +1,11 @@
 import com.vanniktech.maven.publish.SonatypeHost
-import org.gradle.accessors.dm.LibrariesForLibs
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
-import java.time.LocalDate
 
 plugins {
     id("base-convention")
-    org.jetbrains.dokka
+    id("dokka-convention")
     id("com.vanniktech.maven.publish")
-}
-
-val libs = the<LibrariesForLibs>()
-dependencies {
-    dokkaPlugin(libs.dokka.versioning)
 }
 
 kotlin {
@@ -23,36 +16,6 @@ kotlin {
         publishLibraryVariants("release")
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
         unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.unitTest)
-    }
-}
-
-dokka {
-    dokkaSourceSets.configureEach {
-        includes.from("README.md")
-
-        sourceLink {
-            localDirectory.set(projectDir.resolve("src"))
-            remoteUrl("https://github.com/jeffdgr8/kotbase/tree/main/${project.name}/src")
-            remoteLineSuffix.set("#L")
-        }
-
-        externalDocumentationLinks {
-            register("kotlinx.coroutines") {
-                url("https://kotlinlang.org/api/kotlinx.coroutines/")
-            }
-            register("kotlinx-datetime") {
-                url("https://kotlinlang.org/api/kotlinx-datetime/")
-                packageListUrl("https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/package-list")
-            }
-            register("kotlinx-io") {
-                url("https://kotlinlang.org/api/kotlinx-io/")
-            }
-        }
-    }
-
-    pluginsConfiguration.html {
-        customAssets.from(rootProject.projectDir.resolve("docs/site/assets/images/logo-icon.svg"))
-        footerMessage = "© 2022-${LocalDate.now().year} Jeff Lockhart"
     }
 }
 

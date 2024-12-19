@@ -1,12 +1,11 @@
 import kotlinx.validation.ExperimentalBCVApi
 
 plugins {
-    id(libs.plugins.dokka.get().pluginId)
+    `dokka-convention`
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
 }
 
 dependencies {
-    dokkaPlugin(libs.dokka.versioning)
     dokka(projects.couchbaseLite)
     dokka(projects.couchbaseLiteEe)
     dokka(projects.couchbaseLiteKtx)
