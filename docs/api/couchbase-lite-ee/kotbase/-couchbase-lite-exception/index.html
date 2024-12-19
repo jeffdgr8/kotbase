@@ -25,73 +25,132 @@
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
 <link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
 <script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
 <script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
-<link href="../../../styles/multimodule.css" rel="Stylesheet"></head>
+<link href="../../../styles/multimodule.css" rel="Stylesheet">
+<link href="../../../images/logo-icon.svg"></head>
 <body>
     <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
 <a class="library-name--link" href="../../../index.html">
-                            kotbase
-                    </a>            </div>
-            <div class="library-version">
-<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kotbase/-couchbase-lite-exception/index.html&quot;}"><div class="versions-dropdown">
-  <div class="versions-dropdown-button">3.1</div>
-  <div class="versions-dropdown-data"><a href="index.html">3.1</a><a href="../../../older/3.0/couchbase-lite-ee/kotbase/-couchbase-lite-exception/index.html">3.0</a></div>
+                    kotbase
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kotbase/-couchbase-lite-exception/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">3.1</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.1</a></div>
+    <div><a href="../../../older/3.0/couchbase-lite-ee/kotbase/-couchbase-lite-exception/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.0</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
 </div>
-</dokka-template-command>            </div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee/appleMain">apple</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee/commonMain">common</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee/jvmCommonMain">jvmCommon</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee/nativeMain">native</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/appleMain" data-filter=":couchbase-lite-ee/appleMain">
+                                <span class="checkbox--icon"></span>
+                                apple
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/commonMain" data-filter=":couchbase-lite-ee/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/jvmCommonMain" data-filter=":couchbase-lite-ee/jvmCommonMain">
+                                <span class="checkbox--icon"></span>
+                                jvmCommon
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/nativeMain" data-filter=":couchbase-lite-ee/nativeMain">
+                                <span class="checkbox--icon"></span>
+                                native
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
         </div>
-        <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee:dokkaHtmlPartial/appleMain">apple</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee:dokkaHtmlPartial/jvmCommonMain">jvmCommon</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain">native</button>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
         </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
+    </nav>
         <div id="container">
             <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    kotbase
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
             </div>
             <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="couchbase-lite-ee::kotbase/CouchbaseLiteException///PointingToDeclaration//-221275990">
+<div class="main-content" data-page-type="classlike" id="content" pageids="couchbase-lite-ee::kotbase/CouchbaseLiteException///PointingToDeclaration//-1192613852">
   <div class="breadcrumbs"><a href="../../index.html">couchbase-lite-ee</a><span class="delimiter">/</span><a href="../index.html">kotbase</a><span class="delimiter">/</span><span class="current">CouchbaseLiteException</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Couchbase</span><wbr><span>Lite</span><wbr><span><span>Exception</span></span></h1>
     <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/jvmCommonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/jvmCommonMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/jvmCommonMain">jvmCommon</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain">native</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">class </span><a href="index.html">CouchbaseLiteException</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/commonMain/kotlin/kotbase/CouchbaseLiteException.kt#L21">source</a>)</span></span></div><p class="paragraph">Misfortune: The little fox gets its tail wet.</p></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/jvmCommonMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">typealias </span><a href="index.html">CouchbaseLiteException</a><span class="token operator"> = </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/jvmCommonMain/kotlin/kotbase/CouchbaseLiteException.jvmCommon.kt#L18">source</a>)</span></span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">CouchbaseLiteException</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/nativeMain/kotlin/kotbase/CouchbaseLiteException.native.kt#L18">source</a>)</span></span></div></div>    </div>
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain" data-active="" data-toggle=":couchbase-lite-ee/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/jvmCommonMain" data-filterable-set=":couchbase-lite-ee/jvmCommonMain" data-toggle=":couchbase-lite-ee/jvmCommonMain">jvmCommon</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/nativeMain" data-filterable-set=":couchbase-lite-ee/nativeMain" data-toggle=":couchbase-lite-ee/nativeMain">native</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">class </span><a href="index.html">CouchbaseLiteException</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/commonMain/kotlin/kotbase/CouchbaseLiteException.kt#L21">source</a>)</span></span></div><p class="paragraph">Misfortune: The little fox gets its tail wet.</p></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/jvmCommonMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">typealias </span><a href="index.html">CouchbaseLiteException</a><span class="token operator"> = </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/jvmCommonMain/kotlin/kotbase/CouchbaseLiteException.jvmCommon.kt#L18">source</a>)</span></span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/nativeMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">CouchbaseLiteException</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/nativeMain/kotlin/kotbase/CouchbaseLiteException.native.kt#L18">source</a>)</span></span></div></div>    </div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="-1116058524%2FConstructors%2F1046020828" anchor-label="CouchbaseLiteException" id="-1116058524%2FConstructors%2F1046020828" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/nativeMain"></a>
-          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/nativeMain">
+        <div class="table"><a data-name="-1116058524%2FConstructors%2F-458017076" anchor-label="CouchbaseLiteException" id="-1116058524%2FConstructors%2F-458017076" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/nativeMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/nativeMain" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/nativeMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-couchbase-lite-exception.html"><span>Couchbase</span><wbr><span>Lite</span><wbr><span><span>Exception</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1116058524%2FConstructors%2F1046020828"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1116058524%2FConstructors%2F-458017076"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain">native</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Constructs a new exception with the specified detail message.</p></div><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Constructs a new exception with the specified cause</p></div><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">domain<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">code<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Constructs a new exception with the specified detail message, error domain and error code</p></div><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">, </span></span><span class="parameter ">domain<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">code<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Constructs a new exception with the specified error domain, error code and the specified cause</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">domain<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">code<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">, </span></span><span class="parameter ">domain<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">code<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain" data-active="" data-toggle=":couchbase-lite-ee/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/nativeMain" data-filterable-set=":couchbase-lite-ee/nativeMain" data-toggle=":couchbase-lite-ee/nativeMain">native</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Constructs a new exception with the specified detail message.</p></div><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Constructs a new exception with the specified cause</p></div><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">domain<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">code<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Constructs a new exception with the specified detail message, error domain and error code</p></div><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">, </span></span><span class="parameter ">domain<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">code<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Constructs a new exception with the specified error domain, error code and the specified cause</p></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/nativeMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">domain<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">code<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">cause<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">, </span></span><span class="parameter ">domain<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">code<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -100,81 +159,81 @@
       </div>
       <div data-togglable="PROPERTY">
         <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-654012527%2FProperties%2F1046020828" anchor-label="cause" id="-654012527%2FProperties%2F1046020828" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/nativeMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/nativeMain">
+        <div class="table"><a data-name="-654012527%2FProperties%2F-458017076" anchor-label="cause" id="-654012527%2FProperties%2F-458017076" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/nativeMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/nativeMain" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/nativeMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><span data-unresolved-link="kotlin/Throwable/cause/#/PointingToDeclaration/"><span><span>cause</span></span></span></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-654012527%2FProperties%2F1046020828"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-654012527%2FProperties%2F-458017076"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain">native</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#-654012527%2FProperties%2F-848713996">cause</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#-654012527%2FProperties%2F700948340">cause</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain" data-active="" data-toggle=":couchbase-lite-ee/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/nativeMain" data-filterable-set=":couchbase-lite-ee/nativeMain" data-toggle=":couchbase-lite-ee/nativeMain">native</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#-654012527%2FProperties%2F-934490742">cause</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/nativeMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#-654012527%2FProperties%2F615171594">cause</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token operator">?</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1485310562%2FProperties%2F-848713996" anchor-label="code" id="-1485310562%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-1485310562%2FProperties%2F-934490742" anchor-label="code" id="-1485310562%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="../code.html"><span><span>code</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1485310562%2FProperties%2F-848713996"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1485310562%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">CouchbaseLiteException</a><span class="token punctuation">.</span><a href="../code.html">code</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The numerical error code for this error.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">CouchbaseLiteException</a><span class="token punctuation">.</span><a href="../code.html">code</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The numerical error code for this error.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-2058466009%2FProperties%2F-848713996" anchor-label="domain" id="-2058466009%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-2058466009%2FProperties%2F-934490742" anchor-label="domain" id="-2058466009%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="../domain.html"><span><span>domain</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2058466009%2FProperties%2F-848713996"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2058466009%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">CouchbaseLiteException</a><span class="token punctuation">.</span><a href="../domain.html">domain</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">The domain code for this error.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">CouchbaseLiteException</a><span class="token punctuation">.</span><a href="../domain.html">domain</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">The domain code for this error.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-703268419%2FProperties%2F-848713996" anchor-label="info" id="-703268419%2FProperties%2F-848713996" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">
+<a data-name="-703268419%2FProperties%2F-934490742" anchor-label="info" id="-703268419%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="../info.html"><span><span>info</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-703268419%2FProperties%2F-848713996"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-703268419%2FProperties%2F-934490742"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">CouchbaseLiteException</a><span class="token punctuation">.</span><a href="../info.html">info</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">CouchbaseLiteException</a><span class="token punctuation">.</span><a href="../info.html">info</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1824300659%2FProperties%2F1046020828" anchor-label="message" id="1824300659%2FProperties%2F1046020828" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/nativeMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain,:couchbase-lite-ee:dokkaHtmlPartial/nativeMain">
+<a data-name="1824300659%2FProperties%2F-458017076" anchor-label="message" id="1824300659%2FProperties%2F-458017076" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/nativeMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/nativeMain" data-filterable-set=":couchbase-lite-ee/commonMain,:couchbase-lite-ee/nativeMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><span data-unresolved-link="kotlin/Throwable/message/#/PointingToDeclaration/"><span><span>message</span></span></span></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1824300659%2FProperties%2F1046020828"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1824300659%2FProperties%2F-458017076"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain">native</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#1824300659%2FProperties%2F-848713996">message</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#1824300659%2FProperties%2F700948340">message</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain" data-active="" data-toggle=":couchbase-lite-ee/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/nativeMain" data-filterable-set=":couchbase-lite-ee/nativeMain" data-toggle=":couchbase-lite-ee/nativeMain">native</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#1824300659%2FProperties%2F-934490742">message</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div><div class="content sourceset-dependent-content" data-togglable=":couchbase-lite-ee/nativeMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#1824300659%2FProperties%2F615171594">message</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -183,36 +242,36 @@
       </div>
       <div data-togglable="FUNCTION">
         <h2 class="">Functions</h2>
-        <div class="table"><a data-name="1761107147%2FFunctions%2F1915472054" anchor-label="toNSError" id="1761107147%2FFunctions%2F1915472054" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/appleMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/appleMain">
+        <div class="table"><a data-name="1761107147%2FFunctions%2F-1347183412" anchor-label="toNSError" id="1761107147%2FFunctions%2F-1347183412" data-filterable-set=":couchbase-lite-ee/appleMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite-ee/appleMain" data-filterable-set=":couchbase-lite-ee/appleMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="../../kotbase.ext/to-n-s-error.html"><span>to</span><wbr><span><span>NSError</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1761107147%2FFunctions%2F1915472054"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1761107147%2FFunctions%2F-1347183412"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/appleMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">.</span><a href="../../kotbase.ext/to-n-s-error.html"><span class="token function">toNSError</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/appleMain" data-filterable-set=":couchbase-lite-ee/appleMain" data-active="" data-toggle=":couchbase-lite-ee/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">.</span><a href="../../kotbase.ext/to-n-s-error.html"><span class="token function">toNSError</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSError///PointingToDeclaration/">NSError</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1637679598%2FFunctions%2F700948340" anchor-label="toString" id="-1637679598%2FFunctions%2F700948340" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain"></a>
-          <div class="table-row" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain">
+<a data-name="-1637679598%2FFunctions%2F615171594" anchor-label="toString" id="-1637679598%2FFunctions%2F615171594" data-filterable-set=":couchbase-lite-ee/nativeMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/nativeMain" data-filterable-set=":couchbase-lite-ee/nativeMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-string.html"><span>to</span><wbr><span><span>String</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1637679598%2FFunctions%2F700948340"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1637679598%2FFunctions%2F615171594"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-filterable-set=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain" data-active="" data-toggle=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain">native</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee:dokkaHtmlPartial/nativeMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":couchbase-lite-ee/nativeMain" data-filterable-set=":couchbase-lite-ee/nativeMain" data-active="" data-toggle=":couchbase-lite-ee/nativeMain">native</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/nativeMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -222,12 +281,18 @@
     </div>
   </div>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2022-2024 Jeff Lockhart</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
             </div>
         </div>
     </div>
 </body>
 </html>
-
