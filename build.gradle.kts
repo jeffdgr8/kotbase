@@ -26,16 +26,17 @@ allprojects {
 tasks.dokkaGeneratePublicationHtml {
     val apiDocsDir = projectDir.resolve("docs/api")
     val olderDir = apiDocsDir.resolve("older")
-    val tempOlderDir = apiDocsDir.parentFile.resolve("older")
-    tempOlderDir.mkdir()
 
     val shortVersion = """\d+\.\d+""".toRegex()
         .find(version.toString())!!
         .groupValues.first()
 
-    doFirst {
-        olderDir.renameTo(tempOlderDir)
+    dokka.pluginsConfiguration.versioning {
+        olderVersionsDir = olderDir
+        version = shortVersion
+    }
 
+    doFirst {
         val versionJson = apiDocsDir.resolve("version.json")
         if (versionJson.exists()) {
             val currentDocsVersion = """"version"\s*:\s*"(\d+\.\d+)"""".toRegex()
@@ -43,22 +44,19 @@ tasks.dokkaGeneratePublicationHtml {
                 .groupValues[1]
 
             if (currentDocsVersion != shortVersion) {
+                val tempOlderDir = apiDocsDir.parentFile.resolve("older")
+                olderDir.renameTo(tempOlderDir)
                 val archiveDir = tempOlderDir.resolve(currentDocsVersion)
                 apiDocsDir.renameTo(archiveDir)
+                apiDocsDir.mkdir()
+                tempOlderDir.renameTo(olderDir)
             }
         }
-
-        apiDocsDir.deleteRecursively()
-    }
-    outputDirectory.set(apiDocsDir)
-
-    dokka.pluginsConfiguration.versioning {
-        olderVersionsDir = tempOlderDir
-        version = shortVersion
     }
 
     doLast {
-        tempOlderDir.deleteRecursively()
+        apiDocsDir.deleteRecursively()
+        outputDirectory.get().asFile.renameTo(apiDocsDir)
     }
 }
 
