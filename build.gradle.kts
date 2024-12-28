@@ -57,6 +57,19 @@ tasks.dokkaGeneratePublicationHtml {
     doLast {
         apiDocsDir.deleteRecursively()
         outputDirectory.get().asFile.renameTo(apiDocsDir)
+
+        // work around https://github.com/Kotlin/dokka/issues/3965
+        fun removeExtraNewlines(dir: File) {
+            dir.listFiles()?.forEach { file ->
+                if (file.isDirectory) {
+                    removeExtraNewlines(file)
+                } else if (file.extension == "html") {
+                    val contents = file.readText().dropLast(1)
+                    file.writeText(contents)
+                }
+            }
+        }
+        removeExtraNewlines(olderDir)
     }
 }
 
