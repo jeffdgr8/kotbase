@@ -2,142 +2,142 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://kotbase.dev/current/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/active-peer/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/blobs/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/changelog/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/community/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/databases/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/differences/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/documents/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/full-text-search/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/getting-started/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/handling-data-conflicts/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/indexing/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/installation/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/integrate-custom-listener/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/intra-device-sync/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/kermit/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/kotlin-extensions/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/ktx/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/license/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/live-queries/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/n1ql-query-builder-differences/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/n1ql-query-strings/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/n1ql-server-differences/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/paging/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/passive-peer/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/peer-to-peer-sync/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/platforms/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/prebuilt-database/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/query-builder/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/query-result-sets/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/query-troubleshooting/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/remote-sync-gateway/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/roadmap/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/scopes-and-collections/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
     <url>
          <loc>https://kotbase.dev/current/using-logs/</loc>
-         <lastmod>2024-12-14</lastmod>
+         <lastmod>2024-12-28</lastmod>
     </url>
 </urlset>
