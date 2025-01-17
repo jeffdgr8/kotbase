@@ -47,9 +47,8 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
-        actual.save(document.actual).also {
-            document.collectionInternal = this
-        }
+        actual.save(document.actual)
+        document.collectionInternal = this
     }
 
     @Throws(CouchbaseLiteException::class)
