@@ -60,6 +60,7 @@ internal constructor(
         wrapCBLError { error ->
             actual.saveDocument(document.actual, error)
         }
+        document.collectionInternal = this
     }
 
     @Throws(CouchbaseLiteException::class)
@@ -67,6 +68,8 @@ internal constructor(
         return try {
             wrapCBLError { error ->
                 actual.saveDocument(document.actual, concurrencyControl.actual, error)
+            }.also {
+                document.collectionInternal = this
             }
         } catch (e: CouchbaseLiteException) {
             if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
@@ -94,6 +97,8 @@ internal constructor(
                     false
                 }
             }
+        }.also {
+            document.collectionInternal = this
         }
     }
 
