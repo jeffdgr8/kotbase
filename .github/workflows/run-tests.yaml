@@ -34,9 +34,9 @@ jobs:
           name: macos-test-results
           path: ./**/build/reports/tests
 
-  linux-tests:
+  linux-x64-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    name: Run Linux tests
+    name: Run Linux x64 tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -59,7 +59,30 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: linux-test-results
+          name: linux-x64-test-results
+          path: ./**/build/reports/tests
+
+  linux-arm-tests:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    name: Run Linux arm64 tests
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Gradle Wrapper Validation
+        uses: gradle/actions/wrapper-validation@v4
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 21
+      - name: Run tests
+        run: ./gradlew check
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: linux-arm-test-results
           path: ./**/build/reports/tests
 
   windows-tests:
