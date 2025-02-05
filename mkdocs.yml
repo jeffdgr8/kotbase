@@ -85,11 +85,11 @@ extra:
   version_objc: 3.1.9
   generator: false
   social:
-    - icon: simple/github
+    - icon: fontawesome/brands/github
       link: https://github.com/jeffdgr8
-    - icon: simple/x
-      link: https://twitter.com/jeffdgr8
-    - icon: simple/linkedin
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/jeffdgr8
+    - icon: fontawesome/brands/linkedin
       link: https://linkedin.com/in/lockhartjeff/
   analytics:
     provider: google
