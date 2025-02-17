@@ -18,6 +18,7 @@ package kotbase
 import cocoapods.CouchbaseLite.*
 import kotbase.internal.DelegatedClass
 import kotbase.ext.asDispatchQueue
+import kotbase.ext.toKotlinInstantMillis
 import kotbase.ext.wrapCBLError
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
@@ -26,7 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalObjCRefinement
@@ -430,7 +430,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     @Throws(CouchbaseLiteException::class)
     public actual fun getDocumentExpiration(id: String): Instant? {
         return mustBeOpen {
-            actual.getDocumentExpirationWithID(id)?.toKotlinInstant()
+            actual.getDocumentExpirationWithID(id)?.toKotlinInstantMillis()
         }
     }
 

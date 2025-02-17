@@ -17,9 +17,9 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLDictionary
 import kotbase.ext.asNumber
+import kotbase.ext.toKotlinInstantMillis
 import kotbase.internal.DelegatedClass
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
 
 public actual open class Dictionary
 internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actual), Iterable<String> {
@@ -67,7 +67,7 @@ internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actu
         actual.blobForKey(key)?.asBlob()
 
     public actual fun getDate(key: String): Instant? =
-        actual.dateForKey(key)?.toKotlinInstant()
+        actual.dateForKey(key)?.toKotlinInstantMillis()
 
     public actual open fun getArray(key: String): Array? {
         return getInternalCollection(key)

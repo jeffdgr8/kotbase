@@ -18,9 +18,9 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLQueryResult
 import kotbase.internal.DelegatedClass
 import kotbase.ext.asNumber
+import kotbase.ext.toKotlinInstantMillis
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
 
 public actual class Result
 internal constructor(actual: CBLQueryResult) : DelegatedClass<CBLQueryResult>(actual), Iterable<String> {
@@ -75,7 +75,7 @@ internal constructor(actual: CBLQueryResult) : DelegatedClass<CBLQueryResult>(ac
 
     public actual fun getDate(index: Int): Instant? {
         assertInBounds(index)
-        return actual.dateAtIndex(index.convert())?.toKotlinInstant()
+        return actual.dateAtIndex(index.convert())?.toKotlinInstantMillis()
     }
 
     public actual fun getArray(index: Int): Array? {
@@ -123,7 +123,7 @@ internal constructor(actual: CBLQueryResult) : DelegatedClass<CBLQueryResult>(ac
         actual.blobForKey(key)?.asBlob()
 
     public actual fun getDate(key: String): Instant? =
-        actual.dateForKey(key)?.toKotlinInstant()
+        actual.dateForKey(key)?.toKotlinInstantMillis()
 
     public actual fun getArray(key: String): Array? =
         actual.arrayForKey(key)?.asArray()

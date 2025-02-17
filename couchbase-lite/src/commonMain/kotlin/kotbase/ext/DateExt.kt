@@ -16,6 +16,7 @@
 package kotbase.ext
 
 import kotlinx.datetime.Instant
+import kotlin.math.roundToLong
 
 /**
  * An ISO 8601 UTC string with milliseconds
@@ -23,7 +24,7 @@ import kotlinx.datetime.Instant
  * can be seconds or nanoseconds precision.
  */
 internal fun Instant.toStringMillis(): String {
-    return toString().let {
+    return roundToMillis().toString().let {
         if (it.length == 20) {
             it.dropLast(1) + ".000Z"
         } else if (it.length > 24) {
@@ -32,4 +33,12 @@ internal fun Instant.toStringMillis(): String {
             it
         }
     }
+}
+
+internal const val NANOS_PER_MILLI = 1_000_000
+internal const val MILLIS_PER_ONE = 1_000
+
+internal fun Instant.roundToMillis(): Instant {
+    val millis = nanosecondsOfSecond.toFloat() / NANOS_PER_MILLI
+    return Instant.fromEpochMilliseconds(epochSeconds * MILLIS_PER_ONE + millis.roundToLong())
 }

@@ -17,6 +17,7 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLCollection
 import kotbase.ext.asDispatchQueue
+import kotbase.ext.toKotlinInstantMillis
 import kotbase.ext.wrapCBLError
 import kotbase.internal.DelegatedClass
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,7 +25,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalObjCRefinement
@@ -150,7 +150,7 @@ internal constructor(
     public actual fun getDocumentExpiration(id: String): Instant? {
         return wrapCBLError { error ->
             actual.getDocumentExpirationWithID(id, error)
-        }?.toKotlinInstant()
+        }?.toKotlinInstantMillis()
     }
 
     public actual fun addChangeListener(listener: CollectionChangeListener): ListenerToken {

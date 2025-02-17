@@ -16,9 +16,9 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.*
+import kotbase.ext.toKotlinInstantMillis
 import kotbase.internal.DelegatedClass
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSDate
 import platform.Foundation.NSNull
@@ -30,7 +30,7 @@ internal fun Any.delegateIfNecessary(): Any? = when (this) {
     is CBLArray -> asArray()
     is CBLMutableDictionary -> asMutableDictionary()
     is CBLDictionary -> asDictionary()
-    is NSDate -> toKotlinInstant()
+    is NSDate -> toKotlinInstantMillis()
     is List<*> -> delegateIfNecessary()
     is Map<*, *> -> delegateIfNecessary()
     else -> this

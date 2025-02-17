@@ -18,9 +18,9 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLDocument
 import com.couchbase.lite.database
 import kotbase.ext.asNumber
+import kotbase.ext.toKotlinInstantMillis
 import kotbase.internal.DelegatedClass
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
 
 public actual open class Document
 internal constructor(
@@ -90,7 +90,7 @@ internal constructor(
         actual.blobForKey(key)?.asBlob()
 
     public actual fun getDate(key: String): Instant? =
-        actual.dateForKey(key)?.toKotlinInstant()
+        actual.dateForKey(key)?.toKotlinInstantMillis()
 
     public actual open fun getArray(key: String): Array? {
         return getInternalCollection(key)
