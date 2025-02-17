@@ -18,10 +18,10 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLTLSIdentity
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toByteArray
+import kotbase.ext.toKotlinInstantMillis
 import kotbase.ext.toNSData
 import kotbase.ext.wrapCBLError
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toNSDate
 import platform.Security.SecCertificateRef
 import platform.Security.SecIdentityRef
@@ -34,7 +34,7 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
         get() = (actual.certs as List<SecCertificateRef>).map { it.toByteArray() }
 
     public actual val expiration: Instant
-        get() = actual.expiration.toKotlinInstant()
+        get() = actual.expiration.toKotlinInstantMillis()
 
     public actual companion object {
 

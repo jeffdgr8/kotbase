@@ -17,10 +17,10 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLArray
 import kotbase.ext.asNumber
+import kotbase.ext.toKotlinInstantMillis
 import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toKotlinInstant
 
 public actual open class Array
 internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Iterable<Any?> {
@@ -82,7 +82,7 @@ internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Itera
 
     public actual fun getDate(index: Int): Instant? {
         checkIndex(index)
-        return actual.dateAtIndex(index.convert())?.toKotlinInstant()
+        return actual.dateAtIndex(index.convert())?.toKotlinInstantMillis()
     }
 
     public actual open fun getArray(index: Int): Array? {
