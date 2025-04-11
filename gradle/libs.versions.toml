@@ -1,7 +1,7 @@
 [versions]
-couchbase-lite-java = "3.2.1"
-couchbase-lite-objc = "3.2.1"
-couchbase-lite-c = "3.2.1"
+couchbase-lite-java = "3.2.2"
+couchbase-lite-objc = "3.2.2"
+couchbase-lite-c = "3.2.2"
 dokka = "2.0.0"
 mockk = "1.14.5"
 
