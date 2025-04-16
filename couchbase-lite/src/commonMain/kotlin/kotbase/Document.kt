@@ -44,12 +44,13 @@ public expect open class Document : Iterable<String> {
      */
     public val revisionID: String?
 
-    /**
-     * Get the document's timestamp.
-     *
-     * @return the document's timestamp
-     */
-    public val timestamp: Long
+    // TODO: 4.0 API
+//    /**
+//     * Get the document's timestamp.
+//     *
+//     * @return the document's timestamp
+//     */
+//    public val timestamp: Long
 
     /**
      * The sequence number of the document in the database.
@@ -235,6 +236,7 @@ public operator fun Document.get(key: String): Fragment =
 internal inline fun <reified T : Any> Document.getInternalCollection(key: String): T? =
     T::class.safeCast(collectionMap[key])
 
-internal fun Document.compareAge(target: Document): Int {
-    return timestamp.compareTo(target.timestamp)
-}
+// TODO: 4.0 API
+//internal fun Document.compareAge(target: Document): Int {
+//    return timestamp.compareTo(target.timestamp)
+//}

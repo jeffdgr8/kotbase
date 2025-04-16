@@ -83,6 +83,10 @@ internal constructor(
     public actual val revisionID: String?
         get() = if (dbContext.database != null) CBLDocument_RevisionID(actual).toKString() else null
 
+    // TODO: 4.0 API
+//    public actual val timestamp: Long
+//        get() = TODO("available in future 4.0 release")
+
     public actual val sequence: Long
         get() = CBLDocument_Sequence(actual).toLong()
 
