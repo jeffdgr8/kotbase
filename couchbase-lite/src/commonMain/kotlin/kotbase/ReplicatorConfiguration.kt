@@ -15,6 +15,8 @@
  */
 package kotbase
 
+import com.couchbase.lite.generation
+
 /**
  * Configuration for a Replicator
  */
@@ -399,12 +401,20 @@ private val defaultConflictResolver: ConflictResolver by lazy {
         if (localDoc == null || remoteDoc == null) return@cr null
 
         // if one of the docs is newer, return it
-        val cmp = localDoc.compareAge(remoteDoc)
-        if (cmp > 0) {
+        val localGen = localDoc.generation
+        val remoteGen = remoteDoc.generation
+        if (localGen > remoteGen) {
             return@cr localDoc
-        } else if (cmp < 0) {
+        } else if (localGen < remoteGen) {
             return@cr remoteDoc
         }
+        // TODO: 4.0 API
+//        val cmp = localDoc.compareAge(remoteDoc)
+//        if (cmp > 0) {
+//            return@cr localDoc
+//        } else if (cmp < 0) {
+//            return@cr remoteDoc
+//        }
 
         // otherwise, choose one randomly, but deterministically.
         val localRevId = localDoc.revisionID ?: return@cr remoteDoc
