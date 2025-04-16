@@ -17,4 +17,5 @@ package com.couchbase.lite
 
 import kotbase.Document
 
-internal expect val Document.generation: Long
+internal actual val Document.generation: Long
+    get() = actual.timestamp
