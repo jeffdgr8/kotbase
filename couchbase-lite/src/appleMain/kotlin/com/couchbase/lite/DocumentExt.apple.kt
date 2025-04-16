@@ -15,6 +15,8 @@
  */
 package com.couchbase.lite
 
+import cocoapods.CouchbaseLite.generation
 import kotbase.Document
 
-internal expect val Document.generation: Long
+internal actual val Document.generation: Long
+    get() = actual.generation.toLong()
