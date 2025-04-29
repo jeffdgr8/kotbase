@@ -55,15 +55,7 @@ public object CouchbaseLite {
      */
     @Internal("This interface is not part of the public API")
     public fun init(ctxt: Context, debug: Boolean) {
-        init(
-            ctxt,
-            debug,
-            ctxt.filesDir,
-            // Handle nullable platform API
-            // https://forums.couchbase.com/t/couchbaselite-init-illegalstateexception-tmp-dir-root-is-null/31651
-            ctxt.getExternalFilesDir(CouchbaseLiteInternal.SCRATCH_DIR_NAME)
-                ?: ctxt.getDir(CouchbaseLiteInternal.SCRATCH_DIR_NAME, Context.MODE_PRIVATE)
-        )
+        CBLCouchbaseLite.init(ctxt, debug)
     }
 
     /**
