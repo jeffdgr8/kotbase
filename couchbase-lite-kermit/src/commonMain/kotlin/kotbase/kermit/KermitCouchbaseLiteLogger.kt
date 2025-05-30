@@ -67,7 +67,8 @@ public class KermitCouchbaseLiteLogger(
     public fun setDomains(vararg domains: LogDomain) { this.domains = domains.toSet() }
 
     private val LogDomain.tag: String
-        get() = when(this) {
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
+        get() = when (this) {
             LogDomain.DATABASE -> TAG_DATABASE
             LogDomain.QUERY -> TAG_QUERY
             LogDomain.REPLICATOR -> TAG_REPLICATOR

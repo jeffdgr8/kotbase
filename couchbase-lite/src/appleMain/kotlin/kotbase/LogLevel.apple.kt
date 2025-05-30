@@ -38,6 +38,7 @@ public actual enum class LogLevel {
 
     internal companion object {
 
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         internal fun from(logLevel: CBLLogLevel): LogLevel = when (logLevel) {
             kCBLLogLevelDebug -> DEBUG
             kCBLLogLevelVerbose -> VERBOSE

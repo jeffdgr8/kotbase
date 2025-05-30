@@ -31,6 +31,7 @@ public actual enum class ConcurrencyControl {
 
     internal companion object {
 
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         internal fun from(value: CBLConcurrencyControl): ConcurrencyControl = when (value) {
             kCBLConcurrencyControlLastWriteWins -> LAST_WRITE_WINS
             kCBLConcurrencyControlFailOnConflict -> FAIL_ON_CONFLICT

@@ -1932,6 +1932,7 @@ class DatabaseTest : BaseDbTest() {
 
         // Modify doc1b, result to conflict when save:
         doc1b.setString("lastName", "Lion")
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         when (cc) {
             ConcurrencyControl.LAST_WRITE_WINS -> {
                 assertTrue(testCollection.save(doc1b, cc))
@@ -1968,6 +1969,7 @@ class DatabaseTest : BaseDbTest() {
 
         // Modify doc1b and delete.  This results in a conflict when deleted:
         doc1b.setString("lastName", "Lion")
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         when (cc) {
             ConcurrencyControl.LAST_WRITE_WINS -> {
                 assertTrue(testCollection.delete(doc1b, cc))
@@ -1995,6 +1997,7 @@ class DatabaseTest : BaseDbTest() {
         val doc1b = MutableDocument("doc1")
         doc1b.setString("firstName", "Scott")
         doc1b.setString("lastName", "Tiger")
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         when (cc) {
             ConcurrencyControl.LAST_WRITE_WINS -> {
                 assertTrue(testCollection.save(doc1b, cc))
@@ -2029,6 +2032,7 @@ class DatabaseTest : BaseDbTest() {
 
         // Modify doc1b, result to conflict when save:
         doc1b.setString("lastName", "Lion")
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         when (cc) {
             ConcurrencyControl.LAST_WRITE_WINS -> {
                 assertTrue(testCollection.save(doc1b, cc))

@@ -23,7 +23,10 @@ kotlin {
         osx.deploymentTarget = "10.14"
     }
 
-    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+    compilerOptions.freeCompilerArgs.addAll(
+        "-Xexpect-actual-classes",
+        "-Xdont-warn-on-error-suppression"
+    )
 
     sourceSets.configureEach {
         languageSettings {
@@ -70,7 +73,6 @@ android {
         minSdk = 22
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    @Suppress("UnstableApiUsage")
     testOptions {
         targetSdk = 34
     }

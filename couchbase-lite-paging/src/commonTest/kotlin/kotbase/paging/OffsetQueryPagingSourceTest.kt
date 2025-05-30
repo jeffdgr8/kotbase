@@ -699,6 +699,7 @@ private val testItemDiffCallback = object : DiffUtil.ItemCallback<TestItem>() {
 
 data class TestItem(val id: Long)
 
+@Suppress("REDUNDANT_ELSE_IN_WHEN")
 private fun createLoadParam(loadType: LoadType, key: Int?): PagingSourceLoadParams<Int> = when (loadType) {
     LoadType.REFRESH -> PagingSourceLoadParamsRefresh(
         key = key,

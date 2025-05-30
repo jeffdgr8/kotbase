@@ -11,6 +11,10 @@ description = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform"
 
 kotlin {
     cocoapods {
+        framework {
+            binaryOption("bundleId", "dev.kotbase")
+            binaryOption("bundleVersion", version.toString())
+        }
         pod("CouchbaseLite-Enterprise") {
             version = libs.versions.couchbase.lite.objc.get()
             moduleName = "CouchbaseLite"
