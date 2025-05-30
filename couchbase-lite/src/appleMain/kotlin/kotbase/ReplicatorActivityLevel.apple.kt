@@ -36,6 +36,7 @@ public actual enum class ReplicatorActivityLevel {
 
     internal companion object {
 
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         internal fun from(activityLevel: CBLReplicatorActivityLevel): ReplicatorActivityLevel = when (activityLevel) {
             kCBLReplicatorStopped -> STOPPED
             kCBLReplicatorOffline -> OFFLINE

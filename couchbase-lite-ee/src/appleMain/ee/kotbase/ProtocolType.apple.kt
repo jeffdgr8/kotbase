@@ -31,6 +31,7 @@ public actual enum class ProtocolType {
 
     internal companion object {
 
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         internal fun from(protocolType: CBLProtocolType): ProtocolType = when (protocolType) {
             kCBLProtocolTypeMessageStream -> MESSAGE_STREAM
             kCBLProtocolTypeByteStream -> BYTE_STREAM

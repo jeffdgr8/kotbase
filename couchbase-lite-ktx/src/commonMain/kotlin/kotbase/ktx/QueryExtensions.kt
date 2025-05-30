@@ -80,7 +80,7 @@ public fun <T : Any> Query.asObjectsFlow(
     coroutineContext: CoroutineContext?,
     factory: (Map<String, Any?>) -> T?,
     flags: Int,
-    @Suppress("UNUSED_PARAMETER") obj: Any?
+    obj: Any?
 ): Flow<List<T>> = asObjectsFlow(if (flags and 1 != 0) null else coroutineContext, factory)
 
 /**

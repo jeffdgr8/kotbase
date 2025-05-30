@@ -5,6 +5,10 @@ plugins {
 
 kotlin {
     cocoapods {
+        framework {
+            binaryOption("bundleId", "dev.kotbase.testingsupport")
+            binaryOption("bundleVersion", version.toString())
+        }
         pod("CouchbaseLite-Enterprise") {
             version = libs.versions.couchbase.lite.objc.get()
             linkOnly = true

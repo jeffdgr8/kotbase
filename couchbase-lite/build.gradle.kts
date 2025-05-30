@@ -11,6 +11,10 @@ description = "Couchbase Lite Community Edition for Kotlin Multiplatform"
 
 kotlin {
     cocoapods {
+        framework {
+            binaryOption("bundleId", "dev.kotbase")
+            binaryOption("bundleVersion", version.toString())
+        }
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
             // Workaround for 'CBLQueryMeta' is going to be declared twice

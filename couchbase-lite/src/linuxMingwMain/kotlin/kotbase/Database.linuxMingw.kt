@@ -544,7 +544,7 @@ private constructor(
         }
     }
 
-    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
+    @Suppress("DEPRECATION")
     @Deprecated(
         "Use defaultCollection.addChangeListener()",
         ReplaceWith("defaultCollection.addChangeListener(listener)")
@@ -556,7 +556,7 @@ private constructor(
         }
     }
 
-    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
+    @Suppress("DEPRECATION")
     @Deprecated(
         "Use defaultCollection.addChangeListener()",
         ReplaceWith("defaultCollection.addChangeListener(context, listener)")
@@ -573,7 +573,7 @@ private constructor(
         }
     }
 
-    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
+    @Suppress("DEPRECATION")
     @Deprecated(
         "Use defaultCollection.addChangeListener()",
         ReplaceWith("defaultCollection.addChangeListener(scope, listener)")
@@ -747,7 +747,6 @@ private constructor(
         mustBeOpen {
             wrapCBLError { error ->
                 memScoped {
-                    @Suppress("NO_ELSE_IN_WHEN")
                     when (config) {
                         is ValueIndexConfiguration -> CBLDatabase_CreateValueIndex(
                             actual,

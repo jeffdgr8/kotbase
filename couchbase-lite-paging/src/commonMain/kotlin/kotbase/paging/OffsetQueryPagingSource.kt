@@ -84,6 +84,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             .execute()
             .countResult()
             .toInt()
+        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         val offset = when (params) {
             is PagingSourceLoadParamsPrepend<*> -> maxOf(0, key - params.loadSize)
             is PagingSourceLoadParamsAppend<*> -> key
@@ -96,7 +97,6 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             .getAndListenForResults()
         val data = results.toObjects()
         val nextPosToLoad = offset + data.size
-        @Suppress("USELESS_CAST", "KotlinRedundantDiagnosticSuppress")
         when {
             invalid -> PagingSourceLoadResultInvalid<Int, RowType>()
             else -> PagingSourceLoadResultPage(

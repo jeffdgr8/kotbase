@@ -17,4 +17,5 @@ package com.couchbase.lite
 
 import kotbase.Expression
 
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 expect fun Expression.asJSON(): Any?

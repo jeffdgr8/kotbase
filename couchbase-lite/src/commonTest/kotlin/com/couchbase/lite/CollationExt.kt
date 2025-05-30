@@ -17,4 +17,5 @@ package com.couchbase.lite
 
 import kotbase.Collation
 
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 expect fun Collation.asJSON(): Any?

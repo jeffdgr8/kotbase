@@ -7,6 +7,10 @@ description = "Couchbase Lite Community Edition for Kotlin Multiplatform – Kot
 
 kotlin {
     cocoapods {
+        framework {
+            binaryOption("bundleId", "dev.kotbase.ktx")
+            binaryOption("bundleVersion", version.toString())
+        }
         pod("CouchbaseLite") {
             version = libs.versions.couchbase.lite.objc.get()
             linkOnly = true

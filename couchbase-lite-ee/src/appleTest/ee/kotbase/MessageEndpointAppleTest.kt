@@ -194,6 +194,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         // MCSessionDelegate
 
         override fun session(session: MCSession, peer: MCPeerID, didChangeState: MCSessionState) {
+            @Suppress("NO_ELSE_IN_WHEN")
             when (didChangeState) {
                 MCSessionState.MCSessionStateConnecting -> println("*** Connecting: ${peer.displayName}")
                 MCSessionState.MCSessionStateConnected -> {
@@ -205,7 +206,6 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
                     }
                 }
                 MCSessionState.MCSessionStateNotConnected -> println("*** Not Connected: ${peer.displayName}")
-                else -> println("*** Unhandled State: $didChangeState")
             }
         }
 

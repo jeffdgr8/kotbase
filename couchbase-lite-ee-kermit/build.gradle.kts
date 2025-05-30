@@ -7,6 +7,10 @@ description = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform – Ke
 
 kotlin {
     cocoapods {
+        framework {
+            binaryOption("bundleId", "dev.kotbase.kermit")
+            binaryOption("bundleVersion", version.toString())
+        }
         pod("CouchbaseLite-Enterprise") {
             version = libs.versions.couchbase.lite.objc.get()
             linkOnly = true
