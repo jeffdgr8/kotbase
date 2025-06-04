@@ -1,20 +1,21 @@
 [versions]
-android-gradle-plugin = "8.2.2"
-androidx-appcompat = "1.6.1"
-androidx-constraintlayout = "2.1.4"
-androidx-core-ktx = "1.12.0"
-androidx-lifecycle-ktx = "2.7.0"
-androidx-material = "1.11.0"
-compose-plugin = "1.6.0"
+android-gradle-plugin = "8.9.3"
+androidx-appcompat = "1.7.1"
+androidx-constraintlayout = "2.2.1"
+androidx-core-ktx = "1.16.0"
+androidx-lifecycle-ktx = "2.9.1"
+androidx-material = "1.12.0"
+compose-plugin = "1.8.1"
 couchbase-lite-c = "3.1.9"
-kmp-native-coroutines = "1.0.0-ALPHA-25"
+kmp-native-coroutines = "1.0.0-ALPHA-43"
 kotbase = "3.1.9-1.1.1"
-kotlin = "1.9.22"
-ksp = "1.9.22-1.0.17"
+kotlin = "2.1.21"
+ksp = "2.1.21-2.0.1"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kmp-native-coroutines = { id = "com.rickclephas.kmp.nativecoroutines", version.ref = "kmp-native-coroutines" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
