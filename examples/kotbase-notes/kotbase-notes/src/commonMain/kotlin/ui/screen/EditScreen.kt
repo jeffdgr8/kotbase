@@ -3,7 +3,7 @@ package ui.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -45,7 +45,7 @@ fun EditScreen(
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = onClose) {
-                        Icon(Icons.Filled.ArrowBack, "back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "back")
                     }
                 },
                 actions = {

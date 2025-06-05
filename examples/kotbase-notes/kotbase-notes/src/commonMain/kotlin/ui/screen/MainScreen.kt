@@ -5,9 +5,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,8 +24,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import domain.model.Note
+import domain.model.sampleNotes
 import kotlinx.coroutines.Dispatchers
 import domain.randomNanoId
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import presentation.MainViewModel
@@ -58,7 +60,7 @@ fun MainScreen(
                     IconButton(
                         onClick = viewModel::logout
                     ) {
-                        Icon(Icons.Filled.Logout, "logout")
+                        Icon(Icons.AutoMirrored.Filled.Logout, "logout")
                     }
                 }
             )
@@ -194,4 +196,10 @@ fun NoteCard(
             Text(note.edited, fontSize = 12.sp, color = Color.Gray)
         }
     }
+}
+
+@Preview
+@Composable
+fun NotesPreview() {
+    NotesGrid(notes = sampleNotes, onNoteSelected = {})
 }

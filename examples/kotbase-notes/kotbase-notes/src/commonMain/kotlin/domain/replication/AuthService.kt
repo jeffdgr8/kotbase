@@ -7,11 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.basicAuth
 import io.ktor.client.request.get
 import io.ktor.http.*
-import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.io.IOException
 
 class AuthService(
     private val syncGateway: SyncGateway,
