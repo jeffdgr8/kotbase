@@ -28,7 +28,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    packagingOptions.resources.pickFirsts += "META-INF/**"
 }
 
 tasks.withType<KotlinCompile> {
