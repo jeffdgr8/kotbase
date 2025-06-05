@@ -37,6 +37,7 @@ import ui.widget.ReplicationStatus
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
+    modifier: Modifier = Modifier,
     onNoteSelected: (String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
