@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 import presentation.AppViewModel
@@ -16,7 +17,7 @@ import ui.screen.LoginScreen
 import ui.screen.SplashScreen
 
 @Composable
-fun App() {
+fun App(modifier: Modifier = Modifier) {
     MaterialTheme {
         val scope = rememberCoroutineScope()
         val viewModel: AppViewModel = koinInject { parametersOf(scope) }

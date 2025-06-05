@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import org.koin.compose.koinInject
@@ -29,7 +31,7 @@ import ui.handleEnter
 import ui.tabFocus
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val viewModel: LoginViewModel = koinInject { parametersOf(scope) }
 
@@ -58,6 +60,10 @@ fun LoginScreen() {
             modifier = Modifier.padding(contentPadding).fillMaxWidth().padding(12.dp)
         ) {
             Spacer(modifier = Modifier.weight(1F))
+
+            Text("Kotbase Notes", fontSize = 32.sp, color = Color.Red)
+
+            Spacer(modifier = Modifier.weight(0.3F))
 
             UsernameField(
                 value = username,

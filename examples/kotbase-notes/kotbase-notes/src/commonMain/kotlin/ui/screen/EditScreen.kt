@@ -29,6 +29,7 @@ import ui.widget.ReplicationStatus
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreen(
+    modifier: Modifier = Modifier,
     noteId: String,
     onClose: () -> Unit
 ) {
