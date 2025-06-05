@@ -1,14 +1,15 @@
 [versions]
-activity-compose = "1.8.2"
-android-gradle-plugin = "8.2.2"
-compose = "1.6.2"
-compose-plugin = "1.6.0"
-couchbase-lite-objc = "3.1.4"
+activity-compose = "1.10.1"
+android-gradle-plugin = "8.9.3"
+compose = "1.8.2"
+compose-plugin = "1.8.1"
+couchbase-lite-objc = "3.1.9"
 kotbase = "3.1.9-1.1.1"
-kotlin = "1.9.22"
+kotlin = "2.1.21"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 
