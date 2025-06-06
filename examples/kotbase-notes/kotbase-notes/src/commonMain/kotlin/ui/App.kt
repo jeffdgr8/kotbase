@@ -24,6 +24,7 @@ fun App(modifier: Modifier = Modifier) {
         val screenState by viewModel.screen.collectAsState()
 
         AnimatedContent(
+            modifier = modifier,
             targetState = screenState
         ) { screen ->
             when (screen) {

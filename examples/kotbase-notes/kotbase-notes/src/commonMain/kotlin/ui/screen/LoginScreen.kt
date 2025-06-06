@@ -50,6 +50,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
     }
 
     Scaffold(
+        modifier = modifier.imePadding(),
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         }

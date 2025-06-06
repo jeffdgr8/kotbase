@@ -41,6 +41,7 @@ fun EditScreen(
     val replicationStatus by viewModel.replicationStatus.collectAsState()
 
     Scaffold(
+        modifier = modifier.imePadding(),
         topBar = {
             TopAppBar(
                 title = {},
@@ -64,7 +65,10 @@ fun EditScreen(
         }
     ) { contentPadding ->
         Box(
-            modifier = Modifier.padding(contentPadding).padding(horizontal = 12.dp).padding(bottom = 12.dp)
+            modifier = Modifier
+                .padding(contentPadding)
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp)
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -76,7 +80,7 @@ fun EditScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Title(note.title, viewModel::updateTitle, modifier = Modifier.fillMaxWidth())
-                NoteText(note.text, viewModel::updateText, modifier = Modifier.weight(1F).fillMaxWidth())
+                NoteText(note.text, viewModel::updateText, modifier = Modifier.fillMaxWidth().weight(1F))
                 Text("Edited ${note.edited}", fontSize = 12.sp, color = Color.Gray)
             }
         }

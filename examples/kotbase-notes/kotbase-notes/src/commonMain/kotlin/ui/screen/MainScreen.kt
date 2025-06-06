@@ -49,6 +49,7 @@ fun MainScreen(
     val replicationStatus by viewModel.replicationStatus.collectAsState()
 
     Scaffold(
+        modifier = modifier.imePadding(),
         topBar = {
             TopAppBar(
                 title = {},
