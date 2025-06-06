@@ -1,6 +1,5 @@
 import co.touchlab.skie.configuration.DefaultArgumentInterop
 import co.touchlab.skie.configuration.SealedInterop
-import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
@@ -39,7 +38,6 @@ kotlin {
         framework {
             baseName = "KotbaseNotes"
             binaryOption("bundleId", "dev.kotbase.notes")
-            export(libs.kotlinx.coroutines.core)
         }
         podfile = project.file("../iosApp/Podfile")
         pod("CouchbaseLite") {
