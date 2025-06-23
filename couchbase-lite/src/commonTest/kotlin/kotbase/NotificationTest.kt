@@ -16,27 +16,28 @@
 package kotbase
 
 import com.couchbase.lite.copy
-import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class, ExperimentalAtomicApi::class)
 class NotificationTest : BaseDbTest() {
 
     @Test
     fun testCollectionChange() = runBlocking {
         val latch = CountDownLatch(1)
 
-        val n = atomic(0)
+        val n = AtomicInt(0)
         testCollection.addChangeListener(testSerialCoroutineContext) { change ->
             assertNotNull(change)
             assertEquals(testCollection, change.collection)
             val ids: List<String> = change.documentIDs
             assertNotNull(ids)
-            if (n.addAndGet(ids.size) >= 10) { latch.countDown() }
+            if (n.addAndFetch(ids.size) >= 10) { latch.countDown() }
         }.use {
             for (i in 0..<10) {
                 val doc = MutableDocument()
@@ -130,14 +131,14 @@ class NotificationTest : BaseDbTest() {
         val coll2 = db2.getSimilarCollection(testCollection)
         assertNotNull(coll2)
 
-        val counter = atomic(0)
+        val counter = AtomicInt(0)
 
         var token: ListenerToken? = null
         try {
             val latchDB = CountDownLatch(1)
             coll2.addChangeListener(testSerialCoroutineContext) { change ->
                 assertNotNull(change)
-                if (counter.addAndGet(change.documentIDs.size) >= 10) {
+                if (counter.addAndFetch(change.documentIDs.size) >= 10) {
                     assertEquals(1, latchDB.getCount())
                     latchDB.countDown()
                 }
@@ -277,12 +278,12 @@ class NotificationTest : BaseDbTest() {
 //    @Test
 //    fun testCollectionChanged() = runBlocking {
 //        val latch = CountDownLatch(1)
-//        val changeCount = atomic(0)
-//        val callCount = atomic(0)
+//        val changeCount = AtomicInt(0)
+//        val callCount = AtomicInt(0)
 //
 //        val mockProducer: ChangeNotifier.C4ChangeProducer<C4DocumentChange> = object : C4ChangeProducer<C4DocumentChange?>() {
 //            fun getChanges(maxChanges: Int): List<C4DocumentChange>? {
-//                val n: Int = callCount.incrementAndGet()
+//                val n: Int = callCount.incrementAndFetch()
 //                return when (n) {
 //                    1 -> listOf(C4DocumentChange.createC4DocumentChange("A", "r1", 0L, true))
 //                    2 -> listOf(C4DocumentChange.createC4DocumentChange("B", null, 0L, true))
@@ -301,15 +302,15 @@ class NotificationTest : BaseDbTest() {
 //        notifier.addChangeListener(
 //            null,
 //            { ch ->
-//                changeCount.addAndGet(ch.getDocumentIDs().size())
+//                changeCount.addAndFetch(ch.getDocumentIDs().size())
 //                latch.countDown()
 //            },
 //            { ign -> })
 //        notifier.run(mockProducer)
 //
 //        assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
-//        assertEquals(3, changeCount.value)
-//        assertEquals(6, callCount.value)
+//        assertEquals(3, changeCount.load())
+//        assertEquals(6, callCount.load())
 //    }
 
 //    @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")

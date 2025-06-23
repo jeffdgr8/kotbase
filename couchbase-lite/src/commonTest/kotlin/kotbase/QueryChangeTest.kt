@@ -15,11 +15,12 @@
  */
 package kotbase
 
-import kotlinx.atomicfu.atomic
-import kotlinx.atomicfu.locks.SynchronizedObject
-import kotlinx.atomicfu.locks.synchronized
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.test.Test
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -29,6 +30,7 @@ class QueryChangeTest : BaseQueryTest() {
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1615
     @Test
+    @OptIn(ExperimentalAtomicApi::class)
     fun testRemoveQueryChangeListenerInCallback() = runBlocking {
         loadDocuments(10)
 
@@ -37,15 +39,15 @@ class QueryChangeTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
             .where(Expression.property(TEST_DOC_SORT_KEY).lessThan(Expression.intValue(5)))
 
-        val token = atomic<ListenerToken?>(null)
+        val token = AtomicReference<ListenerToken?>(null)
         val latch = CountDownLatch(1)
-        val lock = SynchronizedObject()
+        val lock = reentrantLock()
 
         val listener: QueryChangeListener = listener@{ change ->
             val rs = change.results
             if (rs?.next() == null) return@listener
-            synchronized(lock) {
-                val t = token.getAndSet(null)
+            lock.withLock {
+                val t = token.exchange(null)
                 t?.remove()
             }
             latch.countDown()
@@ -55,13 +57,13 @@ class QueryChangeTest : BaseQueryTest() {
         // The listener might get called before query.addChangeListener(), below, returns.
         // If that happened "token" would not yet have been set and the test would not work.
         // Seizing a lock here guarantees that that can't happen.
-        synchronized(lock) { token.value = query.addChangeListener(testSerialCoroutineContext, listener) }
+        lock.withLock { token.store(query.addChangeListener(testSerialCoroutineContext, listener)) }
         try { assertTrue(latch.await(STD_TIMEOUT_SEC.seconds)) }
         finally {
-            val t = token.value
+            val t = token.load()
             t?.remove()
         }
 
-        assertNull(token.value)
+        assertNull(token.load())
     }
 }

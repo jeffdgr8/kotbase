@@ -15,14 +15,17 @@
  */
 package kotbase
 
-import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.fetchAndIncrement
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class, ExperimentalAtomicApi::class)
 class LiveQueryTest : BaseDbTest() {
 
     companion object {
@@ -68,17 +71,17 @@ class LiveQueryTest : BaseDbTest() {
         val latch1 = arrayOf(CountDownLatch(1), CountDownLatch(1))
         val latch2 = arrayOf(CountDownLatch(1), CountDownLatch(1))
 
-        val atmCount1 = atomic(0)
-        val atmCount2 = atomic(0)
+        val atmCount1 = AtomicInt(0)
+        val atmCount2 = AtomicInt(0)
 
         query.addChangeListener(testSerialCoroutineContext) {
-            latch1[atmCount1.getAndIncrement()].countDown()
+            latch1[atmCount1.fetchAndIncrement()].countDown()
         }.use {
 
             // listener 1 gets notified after observer subscribed
             assertTrue(latch1[0].await(LONG_TIMEOUT_SEC.seconds))
             query.addChangeListener(testSerialCoroutineContext) {
-                latch2[atmCount2.getAndIncrement()].countDown()
+                latch2[atmCount2.fetchAndIncrement()].countDown()
             }.use {
                 // listener 2 should get notified
                 assertTrue(latch2[0].await(LONG_TIMEOUT_SEC.seconds))
@@ -102,12 +105,12 @@ class LiveQueryTest : BaseDbTest() {
             .select(SelectResult.expression(Meta.id))
             .from(DataSource.collection(testCollection))
 
-        val atmCount = atomic(0)
+        val atmCount = AtomicInt(0)
         val latches = arrayOf(CountDownLatch(1), CountDownLatch(1))
 
         query.addChangeListener(testSerialCoroutineContext) { change ->
             change.results!!.close()
-            latches[atmCount.getAndIncrement()].countDown()
+            latches[atmCount.fetchAndIncrement()].countDown()
         }.use {
             createDocNumbered(10)
             assertTrue(latches[0].await(LONG_TIMEOUT_SEC.seconds))
@@ -176,7 +179,7 @@ class LiveQueryTest : BaseDbTest() {
         val latch = arrayOf(CountDownLatch(1), CountDownLatch(1), CountDownLatch(1))
 
         // count is used to get the next latch and also check size of rs
-        val atmCount = atomic(0)
+        val atmCount = AtomicInt(0)
 
         // VALUE is set to 2, we should expect that query will only get notification for doc 2, rs size is 1
         var params = Parameters()
@@ -189,8 +192,8 @@ class LiveQueryTest : BaseDbTest() {
                 //  1. query first gets doc 2, the rs size is 1
                 //  2. after param changes to 1, query gets a new rs that has doc 1 and 2, rs size is now 2
                 //  query should not be notified when doc 0 is added to the db
-                if (rs.allResults().size == atmCount.value + 1) {
-                    latch[atmCount.getAndIncrement()].countDown()
+                if (rs.allResults().size == atmCount.load() + 1) {
+                    latch[atmCount.fetchAndIncrement()].countDown()
                 }
             }
         }.use {
@@ -212,8 +215,8 @@ class LiveQueryTest : BaseDbTest() {
     // CBL-2344: Live query may stop refreshing
     @Test
     fun testLiveQueryRefresh() = runBlocking {
-        val latchHolder = atomic(CountDownLatch(1))
-        val resultsHolder = atomic<List<Result>>(emptyList())
+        val latchHolder = AtomicReference(CountDownLatch(1))
+        val resultsHolder = AtomicReference<List<Result>>(emptyList())
 
         createDocNumbered(10)
 
@@ -223,25 +226,25 @@ class LiveQueryTest : BaseDbTest() {
             .where(Expression.property(KEY).greaterThan(Expression.intValue(0)))
 
         query.addChangeListener(testSerialCoroutineContext) { change ->
-            resultsHolder.value = change.results!!.allResults()
-            latchHolder.value.countDown()
+            resultsHolder.store(change.results!!.allResults())
+            latchHolder.load().countDown()
         }.use {
             // this update should happen nearly instantaneously
-            assertTrue(latchHolder.value.await(LONG_TIMEOUT_SEC.seconds))
-            assertEquals(1, resultsHolder.value.size)
+            assertTrue(latchHolder.load().await(LONG_TIMEOUT_SEC.seconds))
+            assertEquals(1, resultsHolder.load().size)
 
             // adding this document will trigger the query but since it does not meet the query
             // criteria, it will not produce a new result. The listener should not be called.
             // Wait for 2 full update intervals and a little bit more.
-            latchHolder.value = CountDownLatch(1)
+            latchHolder.store(CountDownLatch(1))
             createDocNumbered(0)
-            assertFalse(latchHolder.value.await(APPROXIMATE_CORE_DELAY_MS.milliseconds))
+            assertFalse(latchHolder.load().await(APPROXIMATE_CORE_DELAY_MS.milliseconds))
 
             // adding this document should cause a call to the listener in not much more than an update interval
-            latchHolder.value = CountDownLatch(1)
+            latchHolder.store(CountDownLatch(1))
             createDocNumbered(11)
-            assertTrue(latchHolder.value.await(LONG_TIMEOUT_SEC.seconds))
-            assertEquals(2, resultsHolder.value.size)
+            assertTrue(latchHolder.load().await(LONG_TIMEOUT_SEC.seconds))
+            assertEquals(2, resultsHolder.load().size)
         }
     }
 

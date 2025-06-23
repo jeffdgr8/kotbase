@@ -16,7 +16,6 @@
 package kotbase
 
 import kotbase.test.lockWithTimeout
-import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
@@ -30,6 +29,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.test.assertEquals
@@ -85,6 +86,7 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
         assertTrue(canceled.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
     }
 
+    @OptIn(ExperimentalAtomicApi::class)
     protected fun testCoroutineScopeListenerRemoved(
         addListener: (scope: CoroutineScope, work: () -> Unit) -> Unit,
         listenedChange: () -> Unit,
@@ -92,15 +94,15 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
     ) = runBlocking {
         val mutex = Mutex(true)
         val scope = CoroutineScope(SupervisorJob())
-        val canceled = atomic(false)
+        val canceled = AtomicBoolean(false)
         addListener(scope) {
-            assertFalse(canceled.value)
+            assertFalse(canceled.load())
             if (mutex.isLocked) mutex.unlock()
         }
         listenedChange()
         assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
         scope.cancel()
-        canceled.value = true
+        canceled.store(true)
         notListenedChange()
         delay(200) // give listener time to be called if still listening
     }

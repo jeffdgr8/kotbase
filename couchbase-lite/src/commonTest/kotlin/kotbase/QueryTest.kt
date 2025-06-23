@@ -21,7 +21,6 @@ import co.touchlab.stately.collections.ConcurrentMutableList
 import com.couchbase.lite.asJSON
 import kotbase.internal.utils.Report
 import kotbase.internal.utils.paddedString
-import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
@@ -29,6 +28,9 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.offsetAt
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.fetchAndIncrement
 import kotlin.math.*
 import kotlin.random.Random
 import kotlin.test.*
@@ -1052,6 +1054,7 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
+    @OptIn(ExperimentalAtomicApi::class)
     fun testQuantifiedOperators() {
         loadJSONResourceIntoCollection("names_100.json")
 
@@ -1068,13 +1071,13 @@ class QueryTest : BaseQueryTest() {
                 .satisfies(exprVarLike.equalTo(Expression.string("climbing")))
             )
 
-        val i = atomic(0)
+        val i = AtomicInt(0)
         val expected = arrayOf("doc-017", "doc-021", "doc-023", "doc-045", "doc-060")
         assertEquals(
             expected.size,
             verifyQueryWithEnumerator(
                 query
-            ) { _, result -> assertEquals(expected[i.getAndIncrement()], result.getString(0)) }
+            ) { _, result -> assertEquals(expected[i.fetchAndIncrement()], result.getString(0)) }
         )
 
         // EVERY:
