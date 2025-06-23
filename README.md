@@ -1,6 +1,6 @@
 [![Maven Central](https://img.shields.io/maven-central/v/dev.kotbase/couchbase-lite)](
 https://central.sonatype.com/namespace/dev.kotbase)
-[![Kotlin](https://img.shields.io/badge/kotlin-2.1.21-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.2.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![GitHub License](https://img.shields.io/github/license/jeffdgr8/kotbase)](LICENSE)
 [![Couchbase Community](https://img.shields.io/badge/couchbase-community-ea2328?logo=couchbase&logoColor=ea2328)](
 https://www.couchbase.com/developers/community/)
