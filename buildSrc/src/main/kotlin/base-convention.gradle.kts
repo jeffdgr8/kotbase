@@ -9,6 +9,7 @@ plugins {
     `kotlin-multiplatform`
     `kotlin-native-cocoapods`
     `android-library`
+    org.jetbrains.kotlinx.atomicfu
 }
 
 kotlin {
