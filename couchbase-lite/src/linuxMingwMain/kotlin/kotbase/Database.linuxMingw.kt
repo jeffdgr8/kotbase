@@ -27,7 +27,7 @@ import kotbase.internal.wrapCBLError
 import kotbase.util.identityHashCodeHex
 import kotbase.util.to
 import kotbase.util.toList
-import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.*
 import kotlinx.coroutines.*
@@ -794,7 +794,7 @@ private constructor(
         mustBeOpen { }
     }
 
-    private val lock = SynchronizedObject()
+    private val lock = reentrantLock()
 
     internal inline fun <R> withLock(crossinline action: () -> R): R {
         return lock.withLock {

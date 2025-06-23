@@ -44,8 +44,7 @@ internal class ListenerAwaiter(
     private val err = atomic<Throwable?>(null)
     private val latch = CountDownLatch(1)
 
-    val error: Throwable?
-        get() = err.value
+    val error by err
 
     fun changed(change: ReplicatorChange) {
         val status = change.status

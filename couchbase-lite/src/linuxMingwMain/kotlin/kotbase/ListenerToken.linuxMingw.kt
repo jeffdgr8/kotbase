@@ -58,7 +58,7 @@ internal class StableRefListenerToken<T : Any>(
 
     internal val actual: CPointer<CBLListenerToken> = actualBuilder(stableRef.asCPointer())
 
-    private var disposed = atomic(false)
+    private val disposed = atomic(false)
 
     override fun removeImpl() {
         if (disposed.compareAndSet(expect = false, update = true)) {

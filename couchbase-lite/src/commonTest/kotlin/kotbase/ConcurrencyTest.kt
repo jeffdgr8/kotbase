@@ -17,16 +17,16 @@ package kotbase
 
 import co.touchlab.stately.collections.ConcurrentMutableList
 import kotbase.internal.utils.paddedString
-import kotlinx.atomicfu.AtomicRef
-import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.CountDownLatch
 import kotlinx.coroutines.sync.CyclicBarrier
 import kotlinx.datetime.Clock
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class, ExperimentalAtomicApi::class)
 class ConcurrencyTest : BaseDbTest() {
 
     // TODO: native C fails sometimes
@@ -285,7 +285,7 @@ class ConcurrencyTest : BaseDbTest() {
     @Throws(CancellationException::class)
     fun testBlockDatabaseChange() = runBlocking {
         val latch = CountDownLatch(1)
-        val error: AtomicRef<Exception?> = atomic(null)
+        val error = AtomicReference<Exception?>(null)
         testCollection.addChangeListener(testSerialCoroutineContext) { latch.countDown() }.use {
             launch(testSerialCoroutineContext) {
                 try {
@@ -296,7 +296,7 @@ class ConcurrencyTest : BaseDbTest() {
             }
             assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
         }
-        val e = error.value
+        val e = error.load()
         if (e != null) {
             throw AssertionError("Error saving document", e)
         }
@@ -307,7 +307,7 @@ class ConcurrencyTest : BaseDbTest() {
     fun testBlockDocumentChange() = runBlocking {
         val mDoc = MutableDocument()
         val latch = CountDownLatch(1)
-        val error: AtomicRef<Exception?> = atomic(null)
+        val error = AtomicReference<Exception?>(null)
         testCollection.addDocumentChangeListener(mDoc.id, testSerialCoroutineContext) { latch.countDown() }.use {
             launch(testSerialCoroutineContext) {
                 try {
@@ -318,7 +318,7 @@ class ConcurrencyTest : BaseDbTest() {
             }
             assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
         }
-        val e = error.value
+        val e = error.load()
         if (e != null) {
             throw AssertionError("Error saving document", e)
         }
@@ -411,7 +411,7 @@ class ConcurrencyTest : BaseDbTest() {
     ) = coroutineScope {
         val barrier = CyclicBarrier(2)
         val latch = CountDownLatch(2)
-        val error: AtomicRef<Throwable?> = atomic(null)
+        val error = AtomicReference<Throwable?>(null)
         createTestCoroutines("$name@1", 1, barrier, latch, error) { task1() }
         createTestCoroutines("$name@2", 1, barrier, latch, error) { task2() }
         var ok = false
@@ -425,7 +425,7 @@ class ConcurrencyTest : BaseDbTest() {
     private suspend fun runConcurrentCopies(nThreads: Int, task: (Int) -> Unit) = coroutineScope {
         val barrier = CyclicBarrier(nThreads)
         val latch = CountDownLatch(nThreads)
-        val error: AtomicRef<Throwable?> = atomic(null)
+        val error = AtomicReference<Throwable?>(null)
         createTestCoroutines("Concurrency-test", nThreads, barrier, latch, error, task)
 
         // wait
@@ -438,7 +438,7 @@ class ConcurrencyTest : BaseDbTest() {
         nThreads: Int,
         barrier: CyclicBarrier,
         latch: CountDownLatch,
-        error: AtomicRef<Throwable?>,
+        error: AtomicReference<Throwable?>,
         task: suspend (Int) -> Unit
     ) {
         for (i in 0..<nThreads) {
@@ -459,8 +459,8 @@ class ConcurrencyTest : BaseDbTest() {
         }
     }
 
-    private fun checkForFailure(error: AtomicRef<Throwable?>) {
-        val err = error.value
+    private fun checkForFailure(error: AtomicReference<Throwable?>) {
+        val err = error.load()
         if (err is AssertionError) {
             throw err
         }
