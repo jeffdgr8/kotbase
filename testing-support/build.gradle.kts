@@ -22,7 +22,6 @@ kotlin {
             api(projects.couchbaseLite)
             api(libs.kotlin.test)
             api(libs.kotlinx.serialization.json)
-            api(libs.kotlinx.atomicfu)
         }
         jvmCommonMain.dependencies {
             api(libs.kotlin.test.junit)

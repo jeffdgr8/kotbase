@@ -42,7 +42,6 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
             api(libs.kotlinx.datetime)
             api(libs.kotlinx.io)
-            implementation(libs.kotlinx.atomicfu)
         }
         commonTest.dependencies {
             implementation(projects.testingSupport)

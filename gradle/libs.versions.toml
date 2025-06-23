@@ -10,6 +10,7 @@ mockk = "1.14.4"
 android-library = { id = "com.android.library", version = "8.10.1" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "2.2.0" }
+kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version = "0.28.0" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.17.0" }
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.33.0" }
 
@@ -27,7 +28,6 @@ kermit = { module = "co.touchlab:kermit", version = "2.0.6" }
 korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.10" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
-kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version = "0.28.0" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.10.2" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.2" }
 kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version = "0.7.0" }
