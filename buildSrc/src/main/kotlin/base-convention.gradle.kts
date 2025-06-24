@@ -69,13 +69,13 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 36
     defaultConfig {
         minSdk = 22
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     testOptions {
-        targetSdk = 34
+        targetSdk = 36
     }
     // required by coroutines 1.7.0+ to avoid errors:
     // 6 files found with path 'META-INF/LICENSE.md'.
