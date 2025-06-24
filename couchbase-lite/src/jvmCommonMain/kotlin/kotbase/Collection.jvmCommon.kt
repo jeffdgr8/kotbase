@@ -97,14 +97,12 @@ internal constructor(
     public actual fun addChangeListener(listener: CollectionChangeListener): ListenerToken =
         DelegatedListenerToken(actual.addChangeListener(listener.convert(this)))
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(context: CoroutineContext, listener: CollectionChangeSuspendListener): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(this, scope))
         return SuspendListenerToken(scope, token)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(scope: CoroutineScope, listener: CollectionChangeSuspendListener) {
         val token = actual.addChangeListener(
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
@@ -118,7 +116,6 @@ internal constructor(
     public actual fun addDocumentChangeListener(id: String, listener: DocumentChangeListener): ListenerToken =
         DelegatedListenerToken(actual.addDocumentChangeListener(id, listener.convert(this)))
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentChangeListener(
         id: String,
         context: CoroutineContext,
@@ -133,7 +130,6 @@ internal constructor(
         return SuspendListenerToken(scope, token)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentChangeListener(id: String, scope: CoroutineScope, listener: DocumentChangeSuspendListener) {
         val token = actual.addDocumentChangeListener(
             id,

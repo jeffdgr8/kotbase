@@ -267,7 +267,6 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         DelegatedListenerToken(actual.addChangeListener(listener.convert(this)))
 
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
-    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
         "Use defaultCollection.addChangeListener()",
         ReplaceWith("defaultCollection.addChangeListener(context, listener)")
@@ -282,7 +281,6 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     }
 
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
-    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
         "Use defaultCollection.addChangeListener()",
         ReplaceWith("defaultCollection.addChangeListener(scope, listener)")
@@ -306,7 +304,6 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         DelegatedListenerToken(actual.addDocumentChangeListener(id, listener.convert(defaultCollection)))
 
     @Suppress("DEPRECATION")
-    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
         "Use defaultCollection.addDocumentChangeListener()",
         ReplaceWith("defaultCollection.addDocumentChangeListener(id, context, listener)")
@@ -326,7 +323,6 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     }
 
     @Suppress("DEPRECATION")
-    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
         "Use defaultCollection.addDocumentChangeListener()",
         ReplaceWith("defaultCollection.addDocumentChangeListener(id, scope, listener)")

@@ -46,7 +46,6 @@ abstract class BaseTest : PlatformTest() {
 
         setupPlatform()
 
-        @OptIn(ExperimentalCoroutinesApi::class)
         testSerialCoroutineContext = Dispatchers.Default.limitedParallelism(1)
 
         startTime = Clock.System.now()

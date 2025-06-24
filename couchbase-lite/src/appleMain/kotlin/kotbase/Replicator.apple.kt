@@ -27,7 +27,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalObjCRefinement
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual class Replicator
 internal constructor(
     actual: CBLReplicator,
@@ -131,7 +130,6 @@ internal constructor(
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(
         context: CoroutineContext,
         listener: ReplicatorChangeSuspendListener
@@ -144,7 +142,6 @@ internal constructor(
         return SuspendReplicatorListenerToken(scope, token, actual)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(scope: CoroutineScope, listener: ReplicatorChangeSuspendListener) {
         val token = actual.addChangeListenerWithQueue(
             scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
@@ -162,7 +159,6 @@ internal constructor(
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentReplicationListener(
         context: CoroutineContext,
         listener: DocumentReplicationSuspendListener
@@ -175,7 +171,6 @@ internal constructor(
         return SuspendReplicatorListenerToken(scope, token, actual)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentReplicationListener(scope: CoroutineScope, listener: DocumentReplicationSuspendListener) {
         val token = actual.addDocumentReplicationListenerWithQueue(
             scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),

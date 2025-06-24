@@ -24,7 +24,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import libcblite.CBLListener_Remove
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual sealed class ListenerToken : AutoCloseable {
 
     actual override fun close() {

@@ -46,7 +46,6 @@ internal constructor(actual: CBLMessageEndpointListener) : DelegatedClass<CBLMes
     public actual fun addChangeListener(listener: MessageEndpointListenerChangeListener): ListenerToken =
         DelegatedListenerToken(actual.addChangeListener(listener.convert()))
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(
         context: CoroutineContext,
         listener: MessageEndpointListenerChangeSuspendListener
@@ -56,7 +55,6 @@ internal constructor(actual: CBLMessageEndpointListener) : DelegatedClass<CBLMes
         return SuspendListenerToken(scope, token)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(scope: CoroutineScope, listener: MessageEndpointListenerChangeSuspendListener) {
         val token = actual.addChangeListener(
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),

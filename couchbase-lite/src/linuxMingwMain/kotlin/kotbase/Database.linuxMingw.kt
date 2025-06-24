@@ -37,7 +37,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual class Database
 private constructor(
     internal val actual: CPointer<CBLDatabase>,

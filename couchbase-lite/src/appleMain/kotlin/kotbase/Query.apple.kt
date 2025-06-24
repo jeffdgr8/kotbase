@@ -63,7 +63,6 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListenerWithQueue(
@@ -73,7 +72,6 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
         return SuspendListenerToken(scope, token)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener) {
         val token = actual.addChangeListenerWithQueue(
             scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
