@@ -943,7 +943,7 @@ the parenthesis is optional.
 ```sql
 collate = COLLATE collation | '(' collation (_ collation )* ')'
 
-collation = NO? (UNICODE | CASE | DIACRITICS) WB
+collation = NO? (UNICODE | CASE | DIAC) WB
 ```
 
 #### Arguments
@@ -952,7 +952,7 @@ The available collation options are:
 
 * `UNICODE`: Conduct a Unicode comparison; the default is to do ASCII comparison.
 * `CASE`: Conduct case-sensitive comparison.
-* `DIACRITIC`: Take account of accents and diacritics in the comparison; on by default.
+* `DIAC`: Take account of accents and diacritics in the comparison; on by default.
 * `NO`: This can be used as a prefix to the other collations, to disable them (for example: `NOCASE` to enable
   case-insensitive comparison)
 
