@@ -21,7 +21,6 @@ import kotbase.internal.DelegatedProtocol
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual sealed class ListenerToken(
     actual: CBLListenerTokenProtocol
 ) : DelegatedProtocol<CBLListenerTokenProtocol>(actual), AutoCloseable {

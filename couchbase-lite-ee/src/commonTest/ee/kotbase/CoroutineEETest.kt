@@ -31,7 +31,6 @@ class CoroutineEETest : BaseCoroutineTest() {
         val config = makeSimpleReplConfig(target, type = ReplicatorType.PUSH, continuous = true)
         val replicator = config.testReplicator()
         val stopped = Mutex(true)
-        @OptIn(ExperimentalCoroutinesApi::class)
         replicator.addChangeListener(Dispatchers.Default.limitedParallelism(1)) {
             when (it.status.activityLevel) {
                 ReplicatorActivityLevel.STOPPED -> if (stopped.isLocked) stopped.unlock()

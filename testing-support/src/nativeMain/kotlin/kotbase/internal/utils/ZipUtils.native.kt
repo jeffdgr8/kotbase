@@ -34,7 +34,6 @@ actual object ZipUtils {
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 fun Source.asyncStream(): AsyncStream = use { source ->
     source.use { input ->
         input.readByteArray().openAsync()

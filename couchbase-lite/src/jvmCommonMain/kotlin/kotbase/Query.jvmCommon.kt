@@ -51,14 +51,12 @@ internal class DelegatedQuery(actual: CBLQuery) : DelegatedClass<CBLQuery>(actua
     override fun addChangeListener(listener: QueryChangeListener): ListenerToken =
         DelegatedListenerToken(actual.addChangeListener(listener.convert()))
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(scope))
         return SuspendListenerToken(scope, token)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener) {
         val token = actual.addChangeListener(
             scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),

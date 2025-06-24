@@ -39,7 +39,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
-@OptIn(ExperimentalStdlibApi::class)
 class DocumentTest : BaseDbTest() {
 
     fun interface DocValidator {

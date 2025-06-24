@@ -39,7 +39,6 @@ import kotlin.test.assertTrue
 import kotlin.test.fail
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalCoroutinesApi::class)
 abstract class BaseCoroutineTest : BaseReplicatorTest() {
 
     protected fun testOnCoroutineContext(
@@ -47,7 +46,7 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
         change: () -> Unit
     ) = runBlocking {
         val mutex = Mutex(true)
-        @OptIn(DelicateCoroutinesApi::class)
+        @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
         val testContext = newSingleThreadContext("test-context-thread") + CoroutineName("test-context")
         addListener(testContext) {
             checkContext(testContext)
@@ -57,7 +56,6 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
         assertTrue(mutex.lockWithTimeout(STD_TIMEOUT_SEC.seconds))
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private suspend fun checkContext(context: CoroutineContext) {
         assertEquals(context[CoroutineDispatcher], coroutineContext[CoroutineDispatcher])
         assertEquals(context[CoroutineName], coroutineContext[CoroutineName])

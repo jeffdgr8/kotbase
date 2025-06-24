@@ -31,7 +31,6 @@ import kotlinx.datetime.toNSDate
 import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalObjCRefinement
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual class Database
 internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual), AutoCloseable {
 
@@ -448,7 +447,6 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     }
 
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
-    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
         "Use defaultCollection.addChangeListener()",
         ReplaceWith("defaultCollection.addChangeListener(context, listener)")
@@ -465,7 +463,6 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     }
 
     @Suppress("DEPRECATION", "TYPEALIAS_EXPANSION_DEPRECATION")
-    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
         "Use defaultCollection.addChangeListener()",
         ReplaceWith("defaultCollection.addChangeListener(scope, listener)")
@@ -494,7 +491,6 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
         "Use defaultCollection.addDocumentChangeListener()",
         ReplaceWith("defaultCollection.addDocumentChangeListener(id, context, listener)")
@@ -515,7 +511,6 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated(
         "Use defaultCollection.addDocumentChangeListener()",
         ReplaceWith("defaultCollection.addDocumentChangeListener(id, scope, listener)")

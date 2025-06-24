@@ -33,7 +33,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual class Collection
 internal constructor(
     actual: CPointer<CBLCollection>,

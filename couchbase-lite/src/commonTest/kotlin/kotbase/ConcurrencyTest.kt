@@ -26,7 +26,7 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalStdlibApi::class, ExperimentalAtomicApi::class)
+@OptIn(ExperimentalAtomicApi::class)
 class ConcurrencyTest : BaseDbTest() {
 
     // TODO: native C fails sometimes

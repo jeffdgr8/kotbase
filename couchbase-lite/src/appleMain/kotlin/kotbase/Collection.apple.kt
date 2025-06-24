@@ -29,7 +29,6 @@ import kotlinx.datetime.toNSDate
 import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalObjCRefinement
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual class Collection
 internal constructor(
     actual: CBLCollection,
@@ -159,7 +158,6 @@ internal constructor(
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(context: CoroutineContext, listener: CollectionChangeSuspendListener): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListenerWithQueue(
@@ -169,7 +167,6 @@ internal constructor(
         return SuspendListenerToken(scope, token)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addChangeListener(scope: CoroutineScope, listener: CollectionChangeSuspendListener) {
         val token = actual.addChangeListenerWithQueue(
             scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
@@ -186,7 +183,6 @@ internal constructor(
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentChangeListener(
         id: String,
         context: CoroutineContext,
@@ -201,7 +197,6 @@ internal constructor(
         return SuspendListenerToken(scope, token)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual fun addDocumentChangeListener(id: String, scope: CoroutineScope, listener: DocumentChangeSuspendListener) {
         val token = actual.addDocumentChangeListenerWithID(
             id,

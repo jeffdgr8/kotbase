@@ -59,7 +59,6 @@ class SharedDbWork {
     }
 
     // Create a query to fetch documents with language == Kotlin.
-    @OptIn(ExperimentalStdlibApi::class)
     fun queryDocs() {
         val coll = collection ?: return
 

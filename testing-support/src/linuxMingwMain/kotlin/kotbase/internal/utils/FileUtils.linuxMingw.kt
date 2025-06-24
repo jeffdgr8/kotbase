@@ -28,7 +28,6 @@ import kotlinx.io.files.SystemPathSeparator
 import kotlinx.io.readByteArray
 import kotlin.experimental.ExperimentalNativeApi
 
-@OptIn(ExperimentalStdlibApi::class)
 actual object FileUtils {
 
     actual fun dirExists(dir: String): Boolean {

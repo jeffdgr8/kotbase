@@ -127,7 +127,6 @@ private constructor(
 
     private var blobContent: ByteArray? = null
 
-    @OptIn(ExperimentalStdlibApi::class)
     public actual val content: ByteArray?
         get() {
             if (blobContent == null) {
@@ -307,7 +306,6 @@ private class BlobReadStreamSource(actual: CPointer<CBLBlobReadStream>) : RawSou
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun Source.blobWriteStream(db: Database): CPointer<CBLBlobWriteStream> {
     val writer = wrapCBLError { error ->
         CBLBlobWriter_Create(db.actual, error)

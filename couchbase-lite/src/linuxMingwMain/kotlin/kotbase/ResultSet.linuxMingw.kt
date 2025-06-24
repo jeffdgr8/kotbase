@@ -23,7 +23,6 @@ import libcblite.CBLResultSet_Release
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual class ResultSet
 internal constructor(
     actual: CPointer<CBLResultSet>,
