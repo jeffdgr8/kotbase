@@ -972,7 +972,7 @@ SELECT department FROM db WHERE (name = "fred") COLLATE (UNICODE CASE)
 ```
 
 ```sql
-SELECT name FROM db ORDER BY name COLLATE (UNICODE DIACRITIC)
+SELECT name FROM db ORDER BY name COLLATE (UNICODE DIAC)
 ```
 
 ### CONDITIONAL Operator
