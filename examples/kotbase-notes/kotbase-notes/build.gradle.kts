@@ -1,5 +1,3 @@
-import co.touchlab.skie.configuration.DefaultArgumentInterop
-import co.touchlab.skie.configuration.SealedInterop
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
@@ -10,7 +8,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.kotlin.native.cocoapods)
-    alias(libs.plugins.skie)
 }
 
 kotlin {
@@ -117,17 +114,6 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "dev.kotbase.notes"
             packageVersion = "1.0.0"
-        }
-    }
-}
-
-skie {
-    features {
-        group("kotbase") {
-            SealedInterop.Enabled(false)
-        }
-        group("domain") {
-            DefaultArgumentInterop.Enabled(true)
         }
     }
 }
