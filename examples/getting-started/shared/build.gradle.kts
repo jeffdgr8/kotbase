@@ -16,6 +16,7 @@ kotlin {
             baseName = "shared"
             val path = "$rootDir/vendor/CouchbaseLite/CouchbaseLite.xcframework/ios-arm64"
             linkerOpts("-F$path", "-framework", "CouchbaseLite", "-rpath", path)
+            binaryOption("bundleId", "dev.kotbase.gettingstarted")
         }
     }
     listOf(
@@ -26,6 +27,7 @@ kotlin {
             baseName = "shared"
             val path = "$rootDir/vendor/CouchbaseLite/CouchbaseLite.xcframework/ios-arm64_x86_64-simulator"
             linkerOpts("-F$path", "-framework", "CouchbaseLite", "-rpath", path)
+            binaryOption("bundleId", "dev.kotbase.gettingstarted")
         }
     }
     macosX64()
