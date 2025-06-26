@@ -58,7 +58,7 @@ tasks.withType<KotlinCompile> {
 
 android {
     namespace = "dev.kotbase.gettingstarted.shared"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 24
     }

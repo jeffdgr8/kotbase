@@ -1,5 +1,5 @@
 [versions]
-android-gradle-plugin = "8.9.3"
+android-gradle-plugin = "8.10.1"
 androidx-appcompat = "1.7.1"
 androidx-constraintlayout = "2.2.1"
 androidx-core-ktx = "1.16.0"
@@ -7,10 +7,10 @@ androidx-lifecycle-ktx = "2.9.1"
 androidx-material = "1.12.0"
 compose-plugin = "1.8.2"
 couchbase-lite-c = "3.1.9"
-kmp-native-coroutines = "1.0.0-ALPHA-44"
+kmp-native-coroutines = "1.0.0-ALPHA-45"
 kotbase = "3.1.9-1.1.1"
-kotlin = "2.1.21"
-ksp = "2.1.21-2.0.1"
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
