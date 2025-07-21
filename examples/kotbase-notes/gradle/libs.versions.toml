@@ -9,7 +9,7 @@ couchbase-lite-objc = "3.1.9"
 kotbase = "3.1.9-1.1.1"
 koin = "4.1.0"
 kotlin = "2.2.0"
-ktor = "3.2.0"
+ktor = "3.2.1"
 
 [plugins]
 android-application = { id = "com.android.application", version = "8.10.1" }
@@ -29,7 +29,7 @@ koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", versi
 kotbase = { module = "dev.kotbase:couchbase-lite-ktx", version.ref = "kotbase" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.8.1" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.9.0" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.2" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
