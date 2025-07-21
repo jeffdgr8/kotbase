@@ -47,7 +47,7 @@ kotlin {
                 }
             }
         }
-        runTask?.run {
+        runTaskProvider?.configure {
             // Get command-line arguments from Gradle properties
             val inputValue = providers.gradleProperty("inputValue").getOrElse("")
             val replicate = providers.gradleProperty("replicate").getOrElse("false")

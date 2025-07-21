@@ -18,7 +18,6 @@ https://youtu.be/4DTAb04m0UU).
 * Dependency injection via [Koin](https://github.com/InsertKoinIO/koin).
 * JSON serialization via [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization).
 * HTTP client via [Ktor](https://github.com/ktorio/ktor).
-* Enhanced Swift interoperability via [SKIE](https://github.com/touchlab/SKIE).
 
 ## Source Directories
 

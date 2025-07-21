@@ -8,7 +8,7 @@ object Log {
 
     private val _output = MutableStateFlow("")
     @NativeCoroutines
-    val output = _output.asStateFlow()
+    val output: StateFlow<String> = _output.asStateFlow()
 
     fun i(tag: String, msg: String) {
         val log = "${timestamp()} I/$tag: $msg"

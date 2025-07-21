@@ -17,7 +17,15 @@ fun ReplicationStatus(
     when (status?.activityLevel) {
         ReplicatorActivityLevel.CONNECTING -> CircularProgressIndicator(modifier = modifier.size(24.dp))
         ReplicatorActivityLevel.BUSY -> CircularProgressIndicator(
-            progress = with(status.progress) { completed.toFloat() / total },
+            progress = {
+                with(status.progress) {
+                    if (total == 0L) {
+                        0F
+                    } else {
+                        completed.toFloat() / total
+                    }
+                }
+            },
             modifier = modifier.size(24.dp)
         )
         else -> Spacer(modifier = modifier.size(24.dp))

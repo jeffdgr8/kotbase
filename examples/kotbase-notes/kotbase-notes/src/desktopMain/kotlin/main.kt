@@ -1,13 +1,9 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import di.appModules
 import ui.App
-import ui.screen.NotesGrid
-import domain.model.sampleNotes
 import domain.replication.ReplicationService
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
@@ -38,16 +34,4 @@ fun main() = application {
             App()
         }
     }
-}
-
-@Preview
-@Composable
-fun AppDesktopPreview() {
-    App()
-}
-
-@Preview
-@Composable
-fun NotesPreview() {
-    NotesGrid(notes = sampleNotes, onNoteSelected = {})
 }

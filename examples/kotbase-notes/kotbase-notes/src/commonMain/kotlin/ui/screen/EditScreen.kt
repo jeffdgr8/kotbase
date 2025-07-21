@@ -3,7 +3,7 @@ package ui.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -29,6 +29,7 @@ import ui.widget.ReplicationStatus
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreen(
+    modifier: Modifier = Modifier,
     noteId: String,
     onClose: () -> Unit
 ) {
@@ -40,12 +41,13 @@ fun EditScreen(
     val replicationStatus by viewModel.replicationStatus.collectAsState()
 
     Scaffold(
+        modifier = modifier.imePadding(),
         topBar = {
             TopAppBar(
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = onClose) {
-                        Icon(Icons.Filled.ArrowBack, "back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "back")
                     }
                 },
                 actions = {
@@ -63,7 +65,10 @@ fun EditScreen(
         }
     ) { contentPadding ->
         Box(
-            modifier = Modifier.padding(contentPadding).padding(horizontal = 12.dp).padding(bottom = 12.dp)
+            modifier = Modifier
+                .padding(contentPadding)
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp)
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -75,7 +80,7 @@ fun EditScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Title(note.title, viewModel::updateTitle, modifier = Modifier.fillMaxWidth())
-                NoteText(note.text, viewModel::updateText, modifier = Modifier.weight(1F).fillMaxWidth())
+                NoteText(note.text, viewModel::updateText, modifier = Modifier.fillMaxWidth().weight(1F))
                 Text("Edited ${note.edited}", fontSize = 12.sp, color = Color.Gray)
             }
         }

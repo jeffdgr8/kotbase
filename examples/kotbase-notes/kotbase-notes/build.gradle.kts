@@ -1,6 +1,3 @@
-import co.touchlab.skie.configuration.DefaultArgumentInterop
-import co.touchlab.skie.configuration.SealedInterop
-import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
@@ -8,9 +5,9 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.kotlin.native.cocoapods)
-    alias(libs.plugins.skie)
 }
 
 kotlin {
@@ -24,15 +21,11 @@ kotlin {
         }
     }
 
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
-
+    androidTarget()
     jvm("desktop")
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     cocoapods {
         version = "1.0"
@@ -41,7 +34,7 @@ kotlin {
         ios.deploymentTarget = "14.1"
         framework {
             baseName = "KotbaseNotes"
-            export(libs.kotlinx.coroutines.core)
+            binaryOption("bundleId", "dev.kotbase.notes")
         }
         podfile = project.file("../iosApp/Podfile")
         pod("CouchbaseLite") {
@@ -50,12 +43,9 @@ kotlin {
         }
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
     sourceSets {
         val desktopMain by getting
+        val jvmCommonMain by getting
 
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -63,8 +53,8 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
             api(libs.kotlinx.coroutines.core)
             implementation(libs.kotbase)
             implementation(libs.kotlinx.datetime)
@@ -72,10 +62,14 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.cio)
+        }
+        jvmCommonMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
@@ -91,19 +85,12 @@ android {
     namespace = "dev.kotbase.notes"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
     defaultConfig {
         applicationId = "dev.kotbase.notes"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
     }
     buildTypes {
         getByName("release") {
@@ -127,17 +114,6 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "dev.kotbase.notes"
             packageVersion = "1.0.0"
-        }
-    }
-}
-
-skie {
-    features {
-        group("kotbase") {
-            SealedInterop.Enabled(false)
-        }
-        group("domain") {
-            DefaultArgumentInterop.Enabled(true)
         }
     }
 }
