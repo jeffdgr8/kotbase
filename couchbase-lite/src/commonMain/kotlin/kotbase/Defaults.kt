@@ -27,6 +27,11 @@ public object Defaults {
         public const val MAX_ROTATE_COUNT: Int = 1
     }
 
+    public object Database {
+        /** Full sync is off by default  */
+        public const val FULL_SYNC: Boolean = false
+    }
+
     public object FullTextIndex {
         /** Accents and ligatures are not ignored when indexing via full text search  */
         public const val IGNORE_ACCENTS: Boolean = false
