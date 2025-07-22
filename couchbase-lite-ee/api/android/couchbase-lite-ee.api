@@ -282,7 +282,8 @@ public final class kotbase/CommonFlowsKt {
 public final class kotbase/ConfigurationFactoriesEEKt {
 	public static final fun getMessageEndpointListenerConfigurationFactory ()Lkotbase/MessageEndpointListenerConfiguration;
 	public static final fun getURLEndpointListenerConfigurationFactory ()Lkotbase/URLEndpointListenerConfiguration;
-	public static final fun newConfig (Lkotbase/DatabaseConfiguration;Ljava/lang/String;Lcom/couchbase/lite/EncryptionKey;)Lkotbase/DatabaseConfiguration;
+	public static final synthetic fun newConfig (Lkotbase/DatabaseConfiguration;Ljava/lang/String;Lcom/couchbase/lite/EncryptionKey;)Lkotbase/DatabaseConfiguration;
+	public static final fun newConfig (Lkotbase/DatabaseConfiguration;Ljava/lang/String;Ljava/lang/Boolean;Lcom/couchbase/lite/EncryptionKey;)Lkotbase/DatabaseConfiguration;
 	public static final fun newConfig (Lkotbase/MessageEndpointListenerConfiguration;Ljava/util/Set;Lcom/couchbase/lite/ProtocolType;)Lkotbase/MessageEndpointListenerConfiguration;
 	public static final fun newConfig (Lkotbase/MessageEndpointListenerConfiguration;Lkotbase/Database;Lcom/couchbase/lite/ProtocolType;)Lkotbase/MessageEndpointListenerConfiguration;
 	public static final fun newConfig (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lkotbase/ReplicatorConfiguration;
@@ -290,6 +291,7 @@ public final class kotbase/ConfigurationFactoriesEEKt {
 	public static final fun newConfig (Lkotbase/URLEndpointListenerConfiguration;Ljava/util/Set;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Lkotbase/TLSIdentity;Lkotbase/ListenerAuthenticator;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lkotbase/URLEndpointListenerConfiguration;
 	public static final fun newConfig (Lkotbase/URLEndpointListenerConfiguration;Lkotbase/Database;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Lkotbase/TLSIdentity;Lkotbase/ListenerAuthenticator;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lkotbase/URLEndpointListenerConfiguration;
 	public static synthetic fun newConfig$default (Lkotbase/DatabaseConfiguration;Ljava/lang/String;Lcom/couchbase/lite/EncryptionKey;ILjava/lang/Object;)Lkotbase/DatabaseConfiguration;
+	public static synthetic fun newConfig$default (Lkotbase/DatabaseConfiguration;Ljava/lang/String;Ljava/lang/Boolean;Lcom/couchbase/lite/EncryptionKey;ILjava/lang/Object;)Lkotbase/DatabaseConfiguration;
 	public static synthetic fun newConfig$default (Lkotbase/MessageEndpointListenerConfiguration;Ljava/util/Set;Lcom/couchbase/lite/ProtocolType;ILjava/lang/Object;)Lkotbase/MessageEndpointListenerConfiguration;
 	public static synthetic fun newConfig$default (Lkotbase/MessageEndpointListenerConfiguration;Lkotbase/Database;Lcom/couchbase/lite/ProtocolType;ILjava/lang/Object;)Lkotbase/MessageEndpointListenerConfiguration;
 	public static synthetic fun newConfig$default (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/ReplicatorConfiguration;
@@ -301,10 +303,12 @@ public final class kotbase/ConfigurationFactoriesEEKt {
 public final class kotbase/ConfigurationFactoriesKt {
 	public static final fun getDatabaseConfigurationFactory ()Lkotbase/DatabaseConfiguration;
 	public static final fun getReplicatorConfigurationFactory ()Lkotbase/ReplicatorConfiguration;
-	public static final fun newConfig (Lkotbase/DatabaseConfiguration;Ljava/lang/String;)Lkotbase/DatabaseConfiguration;
+	public static final synthetic fun newConfig (Lkotbase/DatabaseConfiguration;Ljava/lang/String;)Lkotbase/DatabaseConfiguration;
+	public static final fun newConfig (Lkotbase/DatabaseConfiguration;Ljava/lang/String;Ljava/lang/Boolean;)Lkotbase/DatabaseConfiguration;
 	public static final fun newConfig (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lkotbase/ReplicatorConfiguration;
 	public static final fun newConfig (Lkotbase/ReplicatorConfiguration;Lkotbase/Endpoint;Ljava/util/Map;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lkotbase/ReplicatorConfiguration;
 	public static synthetic fun newConfig$default (Lkotbase/DatabaseConfiguration;Ljava/lang/String;ILjava/lang/Object;)Lkotbase/DatabaseConfiguration;
+	public static synthetic fun newConfig$default (Lkotbase/DatabaseConfiguration;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/DatabaseConfiguration;
 	public static synthetic fun newConfig$default (Lkotbase/ReplicatorConfiguration;Lkotbase/Database;Lkotbase/Endpoint;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/ReplicatorConfiguration;
 	public static synthetic fun newConfig$default (Lkotbase/ReplicatorConfiguration;Lkotbase/Endpoint;Ljava/util/Map;Lkotbase/ReplicatorType;Ljava/lang/Boolean;Lkotbase/Authenticator;Ljava/util/Map;[BLjava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/ReplicatorConfiguration;
 }
@@ -425,8 +429,11 @@ public final class kotbase/DatabaseConfiguration : kotbase/internal/DelegatedCla
 	public fun <init> ()V
 	public fun <init> (Lkotbase/DatabaseConfiguration;)V
 	public final fun getDirectory ()Ljava/lang/String;
+	public final fun isFullSync ()Z
 	public final fun setDirectory (Ljava/lang/String;)Lkotbase/DatabaseConfiguration;
 	public final fun setDirectory (Ljava/lang/String;)V
+	public final fun setFullSync (Z)Lkotbase/DatabaseConfiguration;
+	public final fun setFullSync (Z)V
 }
 
 public final class kotbase/DatabaseConfigurationKt {
@@ -455,6 +462,11 @@ public final class kotbase/DatabaseKt {
 
 public final class kotbase/Defaults {
 	public static final field INSTANCE Lkotbase/Defaults;
+}
+
+public final class kotbase/Defaults$Database {
+	public static final field FULL_SYNC Z
+	public static final field INSTANCE Lkotbase/Defaults$Database;
 }
 
 public final class kotbase/Defaults$FullTextIndex {
