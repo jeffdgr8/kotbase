@@ -52,7 +52,7 @@ public expect class DatabaseConfiguration {
      * power failure at just the wrong time could cause the most recently committed transaction's changes to be lost.
      * This would cause the database to appear as it did immediately before that transaction. Setting this mode true
      * ensures that an operating system crash or power failure will not cause the loss of any data. Full sync mode is
-     * very safe but it is also <b>dramatically</b> slower.
+     * very safe but it is also **dramatically** slower.
      */
     public fun setFullSync(isFullSync: Boolean): DatabaseConfiguration
 
@@ -61,7 +61,7 @@ public expect class DatabaseConfiguration {
      * power failure at just the wrong time could cause the most recently committed transaction's changes to be lost.
      * This would cause the database to appear as it did immediately before that transaction. Setting this mode true
      * ensures that an operating system crash or power failure will not cause the loss of any data. Full sync mode is
-     * very safe but it is also <b>dramatically</b> slower.
+     * very safe but it is also **dramatically** slower.
      */
     public var isFullSync: Boolean
 }

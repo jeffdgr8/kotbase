@@ -29,12 +29,18 @@ public val DatabaseConfigurationFactory: DatabaseConfiguration? = null
  * values with the passed parameters:
  *
  * @param databasePath The directory in which the database is stored.
+ * @param fullSync enable full sync mode, where operating system crash or power loss
+ * will not cause a loss of data, but performance is **dramatically** slower.
  *
  * @see DatabaseConfiguration
  */
-public fun DatabaseConfiguration?.newConfig(databasePath: String? = null): DatabaseConfiguration {
+public fun DatabaseConfiguration?.newConfig(
+    databasePath: String? = null,
+    fullSync: Boolean? = null
+): DatabaseConfiguration {
     return DatabaseConfiguration(this).apply {
         databasePath?.let { setDirectory(it) }
+        fullSync?.let { isFullSync = it }
     }
 }
 
@@ -109,6 +115,10 @@ public fun ReplicatorConfiguration?.newConfig(
         }
     }
 }
+
+@Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
+public fun DatabaseConfiguration?.newConfig(databasePath: String? = null): DatabaseConfiguration =
+    newConfig(databasePath = databasePath)
 
 /**
  * Create a ReplicatorConfiguration, overriding the receiver's

@@ -20,16 +20,20 @@ package kotbase
  * values with the passed parameters:
  *
  * @param databasePath The directory in which the database is stored.
+ * @param fullSync enable full sync mode, where operating system crash or power loss
+ * will not cause a loss of data, but performance is **dramatically** slower.
  * @param encryptionKey ENTERPRISE EDITION API: The database encryption key.
  *
  * @see DatabaseConfiguration
  */
 public fun DatabaseConfiguration?.newConfig(
     databasePath: String? = null,
+    fullSync: Boolean? = null,
     encryptionKey: EncryptionKey? = null
 ): DatabaseConfiguration {
     return newConfig(
-        databasePath = databasePath
+        databasePath = databasePath,
+        fullSync = fullSync
     ).apply {
         encryptionKey?.let { setEncryptionKey(it) }
     }
@@ -92,6 +96,17 @@ public fun ReplicatorConfiguration?.newConfig(
             this.isAcceptOnlySelfSignedServerCertificate = it
         }
     }
+}
+
+@Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
+public fun DatabaseConfiguration?.newConfig(
+    databasePath: String? = null,
+    encryptionKey: EncryptionKey? = null
+): DatabaseConfiguration {
+    return newConfig(
+        databasePath = databasePath,
+        encryptionKey = encryptionKey
+    )
 }
 
 /**
