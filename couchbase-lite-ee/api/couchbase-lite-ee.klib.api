@@ -723,6 +723,11 @@ final object kotbase/CBLError { // kotbase/CBLError|null[0]
 }
 
 final object kotbase/Defaults { // kotbase/Defaults|null[0]
+    final object Database { // kotbase/Defaults.Database|null[0]
+        final const val FULL_SYNC // kotbase/Defaults.Database.FULL_SYNC|{}FULL_SYNC[0]
+            final fun <get-FULL_SYNC>(): kotlin/Boolean // kotbase/Defaults.Database.FULL_SYNC.<get-FULL_SYNC>|<get-FULL_SYNC>(){}[0]
+    }
+
     final object FullTextIndex { // kotbase/Defaults.FullTextIndex|null[0]
         final const val IGNORE_ACCENTS // kotbase/Defaults.FullTextIndex.IGNORE_ACCENTS|{}IGNORE_ACCENTS[0]
             final fun <get-IGNORE_ACCENTS>(): kotlin/Boolean // kotbase/Defaults.FullTextIndex.IGNORE_ACCENTS.<get-IGNORE_ACCENTS>|<get-IGNORE_ACCENTS>(){}[0]
@@ -933,6 +938,8 @@ final fun (kotbase/Database).kotbase/get(kotlin/String): kotbase/DocumentFragmen
 final fun (kotbase/DatabaseConfiguration).kotbase/setEncryptionKey(kotbase/EncryptionKey?): kotbase/DatabaseConfiguration // kotbase/setEncryptionKey|setEncryptionKey@kotbase.DatabaseConfiguration(kotbase.EncryptionKey?){}[0]
 final fun (kotbase/DatabaseConfiguration?).kotbase/newConfig(kotlin/String? = ...): kotbase/DatabaseConfiguration // kotbase/newConfig|newConfig@kotbase.DatabaseConfiguration?(kotlin.String?){}[0]
 final fun (kotbase/DatabaseConfiguration?).kotbase/newConfig(kotlin/String? = ..., kotbase/EncryptionKey? = ...): kotbase/DatabaseConfiguration // kotbase/newConfig|newConfig@kotbase.DatabaseConfiguration?(kotlin.String?;kotbase.EncryptionKey?){}[0]
+final fun (kotbase/DatabaseConfiguration?).kotbase/newConfig(kotlin/String? = ..., kotlin/Boolean? = ...): kotbase/DatabaseConfiguration // kotbase/newConfig|newConfig@kotbase.DatabaseConfiguration?(kotlin.String?;kotlin.Boolean?){}[0]
+final fun (kotbase/DatabaseConfiguration?).kotbase/newConfig(kotlin/String? = ..., kotlin/Boolean? = ..., kotbase/EncryptionKey? = ...): kotbase/DatabaseConfiguration // kotbase/newConfig|newConfig@kotbase.DatabaseConfiguration?(kotlin.String?;kotlin.Boolean?;kotbase.EncryptionKey?){}[0]
 final fun (kotbase/Dictionary).kotbase/get(kotlin/String): kotbase/Fragment // kotbase/get|get@kotbase.Dictionary(kotlin.String){}[0]
 final fun (kotbase/Document).kotbase/get(kotlin/String): kotbase/Fragment // kotbase/get|get@kotbase.Document(kotlin.String){}[0]
 final fun (kotbase/FullTextIndexConfiguration?).kotbase/newConfig(kotlin/Array<out kotlin/String>... = ..., kotlin/String? = ..., kotlin/Boolean? = ...): kotbase/FullTextIndexConfiguration // kotbase/newConfig|newConfig@kotbase.FullTextIndexConfiguration?(kotlin.Array<out|kotlin.String>...;kotlin.String?;kotlin.Boolean?){}[0]
@@ -1202,8 +1209,12 @@ final class kotbase/DatabaseConfiguration : kotbase.internal/DelegatedClass<coco
     final var directory // kotbase/DatabaseConfiguration.directory|{}directory[0]
         final fun <get-directory>(): kotlin/String // kotbase/DatabaseConfiguration.directory.<get-directory>|<get-directory>(){}[0]
         final fun <set-directory>(kotlin/String) // kotbase/DatabaseConfiguration.directory.<set-directory>|<set-directory>(kotlin.String){}[0]
+    final var isFullSync // kotbase/DatabaseConfiguration.isFullSync|{}isFullSync[0]
+        final fun <get-isFullSync>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isFullSync.<get-isFullSync>|<get-isFullSync>(){}[0]
+        final fun <set-isFullSync>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isFullSync.<set-isFullSync>|<set-isFullSync>(kotlin.Boolean){}[0]
 
     final fun setDirectory(kotlin/String): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setDirectory|setDirectory(kotlin.String){}[0]
+    final fun setFullSync(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setFullSync|setFullSync(kotlin.Boolean){}[0]
 }
 
 // Targets: [apple]
@@ -2296,8 +2307,12 @@ final class kotbase/DatabaseConfiguration { // kotbase/DatabaseConfiguration|nul
     final var directory // kotbase/DatabaseConfiguration.directory|{}directory[0]
         final fun <get-directory>(): kotlin/String // kotbase/DatabaseConfiguration.directory.<get-directory>|<get-directory>(){}[0]
         final fun <set-directory>(kotlin/String) // kotbase/DatabaseConfiguration.directory.<set-directory>|<set-directory>(kotlin.String){}[0]
+    final var isFullSync // kotbase/DatabaseConfiguration.isFullSync|{}isFullSync[0]
+        final fun <get-isFullSync>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isFullSync.<get-isFullSync>|<get-isFullSync>(){}[0]
+        final fun <set-isFullSync>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isFullSync.<set-isFullSync>|<set-isFullSync>(kotlin.Boolean){}[0]
 
     final fun setDirectory(kotlin/String): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setDirectory|setDirectory(kotlin.String){}[0]
+    final fun setFullSync(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setFullSync|setFullSync(kotlin.Boolean){}[0]
 }
 
 // Targets: [linux, mingwX64]
