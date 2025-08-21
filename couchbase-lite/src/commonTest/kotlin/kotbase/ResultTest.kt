@@ -18,8 +18,15 @@ package kotbase
 import kotbase.ext.toStringMillis
 import kotbase.internal.utils.JsonObject
 import kotbase.internal.utils.paddedString
-import kotlinx.datetime.Instant
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 class ResultTest : BaseQueryTest() {
 
@@ -851,8 +858,6 @@ class ResultTest : BaseQueryTest() {
 
         val testCollection = testCollection
         val result: Result?
-        val dict: Dictionary?
-        val array: Array?
         val results: ResultSet = QueryBuilder
             .createQuery("SELECT * FROM " + testCollection.fullName, testCollection.database)
             .execute()
@@ -860,10 +865,10 @@ class ResultTest : BaseQueryTest() {
         result = results.next()
         assertNotNull(result)
 
-        dict = result.getDictionary(0)
+        val dict = result.getDictionary(0)
         assertNotNull(dict)
 
-        array = dict.getArray("doc-25")
+        val array = dict.getArray("doc-25")
         assertNotNull(array)
 
         val `val` = array.getString(20)

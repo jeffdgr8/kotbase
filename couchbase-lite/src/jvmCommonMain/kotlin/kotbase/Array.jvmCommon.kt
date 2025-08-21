@@ -17,7 +17,7 @@ package kotbase
 
 import kotbase.ext.toKotlinInstant
 import kotbase.internal.DelegatedClass
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import com.couchbase.lite.Array as CBLArray
 
 public actual open class Array

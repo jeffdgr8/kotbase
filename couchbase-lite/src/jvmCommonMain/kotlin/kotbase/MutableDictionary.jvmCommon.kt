@@ -16,7 +16,7 @@
 package kotbase
 
 import kotbase.ext.toDate
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import com.couchbase.lite.MutableDictionary as CBLMutableDictionary
 
 public actual class MutableDictionary

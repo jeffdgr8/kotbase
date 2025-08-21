@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Fragment provides readonly access to data value. Fragment also provides subscript access

@@ -27,8 +27,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.offsetAt
 import kotlin.concurrent.atomics.AtomicBoolean

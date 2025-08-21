@@ -19,7 +19,7 @@ import kotbase.internal.DbContext
 import kotbase.internal.JsonUtils
 import kotbase.internal.fleece.*
 import kotlinx.cinterop.memScoped
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 
 public actual class MutableDictionary

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Mutable access to dictionary data.

@@ -31,7 +31,7 @@ package kotbase.ktx
 
 import kotbase.*
 import kotbase.Collection
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlin.Array
 
 /**

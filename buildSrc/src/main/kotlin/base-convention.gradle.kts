@@ -32,6 +32,7 @@ kotlin {
 
     sourceSets.configureEach {
         languageSettings {
+            optIn("kotlin.time.ExperimentalTime")
             if (!name.startsWith("common") &&
                 !name.startsWith("jvm") &&
                 !name.startsWith("android")

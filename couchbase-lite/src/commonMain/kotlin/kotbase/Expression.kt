@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * The expression used in constructing a query.

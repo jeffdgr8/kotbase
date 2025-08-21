@@ -17,7 +17,7 @@ package kotbase
 
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds

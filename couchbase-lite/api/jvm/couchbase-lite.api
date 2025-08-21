@@ -3,7 +3,7 @@ public class kotbase/Array : kotbase/internal/DelegatedClass, java/lang/Iterable
 	public fun getBlob (I)Lkotbase/Blob;
 	public fun getBoolean (I)Z
 	public fun getCount ()I
-	public fun getDate (I)Lkotlinx/datetime/Instant;
+	public fun getDate (I)Lkotlin/time/Instant;
 	public fun getDictionary (I)Lkotbase/Dictionary;
 	public fun getDouble (I)D
 	public fun getFloat (I)F
@@ -54,7 +54,7 @@ public abstract interface class kotbase/ArrayInterface {
 	public abstract fun getBlob (I)Lkotbase/Blob;
 	public abstract fun getBoolean (I)Z
 	public abstract fun getCount ()I
-	public abstract fun getDate (I)Lkotlinx/datetime/Instant;
+	public abstract fun getDate (I)Lkotlin/time/Instant;
 	public abstract fun getDictionary (I)Lkotbase/Dictionary;
 	public abstract fun getDouble (I)D
 	public abstract fun getFloat (I)F
@@ -223,7 +223,7 @@ public final class kotbase/Collection : kotbase/internal/DelegatedClass, java/la
 	public final fun getCount ()J
 	public final fun getDatabase ()Lkotbase/Database;
 	public final fun getDocument (Ljava/lang/String;)Lkotbase/Document;
-	public final fun getDocumentExpiration (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public final fun getDocumentExpiration (Ljava/lang/String;)Lkotlin/time/Instant;
 	public final fun getFullName ()Ljava/lang/String;
 	public final fun getIndex (Ljava/lang/String;)Lkotbase/QueryIndex;
 	public final fun getIndexes ()Ljava/util/Set;
@@ -234,7 +234,7 @@ public final class kotbase/Collection : kotbase/internal/DelegatedClass, java/la
 	public final fun save (Lkotbase/MutableDocument;)V
 	public final fun save (Lkotbase/MutableDocument;Lcom/couchbase/lite/ConcurrencyControl;)Z
 	public final fun save (Lkotbase/MutableDocument;Lkotlin/jvm/functions/Function2;)Z
-	public final fun setDocumentExpiration (Ljava/lang/String;Lkotlinx/datetime/Instant;)V
+	public final fun setDocumentExpiration (Ljava/lang/String;Lkotlin/time/Instant;)V
 }
 
 public final class kotbase/Collection$Companion {
@@ -389,7 +389,7 @@ public final class kotbase/Database : kotbase/internal/DelegatedClass, java/lang
 	public final fun getDefaultCollection ()Lkotbase/Collection;
 	public final fun getDefaultScope ()Lkotbase/Scope;
 	public final fun getDocument (Ljava/lang/String;)Lkotbase/Document;
-	public final fun getDocumentExpiration (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public final fun getDocumentExpiration (Ljava/lang/String;)Lkotlin/time/Instant;
 	public final fun getIndexes ()Ljava/util/List;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getPath ()Ljava/lang/String;
@@ -403,7 +403,7 @@ public final class kotbase/Database : kotbase/internal/DelegatedClass, java/lang
 	public final fun save (Lkotbase/MutableDocument;)V
 	public final fun save (Lkotbase/MutableDocument;Lcom/couchbase/lite/ConcurrencyControl;)Z
 	public final fun save (Lkotbase/MutableDocument;Lkotlin/jvm/functions/Function2;)Z
-	public final fun setDocumentExpiration (Ljava/lang/String;Lkotlinx/datetime/Instant;)V
+	public final fun setDocumentExpiration (Ljava/lang/String;Lkotlin/time/Instant;)V
 }
 
 public final class kotbase/Database$Companion {
@@ -490,7 +490,7 @@ public class kotbase/Dictionary : kotbase/internal/DelegatedClass, java/lang/Ite
 	public fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
 	public fun getBoolean (Ljava/lang/String;)Z
 	public fun getCount ()I
-	public fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public fun getDate (Ljava/lang/String;)Lkotlin/time/Instant;
 	public fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
 	public fun getDouble (Ljava/lang/String;)D
 	public fun getFloat (Ljava/lang/String;)F
@@ -512,7 +512,7 @@ public abstract interface class kotbase/DictionaryInterface {
 	public abstract fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
 	public abstract fun getBoolean (Ljava/lang/String;)Z
 	public abstract fun getCount ()I
-	public abstract fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public abstract fun getDate (Ljava/lang/String;)Lkotlin/time/Instant;
 	public abstract fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
 	public abstract fun getDouble (Ljava/lang/String;)D
 	public abstract fun getFloat (Ljava/lang/String;)F
@@ -537,7 +537,7 @@ public class kotbase/Document : kotbase/internal/DelegatedClass, java/lang/Itera
 	public fun getBoolean (Ljava/lang/String;)Z
 	public final fun getCollection ()Lkotbase/Collection;
 	public fun getCount ()I
-	public fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public fun getDate (Ljava/lang/String;)Lkotlin/time/Instant;
 	public fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
 	public fun getDouble (Ljava/lang/String;)D
 	public fun getFloat (Ljava/lang/String;)F
@@ -609,7 +609,7 @@ public class kotbase/Expression : kotbase/internal/DelegatedClass {
 public final class kotbase/Expression$Companion {
 	public final fun all ()Lkotbase/PropertyExpression;
 	public final fun booleanValue (Z)Lkotbase/Expression;
-	public final fun date (Lkotlinx/datetime/Instant;)Lkotbase/Expression;
+	public final fun date (Lkotlin/time/Instant;)Lkotbase/Expression;
 	public final fun doubleValue (D)Lkotbase/Expression;
 	public final fun floatValue (F)Lkotbase/Expression;
 	public final fun fullTextIndex (Ljava/lang/String;)Lkotbase/FullTextIndexExpression;
@@ -642,7 +642,7 @@ public class kotbase/Fragment {
 	protected fun getArrayParent ()Lkotbase/ArrayInterface;
 	public fun getBlob ()Lkotbase/Blob;
 	public fun getBoolean ()Z
-	public fun getDate ()Lkotlinx/datetime/Instant;
+	public fun getDate ()Lkotlin/time/Instant;
 	protected fun getDictParent ()Lkotbase/DictionaryInterface;
 	public fun getDictionary ()Lkotbase/Dictionary;
 	public fun getDouble ()D
@@ -957,8 +957,8 @@ public final class kotbase/MutableArray : kotbase/Array, kotbase/MutableArrayInt
 	public synthetic fun addBlob (Lkotbase/Blob;)Lkotbase/MutableArrayInterface;
 	public fun addBoolean (Z)Lkotbase/MutableArray;
 	public synthetic fun addBoolean (Z)Lkotbase/MutableArrayInterface;
-	public fun addDate (Lkotlinx/datetime/Instant;)Lkotbase/MutableArray;
-	public synthetic fun addDate (Lkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public fun addDate (Lkotlin/time/Instant;)Lkotbase/MutableArray;
+	public synthetic fun addDate (Lkotlin/time/Instant;)Lkotbase/MutableArrayInterface;
 	public fun addDictionary (Lkotbase/Dictionary;)Lkotbase/MutableArray;
 	public synthetic fun addDictionary (Lkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
 	public fun addDouble (D)Lkotbase/MutableArray;
@@ -986,8 +986,8 @@ public final class kotbase/MutableArray : kotbase/Array, kotbase/MutableArrayInt
 	public synthetic fun insertBlob (ILkotbase/Blob;)Lkotbase/MutableArrayInterface;
 	public fun insertBoolean (IZ)Lkotbase/MutableArray;
 	public synthetic fun insertBoolean (IZ)Lkotbase/MutableArrayInterface;
-	public fun insertDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArray;
-	public synthetic fun insertDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public fun insertDate (ILkotlin/time/Instant;)Lkotbase/MutableArray;
+	public synthetic fun insertDate (ILkotlin/time/Instant;)Lkotbase/MutableArrayInterface;
 	public fun insertDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArray;
 	public synthetic fun insertDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
 	public fun insertDouble (ID)Lkotbase/MutableArray;
@@ -1014,8 +1014,8 @@ public final class kotbase/MutableArray : kotbase/Array, kotbase/MutableArrayInt
 	public synthetic fun setBoolean (IZ)Lkotbase/MutableArrayInterface;
 	public fun setData (Ljava/util/List;)Lkotbase/MutableArray;
 	public synthetic fun setData (Ljava/util/List;)Lkotbase/MutableArrayInterface;
-	public fun setDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArray;
-	public synthetic fun setDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public fun setDate (ILkotlin/time/Instant;)Lkotbase/MutableArray;
+	public synthetic fun setDate (ILkotlin/time/Instant;)Lkotbase/MutableArrayInterface;
 	public fun setDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArray;
 	public synthetic fun setDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
 	public fun setDouble (ID)Lkotbase/MutableArray;
@@ -1040,7 +1040,7 @@ public abstract interface class kotbase/MutableArrayInterface : kotbase/ArrayInt
 	public abstract fun addArray (Lkotbase/Array;)Lkotbase/MutableArrayInterface;
 	public abstract fun addBlob (Lkotbase/Blob;)Lkotbase/MutableArrayInterface;
 	public abstract fun addBoolean (Z)Lkotbase/MutableArrayInterface;
-	public abstract fun addDate (Lkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public abstract fun addDate (Lkotlin/time/Instant;)Lkotbase/MutableArrayInterface;
 	public abstract fun addDictionary (Lkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
 	public abstract fun addDouble (D)Lkotbase/MutableArrayInterface;
 	public abstract fun addFloat (F)Lkotbase/MutableArrayInterface;
@@ -1054,7 +1054,7 @@ public abstract interface class kotbase/MutableArrayInterface : kotbase/ArrayInt
 	public abstract fun insertArray (ILkotbase/Array;)Lkotbase/MutableArrayInterface;
 	public abstract fun insertBlob (ILkotbase/Blob;)Lkotbase/MutableArrayInterface;
 	public abstract fun insertBoolean (IZ)Lkotbase/MutableArrayInterface;
-	public abstract fun insertDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public abstract fun insertDate (ILkotlin/time/Instant;)Lkotbase/MutableArrayInterface;
 	public abstract fun insertDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
 	public abstract fun insertDouble (ID)Lkotbase/MutableArrayInterface;
 	public abstract fun insertFloat (IF)Lkotbase/MutableArrayInterface;
@@ -1068,7 +1068,7 @@ public abstract interface class kotbase/MutableArrayInterface : kotbase/ArrayInt
 	public abstract fun setBlob (ILkotbase/Blob;)Lkotbase/MutableArrayInterface;
 	public abstract fun setBoolean (IZ)Lkotbase/MutableArrayInterface;
 	public abstract fun setData (Ljava/util/List;)Lkotbase/MutableArrayInterface;
-	public abstract fun setDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public abstract fun setDate (ILkotlin/time/Instant;)Lkotbase/MutableArrayInterface;
 	public abstract fun setDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
 	public abstract fun setDouble (ID)Lkotbase/MutableArrayInterface;
 	public abstract fun setFloat (IF)Lkotbase/MutableArrayInterface;
@@ -1103,8 +1103,8 @@ public final class kotbase/MutableDictionary : kotbase/Dictionary, kotbase/Mutab
 	public synthetic fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDictionaryInterface;
 	public fun setData (Ljava/util/Map;)Lkotbase/MutableDictionary;
 	public synthetic fun setData (Ljava/util/Map;)Lkotbase/MutableDictionaryInterface;
-	public fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionary;
-	public synthetic fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionaryInterface;
+	public fun setDate (Ljava/lang/String;Lkotlin/time/Instant;)Lkotbase/MutableDictionary;
+	public synthetic fun setDate (Ljava/lang/String;Lkotlin/time/Instant;)Lkotbase/MutableDictionaryInterface;
 	public fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionary;
 	public synthetic fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionaryInterface;
 	public fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDictionary;
@@ -1133,7 +1133,7 @@ public abstract interface class kotbase/MutableDictionaryInterface : kotbase/Dic
 	public abstract fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDictionaryInterface;
 	public abstract fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDictionaryInterface;
 	public abstract fun setData (Ljava/util/Map;)Lkotbase/MutableDictionaryInterface;
-	public abstract fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setDate (Ljava/lang/String;Lkotlin/time/Instant;)Lkotbase/MutableDictionaryInterface;
 	public abstract fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionaryInterface;
 	public abstract fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDictionaryInterface;
 	public abstract fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDictionaryInterface;
@@ -1174,8 +1174,8 @@ public final class kotbase/MutableDocument : kotbase/Document, kotbase/MutableDi
 	public fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDocument;
 	public synthetic fun setData (Ljava/util/Map;)Lkotbase/MutableDictionaryInterface;
 	public fun setData (Ljava/util/Map;)Lkotbase/MutableDocument;
-	public synthetic fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionaryInterface;
-	public fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDocument;
+	public synthetic fun setDate (Ljava/lang/String;Lkotlin/time/Instant;)Lkotbase/MutableDictionaryInterface;
+	public fun setDate (Ljava/lang/String;Lkotlin/time/Instant;)Lkotbase/MutableDocument;
 	public synthetic fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionaryInterface;
 	public fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDocument;
 	public synthetic fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDictionaryInterface;
@@ -1206,7 +1206,7 @@ public final class kotbase/MutableFragment : kotbase/Fragment {
 	public synthetic fun getArrayParent ()Lkotbase/ArrayInterface;
 	public fun getBlob ()Lkotbase/Blob;
 	public fun getBoolean ()Z
-	public fun getDate ()Lkotlinx/datetime/Instant;
+	public fun getDate ()Lkotlin/time/Instant;
 	public synthetic fun getDictParent ()Lkotbase/DictionaryInterface;
 	public synthetic fun getDictionary ()Lkotbase/Dictionary;
 	public fun getDictionary ()Lkotbase/MutableDictionary;
@@ -1220,7 +1220,7 @@ public final class kotbase/MutableFragment : kotbase/Fragment {
 	public fun setArray (Lkotbase/MutableArray;)V
 	public fun setBlob (Lkotbase/Blob;)V
 	public fun setBoolean (Z)V
-	public fun setDate (Lkotlinx/datetime/Instant;)V
+	public fun setDate (Lkotlin/time/Instant;)V
 	public fun setDictionary (Lkotbase/MutableDictionary;)V
 	public fun setDouble (D)V
 	public fun setFloat (F)V
@@ -1271,7 +1271,7 @@ public final class kotbase/Parameters : kotbase/internal/DelegatedClass {
 	public final fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/Parameters;
 	public final fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/Parameters;
 	public final fun setBoolean (Ljava/lang/String;Z)Lkotbase/Parameters;
-	public final fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/Parameters;
+	public final fun setDate (Ljava/lang/String;Lkotlin/time/Instant;)Lkotbase/Parameters;
 	public final fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/Parameters;
 	public final fun setDouble (Ljava/lang/String;D)Lkotbase/Parameters;
 	public final fun setFloat (Ljava/lang/String;F)Lkotbase/Parameters;
@@ -1470,8 +1470,8 @@ public final class kotbase/Result : kotbase/internal/DelegatedClass, java/lang/I
 	public fun getBoolean (I)Z
 	public fun getBoolean (Ljava/lang/String;)Z
 	public fun getCount ()I
-	public fun getDate (I)Lkotlinx/datetime/Instant;
-	public fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public fun getDate (I)Lkotlin/time/Instant;
+	public fun getDate (Ljava/lang/String;)Lkotlin/time/Instant;
 	public fun getDictionary (I)Lkotbase/Dictionary;
 	public fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
 	public fun getDouble (I)D

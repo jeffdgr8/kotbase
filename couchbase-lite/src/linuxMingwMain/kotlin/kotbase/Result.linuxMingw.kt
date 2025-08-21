@@ -23,7 +23,7 @@ import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.reinterpret
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner

@@ -21,7 +21,7 @@ import kotbase.internal.JsonUtils
 import kotbase.internal.fleece.*
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 
 public actual class MutableArray

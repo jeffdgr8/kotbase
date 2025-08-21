@@ -17,8 +17,17 @@ package kotbase
 
 import kotbase.ext.toStringMillis
 import kotbase.internal.utils.JsonArray
-import kotlinx.datetime.Instant
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 // Tests for the Array Iterator tests are in IteratorTest
 class ArrayTest : BaseDbTest() {
@@ -214,7 +223,7 @@ class ArrayTest : BaseDbTest() {
 
         // Prepare CBLArray with NSNull placeholders:
         val array = MutableArray()
-        for (i in data.indices) { array.addValue(null) }
+        repeat(data.indices.count()) { array.addValue(null) }
 
         // Set object at index:
         for (i in data.indices) { array.setValue(i, data[i]) }

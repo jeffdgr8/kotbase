@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * MutableDictionaryInterface defines a set of methods for getting and setting dictionary data.

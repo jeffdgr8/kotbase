@@ -26,8 +26,8 @@ import kotbase.internal.utils.paddedString
 import kotbase.test.AfterClass
 import kotbase.test.BeforeClass
 import kotlinx.coroutines.*
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.io.IOException
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem

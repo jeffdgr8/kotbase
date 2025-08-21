@@ -20,7 +20,7 @@ import kotbase.ext.toDate
 import kotbase.ext.toKotlinInstant
 import kotbase.internal.DelegatedClass
 import kotlinx.coroutines.*
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Collection as CBLCollection
 

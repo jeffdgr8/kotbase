@@ -19,7 +19,7 @@ import kotbase.ext.nowMillis
 import kotbase.ext.toStringMillis
 import kotbase.test.IgnoreLinuxMingw
 import kotbase.test.assertIntContentEquals
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.test.*
 
 class PredictiveQueryTest : BaseQueryTest() {

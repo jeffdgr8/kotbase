@@ -19,7 +19,7 @@ import cocoapods.CouchbaseLite.CBLDictionary
 import kotbase.ext.asNumber
 import kotbase.ext.toKotlinInstantMillis
 import kotbase.internal.DelegatedClass
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 public actual open class Dictionary
 internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actual), DictionaryInterface, Iterable<String> {

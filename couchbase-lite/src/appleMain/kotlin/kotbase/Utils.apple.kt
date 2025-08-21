@@ -18,7 +18,7 @@ package kotbase
 import cocoapods.CouchbaseLite.*
 import kotbase.ext.toKotlinInstantMillis
 import kotbase.internal.DelegatedClass
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSDate
 import platform.Foundation.NSNull

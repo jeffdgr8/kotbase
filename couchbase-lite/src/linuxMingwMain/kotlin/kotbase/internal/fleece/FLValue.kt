@@ -19,7 +19,7 @@ import kotbase.*
 import kotbase.CBLError
 import kotbase.internal.DbContext
 import kotbase.internal.wrapCBLError
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 
 private inline val FLValue.type: FLValueType
