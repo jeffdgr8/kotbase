@@ -15,7 +15,7 @@
  */
 package kotbase.ext
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.toNSDate
 import kotlin.test.Test
 import kotlin.test.assertEquals

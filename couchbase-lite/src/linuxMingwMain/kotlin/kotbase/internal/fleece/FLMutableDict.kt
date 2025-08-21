@@ -20,7 +20,7 @@ import kotbase.ext.toStringMillis
 import kotbase.internal.DbContext
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 
 internal fun FLMutableDict.setValue(key: String, value: Any?, ctxt: DbContext?) {

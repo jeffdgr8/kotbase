@@ -15,7 +15,7 @@
  */
 package kotbase.ext
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlin.math.roundToLong
 
 /**

@@ -18,7 +18,7 @@ package kotbase
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toDate
 import kotbase.ext.toKotlinInstant
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import java.util.*
 import com.couchbase.lite.Array as CBLArray
 import com.couchbase.lite.Blob as CBLBlob
