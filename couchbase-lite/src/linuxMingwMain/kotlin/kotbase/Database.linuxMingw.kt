@@ -31,7 +31,7 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.*
 import kotlinx.coroutines.*
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalNativeApi

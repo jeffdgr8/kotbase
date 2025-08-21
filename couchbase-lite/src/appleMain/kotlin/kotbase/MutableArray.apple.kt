@@ -18,9 +18,9 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLMutableArray
 import kotbase.ext.wrapCBLError
 import kotlinx.cinterop.convert
-import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
+import kotlin.time.Instant
 
 public actual class MutableArray
 internal constructor(override val actual: CBLMutableArray) : Array(actual), MutableArrayInterface {

@@ -17,8 +17,16 @@ package kotbase
 
 import cnames.structs.CBLIndexUpdater
 import kotbase.internal.DbContext
-import kotbase.internal.fleece.*
+import kotbase.internal.fleece.toArray
+import kotbase.internal.fleece.toBlob
+import kotbase.internal.fleece.toBoolean
+import kotbase.internal.fleece.toDate
+import kotbase.internal.fleece.toDictionary
+import kotbase.internal.fleece.toDouble
+import kotbase.internal.fleece.toFloat
+import kotbase.internal.fleece.toInt
 import kotbase.internal.fleece.toKString
+import kotbase.internal.fleece.toLong
 import kotbase.internal.fleece.toNative
 import kotbase.internal.fleece.toNumber
 import kotbase.internal.wrapCBLError
@@ -26,11 +34,18 @@ import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.toCValues
-import kotlinx.datetime.Instant
-import libcblite.*
+import libcblite.CBLIndexUpdater_Count
+import libcblite.CBLIndexUpdater_Finish
+import libcblite.CBLIndexUpdater_Release
+import libcblite.CBLIndexUpdater_SetVector
+import libcblite.CBLIndexUpdater_SkipVector
+import libcblite.CBLIndexUpdater_Value
+import libcblite.FLValue
+import libcblite.FLValue_ToJSON
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 import kotlin.reflect.safeCast
+import kotlin.time.Instant
 
 internal class IndexUpdaterImpl(
     internal val actual: CPointer<CBLIndexUpdater>,

@@ -20,7 +20,7 @@ import kotbase.ext.asNumber
 import kotbase.ext.toKotlinInstantMillis
 import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 public actual open class Array
 internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), ArrayInterface, Iterable<Any?> {

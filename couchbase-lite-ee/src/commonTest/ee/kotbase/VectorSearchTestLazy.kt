@@ -17,7 +17,6 @@ package kotbase
 
 import kotbase.ext.toStringMillis
 import kotbase.internal.utils.PlatformUtils
-import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertContentEquals
@@ -28,6 +27,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 // VectorSearchTest+Lazy.swift
 // VectorSearchTest+Lazy.m

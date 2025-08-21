@@ -17,8 +17,8 @@ package kotbase
 
 import kotbase.ext.toKotlinInstant
 import kotbase.internal.DelegatedClass
-import kotlinx.datetime.Instant
 import kotlin.reflect.safeCast
+import kotlin.time.Instant
 import com.couchbase.lite.Array as CBLArray
 import com.couchbase.lite.Dictionary as CBLDictionary
 import com.couchbase.lite.IndexUpdater as CBLIndexUpdater

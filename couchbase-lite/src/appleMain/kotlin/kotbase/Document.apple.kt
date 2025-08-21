@@ -19,7 +19,7 @@ import cocoapods.CouchbaseLite.CBLDocument
 import kotbase.ext.asNumber
 import kotbase.ext.toKotlinInstantMillis
 import kotbase.internal.DelegatedClass
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 public actual open class Document
 internal constructor(

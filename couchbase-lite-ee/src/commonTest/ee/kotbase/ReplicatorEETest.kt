@@ -25,7 +25,7 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 

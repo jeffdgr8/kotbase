@@ -15,7 +15,7 @@
  */
 package kotbase.internal
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.CBLTimestamp
 
 internal fun CBLTimestamp.toKotlinInstant(): Instant? {

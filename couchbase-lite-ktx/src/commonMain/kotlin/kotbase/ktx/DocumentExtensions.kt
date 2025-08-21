@@ -24,7 +24,8 @@
 
 package kotbase.ktx
 
-import kotbase.*
+import kotbase.MutableDictionaryInterface
+import kotbase.MutableDocument
 
 /**
  * Creates a new [MutableDocument] with the key-value entries specified by the

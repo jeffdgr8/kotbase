@@ -20,7 +20,7 @@ import kotbase.internal.fleece.*
 import kotbase.internal.wrapCBLError
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.memScoped
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 
 public actual class MutableDocument

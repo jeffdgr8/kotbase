@@ -25,7 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asExecutor
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import java.io.File
 import kotlin.coroutines.CoroutineContext
 import com.couchbase.lite.Database as CBLDatabase

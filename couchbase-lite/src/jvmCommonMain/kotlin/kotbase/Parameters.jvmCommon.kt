@@ -17,7 +17,7 @@ package kotbase
 
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toDate
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import com.couchbase.lite.Parameters as CBLParameters
 
 public actual class Parameters

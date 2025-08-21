@@ -20,9 +20,9 @@ import kotbase.ext.asNumber
 import kotbase.ext.wrapCBLError
 import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
-import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlin.reflect.safeCast
+import kotlin.time.Instant
 
 internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLIndexUpdater>(actual), IndexUpdater {
 

@@ -28,8 +28,8 @@ import kotbase.internal.utils.paddedString
 import kotbase.test.assertIntEquals
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.io.Buffer
 import kotlin.math.absoluteValue
 import kotlin.test.*

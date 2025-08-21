@@ -22,7 +22,7 @@ import kotbase.internal.DelegatedClass
 import kotbase.internal.DelegatedProtocol
 import kotbase.internal.actuals
 import kotlinx.cinterop.convert
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 

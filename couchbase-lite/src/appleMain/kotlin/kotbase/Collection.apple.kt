@@ -24,10 +24,10 @@ import kotbase.internal.DelegatedClass
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.datetime.Instant
 import kotlinx.datetime.toNSDate
 import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalObjCRefinement
+import kotlin.time.Instant
 
 public actual class Collection
 internal constructor(

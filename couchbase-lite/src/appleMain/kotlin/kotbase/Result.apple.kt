@@ -20,7 +20,7 @@ import kotbase.internal.DelegatedClass
 import kotbase.ext.asNumber
 import kotbase.ext.toKotlinInstantMillis
 import kotlinx.cinterop.convert
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 public actual class Result
 internal constructor(actual: CBLQueryResult) : DelegatedClass<CBLQueryResult>(actual), ArrayInterface, DictionaryInterface, Iterable<String> {

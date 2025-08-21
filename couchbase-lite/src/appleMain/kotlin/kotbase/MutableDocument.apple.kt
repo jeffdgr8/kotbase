@@ -18,7 +18,7 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLMutableDocument
 import kotbase.ext.wrapCBLError
 import kotlinx.cinterop.convert
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.toNSDate
 import platform.Foundation.NSNumber
 

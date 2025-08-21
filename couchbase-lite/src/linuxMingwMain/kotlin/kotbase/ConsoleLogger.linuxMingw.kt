@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import libcblite.CBLLog_ConsoleLevel

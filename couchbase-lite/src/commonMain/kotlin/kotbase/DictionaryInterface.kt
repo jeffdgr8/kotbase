@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * DictionaryInterface defines a set of methods for readonly accessing dictionary data.

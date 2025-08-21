@@ -17,7 +17,7 @@ package kotbase
 
 import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.Report
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 

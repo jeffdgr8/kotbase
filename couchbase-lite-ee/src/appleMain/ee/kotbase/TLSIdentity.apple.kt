@@ -21,7 +21,7 @@ import kotbase.ext.toByteArray
 import kotbase.ext.toKotlinInstantMillis
 import kotbase.ext.toNSData
 import kotbase.ext.wrapCBLError
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.toNSDate
 import platform.Security.SecCertificateRef
 import platform.Security.SecIdentityRef

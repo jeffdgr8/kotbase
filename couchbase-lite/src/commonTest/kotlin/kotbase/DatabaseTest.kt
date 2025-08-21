@@ -27,7 +27,7 @@ import kotbase.test.IgnoreLinuxMingw
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.test.*
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds

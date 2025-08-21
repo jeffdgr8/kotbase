@@ -18,7 +18,7 @@ package kotbase
 import kotbase.ext.nowMillis
 import kotbase.ext.toStringMillis
 import kotbase.test.assertIntEquals
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.test.*
 
 class FragmentTest : BaseDbTest() {
