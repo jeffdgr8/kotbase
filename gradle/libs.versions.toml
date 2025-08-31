@@ -14,7 +14,7 @@ kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-co
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.34.0" }
 
 [libraries]
-androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.9.2" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.9.3" }
 androidx-startup = { module = "androidx.startup:startup-runtime", version = "1.2.0" }
 androidx-test-core-ktx = { module = "androidx.test:core-ktx", version = "1.7.0" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.7.0" }
