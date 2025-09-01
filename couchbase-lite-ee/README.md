@@ -10,7 +10,7 @@ Kotbase core Couchbase Lite Enterprise Edition library
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.kotbase:couchbase-lite-ee:3.1.9-1.1.1")
+            implementation("dev.kotbase:couchbase-lite-ee:3.1.11-1.1.2")
         }
     }
 }

@@ -14,7 +14,7 @@ based on a user-supplied database query.
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.kotbase:couchbase-lite-ee-paging:3.1.9-1.1.1")
+            implementation("dev.kotbase:couchbase-lite-ee-paging:3.1.11-1.1.2")
         }
     }
 }

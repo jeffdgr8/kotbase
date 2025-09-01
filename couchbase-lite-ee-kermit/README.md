@@ -11,7 +11,7 @@ its logs to any number of log outputs, including the console.
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.kotbase:couchbase-lite-ee-kermit:3.1.9-1.1.1")
+            implementation("dev.kotbase:couchbase-lite-ee-kermit:3.1.11-1.1.2")
         }
     }
 }

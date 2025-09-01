@@ -81,8 +81,8 @@ extra:
   version:
     provider: mike
     default: current
-  version_full: 3.1.9-1.1.1
-  version_objc: 3.1.9
+  version_full: 3.1.11-1.1.2
+  version_objc: 3.1.10
   generator: false
   social:
     - icon: fontawesome/brands/github

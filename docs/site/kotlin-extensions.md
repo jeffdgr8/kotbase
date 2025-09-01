@@ -15,9 +15,9 @@ This includes:
 
 Additionally, while not available in the Java SDK, as Java doesn't support operator overloading, Kotbase adds support
 for [`Fragment` subscript APIs](#fragment-subscripts), similar to Couchbase Lite [Swift](
-https://docs.couchbase.com/mobile/3.1.9/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
-https://docs.couchbase.com/mobile/3.1.9/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
-https://docs.couchbase.com/mobile/3.1.9/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
+https://docs.couchbase.com/mobile/3.1.10/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
+https://docs.couchbase.com/mobile/3.1.10/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
+https://docs.couchbase.com/mobile/3.1.10/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
 
 ## Configuration Factories
 

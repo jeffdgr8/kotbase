@@ -1,5 +1,18 @@
 # Change Log
 
+## 3.1.11-1.1.2
+> 1 Sep 2025
+
+* Update Couchbase Lite dependency to 3.1.11 (JVM & Android) & 3.1.10 (Objective-C & C) ([#50](https://github.com/jeffdgr8/kotbase/pull/50))
+    * [Android SDK](https://docs.couchbase.com/couchbase-lite/3.1/android/releasenotes.html#maint-3-1-11)
+    * [Java SDK](https://docs.couchbase.com/couchbase-lite/3.1/java/releasenotes.html#maint-3-1-11)
+    * [Objective-C SDK](https://docs.couchbase.com/couchbase-lite/3.1/objc/releasenotes.html#maint-3-1-10)
+    * [C SDK](https://docs.couchbase.com/couchbase-lite/3.1/c/releasenotes.html#maint-3-1-10)
+* Add full sync API to database configuration ([#49](https://github.com/jeffdgr8/kotbase/pull/49))
+* Update to Kotlin 2.2.10
+* Use AtomicFu compiler plugin ([#44](https://github.com/jeffdgr8/kotbase/pull/44))
+* Update dependencies
+
 ## 3.1.9-1.1.1
 > 28 Oct 2024
 
