@@ -141,11 +141,10 @@ implementation("dev.kotbase:couchbase-lite-ee-kermit:3.1.11-1.1.2")
 
 ### Kotbase Paging
 
-The [paging extensions](couchbase-lite-paging/README.md) are built on Cash App's [Multiplatform Paging](
-https://github.com/cashapp/multiplatform-paging), Google's [AndroidX Paging](
-https://developer.android.com/topic/libraries/architecture/paging/v3-overview) with multiplatform support. Kotbase
-Paging provides a [`PagingSource`](https://developer.android.com/reference/kotlin/androidx/paging/PagingSource) which
-performs limit/offset paging queries based on a user-supplied database query.
+The [paging extensions](couchbase-lite-paging/README.md) are built on Google's [AndroidX Paging](
+https://developer.android.com/topic/libraries/architecture/paging/v3-overview). Kotbase Paging provides a
+[`PagingSource`](https://developer.android.com/reference/kotlin/androidx/paging/PagingSource) which performs
+limit/offset paging queries based on a user-supplied database query.
 
 #### Installation
 

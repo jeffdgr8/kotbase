@@ -15,7 +15,7 @@
  */
 
 /*
- * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonTest/kotlin/app/cash/sqldelight/paging3/OffsetQueryPagingSourceTest.kt
+ * Based on https://github.com/sqldelight/sqldelight/blob/master/extensions/androidx-paging3/src/commonTest/kotlin/app/cash/sqldelight/paging3/OffsetQueryPagingSourceTest.kt
  */
 
 package kotbase.paging

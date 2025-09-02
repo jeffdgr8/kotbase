@@ -15,7 +15,7 @@
  */
 
 /*
- * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonMain/kotlin/app/cash/sqldelight/paging3/QueryPagingSource.kt
+ * Based on https://github.com/sqldelight/sqldelight/blob/master/extensions/androidx-paging3/src/commonMain/kotlin/app/cash/sqldelight/paging3/QueryPagingSource.kt
  */
 
 @file:Suppress("FunctionName")
