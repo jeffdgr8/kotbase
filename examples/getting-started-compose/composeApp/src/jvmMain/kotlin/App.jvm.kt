@@ -1,4 +1,3 @@
-import App
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.HorizontalScrollbar
 import androidx.compose.foundation.ScrollState

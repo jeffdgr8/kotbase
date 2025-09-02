@@ -3,7 +3,6 @@ package data.source.user
 import kotbase.Document
 import kotbase.MutableDocument
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable
