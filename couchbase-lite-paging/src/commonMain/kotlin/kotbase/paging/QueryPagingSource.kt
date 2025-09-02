@@ -22,7 +22,7 @@
 
 package kotbase.paging
 
-import app.cash.paging.PagingSource
+import androidx.paging.PagingSource
 import kotbase.Collection
 import kotbase.Database
 import kotbase.From
@@ -58,12 +58,14 @@ public fun <RowType : Any> QueryPagingSource(
     select: Select,
     collection: Collection,
     mapper: (Map<String, Any?>) -> RowType,
-    queryProvider: From.() -> LimitRouter
+    queryProvider: From.() -> LimitRouter,
+    initialOffset: Int = 0
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
     collection,
     queryProvider,
     context,
+    initialOffset,
     mapMapper = mapper
 )
 
@@ -94,89 +96,14 @@ public fun <RowType : Any> QueryPagingSource(
     select: Select,
     collection: Collection,
     mapper: (String) -> RowType,
-    queryProvider: From.() -> LimitRouter
+    queryProvider: From.() -> LimitRouter,
+    initialOffset: Int = 0
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
     collection,
     queryProvider,
     context,
-    jsonStringMapper = mapper
-)
-
-/**
- * Create a [PagingSource] that pages through all results from the `database`.
- *
- * Queries will be executed without JOIN, WHERE, ORDER BY, or GROUP BY clauses.
- * Call the version of `QueryPagingSource` that takes a `queryProvider` in order
- * to append these clauses to the paging queries.
- *
- * Minimally, an ORDER BY clause should always be provided to ensure query results
- * and paged data are consistently ordered. It's strongly encouraged to use the
- * `queryProvider` parameter for this reason.
- *
- * The [PagingSource] will do SQL offset/limit based paging. Use
- * the `select` statement and `mapper` to map paged documents to objects.
- *
- * Queries will be executed on `context`.
- *
- * @param context `CoroutineContext` to execute queries on
- * @param select query `Select` statement
- * @param database database to query
- * @param mapper mapping function from JSON query results to objects
- */
-@Deprecated(
-    "Use collection instead of database",
-    ReplaceWith("QueryPagingSource(context, select, database.defaultCollection, mapper) { this }")
-)
-public fun <RowType : Any> QueryPagingSource(
-    context: CoroutineContext,
-    select: Select,
-    database: Database,
-    mapper: (Map<String, Any?>) -> RowType
-): PagingSource<Int, RowType> = OffsetQueryPagingSource(
-    select,
-    database.defaultCollection,
-    { this },
-    context,
-    mapMapper = mapper
-)
-
-/**
- * Create a [PagingSource] that pages through all results from the `database`.
- *
- * Queries will be executed without JOIN, WHERE, ORDER BY, or GROUP BY clauses.
- * Call the version of `QueryPagingSource` that takes a `queryProvider` in order
- * to append these clauses to the paging queries.
- *
- * Minimally, an ORDER BY clause should always be provided to ensure query results
- * and paged data are consistently ordered. It's strongly encouraged to use the
- * `queryProvider` parameter for this reason.
- *
- * The [PagingSource] will do SQL offset/limit based paging. Use
- * the `select` statement and `mapper` to map paged documents to objects.
- *
- * Queries will be executed on `context`.
- *
- * @param context `CoroutineContext` to execute queries on
- * @param select query `Select` statement
- * @param database database to query
- * @param mapper mapping function from JSON query results to objects
- */
-@Deprecated(
-    "Use collection instead of database",
-    ReplaceWith("QueryPagingSource(context, select, database.defaultCollection, mapper) { this }")
-)
-@JvmName("QueryPagingSourceString")
-public fun <RowType : Any> QueryPagingSource(
-    context: CoroutineContext,
-    select: Select,
-    database: Database,
-    mapper: (String) -> RowType
-): PagingSource<Int, RowType> = OffsetQueryPagingSource(
-    select,
-    database.defaultCollection,
-    { this },
-    context,
+    initialOffset,
     jsonStringMapper = mapper
 )
 
@@ -211,12 +138,14 @@ public fun <RowType : Any> QueryPagingSource(
     select: Select,
     database: Database,
     mapper: (Map<String, Any?>) -> RowType,
-    queryProvider: From.() -> LimitRouter
+    queryProvider: From.() -> LimitRouter,
+    initialOffset: Int = 0
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
     database.defaultCollection,
     queryProvider,
     context,
+    initialOffset,
     mapMapper = mapper
 )
 
@@ -251,11 +180,13 @@ public fun <RowType : Any> QueryPagingSource(
     select: Select,
     database: Database,
     mapper: (String) -> RowType,
-    queryProvider: From.() -> LimitRouter
+    queryProvider: From.() -> LimitRouter,
+    initialOffset: Int = 0
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
     database.defaultCollection,
     queryProvider,
     context,
+    initialOffset,
     jsonStringMapper = mapper
 )

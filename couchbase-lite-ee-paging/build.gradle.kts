@@ -26,6 +26,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(projects.testingSupportEe)
+            implementation(libs.stately)
         }
     }
 }

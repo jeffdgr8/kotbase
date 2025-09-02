@@ -18,11 +18,9 @@
  * Based on https://github.com/cashapp/sqldelight/blob/master/extensions/androidx-paging3/src/commonMain/kotlin/app/cash/sqldelight/paging3/OffsetQueryPagingSource.kt
  */
 
-@file:Suppress("USELESS_IS_CHECK", "UNCHECKED_CAST")
-
 package kotbase.paging
 
-import app.cash.paging.*
+import androidx.paging.*
 import kotbase.*
 import kotbase.Collection
 import kotbase.ktx.*
@@ -37,6 +35,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
     private val collection: Collection,
     private val queryProvider: From.() -> LimitRouter,
     private val context: CoroutineContext,
+    private val initialOffset: Int,
     private val mapMapper: ((Map<String, Any?>) -> RowType)? = null,
     private val jsonStringMapper: ((String) -> RowType)? = null,
 ) : PagingSource<Int, RowType>() {
@@ -69,13 +68,13 @@ internal class OffsetQueryPagingSource<RowType : Any>(
     }
 
     override suspend fun load(
-        params: PagingSourceLoadParams<Int>
-    ): PagingSourceLoadResult<Int, RowType> = withContext(context) {
+        params: LoadParams<Int>
+    ): LoadResult<Int, RowType> = withContext(context) {
         cancelCurrentQueryListener()
 
-        val key = params.key ?: 0
+        val key = params.key ?: initialOffset
         val limit = when (params) {
-            is PagingSourceLoadParamsPrepend<*> -> minOf(key, params.loadSize)
+            is LoadParams.Prepend<*> -> minOf(key, params.loadSize)
             else -> params.loadSize
         }
 
@@ -84,12 +83,10 @@ internal class OffsetQueryPagingSource<RowType : Any>(
             .execute()
             .countResult()
             .toInt()
-        @Suppress("REDUNDANT_ELSE_IN_WHEN")
         val offset = when (params) {
-            is PagingSourceLoadParamsPrepend<*> -> maxOf(0, key - params.loadSize)
-            is PagingSourceLoadParamsAppend<*> -> key
-            is PagingSourceLoadParamsRefresh<*> -> if (key >= count) maxOf(0, count - params.loadSize) else key
-            else -> error("Unknown PagingSourceLoadParams ${params::class}")
+            is LoadParams.Prepend -> maxOf(0, key - params.loadSize)
+            is LoadParams.Append -> key
+            is LoadParams.Refresh -> if (key >= count - params.loadSize) maxOf(0, count - params.loadSize) else key
         }
         val results = select.from(collection)
             .queryProvider()
@@ -98,15 +95,15 @@ internal class OffsetQueryPagingSource<RowType : Any>(
         val data = results.toObjects()
         val nextPosToLoad = offset + data.size
         when {
-            invalid -> PagingSourceLoadResultInvalid<Int, RowType>()
-            else -> PagingSourceLoadResultPage(
+            invalid -> LoadResult.Invalid()
+            else -> LoadResult.Page(
                 data = data,
                 prevKey = offset.takeIf { it > 0 && data.isNotEmpty() },
                 nextKey = nextPosToLoad.takeIf { data.isNotEmpty() && data.size >= limit && it < count },
                 itemsBefore = offset,
                 itemsAfter = maxOf(0, count - nextPosToLoad),
             )
-        } as PagingSourceLoadResult<Int, RowType>
+        }
     }
 
     private suspend fun Query.getAndListenForResults(): ResultSet {
