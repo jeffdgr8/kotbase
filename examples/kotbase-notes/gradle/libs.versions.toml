@@ -12,7 +12,7 @@ kotlin = "2.2.10"
 ktor = "3.2.3"
 
 [plugins]
-android-application = { id = "com.android.application", version = "8.10.1" }
+android-application = { id = "com.android.application", version = "8.11.1" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
