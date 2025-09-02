@@ -3,8 +3,8 @@ activity-compose = "1.10.1"
 android-gradle-plugin = "8.10.1"
 compose = "1.8.3"
 compose-plugin = "1.8.2"
-couchbase-lite-objc = "3.1.9"
-kotbase = "3.1.9-1.1.1"
+couchbase-lite-objc = "3.1.10"
+kotbase = "3.1.11-1.1.2"
 kotlin = "2.2.0"
 
 [plugins]
