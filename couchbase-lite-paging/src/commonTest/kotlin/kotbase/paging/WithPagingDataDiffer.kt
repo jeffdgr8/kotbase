@@ -23,7 +23,7 @@ package kotbase.paging
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
-import app.cash.paging.PagingData
+import androidx.paging.PagingData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
