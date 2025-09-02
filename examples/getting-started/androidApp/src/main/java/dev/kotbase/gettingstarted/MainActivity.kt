@@ -7,6 +7,8 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import dev.kotbase.gettingstarted.databinding.ActivityMainBinding
@@ -28,6 +30,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val i = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            view.setPadding(i.left, i.top, i.right, i.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
 
         binding.runDbWork.setOnClickListener {
             job?.cancel()

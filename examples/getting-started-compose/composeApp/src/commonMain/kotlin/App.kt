@@ -1,5 +1,6 @@
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,7 +39,9 @@ fun App() {
                         .align(Alignment.CenterVertically),
                     label = {
                         Text("Doc update input value")
-                    }, onValueChange = {
+                    },
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                    onValueChange = {
                         inputValue = it
                     }
                 )
