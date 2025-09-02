@@ -32,7 +32,6 @@ import androidx.recyclerview.widget.ListUpdateCallback
 import co.touchlab.stately.collections.ConcurrentMutableList
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
