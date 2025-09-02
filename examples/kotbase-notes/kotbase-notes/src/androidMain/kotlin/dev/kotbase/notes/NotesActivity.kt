@@ -6,8 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import domain.replication.ReplicationService
 import org.koin.android.ext.android.inject
-import org.koin.androidx.compose.KoinAndroidContext
-import org.koin.core.annotation.KoinExperimentalAPI
 
 class NotesActivity : ComponentActivity() {
 
@@ -17,10 +15,7 @@ class NotesActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            @OptIn(KoinExperimentalAPI::class)
-            KoinAndroidContext {
-                App()
-            }
+            App()
         }
     }
 

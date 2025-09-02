@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.onEach
 
 class AppViewModel(
     scope: CoroutineScope,
-    private val authService: AuthService
+    authService: AuthService
 ) {
 
     private val _screen = MutableStateFlow<Screen>(Screen.Splash)
