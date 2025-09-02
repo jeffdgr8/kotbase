@@ -38,6 +38,5 @@ limitations under the License.
 * [MkDocs Macros Plugin](https://github.com/fralau/mkdocs_macros_plugin/blob/master/LICENSE.md)
 * [MockK](https://github.com/mockk/mockk/blob/master/LICENSE)
 * [MOLO17 Couchbase Lite Kotlin](https://github.com/MOLO17/couchbase-lite-kotlin/blob/master/LICENSE)
-* [Multiplatform Paging](https://github.com/cashapp/multiplatform-paging/blob/main/LICENSE)
 * [Stately](https://github.com/touchlab/Stately/blob/main/LICENSE.txt)
 * [vanniktech gradle-maven-publish-plugin](https://github.com/vanniktech/gradle-maven-publish-plugin/blob/main/LICENSE)
