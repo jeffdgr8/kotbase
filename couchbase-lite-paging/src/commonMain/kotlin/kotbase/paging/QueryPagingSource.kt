@@ -58,7 +58,7 @@ public fun <RowType : Any> QueryPagingSource(
     select: Select,
     collection: Collection,
     mapper: (Map<String, Any?>) -> RowType,
-    queryProvider: From.() -> LimitRouter,
+    queryProvider: QueryProvider,
     initialOffset: Int = 0
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
@@ -96,7 +96,7 @@ public fun <RowType : Any> QueryPagingSource(
     select: Select,
     collection: Collection,
     mapper: (String) -> RowType,
-    queryProvider: From.() -> LimitRouter,
+    queryProvider: QueryProvider,
     initialOffset: Int = 0
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
@@ -138,7 +138,7 @@ public fun <RowType : Any> QueryPagingSource(
     select: Select,
     database: Database,
     mapper: (Map<String, Any?>) -> RowType,
-    queryProvider: From.() -> LimitRouter,
+    queryProvider: QueryProvider,
     initialOffset: Int = 0
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,
@@ -180,7 +180,7 @@ public fun <RowType : Any> QueryPagingSource(
     select: Select,
     database: Database,
     mapper: (String) -> RowType,
-    queryProvider: From.() -> LimitRouter,
+    queryProvider: QueryProvider,
     initialOffset: Int = 0
 ): PagingSource<Int, RowType> = OffsetQueryPagingSource(
     select,

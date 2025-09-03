@@ -33,7 +33,7 @@ import kotlin.coroutines.resumeWithException
 internal class OffsetQueryPagingSource<RowType : Any>(
     private val select: Select,
     private val collection: Collection,
-    private val queryProvider: From.() -> LimitRouter,
+    private val queryProvider: QueryProvider,
     private val context: CoroutineContext,
     private val initialOffset: Int,
     private val mapMapper: ((Map<String, Any?>) -> RowType)? = null,

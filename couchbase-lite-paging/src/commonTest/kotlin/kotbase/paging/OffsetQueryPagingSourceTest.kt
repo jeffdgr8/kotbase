@@ -496,7 +496,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
 
     private fun select(): Select = select(Meta.id)
 
-    private fun queryProvider(): From.() -> LimitRouter = {
+    private fun queryProvider(): QueryProvider = {
         orderBy { (Meta.id + 0).ascending() }
     }
 

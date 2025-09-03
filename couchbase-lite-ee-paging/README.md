@@ -30,7 +30,7 @@ val select = select(Meta.id, "type", "name")
 val mapper = { json: String ->
     Json.decodeFromString<Hotel>(json)
 }
-val queryProvider: From.() -> LimitRouter = {
+val queryProvider: QueryProvider = {
     where {
         ("type" equalTo "hotel") and
         ("state" equalTo "California")
