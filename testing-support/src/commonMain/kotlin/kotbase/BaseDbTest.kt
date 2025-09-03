@@ -143,6 +143,11 @@ abstract class BaseDbTest : BaseTest() {
             testDatabase.createCollection(getUniqueName("test_collection"), getUniqueName("test_scope"))
         Report.log("Created base test Collection: $testCollection")
         testTg = getUniqueName("db_test_tag")
+        setup()
+    }
+
+    open fun setup() {
+        // override to perform setup after setUpBaseDbTest() is run
     }
 
     @AfterTest

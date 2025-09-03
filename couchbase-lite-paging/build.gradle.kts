@@ -26,8 +26,12 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(projects.testingSupport)
+            implementation(libs.stately)
         }
     }
 }
 
-android.namespace = "dev.kotbase.paging"
+android {
+    namespace = "dev.kotbase.paging"
+    defaultConfig.minSdk = 23
+}
