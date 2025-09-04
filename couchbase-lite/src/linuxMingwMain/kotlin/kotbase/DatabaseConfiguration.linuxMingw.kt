@@ -97,26 +97,6 @@ public actual constructor(config: DatabaseConfiguration?) {
             directory.toKString()!!.dropLastWhile { it == SystemPathSeparator }
         }
 
-    public actual fun setFullSync(fullSync: Boolean): DatabaseConfiguration {
-        this.isFullSync = fullSync
-        return this
-    }
-
-    public actual var isFullSync: Boolean = config?.isFullSync ?: Defaults.Database.FULL_SYNC
-        set(value) {
-            checkReadOnly()
-            field = value
-            setActualIsFullSync(value)
-        }
-
-    init {
-        setActualIsFullSync(isFullSync)
-    }
-
-    private fun setActualIsFullSync(isFullSync: Boolean) {
-        actual.pointed.fullSync = isFullSync
-    }
-
     internal var readonly: Boolean = false
 
     private fun checkReadOnly() {
