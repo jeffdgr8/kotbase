@@ -21,7 +21,7 @@ import com.couchbase.lite.isOpen
 import kotbase.internal.utils.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.CountDownLatch
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.io.readLine
 import kotlinx.serialization.json.*
 import kotlin.test.*

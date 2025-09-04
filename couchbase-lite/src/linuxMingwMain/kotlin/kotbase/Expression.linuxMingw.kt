@@ -17,7 +17,7 @@ package kotbase
 
 import kotbase.ext.toStringMillis
 import kotbase.util.identityHashCodeHex
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 public actual open class Expression {
 

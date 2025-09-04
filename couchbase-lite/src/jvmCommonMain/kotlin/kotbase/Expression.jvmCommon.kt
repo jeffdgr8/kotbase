@@ -18,7 +18,7 @@ package kotbase
 import kotbase.ext.toDate
 import kotbase.internal.DelegatedClass
 import kotbase.internal.actuals
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import com.couchbase.lite.Expression as CBLExpression
 import com.couchbase.lite.FullTextIndexExpression as CBLFullTextIndexExpression
 import com.couchbase.lite.IndexExpression as CBLIndexExpression

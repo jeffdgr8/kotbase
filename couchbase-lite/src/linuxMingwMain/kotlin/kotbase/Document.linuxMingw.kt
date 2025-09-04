@@ -20,7 +20,7 @@ import kotbase.internal.DbContext
 import kotbase.internal.fleece.*
 import kotbase.util.identityHashCodeHex
 import kotlinx.cinterop.CPointer
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner

@@ -16,7 +16,7 @@
 package kotbase
 
 import kotbase.internal.fleece.*
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner

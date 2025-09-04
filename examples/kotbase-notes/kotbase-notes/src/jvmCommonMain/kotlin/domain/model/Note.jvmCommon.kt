@@ -1,6 +1,6 @@
 package domain.model
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.toJavaInstant
 import java.time.LocalDateTime
 import java.time.Month

@@ -17,7 +17,7 @@ package kotbase
 
 import kotbase.ext.toStringMillis
 import kotbase.test.assertIntContentEquals
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlin.test.*
