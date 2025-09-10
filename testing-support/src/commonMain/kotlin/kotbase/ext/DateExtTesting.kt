@@ -15,8 +15,8 @@
  */
 package kotbase.ext
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 /**
  * Returns the [Instant] corresponding to the current time,

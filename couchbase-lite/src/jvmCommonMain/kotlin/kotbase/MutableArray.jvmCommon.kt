@@ -16,7 +16,7 @@
 package kotbase
 
 import kotbase.ext.toDate
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import com.couchbase.lite.MutableArray as CBLMutableArray
 
 public actual class MutableArray

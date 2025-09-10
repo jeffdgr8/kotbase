@@ -30,7 +30,7 @@ import kotbase.Expression
 import kotbase.Ordering
 import kotbase.QueryBuilder
 import kotbase.SelectResult
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -20,7 +20,7 @@ import kotbase.internal.DelegatedClass
 import kotbase.ext.toByteArray
 import kotbase.ext.toDate
 import kotbase.ext.toKotlinInstant
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import com.couchbase.lite.TLSIdentity as CBLTLSIdentity
 
 public actual class TLSIdentity

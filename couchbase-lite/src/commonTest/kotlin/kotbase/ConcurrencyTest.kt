@@ -20,7 +20,7 @@ import kotbase.internal.utils.paddedString
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.CountDownLatch
 import kotlinx.coroutines.sync.CyclicBarrier
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.test.*

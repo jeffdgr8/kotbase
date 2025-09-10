@@ -17,7 +17,7 @@ package kotbase
 
 import kotbase.ext.toStringMillis
 import kotbase.internal.utils.paddedString
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlin.test.*

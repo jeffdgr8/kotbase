@@ -27,7 +27,7 @@ package kotbase.ktx
 
 import kotbase.*
 import kotbase.Array
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Creates a new [MutableDocument] with the key-value entries specified by the

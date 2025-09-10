@@ -17,7 +17,7 @@ package kotbase
 
 import kotbase.ext.toKotlinInstant
 import kotbase.internal.DelegatedClass
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import com.couchbase.lite.Dictionary as CBLDictionary
 
 public actual open class Dictionary

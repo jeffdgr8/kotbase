@@ -17,7 +17,7 @@ package kotbase
 
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toKotlinInstant
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import com.couchbase.lite.Result as CBLResult
 
 public actual class Result

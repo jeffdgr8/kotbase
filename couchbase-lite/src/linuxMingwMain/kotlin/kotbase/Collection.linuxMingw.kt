@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import libcblite.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.experimental.ExperimentalNativeApi

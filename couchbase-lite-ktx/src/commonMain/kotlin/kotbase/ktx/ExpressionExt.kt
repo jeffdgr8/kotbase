@@ -19,7 +19,7 @@ package kotbase.ktx
 
 import kotbase.ArrayFunction
 import kotbase.Expression
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Create a between expression that evaluates whether or not the current
