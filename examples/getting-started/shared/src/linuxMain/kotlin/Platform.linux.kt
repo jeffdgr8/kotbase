@@ -7,9 +7,10 @@ import platform.posix.utsname
 
 class LinuxPlatform : Platform {
     override val name: String = memScoped {
-        val utsname = alloc<utsname>()
-        uname(utsname.ptr)
-        utsname.sysname.toKString() + " " + utsname.release.toKString()
+        with(alloc<utsname>()) {
+            uname(ptr)
+            "${sysname.toKString()} ${release.toKString()}"
+        }
     }
 }
 
