@@ -48,6 +48,9 @@ internal constructor(
 
     private val code: Int = if (code > 0) code else CBLError.Code.UNEXPECTED_ERROR
 
+    actual override val message: String
+        get() = "${super.message} ($domain, $code)  [${getVersionInfo()}]"
+
     internal actual fun getDomain(): String = domain
 
     internal actual fun getCode(): Int = code
@@ -55,7 +58,8 @@ internal constructor(
     internal actual fun getInfo(): Map<String, Any?>? = info
 
     override fun toString(): String {
-        val msg = message
-        return "CouchbaseLiteException{$domain,$code,${if (msg == null) "" else "'$msg'"}}"
+        return "CouchbaseLiteException{$domain, $code: ${super.message}"
     }
 }
+
+internal expect fun getVersionInfo(): String
