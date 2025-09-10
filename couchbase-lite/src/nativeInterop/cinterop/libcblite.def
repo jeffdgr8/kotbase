@@ -54,3 +54,7 @@ typedef struct C4Document {
 //bool CBLDocument_Exists(const CBLDocument* doc);
 
 unsigned CBLDocument_Generation(const CBLDocument*);
+
+typedef FLSliceResult C4SliceResult;
+typedef C4SliceResult C4StringResult;
+C4StringResult c4_getVersion(void);
