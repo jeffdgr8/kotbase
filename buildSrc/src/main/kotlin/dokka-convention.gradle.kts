@@ -1,4 +1,5 @@
 import org.gradle.accessors.dm.LibrariesForLibs
+import org.jetbrains.dokka.gradle.engine.parameters.KotlinPlatform
 import java.time.LocalDate
 
 plugins {
@@ -12,6 +13,12 @@ dependencies {
 
 dokka {
     dokkaSourceSets.configureEach {
+        skipDeprecated.set(true)
+
+        if (name == "jvmCommonMain") {
+            analysisPlatform.set(KotlinPlatform.JVM)
+        }
+
         includes.from("README.md")
 
         sourceLink {
