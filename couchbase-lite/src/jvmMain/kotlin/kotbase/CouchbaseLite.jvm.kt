@@ -96,7 +96,7 @@ public object CouchbaseLite {
      */
     private fun resetInit() {
         @Suppress("VisibleForTests")
-        CouchbaseLiteInternal.reset(false)
+        CouchbaseLiteInternal.reset()
     }
 }
 

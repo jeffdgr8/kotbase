@@ -338,7 +338,7 @@ internal constructor(
     public actual fun getIndex(name: String): QueryIndex? {
         return wrapCBLError { error ->
             memScoped {
-                CBLCollection_GetIndex(actual, name.toFLString(this), error)?.asQueryIndex(this)
+                CBLCollection_GetIndex(actual, name.toFLString(this), error)?.asQueryIndex(this@Collection)
             }
         }
     }
