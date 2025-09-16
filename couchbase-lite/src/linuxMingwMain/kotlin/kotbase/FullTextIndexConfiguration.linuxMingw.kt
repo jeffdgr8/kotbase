@@ -23,7 +23,7 @@ import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class FullTextIndexConfiguration
-private constructor(expressions: List<String>) : IndexConfiguration(expressions) {
+public actual constructor(expressions: List<String>) : IndexConfiguration(expressions) {
 
     public actual constructor(vararg expressions: String) : this(expressions.toList())
 

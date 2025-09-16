@@ -23,9 +23,11 @@ import platform.Foundation.currentLocale
 public actual class FullTextIndexConfiguration
 private constructor(override var actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
 
-    public actual constructor(vararg expressions: String) : this(
+    public actual constructor(vararg expressions: String) : this(expressions.toList())
+
+    public actual constructor(expressions: List<String>) : this(
         CBLFullTextIndexConfiguration(
-            expressions.toList(),
+            expressions,
             false,
             NSLocale.currentLocale.objectForKey(NSLocaleLanguageCode) as String?
         )

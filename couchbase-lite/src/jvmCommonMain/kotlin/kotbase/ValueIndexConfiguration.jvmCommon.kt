@@ -21,4 +21,6 @@ public actual class ValueIndexConfiguration
 private constructor(override val actual: CBLValueIndexConfiguration) : IndexConfiguration(actual) {
 
     public actual constructor(vararg expressions: String) : this(CBLValueIndexConfiguration(*expressions))
+
+    public actual constructor(expressions: List<String>) : this(CBLValueIndexConfiguration(expressions))
 }
