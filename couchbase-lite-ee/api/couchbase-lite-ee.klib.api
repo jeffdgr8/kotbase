@@ -119,6 +119,32 @@ abstract fun interface kotbase/PredictiveModel { // kotbase/PredictiveModel|null
     abstract fun predict(kotbase/Dictionary): kotbase/Dictionary? // kotbase/PredictiveModel.predict|predict(kotbase.Dictionary){}[0]
 }
 
+abstract interface kotbase/DefaultsListener { // kotbase/DefaultsListener|null[0]
+    abstract val DISABLE_TLS // kotbase/DefaultsListener.DISABLE_TLS|{}DISABLE_TLS[0]
+        abstract fun <get-DISABLE_TLS>(): kotlin/Boolean // kotbase/DefaultsListener.DISABLE_TLS.<get-DISABLE_TLS>|<get-DISABLE_TLS>(){}[0]
+    abstract val ENABLE_DELTA_SYNC // kotbase/DefaultsListener.ENABLE_DELTA_SYNC|{}ENABLE_DELTA_SYNC[0]
+        abstract fun <get-ENABLE_DELTA_SYNC>(): kotlin/Boolean // kotbase/DefaultsListener.ENABLE_DELTA_SYNC.<get-ENABLE_DELTA_SYNC>|<get-ENABLE_DELTA_SYNC>(){}[0]
+    abstract val PORT // kotbase/DefaultsListener.PORT|{}PORT[0]
+        abstract fun <get-PORT>(): kotlin/Int // kotbase/DefaultsListener.PORT.<get-PORT>|<get-PORT>(){}[0]
+    abstract val READ_ONLY // kotbase/DefaultsListener.READ_ONLY|{}READ_ONLY[0]
+        abstract fun <get-READ_ONLY>(): kotlin/Boolean // kotbase/DefaultsListener.READ_ONLY.<get-READ_ONLY>|<get-READ_ONLY>(){}[0]
+}
+
+abstract interface kotbase/DefaultsVectorIndex { // kotbase/DefaultsVectorIndex|null[0]
+    abstract val DISTANCE_METRIC // kotbase/DefaultsVectorIndex.DISTANCE_METRIC|{}DISTANCE_METRIC[0]
+        abstract fun <get-DISTANCE_METRIC>(): kotbase/VectorIndexConfiguration.DistanceMetric // kotbase/DefaultsVectorIndex.DISTANCE_METRIC.<get-DISTANCE_METRIC>|<get-DISTANCE_METRIC>(){}[0]
+    abstract val ENCODING // kotbase/DefaultsVectorIndex.ENCODING|{}ENCODING[0]
+        abstract fun <get-ENCODING>(): kotbase/VectorEncoding.ScalarQuantizerType // kotbase/DefaultsVectorIndex.ENCODING.<get-ENCODING>|<get-ENCODING>(){}[0]
+    abstract val IS_LAZY // kotbase/DefaultsVectorIndex.IS_LAZY|{}IS_LAZY[0]
+        abstract fun <get-IS_LAZY>(): kotlin/Boolean // kotbase/DefaultsVectorIndex.IS_LAZY.<get-IS_LAZY>|<get-IS_LAZY>(){}[0]
+    abstract val MAX_TRAINING_SIZE // kotbase/DefaultsVectorIndex.MAX_TRAINING_SIZE|{}MAX_TRAINING_SIZE[0]
+        abstract fun <get-MAX_TRAINING_SIZE>(): kotlin/Long // kotbase/DefaultsVectorIndex.MAX_TRAINING_SIZE.<get-MAX_TRAINING_SIZE>|<get-MAX_TRAINING_SIZE>(){}[0]
+    abstract val MIN_TRAINING_SIZE // kotbase/DefaultsVectorIndex.MIN_TRAINING_SIZE|{}MIN_TRAINING_SIZE[0]
+        abstract fun <get-MIN_TRAINING_SIZE>(): kotlin/Long // kotbase/DefaultsVectorIndex.MIN_TRAINING_SIZE.<get-MIN_TRAINING_SIZE>|<get-MIN_TRAINING_SIZE>(){}[0]
+    abstract val NUM_PROBES // kotbase/DefaultsVectorIndex.NUM_PROBES|{}NUM_PROBES[0]
+        abstract fun <get-NUM_PROBES>(): kotlin/Long // kotbase/DefaultsVectorIndex.NUM_PROBES.<get-NUM_PROBES>|<get-NUM_PROBES>(){}[0]
+}
+
 abstract interface kotbase/FromRouter : kotbase/Query { // kotbase/FromRouter|null[0]
     abstract fun from(kotbase/DataSource): kotbase/From // kotbase/FromRouter.from|from(kotbase.DataSource){}[0]
 }
@@ -136,6 +162,30 @@ abstract interface kotbase/HavingRouter : kotbase/Query { // kotbase/HavingRoute
 }
 
 abstract interface kotbase/IndexExpression // kotbase/IndexExpression|null[0]
+
+abstract interface kotbase/IndexUpdater : kotlin.collections/Iterable<kotlin/Any?>, kotlin/AutoCloseable { // kotbase/IndexUpdater|null[0]
+    abstract val count // kotbase/IndexUpdater.count|{}count[0]
+        abstract fun <get-count>(): kotlin/Int // kotbase/IndexUpdater.count.<get-count>|<get-count>(){}[0]
+
+    abstract fun close() // kotbase/IndexUpdater.close|close(){}[0]
+    abstract fun finish() // kotbase/IndexUpdater.finish|finish(){}[0]
+    abstract fun getArray(kotlin/Int): kotbase/Array? // kotbase/IndexUpdater.getArray|getArray(kotlin.Int){}[0]
+    abstract fun getBlob(kotlin/Int): kotbase/Blob? // kotbase/IndexUpdater.getBlob|getBlob(kotlin.Int){}[0]
+    abstract fun getBoolean(kotlin/Int): kotlin/Boolean // kotbase/IndexUpdater.getBoolean|getBoolean(kotlin.Int){}[0]
+    abstract fun getDate(kotlin/Int): kotlinx.datetime/Instant? // kotbase/IndexUpdater.getDate|getDate(kotlin.Int){}[0]
+    abstract fun getDictionary(kotlin/Int): kotbase/Dictionary? // kotbase/IndexUpdater.getDictionary|getDictionary(kotlin.Int){}[0]
+    abstract fun getDouble(kotlin/Int): kotlin/Double // kotbase/IndexUpdater.getDouble|getDouble(kotlin.Int){}[0]
+    abstract fun getFloat(kotlin/Int): kotlin/Float // kotbase/IndexUpdater.getFloat|getFloat(kotlin.Int){}[0]
+    abstract fun getInt(kotlin/Int): kotlin/Int // kotbase/IndexUpdater.getInt|getInt(kotlin.Int){}[0]
+    abstract fun getLong(kotlin/Int): kotlin/Long // kotbase/IndexUpdater.getLong|getLong(kotlin.Int){}[0]
+    abstract fun getNumber(kotlin/Int): kotlin/Number? // kotbase/IndexUpdater.getNumber|getNumber(kotlin.Int){}[0]
+    abstract fun getString(kotlin/Int): kotlin/String? // kotbase/IndexUpdater.getString|getString(kotlin.Int){}[0]
+    abstract fun getValue(kotlin/Int): kotlin/Any? // kotbase/IndexUpdater.getValue|getValue(kotlin.Int){}[0]
+    abstract fun setVector(kotlin.collections/List<kotlin/Float>?, kotlin/Int) // kotbase/IndexUpdater.setVector|setVector(kotlin.collections.List<kotlin.Float>?;kotlin.Int){}[0]
+    abstract fun skipVector(kotlin/Int) // kotbase/IndexUpdater.skipVector|skipVector(kotlin.Int){}[0]
+    abstract fun toJSON(): kotlin/String // kotbase/IndexUpdater.toJSON|toJSON(){}[0]
+    abstract fun toList(): kotlin.collections/List<kotlin/Any?> // kotbase/IndexUpdater.toList|toList(){}[0]
+}
 
 abstract interface kotbase/JoinRouter : kotbase/Query { // kotbase/JoinRouter|null[0]
     abstract fun join(kotlin/Array<out kotbase/Join>...): kotbase/Joins // kotbase/JoinRouter.join|join(kotlin.Array<out|kotbase.Join>...){}[0]
@@ -193,6 +243,15 @@ final class kotbase/ArrayExpressionSatisfies { // kotbase/ArrayExpressionSatisfi
     final fun satisfies(kotbase/Expression): kotbase/Expression // kotbase/ArrayExpressionSatisfies.satisfies|satisfies(kotbase.Expression){}[0]
 }
 
+final class kotbase/ArrayIndexConfiguration : kotbase/IndexConfiguration { // kotbase/ArrayIndexConfiguration|null[0]
+    constructor <init>(kotlin/String) // kotbase/ArrayIndexConfiguration.<init>|<init>(kotlin.String){}[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String>?) // kotbase/ArrayIndexConfiguration.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>?){}[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/Array<out kotlin/String>...) // kotbase/ArrayIndexConfiguration.<init>|<init>(kotlin.String;kotlin.String;kotlin.Array<out|kotlin.String>...){}[0]
+
+    final val path // kotbase/ArrayIndexConfiguration.path|{}path[0]
+        final fun <get-path>(): kotlin/String // kotbase/ArrayIndexConfiguration.path.<get-path>|<get-path>(){}[0]
+}
+
 final class kotbase/BasicAuthenticator : kotbase/Authenticator { // kotbase/BasicAuthenticator|null[0]
     constructor <init>(kotlin/String, kotlin/CharArray) // kotbase/BasicAuthenticator.<init>|<init>(kotlin.String;kotlin.CharArray){}[0]
 
@@ -216,11 +275,19 @@ final class kotbase/ConnectionStatus { // kotbase/ConnectionStatus|null[0]
         final fun <get-connectionCount>(): kotlin/Int // kotbase/ConnectionStatus.connectionCount.<get-connectionCount>|<get-connectionCount>(){}[0]
 }
 
+final class kotbase/CouchbaseLiteError : kotlin/IllegalStateException { // kotbase/CouchbaseLiteError|null[0]
+    constructor <init>(kotlin/String) // kotbase/CouchbaseLiteError.<init>|<init>(kotlin.String){}[0]
+    constructor <init>(kotlin/String, kotlin/Exception?) // kotbase/CouchbaseLiteError.<init>|<init>(kotlin.String;kotlin.Exception?){}[0]
+}
+
 final class kotbase/CouchbaseLiteException : kotlin/Exception { // kotbase/CouchbaseLiteException|null[0]
     constructor <init>(kotlin/String) // kotbase/CouchbaseLiteException.<init>|<init>(kotlin.String){}[0]
     constructor <init>(kotlin/String, kotlin/Exception) // kotbase/CouchbaseLiteException.<init>|<init>(kotlin.String;kotlin.Exception){}[0]
     constructor <init>(kotlin/String, kotlin/Exception, kotlin/String, kotlin/Int) // kotbase/CouchbaseLiteException.<init>|<init>(kotlin.String;kotlin.Exception;kotlin.String;kotlin.Int){}[0]
     constructor <init>(kotlin/String, kotlin/String, kotlin/Int) // kotbase/CouchbaseLiteException.<init>|<init>(kotlin.String;kotlin.String;kotlin.Int){}[0]
+
+    final val message // kotbase/CouchbaseLiteException.message|{}message[0]
+        final fun <get-message>(): kotlin/String // kotbase/CouchbaseLiteException.message.<get-message>|<get-message>(){}[0]
 
     final fun toString(): kotlin/String // kotbase/CouchbaseLiteException.toString|toString(){}[0]
 }
@@ -257,6 +324,7 @@ final class kotbase/FullTextIndex : kotbase/Index { // kotbase/FullTextIndex|nul
 }
 
 final class kotbase/FullTextIndexConfiguration : kotbase/IndexConfiguration { // kotbase/FullTextIndexConfiguration|null[0]
+    constructor <init>(kotlin.collections/List<kotlin/String>) // kotbase/FullTextIndexConfiguration.<init>|<init>(kotlin.collections.List<kotlin.String>){}[0]
     constructor <init>(kotlin/Array<out kotlin/String>...) // kotbase/FullTextIndexConfiguration.<init>|<init>(kotlin.Array<out|kotlin.String>...){}[0]
 
     final var isIgnoringAccents // kotbase/FullTextIndexConfiguration.isIgnoringAccents|{}isIgnoringAccents[0]
@@ -515,10 +583,61 @@ final class kotbase/URLEndpoint : kotbase/Endpoint { // kotbase/URLEndpoint|null
 final class kotbase/ValueIndex : kotbase/Index // kotbase/ValueIndex|null[0]
 
 final class kotbase/ValueIndexConfiguration : kotbase/IndexConfiguration { // kotbase/ValueIndexConfiguration|null[0]
+    constructor <init>(kotlin.collections/List<kotlin/String>) // kotbase/ValueIndexConfiguration.<init>|<init>(kotlin.collections.List<kotlin.String>){}[0]
     constructor <init>(kotlin/Array<out kotlin/String>...) // kotbase/ValueIndexConfiguration.<init>|<init>(kotlin.Array<out|kotlin.String>...){}[0]
 }
 
 final class kotbase/VariableExpression : kotbase/Expression // kotbase/VariableExpression|null[0]
+
+final class kotbase/VectorIndexConfiguration : kotbase/IndexConfiguration { // kotbase/VectorIndexConfiguration|null[0]
+    constructor <init>(kotlin/String, kotlin/Long, kotlin/Long) // kotbase/VectorIndexConfiguration.<init>|<init>(kotlin.String;kotlin.Long;kotlin.Long){}[0]
+
+    final val centroids // kotbase/VectorIndexConfiguration.centroids|{}centroids[0]
+        final fun <get-centroids>(): kotlin/Long // kotbase/VectorIndexConfiguration.centroids.<get-centroids>|<get-centroids>(){}[0]
+    final val dimensions // kotbase/VectorIndexConfiguration.dimensions|{}dimensions[0]
+        final fun <get-dimensions>(): kotlin/Long // kotbase/VectorIndexConfiguration.dimensions.<get-dimensions>|<get-dimensions>(){}[0]
+    final val expression // kotbase/VectorIndexConfiguration.expression|{}expression[0]
+        final fun <get-expression>(): kotlin/String // kotbase/VectorIndexConfiguration.expression.<get-expression>|<get-expression>(){}[0]
+
+    final var encoding // kotbase/VectorIndexConfiguration.encoding|{}encoding[0]
+        final fun <get-encoding>(): kotbase/VectorEncoding // kotbase/VectorIndexConfiguration.encoding.<get-encoding>|<get-encoding>(){}[0]
+        final fun <set-encoding>(kotbase/VectorEncoding) // kotbase/VectorIndexConfiguration.encoding.<set-encoding>|<set-encoding>(kotbase.VectorEncoding){}[0]
+    final var isLazy // kotbase/VectorIndexConfiguration.isLazy|{}isLazy[0]
+        final fun <get-isLazy>(): kotlin/Boolean // kotbase/VectorIndexConfiguration.isLazy.<get-isLazy>|<get-isLazy>(){}[0]
+        final fun <set-isLazy>(kotlin/Boolean) // kotbase/VectorIndexConfiguration.isLazy.<set-isLazy>|<set-isLazy>(kotlin.Boolean){}[0]
+    final var maxTrainingSize // kotbase/VectorIndexConfiguration.maxTrainingSize|{}maxTrainingSize[0]
+        final fun <get-maxTrainingSize>(): kotlin/Long // kotbase/VectorIndexConfiguration.maxTrainingSize.<get-maxTrainingSize>|<get-maxTrainingSize>(){}[0]
+        final fun <set-maxTrainingSize>(kotlin/Long) // kotbase/VectorIndexConfiguration.maxTrainingSize.<set-maxTrainingSize>|<set-maxTrainingSize>(kotlin.Long){}[0]
+    final var metric // kotbase/VectorIndexConfiguration.metric|{}metric[0]
+        final fun <get-metric>(): kotbase/VectorIndexConfiguration.DistanceMetric // kotbase/VectorIndexConfiguration.metric.<get-metric>|<get-metric>(){}[0]
+        final fun <set-metric>(kotbase/VectorIndexConfiguration.DistanceMetric) // kotbase/VectorIndexConfiguration.metric.<set-metric>|<set-metric>(kotbase.VectorIndexConfiguration.DistanceMetric){}[0]
+    final var minTrainingSize // kotbase/VectorIndexConfiguration.minTrainingSize|{}minTrainingSize[0]
+        final fun <get-minTrainingSize>(): kotlin/Long // kotbase/VectorIndexConfiguration.minTrainingSize.<get-minTrainingSize>|<get-minTrainingSize>(){}[0]
+        final fun <set-minTrainingSize>(kotlin/Long) // kotbase/VectorIndexConfiguration.minTrainingSize.<set-minTrainingSize>|<set-minTrainingSize>(kotlin.Long){}[0]
+    final var numProbes // kotbase/VectorIndexConfiguration.numProbes|{}numProbes[0]
+        final fun <get-numProbes>(): kotlin/Long // kotbase/VectorIndexConfiguration.numProbes.<get-numProbes>|<get-numProbes>(){}[0]
+        final fun <set-numProbes>(kotlin/Long) // kotbase/VectorIndexConfiguration.numProbes.<set-numProbes>|<set-numProbes>(kotlin.Long){}[0]
+
+    final fun setEncoding(kotbase/VectorEncoding): kotbase/VectorIndexConfiguration // kotbase/VectorIndexConfiguration.setEncoding|setEncoding(kotbase.VectorEncoding){}[0]
+    final fun setLazy(kotlin/Boolean): kotbase/VectorIndexConfiguration // kotbase/VectorIndexConfiguration.setLazy|setLazy(kotlin.Boolean){}[0]
+    final fun setMaxTrainingSize(kotlin/Long): kotbase/VectorIndexConfiguration // kotbase/VectorIndexConfiguration.setMaxTrainingSize|setMaxTrainingSize(kotlin.Long){}[0]
+    final fun setMetric(kotbase/VectorIndexConfiguration.DistanceMetric): kotbase/VectorIndexConfiguration // kotbase/VectorIndexConfiguration.setMetric|setMetric(kotbase.VectorIndexConfiguration.DistanceMetric){}[0]
+    final fun setMinTrainingSize(kotlin/Long): kotbase/VectorIndexConfiguration // kotbase/VectorIndexConfiguration.setMinTrainingSize|setMinTrainingSize(kotlin.Long){}[0]
+    final fun setNumProbes(kotlin/Long): kotbase/VectorIndexConfiguration // kotbase/VectorIndexConfiguration.setNumProbes|setNumProbes(kotlin.Long){}[0]
+
+    final enum class DistanceMetric : kotlin/Enum<kotbase/VectorIndexConfiguration.DistanceMetric> { // kotbase/VectorIndexConfiguration.DistanceMetric|null[0]
+        enum entry COSINE // kotbase/VectorIndexConfiguration.DistanceMetric.COSINE|null[0]
+        enum entry DOT // kotbase/VectorIndexConfiguration.DistanceMetric.DOT|null[0]
+        enum entry EUCLIDEAN // kotbase/VectorIndexConfiguration.DistanceMetric.EUCLIDEAN|null[0]
+        enum entry EUCLIDEAN_SQUARED // kotbase/VectorIndexConfiguration.DistanceMetric.EUCLIDEAN_SQUARED|null[0]
+
+        final val entries // kotbase/VectorIndexConfiguration.DistanceMetric.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<kotbase/VectorIndexConfiguration.DistanceMetric> // kotbase/VectorIndexConfiguration.DistanceMetric.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): kotbase/VectorIndexConfiguration.DistanceMetric // kotbase/VectorIndexConfiguration.DistanceMetric.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<kotbase/VectorIndexConfiguration.DistanceMetric> // kotbase/VectorIndexConfiguration.DistanceMetric.values|values#static(){}[0]
+    }
+}
 
 open class kotbase/Fragment { // kotbase/Fragment|null[0]
     final val exists // kotbase/Fragment.exists|{}exists[0]
@@ -726,6 +845,8 @@ final object kotbase/Defaults { // kotbase/Defaults|null[0]
     final object Database { // kotbase/Defaults.Database|null[0]
         final const val FULL_SYNC // kotbase/Defaults.Database.FULL_SYNC|{}FULL_SYNC[0]
             final fun <get-FULL_SYNC>(): kotlin/Boolean // kotbase/Defaults.Database.FULL_SYNC.<get-FULL_SYNC>|<get-FULL_SYNC>(){}[0]
+        final const val MMAP_ENABLED // kotbase/Defaults.Database.MMAP_ENABLED|{}MMAP_ENABLED[0]
+            final fun <get-MMAP_ENABLED>(): kotlin/Boolean // kotbase/Defaults.Database.MMAP_ENABLED.<get-MMAP_ENABLED>|<get-MMAP_ENABLED>(){}[0]
     }
 
     final object FullTextIndex { // kotbase/Defaults.FullTextIndex|null[0]
@@ -733,22 +854,13 @@ final object kotbase/Defaults { // kotbase/Defaults|null[0]
             final fun <get-IGNORE_ACCENTS>(): kotlin/Boolean // kotbase/Defaults.FullTextIndex.IGNORE_ACCENTS.<get-IGNORE_ACCENTS>|<get-IGNORE_ACCENTS>(){}[0]
     }
 
-    final object Listener { // kotbase/Defaults.Listener|null[0]
-        final const val DISABLE_TLS // kotbase/Defaults.Listener.DISABLE_TLS|{}DISABLE_TLS[0]
-            final fun <get-DISABLE_TLS>(): kotlin/Boolean // kotbase/Defaults.Listener.DISABLE_TLS.<get-DISABLE_TLS>|<get-DISABLE_TLS>(){}[0]
-        final const val ENABLE_DELTA_SYNC // kotbase/Defaults.Listener.ENABLE_DELTA_SYNC|{}ENABLE_DELTA_SYNC[0]
-            final fun <get-ENABLE_DELTA_SYNC>(): kotlin/Boolean // kotbase/Defaults.Listener.ENABLE_DELTA_SYNC.<get-ENABLE_DELTA_SYNC>|<get-ENABLE_DELTA_SYNC>(){}[0]
-        final const val PORT // kotbase/Defaults.Listener.PORT|{}PORT[0]
-            final fun <get-PORT>(): kotlin/Int // kotbase/Defaults.Listener.PORT.<get-PORT>|<get-PORT>(){}[0]
-        final const val READ_ONLY // kotbase/Defaults.Listener.READ_ONLY|{}READ_ONLY[0]
-            final fun <get-READ_ONLY>(): kotlin/Boolean // kotbase/Defaults.Listener.READ_ONLY.<get-READ_ONLY>|<get-READ_ONLY>(){}[0]
-    }
-
     final object LogFile { // kotbase/Defaults.LogFile|null[0]
         final const val MAX_ROTATE_COUNT // kotbase/Defaults.LogFile.MAX_ROTATE_COUNT|{}MAX_ROTATE_COUNT[0]
             final fun <get-MAX_ROTATE_COUNT>(): kotlin/Int // kotbase/Defaults.LogFile.MAX_ROTATE_COUNT.<get-MAX_ROTATE_COUNT>|<get-MAX_ROTATE_COUNT>(){}[0]
         final const val MAX_SIZE // kotbase/Defaults.LogFile.MAX_SIZE|{}MAX_SIZE[0]
             final fun <get-MAX_SIZE>(): kotlin/Long // kotbase/Defaults.LogFile.MAX_SIZE.<get-MAX_SIZE>|<get-MAX_SIZE>(){}[0]
+        final const val USE_PLAINTEXT // kotbase/Defaults.LogFile.USE_PLAINTEXT|{}USE_PLAINTEXT[0]
+            final fun <get-USE_PLAINTEXT>(): kotlin/Boolean // kotbase/Defaults.LogFile.USE_PLAINTEXT.<get-USE_PLAINTEXT>|<get-USE_PLAINTEXT>(){}[0]
         final const val USE_PLAIN_TEXT // kotbase/Defaults.LogFile.USE_PLAIN_TEXT|{}USE_PLAIN_TEXT[0]
             final fun <get-USE_PLAIN_TEXT>(): kotlin/Boolean // kotbase/Defaults.LogFile.USE_PLAIN_TEXT.<get-USE_PLAIN_TEXT>|<get-USE_PLAIN_TEXT>(){}[0]
     }
@@ -766,6 +878,8 @@ final object kotbase/Defaults { // kotbase/Defaults|null[0]
             final fun <get-MAX_ATTEMPTS_CONTINUOUS>(): kotlin/Int // kotbase/Defaults.Replicator.MAX_ATTEMPTS_CONTINUOUS.<get-MAX_ATTEMPTS_CONTINUOUS>|<get-MAX_ATTEMPTS_CONTINUOUS>(){}[0]
         final const val MAX_ATTEMPTS_SINGLE_SHOT // kotbase/Defaults.Replicator.MAX_ATTEMPTS_SINGLE_SHOT|{}MAX_ATTEMPTS_SINGLE_SHOT[0]
             final fun <get-MAX_ATTEMPTS_SINGLE_SHOT>(): kotlin/Int // kotbase/Defaults.Replicator.MAX_ATTEMPTS_SINGLE_SHOT.<get-MAX_ATTEMPTS_SINGLE_SHOT>|<get-MAX_ATTEMPTS_SINGLE_SHOT>(){}[0]
+        final const val MAX_ATTEMPTS_WAIT_TIME // kotbase/Defaults.Replicator.MAX_ATTEMPTS_WAIT_TIME|{}MAX_ATTEMPTS_WAIT_TIME[0]
+            final fun <get-MAX_ATTEMPTS_WAIT_TIME>(): kotlin/Int // kotbase/Defaults.Replicator.MAX_ATTEMPTS_WAIT_TIME.<get-MAX_ATTEMPTS_WAIT_TIME>|<get-MAX_ATTEMPTS_WAIT_TIME>(){}[0]
         final const val MAX_ATTEMPT_WAIT_TIME // kotbase/Defaults.Replicator.MAX_ATTEMPT_WAIT_TIME|{}MAX_ATTEMPT_WAIT_TIME[0]
             final fun <get-MAX_ATTEMPT_WAIT_TIME>(): kotlin/Int // kotbase/Defaults.Replicator.MAX_ATTEMPT_WAIT_TIME.<get-MAX_ATTEMPT_WAIT_TIME>|<get-MAX_ATTEMPT_WAIT_TIME>(){}[0]
         final const val SELF_SIGNED_CERTIFICATE_ONLY // kotbase/Defaults.Replicator.SELF_SIGNED_CERTIFICATE_ONLY|{}SELF_SIGNED_CERTIFICATE_ONLY[0]
@@ -896,6 +1010,8 @@ final val kotbase/DatabaseConfigurationFactory // kotbase/DatabaseConfigurationF
     final fun <get-DatabaseConfigurationFactory>(): kotbase/DatabaseConfiguration? // kotbase/DatabaseConfigurationFactory.<get-DatabaseConfigurationFactory>|<get-DatabaseConfigurationFactory>(){}[0]
 final val kotbase/FullTextIndexConfigurationFactory // kotbase/FullTextIndexConfigurationFactory|{}FullTextIndexConfigurationFactory[0]
     final fun <get-FullTextIndexConfigurationFactory>(): kotbase/FullTextIndexConfiguration? // kotbase/FullTextIndexConfigurationFactory.<get-FullTextIndexConfigurationFactory>|<get-FullTextIndexConfigurationFactory>(){}[0]
+final val kotbase/Listener // kotbase/Listener|@kotbase.Defaults{}Listener[0]
+    final fun (kotbase/Defaults).<get-Listener>(): kotbase/DefaultsListener // kotbase/Listener.<get-Listener>|<get-Listener>@kotbase.Defaults(){}[0]
 final val kotbase/LogFileConfigurationFactory // kotbase/LogFileConfigurationFactory|{}LogFileConfigurationFactory[0]
     final fun <get-LogFileConfigurationFactory>(): kotbase/LogFileConfiguration? // kotbase/LogFileConfigurationFactory.<get-LogFileConfigurationFactory>|<get-LogFileConfigurationFactory>(){}[0]
 final val kotbase/MAX_PORT // kotbase/MAX_PORT|@kotbase.URLEndpointListenerConfiguration.Companion{}MAX_PORT[0]
@@ -910,6 +1026,8 @@ final val kotbase/URLEndpointListenerConfigurationFactory // kotbase/URLEndpoint
     final fun <get-URLEndpointListenerConfigurationFactory>(): kotbase/URLEndpointListenerConfiguration? // kotbase/URLEndpointListenerConfigurationFactory.<get-URLEndpointListenerConfigurationFactory>|<get-URLEndpointListenerConfigurationFactory>(){}[0]
 final val kotbase/ValueIndexConfigurationFactory // kotbase/ValueIndexConfigurationFactory|{}ValueIndexConfigurationFactory[0]
     final fun <get-ValueIndexConfigurationFactory>(): kotbase/ValueIndexConfiguration? // kotbase/ValueIndexConfigurationFactory.<get-ValueIndexConfigurationFactory>|<get-ValueIndexConfigurationFactory>(){}[0]
+final val kotbase/VectorIndex // kotbase/VectorIndex|@kotbase.Defaults{}VectorIndex[0]
+    final fun (kotbase/Defaults).<get-VectorIndex>(): kotbase/DefaultsVectorIndex // kotbase/VectorIndex.<get-VectorIndex>|<get-VectorIndex>@kotbase.Defaults(){}[0]
 final val kotbase/code // kotbase/code|@kotbase.CouchbaseLiteException{}code[0]
     final fun (kotbase/CouchbaseLiteException).<get-code>(): kotlin/Int // kotbase/code.<get-code>|<get-code>@kotbase.CouchbaseLiteException(){}[0]
 final val kotbase/domain // kotbase/domain|@kotbase.CouchbaseLiteException{}domain[0]
@@ -956,6 +1074,7 @@ final fun (kotbase/MutableArray).kotbase/get(kotlin/Int): kotbase/MutableFragmen
 final fun (kotbase/MutableDictionary).kotbase/get(kotlin/String): kotbase/MutableFragment // kotbase/get|get@kotbase.MutableDictionary(kotlin.String){}[0]
 final fun (kotbase/MutableDocument).kotbase/get(kotlin/String): kotbase/MutableFragment // kotbase/get|get@kotbase.MutableDocument(kotlin.String){}[0]
 final fun (kotbase/Query).kotbase/queryChangeFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/QueryChange> // kotbase/queryChangeFlow|queryChangeFlow@kotbase.Query(kotlin.coroutines.CoroutineContext?){}[0]
+final fun (kotbase/QueryIndex).kotbase/beginUpdate(kotlin/Int): kotbase/IndexUpdater? // kotbase/beginUpdate|beginUpdate@kotbase.QueryIndex(kotlin.Int){}[0]
 final fun (kotbase/Replicator).kotbase/documentReplicationFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/DocumentReplication> // kotbase/documentReplicationFlow|documentReplicationFlow@kotbase.Replicator(kotlin.coroutines.CoroutineContext?){}[0]
 final fun (kotbase/Replicator).kotbase/replicatorChangesFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/ReplicatorChange> // kotbase/replicatorChangesFlow|replicatorChangesFlow@kotbase.Replicator(kotlin.coroutines.CoroutineContext?){}[0]
 final fun (kotbase/ReplicatorConfiguration).kotbase/setAcceptOnlySelfSignedServerCertificate(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/setAcceptOnlySelfSignedServerCertificate|setAcceptOnlySelfSignedServerCertificate@kotbase.ReplicatorConfiguration(kotlin.Boolean){}[0]
@@ -1051,6 +1170,7 @@ final class kotbase/Collection : kotbase.internal/DelegatedClass<cocoapods.Couch
     final fun deleteIndex(kotlin/String) // kotbase/Collection.deleteIndex|deleteIndex(kotlin.String){}[0]
     final fun getDocument(kotlin/String): kotbase/Document? // kotbase/Collection.getDocument|getDocument(kotlin.String){}[0]
     final fun getDocumentExpiration(kotlin/String): kotlinx.datetime/Instant? // kotbase/Collection.getDocumentExpiration|getDocumentExpiration(kotlin.String){}[0]
+    final fun getIndex(kotlin/String): kotbase/QueryIndex? // kotbase/Collection.getIndex|getIndex(kotlin.String){}[0]
     final fun indexes(): kotlin.collections/Set<kotlin/String> // kotbase/Collection.indexes|indexes(){}[0]
     final fun purge(kotbase/Document) // kotbase/Collection.purge|purge(kotbase.Document){}[0]
     final fun purge(kotlin/String) // kotbase/Collection.purge|purge(kotlin.String){}[0]
@@ -1212,9 +1332,13 @@ final class kotbase/DatabaseConfiguration : kotbase.internal/DelegatedClass<coco
     final var isFullSync // kotbase/DatabaseConfiguration.isFullSync|{}isFullSync[0]
         final fun <get-isFullSync>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isFullSync.<get-isFullSync>|<get-isFullSync>(){}[0]
         final fun <set-isFullSync>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isFullSync.<set-isFullSync>|<set-isFullSync>(kotlin.Boolean){}[0]
+    final var isMMapEnabled // kotbase/DatabaseConfiguration.isMMapEnabled|{}isMMapEnabled[0]
+        final fun <get-isMMapEnabled>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isMMapEnabled.<get-isMMapEnabled>|<get-isMMapEnabled>(){}[0]
+        final fun <set-isMMapEnabled>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isMMapEnabled.<set-isMMapEnabled>|<set-isMMapEnabled>(kotlin.Boolean){}[0]
 
     final fun setDirectory(kotlin/String): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setDirectory|setDirectory(kotlin.String){}[0]
     final fun setFullSync(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setFullSync|setFullSync(kotlin.Boolean){}[0]
+    final fun setMMapEnabled(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setMMapEnabled|setMMapEnabled(kotlin.Boolean){}[0]
 }
 
 // Targets: [apple]
@@ -1497,6 +1621,14 @@ final class kotbase/QueryChange : kotbase.internal/DelegatedClass<cocoapods.Couc
 }
 
 // Targets: [apple]
+final class kotbase/QueryIndex : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryIndex> { // kotbase/QueryIndex|null[0]
+    final val collection // kotbase/QueryIndex.collection|{}collection[0]
+        final fun <get-collection>(): kotbase/Collection // kotbase/QueryIndex.collection.<get-collection>|<get-collection>(){}[0]
+    final val name // kotbase/QueryIndex.name|{}name[0]
+        final fun <get-name>(): kotlin/String // kotbase/QueryIndex.name.<get-name>|<get-name>(){}[0]
+}
+
+// Targets: [apple]
 final class kotbase/ReplicatedDocument : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLReplicatedDocument> { // kotbase/ReplicatedDocument|null[0]
     final val collection // kotbase/ReplicatedDocument.collection|{}collection[0]
         final fun <get-collection>(): kotlin/String // kotbase/ReplicatedDocument.collection.<get-collection>|<get-collection>(){}[0]
@@ -1518,6 +1650,8 @@ final class kotbase/Replicator : kotbase.internal/DelegatedClass<cocoapods.Couch
 
     final val config // kotbase/Replicator.config|{}config[0]
         final fun <get-config>(): kotbase/ReplicatorConfiguration // kotbase/Replicator.config.<get-config>|<get-config>(){}[0]
+    final val isClosed // kotbase/Replicator.isClosed|{}isClosed[0]
+        final fun <get-isClosed>(): kotlin/Boolean // kotbase/Replicator.isClosed.<get-isClosed>|<get-isClosed>(){}[0]
     final val pendingDocumentIds // kotbase/Replicator.pendingDocumentIds|{}pendingDocumentIds[0]
         final fun <get-pendingDocumentIds>(): kotlin.collections/Set<kotlin/String> // kotbase/Replicator.pendingDocumentIds.<get-pendingDocumentIds>|<get-pendingDocumentIds>(){}[0]
     final val serverCertificates // kotbase/Replicator.serverCertificates|{}serverCertificates[0]
@@ -1799,6 +1933,27 @@ final class kotbase/ValueIndexItem : kotbase.internal/DelegatedClass<cocoapods.C
     final object Companion { // kotbase/ValueIndexItem.Companion|null[0]
         final fun expression(kotbase/Expression): kotbase/ValueIndexItem // kotbase/ValueIndexItem.Companion.expression|expression(kotbase.Expression){}[0]
         final fun property(kotlin/String): kotbase/ValueIndexItem // kotbase/ValueIndexItem.Companion.property|property(kotlin.String){}[0]
+    }
+}
+
+// Targets: [apple]
+final class kotbase/VectorEncoding : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLVectorEncoding> { // kotbase/VectorEncoding|null[0]
+    final enum class ScalarQuantizerType : kotlin/Enum<kotbase/VectorEncoding.ScalarQuantizerType> { // kotbase/VectorEncoding.ScalarQuantizerType|null[0]
+        enum entry SQ4 // kotbase/VectorEncoding.ScalarQuantizerType.SQ4|null[0]
+        enum entry SQ6 // kotbase/VectorEncoding.ScalarQuantizerType.SQ6|null[0]
+        enum entry SQ8 // kotbase/VectorEncoding.ScalarQuantizerType.SQ8|null[0]
+
+        final val entries // kotbase/VectorEncoding.ScalarQuantizerType.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<kotbase/VectorEncoding.ScalarQuantizerType> // kotbase/VectorEncoding.ScalarQuantizerType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): kotbase/VectorEncoding.ScalarQuantizerType // kotbase/VectorEncoding.ScalarQuantizerType.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<kotbase/VectorEncoding.ScalarQuantizerType> // kotbase/VectorEncoding.ScalarQuantizerType.values|values#static(){}[0]
+    }
+
+    final object Companion { // kotbase/VectorEncoding.Companion|null[0]
+        final fun none(): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.none|none(){}[0]
+        final fun productQuantizer(kotlin/Long, kotlin/Long): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.productQuantizer|productQuantizer(kotlin.Long;kotlin.Long){}[0]
+        final fun scalarQuantizer(kotbase/VectorEncoding.ScalarQuantizerType): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.scalarQuantizer|scalarQuantizer(kotbase.VectorEncoding.ScalarQuantizerType){}[0]
     }
 }
 
@@ -2150,6 +2305,7 @@ final class kotbase/Collection : kotlin/AutoCloseable { // kotbase/Collection|nu
     final fun equals(kotlin/Any?): kotlin/Boolean // kotbase/Collection.equals|equals(kotlin.Any?){}[0]
     final fun getDocument(kotlin/String): kotbase/Document? // kotbase/Collection.getDocument|getDocument(kotlin.String){}[0]
     final fun getDocumentExpiration(kotlin/String): kotlinx.datetime/Instant? // kotbase/Collection.getDocumentExpiration|getDocumentExpiration(kotlin.String){}[0]
+    final fun getIndex(kotlin/String): kotbase/QueryIndex? // kotbase/Collection.getIndex|getIndex(kotlin.String){}[0]
     final fun hashCode(): kotlin/Int // kotbase/Collection.hashCode|hashCode(){}[0]
     final fun purge(kotbase/Document) // kotbase/Collection.purge|purge(kotbase.Document){}[0]
     final fun purge(kotlin/String) // kotbase/Collection.purge|purge(kotlin.String){}[0]
@@ -2310,9 +2466,13 @@ final class kotbase/DatabaseConfiguration { // kotbase/DatabaseConfiguration|nul
     final var isFullSync // kotbase/DatabaseConfiguration.isFullSync|{}isFullSync[0]
         final fun <get-isFullSync>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isFullSync.<get-isFullSync>|<get-isFullSync>(){}[0]
         final fun <set-isFullSync>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isFullSync.<set-isFullSync>|<set-isFullSync>(kotlin.Boolean){}[0]
+    final var isMMapEnabled // kotbase/DatabaseConfiguration.isMMapEnabled|{}isMMapEnabled[0]
+        final fun <get-isMMapEnabled>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isMMapEnabled.<get-isMMapEnabled>|<get-isMMapEnabled>(){}[0]
+        final fun <set-isMMapEnabled>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isMMapEnabled.<set-isMMapEnabled>|<set-isMMapEnabled>(kotlin.Boolean){}[0]
 
     final fun setDirectory(kotlin/String): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setDirectory|setDirectory(kotlin.String){}[0]
     final fun setFullSync(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setFullSync|setFullSync(kotlin.Boolean){}[0]
+    final fun setMMapEnabled(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setMMapEnabled|setMMapEnabled(kotlin.Boolean){}[0]
 }
 
 // Targets: [linux, mingwX64]
@@ -2599,6 +2759,14 @@ final class kotbase/QueryChange { // kotbase/QueryChange|null[0]
 }
 
 // Targets: [linux, mingwX64]
+final class kotbase/QueryIndex { // kotbase/QueryIndex|null[0]
+    final val collection // kotbase/QueryIndex.collection|{}collection[0]
+        final fun <get-collection>(): kotbase/Collection // kotbase/QueryIndex.collection.<get-collection>|<get-collection>(){}[0]
+    final val name // kotbase/QueryIndex.name|{}name[0]
+        final fun <get-name>(): kotlin/String // kotbase/QueryIndex.name.<get-name>|<get-name>(){}[0]
+}
+
+// Targets: [linux, mingwX64]
 final class kotbase/ReplicatedDocument { // kotbase/ReplicatedDocument|null[0]
     final val collection // kotbase/ReplicatedDocument.collection|{}collection[0]
         final fun <get-collection>(): kotlin/String // kotbase/ReplicatedDocument.collection.<get-collection>|<get-collection>(){}[0]
@@ -2620,6 +2788,8 @@ final class kotbase/Replicator : kotlin/AutoCloseable { // kotbase/Replicator|nu
 
     final val config // kotbase/Replicator.config|{}config[0]
         final fun <get-config>(): kotbase/ReplicatorConfiguration // kotbase/Replicator.config.<get-config>|<get-config>(){}[0]
+    final val isClosed // kotbase/Replicator.isClosed|{}isClosed[0]
+        final fun <get-isClosed>(): kotlin/Boolean // kotbase/Replicator.isClosed.<get-isClosed>|<get-isClosed>(){}[0]
     final val pendingDocumentIds // kotbase/Replicator.pendingDocumentIds|{}pendingDocumentIds[0]
         final fun <get-pendingDocumentIds>(): kotlin.collections/Set<kotlin/String> // kotbase/Replicator.pendingDocumentIds.<get-pendingDocumentIds>|<get-pendingDocumentIds>(){}[0]
     final val serverCertificates // kotbase/Replicator.serverCertificates|{}serverCertificates[0]
@@ -2902,6 +3072,27 @@ final class kotbase/ValueIndexItem { // kotbase/ValueIndexItem|null[0]
     final object Companion { // kotbase/ValueIndexItem.Companion|null[0]
         final fun expression(kotbase/Expression): kotbase/ValueIndexItem // kotbase/ValueIndexItem.Companion.expression|expression(kotbase.Expression){}[0]
         final fun property(kotlin/String): kotbase/ValueIndexItem // kotbase/ValueIndexItem.Companion.property|property(kotlin.String){}[0]
+    }
+}
+
+// Targets: [linux, mingwX64]
+final class kotbase/VectorEncoding { // kotbase/VectorEncoding|null[0]
+    final enum class ScalarQuantizerType : kotlin/Enum<kotbase/VectorEncoding.ScalarQuantizerType> { // kotbase/VectorEncoding.ScalarQuantizerType|null[0]
+        enum entry SQ4 // kotbase/VectorEncoding.ScalarQuantizerType.SQ4|null[0]
+        enum entry SQ6 // kotbase/VectorEncoding.ScalarQuantizerType.SQ6|null[0]
+        enum entry SQ8 // kotbase/VectorEncoding.ScalarQuantizerType.SQ8|null[0]
+
+        final val entries // kotbase/VectorEncoding.ScalarQuantizerType.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<kotbase/VectorEncoding.ScalarQuantizerType> // kotbase/VectorEncoding.ScalarQuantizerType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): kotbase/VectorEncoding.ScalarQuantizerType // kotbase/VectorEncoding.ScalarQuantizerType.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<kotbase/VectorEncoding.ScalarQuantizerType> // kotbase/VectorEncoding.ScalarQuantizerType.values|values#static(){}[0]
+    }
+
+    final object Companion { // kotbase/VectorEncoding.Companion|null[0]
+        final fun none(): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.none|none(){}[0]
+        final fun productQuantizer(kotlin/Long, kotlin/Long): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.productQuantizer|productQuantizer(kotlin.Long;kotlin.Long){}[0]
+        final fun scalarQuantizer(kotbase/VectorEncoding.ScalarQuantizerType): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.scalarQuantizer|scalarQuantizer(kotbase.VectorEncoding.ScalarQuantizerType){}[0]
     }
 }
 

@@ -40,6 +40,14 @@ public final class kotbase/ArrayFunction {
 	public final fun length (Lkotbase/Expression;)Lkotbase/Expression;
 }
 
+public final class kotbase/ArrayIndexConfiguration : kotbase/IndexConfiguration {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
+	public final fun getPath ()Ljava/lang/String;
+}
+
 public final class kotbase/ArrayKt {
 	public static final fun get (Lkotbase/Array;I)Lkotbase/Fragment;
 }
@@ -203,6 +211,7 @@ public final class kotbase/Collection : kotbase/internal/DelegatedClass, java/la
 	public final fun getDocument (Ljava/lang/String;)Lkotbase/Document;
 	public final fun getDocumentExpiration (Ljava/lang/String;)Lkotlinx/datetime/Instant;
 	public final fun getFullName ()Ljava/lang/String;
+	public final fun getIndex (Ljava/lang/String;)Lkotbase/QueryIndex;
 	public final fun getIndexes ()Ljava/util/Set;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getScope ()Lkotbase/Scope;
@@ -341,6 +350,10 @@ public final class kotbase/CouchbaseLite {
 	public final fun init (Landroid/content/Context;ZLjava/io/File;Ljava/io/File;)V
 }
 
+public final class kotbase/CouchbaseLiteEEAndroid {
+	public static final fun enableVectorSearch (Lkotbase/CouchbaseLite;)V
+}
+
 public final class kotbase/CouchbaseLiteExceptionKt {
 	public static final fun getCode (Lcom/couchbase/lite/CouchbaseLiteException;)I
 	public static final fun getDomain (Lcom/couchbase/lite/CouchbaseLiteException;)Ljava/lang/String;
@@ -430,10 +443,13 @@ public final class kotbase/DatabaseConfiguration : kotbase/internal/DelegatedCla
 	public fun <init> (Lkotbase/DatabaseConfiguration;)V
 	public final fun getDirectory ()Ljava/lang/String;
 	public final fun isFullSync ()Z
+	public final fun isMMapEnabled ()Z
 	public final fun setDirectory (Ljava/lang/String;)Lkotbase/DatabaseConfiguration;
 	public final fun setDirectory (Ljava/lang/String;)V
 	public final fun setFullSync (Z)Lkotbase/DatabaseConfiguration;
 	public final fun setFullSync (Z)V
+	public final fun setMMapEnabled (Z)Lkotbase/DatabaseConfiguration;
+	public final fun setMMapEnabled (Z)V
 }
 
 public final class kotbase/DatabaseConfigurationKt {
@@ -467,6 +483,7 @@ public final class kotbase/Defaults {
 public final class kotbase/Defaults$Database {
 	public static final field FULL_SYNC Z
 	public static final field INSTANCE Lkotbase/Defaults$Database;
+	public static final field MMAP_ENABLED Z
 }
 
 public final class kotbase/Defaults$FullTextIndex {
@@ -474,18 +491,11 @@ public final class kotbase/Defaults$FullTextIndex {
 	public static final field INSTANCE Lkotbase/Defaults$FullTextIndex;
 }
 
-public final class kotbase/Defaults$Listener {
-	public static final field DISABLE_TLS Z
-	public static final field ENABLE_DELTA_SYNC Z
-	public static final field INSTANCE Lkotbase/Defaults$Listener;
-	public static final field PORT I
-	public static final field READ_ONLY Z
-}
-
 public final class kotbase/Defaults$LogFile {
 	public static final field INSTANCE Lkotbase/Defaults$LogFile;
 	public static final field MAX_ROTATE_COUNT I
 	public static final field MAX_SIZE J
+	public static final field USE_PLAINTEXT Z
 	public static final field USE_PLAIN_TEXT Z
 }
 
@@ -497,9 +507,31 @@ public final class kotbase/Defaults$Replicator {
 	public static final field INSTANCE Lkotbase/Defaults$Replicator;
 	public static final field MAX_ATTEMPTS_CONTINUOUS I
 	public static final field MAX_ATTEMPTS_SINGLE_SHOT I
+	public static final field MAX_ATTEMPTS_WAIT_TIME I
 	public static final field MAX_ATTEMPT_WAIT_TIME I
 	public static final field SELF_SIGNED_CERTIFICATE_ONLY Z
 	public final fun getTYPE ()Lkotbase/ReplicatorType;
+}
+
+public final class kotbase/DefaultsKt {
+	public static final fun getListener (Lkotbase/Defaults;)Lkotbase/DefaultsListener;
+	public static final fun getVectorIndex (Lkotbase/Defaults;)Lkotbase/DefaultsVectorIndex;
+}
+
+public abstract interface class kotbase/DefaultsListener {
+	public abstract fun getDISABLE_TLS ()Z
+	public abstract fun getENABLE_DELTA_SYNC ()Z
+	public abstract fun getPORT ()I
+	public abstract fun getREAD_ONLY ()Z
+}
+
+public abstract interface class kotbase/DefaultsVectorIndex {
+	public abstract fun getDISTANCE_METRIC ()Lkotbase/VectorIndexConfiguration$DistanceMetric;
+	public abstract fun getENCODING ()Lkotbase/VectorEncoding$ScalarQuantizerType;
+	public abstract fun getIS_LAZY ()Z
+	public abstract fun getMAX_TRAINING_SIZE ()J
+	public abstract fun getMIN_TRAINING_SIZE ()J
+	public abstract fun getNUM_PROBES ()J
 }
 
 public class kotbase/Dictionary : kotbase/internal/DelegatedClass, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
@@ -703,6 +735,7 @@ public final class kotbase/FullTextIndex : kotbase/Index {
 }
 
 public final class kotbase/FullTextIndexConfiguration : kotbase/IndexConfiguration {
+	public fun <init> (Ljava/util/List;)V
 	public fun <init> ([Ljava/lang/String;)V
 	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 	public final fun getLanguage ()Ljava/lang/String;
@@ -835,6 +868,28 @@ public abstract class kotbase/IndexConfiguration : kotbase/internal/DelegatedCla
 }
 
 public abstract interface class kotbase/IndexExpression {
+}
+
+public abstract interface class kotbase/IndexUpdater : java/lang/AutoCloseable, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+	public abstract fun close ()V
+	public abstract fun finish ()V
+	public abstract fun getArray (I)Lkotbase/Array;
+	public abstract fun getBlob (I)Lkotbase/Blob;
+	public abstract fun getBoolean (I)Z
+	public abstract fun getCount ()I
+	public abstract fun getDate (I)Lkotlinx/datetime/Instant;
+	public abstract fun getDictionary (I)Lkotbase/Dictionary;
+	public abstract fun getDouble (I)D
+	public abstract fun getFloat (I)F
+	public abstract fun getInt (I)I
+	public abstract fun getLong (I)J
+	public abstract fun getNumber (I)Ljava/lang/Number;
+	public abstract fun getString (I)Ljava/lang/String;
+	public abstract fun getValue (I)Ljava/lang/Object;
+	public abstract fun setVector (Ljava/util/List;I)V
+	public abstract fun skipVector (I)V
+	public abstract fun toJSON ()Ljava/lang/String;
+	public abstract fun toList ()Ljava/util/List;
 }
 
 public class kotbase/Join : kotbase/internal/DelegatedClass {
@@ -1279,6 +1334,15 @@ public final class kotbase/QueryChange : kotbase/internal/DelegatedClass {
 	public final fun getResults ()Lkotbase/ResultSet;
 }
 
+public final class kotbase/QueryIndex : kotbase/internal/DelegatedClass {
+	public final fun getCollection ()Lkotbase/Collection;
+	public final fun getName ()Ljava/lang/String;
+}
+
+public final class kotbase/QueryIndexEEJvm {
+	public static final fun beginUpdate (Lkotbase/QueryIndex;I)Lkotbase/IndexUpdater;
+}
+
 public final class kotbase/ReplicatedDocument : kotbase/internal/DelegatedClass {
 	public final fun getCollection ()Ljava/lang/String;
 	public final fun getError ()Lcom/couchbase/lite/CouchbaseLiteException;
@@ -1301,6 +1365,7 @@ public final class kotbase/Replicator : kotbase/internal/DelegatedClass, java/la
 	public final fun getPendingDocumentIds (Lkotbase/Collection;)Ljava/util/Set;
 	public final fun getServerCertificates ()Ljava/util/List;
 	public final fun getStatus ()Lkotbase/ReplicatorStatus;
+	public final fun isClosed ()Z
 	public final fun isDocumentPending (Ljava/lang/String;)Z
 	public final fun isDocumentPending (Ljava/lang/String;Lkotbase/Collection;)Z
 	public final fun removeChangeListener (Lkotbase/ListenerToken;)V
@@ -1620,6 +1685,7 @@ public final class kotbase/ValueIndex : kotbase/Index {
 }
 
 public final class kotbase/ValueIndexConfiguration : kotbase/IndexConfiguration {
+	public fun <init> (Ljava/util/List;)V
 	public fun <init> ([Ljava/lang/String;)V
 	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
 }
@@ -1636,6 +1702,62 @@ public final class kotbase/ValueIndexItem$Companion {
 
 public final class kotbase/VariableExpression : kotbase/Expression {
 	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
+}
+
+public final class kotbase/VectorEncoding : kotbase/internal/DelegatedClass {
+	public static final field Companion Lkotbase/VectorEncoding$Companion;
+	public synthetic fun <init> (Lcom/couchbase/lite/VectorEncoding;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class kotbase/VectorEncoding$Companion {
+	public final fun none ()Lkotbase/VectorEncoding;
+	public final fun productQuantizer (JJ)Lkotbase/VectorEncoding;
+	public final fun scalarQuantizer (Lkotbase/VectorEncoding$ScalarQuantizerType;)Lkotbase/VectorEncoding;
+}
+
+public final class kotbase/VectorEncoding$ScalarQuantizerType : java/lang/Enum {
+	public static final field SQ4 Lkotbase/VectorEncoding$ScalarQuantizerType;
+	public static final field SQ6 Lkotbase/VectorEncoding$ScalarQuantizerType;
+	public static final field SQ8 Lkotbase/VectorEncoding$ScalarQuantizerType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lkotbase/VectorEncoding$ScalarQuantizerType;
+	public static fun values ()[Lkotbase/VectorEncoding$ScalarQuantizerType;
+}
+
+public final class kotbase/VectorIndexConfiguration : kotbase/IndexConfiguration {
+	public fun <init> (Ljava/lang/String;JJ)V
+	public synthetic fun getActual$couchbase_lite_ee_release ()Ljava/lang/Object;
+	public final fun getCentroids ()J
+	public final fun getDimensions ()J
+	public final fun getEncoding ()Lkotbase/VectorEncoding;
+	public final fun getExpression ()Ljava/lang/String;
+	public final fun getMaxTrainingSize ()J
+	public final fun getMetric ()Lkotbase/VectorIndexConfiguration$DistanceMetric;
+	public final fun getMinTrainingSize ()J
+	public final fun getNumProbes ()J
+	public final fun isLazy ()Z
+	public final fun setEncoding (Lkotbase/VectorEncoding;)Lkotbase/VectorIndexConfiguration;
+	public final fun setEncoding (Lkotbase/VectorEncoding;)V
+	public final fun setLazy (Z)Lkotbase/VectorIndexConfiguration;
+	public final fun setLazy (Z)V
+	public final fun setMaxTrainingSize (J)Lkotbase/VectorIndexConfiguration;
+	public final fun setMaxTrainingSize (J)V
+	public final fun setMetric (Lkotbase/VectorIndexConfiguration$DistanceMetric;)Lkotbase/VectorIndexConfiguration;
+	public final fun setMetric (Lkotbase/VectorIndexConfiguration$DistanceMetric;)V
+	public final fun setMinTrainingSize (J)Lkotbase/VectorIndexConfiguration;
+	public final fun setMinTrainingSize (J)V
+	public final fun setNumProbes (J)Lkotbase/VectorIndexConfiguration;
+	public final fun setNumProbes (J)V
+}
+
+public final class kotbase/VectorIndexConfiguration$DistanceMetric : java/lang/Enum {
+	public static final field COSINE Lkotbase/VectorIndexConfiguration$DistanceMetric;
+	public static final field DOT Lkotbase/VectorIndexConfiguration$DistanceMetric;
+	public static final field EUCLIDEAN Lkotbase/VectorIndexConfiguration$DistanceMetric;
+	public static final field EUCLIDEAN_SQUARED Lkotbase/VectorIndexConfiguration$DistanceMetric;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lkotbase/VectorIndexConfiguration$DistanceMetric;
+	public static fun values ()[Lkotbase/VectorIndexConfiguration$DistanceMetric;
 }
 
 public final class kotbase/Where : kotbase/internal/DelegatedClass, kotbase/GroupByRouter, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query {
