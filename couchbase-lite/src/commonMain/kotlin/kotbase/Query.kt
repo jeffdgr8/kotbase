@@ -30,7 +30,7 @@ public interface Query {
      *
      * @throws CouchbaseLiteException on failure to encode the parameters (e.g., parameter value not supported)
      */
-    @set:Throws(CouchbaseLiteException::class)
+    //@set:Throws(CouchbaseLiteException::class)
     public var parameters: Parameters?
 
     /**

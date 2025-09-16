@@ -15,10 +15,27 @@
  */
 package kotbase
 
-
 /**
  * The representation of a query result. The result set is an iterator over
  * [Result] objects.
+ *
+ * Note: This object retains the Results it contains: closing it will
+ * free the Results, too.  Referencing a Result after closing the ResultSet
+ * that contains it will cause a crash.
+ * This code, for instance will fail.  DO NOT DO THIS:
+ * ```
+ * val results: List<Result>
+ * QueryBuilder.select(SelectResult.expression(Meta.id).`as`("id"))
+ *     .from(DataSource.collection(someCollection))
+ *     .execute()
+ *     .use { rs ->
+ *         results = rs.allResults()
+ *     }
+ * val docs = mutableListOf<String>()
+ * for (result in results) { // SIGSEGV!!!
+ *     result.getString("id")?.let(docs::add)
+ * }
+ * ```
  */
 @OptIn(ExperimentalStdlibApi::class)
 public expect class ResultSet : Iterable<Result>, AutoCloseable {
