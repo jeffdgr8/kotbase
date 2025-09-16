@@ -18,7 +18,11 @@ package kotbase
 /**
  * Full Text Index Configuration
  */
-public expect class FullTextIndexConfiguration(vararg expressions: String) : IndexConfiguration {
+public expect class FullTextIndexConfiguration : IndexConfiguration {
+
+    public constructor(vararg expressions: String)
+
+    public constructor(expressions: List<String>)
 
     /**
      * The language code which is an ISO-639 language such as "en", "fr", etc.
@@ -28,6 +32,12 @@ public expect class FullTextIndexConfiguration(vararg expressions: String) : Ind
      */
     public fun setLanguage(language: String?): FullTextIndexConfiguration
 
+    /**
+     * The language code which is an ISO-639 language such as "en", "fr", etc.
+     * Setting the language code affects how word breaks and word stems are parsed.
+     * If not explicitly set, the current locale's language will be used. Setting
+     * a null, empty, or unrecognized value will disable the language features.
+     */
     public var language: String?
 
     /**
@@ -35,5 +45,8 @@ public expect class FullTextIndexConfiguration(vararg expressions: String) : Ind
      */
     public fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration
 
+    /**
+     * Set the true value to ignore accents/diacritical marks. The default value is false.
+     */
     public var isIgnoringAccents: Boolean
 }

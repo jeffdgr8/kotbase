@@ -18,4 +18,9 @@ package kotbase
 /**
  * Configuration for a standard database index.
  */
-public expect class ValueIndexConfiguration(vararg expressions: String) : IndexConfiguration
+public expect class ValueIndexConfiguration : IndexConfiguration {
+
+    public constructor(vararg expressions: String)
+
+    public constructor(expressions: List<String>)
+}

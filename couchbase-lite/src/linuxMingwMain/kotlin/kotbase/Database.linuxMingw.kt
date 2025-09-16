@@ -744,24 +744,7 @@ private constructor(
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
         mustBeOpen {
-            wrapCBLError { error ->
-                memScoped {
-                    when (config) {
-                        is ValueIndexConfiguration -> CBLDatabase_CreateValueIndex(
-                            actual,
-                            name.toFLString(this),
-                            config.actual,
-                            error
-                        )
-                        is FullTextIndexConfiguration -> CBLDatabase_CreateFullTextIndex(
-                            actual,
-                            name.toFLString(this),
-                            config.actual,
-                            error
-                        )
-                    }
-                }
-            }
+            defaultCollection.createIndex(name, config)
         }
     }
 

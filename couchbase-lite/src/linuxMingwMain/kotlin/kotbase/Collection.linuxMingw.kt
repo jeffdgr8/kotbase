@@ -345,25 +345,7 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
-        wrapCBLError { error ->
-            memScoped {
-                @Suppress("NO_ELSE_IN_WHEN")
-                when (config) {
-                    is ValueIndexConfiguration -> CBLCollection_CreateValueIndex(
-                        actual,
-                        name.toFLString(this),
-                        config.actual,
-                        error
-                    )
-                    is FullTextIndexConfiguration -> CBLCollection_CreateFullTextIndex(
-                        actual,
-                        name.toFLString(this),
-                        config.actual,
-                        error
-                    )
-                }
-            }
-        }
+        createIndexImpl(name, config)
     }
 
     @Throws(CouchbaseLiteException::class)

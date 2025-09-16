@@ -22,6 +22,8 @@ private constructor(override val actual: CBLFullTextIndexConfiguration) : IndexC
 
     public actual constructor(vararg expressions: String) : this(CBLFullTextIndexConfiguration(*expressions))
 
+    public actual constructor(expressions: List<String>) : this(CBLFullTextIndexConfiguration(expressions))
+
     public actual fun setLanguage(language: String?): FullTextIndexConfiguration {
         actual.language = language
         return this

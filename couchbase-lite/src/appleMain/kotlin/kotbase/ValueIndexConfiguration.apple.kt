@@ -20,7 +20,7 @@ import cocoapods.CouchbaseLite.CBLValueIndexConfiguration
 public actual class ValueIndexConfiguration
 private constructor(override val actual: CBLValueIndexConfiguration) : IndexConfiguration(actual) {
 
-    public actual constructor(vararg expressions: String) : this(
-        CBLValueIndexConfiguration(expressions.toList())
-    )
+    public actual constructor(vararg expressions: String) : this(expressions.toList())
+
+    public actual constructor(expressions: List<String>) : this(CBLValueIndexConfiguration(expressions))
 }
