@@ -17,7 +17,7 @@ package kotbase
 
 public actual class CouchbaseLiteException
 internal constructor(
-    message: String?,
+    message: String,
     cause: Exception?,
     domain: String?,
     code: Int,
@@ -49,7 +49,7 @@ internal constructor(
     private val code: Int = if (code > 0) code else CBLError.Code.UNEXPECTED_ERROR
 
     actual override val message: String
-        get() = "${super.message} ($domain, $code)  [${getVersionInfo()}]"
+        get() = "${super.message} ($domain, $code)"
 
     internal actual fun getDomain(): String = domain
 
@@ -61,5 +61,3 @@ internal constructor(
         return "CouchbaseLiteException{$domain, $code: ${super.message}"
     }
 }
-
-internal expect fun getVersionInfo(): String

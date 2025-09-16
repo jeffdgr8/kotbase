@@ -74,7 +74,3 @@ typedef struct C4Document {
 @interface CBLQueryCollation ()
 - (id) asJSON;
 @end
-
-@interface CBLVersion : NSObject
-+ (NSString*) userAgent;
-@end
