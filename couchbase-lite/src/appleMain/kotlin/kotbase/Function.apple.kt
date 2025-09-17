@@ -22,10 +22,8 @@ public actual object Function {
     public actual fun avg(operand: Expression): Expression =
         Expression(CBLQueryFunction.avg(operand.actual))
 
-    // TODO: remove Expression.value(".") when nullable in 3.1 (pending iOS as well)
-    //  https://forums.couchbase.com/t/function-count-docs-api-clarification/33876
     public actual fun count(operand: Expression?): Expression =
-        Expression(CBLQueryFunction.count(operand?.actual ?: Expression.value(".").actual))
+        Expression(CBLQueryFunction.count(operand?.actual))
 
     public actual fun min(operand: Expression): Expression =
         Expression(CBLQueryFunction.min(operand.actual))

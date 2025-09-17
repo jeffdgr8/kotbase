@@ -23,7 +23,7 @@ public object Defaults {
         public const val FULL_SYNC: Boolean = false
 
         /**
-         * Memory mapped database files are enabled by default, except on MacOS
+         * Memory mapped database files are enabled by default
          */
         public const val MMAP_ENABLED: Boolean = true
     }

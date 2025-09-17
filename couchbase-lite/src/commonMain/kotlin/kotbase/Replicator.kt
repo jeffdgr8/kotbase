@@ -53,10 +53,10 @@ constructor(config: ReplicatorConfiguration) : AutoCloseable {
     public fun start(resetCheckpoint: Boolean)
 
     /**
-     * Stop a running replicator.
+     * Stop a running replicator, first cancelling any pending conflict resolutions.
      * This method does not wait for the replicator to stop.
-     * When the replicator actually stops, it will broadcast a new state, STOPPED,
-     * to change listeners.
+     * When the replicator actually stops, it will broadcast a new state,
+     * STOPPED, to change listeners.
      */
     public fun stop()
 

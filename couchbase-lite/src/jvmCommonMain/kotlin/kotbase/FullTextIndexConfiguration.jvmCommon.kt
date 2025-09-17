@@ -45,4 +45,15 @@ private constructor(override val actual: CBLFullTextIndexConfiguration) : IndexC
         set(value) {
             actual.ignoreAccents(value)
         }
+
+    public actual fun setWhere(where: String?): FullTextIndexConfiguration {
+        actual.where = where
+        return this
+    }
+
+    public actual var where: String?
+        get() = actual.where
+        set(value) {
+            actual.where = value
+        }
 }

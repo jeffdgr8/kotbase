@@ -28,7 +28,7 @@ private constructor(override var actual: CBLFullTextIndexConfiguration) : IndexC
     public actual constructor(expressions: List<String>) : this(
         CBLFullTextIndexConfiguration(
             expressions,
-            false,
+            Defaults.FullTextIndex.IGNORE_ACCENTS,
             NSLocale.currentLocale.objectForKey(NSLocaleLanguageCode) as String?
         )
     )
@@ -43,6 +43,7 @@ private constructor(override var actual: CBLFullTextIndexConfiguration) : IndexC
         set(value) {
             actual = CBLFullTextIndexConfiguration(
                 actual.expressions,
+                actual.where,
                 actual.ignoreAccents,
                 value
             )
@@ -58,7 +59,24 @@ private constructor(override var actual: CBLFullTextIndexConfiguration) : IndexC
         set(value) {
             actual = CBLFullTextIndexConfiguration(
                 actual.expressions,
+                actual.where,
                 value,
+                actual.language
+            )
+        }
+
+    public actual fun setWhere(where: String?): FullTextIndexConfiguration {
+        this.where = where
+        return this
+    }
+
+    public actual var where: String?
+        get() = actual.where
+        set(value) {
+            actual = CBLFullTextIndexConfiguration(
+                actual.expressions,
+                value,
+                actual.ignoreAccents,
                 actual.language
             )
         }
