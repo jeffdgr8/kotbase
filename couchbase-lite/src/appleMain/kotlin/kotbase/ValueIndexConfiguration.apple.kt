@@ -18,9 +18,20 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLValueIndexConfiguration
 
 public actual class ValueIndexConfiguration
-private constructor(override val actual: CBLValueIndexConfiguration) : IndexConfiguration(actual) {
+private constructor(override var actual: CBLValueIndexConfiguration) : IndexConfiguration(actual) {
 
     public actual constructor(vararg expressions: String) : this(expressions.toList())
 
     public actual constructor(expressions: List<String>) : this(CBLValueIndexConfiguration(expressions))
+
+    public actual fun setWhere(where: String?): ValueIndexConfiguration {
+        this.where = where
+        return this
+    }
+
+    public actual var where: String?
+        get() = actual.where
+        set(value) {
+            actual = CBLValueIndexConfiguration(actual.expressions, value)
+        }
 }

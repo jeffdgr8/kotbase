@@ -36,7 +36,7 @@ public expect class MessageEndpointListenerConfiguration {
 
     /**
      * Create a MessageEndpointListenerConfiguration with the passed protocol type, for the passed Collections
-     * The passed set must contain at least one collection and all of the collections it contains must belong
+     * The passed set must contain at least one collection and all the collections it contains must belong
      * to the same scope and the same database, otherwise an InvalidArgumentException will be thrown.
      * If one of the specified collections is deleted during replication, connected clients will be closed
      * with an error.

@@ -23,4 +23,8 @@ public expect class ValueIndexConfiguration : IndexConfiguration {
     public constructor(vararg expressions: String)
 
     public constructor(expressions: List<String>)
+
+    public fun setWhere(where: String?): ValueIndexConfiguration
+
+    public var where: String?
 }

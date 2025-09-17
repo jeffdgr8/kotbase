@@ -49,4 +49,16 @@ public expect class FullTextIndexConfiguration : IndexConfiguration {
      * Set the true value to ignore accents/diacritical marks. The default value is false.
      */
     public var isIgnoringAccents: Boolean
+
+    /**
+     * A predicate expression defining conditions for indexing documents.
+     * Only documents satisfying the predicate are included, enabling partial indexes.
+     */
+    public fun setWhere(where: String?): FullTextIndexConfiguration
+
+    /**
+     * A predicate expression defining conditions for indexing documents.
+     * Only documents satisfying the predicate are included, enabling partial indexes.
+     */
+    public var where: String?
 }
