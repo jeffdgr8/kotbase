@@ -23,7 +23,6 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalStdlibApi::class)
 class CollectionListenerTest : BaseDbTest() {
 
     // 8.4.1 Test that change listeners can be added to a collection and that they receive changes correctly.

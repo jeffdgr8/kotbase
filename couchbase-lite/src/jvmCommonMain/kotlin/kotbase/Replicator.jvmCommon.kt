@@ -16,8 +16,8 @@
 package kotbase
 
 import com.couchbase.lite.testReplicator
+import kotbase.ext.dispatcher
 import kotbase.internal.DelegatedClass
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -98,7 +98,7 @@ internal constructor(
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListener(
-            context[CoroutineDispatcher]?.asExecutor(),
+            context.dispatcher?.asExecutor(),
             listener.convert(this, scope)
         )
         return SuspendListenerToken(scope, token)
@@ -106,7 +106,7 @@ internal constructor(
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: ReplicatorChangeSuspendListener) {
         val token = actual.addChangeListener(
-            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            scope.coroutineContext.dispatcher?.asExecutor(),
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
@@ -123,7 +123,7 @@ internal constructor(
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addDocumentReplicationListener(
-            context[CoroutineDispatcher]?.asExecutor(),
+            context.dispatcher?.asExecutor(),
             listener.convert(this, scope)
         )
         return SuspendListenerToken(scope, token)
@@ -134,7 +134,7 @@ internal constructor(
         listener: DocumentReplicationSuspendListener
     ) {
         val token = actual.addDocumentReplicationListener(
-            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            scope.coroutineContext.dispatcher?.asExecutor(),
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {

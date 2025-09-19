@@ -18,7 +18,7 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLMessageEndpointListener
 import kotbase.internal.DelegatedClass
 import kotbase.ext.asDispatchQueue
-import kotlinx.coroutines.CoroutineDispatcher
+import kotbase.ext.dispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -53,7 +53,7 @@ internal constructor(actual: CBLMessageEndpointListener) :
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListenerWithQueue(
-            context[CoroutineDispatcher]?.asDispatchQueue(),
+            context.dispatcher?.asDispatchQueue(),
             listener.convert(scope)
         )
         return SuspendListenerToken(scope, token)
@@ -61,7 +61,7 @@ internal constructor(actual: CBLMessageEndpointListener) :
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: MessageEndpointListenerChangeSuspendListener) {
         val token = actual.addChangeListenerWithQueue(
-            scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
+            scope.coroutineContext.dispatcher?.asDispatchQueue(),
             listener.convert(scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
