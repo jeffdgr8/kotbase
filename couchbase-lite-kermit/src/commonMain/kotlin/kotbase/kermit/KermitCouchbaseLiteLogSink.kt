@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("MemberVisibilityCanBePrivate", "DEPRECATION")
-
 package kotbase.kermit
 
+import co.touchlab.kermit.Logger
+import co.touchlab.kermit.Severity
 import kotbase.LogDomain
 import kotbase.LogLevel
-import kotbase.Logger
-import co.touchlab.kermit.Logger as KermitLogger
+import kotbase.logging.LogSink
 
 /**
- * Couchbase Lite custom Logger that logs to Kermit
+ * Couchbase Lite custom LogSink that logs to Kermit
  *
  * Disable default console logs and set as custom logger:
  *
  * ```
- * Database.log.console.level = LogLevel.NONE
- * Database.log.custom = KermitCouchbaseLiteLogger(kermit)
+ * LogSinks.console = ConsoleLogSink(LogLevel.NONE)
+ * LogSinks.custom = CustomLogSink(LogLevel.WARNING, logSink = KermitCouchbaseLiteLogSink(kermit))
  * ```
  *
  * Note Couchbase Lite `LogLevel.DEBUG` is lower than
@@ -41,30 +40,13 @@ import co.touchlab.kermit.Logger as KermitLogger
  * `LogLevel.DEBUG` logs are only logged in debug builds of Couchbase
  * Lite, this generally isn't an issue.
  */
-@Deprecated("Use KermitCouchbaseLiteLogSink")
-public class KermitCouchbaseLiteLogger(
-    kermit: KermitLogger,
-    override val level: LogLevel = LogLevel.WARNING
-) : Logger {
+public class KermitCouchbaseLiteLogSink(kermit: Logger) : LogSink {
 
     private val log = kermit.withTag(TAG)
 
-    override fun log(level: LogLevel, domain: LogDomain, message: String) {
-        if (level < this.level || !domains.contains(domain)) return
+    override fun writeLog(level: LogLevel, domain: LogDomain, message: String) {
         log.log(level.severity, domain.tag, null, message)
     }
-
-    /**
-     * The domains that will be considered for writing to the console log.
-     */
-    public var domains: Set<LogDomain> = LogDomain.ALL_DOMAINS
-
-    /**
-     * Sets the domains that will be considered for writing to the console log.
-     *
-     * @param domains The domains to make active (vararg)
-     */
-    public fun setDomains(vararg domains: LogDomain) { this.domains = domains.toSet() }
 
     private val LogDomain.tag: String
         @Suppress("REDUNDANT_ELSE_IN_WHEN")
@@ -86,3 +68,14 @@ public class KermitCouchbaseLiteLogger(
         const val TAG_LISTENER = "$TAG-LISTENER"
     }
 }
+
+internal val LogLevel.severity: Severity
+    get() = when (this) {
+        // LogLevel.DEBUG is lowest CBL log level and only available in debug builds
+        LogLevel.DEBUG -> Severity.Debug
+        LogLevel.VERBOSE -> Severity.Verbose
+        LogLevel.INFO -> Severity.Info
+        LogLevel.WARNING -> Severity.Warn
+        LogLevel.ERROR -> Severity.Error
+        else -> Severity.Assert
+    }

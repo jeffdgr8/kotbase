@@ -18,7 +18,7 @@ package kotbase
 /**
  * Contains methods required for the tests to run on both Android and Java platforms.
  */
-expect abstract class PlatformTest() {
+expect abstract class PlatformTest(useLegacyLogging: Boolean = false) {
 
     /* initialize the platform */
     fun setupPlatform()
