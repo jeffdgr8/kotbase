@@ -26,12 +26,12 @@ class PreInitTest : BaseTest() {
 
     @BeforeTest
     fun setUpPreInitTest() {
-        CouchbaseLiteInternal.reset(false)
+        CouchbaseLiteInternal.reset()
     }
 
     @AfterTest
     fun tearDownPreInitTest() {
-        CouchbaseLiteInternal.reset(true)
+        CouchbaseLiteInternal.reset()
     }
 
     @Test
