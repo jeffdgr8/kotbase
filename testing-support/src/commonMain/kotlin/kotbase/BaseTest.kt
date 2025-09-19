@@ -35,7 +35,7 @@ import kotlin.test.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-abstract class BaseTest : PlatformTest() {
+abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLegacyLogging) {
 
     protected lateinit var testSerialCoroutineContext: CoroutineContext
     private var startTime: Instant = Instant.DISTANT_PAST
