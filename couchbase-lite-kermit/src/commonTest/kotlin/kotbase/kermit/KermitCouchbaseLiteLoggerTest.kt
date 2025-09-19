@@ -31,10 +31,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+// This test class can only run by itself, as it requires legacy logging
+@Ignore
 class KermitCouchbaseLiteLoggerTest : BaseTest(useLegacyLogging = true) {
 
     class TestLogWriter(
