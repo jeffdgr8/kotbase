@@ -52,6 +52,8 @@ public expect class Database : AutoCloseable {
          * Gets the logging controller for the Couchbase Lite library to configure the
          * logging settings and add custom logging.
          */
+        @Suppress("DEPRECATION")
+        @Deprecated("Use LogSinks.file")
         public val log: Log
 
         /**

@@ -18,6 +18,8 @@ package kotbase
 /**
  * A class that sends log messages to the system log, available via 'logcat' on Android.
  */
+@Suppress("DEPRECATION")
+@Deprecated("Use ConsoleLogSink")
 public expect class ConsoleLogger : Logger {
 
     /**
@@ -28,7 +30,7 @@ public expect class ConsoleLogger : Logger {
     override fun log(level: LogLevel, domain: LogDomain, message: String)
 
     /**
-     * The domains that will be considered for writing to the console log.
+     * The set of domains currently being logged to the console.
      */
     public var domains: Set<LogDomain>
 

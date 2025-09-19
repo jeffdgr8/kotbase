@@ -20,6 +20,7 @@ package kotbase
  * to route log messages to an arbitrary endpoint can do so by
  * installing an implementation of this interface with [Log.custom].
  */
+@Deprecated("Use CustomLogSink")
 public interface Logger {
 
     /**

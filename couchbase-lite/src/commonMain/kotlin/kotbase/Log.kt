@@ -13,25 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package kotbase
 
 /**
  * Holder for the three Couchbase Lite loggers: console, file, and custom.
  */
+@Deprecated("Use LogSinks")
 public expect class Log {
 
     /**
      * The logger that writes to the system console
      */
+    @Deprecated("Use LogSinks.console")
     public val console: ConsoleLogger
 
     /**
      * The logger that writes to log files
      */
+    @Deprecated("Use LogSinks.file")
     public val file: FileLogger
 
     /**
      * An application specific logging method
      */
+    @Deprecated("Use LogSinks.custom")
     public var custom: Logger?
 }

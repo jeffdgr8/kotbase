@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package kotbase
 
 import kotbase.internal.DelegatedClass
 import com.couchbase.lite.FileLogger as CBLFileLogger
 
+@Deprecated("Use FileLogSink")
 public actual class FileLogger
 internal constructor(override val actual: CBLFileLogger) : DelegatedClass<CBLFileLogger>(actual), Logger {
 

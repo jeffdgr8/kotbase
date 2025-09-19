@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kotbase
+package kotbase.logging
+
+import kotbase.LogDomain
+import kotbase.LogLevel
 
 /**
- * Log domain
+ * A log sink that writes log messages the system console.
  */
-public expect enum class LogDomain {
-    DATABASE,
-    QUERY,
-    REPLICATOR,
-    NETWORK,
-    LISTENER;
+public class ConsoleLogSink
+public constructor(internal val level: LogLevel, domains: Collection<LogDomain>?) {
 
-    public companion object {
+    internal val domains = domains?.toSet().orEmpty().ifEmpty { LogDomain.ALL }
 
-        /**
-         * All domains.
-         */
-        public val ALL: Set<LogDomain>
-
-        @Deprecated(
-            "Use LogDomain.ALL",
-            ReplaceWith("LogDomain.ALL")
-        )
-        public val ALL_DOMAINS: Set<LogDomain>
-    }
+    public constructor(level: LogLevel, vararg domains: LogDomain) : this(level, domains.toSet())
 }

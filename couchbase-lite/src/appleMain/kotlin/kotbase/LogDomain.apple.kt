@@ -35,7 +35,14 @@ public actual enum class LogDomain {
 
     public actual companion object {
 
-        public actual val ALL_DOMAINS: Set<LogDomain> = entries.toSet()
+        public actual val ALL: Set<LogDomain> = entries.toSet()
+
+        @Deprecated(
+            "Use LogDomain.ALL",
+            ReplaceWith("LogDomain.ALL")
+        )
+        public actual val ALL_DOMAINS: Set<LogDomain>
+            get() = ALL
 
         internal fun from(logDomain: CBLLogDomain): LogDomain = when (logDomain) {
             kCBLLogDomainDatabase -> DATABASE

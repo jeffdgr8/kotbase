@@ -36,7 +36,14 @@ public actual enum class LogDomain {
 
     public actual companion object {
 
-        public actual val ALL_DOMAINS: Set<LogDomain> = entries.toSet()
+        public actual val ALL: Set<LogDomain> = entries.toSet()
+
+        @Deprecated(
+            "Use LogDomain.ALL",
+            ReplaceWith("LogDomain.ALL")
+        )
+        public actual val ALL_DOMAINS: Set<LogDomain>
+            get() = ALL
 
         internal fun from(logDomain: CBLLogDomain): LogDomain = when (logDomain.toUInt()) {
             kCBLLogDomainDatabase -> DATABASE
@@ -47,6 +54,45 @@ public actual enum class LogDomain {
             else -> error("Unexpected CBLLogDomain ($logDomain)")
         }
     }
+}
+
+internal fun UShort.toLogDomain(): Set<LogDomain> = buildSet {
+    val domains = this@toLogDomain.toUInt()
+    if (domains and kCBLLogDomainDatabase != 0U) {
+        add(LogDomain.DATABASE)
+    }
+    if (domains and kCBLLogDomainQuery != 0U) {
+        add(LogDomain.QUERY)
+    }
+    if (domains and kCBLLogDomainReplicator != 0U) {
+        add(LogDomain.REPLICATOR)
+    }
+    if (domains and kCBLLogDomainNetwork != 0U) {
+        add(LogDomain.NETWORK)
+    }
+    if (domains and kCBLLogDomainListener != 0U) {
+        add(LogDomain.LISTENER)
+    }
+}
+
+internal fun Set<LogDomain>.toCBLLogDomain(): UShort {
+    var domains = 0U
+    if (contains(LogDomain.DATABASE)) {
+        domains = domains or kCBLLogDomainDatabase
+    }
+    if (contains(LogDomain.QUERY)) {
+        domains = domains or kCBLLogDomainQuery
+    }
+    if (contains(LogDomain.REPLICATOR)) {
+        domains = domains or kCBLLogDomainReplicator
+    }
+    if (contains(LogDomain.NETWORK)) {
+        domains = domains or kCBLLogDomainNetwork
+    }
+    if (contains(LogDomain.LISTENER)) {
+        domains = domains or kCBLLogDomainListener
+    }
+    return domains.toUShort()
 }
 
 // This constant is enterprise only in the C SDK, but not Java

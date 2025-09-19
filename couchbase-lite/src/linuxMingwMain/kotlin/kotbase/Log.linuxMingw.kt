@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package kotbase
 
 import kotbase.internal.fleece.toKString
@@ -21,16 +23,20 @@ import libcblite.CBLLog_SetCallback
 import libcblite.CBLLog_SetCallbackLevel
 import libcblite.kCBLLogNone
 
+@Deprecated("Use LogSinks")
 public actual class Log internal constructor() {
 
+    @Deprecated("Use LogSinks.console")
     public actual val console: ConsoleLogger by lazy {
         ConsoleLogger()
     }
 
+    @Deprecated("Use LogSinks.file")
     public actual val file: FileLogger by lazy {
         FileLogger()
     }
 
+    @Deprecated("Use LogSinks.custom")
     public actual var custom: Logger?
         get() = topLevelCustom
         set(value) {

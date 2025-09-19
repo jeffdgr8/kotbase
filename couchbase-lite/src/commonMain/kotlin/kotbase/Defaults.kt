@@ -50,6 +50,24 @@ public object Defaults {
         public const val MAX_ROTATE_COUNT: Int = 1
     }
 
+    public object FileLogSink {
+
+        /**
+         * Plaintext is not used, and instead binary encoding is used in log files
+         */
+        public const val USE_PLAINTEXT: Boolean = false
+
+        /**
+         * 512 KiB for the size of a log file
+         */
+        public const val MAX_SIZE: Long = 524288
+
+        /**
+         * 2 files preserved during each log rotation
+         */
+        public const val MAX_KEPT_FILES: Int = 2
+    }
+
     public object FullTextIndex {
         /**
          * Accents and ligatures are not ignored when indexing via full text search

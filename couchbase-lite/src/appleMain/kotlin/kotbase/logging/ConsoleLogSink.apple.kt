@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kotbase
+package kotbase.logging
 
-/**
- * Log domain
- */
-public expect enum class LogDomain {
-    DATABASE,
-    QUERY,
-    REPLICATOR,
-    NETWORK,
-    LISTENER;
+import cocoapods.CouchbaseLite.CBLConsoleLogSink
+import kotbase.LogLevel
+import kotbase.toCBLLogDomain
+import kotbase.toLogDomain
 
-    public companion object {
+internal fun CBLConsoleLogSink.asConsoleLogSink() = ConsoleLogSink(LogLevel.from(level), domains.toLogDomain())
 
-        /**
-         * All domains.
-         */
-        public val ALL: Set<LogDomain>
-
-        @Deprecated(
-            "Use LogDomain.ALL",
-            ReplaceWith("LogDomain.ALL")
-        )
-        public val ALL_DOMAINS: Set<LogDomain>
-    }
-}
+internal val ConsoleLogSink.actual: CBLConsoleLogSink
+    get() = CBLConsoleLogSink(level.actual, domains.toCBLLogDomain())
