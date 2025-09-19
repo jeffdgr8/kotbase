@@ -22,7 +22,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
 
-@OptIn(ExperimentalStdlibApi::class)
 class ResultTest : BaseQueryTest() {
 
     @Test

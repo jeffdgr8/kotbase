@@ -22,7 +22,6 @@ import kotlin.coroutines.CoroutineContext
 /**
  * A Couchbase Lite database.
  */
-@OptIn(ExperimentalStdlibApi::class)
 public expect class Database : AutoCloseable {
 
     /**
