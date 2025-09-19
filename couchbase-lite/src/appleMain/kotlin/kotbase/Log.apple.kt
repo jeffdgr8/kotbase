@@ -18,17 +18,21 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLLog
 import kotbase.internal.DelegatedClass
 
+@Deprecated("Use LogSinks")
 public actual class Log
 internal constructor(actual: CBLLog) : DelegatedClass<CBLLog>(actual) {
 
+    @Deprecated("Use LogSinks.console")
     public actual val console: ConsoleLogger by lazy {
         ConsoleLogger(actual.console)
     }
 
+    @Deprecated("Use LogSinks.file")
     public actual val file: FileLogger by lazy {
         FileLogger(actual.file)
     }
 
+    @Deprecated("Use LogSinks.custom")
     public actual var custom: Logger? = null
         set(value) {
             field = value

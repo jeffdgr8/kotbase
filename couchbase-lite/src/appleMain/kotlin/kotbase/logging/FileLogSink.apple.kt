@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kotbase
+package kotbase.logging
 
-/**
- * Log domain
- */
-public expect enum class LogDomain {
-    DATABASE,
-    QUERY,
-    REPLICATOR,
-    NETWORK,
-    LISTENER;
+import cocoapods.CouchbaseLite.CBLFileLogSink
+import kotbase.LogLevel
 
-    public companion object {
+internal fun CBLFileLogSink.asFileLogSink() = FileLogSink(
+    LogLevel.from(level),
+    directory,
+    usePlaintext,
+    maxKeptFiles.toInt(),
+    maxFileSize
+)
 
-        /**
-         * All domains.
-         */
-        public val ALL: Set<LogDomain>
-
-        @Deprecated(
-            "Use LogDomain.ALL",
-            ReplaceWith("LogDomain.ALL")
-        )
-        public val ALL_DOMAINS: Set<LogDomain>
-    }
-}
+internal val FileLogSink.actual: CBLFileLogSink
+    get() = CBLFileLogSink(level.actual, directory, isPlainText, maxKeptFiles.toLong(), maxFileSize)

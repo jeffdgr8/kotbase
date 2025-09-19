@@ -20,25 +20,22 @@ package kotbase
  * that log messages can persist durably after the application has
  * stopped or encountered a problem.  Each log level is written to
  * a separate file.
- * Threading policy: This class is certain to be used from multiple
- * threads.  As long as it is thread safe, the various race conditions
- * are unlikely and the penalties very small.  "Volatile" ensures
- * the thread safety and the several races are tolerable.
  */
+@Suppress("DEPRECATION")
+@Deprecated("Use FileLogSink")
 public expect class FileLogger : Logger {
 
     /**
-     * The maximum logging level that will be written to the logging files.
+     * The lowest level that will be logged to the logging files.
      */
     override var level: LogLevel
 
     override fun log(level: LogLevel, domain: LogDomain, message: String)
 
     /**
-     * The configuration currently in use by the file logger.
-     * Note that once a configuration has been installed in a logger,
-     * it is read-only and can no longer be modified.
-     * An attempt to modify the configuration returned by this method will cause an exception.
+     * Gets the configuration currently in use by the file logger.
+     * Note the configuration returned from this method is read-only
+     * and cannot be modified. An attempt to modify it will throw an exception.
      */
     public var config: LogFileConfiguration?
 }

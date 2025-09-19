@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package kotbase
 
 /**
@@ -22,6 +24,7 @@ package kotbase
  * To change the configuration of a logger, copy its configuration, mutate the
  * copy and then use it to replace the loggers current configuration.
  */
+@Deprecated("Use FileLogSink")
 public expect class LogFileConfiguration {
 
     /**

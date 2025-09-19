@@ -22,9 +22,11 @@ import libcblite.CBLLog_ConsoleLevel
 import libcblite.CBLLog_SetConsoleLevel
 import platform.posix.pthread_self
 
+@Suppress("DEPRECATION")
+@Deprecated("Use ConsoleLogSink")
 public actual class ConsoleLogger internal constructor() : Logger {
 
-    public actual var domains: Set<LogDomain> = LogDomain.ALL_DOMAINS
+    public actual var domains: Set<LogDomain> = LogDomain.ALL
 
     public actual fun setDomains(vararg domains: LogDomain) {
         this.domains = domains.toSet()

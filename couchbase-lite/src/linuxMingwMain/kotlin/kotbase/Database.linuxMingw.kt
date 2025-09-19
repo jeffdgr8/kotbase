@@ -76,6 +76,8 @@ private constructor(
 
     public actual companion object {
 
+        @Suppress("DEPRECATION")
+        @Deprecated("Use LogSinks.file")
         public actual val log: Log by lazy {
             Log()
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kotbase
+package kotbase.logging
 
-/**
- * Log domain
- */
-public expect enum class LogDomain {
-    DATABASE,
-    QUERY,
-    REPLICATOR,
-    NETWORK,
-    LISTENER;
+import com.couchbase.lite.LogLevel
+import com.couchbase.lite.logging.BaseLogSink
+import kotbase.LogDomain
+import com.couchbase.lite.LogDomain as CBLLogDomain
 
-    public companion object {
+internal val CustomLogSink.actual: BaseLogSink
+    get() = object : BaseLogSink(level, domains.map { it.actual }) {
 
-        /**
-         * All domains.
-         */
-        public val ALL: Set<LogDomain>
-
-        @Deprecated(
-            "Use LogDomain.ALL",
-            ReplaceWith("LogDomain.ALL")
-        )
-        public val ALL_DOMAINS: Set<LogDomain>
+        override fun writeLog(level: LogLevel, domain: CBLLogDomain, message: String) {
+            logSink.writeLog(level, LogDomain.from(domain), message)
+        }
     }
-}
