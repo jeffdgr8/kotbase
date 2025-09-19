@@ -21,6 +21,6 @@ kotlin {
 
 ```kotlin
 // Disable default console logs and log to Kermit
-Database.log.console.level = LogLevel.NONE
-Database.log.custom = KermitCouchbaseLiteLogger(kermit)
+LogSinks.console = ConsoleLogSink(LogLevel.NONE)
+LogSinks.custom = CustomLogSink(LogLevel.WARNING, logSink = KermitCouchbaseLiteLogSink(kermit))
 ```

@@ -17,12 +17,15 @@ package kotbase
 
 import com.couchbase.lite.internal.CouchbaseLiteInternal
 import kotbase.internal.utils.FileUtils
+import kotbase.logging.ConsoleLogSink
+import kotbase.logging.LogSinks
 import java.io.File
 
 /**
  * Platform test class for Android.
  */
-actual abstract class PlatformTest {
+actual abstract class PlatformTest
+actual constructor(private val useLegacyLogging: Boolean) {
 
     companion object {
 
@@ -35,9 +38,14 @@ actual abstract class PlatformTest {
     }
 
     actual fun setupPlatform() {
-        val console = Database.log.console
-        console.level = LogLevel.INFO
-        console.domains = LogDomain.ALL_DOMAINS
+        if (!useLegacyLogging) {
+            LogSinks.console = ConsoleLogSink(LogLevel.INFO, LogDomain.ALL)
+        } else {
+            @Suppress("DEPRECATION")
+            val console = Database.log.console
+            console.level = LogLevel.INFO
+            console.domains = LogDomain.ALL
+        }
     }
 
     actual val tmpDir: String

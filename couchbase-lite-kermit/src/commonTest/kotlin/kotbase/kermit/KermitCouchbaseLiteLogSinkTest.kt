@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,9 @@ import kotbase.Database
 import kotbase.LogDomain
 import kotbase.LogLevel
 import kotbase.MutableDocument
+import kotbase.logging.ConsoleLogSink
+import kotbase.logging.CustomLogSink
+import kotbase.logging.LogSinks
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlin.test.AfterTest
@@ -35,7 +38,7 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class KermitCouchbaseLiteLoggerTest : BaseTest(useLegacyLogging = true) {
+class KermitCouchbaseLiteLogSinkTest : BaseTest() {
 
     class TestLogWriter(
         private val minSeverity: Severity,
@@ -81,7 +84,7 @@ class KermitCouchbaseLiteLoggerTest : BaseTest(useLegacyLogging = true) {
 
     @BeforeTest
     fun setup() {
-        Database.log.console.level = LogLevel.NONE
+        LogSinks.console = ConsoleLogSink(LogLevel.NONE)
     }
 
     @AfterTest
@@ -106,19 +109,17 @@ class KermitCouchbaseLiteLoggerTest : BaseTest(useLegacyLogging = true) {
 
     @Test
     fun testOmittedDomainsNotWritten() {
-        testKermitLogger(Severity.Verbose, LogLevel.VERBOSE, setOf(LogDomain.QUERY))
+        testKermitLogger(Severity.Verbose, LogLevel.VERBOSE, LogDomain.QUERY)
     }
 
     private fun testKermitLogger(
         minSeverity: Severity,
         minLevel: LogLevel,
-        domains: Set<LogDomain> = LogDomain.ALL_DOMAINS
+        vararg domains: LogDomain
     ) {
         val logWriter = TestLogWriter(maxOf(minSeverity, minLevel.severity), domains.toTags())
         val kermit = Logger(loggerConfigInit(logWriter, minSeverity = minSeverity))
-        Database.log.custom = KermitCouchbaseLiteLogger(kermit, minLevel).apply {
-            this.domains = domains
-        }
+        LogSinks.custom = CustomLogSink(minLevel, *domains, logSink = KermitCouchbaseLiteLogSink(kermit))
 
         val database = createDb("log-test-db")
         this.database = database
@@ -167,7 +168,8 @@ class KermitCouchbaseLiteLoggerTest : BaseTest(useLegacyLogging = true) {
         delay(1)
     }
 
-    private fun Set<LogDomain>.toTags() = map { "CBL-${it.name}" }.toSet()
+    private fun Array<out LogDomain>.toTags() = ifEmpty { LogDomain.ALL.toTypedArray() }
+        .map { "CBL-${it.name}" }.toSet()
 
     companion object {
         const val CBL_DATABASE = "CBL-DATABASE"
