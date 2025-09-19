@@ -1,6 +1,10 @@
 Copyright 2024
 
+<<<<<<<< HEAD:examples/getting-started/cliApp/vendor/libcblite/linux/arm64/libcblite-3.1.10/notices.txt
 [couchbase-lite-c : 3.1.10]
+========
+[couchbase-lite-c : 3.2.1]
+>>>>>>>> ed58ae4fc (Update Couchbase Lite to 3.2.1):couchbase-lite/vendor/libcblite/linux/arm64/libcblite-3.2.1/notices.txt
 
 
 Components: 
@@ -9,16 +13,16 @@ jsonsl 20171103-snapshot-684b60f9 : MIT License
 libb64 1.2.1 : Creative Commons Public Domain Dedication and Certification
 libicu 71.1 : (MIT License AND Public Domain AND Unicode Character Database Terms Of Use)
 libstemmer 0 : BSD 3-clause "New" or "Revised" License
-mbed TLS 2.28.5 : Apache License 2.0
-SQLite 3.43.0 : Public Domain
+mbed TLS 2.28.8 : Apache License 2.0
+SQLite 3.45.2 : The Unlicense
 sqlite3-unicodesn 20160920-snapshot-af75748c : Public Domain
 SQLiteCpp 2.0.0 : MIT License
-zlib 1.2.13 : zlib License
+zlib v1.3.1 : zlib License
 
 Licenses: 
 
 Apache License 2.0
-(mbed TLS 2.28.5)
+(mbed TLS 2.28.8)
 
 Apache License
 Version 2.0, January 2004
@@ -335,9 +339,39 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
 ---
 
 Public Domain
-(libicu 71.1, SQLite 3.43.0, sqlite3-unicodesn 20160920-snapshot-af75748c)
+(libicu 71.1, sqlite3-unicodesn 20160920-snapshot-af75748c)
 
 Public domain code is not subject to any license.
+
+---
+
+The Unlicense
+(SQLite 3.45.2)
+
+The Unlicense
+=============
+
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or distribute this
+software, either in source code form or as a compiled binary, for any purpose,
+commercial or non-commercial, and by any means.
+
+In jurisdictions that recognize copyright laws, the author or authors of this
+software dedicate any and all copyright interest in the software to the public
+domain. We make this dedication for the benefit of the public at large and to the
+detriment of our heirs and successors. We intend this dedication to be an overt
+act of relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to http://unlicense.org/
 
 ---
 
@@ -373,7 +407,7 @@ programs, as long as there is an accompanying notice indicating the source.
 ---
 
 zlib License
-(zlib 1.2.13)
+(zlib v1.3.1)
 
 The zlib/libpng License
 =======================

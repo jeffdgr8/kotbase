@@ -256,6 +256,10 @@ private constructor(
 
     actual override fun close() {
         memory.closeCalled = true
+        stop()
         CBLReplicator_Release(actual)
     }
+
+    public actual val isClosed: Boolean
+        get() = memory.closeCalled
 }

@@ -42,7 +42,7 @@ internal constructor(
         get() = actual.name
 
     public actual val fullName: String
-        get() = "${actual.scope.name}.$name"
+        get() = actual.fullName
 
     public actual val count: Long
         get() = actual.count.toLong()
@@ -59,6 +59,7 @@ internal constructor(
         wrapCBLError { error ->
             actual.saveDocument(document.actual, error)
         }
+        document.collectionInternal = this
     }
 
     @Throws(CouchbaseLiteException::class)
@@ -66,6 +67,8 @@ internal constructor(
         return try {
             wrapCBLError { error ->
                 actual.saveDocument(document.actual, concurrencyControl.actual, error)
+            }.also {
+                document.collectionInternal = this
             }
         } catch (e: CouchbaseLiteException) {
             if (e.code != CBLError.Code.CONFLICT || e.domain != CBLError.Domain.CBLITE) throw e
@@ -93,6 +96,8 @@ internal constructor(
                     false
                 }
             }
+        }.also {
+            document.collectionInternal = this
         }
     }
 
@@ -228,6 +233,13 @@ internal constructor(
     // For Objective-C/Swift throws
     @Throws(CouchbaseLiteException::class)
     public fun indexes(): Set<String> = indexes
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getIndex(name: String): QueryIndex? {
+        return wrapCBLError { error ->
+            actual.indexWithName(name, error)?.asQueryIndex(this)
+        }
+    }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {

@@ -58,6 +58,28 @@ public actual constructor(config: DatabaseConfiguration?) {
             setActualDirectory(value)
         }
 
+    public actual fun setFullSync(fullSync: Boolean): DatabaseConfiguration {
+        actual.pointed.fullSync = fullSync
+        return this
+    }
+
+    public actual var isFullSync: Boolean
+        get() = actual.pointed.fullSync
+        set(value) {
+            actual.pointed.fullSync = value
+        }
+
+    public actual fun setMMapEnabled(mmapEnabled: Boolean): DatabaseConfiguration {
+        actual.pointed.mmapDisabled = !mmapEnabled
+        return this
+    }
+
+    public actual var isMMapEnabled: Boolean
+        get() = !actual.pointed.mmapDisabled
+        set(value) {
+            actual.pointed.mmapDisabled = !value
+        }
+
     init {
         setActualDirectory(directory)
     }
@@ -74,26 +96,6 @@ public actual constructor(config: DatabaseConfiguration?) {
         get() = CBLDatabaseConfiguration_Default().useContents {
             directory.toKString()!!.dropLastWhile { it == SystemPathSeparator }
         }
-
-    public actual fun setFullSync(isFullSync: Boolean): DatabaseConfiguration {
-        this.isFullSync = isFullSync
-        return this
-    }
-
-    public actual var isFullSync: Boolean = config?.isFullSync ?: Defaults.Database.FULL_SYNC
-        set(value) {
-            checkReadOnly()
-            field = value
-            setActualIsFullSync(value)
-        }
-
-    init {
-        setActualIsFullSync(isFullSync)
-    }
-
-    private fun setActualIsFullSync(isFullSync: Boolean) {
-        actual.pointed.fullSync = isFullSync
-    }
 
     internal var readonly: Boolean = false
 

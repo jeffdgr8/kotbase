@@ -36,7 +36,7 @@ internal constructor(
         get() = actual.name
 
     public actual val fullName: String
-        get() = "${actual.scope.name}.$name"
+        get() = actual.fullName
 
     public actual val count: Long
         get() = actual.count
@@ -47,9 +47,8 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument) {
-        actual.save(document.actual).also {
-            document.collectionInternal = this
-        }
+        actual.save(document.actual)
+        document.collectionInternal = this
     }
 
     @Throws(CouchbaseLiteException::class)
@@ -144,6 +143,11 @@ internal constructor(
     @get:Throws(CouchbaseLiteException::class)
     public actual val indexes: Set<String>
         get() = actual.indexes
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun getIndex(name: String): QueryIndex? {
+        return actual.getIndex(name)?.asQueryIndex(this)
+    }
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {

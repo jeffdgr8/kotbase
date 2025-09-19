@@ -57,6 +57,10 @@ kotlin {
             api(libs.couchbase.lite.android)
             implementation(libs.androidx.startup)
         }
+
+        all {
+            kotlin.srcDir("src/$name/ce")
+        }
     }
 }
 

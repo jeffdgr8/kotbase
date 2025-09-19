@@ -744,24 +744,7 @@ private constructor(
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
         mustBeOpen {
-            wrapCBLError { error ->
-                memScoped {
-                    when (config) {
-                        is ValueIndexConfiguration -> CBLDatabase_CreateValueIndex(
-                            actual,
-                            name.toFLString(this),
-                            config.actual,
-                            error
-                        )
-                        is FullTextIndexConfiguration -> CBLDatabase_CreateFullTextIndex(
-                            actual,
-                            name.toFLString(this),
-                            config.actual,
-                            error
-                        )
-                    }
-                }
-            }
+            defaultCollection.createIndex(name, config)
         }
     }
 
@@ -811,10 +794,12 @@ private constructor(
     }
 
     public override fun toString(): String {
-        return ("Database{@${identityHashCodeHex()}"
-                + ": '$name"
-                + (if (config.isFullSync) "!" else "")
-                + "'}")
+        return buildString {
+            append("Database{@${identityHashCodeHex()}: '$name")
+            if (config.isFullSync) append("!")
+            if (config.isMMapEnabled) append("*")
+            append("'}")
+        }
     }
 
     public override fun hashCode(): Int =

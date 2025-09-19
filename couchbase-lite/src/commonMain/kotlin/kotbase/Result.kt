@@ -21,8 +21,8 @@ import kotlinx.datetime.Instant
  * Result represents a row of result set returned by a Query.
  *
  * A Result may be referenced **only** while the ResultSet that contains it is open.
- * An Attempt to reference a Result after calling ResultSet.close on the ResultSet that
- * contains it will throw and IllegalStateException
+ * An attempt to reference a Result after calling ResultSet.close on the ResultSet that
+ * contains it will throw a CouchbaseLiteError
  */
 public expect class Result : Iterable<String> {
 
@@ -266,6 +266,12 @@ public expect class Result : Iterable<String> {
      */
     public fun toMap(): Map<String, Any?>
 
+    /**
+     * Encode a Result as a JSON string
+     *
+     * @return JSON encoded representation of the Result
+     * @throws CouchbaseLiteException on encoder failure.
+     */
     public fun toJSON(): String
 
     /**

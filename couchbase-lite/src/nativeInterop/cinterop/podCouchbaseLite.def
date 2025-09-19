@@ -68,10 +68,6 @@ typedef struct C4Document {
 - (BOOL) isClosed;
 @end
 
-@interface CBLCollection ()
-@property (nonatomic, readonly, weak) CBLDatabase* db;
-@end
-
 @interface CBLQueryExpression ()
 - (id) asJSON;
 @end

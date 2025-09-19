@@ -9,16 +9,27 @@
 # The variable CVF_VERSION must be set before calling configure_file().
 
 
+<<<<<<<< HEAD:examples/getting-started/cliApp/vendor/libcblite/linux/x86_64/libcblite-3.1.10/lib/x86_64-linux-gnu/cmake/CouchbaseLite/CouchbaseLiteConfigVersion.cmake
 set(PACKAGE_VERSION "3.1.10")
+========
+set(PACKAGE_VERSION "3.2.1")
+>>>>>>>> ed58ae4fc (Update Couchbase Lite to 3.2.1):couchbase-lite-ee/vendor/libcblite/linux/arm64/libcblite-3.2.1/lib/aarch64-linux-gnu/cmake/CouchbaseLite/CouchbaseLiteConfigVersion.cmake
 
 if(PACKAGE_VERSION VERSION_LESS PACKAGE_FIND_VERSION)
   set(PACKAGE_VERSION_COMPATIBLE FALSE)
 else()
 
+<<<<<<<< HEAD:examples/getting-started/cliApp/vendor/libcblite/linux/x86_64/libcblite-3.1.10/lib/x86_64-linux-gnu/cmake/CouchbaseLite/CouchbaseLiteConfigVersion.cmake
   if("3.1.10" MATCHES "^([0-9]+)\\.")
     set(CVF_VERSION_MAJOR "${CMAKE_MATCH_1}")
   else()
     set(CVF_VERSION_MAJOR "3.1.10")
+========
+  if("3.2.1" MATCHES "^([0-9]+)\\.")
+    set(CVF_VERSION_MAJOR "${CMAKE_MATCH_1}")
+  else()
+    set(CVF_VERSION_MAJOR "3.2.1")
+>>>>>>>> ed58ae4fc (Update Couchbase Lite to 3.2.1):couchbase-lite-ee/vendor/libcblite/linux/arm64/libcblite-3.2.1/lib/aarch64-linux-gnu/cmake/CouchbaseLite/CouchbaseLiteConfigVersion.cmake
   endif()
 
   if(PACKAGE_FIND_VERSION_RANGE)

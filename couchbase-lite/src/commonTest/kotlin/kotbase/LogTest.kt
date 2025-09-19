@@ -26,6 +26,7 @@ import kotbase.test.AfterClass
 import kotlin.jvm.JvmStatic
 import kotlin.test.*
 
+@OptIn(ExperimentalStdlibApi::class)
 class LogTest : BaseDbTest() {
 
 //    private class SingleLineLogger(private val prefix: String?) : Logger {
@@ -193,7 +194,7 @@ class LogTest : BaseDbTest() {
         val config = LogFileConfiguration("up/down")
         assertEquals(Defaults.LogFile.MAX_SIZE, config.maxSize)
         assertEquals(Defaults.LogFile.MAX_ROTATE_COUNT, config.maxRotateCount)
-        assertEquals(Defaults.LogFile.USE_PLAIN_TEXT, config.usesPlaintext)
+        assertEquals(Defaults.LogFile.USE_PLAINTEXT, config.usesPlaintext)
     }
 
 //    @Test

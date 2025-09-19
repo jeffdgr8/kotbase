@@ -22,6 +22,8 @@ private constructor(override val actual: CBLFullTextIndexConfiguration) : IndexC
 
     public actual constructor(vararg expressions: String) : this(CBLFullTextIndexConfiguration(*expressions))
 
+    public actual constructor(expressions: List<String>) : this(CBLFullTextIndexConfiguration(expressions))
+
     public actual fun setLanguage(language: String?): FullTextIndexConfiguration {
         actual.language = language
         return this
@@ -42,5 +44,16 @@ private constructor(override val actual: CBLFullTextIndexConfiguration) : IndexC
         get() = actual.isIgnoringAccents
         set(value) {
             actual.ignoreAccents(value)
+        }
+
+    public actual fun setWhere(where: String?): FullTextIndexConfiguration {
+        actual.where = where
+        return this
+    }
+
+    public actual var where: String?
+        get() = actual.where
+        set(value) {
+            actual.where = value
         }
 }

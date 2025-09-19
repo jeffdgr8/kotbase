@@ -387,8 +387,8 @@ public val ReplicatorConfiguration.Companion.DISABLE_HEARTBEAT: Int
 
 /**
  * The default conflict resolution strategy.
- * Deletion always wins.  A newer doc always beats an older one.
- * Otherwise one of the two document is chosen randomly but deterministically.
+ * Deletion always wins. A newer doc always beats an older one.
+ * Otherwise, one of the two document is chosen randomly but deterministically.
  */
 public val ReplicatorConfiguration.Companion.DEFAULT_CONFLICT_RESOLVER: ConflictResolver
     get() = defaultConflictResolver
@@ -408,6 +408,13 @@ private val defaultConflictResolver: ConflictResolver by lazy {
         } else if (localGen < remoteGen) {
             return@cr remoteDoc
         }
+        // TODO: 4.0 API
+//        val cmp = localDoc.compareAge(remoteDoc)
+//        if (cmp > 0) {
+//            return@cr localDoc
+//        } else if (cmp < 0) {
+//            return@cr remoteDoc
+//        }
 
         // otherwise, choose one randomly, but deterministically.
         val localRevId = localDoc.revisionID ?: return@cr remoteDoc

@@ -53,6 +53,8 @@ public expect class CouchbaseLiteException : Exception {
      */
     public constructor(message: String, cause: Exception, domain: String, code: Int)
 
+    override val message: String
+
     internal fun getDomain(): String
 
     internal fun getCode(): Int

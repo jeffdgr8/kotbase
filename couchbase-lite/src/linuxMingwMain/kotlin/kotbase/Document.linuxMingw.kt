@@ -83,6 +83,10 @@ internal constructor(
     public actual val revisionID: String?
         get() = if (dbContext.database != null) CBLDocument_RevisionID(actual).toKString() else null
 
+    // TODO: 4.0 API
+//    public actual val timestamp: Long
+//        get() = TODO("available in future 4.0 release")
+
     public actual val sequence: Long
         get() = CBLDocument_Sequence(actual).toLong()
 
@@ -190,20 +194,22 @@ internal constructor(
     internal var isDeleted = false
 
     override fun toString(): String {
-        val buf = StringBuilder("Document{").append(identityHashCodeHex())
-            .append(id).append('@').append(revisionID)
-            .append('(').append(if (this is MutableDocument) '+' else '.')
-            .append(if (isDeleted) '?' else '.').append("):")
-        var first = true
-        for (key in keys) {
-            if (first) {
-                first = false
-            } else {
-                buf.append(',')
+        return buildString {
+            append("Document{").append(identityHashCodeHex())
+            append(id).append('@').append(revisionID)
+            append('(').append(if (this@Document is MutableDocument) '+' else '.')
+            append(if (isDeleted) '?' else '.').append("):")
+            var first = true
+            for (key in keys) {
+                if (first) {
+                    first = false
+                } else {
+                    append(',')
+                }
+                append(key).append("=>").append(getValue(key))
             }
-            buf.append(key).append("=>").append(getValue(key))
+            append('}')
         }
-        return buf.append('}').toString()
     }
 }
 

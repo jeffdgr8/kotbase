@@ -17,11 +17,19 @@
 //
 
 #ifndef COUCHBASE_ENTERPRISE
-/* #undef COUCHBASE_ENTERPRISE */
+#define COUCHBASE_ENTERPRISE
 #endif
 
+<<<<<<<< HEAD:examples/getting-started/cliApp/vendor/libcblite/linux/x86_64/libcblite-3.1.10/include/cbl/CBL_Edition.h
 #define CBLITE_VERSION "3.1.10"
 #define CBLITE_VERSION_NUMBER 3001010
 #define CBLITE_BUILD_NUMBER 4
 #define CBLITE_SOURCE_ID "ec0eb21"
 #define CBLITE_BUILD_TIMESTAMP "2024-11-07T19:06:36Z"
+========
+#define CBLITE_VERSION "3.2.1"
+#define CBLITE_VERSION_NUMBER 3002001
+#define CBLITE_BUILD_NUMBER 9
+#define CBLITE_SOURCE_ID "6728898+e322f9b"
+#define CBLITE_BUILD_TIMESTAMP "2024-10-30T14:17:41Z"
+>>>>>>>> ed58ae4fc (Update Couchbase Lite to 3.2.1):couchbase-lite-ee/vendor/libcblite/linux/arm64/libcblite-3.2.1/include/cbl/CBL_Edition.h

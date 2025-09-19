@@ -66,7 +66,7 @@ internal constructor(
         get() = CBLCollection_Name(actual).toKString()!!
 
     public actual val fullName: String
-        get() = "${scope.name}.$name"
+        get() = CBLCollection_FullName(actual).toKString()!!
 
     public actual val count: Long
         get() = database.withLock {
@@ -335,26 +335,17 @@ internal constructor(
         }
 
     @Throws(CouchbaseLiteException::class)
-    public actual fun createIndex(name: String, config: IndexConfiguration) {
-        wrapCBLError { error ->
+    public actual fun getIndex(name: String): QueryIndex? {
+        return wrapCBLError { error ->
             memScoped {
-                @Suppress("NO_ELSE_IN_WHEN")
-                when (config) {
-                    is ValueIndexConfiguration -> CBLCollection_CreateValueIndex(
-                        actual,
-                        name.toFLString(this),
-                        config.actual,
-                        error
-                    )
-                    is FullTextIndexConfiguration -> CBLCollection_CreateFullTextIndex(
-                        actual,
-                        name.toFLString(this),
-                        config.actual,
-                        error
-                    )
-                }
+                CBLCollection_GetIndex(actual, name.toFLString(this), error)?.asQueryIndex(this@Collection)
             }
         }
+    }
+
+    @Throws(CouchbaseLiteException::class)
+    public actual fun createIndex(name: String, config: IndexConfiguration) {
+        createIndexImpl(name, config)
     }
 
     @Throws(CouchbaseLiteException::class)

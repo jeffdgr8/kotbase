@@ -21,4 +21,17 @@ public actual class ValueIndexConfiguration
 private constructor(override val actual: CBLValueIndexConfiguration) : IndexConfiguration(actual) {
 
     public actual constructor(vararg expressions: String) : this(CBLValueIndexConfiguration(*expressions))
+
+    public actual constructor(expressions: List<String>) : this(CBLValueIndexConfiguration(expressions))
+
+    public actual fun setWhere(where: String?): ValueIndexConfiguration {
+        actual.where = where
+        return this
+    }
+
+    public actual var where: String?
+        get() = actual.where
+        set(value) {
+            actual.where = value
+        }
 }

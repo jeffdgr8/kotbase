@@ -74,7 +74,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
 
         val key = params.key ?: initialOffset
         val limit = when (params) {
-            is LoadParams.Prepend<*> -> minOf(key, params.loadSize)
+            is LoadParams.Prepend -> minOf(key, params.loadSize)
             else -> params.loadSize
         }
 

@@ -1,0 +1,159 @@
+/*
+ * Copyright 2024 Jeff Lockhart
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package kotbase
+
+import cnames.structs.CBLIndexUpdater
+import kotbase.internal.DbContext
+import kotbase.internal.fleece.*
+import kotbase.internal.fleece.toKString
+import kotbase.internal.fleece.toNative
+import kotbase.internal.fleece.toNumber
+import kotbase.internal.wrapCBLError
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.toCValues
+import kotlinx.datetime.Instant
+import libcblite.*
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
+import kotlin.reflect.safeCast
+
+internal class IndexUpdaterImpl(
+    internal val actual: CPointer<CBLIndexUpdater>,
+    private val dbContext: DbContext?
+) : IndexUpdater {
+
+    @OptIn(ExperimentalNativeApi::class)
+    @Suppress("unused")
+    private val cleaner = createCleaner(actual) {
+        CBLIndexUpdater_Release(it)
+    }
+
+    private val collectionMap: MutableMap<Int, Any> = mutableMapOf()
+
+    override val count: Int
+        get() = CBLIndexUpdater_Count(actual).toInt()
+
+    private fun getFLValue(index: Int): FLValue? {
+        checkIndex(index)
+        return CBLIndexUpdater_Value(actual, index.convert())
+    }
+
+    override fun getValue(index: Int): Any? {
+        return collectionMap[index]
+            ?: getFLValue(index)?.toNative(dbContext)
+                ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
+    }
+
+    override fun getString(index: Int): String? =
+        getFLValue(index)?.toKString()
+
+    override fun getNumber(index: Int): Number? =
+        getFLValue(index)?.toNumber()
+
+    override fun getInt(index: Int): Int =
+        getFLValue(index).toInt()
+
+    override fun getLong(index: Int): Long =
+        getFLValue(index).toLong()
+
+    override fun getFloat(index: Int): Float =
+        getFLValue(index).toFloat()
+
+    override fun getDouble(index: Int): Double =
+        getFLValue(index).toDouble()
+
+    override fun getBoolean(index: Int): Boolean =
+        getFLValue(index).toBoolean()
+
+    override fun getBlob(index: Int): Blob? =
+        getFLValue(index)?.toBlob(dbContext)
+
+    override fun getDate(index: Int): Instant? =
+        getFLValue(index)?.toDate()
+
+    override fun getArray(index: Int): Array? {
+        return getInternalCollection(index)
+            ?: getFLValue(index)?.toArray(dbContext)
+                ?.also { collectionMap[index] = it }
+    }
+
+    override fun getDictionary(index: Int): Dictionary? {
+        return getInternalCollection(index)
+            ?: getFLValue(index)?.toDictionary(dbContext)
+                ?.also { collectionMap[index] = it }
+    }
+
+    override fun toList(): List<Any?> =
+        iterator().asSequence().toList()
+
+    override fun toJSON(): String =
+        FLValue_ToJSON(actual.reinterpret()).toKString()!!
+
+    override fun iterator(): Iterator<Any?> =
+        IndexUpdaterIterator(count)
+
+    private inner class IndexUpdaterIterator(private val count: Int) : Iterator<Any?> {
+
+        private var index = 0
+
+        override fun hasNext(): Boolean = index < count
+
+        override fun next(): Any? =
+            getValue(index++)
+    }
+
+    override fun setVector(value: List<Float>?, index: Int) {
+        wrapCBLError { error ->
+            CBLIndexUpdater_SetVector(
+                actual,
+                index.convert(),
+                value?.toFloatArray()?.toCValues(),
+                (value?.size ?: 0).convert(),
+                error
+            )
+        }
+    }
+
+    override fun skipVector(index: Int) {
+        CBLIndexUpdater_SkipVector(actual, index.convert())
+    }
+
+    override fun finish() {
+        wrapCBLError { error ->
+            CBLIndexUpdater_Finish(actual, error)
+        }
+    }
+
+    override fun close() {
+        wrapCBLError { error ->
+            CBLIndexUpdater_Finish(actual, error)
+        }
+    }
+
+    private fun checkIndex(index: Int) {
+        if (index < 0 || index >= count) {
+            throw IndexOutOfBoundsException("Array index $index is out of range")
+        }
+    }
+
+    private inline fun <reified T : Any> getInternalCollection(index: Int): T? =
+        T::class.safeCast(collectionMap[index])
+}
+
+internal fun CPointer<CBLIndexUpdater>.asIndexUpdater(dbContext: DbContext?): IndexUpdater =
+    IndexUpdaterImpl(this, dbContext)

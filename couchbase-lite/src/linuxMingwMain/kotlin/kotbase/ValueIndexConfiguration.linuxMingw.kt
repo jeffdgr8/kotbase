@@ -23,17 +23,27 @@ import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class ValueIndexConfiguration
-private constructor(expressions: List<String>) : IndexConfiguration(expressions) {
+public actual constructor(expressions: List<String>) : IndexConfiguration(expressions) {
 
     public actual constructor(vararg expressions: String) : this(expressions.toList())
+
+    public actual fun setWhere(where: String?): ValueIndexConfiguration {
+        this.where = where
+        return this
+    }
+
+    public actual var where: String? = null
 
     internal val actual: CValue<CBLValueIndexConfiguration>
         get() {
             val exp = expressions.joinToString(separator = ",")
+            val whr = where
             return cValue {
                 expressionLanguage = kCBLN1QLLanguage
                 expressions.buf = strdup(exp)
                 expressions.size = strlen(exp)
+                where.buf = whr?.let { strdup(whr) }
+                where.size = whr?.let { strlen(whr) } ?: 0U
             }
         }
 }
