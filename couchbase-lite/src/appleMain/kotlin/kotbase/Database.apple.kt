@@ -51,6 +51,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     public actual companion object {
 
+        @Suppress("DEPRECATION")
         @Deprecated("Use LogSinks.file")
         public actual val log: Log by lazy {
             Log(CBLDatabase.log())

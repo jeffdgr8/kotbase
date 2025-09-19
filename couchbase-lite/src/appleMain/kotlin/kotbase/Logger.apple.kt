@@ -20,6 +20,7 @@ import cocoapods.CouchbaseLite.CBLLogLevel
 import cocoapods.CouchbaseLite.CBLLoggerProtocol
 import platform.darwin.NSObject
 
+@Suppress("DEPRECATION")
 internal fun Logger.convert(): CBLLoggerProtocol = object : NSObject(), CBLLoggerProtocol {
 
     override fun level(): CBLLogLevel {

@@ -18,6 +18,7 @@ package kotbase
 import cocoapods.CouchbaseLite.CBLConsoleLogger
 import kotbase.internal.DelegatedClass
 
+@Suppress("DEPRECATION")
 @Deprecated("Use ConsoleLogSink")
 public actual class ConsoleLogger
 internal constructor(override val actual: CBLConsoleLogger) : DelegatedClass<CBLConsoleLogger>(actual), Logger {
