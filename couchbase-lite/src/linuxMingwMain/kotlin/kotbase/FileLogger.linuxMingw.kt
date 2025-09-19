@@ -23,6 +23,8 @@ import kotlinx.io.files.SystemFileSystem
 import libcblite.CBLLog_SetFileConfig
 import libcblite.CBL_LogMessage
 
+@Suppress("DEPRECATION")
+@Deprecated("Use FileLogSink")
 public actual class FileLogger internal constructor() : Logger {
 
     public actual var config: LogFileConfiguration? = null

@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("DEPRECATION")
+
 package kotbase
 
 import kotbase.internal.DelegatedClass
 import com.couchbase.lite.Log as CBLLog
 
+@Deprecated("Use LogSinks")
 public actual class Log
 internal constructor(actual: CBLLog) : DelegatedClass<CBLLog>(actual) {
 
+    @Deprecated("Use LogSinks.console")
     public actual val console: ConsoleLogger = ConsoleLogger(actual.console)
         get() {
             // access the underlying logger on each get(), required to satisfy PreInitTest
@@ -28,6 +32,7 @@ internal constructor(actual: CBLLog) : DelegatedClass<CBLLog>(actual) {
             return field
         }
 
+    @Deprecated("Use LogSinks.file")
     public actual val file: FileLogger = FileLogger(actual.file)
         get() {
             // access the underlying logger on each get(), required to satisfy PreInitTest
@@ -35,6 +40,7 @@ internal constructor(actual: CBLLog) : DelegatedClass<CBLLog>(actual) {
             return field
         }
 
+    @Deprecated("Use LogSinks.custom")
     public actual var custom: Logger? = null
         set(value) {
             field = value
