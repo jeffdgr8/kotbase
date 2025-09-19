@@ -15,8 +15,8 @@
  */
 package kotbase
 
+import kotbase.ext.dispatcher
 import kotbase.internal.DelegatedClass
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -51,13 +51,13 @@ internal constructor(actual: CBLMessageEndpointListener) : DelegatedClass<CBLMes
         listener: MessageEndpointListenerChangeSuspendListener
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(scope))
+        val token = actual.addChangeListener(context.dispatcher?.asExecutor(), listener.convert(scope))
         return SuspendListenerToken(scope, token)
     }
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: MessageEndpointListenerChangeSuspendListener) {
         val token = actual.addChangeListener(
-            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            scope.coroutineContext.dispatcher?.asExecutor(),
             listener.convert(scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {

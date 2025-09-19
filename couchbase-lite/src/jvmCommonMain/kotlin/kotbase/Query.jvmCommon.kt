@@ -15,8 +15,8 @@
  */
 package kotbase
 
+import kotbase.ext.dispatcher
 import kotbase.internal.DelegatedClass
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -54,13 +54,13 @@ internal class DelegatedQuery(actual: CBLQuery) : DelegatedClass<CBLQuery>(actua
 
     override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(scope))
+        val token = actual.addChangeListener(context.dispatcher?.asExecutor(), listener.convert(scope))
         return SuspendListenerToken(scope, token)
     }
 
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener) {
         val token = actual.addChangeListener(
-            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            scope.coroutineContext.dispatcher?.asExecutor(),
             listener.convert(scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {

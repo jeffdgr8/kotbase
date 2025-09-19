@@ -25,8 +25,8 @@ import cocoapods.CouchbaseLite.CBLQueryOrdering
 import cocoapods.CouchbaseLite.CBLQuerySelectResult
 import kotbase.internal.AbstractDelegatedClass
 import kotbase.ext.asDispatchQueue
+import kotbase.ext.dispatcher
 import kotbase.ext.wrapCBLError
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -66,7 +66,7 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
     override fun addChangeListener(context: CoroutineContext, listener: QueryChangeSuspendListener): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListenerWithQueue(
-            context[CoroutineDispatcher]?.asDispatchQueue(),
+            context.dispatcher?.asDispatchQueue(),
             listener.convert(scope)
         )
         return SuspendListenerToken(scope, token)
@@ -74,7 +74,7 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
 
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener) {
         val token = actual.addChangeListenerWithQueue(
-            scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
+            scope.coroutineContext.dispatcher?.asDispatchQueue(),
             listener.convert(scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {

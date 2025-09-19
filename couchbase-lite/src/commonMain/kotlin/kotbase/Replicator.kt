@@ -23,16 +23,13 @@ import kotlin.coroutines.CoroutineContext
  * The replicator can be bidirectional or either push or pull. The replicator can also be one-shot
  * or continuous. The replicator runs asynchronously, so observe the status to
  * be notified of progress.
- */
-@OptIn(ExperimentalStdlibApi::class)
-public expect class Replicator
-
-/**
- * Initializes a replicator with the given configuration.
+ *
+ * @constructor Initializes a replicator with the given configuration.
  *
  * @param config replicator configuration
  */
-constructor(config: ReplicatorConfiguration) : AutoCloseable {
+public expect class Replicator
+public constructor(config: ReplicatorConfiguration) : AutoCloseable {
 
     internal constructor(config: ReplicatorConfiguration, test: Boolean)
 

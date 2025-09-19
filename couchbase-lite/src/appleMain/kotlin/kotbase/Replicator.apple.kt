@@ -17,10 +17,10 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLReplicator
 import kotbase.ext.asDispatchQueue
+import kotbase.ext.dispatcher
 import kotbase.ext.toByteArray
 import kotbase.ext.wrapCBLError
 import kotbase.internal.DelegatedClass
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -136,7 +136,7 @@ internal constructor(
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addChangeListenerWithQueue(
-            context[CoroutineDispatcher]?.asDispatchQueue(),
+            context.dispatcher?.asDispatchQueue(),
             listener.convert(this, scope)
         )
         return SuspendReplicatorListenerToken(scope, token, actual)
@@ -144,7 +144,7 @@ internal constructor(
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: ReplicatorChangeSuspendListener) {
         val token = actual.addChangeListenerWithQueue(
-            scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
+            scope.coroutineContext.dispatcher?.asDispatchQueue(),
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
@@ -165,7 +165,7 @@ internal constructor(
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addDocumentReplicationListenerWithQueue(
-            context[CoroutineDispatcher]?.asDispatchQueue(),
+            context.dispatcher?.asDispatchQueue(),
             listener.convert(this, scope)
         )
         return SuspendReplicatorListenerToken(scope, token, actual)
@@ -173,7 +173,7 @@ internal constructor(
 
     public actual fun addDocumentReplicationListener(scope: CoroutineScope, listener: DocumentReplicationSuspendListener) {
         val token = actual.addDocumentReplicationListenerWithQueue(
-            scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
+            scope.coroutineContext.dispatcher?.asDispatchQueue(),
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {

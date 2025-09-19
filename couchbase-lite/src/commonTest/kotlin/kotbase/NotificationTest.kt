@@ -24,7 +24,7 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalAtomicApi::class, ExperimentalStdlibApi::class)
+@OptIn(ExperimentalAtomicApi::class)
 class NotificationTest : BaseDbTest() {
 
     @Test

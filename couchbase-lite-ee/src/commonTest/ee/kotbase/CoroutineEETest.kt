@@ -17,7 +17,6 @@ package kotbase
 
 import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlin.test.Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package kotbase
+package kotbase.ext
 
-/**
- * Base class for a removable subscription to an observable.
- */
-public expect sealed class ListenerToken : AutoCloseable {
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlin.coroutines.ContinuationInterceptor
+import kotlin.coroutines.CoroutineContext
 
-    /**
-     * Remove the change listener.
-     */
-    override fun close()
-
-    /**
-     * Remove the change listener.
-     */
-    public fun remove()
-}
+internal val CoroutineContext.dispatcher: CoroutineDispatcher?
+    get() = this[ContinuationInterceptor] as? CoroutineDispatcher

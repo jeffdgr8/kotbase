@@ -18,11 +18,11 @@ package kotbase
 import cocoapods.CouchbaseLite.*
 import kotbase.internal.DelegatedClass
 import kotbase.ext.asDispatchQueue
+import kotbase.ext.dispatcher
 import kotbase.ext.toKotlinInstantMillis
 import kotbase.ext.wrapCBLError
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -456,7 +456,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         return mustBeOpen {
             val scope = CoroutineScope(SupervisorJob() + context)
             val token = actual.addChangeListenerWithQueue(
-                context[CoroutineDispatcher]?.asDispatchQueue(),
+                context.dispatcher?.asDispatchQueue(),
                 listener.convert(this, scope)
             )
             SuspendListenerToken(scope, token)
@@ -471,7 +471,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         mustBeOpen {
             val token = actual.addChangeListenerWithQueue(
-                scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
+                scope.coroutineContext.dispatcher?.asDispatchQueue(),
                 listener.convert(this, scope)
             )
             scope.coroutineContext[Job]?.invokeOnCompletion {
@@ -505,7 +505,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
             val scope = CoroutineScope(SupervisorJob() + context)
             val token = actual.addDocumentChangeListenerWithID(
                 id,
-                context[CoroutineDispatcher]?.asDispatchQueue(),
+                context.dispatcher?.asDispatchQueue(),
                 listener.convert(defaultCollection, scope)
             )
             SuspendListenerToken(scope, token)
@@ -524,7 +524,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         mustBeOpen {
             val token = actual.addDocumentChangeListenerWithID(
                 id,
-                scope.coroutineContext[CoroutineDispatcher]?.asDispatchQueue(),
+                scope.coroutineContext.dispatcher?.asDispatchQueue(),
                 listener.convert(defaultCollection, scope)
             )
             scope.coroutineContext[Job]?.invokeOnCompletion {

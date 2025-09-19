@@ -16,11 +16,11 @@
 package kotbase
 
 import com.couchbase.lite.UnitOfWork
+import kotbase.ext.dispatcher
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toDate
 import kotbase.ext.toFile
 import kotbase.ext.toKotlinInstant
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -278,7 +278,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         listener: DatabaseChangeSuspendListener
     ): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(this, scope))
+        val token = actual.addChangeListener(context.dispatcher?.asExecutor(), listener.convert(this, scope))
         return SuspendListenerToken(scope, token)
     }
 
@@ -289,7 +289,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     )
     public actual fun addChangeListener(scope: CoroutineScope, listener: DatabaseChangeSuspendListener) {
         val token = actual.addChangeListener(
-            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            scope.coroutineContext.dispatcher?.asExecutor(),
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
@@ -318,7 +318,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addDocumentChangeListener(
             id,
-            context[CoroutineDispatcher]?.asExecutor(),
+            context.dispatcher?.asExecutor(),
             listener.convert(defaultCollection, scope)
         )
         return SuspendListenerToken(scope, token)
@@ -336,7 +336,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     ) {
         val token = actual.addDocumentChangeListener(
             id,
-            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            scope.coroutineContext.dispatcher?.asExecutor(),
             listener.convert(defaultCollection, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {

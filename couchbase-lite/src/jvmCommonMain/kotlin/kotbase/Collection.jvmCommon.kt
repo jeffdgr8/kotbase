@@ -15,6 +15,7 @@
  */
 package kotbase
 
+import kotbase.ext.dispatcher
 import kotbase.ext.toDate
 import kotbase.ext.toKotlinInstant
 import kotbase.internal.DelegatedClass
@@ -98,13 +99,13 @@ internal constructor(
 
     public actual fun addChangeListener(context: CoroutineContext, listener: CollectionChangeSuspendListener): ListenerToken {
         val scope = CoroutineScope(SupervisorJob() + context)
-        val token = actual.addChangeListener(context[CoroutineDispatcher]?.asExecutor(), listener.convert(this, scope))
+        val token = actual.addChangeListener(context.dispatcher?.asExecutor(), listener.convert(this, scope))
         return SuspendListenerToken(scope, token)
     }
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: CollectionChangeSuspendListener) {
         val token = actual.addChangeListener(
-            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            scope.coroutineContext.dispatcher?.asExecutor(),
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {
@@ -123,7 +124,7 @@ internal constructor(
         val scope = CoroutineScope(SupervisorJob() + context)
         val token = actual.addDocumentChangeListener(
             id,
-            context[CoroutineDispatcher]?.asExecutor(),
+            context.dispatcher?.asExecutor(),
             listener.convert(this, scope)
         )
         return SuspendListenerToken(scope, token)
@@ -132,7 +133,7 @@ internal constructor(
     public actual fun addDocumentChangeListener(id: String, scope: CoroutineScope, listener: DocumentChangeSuspendListener) {
         val token = actual.addDocumentChangeListener(
             id,
-            scope.coroutineContext[CoroutineDispatcher]?.asExecutor(),
+            scope.coroutineContext.dispatcher?.asExecutor(),
             listener.convert(this, scope)
         )
         scope.coroutineContext[Job]?.invokeOnCompletion {

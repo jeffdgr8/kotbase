@@ -51,7 +51,6 @@ import kotlin.coroutines.CoroutineContext
  * collection will manage them correctly, developers are strongly encouraged to
  * use them in try-with-resources blocks or to close them explicitly, after use.
  */
-@OptIn(ExperimentalStdlibApi::class)
 public expect class Collection : AutoCloseable {
 
     /**

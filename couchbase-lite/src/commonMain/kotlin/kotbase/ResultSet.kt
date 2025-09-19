@@ -37,7 +37,6 @@ package kotbase
  * }
  * ```
  */
-@OptIn(ExperimentalStdlibApi::class)
 public expect class ResultSet : Iterable<Result>, AutoCloseable {
 
     /**

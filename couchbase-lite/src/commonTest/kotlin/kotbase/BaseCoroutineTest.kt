@@ -15,9 +15,9 @@
  */
 package kotbase
 
+import kotbase.ext.dispatcher
 import kotbase.test.lockWithTimeout
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -57,7 +57,7 @@ abstract class BaseCoroutineTest : BaseReplicatorTest() {
     }
 
     private suspend fun checkContext(context: CoroutineContext) {
-        assertEquals(context[CoroutineDispatcher], coroutineContext[CoroutineDispatcher])
+        assertEquals(context.dispatcher, coroutineContext.dispatcher)
         assertEquals(context[CoroutineName], coroutineContext[CoroutineName])
     }
 
