@@ -72,17 +72,13 @@ public val FullTextIndexConfigurationFactory: FullTextIndexConfiguration? = null
  * @see FullTextIndexConfiguration
  */
 public fun FullTextIndexConfiguration?.newConfig(
-    vararg expressions: String = emptyArray(),
+    vararg expressions: String,
     language: String? = null,
     ignoreAccents: Boolean? = null
 ): FullTextIndexConfiguration {
     return FullTextIndexConfiguration(
-        *requireNotNull(
-            if (expressions.isNotEmpty()) {
-                expressions
-            } else {
-                this?.expressions?.toTypedArray()
-            }
+        requireNotNull(
+            expressions.asList().ifEmpty { this?.expressions }
         ) { "A FullTextIndexConfiguration must specify expressions" }
     ).apply {
         (language ?: this@newConfig?.language)?.let { this.language = it }
@@ -108,15 +104,11 @@ public val ValueIndexConfigurationFactory: ValueIndexConfiguration? = null
  * @see ValueIndexConfiguration
  */
 public fun ValueIndexConfiguration?.newConfig(
-    vararg expressions: String = emptyArray()
+    vararg expressions: String
 ): ValueIndexConfiguration {
     return ValueIndexConfiguration(
-        *requireNotNull(
-            if (expressions.isNotEmpty()) {
-                expressions
-            } else {
-                this?.expressions?.toTypedArray()
-            }
+        requireNotNull(
+            expressions.asList().ifEmpty { this?.expressions }
         ) { "A ValueIndexConfiguration must specify expressions" }
     )
 }
@@ -141,6 +133,8 @@ public val LogFileConfigurationFactory: LogFileConfiguration? = null
  *
  * @see LogFileConfiguration
  */
+@Suppress("DEPRECATION")
+@Deprecated("Use FileLogSink")
 public fun LogFileConfiguration?.newConfig(
     directory: String? = null,
     maxSize: Long? = null,
@@ -148,7 +142,7 @@ public fun LogFileConfiguration?.newConfig(
     usePlainText: Boolean? = null
 ): LogFileConfiguration {
     return LogFileConfiguration(
-        requireNotNull(directory ?: this?.directory) { "Must specify a db directory" },
+        requireNotNull(directory ?: this?.directory) { "A LogFileConfiguration must specify a db directory" },
         this
     ).apply {
         maxSize?.let { setMaxSize(it) }
