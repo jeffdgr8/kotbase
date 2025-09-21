@@ -22,6 +22,7 @@ package kotbase
  *
  *     val dbConfig = DatabaseConfigurationFactory.newConfig(...)
  */
+@Deprecated("Use DatabaseConfiguration()")
 public val DatabaseConfigurationFactory: DatabaseConfiguration? = null
 
 /**
@@ -34,12 +35,16 @@ public val DatabaseConfigurationFactory: DatabaseConfiguration? = null
  *
  * @see DatabaseConfiguration
  */
+@Deprecated(
+    "Use DatabaseConfiguration() and properties",
+    ReplaceWith("DatabaseConfiguration().apply { directory = databasePath\nisFullSync = fullSync }")
+)
 public fun DatabaseConfiguration?.newConfig(
     databasePath: String? = null,
     fullSync: Boolean? = null
 ): DatabaseConfiguration {
     return DatabaseConfiguration(this).apply {
-        databasePath?.let { setDirectory(it) }
+        databasePath?.let { directory = it }
         fullSync?.let { isFullSync = it }
     }
 }
@@ -51,6 +56,7 @@ public fun DatabaseConfiguration?.newConfig(
  *
  *     val replConfig = ReplicatorConfigurationFactory.newConfig(...)
  */
+@Deprecated("Use ReplicatorConfiguration()")
 public val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
 
 /**
@@ -75,6 +81,10 @@ public val ReplicatorConfigurationFactory: ReplicatorConfiguration? = null
  *
  * @see ReplicatorConfiguration
  */
+@Deprecated(
+    "Use ReplicatorConfiguration() and properties",
+    ReplaceWith("ReplicatorConfiguration(target).apply { collections?.forEach { (collection, config) -> addCollections(collection, config) }\nthis.type = type\nisContinuous = continuous\nthis.authenticator = authenticator\nthis.headers = headers\nthis.pinnedServerCertificate = pinnedServerCertificate\nthis.maxAttempts = maxAttempts\nthis.maxAttemptWaitTime = maxAttemptWaitTime\nthis.heartbeat = heartbeat\nisAutoPurgeEnabled = enableAutoPurge\nisAcceptParentDomainCookies = acceptParentDomainCookies }")
+)
 public fun ReplicatorConfiguration?.newConfig(
     target: Endpoint? = null,
     collections: Map<out kotlin.collections.Collection<Collection>, CollectionConfiguration?>? = null,
@@ -116,6 +126,7 @@ public fun ReplicatorConfiguration?.newConfig(
     }
 }
 
+@Suppress("DEPRECATION")
 @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
 public fun DatabaseConfiguration?.newConfig(databasePath: String? = null): DatabaseConfiguration =
     newConfig(databasePath = databasePath)

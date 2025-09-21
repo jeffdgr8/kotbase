@@ -26,6 +26,11 @@ package kotbase
  *
  * @see DatabaseConfiguration
  */
+@Suppress("DEPRECATION")
+@Deprecated(
+    "Use DatabaseConfiguration() and properties",
+    ReplaceWith("DatabaseConfiguration().apply { directory = databasePath\nisFullSync = fullSync\nthis.encryptionKey = encryptionKey }")
+)
 public fun DatabaseConfiguration?.newConfig(
     databasePath: String? = null,
     fullSync: Boolean? = null,
@@ -35,7 +40,7 @@ public fun DatabaseConfiguration?.newConfig(
         databasePath = databasePath,
         fullSync = fullSync
     ).apply {
-        encryptionKey?.let { setEncryptionKey(it) }
+        encryptionKey?.let { this.encryptionKey = it }
     }
 }
 
@@ -62,6 +67,11 @@ public fun DatabaseConfiguration?.newConfig(
  *
  * @see ReplicatorConfiguration
  */
+@Suppress("DEPRECATION")
+@Deprecated(
+    "Use ReplicatorConfiguration() and properties",
+    ReplaceWith("ReplicatorConfiguration(target).apply { collections?.forEach { (collection, config) -> addCollections(collection, config) }\nthis.type = type\nisContinuous = continuous\nthis.authenticator = authenticator\nthis.headers = headers\nthis.pinnedServerCertificate = pinnedServerCertificate\nthis.maxAttempts = maxAttempts\nthis.maxAttemptWaitTime = maxAttemptWaitTime\nthis.heartbeat = heartbeat\nisAutoPurgeEnabled = enableAutoPurge\nisAcceptOnlySelfSignedServerCertificate = acceptOnlySelfSignedServerCertificate\nisAcceptParentDomainCookies = acceptParentDomainCookies }")
+)
 public fun ReplicatorConfiguration?.newConfig(
     target: Endpoint? = null,
     collections: Map<out kotlin.collections.Collection<Collection>, CollectionConfiguration?>? = null,
@@ -98,6 +108,7 @@ public fun ReplicatorConfiguration?.newConfig(
     }
 }
 
+@Suppress("DEPRECATION")
 @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
 public fun DatabaseConfiguration?.newConfig(
     databasePath: String? = null,
@@ -198,6 +209,7 @@ public fun ReplicatorConfiguration?.newConfig(
  *
  *     val endpointListenerConfig = MessageEndpointListenerConfigurationFactory.newConfig(...)
  */
+@Deprecated("Use MessageEndpointListenerConfiguration()")
 public val MessageEndpointListenerConfigurationFactory: MessageEndpointListenerConfiguration? = null
 
 /**
@@ -211,6 +223,10 @@ public val MessageEndpointListenerConfigurationFactory: MessageEndpointListenerC
  *
  * @see MessageEndpointListenerConfiguration
  */
+@Deprecated(
+    "Use MessageEndpointListenerConfiguration() and properties",
+    ReplaceWith("MessageEndpointListenerConfiguration(collections, protocolType)")
+)
 public fun MessageEndpointListenerConfiguration?.newConfig(
     collections: Set<Collection>? = null,
     protocolType: ProtocolType? = null
@@ -252,6 +268,7 @@ public fun MessageEndpointListenerConfiguration?.newConfig(
  *
  *     val endpointListenerConfig = URLEndpointListenerConfigurationFactory.newConfig(...)
  */
+@Deprecated("Use URLEndpointListenerConfiguration()")
 public val URLEndpointListenerConfigurationFactory: URLEndpointListenerConfiguration? = null
 
 /**
@@ -271,6 +288,10 @@ public val URLEndpointListenerConfigurationFactory: URLEndpointListenerConfigura
  *
  * @see URLEndpointListenerConfiguration
  */
+@Deprecated(
+    "Use URLEndpointListenerConfiguration()",
+    ReplaceWith("URLEndpointListenerConfiguration(collections = collections, networkInterface = networkInterface, port = port, disableTls = disableTls, identity = identity, authenticator = authenticator, readOnly = readOnly, enableDeltaSync = enableDeltaSync)")
+)
 public fun URLEndpointListenerConfiguration?.newConfig(
     collections: Set<Collection>? = null,
     networkInterface: String? = null,
