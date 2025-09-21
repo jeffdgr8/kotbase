@@ -15,13 +15,28 @@
  */
 package kotbase
 
-/**
- * Full Text Index Configuration
- */
-public expect class FullTextIndexConfiguration : IndexConfiguration {
+internal const val NOT_SPECIFIED = "NOT_SPECIFIED"
 
+/**
+ * Configuration for creating full-text indexes.
+ *
+ * @constructor Initializes a full-text index using an array of SQL++ expression
+ * strings, with an optional where clause for partial indexing.
+ */
+public expect class FullTextIndexConfiguration(
+    expressions: List<String>,
+    where: String? = null,
+    ignoreAccents: Boolean = Defaults.FullTextIndex.IGNORE_ACCENTS,
+    language: String? = NOT_SPECIFIED
+) : IndexConfiguration {
+
+    @Deprecated(
+        "Use FullTextIndexConfiguration(List<String>)",
+        ReplaceWith("FullTextIndexConfiguration(listOf(*expressions))")
+    )
     public constructor(vararg expressions: String)
 
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public constructor(expressions: List<String>)
 
     /**
@@ -30,6 +45,7 @@ public expect class FullTextIndexConfiguration : IndexConfiguration {
      * If not explicitly set, the current locale's language will be used. Setting
      * a null, empty, or unrecognized value will disable the language features.
      */
+    @Deprecated("Use constructor parameter")
     public fun setLanguage(language: String?): FullTextIndexConfiguration
 
     /**
@@ -38,27 +54,26 @@ public expect class FullTextIndexConfiguration : IndexConfiguration {
      * If not explicitly set, the current locale's language will be used. Setting
      * a null, empty, or unrecognized value will disable the language features.
      */
+    @set:Deprecated("Use constructor parameter")
     public var language: String?
 
     /**
-     * Set the true value to ignore accents/diacritical marks. The default value is false.
+     * Whether to ignore accents/diacritical marks.
+     * The default value is [Defaults.FullTextIndex.IGNORE_ACCENTS].
      */
+    @Deprecated("Use constructor parameter")
     public fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration
 
     /**
-     * Set the true value to ignore accents/diacritical marks. The default value is false.
+     * Whether to ignore accents/diacritical marks.
+     * The default value is [Defaults.FullTextIndex.IGNORE_ACCENTS].
      */
+    @set:Deprecated("Use constructor parameter")
     public var isIgnoringAccents: Boolean
 
     /**
      * A predicate expression defining conditions for indexing documents.
      * Only documents satisfying the predicate are included, enabling partial indexes.
      */
-    public fun setWhere(where: String?): FullTextIndexConfiguration
-
-    /**
-     * A predicate expression defining conditions for indexing documents.
-     * Only documents satisfying the predicate are included, enabling partial indexes.
-     */
-    public var where: String?
+    public val where: String?
 }

@@ -18,13 +18,19 @@ package kotbase
 /**
  * Configuration for a standard database index.
  */
-public expect class ValueIndexConfiguration : IndexConfiguration {
+public expect class ValueIndexConfiguration(
+    expressions: List<String>,
+    where: String? = null
+) : IndexConfiguration {
 
+    @Deprecated(
+        "Use ValueIndexConfiguration(List<String>)",
+        ReplaceWith("ValueIndexConfiguration(listOf(*expressions))")
+    )
     public constructor(vararg expressions: String)
 
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public constructor(expressions: List<String>)
 
-    public fun setWhere(where: String?): ValueIndexConfiguration
-
-    public var where: String?
+    public val where: String?
 }

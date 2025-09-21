@@ -20,18 +20,22 @@ import com.couchbase.lite.ValueIndexConfiguration as CBLValueIndexConfiguration
 public actual class ValueIndexConfiguration
 private constructor(override val actual: CBLValueIndexConfiguration) : IndexConfiguration(actual) {
 
-    public actual constructor(vararg expressions: String) : this(CBLValueIndexConfiguration(*expressions))
-
-    public actual constructor(expressions: List<String>) : this(CBLValueIndexConfiguration(expressions))
-
-    public actual fun setWhere(where: String?): ValueIndexConfiguration {
+    public actual constructor(
+        expressions: List<String>,
+        where: String?
+    ) : this(CBLValueIndexConfiguration(expressions)) {
         actual.where = where
-        return this
     }
 
-    public actual var where: String?
+    @Deprecated(
+        "Use ValueIndexConfiguration(List<String>)",
+        ReplaceWith("ValueIndexConfiguration(listOf(*expressions))")
+    )
+    public actual constructor(vararg expressions: String) : this(expressions.asList())
+
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
+    public actual constructor(expressions: List<String>) : this(expressions)
+
+    public actual val where: String?
         get() = actual.where
-        set(value) {
-            actual.where = value
-        }
 }

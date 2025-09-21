@@ -25,15 +25,8 @@ import platform.posix.strlen
 public actual class ArrayIndexConfiguration
 public actual constructor(
     public actual val path: String,
-    expressions: List<String>?
-) : IndexConfiguration(expressions ?: emptyList()) {
-
-    public actual constructor(path: String) : this(path, null)
-
-    public actual constructor(path: String, expression: String, vararg expressions: String) : this(
-        path,
-        listOf(expression) + expressions
-    )
+    expressions: List<String>
+) : IndexConfiguration(expressions) {
 
     internal val actual: CValue<CBLArrayIndexConfiguration>
         get() {

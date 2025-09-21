@@ -20,18 +20,20 @@ import cocoapods.CouchbaseLite.CBLValueIndexConfiguration
 public actual class ValueIndexConfiguration
 private constructor(override var actual: CBLValueIndexConfiguration) : IndexConfiguration(actual) {
 
-    public actual constructor(vararg expressions: String) : this(expressions.toList())
+    public actual constructor(
+        expressions: List<String>,
+        where: String?
+    ) : this(CBLValueIndexConfiguration(expressions, where))
 
-    public actual constructor(expressions: List<String>) : this(CBLValueIndexConfiguration(expressions))
+    @Deprecated(
+        "Use ValueIndexConfiguration(List<String>)",
+        ReplaceWith("ValueIndexConfiguration(listOf(*expressions))")
+    )
+    public actual constructor(vararg expressions: String) : this(expressions.asList())
 
-    public actual fun setWhere(where: String?): ValueIndexConfiguration {
-        this.where = where
-        return this
-    }
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
+    public actual constructor(expressions: List<String>) : this(expressions)
 
-    public actual var where: String?
+    public actual val where: String?
         get() = actual.where
-        set(value) {
-            actual = CBLValueIndexConfiguration(actual.expressions, value)
-        }
 }

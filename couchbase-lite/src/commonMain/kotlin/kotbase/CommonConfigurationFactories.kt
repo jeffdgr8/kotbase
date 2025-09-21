@@ -22,6 +22,7 @@ package kotbase
  *
  *     val collConfig = CollectionConfigurationFactory.newConfig(...)
  */
+@Deprecated("Use CollectionConfiguration()")
 public val CollectionConfigurationFactory: CollectionConfiguration? = null
 
 /**
@@ -36,6 +37,10 @@ public val CollectionConfigurationFactory: CollectionConfiguration? = null
  *
  * @see CollectionConfiguration
  */
+@Deprecated(
+    "Use CollectionConfiguration()",
+    ReplaceWith("CollectionConfiguration(channels, documentIDs, pullFilter, pushFilter, conflictResolver)")
+)
 public fun CollectionConfiguration?.newConfig(
     channels: List<String>? = null,
     documentIDs: List<String>? = null,
@@ -61,6 +66,7 @@ public fun CollectionConfiguration?.newConfig(
  *
  *     val fullTextIndexConfig = FullTextIndexConfigurationFactory.newConfig(...)
  */
+@Deprecated("Use FullTextIndexConfiguration()")
 public val FullTextIndexConfigurationFactory: FullTextIndexConfiguration? = null
 
 /**
@@ -71,6 +77,10 @@ public val FullTextIndexConfigurationFactory: FullTextIndexConfiguration? = null
  *
  * @see FullTextIndexConfiguration
  */
+@Deprecated(
+    "Use FullTextIndexConfiguration()",
+    ReplaceWith("FullTextIndexConfiguration(*expressions, ignoreAccents = ignoreAccents, language = language)")
+)
 public fun FullTextIndexConfiguration?.newConfig(
     vararg expressions: String,
     language: String? = null,
@@ -79,11 +89,10 @@ public fun FullTextIndexConfiguration?.newConfig(
     return FullTextIndexConfiguration(
         requireNotNull(
             expressions.asList().ifEmpty { this?.expressions }
-        ) { "A FullTextIndexConfiguration must specify expressions" }
-    ).apply {
-        (language ?: this@newConfig?.language)?.let { this.language = it }
-        (ignoreAccents ?: this@newConfig?.isIgnoringAccents)?.let { this.isIgnoringAccents = it }
-    }
+        ) { "A FullTextIndexConfiguration must specify expressions" },
+        ignoreAccents = ignoreAccents ?: this?.isIgnoringAccents ?: Defaults.FullTextIndex.IGNORE_ACCENTS,
+        language = language ?: this?.language ?: NOT_SPECIFIED
+    )
 }
 
 /**
@@ -93,6 +102,7 @@ public fun FullTextIndexConfiguration?.newConfig(
  *
  *     val valIndexConfig = ValueIndexConfigurationFactory.newConfig(...)
  */
+@Deprecated("Use ValueIndexConfiguration()")
 public val ValueIndexConfigurationFactory: ValueIndexConfiguration? = null
 
 /**
@@ -103,6 +113,10 @@ public val ValueIndexConfigurationFactory: ValueIndexConfiguration? = null
  *
  * @see ValueIndexConfiguration
  */
+@Deprecated(
+    "Use ValueIndexConfiguration()",
+    ReplaceWith("ValueIndexConfiguration(*expressions)")
+)
 public fun ValueIndexConfiguration?.newConfig(
     vararg expressions: String
 ): ValueIndexConfiguration {
@@ -120,6 +134,8 @@ public fun ValueIndexConfiguration?.newConfig(
  *
  *     val logFileConfig = LogFileConfigurationFactory.newConfig(...)
  */
+@Suppress("DEPRECATION")
+@Deprecated("Use FileLogSink")
 public val LogFileConfigurationFactory: LogFileConfiguration? = null
 
 /**
