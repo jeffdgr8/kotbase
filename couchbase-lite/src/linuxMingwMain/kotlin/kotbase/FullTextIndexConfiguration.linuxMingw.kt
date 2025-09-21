@@ -23,32 +23,44 @@ import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class FullTextIndexConfiguration
-public actual constructor(expressions: List<String>) : IndexConfiguration(expressions) {
+public actual constructor(
+    expressions: List<String>,
+    where: String?,
+    ignoreAccents: Boolean,
+    language: String?
+) : IndexConfiguration(expressions) {
 
-    public actual constructor(vararg expressions: String) : this(expressions.toList())
+    @Deprecated(
+        "Use FullTextIndexConfiguration(List<String>)",
+        ReplaceWith("FullTextIndexConfiguration(listOf(*expressions))")
+    )
+    public actual constructor(vararg expressions: String) : this(expressions.asList())
 
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
+    public actual constructor(expressions: List<String>) : this(expressions)
+
+    @Suppress("DEPRECATION")
+    @Deprecated("Use constructor parameter")
     public actual fun setLanguage(language: String?): FullTextIndexConfiguration {
         this.language = language
         return this
     }
 
+    @set:Deprecated("Use constructor parameter")
     // TODO: this should default to device's default locale, tests check for "en"
-    public actual var language: String? = "en"
+    public actual var language: String? = if (language == NOT_SPECIFIED) "en" else language
 
+    @Suppress("DEPRECATION")
+    @Deprecated("Use constructor parameter")
     public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration {
         isIgnoringAccents = ignoreAccents
         return this
     }
 
-    public actual var isIgnoringAccents: Boolean = false
+    @set:Deprecated("Use constructor parameter")
+    public actual var isIgnoringAccents: Boolean = ignoreAccents
 
-
-    public actual fun setWhere(where: String?): FullTextIndexConfiguration {
-        this.where = where
-        return this
-    }
-
-    public actual var where: String? = null
+    public actual val where: String? = where
 
     internal val actual: CValue<CBLFullTextIndexConfiguration>
         get() {

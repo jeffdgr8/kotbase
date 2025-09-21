@@ -23,21 +23,41 @@ import platform.Foundation.currentLocale
 public actual class FullTextIndexConfiguration
 private constructor(override var actual: CBLFullTextIndexConfiguration) : IndexConfiguration(actual) {
 
-    public actual constructor(vararg expressions: String) : this(expressions.toList())
-
-    public actual constructor(expressions: List<String>) : this(
+    public actual constructor(
+        expressions: List<String>,
+        where: String?,
+        ignoreAccents: Boolean,
+        language: String?
+    ) : this(
         CBLFullTextIndexConfiguration(
             expressions,
-            Defaults.FullTextIndex.IGNORE_ACCENTS,
-            NSLocale.currentLocale.objectForKey(NSLocaleLanguageCode) as String?
+            where,
+            ignoreAccents,
+            if (language == NOT_SPECIFIED) {
+                NSLocale.currentLocale.objectForKey(NSLocaleLanguageCode) as String?
+            } else {
+                language
+            }
         )
     )
 
+    @Deprecated(
+        "Use FullTextIndexConfiguration(List<String>)",
+        ReplaceWith("FullTextIndexConfiguration(listOf(*expressions))")
+    )
+    public actual constructor(vararg expressions: String) : this(expressions.asList())
+
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
+    public actual constructor(expressions: List<String>) : this(expressions)
+
+    @Suppress("DEPRECATION")
+    @Deprecated("Use constructor parameter")
     public actual fun setLanguage(language: String?): FullTextIndexConfiguration {
         this.language = language
         return this
     }
 
+    @set:Deprecated("Use constructor parameter")
     public actual var language: String?
         get() = actual.language
         set(value) {
@@ -49,11 +69,14 @@ private constructor(override var actual: CBLFullTextIndexConfiguration) : IndexC
             )
         }
 
+    @Suppress("DEPRECATION")
+    @Deprecated("Use constructor parameter")
     public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration {
         isIgnoringAccents = ignoreAccents
         return this
     }
 
+    @set:Deprecated("Use constructor parameter")
     public actual var isIgnoringAccents: Boolean
         get() = actual.ignoreAccents
         set(value) {
@@ -65,19 +88,6 @@ private constructor(override var actual: CBLFullTextIndexConfiguration) : IndexC
             )
         }
 
-    public actual fun setWhere(where: String?): FullTextIndexConfiguration {
-        this.where = where
-        return this
-    }
-
-    public actual var where: String?
+    public actual val where: String?
         get() = actual.where
-        set(value) {
-            actual = CBLFullTextIndexConfiguration(
-                actual.expressions,
-                value,
-                actual.ignoreAccents,
-                actual.language
-            )
-        }
 }
