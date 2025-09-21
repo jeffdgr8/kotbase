@@ -90,4 +90,6 @@ private constructor(override var actual: CBLFullTextIndexConfiguration) : IndexC
 
     public actual val where: String?
         get() = actual.where
+
+    internal actual companion object
 }

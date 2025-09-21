@@ -79,7 +79,7 @@ public val FullTextIndexConfigurationFactory: FullTextIndexConfiguration? = null
  */
 @Deprecated(
     "Use FullTextIndexConfiguration()",
-    ReplaceWith("FullTextIndexConfiguration(*expressions, ignoreAccents = ignoreAccents, language = language)")
+    ReplaceWith("FullTextIndexConfiguration(expressions.asList(), ignoreAccents = ignoreAccents, language = language)")
 )
 public fun FullTextIndexConfiguration?.newConfig(
     vararg expressions: String,
@@ -91,7 +91,7 @@ public fun FullTextIndexConfiguration?.newConfig(
             expressions.asList().ifEmpty { this?.expressions }
         ) { "A FullTextIndexConfiguration must specify expressions" },
         ignoreAccents = ignoreAccents ?: this?.isIgnoringAccents ?: Defaults.FullTextIndex.IGNORE_ACCENTS,
-        language = language ?: this?.language ?: NOT_SPECIFIED
+        language = language ?: this?.language ?: FullTextIndexConfiguration.NOT_SPECIFIED
     )
 }
 
@@ -115,7 +115,7 @@ public val ValueIndexConfigurationFactory: ValueIndexConfiguration? = null
  */
 @Deprecated(
     "Use ValueIndexConfiguration()",
-    ReplaceWith("ValueIndexConfiguration(*expressions)")
+    ReplaceWith("ValueIndexConfiguration(expressions.asList())")
 )
 public fun ValueIndexConfiguration?.newConfig(
     vararg expressions: String

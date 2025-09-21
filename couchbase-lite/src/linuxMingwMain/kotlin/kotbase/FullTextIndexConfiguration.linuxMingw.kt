@@ -78,4 +78,6 @@ public actual constructor(
                 ignoreAccents = isIgnoringAccents
             }
         }
+
+    internal actual companion object
 }

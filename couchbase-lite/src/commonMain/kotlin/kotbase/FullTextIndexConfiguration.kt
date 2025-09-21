@@ -15,8 +15,6 @@
  */
 package kotbase
 
-internal const val NOT_SPECIFIED = "NOT_SPECIFIED"
-
 /**
  * Configuration for creating full-text indexes.
  *
@@ -76,4 +74,9 @@ public expect class FullTextIndexConfiguration(
      * Only documents satisfying the predicate are included, enabling partial indexes.
      */
     public val where: String?
+
+    internal companion object
 }
+
+internal val FullTextIndexConfiguration.Companion.NOT_SPECIFIED: String
+    get() = "NOT_SPECIFIED"
