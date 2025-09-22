@@ -15,28 +15,29 @@
  */
 package kotbase
 
+import kotbase.logging.LogSinks
 import kotlin.test.Test
 
-class AutoInitTest {
+class AutoInitTest : BaseTest() {
 
     @Test
-    fun testCreateDatabaseWithoutInit() {
-        val db = Database("succeed", DatabaseConfiguration())
-        db.delete()
+    fun testGetConsoleLoggerWithoutInit() {
+        LogSinks.console
     }
 
     @Test
-    fun testGetConsoleWithoutInit() {
-        Database.log.console
-    }
-
-    @Test
-    fun testGetFileWithoutInit() {
-        Database.log.file
+    fun testGetFileLoggerWithoutInit() {
+        LogSinks.file
     }
 
     @Test
     fun testCreateDBConfigWithoutInit() {
         DatabaseConfiguration()
+    }
+
+    @Test
+    fun testCreateDatabaseWithoutInit() {
+        val db = Database("succeed")
+        db.delete()
     }
 }

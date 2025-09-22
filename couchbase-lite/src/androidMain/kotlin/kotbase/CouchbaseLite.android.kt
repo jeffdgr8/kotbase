@@ -23,12 +23,12 @@ import kotlinx.atomicfu.atomic
 import java.io.File
 import com.couchbase.lite.CouchbaseLite as CBLCouchbaseLite
 
+private val initCalled = atomic(false)
+
 /**
  * CouchbaseLite Utility
  */
 public object CouchbaseLite {
-
-    private val initCalled = atomic(false)
 
     /**
      * Initialize CouchbaseLite library. Unlike the Couchbase Lite Android SDK,
@@ -105,4 +105,10 @@ internal actual fun internalInit() {
     // no-op
     // Android default initialization is handled by androidx-startup
     // Content Provider in AndroidManifest.xml with internalInit(Context)
+}
+
+internal actual fun internalResetInit() {
+    @Suppress("VisibleForTests")
+    CouchbaseLiteInternal.reset()
+    initCalled.value = false
 }

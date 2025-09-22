@@ -16,6 +16,7 @@
 package kotbase
 
 import com.couchbase.lite.internal.CouchbaseLiteInternal
+import kotbase.logging.LogSinks
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -31,34 +32,27 @@ class PreInitTest : BaseTest() {
 
     @AfterTest
     fun tearDownPreInitTest() {
-        CouchbaseLiteInternal.reset()
+        internalResetInit()
+        setupPlatform()
     }
 
     @Test
-    fun testCreateDatabaseBeforeInit() {
-        assertFailsWith<IllegalStateException> {
-            Database("fail", DatabaseConfiguration())
-        }
+    fun testGetConsoleLoggerBeforeInit() {
+        assertFailsWith<CouchbaseLiteError> { LogSinks.console }
     }
 
     @Test
-    fun testGetConsoleBeforeInit() {
-        assertFailsWith<IllegalStateException> {
-            Database.log.console
-        }
-    }
-
-    @Test
-    fun testGetFileBeforeInit() {
-        assertFailsWith<IllegalStateException> {
-            Database.log.file
-        }
+    fun testGetFileLoggerBeforeInit() {
+        assertFailsWith<CouchbaseLiteError> { LogSinks.file }
     }
 
     @Test
     fun testCreateDBConfigBeforeInit() {
-        assertFailsWith<IllegalStateException> {
-            DatabaseConfiguration()
-        }
+        assertFailsWith<CouchbaseLiteError> { DatabaseConfiguration() }
+    }
+
+    @Test
+    fun testCreateDatabaseBeforeInit() {
+        assertFailsWith<CouchbaseLiteError> { Database("fail") }
     }
 }
