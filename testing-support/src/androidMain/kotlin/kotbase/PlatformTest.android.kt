@@ -37,10 +37,6 @@ actual constructor(private val useLegacyLogging: Boolean) {
             get() = ApplicationProvider.getApplicationContext()
 
         init {
-            CouchbaseLite.init(appContext, true)
-        }
-
-        init {
             try {
                 Runtime.getRuntime()
                     .exec("logcat -P '" + android.os.Process.myPid() + "'").waitFor()
@@ -53,6 +49,8 @@ actual constructor(private val useLegacyLogging: Boolean) {
     }
 
     actual fun setupPlatform() {
+        CouchbaseLite.init(appContext, true)
+
         if (!useLegacyLogging) {
             LogSinks.console = ConsoleLogSink(LogLevel.INFO, LogDomain.ALL)
         } else {

@@ -109,3 +109,9 @@ internal actual fun internalInit() {
     if (initCalled.value) return
     CBLCouchbaseLite.init()
 }
+
+internal actual fun internalResetInit() {
+    @Suppress("VisibleForTests")
+    CouchbaseLiteInternal.reset()
+    initCalled.value = false
+}

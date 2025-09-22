@@ -16,3 +16,8 @@
 package kotbase
 
 internal expect fun internalInit()
+
+/**
+ * For testing purposes only.
+ */
+internal expect fun internalResetInit()

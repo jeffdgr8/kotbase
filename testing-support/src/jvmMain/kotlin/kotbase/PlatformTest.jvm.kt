@@ -30,14 +30,12 @@ actual constructor(private val useLegacyLogging: Boolean) {
     companion object {
 
         const val SCRATCH_DIR_NAME = "cbl_test_scratch"
-
-        init {
-            val rootDir = File("build/cb-tmp")
-            CouchbaseLite.init(true, rootDir, rootDir)
-        }
     }
 
     actual fun setupPlatform() {
+        val rootDir = File("build/cb-tmp")
+        CouchbaseLite.init(true, rootDir, rootDir)
+
         if (!useLegacyLogging) {
             LogSinks.console = ConsoleLogSink(LogLevel.INFO, LogDomain.ALL)
         } else {
