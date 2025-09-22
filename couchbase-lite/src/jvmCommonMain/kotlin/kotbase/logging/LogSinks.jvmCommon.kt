@@ -15,9 +15,14 @@
  */
 package kotbase.logging
 
+import kotbase.internalInit
 import com.couchbase.lite.logging.LogSinks as CBLLogSinks
 
 public actual object LogSinks {
+
+    init {
+        internalInit()
+    }
 
     public actual var file: FileLogSink?
         get() = CBLLogSinks.get().file?.asFileLogSink()
