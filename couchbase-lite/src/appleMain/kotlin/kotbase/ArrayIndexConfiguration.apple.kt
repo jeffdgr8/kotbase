@@ -20,8 +20,17 @@ import cocoapods.CouchbaseLite.CBLArrayIndexConfiguration
 public actual class ArrayIndexConfiguration
 private constructor(override val actual: CBLArrayIndexConfiguration) : IndexConfiguration(actual) {
 
-    public actual constructor(path: String, expressions: List<String>) : this(
-        CBLArrayIndexConfiguration(path, expressions)
+    public actual constructor(path: String, expressions: List<String>?) : this(
+        // https://youtrack.jetbrains.com/issue/KT-81232
+        Unit.run {
+            if (expressions != null) {
+                require(expressions.isNotEmpty<String>()) { "Empty expressions is not allowed, use null instead." }
+                if (expressions.size == 1) {
+                    require(expressions[0].isNotEmpty()) { "An expression list should not contain a single empty string. Use null to specify no expressions." }
+                }
+            }
+            CBLArrayIndexConfiguration(path, expressions)
+        }
     )
 
     public actual val path: String

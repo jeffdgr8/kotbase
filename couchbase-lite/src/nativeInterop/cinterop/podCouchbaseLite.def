@@ -75,3 +75,7 @@ typedef struct C4Document {
 @interface CBLQueryCollation ()
 - (id) asJSON;
 @end
+
+@interface CBLCollection ()
+- (nullable NSArray*) indexesInfo: (NSError**)error;
+@end

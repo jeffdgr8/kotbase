@@ -23,3 +23,9 @@ internal expect class C4Document {
 
     fun isRevDeleted(): Boolean
 }
+
+internal expect fun Collection.getIndexInfo(): List<Map<String, Any?>>
+
+internal val Collection.Companion.INDEX_KEY_NAME get() = "name"
+
+internal val Collection.Companion.INDEX_KEY_EXPR get() = "expr"

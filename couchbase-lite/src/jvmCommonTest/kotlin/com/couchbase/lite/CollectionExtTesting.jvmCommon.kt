@@ -27,3 +27,6 @@ internal actual class C4Document(actual: CBLC4Document) : DelegatedClass<CBLC4Do
     actual fun isRevDeleted(): Boolean =
         actual.isRevDeleted
 }
+
+@Suppress("VisibleForTests")
+internal actual fun Collection.getIndexInfo(): List<Map<String, Any?>> = actual.getIndexInfo()

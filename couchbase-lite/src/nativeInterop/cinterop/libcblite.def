@@ -54,3 +54,5 @@ typedef struct C4Document {
 //bool CBLDocument_Exists(const CBLDocument* doc);
 
 unsigned CBLDocument_Generation(const CBLDocument*);
+
+FLMutableArray CBLCollection_GetIndexesInfo(const CBLCollection* collection, CBLError* outError);

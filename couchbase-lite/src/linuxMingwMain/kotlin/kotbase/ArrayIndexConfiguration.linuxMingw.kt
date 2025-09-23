@@ -25,8 +25,17 @@ import platform.posix.strlen
 public actual class ArrayIndexConfiguration
 public actual constructor(
     public actual val path: String,
-    expressions: List<String>
-) : IndexConfiguration(expressions) {
+    expressions: List<String>?
+) : IndexConfiguration(expressions ?: listOf("")) {
+
+    init {
+        if (expressions != null) {
+            require(expressions.isNotEmpty()) { "Empty expressions is not allowed, use null instead." }
+            if (expressions.size == 1) {
+                require(expressions[0].isNotEmpty()) { "An expression list should not contain a single empty string. Use null to specify no expressions." }
+            }
+        }
+    }
 
     internal val actual: CValue<CBLArrayIndexConfiguration>
         get() {
