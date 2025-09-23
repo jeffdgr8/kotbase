@@ -33,10 +33,9 @@ public expect class ArrayIndexConfiguration : IndexConfiguration {
      *                    "contacts[].phones" to specify an array of phones within each
      *                    contact.
      * @param expressions A list of strings, where each string represents an expression
-     *                    defining the values within the array to be indexed. Expressions
-     *                    may not be null.
+     *                    defining the values within the array to be indexed.
      */
-    public constructor(path: String, expressions: List<String>)
+    public constructor(path: String, expressions: List<String>? = null)
 
     /**
      * Path to the array, which can be nested.

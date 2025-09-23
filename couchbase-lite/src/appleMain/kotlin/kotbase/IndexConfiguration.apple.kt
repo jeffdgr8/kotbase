@@ -23,5 +23,5 @@ public actual sealed class IndexConfiguration(actual: CBLIndexConfiguration) :
 
     @Suppress("UNCHECKED_CAST")
     public actual val expressions: List<String>
-        get() = actual.expressions as List<String>
+        get() = actual.expressions as List<String>? ?: listOf("")
 }

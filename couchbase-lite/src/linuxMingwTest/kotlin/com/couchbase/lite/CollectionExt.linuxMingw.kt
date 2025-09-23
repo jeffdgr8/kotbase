@@ -17,6 +17,11 @@ package com.couchbase.lite
 
 import kotbase.Collection
 import kotbase.Document
+import kotbase.internal.fleece.iterator
+import kotbase.internal.fleece.toList
+import kotbase.internal.wrapCBLError
+import kotlinx.cinterop.memScoped
+import libcblite.CBLCollection_GetIndexesInfo
 
 // TODO: implement native C getC4Document()
 
@@ -26,4 +31,13 @@ internal actual fun Collection.getC4Document(id: String): C4Document? =
 internal actual class C4Document(private val doc: Document) {
 
     actual fun isRevDeleted(): Boolean = false
+}
+
+internal actual fun Collection.getIndexInfo(): List<Map<String, Any?>> {
+    val flIndexInfo = database.withLock {
+        wrapCBLError { error ->
+            CBLCollection_GetIndexesInfo(actual, error)
+        }
+    }
+    return flIndexInfo?.toList(null) as List<Map<String, Any?>>
 }

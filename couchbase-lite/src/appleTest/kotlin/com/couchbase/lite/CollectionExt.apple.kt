@@ -32,3 +32,10 @@ internal actual class C4Document(actual: CBLC4Document) : DelegatedClass<CBLC4Do
     actual fun isRevDeleted(): Boolean =
         (actual.revFlags and kRevDeleted.toUByte()) != 0.toUByte()
 }
+
+internal actual fun Collection.getIndexInfo(): List<Map<String, Any?>> {
+    return wrapCBLError { error ->
+        @Suppress("UNCHECKED_CAST")
+        actual.indexesInfo(error) as List<Map<String, Any?>>
+    }
+}
