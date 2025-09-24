@@ -23,3 +23,7 @@ internal actual val Document.content: Dictionary
 
 internal actual fun Document.exists(): Boolean =
     actual.exists()
+
+internal actual val Document.revisionHistory: String?
+    @Suppress("VisibleForTests")
+    get() = actual.revisionHistory

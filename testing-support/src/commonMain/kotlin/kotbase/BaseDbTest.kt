@@ -18,6 +18,11 @@
 package kotbase
 
 import com.couchbase.lite.isOpen
+import kotbase.ext.META_PROP_TYPE
+import kotbase.ext.PROP_CONTENT_TYPE
+import kotbase.ext.PROP_DIGEST
+import kotbase.ext.PROP_LENGTH
+import kotbase.ext.TYPE_BLOB
 import kotbase.internal.utils.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.CountDownLatch
@@ -198,15 +203,13 @@ abstract class BaseDbTest : BaseTest() {
         return doc
     }
 
-    protected fun saveDocsInCollection(
-        mDocs: List<MutableDocument>,
-        collection: Collection = testCollection
-    ): List<Document> {
+    protected fun saveDocsInCollection(mDocs: List<MutableDocument>, collection: Collection = testCollection)
+            : List<Document> {
         var docs: List<Document>? = null
         collection.database.inBatch {
             docs = mDocs.map { saveDocInCollection(it, collection) }
         }
-        return docs ?: throw IllegalStateException("doc list is null")
+        return docs ?: throw CouchbaseLiteError("doc list is null")
     }
 
     protected fun createDocInCollection(
@@ -354,7 +357,7 @@ abstract class BaseDbTest : BaseTest() {
         assertIs<JsonObject>(jArray[26])
     }
 
-    protected fun verifyArray(array: Array?) {
+    protected fun verifyArray(array: Array?, fromJSON: Boolean = false) {
         assertNotNull(array)
 
         assertEquals(27, array.count.toLong())
@@ -486,13 +489,21 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(array.getDictionary(8))
 
         //#9 array.addFloat(0.0F);
-        assertEquals(0.0f, array.getValue(9))
+        if (fromJSON) {
+            assertEquals(0.0, array.getValue(9))
+        } else {
+            assertEquals(0.0f, array.getValue(9))
+        }
         assertFalse(array.getBoolean(9))
         assertEquals(0, array.getInt(9).toLong())
         assertEquals(0L, array.getLong(9))
         assertEquals(0.0f, array.getFloat(9), 0.001f)
         assertEquals(0.0, array.getDouble(9), 0.001)
-        assertEquals(0.0f, array.getNumber(9))
+        if (fromJSON) {
+            assertEquals(0.0, array.getNumber(9))
+        } else {
+            assertEquals(0.0f, array.getValue(9))
+        }
         assertNull(array.getString(9))
         assertNull(array.getDate(9))
         assertNull(array.getBlob(9))
@@ -517,7 +528,7 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(Float.MAX_VALUE, array.getValue(11)!!.demoteToFloat())
         assertTrue(array.getBoolean(11))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), array.getInt(11))
-        // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), array.getLong(11))
+        // ??? Fails in Java: assertEquals(Float.MAX_VALUE.toLong(), array.getLong(11))
         assertEquals(Float.MAX_VALUE, array.getFloat(11), 100.0f)
         assertEquals(Float.MAX_VALUE.toDouble(), array.getDouble(11), 1.0E31)
         assertEquals(Float.MAX_VALUE, array.getNumber(11)!!.demoteToFloat())
@@ -534,7 +545,7 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(0L, array.getLong(12))
         assertEquals(0.0f, array.getFloat(12), 0.001f)
         assertEquals(0.0, array.getDouble(12), 0.001)
-        assertEquals(0f, array.getNumber(12))
+        assertEquals(0.0, array.getNumber(12))
         assertNull(array.getString(12))
         assertNull(array.getDate(12))
         assertNull(array.getBlob(12))
@@ -559,7 +570,7 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(Double.MAX_VALUE, array.getValue(14))
         assertTrue(array.getBoolean(14))
         // ??? Fails: assertEquals(Double.MAX_VALUE.toInt(), array.getInt(14))
-        // ??? Fails: assertEquals(Double.MAX_VALUE.toLong(), array.getLong(14))
+        // ??? Fails in Java: assertEquals(Double.MAX_VALUE.toLong(), array.getLong(14))
         assertEquals(Double.MAX_VALUE.toFloat(), array.getFloat(14), 100.0f)
         assertEquals(Double.MAX_VALUE, array.getDouble(14), 100.0)
         assertEquals(Double.MAX_VALUE, array.getNumber(14))
@@ -812,7 +823,7 @@ abstract class BaseDbTest : BaseTest() {
         assertIs<JsonObject>(jObj["dict-27"])
     }
 
-    protected fun verifyDict(dict: Dictionary?) {
+    protected fun verifyDict(dict: Dictionary?, fromJSON: Boolean = false) {
         assertNotNull(dict)
 
         assertEquals(27, dict.count.toLong())
@@ -944,13 +955,21 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(dict.getDictionary("dict-9"))
 
         //#9 dict.setFloat(0.0F);
-        assertEquals(0.0f, dict.getValue("dict-10"))
+        if (fromJSON) {
+            assertEquals(0.0, dict.getValue("dict-10"))
+        } else {
+            assertEquals(0.0f, dict.getValue("dict-10"))
+        }
         assertFalse(dict.getBoolean("dict-10"))
         assertEquals(0, dict.getInt("dict-10"))
         assertEquals(0L, dict.getLong("dict-10"))
         assertEquals(0.0f, dict.getFloat("dict-10"), 0.001f)
         assertEquals(0.0, dict.getDouble("dict-10"), 0.001)
-        assertEquals(0.0f, dict.getNumber("dict-10"))
+        if (fromJSON) {
+            assertEquals(0.0, dict.getValue("dict-10"))
+        } else {
+            assertEquals(0.0f, dict.getValue("dict-10"))
+        }
         assertNull(dict.getString("dict-10"))
         assertNull(dict.getDate("dict-10"))
         assertNull(dict.getBlob("dict-10"))
@@ -975,7 +994,7 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(Float.MAX_VALUE, dict.getValue("dict-12")!!.demoteToFloat())
         assertTrue(dict.getBoolean("dict-12"))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), dict.getInt("dict-12"))
-        // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), dict.getLong("dict-12"))
+        // ??? Fails in Java: assertEquals(Float.MAX_VALUE.toLong(), dict.getLong("dict-12"))
         assertEquals(Float.MAX_VALUE, dict.getFloat("dict-12"), 1.0E32F)
         assertEquals(Float.MAX_VALUE.toDouble(), dict.getDouble("dict-12"), 1.0E32)
         assertEquals(Float.MAX_VALUE, dict.getNumber("dict-12")!!.demoteToFloat())
@@ -1017,7 +1036,7 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(Double.MAX_VALUE, dict.getValue("dict-15")!!.promoteToDouble(), 0.001)
         assertTrue(dict.getBoolean("dict-15"))
         // ??? Fails: assertEquals(Double.MAX_VALUE.toInt(), dict.getInt("dict-15"))
-        // ??? Fails: assertEquals(Double.MAX_VALUE.toLong(), dict.getLong("dict-15"))
+        // ??? Fails in Java: assertEquals(Double.MAX_VALUE.toLong(), dict.getLong("dict-15"))
         assertEquals(Double.MAX_VALUE.toFloat(), dict.getFloat("dict-15"), 100.0f)
         assertEquals(Double.MAX_VALUE, dict.getDouble("dict-15"), 100.0)
         assertEquals(Double.MAX_VALUE, dict.getNumber("dict-15")!!.promoteToDouble(), 0.001)
@@ -1202,14 +1221,10 @@ abstract class BaseDbTest : BaseTest() {
 
     protected fun verifyBlob(jBlob: JsonObject) {
         assertEquals(4, jBlob.size.toLong())
-        // Blob.TYPE_BLOB Blob.META_PROP_TYPE
-        assertEquals("blob", jBlob["@type"]?.jsonPrimitive?.content)
-        // Blob.PROP_DIGEST
-        assertEquals("sha1-C+QguVamTgLjyDQ9RzRtyCv6x60=", jBlob["digest"]?.jsonPrimitive?.content)
-        // Blob.PROP_LENGTH
-        assertEquals(59, jBlob["length"]?.jsonPrimitive?.long)
-        // Blob.PROP_CONTENT_TYPE
-        assertEquals("text/plain", jBlob["content_type"]?.jsonPrimitive?.content)
+        assertEquals(Blob.TYPE_BLOB, jBlob[Blob.META_PROP_TYPE]?.jsonPrimitive?.content)
+        assertEquals("sha1-C+QguVamTgLjyDQ9RzRtyCv6x60=", jBlob[Blob.PROP_DIGEST]?.jsonPrimitive?.content)
+        assertEquals(59, jBlob[Blob.PROP_LENGTH]?.jsonPrimitive?.long)
+        assertEquals("text/plain", jBlob[Blob.PROP_CONTENT_TYPE]?.jsonPrimitive?.content)
     }
 
     protected fun verifyBlob(blob: Blob?) {
@@ -1271,7 +1286,7 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(Long.MIN_VALUE, jObj["doc-8"]?.jsonPrimitive?.long)
         assertEquals(Long.MAX_VALUE, jObj["doc-9"]?.jsonPrimitive?.long)
 
-        assertEquals(0.0F, jObj["doc-10"]!!.jsonPrimitive.float, 0.001F)
+        assertEquals(0.0f, jObj["doc-10"]!!.jsonPrimitive.float, 0.001F)
         assertEquals(Float.MIN_VALUE, jObj["doc-11"]!!.jsonPrimitive.float, 0.001F)
         assertEquals(Float.MAX_VALUE, jObj["doc-12"]!!.jsonPrimitive.float, 100.0F)
 
@@ -1300,7 +1315,7 @@ abstract class BaseDbTest : BaseTest() {
         verifyBlob(jObj["doc-29"]!!.jsonObject)
     }
 
-    protected fun verifyDocument(doc: Dictionary) {
+    protected fun verifyDocument(doc: Dictionary, fromJSON: Boolean = false) {
         assertEquals(29, doc.count.toLong())
 
         //#0 doc.setValue(null);
@@ -1430,13 +1445,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-9"))
 
         //#9 doc.setFloat(0.0F);
-        assertEquals(0.0f, doc.getValue("doc-10"))
+        assertEquals(0.0, doc.getValue("doc-10"))
         assertFalse(doc.getBoolean("doc-10"))
         assertEquals(0, doc.getInt("doc-10").toLong())
         assertEquals(0L, doc.getLong("doc-10"))
         assertEquals(0.0f, doc.getFloat("doc-10"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-10"), 0.001)
-        assertEquals(0.0f, doc.getNumber("doc-10"))
+        assertEquals(0.0, doc.getNumber("doc-10"))
         assertNull(doc.getString("doc-10"))
         assertNull(doc.getDate("doc-10"))
         assertNull(doc.getBlob("doc-10"))
@@ -1446,8 +1461,16 @@ abstract class BaseDbTest : BaseTest() {
         //#10 doc.setFloat(Float.MIN_VALUE);
         assertEquals(Float.MIN_VALUE, doc.getValue("doc-11")?.demoteToFloat())
         // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-11")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
-        assertEquals(Float.MIN_VALUE.toInt().toFloat(), doc.getInt("doc-11").toFloat(), 0.001f)
-        assertEquals(Float.MIN_VALUE.toLong().toFloat(), doc.getLong("doc-11").toFloat(), 0.001f)
+        assertEquals(
+            Float.MIN_VALUE.toInt().toFloat(),
+            doc.getInt("doc-11").toFloat(),
+            0.001f
+        )
+        assertEquals(
+            Float.MIN_VALUE.toLong().toFloat(),
+            doc.getLong("doc-11").toFloat(),
+            0.001f
+        )
         assertEquals(Float.MIN_VALUE, doc.getFloat("doc-11"), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-11"), 0.001)
         assertEquals(Float.MIN_VALUE, doc.getValue("doc-11")?.demoteToFloat())
@@ -1461,7 +1484,7 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(Float.MAX_VALUE, doc.getValue("doc-12")?.demoteToFloat())
         assertTrue(doc.getBoolean("doc-12"))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), doc.getInt("doc-12"))
-        // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), doc.getLong("doc-12"))
+        // ??? Fails in Java: assertEquals(Float.MAX_VALUE.toLong(), doc.getLong("doc-12"))
         assertEquals(Float.MAX_VALUE, doc.getFloat("doc-12"), 1.0E32F)
         assertEquals(Float.MAX_VALUE.toDouble(), doc.getDouble("doc-12"), 1.0E32)
         assertEquals(Float.MAX_VALUE, doc.getNumber("doc-12")?.demoteToFloat())
@@ -1472,13 +1495,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-12"))
 
         //#12 doc.setDouble(0.0);
-        assertEquals(0f, doc.getValue("doc-13"))
+        assertEquals(0.0, doc.getValue("doc-13"))
         assertFalse(doc.getBoolean("doc-13"))
         assertEquals(0, doc.getInt("doc-13").toLong())
         assertEquals(0L, doc.getLong("doc-13"))
         assertEquals(0.0f, doc.getFloat("doc-13"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-13"), 0.001)
-        assertEquals(0f, doc.getNumber("doc-13"))
+        assertEquals(0.0, doc.getNumber("doc-13"))
         assertNull(doc.getString("doc-13"))
         assertNull(doc.getDate("doc-13"))
         assertNull(doc.getBlob("doc-13"))
@@ -1502,7 +1525,7 @@ abstract class BaseDbTest : BaseTest() {
         //#14 doc.setDouble(Double.MAX_VALUE);
         assertEquals(Double.MAX_VALUE, doc.getValue("doc-15"))
         // ??? Fails: assertEquals(Double.MAX_VALUE.toInt(), doc.getInt("doc-15"))
-        // ??? Fails: assertEquals(Double.MAX_VALUE.toLong(), doc.getLong("doc-15"))
+        // ??? Fails in Java: assertEquals(Double.MAX_VALUE.toLong(), doc.getLong("doc-15"))
         assertEquals(Double.MAX_VALUE.toFloat(), doc.getFloat("doc-15"), 100.0f)
         assertEquals(Double.MAX_VALUE, doc.getDouble("doc-15"), 100.0)
         assertEquals(Double.MAX_VALUE, doc.getNumber("doc-15"))
@@ -1639,7 +1662,7 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-24"))
 
         //#24 doc.setDictionary(null);
-        verifyArray(doc.getArray("doc-25"))
+        verifyArray(doc.getArray("doc-25"), fromJSON)
 
         //#25 doc.setDictionary(null);
         assertNull(doc.getValue("doc-26"))
@@ -1656,7 +1679,7 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-26"))
 
         //#26 doc.setDictionary(simpleDict);
-        verifyDict(doc.getDictionary("doc-27"))
+        verifyDict(doc.getDictionary("doc-27"), fromJSON)
 
         //#27 doc.setDictionary(null);
         assertNull(doc.getValue("doc-28"))
@@ -1675,7 +1698,7 @@ abstract class BaseDbTest : BaseTest() {
     }
 
     // identical to verifyDocument(doc: Dictionary) (since publicly they don't share an interface)
-    protected fun verifyDocument(doc: Result) {
+    protected fun verifyDocument(doc: Result, fromJSON: Boolean = false) {
         assertEquals(29, doc.count.toLong())
 
         //#0 doc.setValue(null);
@@ -1805,13 +1828,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-9"))
 
         //#9 doc.setFloat(0.0F);
-        assertEquals(0.0f, doc.getValue("doc-10"))
+        assertEquals(0.0, doc.getValue("doc-10"))
         assertFalse(doc.getBoolean("doc-10"))
         assertEquals(0, doc.getInt("doc-10").toLong())
         assertEquals(0L, doc.getLong("doc-10"))
         assertEquals(0.0f, doc.getFloat("doc-10"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-10"), 0.001)
-        assertEquals(0.0f, doc.getNumber("doc-10"))
+        assertEquals(0.0, doc.getNumber("doc-10"))
         assertNull(doc.getString("doc-10"))
         assertNull(doc.getDate("doc-10"))
         assertNull(doc.getBlob("doc-10"))
@@ -1821,8 +1844,16 @@ abstract class BaseDbTest : BaseTest() {
         //#10 doc.setFloat(Float.MIN_VALUE);
         assertEquals(Float.MIN_VALUE, doc.getValue("doc-11")?.demoteToFloat())
         // !!! Fails on iOS: assertFalse(doc.getBoolean("doc-11")) (any non-zero number should be true, but Float.MIN_VALUE is false on Android)
-        assertEquals(Float.MIN_VALUE.toInt().toFloat(), doc.getInt("doc-11").toFloat(), 0.001f)
-        assertEquals(Float.MIN_VALUE.toLong().toFloat(), doc.getLong("doc-11").toFloat(), 0.001f)
+        assertEquals(
+            Float.MIN_VALUE.toInt().toFloat(),
+            doc.getInt("doc-11").toFloat(),
+            0.001f
+        )
+        assertEquals(
+            Float.MIN_VALUE.toLong().toFloat(),
+            doc.getLong("doc-11").toFloat(),
+            0.001f
+        )
         assertEquals(Float.MIN_VALUE, doc.getFloat("doc-11"), 0.001f)
         assertEquals(Float.MIN_VALUE.toDouble(), doc.getDouble("doc-11"), 0.001)
         assertEquals(Float.MIN_VALUE, doc.getValue("doc-11")?.demoteToFloat())
@@ -1836,7 +1867,7 @@ abstract class BaseDbTest : BaseTest() {
         assertEquals(Float.MAX_VALUE, doc.getValue("doc-12")?.demoteToFloat())
         assertTrue(doc.getBoolean("doc-12"))
         // ??? Fails: assertEquals(Float.MAX_VALUE.toInt(), doc.getInt("doc-12"))
-        // ??? Fails: assertEquals(Float.MAX_VALUE.toLong(), doc.getLong("doc-12"))
+        // ??? Fails in Java: assertEquals(Float.MAX_VALUE.toLong(), doc.getLong("doc-12"))
         assertEquals(Float.MAX_VALUE, doc.getFloat("doc-12"), 1.0E32F)
         assertEquals(Float.MAX_VALUE.toDouble(), doc.getDouble("doc-12"), 1.0E32)
         assertEquals(Float.MAX_VALUE, doc.getNumber("doc-12")?.demoteToFloat())
@@ -1847,13 +1878,13 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-12"))
 
         //#12 doc.setDouble(0.0);
-        assertEquals(0f, doc.getValue("doc-13"))
+        assertEquals(0.0, doc.getValue("doc-13"))
         assertFalse(doc.getBoolean("doc-13"))
         assertEquals(0, doc.getInt("doc-13").toLong())
         assertEquals(0L, doc.getLong("doc-13"))
         assertEquals(0.0f, doc.getFloat("doc-13"), 0.001f)
         assertEquals(0.0, doc.getDouble("doc-13"), 0.001)
-        assertEquals(0f, doc.getNumber("doc-13"))
+        assertEquals(0.0, doc.getNumber("doc-13"))
         assertNull(doc.getString("doc-13"))
         assertNull(doc.getDate("doc-13"))
         assertNull(doc.getBlob("doc-13"))
@@ -1877,7 +1908,7 @@ abstract class BaseDbTest : BaseTest() {
         //#14 doc.setDouble(Double.MAX_VALUE);
         assertEquals(Double.MAX_VALUE, doc.getValue("doc-15"))
         // ??? Fails: assertEquals(Double.MAX_VALUE.toInt(), doc.getInt("doc-15"))
-        // ??? Fails: assertEquals(Double.MAX_VALUE.toLong(), doc.getLong("doc-15"))
+        // ??? Fails in Java: assertEquals(Double.MAX_VALUE.toLong(), doc.getLong("doc-15"))
         assertEquals(Double.MAX_VALUE.toFloat(), doc.getFloat("doc-15"), 100.0f)
         assertEquals(Double.MAX_VALUE, doc.getDouble("doc-15"), 100.0)
         assertEquals(Double.MAX_VALUE, doc.getNumber("doc-15"))
@@ -2014,7 +2045,7 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-24"))
 
         //#24 doc.setDictionary(null);
-        verifyArray(doc.getArray("doc-25"))
+        verifyArray(doc.getArray("doc-25"), fromJSON)
 
         //#25 doc.setDictionary(null);
         assertNull(doc.getValue("doc-26"))
@@ -2031,7 +2062,7 @@ abstract class BaseDbTest : BaseTest() {
         assertNull(doc.getDictionary("doc-26"))
 
         //#26 doc.setDictionary(simpleDict);
-        verifyDict(doc.getDictionary("doc-27"))
+        verifyDict(doc.getDictionary("doc-27"), fromJSON)
 
         //#27 doc.setDictionary(null);
         assertNull(doc.getValue("doc-28"))

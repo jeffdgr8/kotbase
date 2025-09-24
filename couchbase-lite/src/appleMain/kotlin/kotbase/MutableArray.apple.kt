@@ -48,7 +48,6 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual fun setData(data: List<Any?>): MutableArray {
         collectionMap.clear()
-        data.forEach { checkSelf(it) }
         actual.setData(data.actualIfDelegated())
         setBooleans(data)
         mutate()
@@ -69,7 +68,6 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun setValue(index: Int, value: Any?): MutableArray {
-        checkSelf(value)
         checkType(value)
         checkIndex(index)
         when (value) {
@@ -77,12 +75,12 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
             is Boolean -> actual.setBoolean(value, index.convert())
             else -> actual.setValue(value?.actualIfDelegated(), index.convert())
         }
-        if (value is Array || value is Dictionary) {
+        mutate()
+        if (value is Array && value !== this || value is Dictionary) {
             collectionMap[index] = value
         } else {
             collectionMap.remove(index)
         }
-        mutate()
         return this
     }
 
@@ -159,13 +157,12 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun setArray(index: Int, value: Array?): MutableArray {
-        checkSelf(value)
         checkIndex(index)
         actual.setArray(value?.actual, index.convert())
-        if (value == null) {
-            collectionMap.remove(index)
-        } else {
+        if (value != null && value !== this) {
             collectionMap[index] = value
+        } else {
+            collectionMap.remove(index)
         }
         mutate()
         return this
@@ -184,7 +181,6 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun addValue(value: Any?): MutableArray {
-        checkSelf(value)
         checkType(value)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
@@ -192,6 +188,9 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
             else -> actual.addValue(value?.actualIfDelegated())
         }
         mutate()
+        if (value is Array && value !== this || value is Dictionary) {
+            collectionMap[count - 1] = value
+        }
         return this
     }
 
@@ -250,9 +249,8 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun addArray(value: Array?): MutableArray {
-        checkSelf(value)
         actual.addArray(value?.actual)
-        if (value != null) {
+        if (value != null && value !== this) {
             collectionMap[count - 1] = value
         }
         mutate()
@@ -269,7 +267,6 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun insertValue(index: Int, value: Any?): MutableArray {
-        checkSelf(value)
         checkType(value)
         checkInsertIndex(index)
         when (value) {
@@ -278,7 +275,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
             else -> actual.insertValue(value?.actualIfDelegated(), index.convert())
         }
         incrementAfter(index, collectionMap)
-        if (value is Array || value is Dictionary) {
+        if (value is Array && value !== this || value is Dictionary) {
             collectionMap[index] = value
         }
         mutate()
@@ -358,11 +355,10 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     public actual fun insertArray(index: Int, value: Array?): MutableArray {
-        checkSelf(value)
         checkInsertIndex(index)
         actual.insertArray(value?.actual, index.convert())
         incrementAfter(index, collectionMap)
-        if (value != null) {
+        if (value != null && value !== this) {
             collectionMap[index] = value
         }
         mutate()
@@ -403,14 +399,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     }
 
     override fun toJSON(): String {
-        throw IllegalStateException("Mutable objects may not be encoded as JSON")
-    }
-
-    // Java performs this check, but Objective-C does not
-    private fun checkSelf(value: Any?) {
-        if (value === this) {
-            throw IllegalArgumentException("Arrays cannot ba added to themselves")
-        }
+        throw CouchbaseLiteError("Mutable objects may not be encoded as JSON")
     }
 }
 

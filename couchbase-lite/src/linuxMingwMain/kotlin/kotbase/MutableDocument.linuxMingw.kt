@@ -239,6 +239,6 @@ internal constructor(
     }
 
     override fun toJSON(): String? {
-        throw IllegalStateException("Mutable objects may not be encoded as JSON")
+        throw CouchbaseLiteError("Mutable objects may not be encoded as JSON")
     }
 }

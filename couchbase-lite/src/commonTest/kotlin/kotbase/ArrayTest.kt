@@ -22,6 +22,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlin.test.*
 
+// Tests for the Array Iterator tests are in IteratorTest
 class ArrayTest : BaseDbTest() {
 
     @Test
@@ -59,7 +60,8 @@ class ArrayTest : BaseDbTest() {
     @Test
     fun testRecursiveArray() {
         val array = MutableArray()
-        assertFailsWith<IllegalArgumentException> { array.addArray(array) }
+        array.addArray(array)
+        assertNotSame(array, array.getArray(0))
     }
 
     @Test
@@ -110,11 +112,9 @@ class ArrayTest : BaseDbTest() {
             val array = MutableArray()
 
             // Add objects of all types:
-            if (i % 2 == 0) {
-                populateData(array)
-            } else {
-                populateDataByType(array)
-            }
+            if (i % 2 == 0) { populateData(array) }
+            else { populateDataByType(array) }
+
             val doc = MutableDocument("doc1")
             save(doc, "array", array) { a ->
                 assertEquals(12, a.count)
@@ -131,7 +131,7 @@ class ArrayTest : BaseDbTest() {
 
                 // dictionary
                 val dict = a.getValue(9) as Dictionary
-                val subdict = if (dict is MutableDictionary) dict else dict.toMutable()
+                val subdict = dict as? MutableDictionary ?: dict.toMutable()
 
                 val expectedMap = mutableMapOf<String, Any?>()
                 expectedMap["name"] = "Scott Tiger"
@@ -139,7 +139,7 @@ class ArrayTest : BaseDbTest() {
 
                 // array
                 val array1 = a.getValue(10) as Array
-                val subarray = if (array1 is MutableArray) array1 else array1.toMutable()
+                val subarray = array1 as? MutableArray ?: array1.toMutable()
 
                 val expected = mutableListOf<Any?>()
                 expected.add("a")
@@ -190,14 +190,14 @@ class ArrayTest : BaseDbTest() {
 
                 // dictionary
                 val dict = a.getValue(12 + 9) as Dictionary
-                val subdict = if (dict is MutableDictionary) dict else dict.toMutable()
+                val subdict = dict as? MutableDictionary ?: dict.toMutable()
                 val expectedMap = mutableMapOf<String, Any?>()
                 expectedMap["name"] = "Scott Tiger"
                 assertEquals(expectedMap, subdict.toMap())
 
                 // array
                 val array1 = a.getValue(12 + 10) as Array
-                val subarray = if (array1 is MutableArray) array1 else array1.toMutable()
+                val subarray = array1 as? MutableArray ?: array1.toMutable()
                 val expected = mutableListOf<Any?>()
                 expected.add("a")
                 expected.add("b")
@@ -237,14 +237,14 @@ class ArrayTest : BaseDbTest() {
 
             // dictionary
             val dict = a.getValue(9) as Dictionary
-            val subdict = if (dict is MutableDictionary) dict else dict.toMutable()
+            val subdict = dict as? MutableDictionary ?: dict.toMutable()
             val expectedMap = mutableMapOf<String, Any?>()
             expectedMap["name"] = "Scott Tiger"
             assertEquals(expectedMap, subdict.toMap())
 
             // array
             val array1 = a.getValue(10) as Array
-            val subarray = if (array1 is MutableArray) array1 else array1.toMutable()
+            val subarray = array1 as? MutableArray ?: array1.toMutable()
             val expected = mutableListOf<Any?>()
             expected.add("a")
             expected.add("b")
@@ -290,7 +290,7 @@ class ArrayTest : BaseDbTest() {
 
                 // dictionary
                 val dict = a.getValue(2) as Dictionary
-                val subdict = if (dict is MutableDictionary) dict else dict.toMutable()
+                val subdict = dict as? MutableDictionary ?: dict.toMutable()
 
                 val expectedMap = mutableMapOf<String, Any?>()
                 expectedMap["name"] = "Scott Tiger"
@@ -298,7 +298,7 @@ class ArrayTest : BaseDbTest() {
 
                 // array
                 val array1 = a.getValue(1) as Array
-                val subarray = if (array1 is MutableArray) array1 else array1.toMutable()
+                val subarray = array1 as? MutableArray ?: array1.toMutable()
 
                 val expected = mutableListOf<Any?>()
                 expected.add("a")
@@ -519,7 +519,6 @@ class ArrayTest : BaseDbTest() {
         }
     }
 
-    // ??? Fails on Nexus 4
     @Test
     fun testGetNumber() {
         for (i in 0..1) {
@@ -719,28 +718,28 @@ class ArrayTest : BaseDbTest() {
             assertEquals(1.49, a.getNumber(1))
             assertEquals(1, a.getInt(1))
             assertEquals(1L, a.getLong(1))
-            assertEquals(1.49f, a.getFloat(1), 0.0f)
+            assertEquals(1.49F, a.getFloat(1), 0.0f)
             assertEquals(1.49, a.getDouble(1), 0.0)
 
             assertEquals(1.50, (a.getValue(2) as Number).toDouble(), 0.0)
             assertEquals(1.50, a.getNumber(2)!!.toDouble(), 0.0)
             assertEquals(1, a.getInt(2))
             assertEquals(1L, a.getLong(2))
-            assertEquals(1.50f, a.getFloat(2), 0.0F)
+            assertEquals(1.50F, a.getFloat(2), 0.0F)
             assertEquals(1.50, a.getDouble(2), 0.0)
 
             assertEquals(1.51, a.getValue(3))
             assertEquals(1.51, a.getNumber(3))
             assertEquals(1, a.getInt(3))
             assertEquals(1L, a.getLong(3))
-            assertEquals(1.51f, a.getFloat(3), 0.0F)
+            assertEquals(1.51F, a.getFloat(3), 0.0F)
             assertEquals(1.51, a.getDouble(3), 0.0)
 
             assertEquals(1.99, a.getValue(4))
             assertEquals(1.99, a.getNumber(4))
             assertEquals(1, a.getInt(4))
             assertEquals(1L, a.getLong(4))
-            assertEquals(1.99f, a.getFloat(4), 0.0F)
+            assertEquals(1.99F, a.getFloat(4), 0.0F)
             assertEquals(1.99, a.getDouble(4), 0.0)
         }
     }
@@ -985,50 +984,6 @@ class ArrayTest : BaseDbTest() {
     }
 
     @Test
-    fun testArrayEnumerationWithDataModification1() {
-        val array = MutableArray()
-        for (i in 0..2) { array.addValue(i) }
-
-        assertEquals(3, array.count)
-        assertIntContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
-
-        assertFailsWith<ConcurrentModificationException> {
-            var n = 0
-            val itr = array.iterator()
-            while (itr.hasNext()) {
-                if (n++ == 1) {
-                    array.addValue(3)
-                }
-                itr.next()
-            }
-        }
-    }
-
-    @Test
-    fun testArrayEnumerationWithDataModification2() {
-        val array = MutableArray()
-        for (i in 0..2) { array.addValue(i) }
-
-        assertEquals(3, array.count)
-        assertIntContentEquals(arrayOf(0, 1, 2), array.toList().toTypedArray())
-
-        val doc = MutableDocument("doc1").setValue("array", array)
-        val savedArray = saveDocInCollection(doc).toMutable().getArray("array")
-        assertNotNull(savedArray)
-
-        assertFailsWith<ConcurrentModificationException> {
-            var n = 0
-            val itr = savedArray.iterator()
-            while (itr.hasNext()) {
-                if (n++ == 1) {
-                    savedArray.addValue(3)
-                }
-                itr.next()
-            }
-        }
-    }
-
-    @Test
     fun testSetNull() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
@@ -1180,11 +1135,11 @@ class ArrayTest : BaseDbTest() {
 
         // against other type
         assertNotEquals<Any?>(null, array3)
-        assertNotEquals(array3, Any())
+        assertNotEquals(Any(), array3)
         assertNotEquals<Any?>(1, array3)
-        assertNotEquals<Any?>(array3, emptyMap<Any, Any>())
-        assertNotEquals<Any?>(array3, MutableDictionary())
-        assertNotEquals(array3, MutableArray())
+        assertNotEquals<Any?>(emptyMap<Any, Any>(), array3)
+        assertNotEquals<Any?>(MutableDictionary(), array3)
+        assertNotEquals(MutableArray(), array3)
         assertNotEquals<Any?>(array3, doc)
         assertNotEquals<Any?>(array3, mDoc)
     }
@@ -1474,7 +1429,7 @@ class ArrayTest : BaseDbTest() {
     fun testAddFloat() {
         val mDoc = MutableDocument("test")
         val mArray = MutableArray()
-        mArray.addFloat(0.0f)
+        mArray.addFloat(0.0F)
         mArray.addFloat(Float.MAX_VALUE)
         mArray.addFloat(Float.MIN_VALUE)
         mDoc.setArray("array", mArray)
@@ -1512,7 +1467,7 @@ class ArrayTest : BaseDbTest() {
 
         assertEquals(0.0F, array.getLong(2).toFloat(), 0.0F)
         assertEquals(Float.MAX_VALUE, array.getFloat(0), 0.0F)
-        assertEquals(Float.MIN_VALUE, array.getFloat(1), 0.0F)
+        assertEquals(Float.MIN_VALUE, array.getFloat(1), 0.0f)
     }
 
     @Test
@@ -1848,7 +1803,7 @@ class ArrayTest : BaseDbTest() {
     // JSON 3.7.?
     @Test
     fun testArrayToJSONBeforeSave() {
-        assertFailsWith<IllegalStateException> { MutableArray().toJSON() }
+        assertFailsWith<CouchbaseLiteError> { MutableArray().toJSON() }
     }
 
     // JSON 3.7.a-b
@@ -1857,7 +1812,7 @@ class ArrayTest : BaseDbTest() {
         val mArray = MutableArray(readJSONResource("array.json"))
         val mDoc = MutableDocument().setArray("array", mArray)
         val dbArray = saveDocInCollection(mDoc).getArray("array")
-        verifyArray(dbArray)
+        verifyArray(dbArray, true)
         verifyArray(Json.parseToJsonElement(dbArray!!.toJSON()).jsonArray)
     }
 
@@ -1939,12 +1894,7 @@ class ArrayTest : BaseDbTest() {
         }
     }
 
-    private fun save(
-        mDoc: MutableDocument,
-        key: String,
-        mArray: MutableArray,
-        validator: (Array) -> Unit
-    ): Document {
+    private fun save(mDoc: MutableDocument, key: String, mArray: MutableArray, validator: (Array) -> Unit): Document {
         validator(mArray)
         mDoc.setValue(key, mArray)
         val doc = saveDocInCollection(mDoc)

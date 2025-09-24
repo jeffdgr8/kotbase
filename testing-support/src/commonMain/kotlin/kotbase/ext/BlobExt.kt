@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.couchbase.lite
+package kotbase.ext
 
-import kotbase.Dictionary
-import kotbase.Document
+import kotbase.Blob
 
-internal expect val Document.content: Dictionary
-
-internal expect fun Document.exists(): Boolean
-
-internal expect val Document.revisionHistory: String?
+internal val Blob.Companion.TYPE_BLOB get() = "blob"
+internal val Blob.Companion.META_PROP_TYPE get() = "@type"
+internal val Blob.Companion.PROP_DIGEST get() = "digest"
+internal val Blob.Companion.PROP_LENGTH get() = "length"
+internal val Blob.Companion.PROP_CONTENT_TYPE get() = "content_type"

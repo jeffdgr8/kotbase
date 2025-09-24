@@ -110,7 +110,7 @@ internal constructor(
 
     public actual fun setValue(key: String, value: Any?): MutableDictionary {
         actual.setValue(key, value, dbContext)
-        if (value is Array || value is Dictionary) {
+        if (value is Array || value is Dictionary && value !== this) {
             collectionMap[key] = value
         } else {
             collectionMap.remove(key)
@@ -207,7 +207,7 @@ internal constructor(
     public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary {
         actual.setDictionary(key, value, dbContext)
         removeInternal(key)
-        if (value != null) {
+        if (value != null && value !== this) {
             collectionMap[key] = value
         }
         mutate()
@@ -246,6 +246,6 @@ internal constructor(
     }
 
     override fun toJSON(): String {
-        throw IllegalStateException("Mutable objects may not be encoded as JSON")
+        throw CouchbaseLiteError("Mutable objects may not be encoded as JSON")
     }
 }

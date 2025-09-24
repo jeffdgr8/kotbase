@@ -17,8 +17,8 @@ package kotbase
 
 import com.couchbase.lite.content
 import com.couchbase.lite.exists
+import com.couchbase.lite.revisionHistory
 import com.couchbase.lite.saveBlob
-import kotbase.DocumentTest.DocValidator
 import kotbase.ext.nowMillis
 import kotbase.ext.toStringMillis
 import kotbase.internal.utils.Report
@@ -39,6 +39,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
+// Tests for the Document Iterator tests are in IteratorTest
 class DocumentTest : BaseDbTest() {
 
     fun interface DocValidator {
@@ -50,7 +51,7 @@ class DocumentTest : BaseDbTest() {
     fun testCreateDoc() {
         val doc1a = MutableDocument()
         assertNotNull(doc1a)
-        assertTrue(doc1a.id.isNotEmpty())
+        assertFalse(doc1a.id.isEmpty())
         assertEquals(emptyMap(), doc1a.toMap())
 
         val doc1b = saveDocInCollection(doc1a)
@@ -90,7 +91,7 @@ class DocumentTest : BaseDbTest() {
     fun testCreateDocWithNilID() {
         val doc1a = MutableDocument(null as String?)
         assertNotNull(doc1a)
-        assertTrue(doc1a.id.isNotEmpty())
+        assertFalse(doc1a.id.isEmpty())
         assertEquals(emptyMap(), doc1a.toMap())
 
         val doc1b = saveDocInCollection(doc1a)
@@ -117,7 +118,7 @@ class DocumentTest : BaseDbTest() {
 
         val doc1a = MutableDocument(dict)
         assertNotNull(doc1a)
-        assertTrue(doc1a.id.isNotEmpty())
+        assertFalse(doc1a.id.isEmpty())
         assertEquals(dict, doc1a.toMap())
 
         val doc1b = saveDocInCollection(doc1a)
@@ -201,10 +202,10 @@ class DocumentTest : BaseDbTest() {
 
     @Test
     fun testMutateEmptyDocument() {
-        var doc = MutableDocument("doc")
+        var doc = MutableDocument()
         testCollection.save(doc)
 
-        doc = testCollection.getDocument("doc")!!.toMutable()
+        doc = testCollection.getDocument(doc.id)!!.toMutable()
         doc.setString("foo", "bar")
         testCollection.save(doc)
     }
@@ -771,7 +772,7 @@ class DocumentTest : BaseDbTest() {
 
         val date = Clock.System.nowMillis()
         val dateStr = date.toStringMillis()
-        assertTrue(dateStr.isNotEmpty())
+        assertFalse(dateStr.isEmpty())
         mDoc.setValue("date", date)
 
         val doc = validateAndSaveDocInTestCollection(mDoc) { d ->
@@ -2694,7 +2695,7 @@ class DocumentTest : BaseDbTest() {
     // JSON 3.5.?
     @Test
     fun testMutableDocToJSONBeforeSave() {
-        assertFailsWith<IllegalStateException> { MutableDocument().toJSON() }
+        assertFailsWith<CouchbaseLiteError> { MutableDocument().toJSON() }
     }
 
     // JSON 3.5.a
@@ -2706,7 +2707,7 @@ class DocumentTest : BaseDbTest() {
         val dbDoc =
             saveDocInCollection(MutableDocument("fromJSON", readJSONResource("document.json")))
         testDatabase.saveBlob(makeBlob()) // be sure the blob is there...
-        verifyDocument(dbDoc.content)
+        verifyDocument(dbDoc.content, true)
         verifyDocument(Json.parseToJsonElement(dbDoc.toJSON()!!).jsonObject)
     }
 
@@ -2736,6 +2737,16 @@ class DocumentTest : BaseDbTest() {
         assertFailsWith<IllegalArgumentException> {
             MutableDocument("fromJSON", readJSONResource("array.json"))
         }
+    }
+
+    // Unsupported revision history
+    @Test
+    fun testGetRevisionHistory() {
+        val mdoc = MutableDocument("doc1")
+        val coll = testCollection
+        coll.save(mdoc)
+        val doc = coll.getDocument(mdoc.id)!!
+        assertFalse(doc.revisionHistory!!.isEmpty())
     }
 
     // !!! Replace with BaseDbTest.makeDocument

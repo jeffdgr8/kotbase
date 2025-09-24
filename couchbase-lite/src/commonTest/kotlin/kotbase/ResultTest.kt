@@ -47,9 +47,19 @@ class ResultTest : BaseQueryTest() {
                 assertTrue(r.getValue("blob") is Blob)
                 assertNull(r.getValue("non_existing_key"))
 
+                //assertFailsWith<IllegalArgumentException> { r.getValue(null) }
+
                 assertNull(r.getValue("not_in_query_select"))
             }
             assertEquals(1, rows)
+        }
+    }
+
+    private fun runTest(test: (Query) -> Unit) {
+        for (i in 1..2) {
+            val docID = prepareData(i)
+            val query = generateQuery(docID)
+            test(query)
         }
     }
 
@@ -102,6 +112,8 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getString("array"))
                 assertNull(r.getString("blob"))
                 assertNull(r.getString("non_existing_key"))
+
+                //assertFailsWith<IllegalArgumentException> { r.getString(null) }
 
                 assertNull(r.getString("not_in_query_select"))
             }
@@ -160,6 +172,8 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getNumber("blob"))
                 assertNull(r.getNumber("non_existing_key"))
 
+                //assertFailsWith<IllegalArgumentException> { r.getNumber(null) }
+
                 assertNull(r.getNumber("not_in_query_select"))
             }
 
@@ -215,6 +229,8 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0, r.getInt("array"))
                 assertEquals(0, r.getInt("blob"))
                 assertEquals(0, r.getInt("non_existing_key"))
+
+                //assertFailsWith<IllegalArgumentException> { r.getInt(null) }
 
                 assertEquals(0, r.getInt("not_in_query_select"))
             }
@@ -272,6 +288,8 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0, r.getLong("blob"))
                 assertEquals(0, r.getLong("non_existing_key"))
 
+                //assertFailsWith<IllegalArgumentException> { r.getLong(null) }
+
                 assertEquals(0, r.getLong("not_in_query_select"))
             }
 
@@ -328,6 +346,8 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0.0f, r.getFloat("blob"), 0.0f)
                 assertEquals(0.0f, r.getFloat("non_existing_key"), 0.0f)
 
+                //assertFailsWith<IllegalArgumentException> { r.getFloat(null) }
+
                 assertEquals(0.0f, r.getFloat("not_in_query_select"), 0.0f)
             }
             assertEquals(1, rows)
@@ -382,6 +402,8 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(0.0, r.getDouble("array"), 0.0)
                 assertEquals(0.0, r.getDouble("blob"), 0.0)
                 assertEquals(0.0, r.getDouble("non_existing_key"), 0.0)
+
+                //assertFailsWith<IllegalArgumentException> { r.getDouble(null) }
 
                 assertEquals(0.0, r.getDouble("not_in_query_select"), 0.0)
             }
@@ -439,6 +461,8 @@ class ResultTest : BaseQueryTest() {
                 assertTrue(r.getBoolean("blob"))
                 assertFalse(r.getBoolean("non_existing_key"))
 
+                //assertFailsWith<IllegalArgumentException> { r.getBoolean(null) }
+
                 assertFalse(r.getBoolean("not_in_query_select"))
             }
 
@@ -494,6 +518,8 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getDate("array"))
                 assertNull(r.getDate("blob"))
                 assertNull(r.getDate("non_existing_key"))
+
+                //assertFailsWith<IllegalArgumentException> { r.getDate(null) }
 
                 assertNull(r.getDate("not_in_query_select"))
             }
@@ -554,6 +580,8 @@ class ResultTest : BaseQueryTest() {
                     r.getBlob("blob")!!.content
                 )
                 assertNull(r.getBlob("non_existing_key"))
+
+                //assertFailsWith<IllegalArgumentException> { r.getBlob(null) }
 
                 assertNull(r.getBlob("not_in_query_select"))
             }
@@ -621,6 +649,8 @@ class ResultTest : BaseQueryTest() {
                 assertNull(r.getDictionary("blob"))
                 assertNull(r.getDictionary("non_existing_key"))
 
+                //assertFailsWith<IllegalArgumentException> { r.getDictionary(null) }
+
                 assertNull(r.getDictionary("not_in_query_select"))
             }
 
@@ -684,6 +714,8 @@ class ResultTest : BaseQueryTest() {
                 assertEquals(list, r.getArray("array")!!.toList())
                 assertNull(r.getArray("blob"))
                 assertNull(r.getArray("non_existing_key"))
+
+                //assertFailsWith<IllegalArgumentException> { r.getArray(null) }
 
                 assertNull(r.getArray("not_in_query_select"))
             }
@@ -773,6 +805,8 @@ class ResultTest : BaseQueryTest() {
                 // not exists -> false
                 assertFalse(r.contains("non_existing_key"))
 
+                //assertFailsWith<IllegalArgumentException> { r.contains(null) }
+
                 assertFalse(r.contains("not_in_query_select"))
             }
 
@@ -806,6 +840,41 @@ class ResultTest : BaseQueryTest() {
             }
         }
     }
+
+    @Test
+    fun testResultRefAfterClose() {
+        val mDoc = makeDocument()
+        saveDocInCollection(mDoc)
+
+        val testCollection = testCollection
+        val result: Result?
+        val dict: Dictionary?
+        val array: Array?
+        val results: ResultSet = QueryBuilder
+            .createQuery("SELECT * FROM " + testCollection.fullName, testCollection.database)
+            .execute()
+
+        result = results.next()
+        assertNotNull(result)
+
+        dict = result.getDictionary(0)
+        assertNotNull(dict)
+
+        array = dict.getArray("doc-25")
+        assertNotNull(array)
+
+        val `val` = array.getString(20)
+        assertNotNull(`val`)
+
+        results.close()
+
+        assertNull(results.next())
+        // behavior differs between platforms because of caching in Kotbase and native platforms not implementing ResultSet.close()
+        //assertFailsWith<CouchbaseLiteError> { result.getDictionary(0) }
+        //assertFailsWith<CouchbaseLiteError> { dict.getArray("doc-25") }
+        //assertFailsWith<CouchbaseLiteError> { array.getString(20) }
+    }
+
 
     ///////////////  JSON tests
 
@@ -842,14 +911,6 @@ class ResultTest : BaseQueryTest() {
     private fun docId() = getUniqueName("doc")
 
     private fun docId(i: Int) = "doc-${i.paddedString(3)}"
-
-    private fun runTest(test: (Query) -> Unit) {
-        for (i in 1..2) {
-            val docID = prepareData(i)
-            val query = generateQuery(docID)
-            test(query)
-        }
-    }
 
     private fun prepareData(i: Int): String {
         val mDoc = MutableDocument(docId(i))
