@@ -56,3 +56,5 @@ typedef struct C4Document {
 unsigned CBLDocument_Generation(const CBLDocument*);
 
 FLMutableArray CBLCollection_GetIndexesInfo(const CBLCollection* collection, CBLError* outError);
+
+FLSliceResult CBLDocument_GetRevisionHistory(const CBLDocument* doc);

@@ -47,7 +47,6 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
     }
 
     public actual fun setData(data: Map<String, Any?>): MutableDictionary {
-        data.forEach { checkSelf(it.value) }
         collectionMap.clear()
         actual.setData(data.actualIfDelegated())
         setBooleans(data)
@@ -69,14 +68,13 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
     }
 
     public actual fun setValue(key: String, value: Any?): MutableDictionary {
-        checkSelf(value)
         checkType(value)
         when (value) {
             // Booleans treated as numbers unless explicitly using boolean API
             is Boolean -> actual.setBoolean(value, key)
             else -> actual.setValue(value?.actualIfDelegated(), key)
         }
-        if (value is Array || value is Dictionary) {
+        if (value is Array || value is Dictionary && value !== this) {
             collectionMap[key] = value
         } else {
             collectionMap.remove(key)
@@ -150,15 +148,22 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
 
     public actual fun setArray(key: String, value: Array?): MutableDictionary {
         actual.setArray(value?.actual, key)
-        collectionMap.remove(key)
+        if (value == null) {
+            collectionMap.remove(key)
+        } else {
+            collectionMap[key] = value
+        }
         mutate()
         return this
     }
 
     public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary {
-        checkSelf(value)
         actual.setDictionary(value?.actual, key)
-        collectionMap.remove(key)
+        if (value != null && value !== this) {
+            collectionMap[key] = value
+        } else {
+            collectionMap.remove(key)
+        }
         mutate()
         return this
     }
@@ -183,14 +188,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
     }
 
     override fun toJSON(): String {
-        throw IllegalStateException("Mutable objects may not be encoded as JSON")
-    }
-
-    // Java performs this check, but Objective-C does not
-    private fun checkSelf(value: Any?) {
-        if (value === this) {
-            throw IllegalArgumentException("Dictionaries cannot ba added to themselves")
-        }
+        throw CouchbaseLiteError("Mutable objects may not be encoded as JSON")
     }
 }
 

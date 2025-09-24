@@ -42,7 +42,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
 
     public actual fun setValue(key: String, value: Any?): MutableDictionary {
         actual.setValue(key, value?.actualIfDelegated())
-        if (value is Array || value is Dictionary) {
+        if (value is Array || value is Dictionary && value !== this) {
             collectionMap[key] = value
         } else {
             collectionMap.remove(key)
@@ -92,57 +92,35 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         return this
     }
 
-    // TODO: Remove setValue() when nullable in 3.1
-    //  https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setBlob(key: String, value: Blob?): MutableDictionary {
-        if (value == null) {
-            actual.setValue(key, null)
-        } else {
-            actual.setBlob(key, value.actual)
-        }
-        //actual.setBlob(key, value?.actual)
+        actual.setBlob(key, value?.actual)
         collectionMap.remove(key)
         return this
     }
 
-    // TODO: Remove setValue() when nullable in 3.1
-    //  https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setDate(key: String, value: Instant?): MutableDictionary {
-        if (value == null) {
-            actual.setValue(key, null)
-        } else {
-            actual.setDate(key, value.toDate())
-        }
-        //actual.setDate(key, value?.toDate())
+        actual.setDate(key, value?.toDate())
         collectionMap.remove(key)
         return this
     }
 
-    // TODO: Remove setValue() when nullable in 3.1
-    //  https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setArray(key: String, value: Array?): MutableDictionary {
+        actual.setArray(key, value?.actual)
         if (value == null) {
-            actual.setValue(key, null)
             collectionMap.remove(key)
         } else {
-            actual.setArray(key, value.actual)
             collectionMap[key] = value
         }
-        //actual.setArray(key, value?.actual)
         return this
     }
 
-    // TODO: Remove setValue() when nullable in 3.1
-    //  https://forums.couchbase.com/t/couchbase-lite-java-sdk-api-feedback/33897/1/
     public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary {
-        if (value == null) {
-            actual.setValue(key, null)
-            collectionMap.remove(key)
-        } else {
-            actual.setDictionary(key, value.actual)
+        actual.setDictionary(key, value?.actual)
+        if (value != null && value !== this) {
             collectionMap[key] = value
+        } else {
+            collectionMap.remove(key)
         }
-        //actual.setDictionary(key, value?.actual)
         return this
     }
 

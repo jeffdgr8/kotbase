@@ -30,3 +30,6 @@ internal actual fun Document.exists(): Boolean {
     val c4Doc = actual.c4Doc?.rawDoc ?: return false
     return (c4Doc.pointed.flags and kDocExists) != 0u
 }
+
+internal actual val Document.revisionHistory: String?
+    get() = actual._getRevisionHistory()

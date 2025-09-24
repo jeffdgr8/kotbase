@@ -42,7 +42,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual fun setValue(index: Int, value: Any?): MutableArray {
         actual.setValue(index, value?.actualIfDelegated())
-        if (value is Array || value is Dictionary) {
+        if (value is Array && value !== this || value is Dictionary) {
             collectionMap[index] = value
         } else {
             collectionMap.remove(index)
@@ -106,10 +106,10 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual fun setArray(index: Int, value: Array?): MutableArray {
         actual.setArray(index, value?.actual)
-        if (value == null) {
-            collectionMap.remove(index)
-        } else {
+        if (value != null && value !== this) {
             collectionMap[index] = value
+        } else {
+            collectionMap.remove(index)
         }
         return this
     }
@@ -126,7 +126,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual fun addValue(value: Any?): MutableArray {
         actual.addValue(value?.actualIfDelegated())
-        if (value is Array || value is Dictionary) {
+        if (value is Array && value !== this || value is Dictionary) {
             collectionMap[count - 1] = value
         }
         return this
@@ -179,7 +179,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
 
     public actual fun addArray(value: Array?): MutableArray {
         actual.addArray(value?.actual)
-        if (value != null) {
+        if (value != null && value !== this) {
             collectionMap[count - 1] = value
         }
         return this
@@ -196,7 +196,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     public actual fun insertValue(index: Int, value: Any?): MutableArray {
         actual.insertValue(index, value?.actualIfDelegated())
         incrementAfter(index, collectionMap)
-        if (value is Array || value is Dictionary) {
+        if (value is Array && value !== this || value is Dictionary) {
             collectionMap[index] = value
         }
         return this
@@ -259,7 +259,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual) {
     public actual fun insertArray(index: Int, value: Array?): MutableArray {
         actual.insertArray(index, value?.actual)
         incrementAfter(index, collectionMap)
-        if (value != null) {
+        if (value != null && value !== this) {
             collectionMap[index] = value
         }
         return this

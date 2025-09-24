@@ -16,8 +16,10 @@
 package com.couchbase.lite
 
 import kotbase.*
+import kotbase.internal.fleece.toKString
 import kotlinx.cinterop.*
 import libcblite.C4Document
+import libcblite.CBLDocument_GetRevisionHistory
 import libcblite.kDocExists
 import kotlin.experimental.ExperimentalNativeApi
 
@@ -44,3 +46,6 @@ internal val Document.c4Doc: CPointer<C4Document>?
         val ptrs = actual.reinterpret<LongVar>()
         return ptrs[offset].toCPointer()
     }
+
+internal actual val Document.revisionHistory: String?
+    get() = CBLDocument_GetRevisionHistory(actual).toKString()

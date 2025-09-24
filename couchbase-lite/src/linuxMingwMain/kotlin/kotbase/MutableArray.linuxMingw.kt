@@ -242,7 +242,9 @@ internal constructor(
         if (value != null) {
             checkSelf(value.actual)
             FLMutableArray_SetArray(actual, index.convert(), value.actual)
-            collectionMap[index] = value
+            if (value !== this) {
+                collectionMap[index] = value
+            }
         } else {
             FLMutableArray_SetNull(actual, index.convert())
         }
@@ -368,7 +370,9 @@ internal constructor(
         if (value != null) {
             checkSelf(value.actual)
             FLMutableArray_AppendArray(actual, value.actual)
-            collectionMap[count - 1] = value
+            if (value !== this) {
+                collectionMap[count - 1] = value
+            }
         } else {
             FLMutableArray_AppendNull(actual)
         }
@@ -499,7 +503,7 @@ internal constructor(
     }
 
     override fun toJSON(): String {
-        throw IllegalStateException("Mutable objects may not be encoded as JSON")
+        throw CouchbaseLiteError("Mutable objects may not be encoded as JSON")
     }
 
     private fun checkSelf(value: FLMutableArray) {
