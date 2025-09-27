@@ -29,6 +29,8 @@ import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.io.IOException
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmStatic
 import kotlin.test.*
@@ -36,6 +38,115 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLegacyLogging) {
+
+    @Suppress("unused")
+    companion object {
+
+        const val STD_TIMEOUT_SEC = 10L
+        const val LONG_TIMEOUT_SEC = 60L
+
+        const val STD_TIMEOUT_MS = STD_TIMEOUT_SEC * 1000L
+        const val LONG_TIMEOUT_MS = LONG_TIMEOUT_SEC * 1000L
+
+        const val TEST_DATE = "2019-02-21T05:37:22.014Z"
+        const val BLOB_CONTENT = "Knox on fox in socks in box. Socks on Knox and Knox in box."
+
+        const val TEST_DOC_SORT_KEY = "TEST_SORT_ASC"
+        const val TEST_DOC_REV_SORT_KEY = "TEST_SORT_DESC"
+        const val TEST_DOC_TAG_KEY = "TEST_TAG"
+
+        private val SCRATCH_DIRS = mutableListOf<String>()
+
+        const val DB_EXTENSION = ".cblite2" // C4Database.DB_EXTENSION
+
+        const val LEGAL_FILE_NAME_CHARS = "`~@#$%^&()_+{}][=-.,;'12345ABCDEabcde"
+
+        @BeforeClass
+        @JvmStatic
+        fun setUpPlatformSuite() {
+            Report.log(">>>>>>>>>>>> Suite started")
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun tearDownBaseTestSuite() {
+            for (path in SCRATCH_DIRS) {
+                FileUtils.eraseFileOrDir(path)
+            }
+            SCRATCH_DIRS.clear()
+            Report.log("<<<<<<<<<<<< Suite completed")
+        }
+
+        fun getUniqueName(prefix: String): String =
+            StringUtils.getUniqueName(prefix, 8)
+
+        // Run a boolean function every `waitMs` until it is true
+        // If it is not true within `maxWaitMs` fail.
+        protected fun waitUntil(maxWaitMs: Long, test: () -> Boolean) {
+            val waitMs = 100L
+            val endTime = Clock.System.now() + (maxWaitMs - waitMs).milliseconds
+            while (true) {
+                if (test()) { break }
+                if (Clock.System.now() > endTime) { throw AssertionError("Operation timed out") }
+                try { runBlocking { delay(waitMs) } }
+                catch (e: CancellationException) { throw AssertionError("Operation interrupted", e) }
+            }
+        }
+
+        // See if the container contains an item that matches using the passed comparator
+        fun <T : Throwable> containsWithComparator(
+            collection: kotlin.collections.Collection<T>,
+            target: T,
+            comp: (T, T) -> Boolean
+        ): Boolean {
+            if (collection.isEmpty()) { return false }
+            for (obj: T in collection) {
+                if (comp(target, obj)) { return true }
+            }
+            return false
+        }
+
+        ///////////////////////////////   A S S E R T I O N S   ///////////////////////////////
+
+        fun <T> assertNonNull(obj: T?): T {
+            assertNotNull(obj)
+            return obj
+        }
+
+        // Please do *NOT* use the @Test(expected=...) annotation.  It is entirely too prone to error.
+        // Even though it can work pretty will in a very limited number of cases, please, always prefer
+        // one of these methods (or their equivalents in C4BaseTest and OKHttpSocketTest
+
+        fun assertIsCBLException(e: Exception?, domain: String?, code: Int) {
+            assertNotNull(e)
+            if (e !is CouchbaseLiteException) {
+                throw AssertionError("Expected CBL exception ($domain, $code) but got:", e)
+            }
+            if (domain != null) { assertEquals(domain, e.domain) }
+            if (code > 0) { assertEquals(code, e.code) }
+        }
+
+        fun assertThrowsCBLException(
+            domain: String?,
+            code: Int,
+            block: () -> Unit
+        ) {
+            try {
+                block()
+                fail("Expected CBL exception ($domain, $code)")
+            } catch (e: Exception) {
+                assertIsCBLException(e, domain, code)
+            }
+        }
+
+        fun compareExceptions(e1: Throwable, e2: Throwable): Boolean {
+            if (e1 !is CouchbaseLiteException || e2 !is CouchbaseLiteException) {
+                return e1::class == e2::class
+            }
+
+            return e1.code == e2.code && e1.domain == e2.domain
+        }
+    }
 
     protected lateinit var testSerialCoroutineContext: CoroutineContext
     private var startTime: Instant = Instant.DISTANT_PAST
@@ -83,33 +194,50 @@ abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLeg
         return db
     }
 
+    // Prefer this method to any other way of copying a database
+    protected fun copyDb(
+        srcDbPath: String,
+        srcDbName: String,
+        dstDbName: String,
+        config: DatabaseConfiguration = DatabaseConfiguration()
+    ): Database {
+        val srcDbFile = Path(srcDbPath, srcDbName + DB_EXTENSION)
+        assertTrue(SystemFileSystem.exists(srcDbFile))
+
+        val dbName = getUniqueName(dstDbName)
+        val dstDbFile = Path(config.directory, dbName + DB_EXTENSION)
+        assertFalse(SystemFileSystem.exists(dstDbFile))
+
+        val db: Database
+        try {
+            Database.copy(srcDbFile.toString(), dbName, config)
+            db = Database(dbName, config)
+        }
+        catch (e: Exception) { throw AssertionError("Failed creating database $dstDbFile", e) }
+
+        assertTrue(SystemFileSystem.exists(dstDbFile))
+        return db
+    }
+
     // Get a new instance of the db or fail.
     protected fun duplicateDb(db: Database, config: DatabaseConfiguration = DatabaseConfiguration()): Database {
-        try {
-            return Database(db.name, config)
-        } catch (e: Exception) {
-            throw AssertionError("Failed duplicating database $db", e)
-        }
+        val dbName = db.name
+        try { return Database(dbName, config) }
+        catch (e: Exception) { throw AssertionError("Failed duplicating database $db", e) }
     }
 
     // Close and reopen the db or fail.
-    protected fun reopenDb(db: Database, config: DatabaseConfiguration? = null): Database {
+    protected fun reopenDb(db: Database, config: DatabaseConfiguration = DatabaseConfiguration()): Database {
         val dbName = db.name
         closeDb(db)
-        try {
-            return Database(dbName, config ?: DatabaseConfiguration())
-        } catch (e: Exception) {
-            throw AssertionError("Failed reopening database $db", e)
-        }
+        try { return Database(dbName, config) }
+        catch (e: Exception) { throw AssertionError("Failed reopening database $db", e) }
     }
 
     // Close the db or fail.
     protected fun closeDb(db: Database) {
-        try {
-            db.close()
-        } catch (e: Exception) {
-            throw AssertionError("Failed closing database $db", e)
-        }
+        try { db.close() }
+        catch (e: Exception) { throw AssertionError("Failed closing database $db", e) }
     }
 
     // Delete the db or fail.
@@ -120,40 +248,33 @@ abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLeg
                 db.delete()
                 return
             }
+
             val dbPath = db.dbPath
-            if (dbPath != null && FileUtils.dirExists(dbPath)) {
-                FileUtils.eraseFileOrDir(dbPath)
-            }
-        } catch (e: Exception) {
-            throw AssertionError("Failed deleting database $db", e)
+            if (dbPath != null && FileUtils.dirExists(dbPath)) { FileUtils.eraseFileOrDir(dbPath) }
         }
+        catch (e: Exception) { throw AssertionError("Failed deleting database $db", e) }
     }
 
     // Test cleanup: Best effort to delete the db.
     protected fun eraseDb(db: Database?) {
         if (db == null) return
+
         try {
             // there is a race here but probably small.
             if (db.isOpen) {
                 db.delete()
                 return
             }
+
             val dbPath = db.dbPath
-            if (dbPath != null && FileUtils.dirExists(dbPath)) {
-                FileUtils.eraseFileOrDir(dbPath)
-            }
-        } catch (e: Exception) {
-            Report.log("Failed to delete database $db", e)
+            if (dbPath != null && FileUtils.dirExists(dbPath)) { FileUtils.eraseFileOrDir(dbPath) }
         }
+        catch (e: Exception) { Report.log("Failed to delete database $db", e) }
     }
 
-    protected fun createTestDoc(): MutableDocument {
-        return createTestDoc(1, 1, getUniqueName("no-tag"))
-    }
+    protected fun createTestDoc(): MutableDocument { return createTestDoc(1, 1, getUniqueName("no-tag")) }
 
-    protected fun createTestDoc(tag: String): MutableDocument {
-        return createTestDoc(1, 1, tag)
-    }
+    protected fun createTestDoc(tag: String): MutableDocument { return createTestDoc(1, 1, tag) }
 
     protected fun createTestDocs(
         first: Int,
@@ -162,9 +283,7 @@ abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLeg
     ): List<MutableDocument> {
         return buildList {
             val last = first + n - 1
-            for (i in first..last) {
-                add(createTestDoc(i, last, tag))
-            }
+            for (i in first..last) { add(createTestDoc(i, last, tag)) }
         }
     }
 
@@ -179,9 +298,7 @@ abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLeg
     protected fun createComplexTestDocs(first: Int, n: Int, tag: String): List<MutableDocument> {
         return buildList {
             val last = first + n - 1
-            for (i in first..last) {
-                add(addComplexData(createTestDoc(i, last, tag)))
-            }
+            for (i in first..last) { add(addComplexData(createTestDoc(i, last, tag))) }
         }
     }
 
@@ -225,100 +342,14 @@ abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLeg
         phones.addValue("650-123-0001")
         phones.addValue("650-123-0002")
         mDoc.setValue("phones", phones)
+
         return mDoc
     }
 
     private fun formatInterval(duration: Duration): String {
         return duration.toComponents { min, sec, nano ->
-            val mil = nano / 1_000_000
-            "${min.paddedString(2)}:${sec.paddedString(2)}.${mil.paddedString(3)}"
-        }
-    }
-
-    @Suppress("unused")
-    companion object {
-
-        const val STD_TIMEOUT_SEC = 10L
-        const val LONG_TIMEOUT_SEC = 60L
-
-        const val STD_TIMEOUT_MS = STD_TIMEOUT_SEC * 1000L
-        const val LONG_TIMEOUT_MS = LONG_TIMEOUT_SEC * 1000L
-
-        const val TEST_DATE = "2019-02-21T05:37:22.014Z"
-        const val BLOB_CONTENT = "Knox on fox in socks in box. Socks on Knox and Knox in box."
-
-        const val TEST_DOC_SORT_KEY = "TEST_SORT_ASC"
-        const val TEST_DOC_REV_SORT_KEY = "TEST_SORT_DESC"
-        const val TEST_DOC_TAG_KEY = "TEST_TAG"
-
-        private val SCRATCH_DIRS = mutableListOf<String>()
-
-        const val DB_EXTENSION = ".cblite2" // C4Database.DB_EXTENSION
-
-        const val LEGAL_FILE_NAME_CHARS = "`~@#$%^&()_+{}][=-.,;'12345ABCDEabcde"
-
-        @BeforeClass
-        @JvmStatic
-        fun setUpPlatformSuite() {
-            Report.log(">>>>>>>>>>>> Suite started")
-        }
-
-        @AfterClass
-        @JvmStatic
-        fun tearDownBaseTestSuite() {
-            for (path in SCRATCH_DIRS) {
-                FileUtils.eraseFileOrDir(path)
-            }
-            SCRATCH_DIRS.clear()
-            Report.log("<<<<<<<<<<<< Suite completed")
-        }
-
-        fun getUniqueName(prefix: String): String =
-            StringUtils.getUniqueName(prefix, 8)
-
-        // Run a boolean function every `waitMs` until it is true
-        // If it is not true within `maxWaitMs` fail.
-        @JvmStatic
-        protected fun waitUntil(maxWaitMs: Long, test: () -> Boolean) {
-            val waitMs = 100L
-            val endTime = Clock.System.now() + (maxWaitMs - waitMs).milliseconds
-            while (true) {
-                if (test()) {
-                    break
-                }
-                if (Clock.System.now() > endTime) {
-                    throw AssertionError("Operation timed out")
-                }
-                try {
-                    runBlocking {
-                        delay(waitMs)
-                    }
-                } catch (e: CancellationException) {
-                    throw AssertionError("Operation interrupted", e)
-                }
-            }
-        }
-
-        fun assertIsCBLException(e: Exception?, domain: String? = null, code: Int = 0) {
-            assertNotNull(e)
-            if (e !is CouchbaseLiteException) {
-                throw AssertionError("Expected CBL exception ($domain, $code) but got:", e)
-            }
-            if (domain != null) {
-                assertEquals(domain, e.domain)
-            }
-            if (code > 0) {
-                assertEquals(code.toLong(), e.code.toLong())
-            }
-        }
-
-        fun assertThrowsCBLException(domain: String?, code: Int, block: () -> Unit) {
-            try {
-                block()
-                fail("Expected CBL exception ($domain, $code)")
-            } catch (e: Exception) {
-                assertIsCBLException(e, domain, code)
-            }
+            val ms = nano / 1_000_000
+            "${min.paddedString(2)}:${sec.paddedString(2)}.${ms.paddedString(3)}"
         }
     }
 }

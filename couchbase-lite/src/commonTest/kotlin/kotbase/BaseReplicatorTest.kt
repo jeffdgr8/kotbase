@@ -23,7 +23,6 @@ import kotlinx.coroutines.sync.CyclicBarrier
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -63,7 +62,9 @@ internal class ListenerAwaiter(
             replicator.stop()
         }
 
-        if (stopStates.contains(level)) latch.countDown()
+        if (stopStates.contains(level)) {
+            latch.countDown()
+        }
     }
 
     suspend fun awaitCompletion(maxWait: Duration = BaseTest.LONG_TIMEOUT_SEC.seconds): Boolean =
@@ -74,7 +75,7 @@ internal class ListenerAwaiter(
         }
 }
 
-internal class ReplicatorAwaiter(repl: Replicator, coroutineContext: CoroutineContext) : ReplicatorChangeListener {
+internal class ReplicatorAwaiter(private val repl: Replicator, coroutineContext: CoroutineContext) : ReplicatorChangeListener {
     private val awaiter = ListenerAwaiter(repl.addChangeListener(coroutineContext, this))
 
     val error: Throwable?
@@ -82,8 +83,12 @@ internal class ReplicatorAwaiter(repl: Replicator, coroutineContext: CoroutineCo
 
     override fun invoke(change: ReplicatorChange) = awaiter.changed(change)
 
-    suspend fun awaitCompletion(maxWait: Duration = BaseTest.LONG_TIMEOUT_SEC.seconds) =
-        awaiter.awaitCompletion(maxWait)
+    suspend fun awaitCompletion(maxWait: Duration = BaseTest.LONG_TIMEOUT_SEC.seconds): Boolean {
+        Report.log("Awaiting replicator $repl")
+        val ok = awaiter.awaitCompletion(maxWait)
+        Report.log("Replicator finished ($ok, ${awaiter.error}): $repl")
+        return ok
+    }
 }
 
 // A filter can actually hang the replication
@@ -92,8 +97,12 @@ internal class DelayFilter(val name: String, private val barrier: CyclicBarrier)
 
     override fun invoke(doc: Document, flags: Set<DocumentFlag>): Boolean = runBlocking {
         if (shouldWait.getAndSet(false)) {
-            Report.log("$name waiting with doc: ${doc.id}")
-            barrier.await(BaseTest.STD_TIMEOUT_SEC.seconds)
+            Report.log("$name in delay with doc: ${doc.id}")
+            try {
+                barrier.await(BaseTest.STD_TIMEOUT_SEC.seconds)
+            } catch (e: Exception) {
+                Report.log("$name delay interrupted", e)
+            }
         }
 
         Report.log("$name filtered doc: ${doc.id}")
@@ -209,53 +218,51 @@ abstract class BaseReplicatorTest : BaseDbTest() {
         return repl
     }
 
-    protected fun ReplicatorConfiguration.run(reset: Boolean = false, errDomain: String? = null, errCode: Int = 0) =
-        this.testReplicator().run(reset, errDomain, errCode)
+    protected fun ReplicatorConfiguration.run(code: Int = 0, reset: Boolean = false): Replicator {
+        return this.testReplicator().run(
+            reset,
+            expectedErrs = if (code == 0) emptyArray() else arrayOf(
+                CouchbaseLiteException("", CBLError.Domain.CBLITE, code)
+            )
+        )
+    }
 
-    protected fun Replicator.run(reset: Boolean = false, errDomain: String? = null, errCode: Int = 0): Replicator = runBlocking {
+    protected fun Replicator.run(code: Int = 0): Replicator {
+        return this.run(
+            expectedErrs = if (code == 0) emptyArray() else arrayOf(
+                CouchbaseLiteException("", CBLError.Domain.CBLITE, code)
+            )
+        )
+    }
+
+    protected fun Replicator.run(
+        reset: Boolean = false,
+        timeoutSecs: Long = LONG_TIMEOUT_SEC,
+        vararg expectedErrs: Exception
+    ): Replicator = runBlocking {
         val awaiter = ReplicatorAwaiter(this@run, testSerialCoroutineContext)
 
         Report.log("Test replicator starting: $config")
-        var ok = false
         try {
             this@run.start(reset)
-            ok = awaiter.awaitCompletion(LONG_TIMEOUT_SEC.seconds)
+            if (!awaiter.awaitCompletion(timeoutSecs.seconds)) {
+                throw AssertionError("Replicator timed out")
+            }
         } finally {
             this@run.stop()
-            Report.log("Test replicator ${if (ok) "finished" else "timed out"}", awaiter.error)
         }
 
         val err = awaiter.error
-        if ((errCode == 0) && (errDomain == null)) {
-            if (err != null) throw AssertionError("Replication failed with unexpected error", err)
+        if (err == null) {
+            if (expectedErrs.isNotEmpty()) {
+                throw AssertionError("Replication finished successfully when expecting error in: $expectedErrs")
+            }
         } else {
-            if (err !is CouchbaseLiteException) {
-                if (err != null) throw AssertionError("Replication failed with unexpected error", err)
-                throw AssertionError("Expected CBLError (${errDomain}, ${errCode}) but no error occurred")
-            }
-
-            if (errCode != 0) {
-                assertEquals(errCode, err.code)
-            }
-
-            if (errDomain != null) {
-                assertEquals(errDomain, err.domain)
+            if (!containsWithComparator(expectedErrs.toList(), err, BaseTest::compareExceptions)) {
+                throw AssertionError("Expecting error in $expectedErrs but got", err)
             }
         }
 
         this@run
-    }
-}
-
-class TestConflictResolver(
-    // set this resolver, which will be used while resolving the conflict
-    val resolver: ConflictResolver
-) : ConflictResolver {
-
-    var winner: Document? = null
-
-    override fun invoke(conflict: Conflict): Document? {
-        winner = resolver(conflict)
-        return winner
     }
 }
