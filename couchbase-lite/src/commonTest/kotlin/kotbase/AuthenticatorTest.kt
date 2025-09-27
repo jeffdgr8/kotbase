@@ -17,6 +17,7 @@ package kotbase
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class AuthenticatorTest {
 
@@ -28,6 +29,17 @@ class AuthenticatorTest {
         assertEquals(username, auth.username)
         assertEquals(password, auth.passwordChars.concatToString())
     }
+
+//    @Test
+//    fun testBasicAuthenticatorWithEmptyUsername() {
+//        assertFailsWith<IllegalArgumentException> { BasicAuthenticator(null, "somePassword".toCharArray()) }
+//    }
+
+
+//    @Test
+//    fun testBasicAuthenticatorWithEmptyPassword() {
+//        assertFailsWith<IllegalArgumentException> { BasicAuthenticator("someUsername", null) }
+//    }
 
     @Test
     fun testSessionAuthenticatorWithSessionID() {
@@ -45,6 +57,11 @@ class AuthenticatorTest {
         assertEquals(sessionID, auth.sessionID)
         assertEquals(cookie, auth.cookieName)
     }
+
+//    @Test
+//    fun testSessionAuthenticatorEmptySessionID() {
+//        assertFailsWith<IllegalArgumentException> { SessionAuthenticator(null, null) }
+//    }
 
     @Test
     fun testSessionAuthenticatorEmptyCookie() {

@@ -38,5 +38,5 @@ expect object FileUtils {
 
 fun FileUtils.getParentDir(path: String): String {
     val file = path.dropLastWhile { it == separatorChar }
-    return file.substring(0, file.lastIndexOf(separatorChar))
+    return file.take(file.lastIndexOf(separatorChar))
 }

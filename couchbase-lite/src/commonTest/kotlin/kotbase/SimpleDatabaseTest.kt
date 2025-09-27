@@ -15,6 +15,7 @@
  */
 package kotbase
 
+import kotbase.DatabaseConfiguration
 import kotbase.internal.utils.FileUtils
 import kotlin.test.*
 
@@ -30,14 +31,52 @@ class SimpleDatabaseTest : BaseTest() {
         // Custom
         val config2 = DatabaseConfiguration()
         val dbDir = getScratchDirectoryPath(getUniqueName("tmp"))
-        config2.setDirectory(dbDir)
+        config2.directory = dbDir
         assertEquals(dbDir, config2.directory)
     }
 
     @Test
-    fun testGetSetConfiguration() {
+    fun testFullSync() {
+        var config = DatabaseConfiguration()
+
+        // # 1.2 TestSQLiteFullSyncDefault
+        assertEquals(Defaults.Database.FULL_SYNC, config.isFullSync);
+
+        config = DatabaseConfiguration()
+
+        // # 1.3-4 TestSetGetFullSync
+        config.isFullSync = true
+        assertTrue(config.isFullSync)
+        // # 1.5-6 TestSetGetFullSync
+        config.isFullSync = false
+        assertFalse(config.isFullSync)
+    }
+
+    /**
+     * Steps
+     * 1. Create a DatabaseConfiguration object.
+     * 2. Get and check that the value of the mmapEnabled property is true.
+     * 3. Set the mmapEnabled property to false and verify that the value is false.
+     * 4. Set the mmapEnabled property to true, and verify that the mmap value is true.
+     */
+    @Test
+    fun testMMapConfig() {
         val config = DatabaseConfiguration()
-            .setDirectory(getScratchDirectoryPath(getUniqueName("get-set-config-dir")))
+
+        assertEquals(Defaults.Database.MMAP_ENABLED, config.isMMapEnabled)
+
+        config.isMMapEnabled = false
+        assertFalse(config.isMMapEnabled)
+
+        config.isMMapEnabled = true
+        assertTrue(config.isMMapEnabled)
+    }
+
+    @Test
+    fun testGetSetConfiguration() {
+        val config = DatabaseConfiguration().apply {
+            directory = getScratchDirectoryPath(getUniqueName("get-set-config-dir"))
+        }
 
         val db = createDb("get_set_config_db", config)
         try {
@@ -49,8 +88,9 @@ class SimpleDatabaseTest : BaseTest() {
 
     @Test
     fun testConfigurationIsCopiedWhenGetSet() {
-        val config = DatabaseConfiguration()
-            .setDirectory(getScratchDirectoryPath(getUniqueName("copy-config-dir")))
+        val config = DatabaseConfiguration().apply {
+            directory = getScratchDirectoryPath(getUniqueName("copy-config-dir"))
+        }
 
         val db = createDb("config_copied_db", config)
         try {
@@ -80,6 +120,29 @@ class SimpleDatabaseTest : BaseTest() {
             assertNotNull(db)
             assertEquals(0, db.count)
         } finally { eraseDb(db) }
+    }
+
+    @Test
+    fun testDBWithFullSync() {
+        val config = DatabaseConfiguration()
+
+        var db = Database(getUniqueName("full_sync_db_1"), config.apply { isFullSync = true })
+        try {
+            assertTrue(db.config.isFullSync)
+//            assertEquals(
+//                C4Constants.DatabaseFlags.DISC_FULL_SYNC,
+//                C4TestUtils.getFlags(db.getOpenC4Database()) & C4Constants.DatabaseFlags.DISC_FULL_SYNC)
+        }
+        finally { eraseDb(db); }
+
+        db = Database(getUniqueName("full_sync_db_2"), config.apply { isFullSync = false })
+        try {
+            assertFalse(db.config.isFullSync)
+//            assertEquals(
+//                0,
+//                C4TestUtils.getFlags(db.getOpenC4Database()) & C4Constants.DatabaseFlags.DISC_FULL_SYNC);
+        }
+        finally { eraseDb(db); }
     }
 
     @Test
