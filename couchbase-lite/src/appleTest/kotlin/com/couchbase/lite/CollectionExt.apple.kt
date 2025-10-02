@@ -29,8 +29,8 @@ internal actual fun Collection.getC4Document(id: String): C4Document? {
 
 internal actual class C4Document(actual: CBLC4Document) : DelegatedClass<CBLC4Document>(actual) {
 
-    actual fun isRevDeleted(): Boolean =
-        (actual.revFlags and kRevDeleted.toUByte()) != 0.toUByte()
+    actual val isRevDeleted: Boolean
+        get() = (actual.revFlags and kRevDeleted.toUByte()) != 0.toUByte()
 }
 
 internal actual fun Collection.getIndexInfo(): List<Map<String, Any?>> {

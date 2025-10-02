@@ -27,29 +27,21 @@ class CollectionListenerTest : BaseDbTest() {
 
     // 8.4.1 Test that change listeners can be added to a collection and that they receive changes correctly.
     @Test
-    fun testCollectionChangeListener() = runBlocking {
-        testCollectionChangeListener(null)
-    }
+    fun testCollectionChangeListener() = runBlocking { testCollectionChangeListener(null) }
 
     // 8.4.2 Test that change listeners can be added to a collection with a custom coroutine context
     //   and that they receive changes correctly.
     @Test
-    fun testCollectionChangeListenerWithExecutor() = runBlocking {
-        testCollectionChangeListener(testSerialCoroutineContext)
-    }
+    fun testCollectionChangeListenerWithExecutor() = runBlocking { testCollectionChangeListener(testSerialCoroutineContext) }
 
     // 8.4.3 Test that document change listeners can be added to a collection and that they receive changes correctly.
     @Test
-    fun testCollectionDocumentChangeListener() = runBlocking {
-        testCollectionDocumentChangeListener(null)
-    }
+    fun testCollectionDocumentChangeListener() = runBlocking { testCollectionDocumentChangeListener(null) }
 
     // 8.4.4 Test that document change listeners can be added to a collection with a custom executor
     //   and that they receive changes correctly.
     @Test
-    fun testCollectionDocumentChangeListenerWithExecutor() = runBlocking {
-        testCollectionDocumentChangeListener(testSerialCoroutineContext)
-    }
+    fun testCollectionDocumentChangeListenerWithExecutor() = runBlocking { testCollectionDocumentChangeListener(testSerialCoroutineContext) }
 
     // Test that adding a change listener to a deleted collection doesn't throw exception
     @Test

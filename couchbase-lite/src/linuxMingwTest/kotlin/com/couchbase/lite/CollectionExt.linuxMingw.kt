@@ -26,11 +26,12 @@ import libcblite.CBLCollection_GetIndexesInfo
 // TODO: implement native C getC4Document()
 
 internal actual fun Collection.getC4Document(id: String): C4Document? =
-    getDocument(id)?.let(::C4Document)
+    C4Document(getDocument(id))
 
-internal actual class C4Document(private val doc: Document) {
+internal actual class C4Document(private val doc: Document?) {
 
-    actual fun isRevDeleted(): Boolean = false
+    actual val isRevDeleted: Boolean
+        get() = doc == null
 }
 
 internal actual fun Collection.getIndexInfo(): List<Map<String, Any?>> {

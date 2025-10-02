@@ -82,7 +82,7 @@ abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLeg
 
         // Run a boolean function every `waitMs` until it is true
         // If it is not true within `maxWaitMs` fail.
-        protected fun waitUntil(maxWaitMs: Long, test: () -> Boolean) {
+        fun waitUntil(maxWaitMs: Long, test: () -> Boolean) {
             val waitMs = 100L
             val endTime = Clock.System.now() + (maxWaitMs - waitMs).milliseconds
             while (true) {

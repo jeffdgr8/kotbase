@@ -44,7 +44,11 @@ class CollectionTest : BaseDbTest() {
     @Test
     fun testGetExistingDocWithIdFromDifferentDBInstance() {
         val doc = createDocInCollection()
-        duplicateDb(testDatabase).use { assertNotNull(it.getSimilarCollection(testCollection).getDocument(doc.id)) }
+        duplicateDb(testDatabase).use {
+            assertNotNull(
+                it.getSimilarCollection(testCollection).getDocument(doc.id)
+            )
+        }
     }
 
     // getting doc from deleted collection causes CBL exception
@@ -753,7 +757,6 @@ class CollectionTest : BaseDbTest() {
     // Test that getIndexes from collection in deleted database causes CBLException
     @Test
     fun testGetIndexesFromCollectionFromDeletedDatabase() {
-
         testCollection.createIndex("index1", ValueIndexConfiguration("firstName", "lastName"))
         assertContents(testCollection.indexes.toList(), "index1")
 
@@ -1076,7 +1079,10 @@ class CollectionTest : BaseDbTest() {
         val scopeName = getUniqueName("oscilli")
         val collectionName = getUniqueName("dry_flies")
         testDatabase.createCollection(collectionName, scopeName)
-        assertEquals("${scopeName}.${collectionName}", testDatabase.getCollection(collectionName, scopeName)?.fullName)
+        assertEquals(
+            "${scopeName}.${collectionName}",
+            testDatabase.getCollection(collectionName, scopeName)?.fullName
+        )
     }
 
     // 3.1 TestGetDatabaseFromNewCollection
@@ -1157,31 +1163,25 @@ class CollectionTest : BaseDbTest() {
     @Test
     fun testDefaultCollectionExists() {
         val collection = testDatabase.defaultCollection
-        assertEquals(collection.name, Collection.DEFAULT_NAME)
+        assertEquals(Collection.DEFAULT_NAME, collection.name)
 
-        val cols = testDatabase.collections
-        assertTrue(cols.contains(collection))
+        assertTrue(testDatabase.collections.contains(collection))
 
         val scope = collection.scope
         assertNotNull(scope)
         assertEquals(Scope.DEFAULT_NAME, scope.name)
 
-        val col1 = testDatabase.getCollection(Collection.DEFAULT_NAME)
-        assertEquals(col1, collection)
+        assertEquals(collection, testDatabase.getCollection(Collection.DEFAULT_NAME))
     }
 
     @Test
     fun testDefaultScopeExists() {
         val scope = testDatabase.defaultScope
-        assertNotNull(scope)
         assertEquals(Scope.DEFAULT_NAME, scope.name)
 
-        val scopes = testDatabase.scopes
-        assertTrue(scopes.contains(scope))
+        assertTrue(testDatabase.scopes.contains(scope))
 
-        val scope1 = testDatabase.getScope(Scope.DEFAULT_NAME)
-        assertNotNull(scope1)
-        assertEquals(Scope.DEFAULT_NAME, scope1.name)
+        assertEquals(scope, testDatabase.getScope(Scope.DEFAULT_NAME))
     }
 
     @Test
@@ -1210,7 +1210,8 @@ class CollectionTest : BaseDbTest() {
         val scope = testDatabase.defaultScope
         assertEquals(Scope.DEFAULT_NAME, scope.name)
 
-        val scopes = testDatabase.scopes
-        assertTrue(scopes.contains(scope))
+        assertTrue(testDatabase.scopes.contains(scope))
+
+        assertEquals(scope, testDatabase.getScope(Scope.DEFAULT_NAME))
     }
 }
