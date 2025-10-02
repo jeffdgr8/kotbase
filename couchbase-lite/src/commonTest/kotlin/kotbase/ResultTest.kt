@@ -16,10 +16,9 @@
 package kotbase
 
 import kotbase.ext.toStringMillis
+import kotbase.internal.utils.JsonObject
 import kotbase.internal.utils.paddedString
 import kotlinx.datetime.Instant
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
 
 class ResultTest : BaseQueryTest() {
@@ -901,7 +900,7 @@ class ResultTest : BaseQueryTest() {
                 assertNull(results.next())
 
                 verifyDocument(result)
-                verifyDocument(Json.parseToJsonElement(result.toJSON()).jsonObject)
+                verifyDocument(JsonObject(result.toJSON()))
             }
     }
 

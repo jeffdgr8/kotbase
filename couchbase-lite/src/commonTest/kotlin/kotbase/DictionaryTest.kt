@@ -15,11 +15,9 @@
  */
 package kotbase
 
+import kotbase.internal.utils.JsonObject
 import kotbase.test.assertIntEquals
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
-
 
 // Tests for the Dictionary Iterator tests are in IteratorTest
 class DictionaryTest : BaseDbTest() {
@@ -693,11 +691,7 @@ class DictionaryTest : BaseDbTest() {
     @Test
     fun testDictToJSON() {
         val mDoc = MutableDocument().setDictionary("dict", makeDict())
-        verifyDict(
-            Json.parseToJsonElement(
-                saveDocInCollection(mDoc).getDictionary("dict")!!.toJSON()
-            ).jsonObject
-        )
+        verifyDict(JsonObject(saveDocInCollection(mDoc).getDictionary("dict")!!.toJSON()))
     }
 
     // JSON 3.6.?
@@ -713,7 +707,7 @@ class DictionaryTest : BaseDbTest() {
         val mDoc = MutableDocument().setDictionary("dict", mDict)
         val dbDict = saveDocInCollection(mDoc).getDictionary("dict")
         verifyDict(dbDict, true)
-        verifyDict(Json.parseToJsonElement(dbDict!!.toJSON()).jsonObject)
+        verifyDict(JsonObject(dbDict!!.toJSON()))
     }
 
     // JSON 3.6.c.1

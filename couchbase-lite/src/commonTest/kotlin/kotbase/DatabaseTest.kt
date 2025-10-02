@@ -15,6 +15,7 @@
  */
 package kotbase
 
+import com.couchbase.lite.compareAge
 import com.couchbase.lite.generation
 import com.couchbase.lite.isOpen
 import kotbase.ext.nowMillis
@@ -168,7 +169,9 @@ class DatabaseTest : BaseDbTest() {
 
             // Attempt to save the doc in the wrong db
             doc.setValue(TEST_DOC_TAG_KEY, "bam!!!")
-            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.save(doc) }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherCollection.save(doc)
+            }
         }
     }
 
@@ -187,7 +190,9 @@ class DatabaseTest : BaseDbTest() {
 
             // Attempt to save the doc in a *very* wrong db
             doc.setValue(TEST_DOC_TAG_KEY, "bam!!!")
-            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.save(doc) }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherCollection.save(doc)
+            }
         } finally {
             // delete otherDb
             eraseDb(otherDb)
@@ -224,7 +229,9 @@ class DatabaseTest : BaseDbTest() {
         testDatabase.close()
         val doc = MutableDocument()
         doc.setValue(TEST_DOC_TAG_KEY, testTag)
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.save(doc) }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) {
+            testCollection.save(doc)
+        }
     }
 
     @Test
@@ -233,7 +240,9 @@ class DatabaseTest : BaseDbTest() {
         testDatabase.delete()
         val doc = MutableDocument()
         doc.setValue(TEST_DOC_TAG_KEY, testTag)
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { testCollection.save(doc) }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) {
+            testCollection.save(doc)
+        }
     }
 
     //---------------------------------------------
@@ -272,7 +281,9 @@ class DatabaseTest : BaseDbTest() {
             assertEquals(n + 1, testCollection.count)
 
             // Delete from the wrong db
-            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.delete(doc) }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherCollection.delete(doc)
+            }
         }
     }
 
@@ -289,7 +300,9 @@ class DatabaseTest : BaseDbTest() {
             assertNotSame(otherCollection, testCollection)
 
             // Delete from the different db:
-            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.delete(doc) }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherCollection.delete(doc)
+            }
         } finally {
             eraseDb(otherDb)
         }
@@ -375,7 +388,9 @@ class DatabaseTest : BaseDbTest() {
             assertEquals(n + 1, otherCollection.count)
 
             // purge document against other db instance:
-            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.purge(doc) }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherCollection.purge(doc)
+            }
         }
     }
 
@@ -393,7 +408,9 @@ class DatabaseTest : BaseDbTest() {
             assertEquals(0, otherCollection.count)
 
             // Purge document against other db:
-            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) { otherCollection.purge(doc) }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_PARAMETER) {
+                otherCollection.purge(doc)
+            }
         } finally {
             eraseDb(otherDb)
         }
@@ -545,7 +562,7 @@ class DatabaseTest : BaseDbTest() {
         assertNotNull(blob)
 
         // trying to get the content, however, should fail
-        assertFailsWith<IllegalStateException> { blob.content }
+        assertFailsWith<CouchbaseLiteError> { blob.content }
     }
 
     @Test
@@ -571,7 +588,7 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(testDatabase.isOpen)
         testDatabase.close()
         assertFalse(testDatabase.isOpen)
-        assertFailsWith<IllegalStateException> {
+        assertFailsWith<CouchbaseLiteError> {
             testDatabase.inBatch { }
         }
     }
@@ -580,7 +597,9 @@ class DatabaseTest : BaseDbTest() {
     fun testCloseInInBatch() {
         testDatabase.inBatch {
             // can't close a db in a transaction
-            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.TRANSACTION_NOT_CLOSED) { testDatabase.close() }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.TRANSACTION_NOT_CLOSED) {
+                testDatabase.close()
+            }
         }
     }
 
@@ -589,7 +608,7 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(testDatabase.isOpen)
         testDatabase.close()
         assertFalse(testDatabase.isOpen)
-        assertFailsWith<IllegalStateException> { testDatabase.delete() }
+        assertFailsWith<CouchbaseLiteError> { testDatabase.delete() }
     }
 
     //---------------------------------------------
@@ -613,7 +632,7 @@ class DatabaseTest : BaseDbTest() {
         assertFalse(FileUtils.dirExists(path))
 
         // second delete should fail
-        assertFailsWith<IllegalStateException> { testDatabase.delete() }
+        assertFailsWith<CouchbaseLiteError> { testDatabase.delete() }
     }
 
     @Test
@@ -692,7 +711,7 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(FileUtils.dirExists(path))
         testDatabase.delete()
         assertFalse(FileUtils.dirExists(path))
-        assertFailsWith<IllegalStateException> {
+        assertFailsWith<CouchbaseLiteError> {
             testDatabase.inBatch { }
         }
     }
@@ -702,7 +721,9 @@ class DatabaseTest : BaseDbTest() {
         val path = testDatabase.path!!
         assertTrue(FileUtils.dirExists(path))
         testDatabase.inBatch {
-            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.TRANSACTION_NOT_CLOSED) { testDatabase.delete() }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.TRANSACTION_NOT_CLOSED) {
+                testDatabase.delete()
+            }
         }
     }
 
@@ -747,7 +768,9 @@ class DatabaseTest : BaseDbTest() {
         assertNotNull(path)
         assertTrue(FileUtils.dirExists(path))
 
-        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.BUSY) { Database.delete(testDatabase.name, null) }
+        assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.BUSY) {
+            Database.delete(testDatabase.name, null)
+        }
     }
 
     @Test
@@ -906,10 +929,9 @@ class DatabaseTest : BaseDbTest() {
             // All of these things should throw
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.getDocument(doc.id) }
 
-            assertThrowsCBLException(
-                CBLError.Domain.CBLITE,
-                CBLError.Code.NOT_OPEN
-            ) { collection.save(MutableDocument()) }
+            assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) {
+                collection.save(MutableDocument())
+            }
 
             assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.NOT_OPEN) { collection.delete(doc) }
 
@@ -1796,14 +1818,14 @@ class DatabaseTest : BaseDbTest() {
 
     @Test
     fun testSaveSavedMutableDocument() {
-        val doc = MutableDocument("doc1")
-        doc.setValue("name", "Scott Tiger")
-        saveDocInCollection(doc)
-        doc.setValue("age", 20)
-        val saved = saveDocInCollection(doc)
-        assertEquals(2, saved.generation)
-        assertEquals(20, saved.getInt("age"))
-        assertEquals("Scott Tiger", saved.getString("name"))
+        val mDoc = MutableDocument("doc1")
+        mDoc.setValue("name", "Scott Tiger")
+        val doc1 = saveDocInCollection(mDoc)
+        mDoc.setValue("age", 20)
+        val doc2 = saveDocInCollection(mDoc)
+        assertEquals(1, doc2.compareAge(doc1))
+        assertEquals(20, doc2.getInt("age"))
+        assertEquals("Scott Tiger", doc2.getString("name"))
     }
 
     @Test
@@ -1875,6 +1897,62 @@ class DatabaseTest : BaseDbTest() {
         }
     }
 
+    /**
+     * Steps
+     * 1. Create a DatabaseConfiguration object and set mmapEnabled to false.
+     * 2. Create a database with the config.
+     * 3. Get the configuration object from the database and check that the mmapEnabled is false.
+     * 4. Use c4db_config2 to confirm that its config contains the kC4DB_MmapDisabled flag
+     * 5. Set the config's mmapEnabled property true
+     * 6. Create a database with the config.
+     * 7. Get the configuration object from the database and verify that mmapEnabled is true
+     * 8. Use c4db_config2 to confirm that its config doesn't contains the kC4DB_MmapDisabled flag
+     */
+    @Test
+    fun testDatabaseWithConfiguredMMap() {
+        val config = DatabaseConfiguration()
+        config.isMMapEnabled = false
+
+        var db = createDb("mmapdb1", config)
+        assertFalse(db.config.isMMapEnabled)
+
+        try {
+//            assertEquals(
+//                C4Constants.DatabaseFlags.DISABLE_MMAP,
+//                C4TestUtils.getFlags(db.openC4Database) and C4Constants.DatabaseFlags.DISABLE_MMAP
+//            )
+        } finally {
+            eraseDb(db)
+        }
+
+        config.isMMapEnabled = true
+        db = createDb("mmapdb2", config)
+        assertTrue(db.config.isMMapEnabled)
+
+        try {
+//            assertEquals(0, C4TestUtils.getFlags(db.openC4Database) and C4Constants.DatabaseFlags.DISABLE_MMAP)
+        } finally {
+            eraseDb(db)
+        }
+    }
+
+//    @Test
+//    fun testDatabaseCookies() {
+//        testDatabase.setCookies(
+//            "http://zqx3.foo.com",
+//            listOf("session=xyzzy; secure", "user=guest; path=/; domain=foo.com"),
+//            true
+//        )
+//
+//        assertNull(testDatabase.getCookies("http://bar.com"))
+//
+//        var cookies = assertNonNull(testDatabase.getCookies("http://foo.com"))
+//        assertTrue(cookies.contains("user=guest"))
+//
+//        cookies = assertNonNull(testDatabase.getCookies("http://zqx3.foo.com"))
+//        assertTrue(cookies.contains("session=xyzzy"))
+//        assertTrue(cookies.contains("user=guest"))
+//    }
 
     /////////////////////////////////   H E L P E R S   //////////////////////////////////////
 
@@ -1939,6 +2017,7 @@ class DatabaseTest : BaseDbTest() {
                 assertEquals(doc1b.toMap(), savedDoc!!.toMap())
                 assertEquals(4, savedDoc.sequence)
             }
+
             ConcurrencyControl.FAIL_ON_CONFLICT -> {
                 assertFalse(testCollection.save(doc1b, cc))
                 val savedDoc = testCollection.getDocument(doc.id)
@@ -1975,6 +2054,7 @@ class DatabaseTest : BaseDbTest() {
                 assertEquals(3, doc1b.sequence)
                 assertNull(testCollection.getDocument(doc1b.id))
             }
+
             ConcurrencyControl.FAIL_ON_CONFLICT -> {
                 assertFalse(testCollection.delete(doc1b, cc))
                 val savedDoc = testCollection.getDocument(doc.id)
@@ -2004,6 +2084,7 @@ class DatabaseTest : BaseDbTest() {
                 assertEquals(doc1b.toMap(), savedDoc!!.toMap())
                 assertEquals(2, savedDoc.sequence)
             }
+
             ConcurrencyControl.FAIL_ON_CONFLICT -> {
                 assertFalse(testCollection.save(doc1b, cc))
                 savedDoc = testCollection.getDocument(doc1b.id)
@@ -2039,6 +2120,7 @@ class DatabaseTest : BaseDbTest() {
                 assertEquals(doc1b.toMap(), savedDoc!!.toMap())
                 assertEquals(3, savedDoc.sequence)
             }
+
             ConcurrencyControl.FAIL_ON_CONFLICT -> {
                 assertFalse(testCollection.save(doc1b, cc))
                 assertNull(testCollection.getDocument(doc.id))

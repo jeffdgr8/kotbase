@@ -59,6 +59,7 @@ internal constructor(
         collectionMap.clear()
         actual.setData(data.actualIfDelegated())
         setBooleans(data)
+        mutate()
         return this
     }
 
@@ -71,6 +72,7 @@ internal constructor(
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)
         }
+        mutate()
         return this
     }
 
@@ -86,60 +88,70 @@ internal constructor(
         } else {
             collectionMap.remove(key)
         }
+        mutate()
         return this
     }
 
     public actual fun setString(key: String, value: String?): MutableDocument {
         actual.setString(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setNumber(key: String, value: Number?): MutableDocument {
         actual.setNumber(value as NSNumber?, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setInt(key: String, value: Int): MutableDocument {
         actual.setInteger(value.convert(), key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setLong(key: String, value: Long): MutableDocument {
         actual.setLongLong(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setFloat(key: String, value: Float): MutableDocument {
         actual.setFloat(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setDouble(key: String, value: Double): MutableDocument {
         actual.setDouble(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setBoolean(key: String, value: Boolean): MutableDocument {
         actual.setBoolean(value, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setBlob(key: String, value: Blob?): MutableDocument {
         actual.setBlob(value?.actual, key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
     public actual fun setDate(key: String, value: Instant?): MutableDocument {
         actual.setDate(value?.toNSDate(), key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 
@@ -150,6 +162,7 @@ internal constructor(
         } else {
             collectionMap.remove(key)
         }
+        mutate()
         return this
     }
 
@@ -160,12 +173,14 @@ internal constructor(
         } else {
             collectionMap.remove(key)
         }
+        mutate()
         return this
     }
 
     public actual fun remove(key: String): MutableDocument {
         actual.removeValueForKey(key)
         collectionMap.remove(key)
+        mutate()
         return this
     }
 

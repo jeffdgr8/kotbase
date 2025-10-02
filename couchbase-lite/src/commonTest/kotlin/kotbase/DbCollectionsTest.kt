@@ -36,7 +36,6 @@ class DbCollectionsTest : BaseDbTest() {
     @Test
     fun testGetDefaultCollection() {
         val col = testDatabase.defaultCollection
-        assertNotNull(col)
         assertEquals(Collection.DEFAULT_NAME, col.name)
         assertEquals(col, testDatabase.getCollection(Collection.DEFAULT_NAME))
         assertTrue(testDatabase.collections.contains(col))
@@ -50,7 +49,7 @@ class DbCollectionsTest : BaseDbTest() {
     fun testCreateCollectionInDefaultScope() {
         //name with valid characters
         testDatabase.createCollection("chintz")
-        // collection names should be case sensitive
+        // collection names should be case-sensitive
         testDatabase.createCollection("Chintz")
         testDatabase.createCollection("6hintz")
         testDatabase.createCollection("-Ch1ntz")

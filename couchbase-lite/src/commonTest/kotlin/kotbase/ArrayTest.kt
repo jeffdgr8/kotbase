@@ -16,10 +16,8 @@
 package kotbase
 
 import kotbase.ext.toStringMillis
-import kotbase.test.assertIntContentEquals
+import kotbase.internal.utils.JsonArray
 import kotlinx.datetime.Instant
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
 import kotlin.test.*
 
 // Tests for the Array Iterator tests are in IteratorTest
@@ -1793,11 +1791,7 @@ class ArrayTest : BaseDbTest() {
     @Test
     fun testArrayToJSON() {
         val mDoc = MutableDocument().setArray("array", makeArray())
-        verifyArray(
-            Json.parseToJsonElement(
-                saveDocInCollection(mDoc).getArray("array")!!.toJSON()
-            ).jsonArray
-        )
+        verifyArray(JsonArray(saveDocInCollection(mDoc).getArray("array")!!.toJSON()))
     }
 
     // JSON 3.7.?
@@ -1813,7 +1807,7 @@ class ArrayTest : BaseDbTest() {
         val mDoc = MutableDocument().setArray("array", mArray)
         val dbArray = saveDocInCollection(mDoc).getArray("array")
         verifyArray(dbArray, true)
-        verifyArray(Json.parseToJsonElement(dbArray!!.toJSON()).jsonArray)
+        verifyArray(JsonArray(dbArray!!.toJSON()))
     }
 
     // JSON 3.7.c.1
