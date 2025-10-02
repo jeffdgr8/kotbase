@@ -24,8 +24,8 @@ internal actual fun Collection.getC4Document(id: String): C4Document? =
 
 internal actual class C4Document(actual: CBLC4Document) : DelegatedClass<CBLC4Document>(actual) {
 
-    actual fun isRevDeleted(): Boolean =
-        actual.isRevDeleted
+    actual val isRevDeleted: Boolean
+        get() = actual.isRevDeleted
 }
 
 @Suppress("VisibleForTests")

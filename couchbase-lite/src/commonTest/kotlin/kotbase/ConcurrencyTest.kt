@@ -43,15 +43,14 @@ class ConcurrencyTest : BaseDbTest() {
                 for (mDoc in createComplexTestDocs(nDocs, "TAG@CREATES-$id")) {
                     testCollection.save(mDoc)
                 }
-            } catch (e: CouchbaseLiteException) {
+            }
+            catch (e: CouchbaseLiteException) {
                 throw AssertionError("Failed saving doc", e)
             }
         }
 
         // validate stored documents
-        for (i in 0..<copies) {
-            assertEquals(nDocs, countTaggedDocs("TAG@CREATES-$i"))
-        }
+        for (i in 0..<copies) { assertEquals(nDocs, countTaggedDocs("TAG@CREATES-$i")) }
     }
 
     @Test
@@ -66,7 +65,8 @@ class ConcurrencyTest : BaseDbTest() {
                 for (mDoc in createComplexTestDocs(nDocs, "TAG@CREATESBATCH-$id")) {
                     testDatabase.inBatch { testCollection.save(mDoc) }
                 }
-            } catch (e: CouchbaseLiteException) {
+            }
+            catch (e: CouchbaseLiteException) {
                 throw AssertionError("Failed saving doc in batch", e)
             }
         }
@@ -86,12 +86,11 @@ class ConcurrencyTest : BaseDbTest() {
     @Test
     fun testConcurrentReadsInBatch() = runBlocking {
         val docIDs = saveDocs(createComplexTestDocs(5, "TAG@READSBATCH"))
+
         runConcurrentCopies(4) {
             try {
                 testDatabase.inBatch { readDocs(docIDs, 50) }
-            } catch (e: CouchbaseLiteException) {
-                throw AssertionError("Failed reading docs in batch", e)
-            }
+            } catch (e: CouchbaseLiteException) { throw AssertionError("Failed reading docs in batch", e) }
         }
     }
 
@@ -99,18 +98,20 @@ class ConcurrencyTest : BaseDbTest() {
     @Test
     fun testConcurrentUpdates() = runBlocking {
         val docIDs = saveDocs(createComplexTestDocs(5, "TAG@UPDATES"))
+
         val copies = 4
         runConcurrentCopies(copies) { id -> updateDocs(docIDs, 50, "TAG@UPDATED-$id") }
+
         var count = 0
-        for (i in 0..<copies) {
-            count += countTaggedDocs("TAG@UPDATED-$i")
-        }
+        for (i in 0..<copies) { count += countTaggedDocs("TAG@UPDATED-$i") }
+
         assertEquals(docIDs.size, count)
     }
 
     @Test
     fun testConcurrentDeletes() = runBlocking {
         val docIDs = saveDocs(createComplexTestDocs(100, "TAG@DELETES"))
+
         runConcurrently(
             name = "delete",
             task1 = {
@@ -120,21 +121,17 @@ class ConcurrencyTest : BaseDbTest() {
                         if (doc != null) {
                             testCollection.delete(doc)
                         }
-                    } catch (e: CouchbaseLiteException) {
-                        throw AssertionError("Failed deleting doc: $docID", e)
                     }
+                    catch (e: CouchbaseLiteException) { throw AssertionError("Failed deleting doc: $docID", e) }
                 }
             },
             task2 = {
                 for (docID in docIDs) {
                     try {
                         val doc = testCollection.getDocument(docID)
-                        if (doc != null) {
-                            testCollection.delete(doc)
-                        }
-                    } catch (e: CouchbaseLiteException) {
-                        throw AssertionError("Failed deleting doc: $docID", e)
+                        if (doc != null) { testCollection.delete(doc) }
                     }
+                    catch (e: CouchbaseLiteException) { throw AssertionError("Failed deleting doc: $docID", e) }
                 }
             }
         )
@@ -144,19 +141,17 @@ class ConcurrencyTest : BaseDbTest() {
     @Test
     fun testConcurrentPurges() = runBlocking {
         val docIDs = saveDocs(createComplexTestDocs(100, "TAG@PURGES"))
+
         runConcurrently(
             name = "purge",
             task1 = {
                 for (docID in docIDs) {
                     try {
                         val doc = testCollection.getDocument(docID)
-                        if (doc != null) {
-                            testCollection.purge(doc)
-                        }
-                    } catch (e: CouchbaseLiteException) {
-                        if (e.code != 404) {
-                            throw AssertionError("Failed purging doc: $docID", e)
-                        }
+                        if (doc != null) { testCollection.purge(doc) }
+                    }
+                    catch (e: CouchbaseLiteException) {
+                        if (e.code != 404) { throw AssertionError("Failed purging doc: $docID", e) }
                     }
                 }
             },
@@ -164,13 +159,10 @@ class ConcurrencyTest : BaseDbTest() {
                 for (docID in docIDs) {
                     try {
                         val doc = testCollection.getDocument(docID)
-                        if (doc != null) {
-                            testCollection.purge(doc)
-                        }
-                    } catch (e: CouchbaseLiteException) {
-                        if (e.code != 404) {
-                            throw AssertionError("Failed purging doc: $docID", e)
-                        }
+                        if (doc != null) { testCollection.purge(doc) }
+                    }
+                    catch (e: CouchbaseLiteException) {
+                        if (e.code != 404) { throw AssertionError("Failed purging doc: $docID", e) }
                     }
                 }
             }
@@ -203,7 +195,9 @@ class ConcurrencyTest : BaseDbTest() {
                     try {
                         testCollection.save(mDoc)
                     } catch (e: CouchbaseLiteException) {
-                        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) break
+                        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) {
+                            break
+                        }
                         throw AssertionError("Failed saving document: $mDoc", e)
                     }
                 }
@@ -214,6 +208,7 @@ class ConcurrencyTest : BaseDbTest() {
     @Test
     fun testConcurrentCreateWhileDeleteDB() = runBlocking {
         val docs = createComplexTestDocs(100, "TAG@DELETEDB")
+
         runConcurrently(
             name = "createWhileDeleteDb",
             task1 = {
@@ -225,7 +220,9 @@ class ConcurrencyTest : BaseDbTest() {
                     try {
                         testCollection.save(mDoc)
                     } catch (e: CouchbaseLiteException) {
-                        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) break
+                        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) {
+                            break
+                        }
                         throw AssertionError("Failed saving document: $mDoc", e)
                     }
                 }
@@ -236,6 +233,7 @@ class ConcurrencyTest : BaseDbTest() {
     @Test
     fun testConcurrentCreateWhileCompactDB() = runBlocking {
         val docs = createComplexTestDocs(100, "TAG@COMPACTDB")
+
         runConcurrently(
             name = "createAndCompactDb@1",
             task1 = {
@@ -244,16 +242,16 @@ class ConcurrencyTest : BaseDbTest() {
                     if (!testDatabase.performMaintenance(MaintenanceType.COMPACT)) {
                         throw CouchbaseLiteException("Compaction failed")
                     }
-                } catch (e: CouchbaseLiteException) {
-                    throw AssertionError("Failed compacting database", e)
                 }
+                catch (e: CouchbaseLiteException) { throw AssertionError("Failed compacting database", e) }
             },
             task2 = {
                 for (doc in docs) {
-                    try {
-                        testCollection.save(doc)
-                    } catch (e: CouchbaseLiteException) {
-                        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) break
+                    try { testCollection.save(doc) }
+                    catch (e: CouchbaseLiteException) {
+                        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) {
+                            break
+                        }
                         throw AssertionError("Failed saving document: $doc", e)
                     }
                 }
@@ -264,7 +262,9 @@ class ConcurrencyTest : BaseDbTest() {
     @Test
     fun testConcurrentCreateWhileIndexDB() = runBlocking {
         loadJSONResourceIntoCollection("sentences.json")
+
         val docs = createComplexTestDocs(100, "TAG@INDEX")
+
         runConcurrently(
             name = "CreateWhileIndex",
             task1 = {
@@ -273,9 +273,8 @@ class ConcurrencyTest : BaseDbTest() {
                         "sentence",
                         IndexBuilder.fullTextIndex(FullTextIndexItem.property("sentence"))
                     )
-                } catch (e: CouchbaseLiteException) {
-                    throw AssertionError("Failed creating index", e)
                 }
+                catch (e: CouchbaseLiteException) { throw AssertionError("Failed creating index", e) }
             },
             task2 = { saveDocs(docs) }
         )
@@ -286,98 +285,85 @@ class ConcurrencyTest : BaseDbTest() {
     fun testBlockDatabaseChange() = runBlocking {
         val latch = CountDownLatch(1)
         val error = AtomicReference<Exception?>(null)
+
         testCollection.addChangeListener(testSerialCoroutineContext) { latch.countDown() }.use {
             launch(testSerialCoroutineContext) {
-                try {
-                    testCollection.save(MutableDocument())
-                } catch (e: Exception) {
-                    error.compareAndSet(null, e)
-                }
+                try { testCollection.save(MutableDocument()) }
+                catch (e: Exception) { error.compareAndSet(null, e) }
             }
+
             assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
         }
+
         val e = error.load()
-        if (e != null) {
-            throw AssertionError("Error saving document", e)
-        }
+        if (e != null) { throw AssertionError("Error saving document", e) }
     }
 
     @Test
-    @Throws(CancellationException::class)
     fun testBlockDocumentChange() = runBlocking {
         val mDoc = MutableDocument()
+
         val latch = CountDownLatch(1)
         val error = AtomicReference<Exception?>(null)
+
         testCollection.addDocumentChangeListener(mDoc.id, testSerialCoroutineContext) { latch.countDown() }.use {
             launch(testSerialCoroutineContext) {
-                try {
-                    testCollection.save(mDoc)
-                } catch (e: Exception) {
-                    error.compareAndSet(null, e)
-                }
+                try { testCollection.save(mDoc) }
+                catch (e: Exception) { error.compareAndSet(null, e) }
             }
+
             assertTrue(latch.await(STD_TIMEOUT_SEC.seconds))
         }
+
         val e = error.load()
-        if (e != null) {
-            throw AssertionError("Error saving document", e)
-        }
+        if (e != null) { throw AssertionError("Error saving document", e) }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1407
     @Test
     fun testQueryExecute() = runBlocking {
         loadJSONResourceIntoCollection("names_100.json")
+
         val query = QueryBuilder.select(SelectResult.expression(Meta.id), SelectResult.expression(Meta.sequence))
             .from(DataSource.collection(testCollection))
+
         val nResults: MutableList<Int> = ConcurrentMutableList()
         runConcurrentCopies(10) {
-            try {
-                query.execute().use { rs -> nResults.add(rs.allResults().size) }
-            } catch (e: CouchbaseLiteException) {
-                throw AssertionError("Failed executing query", e)
-            }
+            try { query.execute().use { rs -> nResults.add(rs.allResults().size) } }
+            catch (e: CouchbaseLiteException) { throw AssertionError("Failed executing query", e) }
         }
+
         assertEquals(10, nResults.size)
-        for (n in nResults) {
-            assertEquals(testCollection.count, n.toLong())
-        }
+        for (n in nResults) { assertEquals(testCollection.count, n.toLong()) }
     }
 
     private fun saveDocs(mDocs: List<MutableDocument>): List<String> {
-        return try {
-            ConcurrentMutableList<String>().apply {
-                saveDocsInCollection(mDocs).forEach { add(it.id) }
-            }
-        } catch (e: Exception) {
-            throw AssertionError("Failed saving documents", e)
-        }
+        return try { ConcurrentMutableList<String>().apply { saveDocsInCollection(mDocs).forEach { add(it.id) } } }
+        catch (e: Exception) { throw AssertionError("Failed saving documents", e) }
     }
 
     private fun updateDocs(docIds: List<String>, rounds: Int, tag: String) {
         for (i in 1..rounds) {
             for (docId in docIds) {
-                val mDoc = try {
-                    testCollection.getDocument(docId)!!.toMutable()
-                } catch (e: CouchbaseLiteException) {
-                    throw AssertionError("Failed getting document: $docId", e)
-                }
+                val mDoc = try { testCollection.getDocument(docId)!!.toMutable() }
+                catch (e: CouchbaseLiteException) { throw AssertionError("Failed getting document: $docId", e) }
+
                 mDoc.setValue(TEST_DOC_TAG_KEY, tag)
+
                 val address = mDoc.getDictionary("address")
                 assertNotNull(address)
                 val street = "$i street."
                 address.setValue("street", street)
+
                 val phones = mDoc.getArray("phones")
                 assertNotNull(phones)
                 assertEquals(2, phones.count())
                 val phone = "650-000-${i.paddedString(4)}"
                 phones.setValue(0, phone)
+
                 mDoc.setValue("updated", Clock.System.now())
-                try {
-                    testCollection.save(mDoc)
-                } catch (e: CouchbaseLiteException) {
-                    throw AssertionError("Failed saving document: $docId", e)
-                }
+                try { testCollection.save(mDoc) }
+                catch (e: CouchbaseLiteException) { throw AssertionError("Failed saving document: $docId", e) }
             }
         }
     }
@@ -385,18 +371,14 @@ class ConcurrencyTest : BaseDbTest() {
     private fun readDocs(docIDs: List<String>, rounds: Int) {
         for (i in 1..rounds) {
             for (docID in docIDs) {
-                val doc = try {
-                    testCollection.getDocument(docID)
-                } catch (e: CouchbaseLiteException) {
-                    throw AssertionError("Failed reading document: $docID", e)
-                }
+                val doc = try { testCollection.getDocument(docID) }
+                catch (e: CouchbaseLiteException) { throw AssertionError("Failed reading document: $docID", e) }
                 assertNotNull(doc)
                 assertEquals(docID, doc.id)
             }
         }
     }
 
-    @Throws(CouchbaseLiteException::class)
     private fun countTaggedDocs(tag: String): Int {
         val query = QueryBuilder.select(SelectResult.expression(Meta.id))
             .from(DataSource.collection(testCollection))
@@ -412,13 +394,16 @@ class ConcurrencyTest : BaseDbTest() {
         val barrier = CyclicBarrier(2)
         val latch = CountDownLatch(2)
         val error = AtomicReference<Throwable?>(null)
+
         createTestCoroutines("$name@1", 1, barrier, latch, error) { task1() }
         createTestCoroutines("$name@2", 1, barrier, latch, error) { task2() }
+
         var ok = false
-        try {
-            ok = latch.await(STD_TIMEOUT_SEC.seconds)
-        } catch (_: CancellationException) { }
+        try { ok = latch.await(STD_TIMEOUT_SEC.seconds) }
+        catch (_: CancellationException) { }
+
         checkForFailure(error)
+
         assertTrue(ok)
     }
 
@@ -426,10 +411,12 @@ class ConcurrencyTest : BaseDbTest() {
         val barrier = CyclicBarrier(nThreads)
         val latch = CountDownLatch(nThreads)
         val error = AtomicReference<Throwable?>(null)
+
         createTestCoroutines("Concurrency-test", nThreads, barrier, latch, error, task)
 
         // wait
         assertTrue(latch.await(LONG_TIMEOUT_SEC.seconds))
+
         checkForFailure(error)
     }
 
@@ -447,12 +434,14 @@ class ConcurrencyTest : BaseDbTest() {
                 try {
                     barrier.await()
                     task(i)
-                } catch (e: Exception) {
+                }
+                catch (e: Exception) {
                     error.compareAndSet(
                         null,
                         AssertionError("Unexpected error in test on thread $coroutineName", e)
                     )
-                } finally {
+                }
+                finally {
                     latch.countDown()
                 }
             }
@@ -461,17 +450,12 @@ class ConcurrencyTest : BaseDbTest() {
 
     private fun checkForFailure(error: AtomicReference<Throwable?>) {
         val err = error.load()
-        if (err is AssertionError) {
-            throw err
-        }
-        if (err != null) {
-            throw AssertionError("Exception thrown in test", err)
-        }
+        if (err is AssertionError) { throw err }
+        if (err != null) { throw AssertionError("Exception thrown in test", err) }
     }
 
     private suspend fun delay() {
-        try {
-            delay(2)
-        } catch (_: CancellationException) { }
+        try { delay(2) }
+        catch (_: CancellationException) { }
     }
 }

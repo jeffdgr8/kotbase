@@ -115,7 +115,10 @@ class DeprecatedConfigFactoryTest : BaseDbTest() {
         val config = ReplicatorConfigurationFactory.newConfig(testDatabase, testEndpoint, channels = listOf("boop"))
         assertEquals(testDatabase, config.database)
         assertEquals(testEndpoint, config.target)
-        assertEquals(listOf("boop"), config.getCollectionConfiguration(testDatabase.defaultCollection)!!.channels)
+        assertEquals(
+            listOf("boop"),
+            config.getCollectionConfiguration(testDatabase.defaultCollection)!!.channels
+        )
     }
 
     // Create a collection style config from one built with the legacy call

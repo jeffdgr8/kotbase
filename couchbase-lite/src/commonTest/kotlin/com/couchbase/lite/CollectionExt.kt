@@ -21,7 +21,7 @@ internal expect fun Collection.getC4Document(id: String): C4Document?
 
 internal expect class C4Document {
 
-    fun isRevDeleted(): Boolean
+    val isRevDeleted: Boolean
 }
 
 internal expect fun Collection.getIndexInfo(): List<Map<String, Any?>>

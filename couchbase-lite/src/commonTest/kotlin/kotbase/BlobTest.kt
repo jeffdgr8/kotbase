@@ -21,6 +21,7 @@ import kotbase.internal.utils.FileUtils
 import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.StringUtils
 import kotbase.test.IgnoreApple
+import kotlinx.io.Source
 import kotlinx.io.readByteArray
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -33,6 +34,28 @@ class BlobTest : BaseDbTest() {
 
     @BeforeTest
     fun setUpBlobTest() { localBlobContent = StringUtils.randomString(100) }
+
+//    @Test
+//    fun testBlobCtorWithNullContentType() {
+//        assertFailsWith<IllegalArgumentException> { Blob(null, byteArrayOf(5, 6, 7, 8)) }
+//    }
+
+//    @Test
+//    fun testBlobCtorWithNullContent() {
+//        assertFailsWith<IllegalArgumentException> { Blob("image/png", null as ByteArray?) }
+//    }
+
+//    @Test
+//    fun testBlobCtorWithStreamAndNullContentType() {
+//        assertFailsWith<IllegalArgumentException> {
+//            Blob(null, PlatformUtils.getAsset("attachment.png"))
+//        }
+//    }
+
+//    @Test
+//    fun testBlobCtorsWithNullStream() {
+//        assertFailsWith<IllegalArgumentException> { Blob("image/png", null as Source?) }
+//    }
 
     @Test
     fun testEquals() {
@@ -221,7 +244,13 @@ class BlobTest : BaseDbTest() {
             val content = blob.content
             assertContentEquals(content, bytes)
 
-            assertFailsWith<IllegalArgumentException> { Blob(contentType, "http://java.sun.com") }
+            //assertFailsWith<IllegalArgumentException> { Blob(null, path) }
+
+            //assertFailsWith<IllegalArgumentException> { Blob(contentType, null) }
+
+            assertFailsWith<IllegalArgumentException> {
+                Blob(contentType, "http://java.sun.com")
+            }
         } finally {
             FileUtils.deleteContents(tmpDir)
         }
@@ -229,18 +258,14 @@ class BlobTest : BaseDbTest() {
 
     @Test
     fun testBlobReadByte() {
-        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-            input.readByteArray()
-        }
+        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input -> input.readByteArray() }
 
         assertEquals(data[0], Blob("application/json", data).contentStream!!.readByte())
     }
 
     @Test
     fun testBlobReadByteArray() {
-        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-            input.readByteArray()
-        }
+        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input -> input.readByteArray() }
 
         val blobContent = Blob("application/json", data).contentStream!!.readByteArray()
         assertEquals(data.size, blobContent.size)
@@ -249,9 +274,7 @@ class BlobTest : BaseDbTest() {
 
     @Test
     fun testBlobReadSkip() {
-        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input ->
-            input.readByteArray()
-        }
+        val data = PlatformUtils.getAsset("iTunesMusicLibrary.json")!!.use { input -> input.readByteArray() }
 
         val blobStream = Blob("application/json", data).contentStream!!
         blobStream.skip(17)
@@ -260,9 +283,7 @@ class BlobTest : BaseDbTest() {
 
     @Test
     fun testReadBlobStream() {
-        val bytes = PlatformUtils.getAsset("attachment.png")!!.use { input ->
-            input.readByteArray()
-        }
+        val bytes = PlatformUtils.getAsset("attachment.png")!!.use { input -> input.readByteArray() }
 
         val blob = Blob("image/png", bytes)
         val mDoc = MutableDocument("doc1")
@@ -289,18 +310,15 @@ class BlobTest : BaseDbTest() {
         verifyBlob(Json.parseToJsonElement(blob.toJSON()).jsonObject)
     }
 
-    // TODO: iOS doesn't update its size after DB get
-    //  https://forums.couchbase.com/t/objc-sdk-doesnt-set-length-after-database-getblob/34077
-    @IgnoreApple
     // 3.1.b
     @Test
     fun testDbGetBlob() {
         val props = getPropsForSavedBlob()
 
         val fetchProps = mutableMapOf<String, Any?>()
-        fetchProps[META_PROP_TYPE] = TYPE_BLOB
-        fetchProps[PROP_DIGEST] = props[PROP_DIGEST]
-        fetchProps[PROP_CONTENT_TYPE] = props[PROP_CONTENT_TYPE]
+        fetchProps[Blob.META_PROP_TYPE] = Blob.TYPE_BLOB
+        fetchProps[Blob.PROP_DIGEST] = props[Blob.PROP_DIGEST]
+        fetchProps[Blob.PROP_CONTENT_TYPE] = props[Blob.PROP_CONTENT_TYPE]
         val dbBlob = testDatabase.getBlob(fetchProps)
 
         verifyBlob(dbBlob)
@@ -317,10 +335,18 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testDbGetNonexistentBlob() {
         val props = mutableMapOf<String, Any?>()
-        props[META_PROP_TYPE] = TYPE_BLOB
-        props[PROP_DIGEST] = "sha1-C+ThisIsTheWayWeMakeItFail="
+        props[Blob.META_PROP_TYPE] = Blob.TYPE_BLOB
+        props[Blob.PROP_DIGEST] = "sha1-C+ThisIsTheWayWeMakeItFail="
         assertNull(testDatabase.getBlob(props))
     }
+
+    // 3.1.e.0: null param
+//    @Test
+//    fun testDbGetNotBlob0() {
+//        val blob = makeBlob()
+//        testDatabase.saveBlob(blob)
+//        assertFailsWith<IllegalArgumentException> { testDatabase.getBlob(null) }
+//    }
 
     // 3.1.e.1: empty param
     @Test
@@ -334,7 +360,7 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testDbGetNotBlob2() {
         val props = getPropsForSavedBlob().toMutableMap()
-        props.remove(PROP_DIGEST)
+        props.remove(Blob.PROP_DIGEST)
         assertFailsWith<IllegalArgumentException> { testDatabase.getBlob(props) }
     }
 
@@ -342,7 +368,7 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testDbGetNotBlob3() {
         val props = getPropsForSavedBlob().toMutableMap()
-        props.remove(META_PROP_TYPE)
+        props.remove(Blob.META_PROP_TYPE)
         assertFailsWith<IllegalArgumentException> { assertNull(testDatabase.getBlob(props)) }
     }
 
@@ -350,7 +376,7 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testDbGetNotBlob4() {
         val props = getPropsForSavedBlob().toMutableMap()
-        props[PROP_LENGTH] = "42"
+        props[Blob.PROP_LENGTH] = "42"
         assertFailsWith<IllegalArgumentException> { assertNull(testDatabase.getBlob(props)) }
     }
 
@@ -358,7 +384,7 @@ class BlobTest : BaseDbTest() {
     @Test
     fun testDbGetNotBlob5() {
         val props = getPropsForSavedBlob().toMutableMap()
-        props[PROP_CONTENT_TYPE] = Any()
+        props[Blob.PROP_CONTENT_TYPE] = Any()
         assertFailsWith<IllegalArgumentException> { assertNull(testDatabase.getBlob(props)) }
     }
 
@@ -392,8 +418,8 @@ class BlobTest : BaseDbTest() {
         assertTrue(testDatabase.performMaintenance(MaintenanceType.COMPACT))
 
         val props = mutableMapOf<String, Any?>()
-        props[META_PROP_TYPE] = TYPE_BLOB
-        props[PROP_DIGEST] = blob.digest
+        props[Blob.META_PROP_TYPE] = Blob.TYPE_BLOB
+        props[Blob.PROP_DIGEST] = blob.digest
 
         assertNull(testDatabase.getBlob(props))
     }
@@ -444,11 +470,11 @@ class BlobTest : BaseDbTest() {
          * The sub-document property that identifies it as a special type of object.
          * For example, a blob is represented as `{"@type":"blob", "digest":"xxxx", ...}`
          */
-        const val META_PROP_TYPE = "@type"
-        const val TYPE_BLOB = "blob"
+        val Blob.Companion.META_PROP_TYPE get() = "@type"
+        val Blob.Companion.TYPE_BLOB get() = "blob"
 
-        const val PROP_DIGEST = "digest"
-        const val PROP_LENGTH = "length"
-        const val PROP_CONTENT_TYPE = "content_type"
+        val Blob.Companion.PROP_DIGEST get() = "digest"
+        val Blob.Companion.PROP_LENGTH get() = "length"
+        val Blob.Companion.PROP_CONTENT_TYPE get() = "content_type"
     }
 }
