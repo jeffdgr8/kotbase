@@ -260,7 +260,7 @@ abstract class BaseDbTest : BaseTest() {
                 while (true) {
                     val l = src.readLine() ?: break
                     val doc = MutableDocument("doc-${n++.paddedString(3)}")
-                    doc.setData(JSONUtils.fromJSON(Json.parseToJsonElement(l).jsonObject))
+                    doc.setData(JSONUtils.fromJSON(JsonObject(l)))
                     saveDocInCollection(doc, collection)
                 }
             }

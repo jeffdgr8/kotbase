@@ -47,3 +47,7 @@ object JSONUtils {
 
     private fun Long.toIntIfPossible(): Number = if (this >= Int.MIN_VALUE && this <= Int.MAX_VALUE) toInt() else this
 }
+
+fun JsonObject(string: String): JsonObject = Json.parseToJsonElement(string).jsonObject
+
+fun JsonArray(string: String): JsonArray = Json.parseToJsonElement(string).jsonArray

@@ -21,6 +21,7 @@ import com.couchbase.lite.revisionHistory
 import com.couchbase.lite.saveBlob
 import kotbase.ext.nowMillis
 import kotbase.ext.toStringMillis
+import kotbase.internal.utils.JsonObject
 import kotbase.internal.utils.Report
 import kotbase.internal.utils.StringUtils
 import kotbase.internal.utils.paddedString
@@ -30,8 +31,6 @@ import kotlinx.coroutines.sync.CountDownLatch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.io.Buffer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 import kotlin.math.absoluteValue
 import kotlin.test.*
 import kotlin.time.Duration.Companion.days
@@ -2689,7 +2688,7 @@ class DocumentTest : BaseDbTest() {
     fun testDocToJSON() {
         val mDoc = makeDocument()
         saveDocInCollection(mDoc)
-        verifyDocument(Json.parseToJsonElement(testCollection.getDocument(mDoc.id)!!.toJSON()!!).jsonObject)
+        verifyDocument(JsonObject(testCollection.getDocument(mDoc.id)!!.toJSON()!!))
     }
 
     // JSON 3.5.?
@@ -2704,11 +2703,10 @@ class DocumentTest : BaseDbTest() {
     // JSON 3.5.b-c
     @Test
     fun testDocFromJSON() {
-        val dbDoc =
-            saveDocInCollection(MutableDocument("fromJSON", readJSONResource("document.json")))
+        val dbDoc = saveDocInCollection(MutableDocument("fromJSON", readJSONResource("document.json")))
         testDatabase.saveBlob(makeBlob()) // be sure the blob is there...
         verifyDocument(dbDoc.content, true)
-        verifyDocument(Json.parseToJsonElement(dbDoc.toJSON()!!).jsonObject)
+        verifyDocument(JsonObject(dbDoc.toJSON()!!))
     }
 
     // JSON 3.5.d.1

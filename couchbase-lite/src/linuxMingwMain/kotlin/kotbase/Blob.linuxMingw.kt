@@ -181,7 +181,7 @@ private constructor(
 
     public actual fun toJSON(): String {
         if (digest == null) {
-            throw IllegalStateException("A Blob may be encoded as JSON only after it has been saved in a database")
+            throw CouchbaseLiteError("A Blob may be encoded as JSON only after it has been saved in a database")
         }
         return if (actual != null) {
             FLValue_ToJSON(CBLBlob_Properties(actual)?.reinterpret()).toKString()!!

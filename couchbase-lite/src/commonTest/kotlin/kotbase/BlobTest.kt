@@ -18,13 +18,10 @@ package kotbase
 import com.couchbase.lite.getBlob
 import com.couchbase.lite.saveBlob
 import kotbase.internal.utils.FileUtils
+import kotbase.internal.utils.JsonObject
 import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.StringUtils
-import kotbase.test.IgnoreApple
-import kotlinx.io.Source
 import kotlinx.io.readByteArray
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 import kotlin.test.*
 
 // There are other blob tests in test suites...
@@ -307,7 +304,7 @@ class BlobTest : BaseDbTest() {
     fun testDbSaveBlob() {
         val blob = makeBlob()
         testDatabase.saveBlob(blob)
-        verifyBlob(Json.parseToJsonElement(blob.toJSON()).jsonObject)
+        verifyBlob(JsonObject(blob.toJSON()))
     }
 
     // 3.1.b
@@ -328,7 +325,7 @@ class BlobTest : BaseDbTest() {
     // 3.1.c
     @Test
     fun testUnsavedBlobToJSON() {
-        assertFailsWith<IllegalStateException> { makeBlob().toJSON() }
+        assertFailsWith<CouchbaseLiteError> { makeBlob().toJSON() }
     }
 
     // 3.1.d
@@ -406,7 +403,7 @@ class BlobTest : BaseDbTest() {
 
         verifyBlob(dbBlob)
 
-        verifyBlob(Json.parseToJsonElement(dbBlob!!.toJSON()).jsonObject)
+        verifyBlob(JsonObject(dbBlob!!.toJSON()))
     }
 
     // 3.1.h

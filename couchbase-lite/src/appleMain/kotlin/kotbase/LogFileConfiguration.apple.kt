@@ -95,7 +95,7 @@ internal constructor(actual: CBLLogFileConfiguration) : DelegatedClass<CBLLogFil
     override fun hashCode(): Int = directory.hashCode()
 
     private fun checkReadOnly() {
-        if (readonly) throw IllegalStateException("LogFileConfiguration is readonly mode.")
+        if (readonly) throw CouchbaseLiteError("LogFileConfiguration is readonly mode.")
     }
 }
 

@@ -243,7 +243,7 @@ private constructor(
         get() {
             return collectionConfigurations.keys.firstOrNull()?.database
                 ?: db
-                ?: throw IllegalStateException("No database or collections provided for replication configuration")
+                ?: throw CouchbaseLiteError("No database or collections provided for replication configuration")
         }
 
     @Deprecated("Use CollectionConfiguration.documentIDs")

@@ -632,7 +632,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
     private fun <R> mustBeOpen(action: () -> R): R {
         return withLock {
             if (actual.isClosed()) {
-                throw IllegalStateException("Attempt to perform an operation on a closed database or a deleted collection.")
+                throw CouchbaseLiteError("Attempt to perform an operation on a closed database or a deleted collection.")
             }
             action()
         }

@@ -420,7 +420,6 @@ public expect class Database : AutoCloseable {
      *
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
-     * @throws IllegalStateException if the default collection doesn’t exist.
      *
      * @see ListenerToken.remove
      */
@@ -439,7 +438,6 @@ public expect class Database : AutoCloseable {
      * @param context coroutine context in which the listener will run
      * @param listener The listener to post changes.
      * @return An opaque listener token object for removing the listener.
-     * @throws IllegalStateException if the default collection doesn’t exist.
      *
      * @see ListenerToken.remove
      */
@@ -454,7 +452,6 @@ public expect class Database : AutoCloseable {
      * Adds a change listener for the changes that occur in the database, in the default collection,
      * with a [CoroutineScope] that will be used to launch coroutines the listener will be called on.
      * The listener is removed when the scope is canceled.
-     * @throws IllegalStateException if the default collection doesn’t exist.
      *
      * @param scope coroutine scope in which the listener will run
      * @param listener The listener to post changes.

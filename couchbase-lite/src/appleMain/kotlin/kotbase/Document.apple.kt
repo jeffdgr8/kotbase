@@ -118,9 +118,30 @@ internal constructor(
         // iOS SDK implements as actual.booleanForKey(key), this will behave like Java SDK
         actual.toDictionary().containsKey(key)
 
+    private var mutations: Long = 0
+
+    protected fun mutate() {
+        mutations++
+    }
+
     @Suppress("UNCHECKED_CAST")
     actual override fun iterator(): Iterator<String> =
-        (actual.keys as List<String>).iterator()
+        DocumentIterator((actual.keys as List<String>).iterator(), mutations)
+
+    private inner class DocumentIterator(
+        private val iterator: Iterator<String>,
+        private val mutations: Long
+    ) : Iterator<String> {
+
+        override fun hasNext(): Boolean = iterator.hasNext()
+
+        override fun next(): String {
+            if (this@Document.mutations != mutations) {
+                throw ConcurrentModificationException("Document modified during iteration")
+            }
+            return iterator.next()
+        }
+    }
 }
 
 internal fun CBLDocument.asDocument(collection: Collection?) = Document(this, collection)
