@@ -74,9 +74,8 @@ class SimpleDatabaseTest : BaseTest() {
 
     @Test
     fun testGetSetConfiguration() {
-        val config = DatabaseConfiguration().apply {
-            directory = getScratchDirectoryPath(getUniqueName("get-set-config-dir"))
-        }
+        val config =
+            DatabaseConfiguration().setDirectory(getScratchDirectoryPath(getUniqueName("get-set-config-dir")))
 
         val db = createDb("get_set_config_db", config)
         try {
@@ -88,9 +87,8 @@ class SimpleDatabaseTest : BaseTest() {
 
     @Test
     fun testConfigurationIsCopiedWhenGetSet() {
-        val config = DatabaseConfiguration().apply {
-            directory = getScratchDirectoryPath(getUniqueName("copy-config-dir"))
-        }
+        val config =
+            DatabaseConfiguration().setDirectory(getScratchDirectoryPath(getUniqueName("copy-config-dir")))
 
         val db = createDb("config_copied_db", config)
         try {
@@ -126,7 +124,7 @@ class SimpleDatabaseTest : BaseTest() {
     fun testDBWithFullSync() {
         val config = DatabaseConfiguration()
 
-        var db = Database(getUniqueName("full_sync_db_1"), config.apply { isFullSync = true })
+        var db = Database(getUniqueName("full_sync_db_1"), config.setFullSync(true))
         try {
             assertTrue(db.config.isFullSync)
 //            assertEquals(
@@ -135,7 +133,7 @@ class SimpleDatabaseTest : BaseTest() {
         }
         finally { eraseDb(db); }
 
-        db = Database(getUniqueName("full_sync_db_2"), config.apply { isFullSync = false })
+        db = Database(getUniqueName("full_sync_db_2"), config.setFullSync(false))
         try {
             assertFalse(db.config.isFullSync)
 //            assertEquals(

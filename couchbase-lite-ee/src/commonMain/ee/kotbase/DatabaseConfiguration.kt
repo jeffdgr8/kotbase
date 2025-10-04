@@ -24,10 +24,6 @@ package kotbase
  * @param encryptionKey the key
  * @return this.
  */
-@Deprecated(
-    "Use encryptionKey property",
-    ReplaceWith("this.encryptionKey = encryptionKey")
-)
 public fun DatabaseConfiguration.setEncryptionKey(encryptionKey: EncryptionKey?): DatabaseConfiguration {
     this.encryptionKey = encryptionKey
     return this

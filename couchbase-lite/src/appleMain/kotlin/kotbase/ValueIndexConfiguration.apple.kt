@@ -34,6 +34,14 @@ private constructor(override var actual: CBLValueIndexConfiguration) : IndexConf
     @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public actual constructor(expressions: List<String>) : this(expressions)
 
-    public actual val where: String?
+    public actual fun setWhere(where: String?): ValueIndexConfiguration {
+        this.where = where
+        return this
+    }
+
+    public actual var where: String?
         get() = actual.where
+        set(value) {
+            actual = CBLValueIndexConfiguration(actual.expressions, value)
+        }
 }

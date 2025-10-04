@@ -40,34 +40,38 @@ private constructor(override val actual: CBLFullTextIndexConfiguration) : IndexC
     @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public actual constructor(expressions: List<String>) : this(expressions)
 
-    @Deprecated("Use constructor parameter")
     public actual fun setLanguage(language: String?): FullTextIndexConfiguration {
         actual.language = language
         return this
     }
 
-    @set:Deprecated("Use constructor parameter")
     public actual var language: String?
         get() = actual.language
         set(value) {
             actual.language = value
         }
 
-    @Deprecated("Use constructor parameter")
     public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration {
         actual.ignoreAccents(ignoreAccents)
         return this
     }
 
-    @set:Deprecated("Use constructor parameter")
     public actual var isIgnoringAccents: Boolean
         get() = actual.isIgnoringAccents
         set(value) {
             actual.ignoreAccents(value)
         }
 
-    public actual val where: String?
+    public actual fun setWhere(where: String?): FullTextIndexConfiguration {
+        actual.where = where
+        return this
+    }
+
+    public actual var where: String?
         get() = actual.where
+        set(value) {
+            actual.where = value
+        }
 
     internal actual companion object
 }

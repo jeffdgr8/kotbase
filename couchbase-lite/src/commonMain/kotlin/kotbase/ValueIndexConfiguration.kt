@@ -17,6 +17,9 @@ package kotbase
 
 /**
  * Configuration for a standard database index.
+ *
+ * @constructor Initializes a value index using an array of SQL++ expression
+ * strings, with an optional where clause for partial indexing.
  */
 public expect class ValueIndexConfiguration(
     expressions: List<String>,
@@ -32,5 +35,15 @@ public expect class ValueIndexConfiguration(
     @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public constructor(expressions: List<String>)
 
-    public val where: String?
+    /**
+     * A predicate expression defining conditions for indexing documents.
+     * Only documents satisfying the predicate are included, enabling partial indexes.
+     */
+    public fun setWhere(where: String?): ValueIndexConfiguration
+
+    /**
+     * A predicate expression defining conditions for indexing documents.
+     * Only documents satisfying the predicate are included, enabling partial indexes.
+     */
+    public var where: String?
 }

@@ -46,10 +46,6 @@ public actual constructor(config: DatabaseConfiguration?) {
     internal val actual: CPointer<CBLDatabaseConfiguration>
         get() = memory.actual
 
-    @Deprecated(
-        "Use directory property",
-        ReplaceWith("this.directory = directory")
-    )
     public actual fun setDirectory(directory: String): DatabaseConfiguration {
         this.directory = directory
         return this
@@ -62,10 +58,6 @@ public actual constructor(config: DatabaseConfiguration?) {
             setActualDirectory(value)
         }
 
-    @Deprecated(
-        "Use isFullSync property",
-        ReplaceWith("isFullSync = fullSync")
-    )
     public actual fun setFullSync(fullSync: Boolean): DatabaseConfiguration {
         actual.pointed.fullSync = fullSync
         return this
@@ -76,6 +68,11 @@ public actual constructor(config: DatabaseConfiguration?) {
         set(value) {
             actual.pointed.fullSync = value
         }
+
+    public actual fun setMMapEnabled(mmapEnabled: Boolean): DatabaseConfiguration {
+        actual.pointed.mmapDisabled = !mmapEnabled
+        return this
+    }
 
     public actual var isMMapEnabled: Boolean
         get() = !actual.pointed.mmapDisabled

@@ -39,28 +39,27 @@ public actual constructor(
     @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public actual constructor(expressions: List<String>) : this(expressions)
 
-    @Suppress("DEPRECATION")
-    @Deprecated("Use constructor parameter")
     public actual fun setLanguage(language: String?): FullTextIndexConfiguration {
         this.language = language
         return this
     }
 
-    @set:Deprecated("Use constructor parameter")
     // TODO: this should default to device's default locale, tests check for "en"
     public actual var language: String? = if (language == NOT_SPECIFIED) "en" else language
 
-    @Suppress("DEPRECATION")
-    @Deprecated("Use constructor parameter")
     public actual fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration {
         isIgnoringAccents = ignoreAccents
         return this
     }
 
-    @set:Deprecated("Use constructor parameter")
     public actual var isIgnoringAccents: Boolean = ignoreAccents
 
-    public actual val where: String? = where
+    public actual fun setWhere(where: String?): FullTextIndexConfiguration {
+        this.where = where
+        return this
+    }
+
+    public actual var where: String? = where
 
     internal val actual: CValue<CBLFullTextIndexConfiguration>
         get() {

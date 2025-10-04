@@ -25,10 +25,6 @@ internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatab
 
     public actual constructor(config: DatabaseConfiguration?) : this(CBLDatabaseConfiguration(config?.actual))
 
-    @Deprecated(
-        "Use directory property",
-        ReplaceWith("this.directory = directory")
-    )
     public actual fun setDirectory(directory: String): DatabaseConfiguration {
         actual.directory = directory
         return this
@@ -40,10 +36,6 @@ internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatab
             actual.directory = value
         }
 
-    @Deprecated(
-        "Use isFullSync property",
-        ReplaceWith("isFullSync = fullSync")
-    )
     public actual fun setFullSync(fullSync: Boolean): DatabaseConfiguration {
         actual.isFullSync = fullSync
         return this
@@ -54,6 +46,11 @@ internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatab
         set(value) {
             actual.isFullSync = value
         }
+
+    public actual fun setMMapEnabled(mmapEnabled: Boolean): DatabaseConfiguration {
+        actual.isMMapEnabled = mmapEnabled
+        return this
+    }
 
     public actual var isMMapEnabled: Boolean
         get() = actual.isMMapEnabled
