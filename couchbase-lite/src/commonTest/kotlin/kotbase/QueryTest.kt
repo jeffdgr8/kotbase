@@ -42,7 +42,7 @@ class QueryTest : BaseQueryTest() {
     private class MathFn(val name: String, val expr: Expression, val expected: Double)
 
     private class TestCase(val expr: Expression, val docIds: List<String>) {
-        constructor(expr: Expression, vararg documentIDs: String) : this(expr, documentIDs.toList())
+        constructor(expr: Expression, vararg documentIDs: String) : this(expr, documentIDs.asList())
 
         constructor(expr: Expression, docIds: List<String>, vararg pos: Int) : this(
             expr,
@@ -1127,7 +1127,14 @@ class QueryTest : BaseQueryTest() {
             query,
             1
         ) { _, result ->
-            assertEquals(50.5F, result.getValue(0) as Float, 0.0F)
+            when (val avg = result.getValue(0)) {
+                // JVM is Float
+                is Float -> assertEquals(50.5F, avg, 0.0F)
+                // iOS is Double
+                is Double -> assertEquals(50.5, avg, 0.0)
+                null -> fail("avg is null")
+                else -> fail("avg is $avg (${avg::class})")
+            }
             assertEquals(100L, result.getValue(1) as Long)
             assertEquals(1L, result.getValue(2) as Long)
             assertEquals(100L, result.getValue(3) as Long)
