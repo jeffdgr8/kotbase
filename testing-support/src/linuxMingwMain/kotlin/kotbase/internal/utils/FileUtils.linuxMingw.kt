@@ -15,10 +15,9 @@
  */
 package kotbase.internal.utils
 
+import korlibs.io.file.modifiedDate
 import korlibs.io.file.std.localVfs
-import korlibs.io.posix.posixRealpath
 import kotbase.LogDomain
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.IOException
 import kotlinx.io.buffered
@@ -37,32 +36,18 @@ actual object FileUtils {
     }
 
     actual fun listFiles(dir: String): List<String> {
-        // TODO: use kotlinx-io when list API is available
         try {
-            //return okio.FileSystem.SYSTEM.list(dir.toPath())
-            //    .map { it.toString() }
-            val vfsFile = localVfs(dir)
-            return runBlocking {
-                vfsFile.list().toList().map { it.absolutePath }
-            }
+            return SystemFileSystem.list(Path(dir)).map { it.toString() }
         } catch (e: Exception) {
             throw IOException(e.message, e)
         }
     }
 
-    // TODO: canonicalize with kotlinx-io when API available
     actual fun getCanonicalPath(path: String): String =
-        //path.toPath().canonicalPath
-        posixRealpath(path).dropLastWhile { it == separatorChar }
-
-    //private val Path.canonicalPath: String
-    //    get() = okio.FileSystem.SYSTEM.canonicalize(this).toString()
+        SystemFileSystem.resolve(Path(path)).toString()
 
     actual fun verifyDir(dirPath: String): String {
-        //verifyDir(Path(dirPath))
         val dir = Path(dirPath)
-
-    //private fun verifyDir(dir: Path): String {
         if (!dirExists(dir.toString())) {
             try {
                 SystemFileSystem.createDirectories(dir, true)
@@ -70,7 +55,6 @@ actual object FileUtils {
                 throw IllegalStateException("Cannot create or access directory at $dir", e)
             }
         }
-        //return dir.canonicalPath
         return getCanonicalPath(dirPath)
     }
 
@@ -112,6 +96,14 @@ actual object FileUtils {
         } else {
             SystemPathSeparator
         }
+
+    actual fun lastModified(path: String): Long {
+        // TODO: use kotlinx-io when last modified API is available
+        val vfsFile = localVfs(path)
+        return runBlocking {
+            vfsFile.stat().modifiedDate.unixMillisLong
+        }
+    }
 
     private fun deleteRecursive(fileOrDirectory: String): Boolean =
         !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)

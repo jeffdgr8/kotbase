@@ -111,6 +111,13 @@ actual object FileUtils {
     actual val separatorChar: Char
         get() = '/'
 
+    actual fun lastModified(path: String): Long {
+        return wrapError { error ->
+            val date = fm.attributesOfItemAtPath(path, error)!![NSFileModificationDate] as NSDate
+            date.timeIntervalSince1970.toLong()
+        }
+    }
+
     private fun deleteRecursive(fileOrDirectory: String): Boolean =
         !exists(fileOrDirectory) || deleteContents(fileOrDirectory) && delete(fileOrDirectory)
 
