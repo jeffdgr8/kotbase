@@ -24,8 +24,9 @@ import kotbase.LogLevel
  * @constructor Initializes a `CustomLogSink` with the specified log level, log domains,
  * and custom log sink implementation. The default log domain is set to all domains.
  */
-public class CustomLogSink(internal val level: LogLevel, vararg domains: LogDomain, internal val logSink: LogSink) {
-    internal val domains = domains.toSet().ifEmpty { LogDomain.ALL }
+public class CustomLogSink(internal val level: LogLevel, internal val domains: Set<LogDomain>, internal val logSink: LogSink) {
+
+    public constructor(level: LogLevel, vararg domains: LogDomain, logSink: LogSink) : this(level, domains.toSet(), logSink)
 }
 
 /**

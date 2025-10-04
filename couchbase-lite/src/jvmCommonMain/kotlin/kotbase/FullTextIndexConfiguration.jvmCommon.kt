@@ -31,10 +31,14 @@ private constructor(override val actual: CBLFullTextIndexConfiguration) : IndexC
         if (language != NOT_SPECIFIED) actual.language = language
     }
 
-    @Deprecated(
-        "Use FullTextIndexConfiguration(List<String>)",
-        ReplaceWith("FullTextIndexConfiguration(listOf(*expressions))")
-    )
+    public actual constructor(
+        vararg expressions: String,
+        where: String?,
+        ignoreAccents: Boolean,
+        language: String?
+    ) : this(expressions.asList(), where, ignoreAccents, language)
+
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public actual constructor(vararg expressions: String) : this(expressions.asList())
 
     @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)

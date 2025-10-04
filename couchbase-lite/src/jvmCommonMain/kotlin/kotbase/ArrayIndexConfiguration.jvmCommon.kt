@@ -20,6 +20,10 @@ import com.couchbase.lite.ArrayIndexConfiguration as CBLArrayIndexConfiguration
 public actual class ArrayIndexConfiguration
 private constructor(override val actual: CBLArrayIndexConfiguration) : IndexConfiguration(actual) {
 
+    public actual constructor(path: String) : this(path, null)
+
+    public actual constructor(path: String, vararg expressions: String) : this(path, expressions.asList())
+
     public actual constructor(path: String, expressions: List<String>?) : this(
         CBLArrayIndexConfiguration(path, expressions)
     )

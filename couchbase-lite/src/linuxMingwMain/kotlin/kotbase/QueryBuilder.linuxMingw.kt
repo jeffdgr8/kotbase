@@ -18,10 +18,10 @@ package kotbase
 public actual object QueryBuilder {
 
     public actual fun select(vararg results: SelectResult): Select =
-        Select(QueryState(results.toList()))
+        Select(QueryState(results.asList()))
 
     public actual fun selectDistinct(vararg results: SelectResult): Select =
-        Select(QueryState(results.toList(), true))
+        Select(QueryState(results.asList(), true))
 
     public actual fun createQuery(query: String, database: Database): Query =
         database.createQuery(query)

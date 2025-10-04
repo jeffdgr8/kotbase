@@ -25,4 +25,4 @@ import kotbase.MutableArray
  * @param values the array content values
  */
 public fun mutableArrayOf(vararg values: Any?): MutableArray =
-    MutableArray(values.toList())
+    MutableArray(values.asList())

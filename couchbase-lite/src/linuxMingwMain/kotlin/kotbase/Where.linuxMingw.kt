@@ -23,11 +23,11 @@ internal constructor(private val state: QueryState) :
     LimitRouter {
 
     public actual override fun groupBy(vararg expressions: Expression): GroupBy {
-        return GroupBy(state.copy(groupBy = expressions.toList()))
+        return GroupBy(state.copy(groupBy = expressions.asList()))
     }
 
     public actual override fun orderBy(vararg orderings: Ordering): OrderBy {
-        return OrderBy(state.copy(orderBy = orderings.toList()))
+        return OrderBy(state.copy(orderBy = orderings.asList()))
     }
 
     public actual override fun limit(limit: Expression): Limit {
