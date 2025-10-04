@@ -26,10 +26,13 @@ public expect class ValueIndexConfiguration(
     where: String? = null
 ) : IndexConfiguration {
 
-    @Deprecated(
-        "Use ValueIndexConfiguration(List<String>)",
-        ReplaceWith("ValueIndexConfiguration(listOf(*expressions))")
-    )
+    /**
+     * Initializes a value index using an array of SQL++ expression
+     * strings, with an optional where clause for partial indexing.
+     */
+    public constructor(vararg expressions: String, where: String? = null)
+
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public constructor(vararg expressions: String)
 
     @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)

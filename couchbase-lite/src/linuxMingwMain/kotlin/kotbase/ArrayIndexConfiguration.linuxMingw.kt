@@ -28,6 +28,10 @@ public actual constructor(
     expressions: List<String>?
 ) : IndexConfiguration(expressions ?: listOf("")) {
 
+    public actual constructor(path: String) : this(path, null)
+
+    public actual constructor(path: String, vararg expressions: String) : this(path, expressions.asList())
+
     init {
         if (expressions != null) {
             require(expressions.isNotEmpty()) { "Empty expressions is not allowed, use null instead." }

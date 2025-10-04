@@ -373,7 +373,7 @@ public actual open class Expression {
 
     public actual fun `in`(vararg expressions: Expression): Expression {
         if (expressions.isEmpty()) throw IllegalArgumentException("empty 'IN'.")
-        val aggr = AggregateExpression(expressions.toList())
+        val aggr = AggregateExpression(expressions.asList())
         return BinaryExpression(this, aggr, BinaryExpression.OP_IN)
     }
 

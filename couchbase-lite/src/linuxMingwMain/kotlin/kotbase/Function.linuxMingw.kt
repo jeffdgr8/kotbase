@@ -141,5 +141,5 @@ public actual object Function {
         Expression.FunctionExpression(expr, listOf(op))
 
     private fun expr(expr: String, vararg ops: Expression): Expression.FunctionExpression =
-        Expression.FunctionExpression(expr, ops.toList())
+        Expression.FunctionExpression(expr, ops.asList())
 }

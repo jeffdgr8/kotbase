@@ -22,7 +22,7 @@ internal constructor(private val state: QueryState) :
     LimitRouter {
 
     public actual override fun orderBy(vararg orderings: Ordering): OrderBy {
-        return OrderBy(state.copy(orderBy = orderings.toList()))
+        return OrderBy(state.copy(orderBy = orderings.asList()))
     }
 
     public actual override fun limit(limit: Expression): Limit {

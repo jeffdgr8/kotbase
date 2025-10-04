@@ -28,10 +28,14 @@ public expect class FullTextIndexConfiguration(
     language: String? = NOT_SPECIFIED
 ) : IndexConfiguration {
 
-    @Deprecated(
-        "Use FullTextIndexConfiguration(List<String>)",
-        ReplaceWith("FullTextIndexConfiguration(listOf(*expressions))")
+    public constructor(
+        vararg expressions: String,
+        where: String? = null,
+        ignoreAccents: Boolean = Defaults.FullTextIndex.IGNORE_ACCENTS,
+        language: String? = NOT_SPECIFIED
     )
+
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public constructor(vararg expressions: String)
 
     @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
