@@ -43,7 +43,6 @@ public expect class FullTextIndexConfiguration(
      * If not explicitly set, the current locale's language will be used. Setting
      * a null, empty, or unrecognized value will disable the language features.
      */
-    @Deprecated("Use constructor parameter")
     public fun setLanguage(language: String?): FullTextIndexConfiguration
 
     /**
@@ -52,28 +51,31 @@ public expect class FullTextIndexConfiguration(
      * If not explicitly set, the current locale's language will be used. Setting
      * a null, empty, or unrecognized value will disable the language features.
      */
-    @set:Deprecated("Use constructor parameter")
     public var language: String?
 
     /**
      * Whether to ignore accents/diacritical marks.
      * The default value is [Defaults.FullTextIndex.IGNORE_ACCENTS].
      */
-    @Deprecated("Use constructor parameter")
     public fun ignoreAccents(ignoreAccents: Boolean): FullTextIndexConfiguration
 
     /**
      * Whether to ignore accents/diacritical marks.
      * The default value is [Defaults.FullTextIndex.IGNORE_ACCENTS].
      */
-    @set:Deprecated("Use constructor parameter")
     public var isIgnoringAccents: Boolean
 
     /**
      * A predicate expression defining conditions for indexing documents.
      * Only documents satisfying the predicate are included, enabling partial indexes.
      */
-    public val where: String?
+    public fun setWhere(where: String?): FullTextIndexConfiguration
+
+    /**
+     * A predicate expression defining conditions for indexing documents.
+     * Only documents satisfying the predicate are included, enabling partial indexes.
+     */
+    public var where: String?
 
     internal companion object
 }

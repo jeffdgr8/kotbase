@@ -37,7 +37,12 @@ public actual constructor(
     @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public actual constructor(expressions: List<String>) : this(expressions)
 
-    public actual val where: String? = null
+    public actual fun setWhere(where: String?): ValueIndexConfiguration {
+        this.where = where
+        return this
+    }
+
+    public actual var where: String? = null
 
     internal val actual: CValue<CBLValueIndexConfiguration>
         get() {
