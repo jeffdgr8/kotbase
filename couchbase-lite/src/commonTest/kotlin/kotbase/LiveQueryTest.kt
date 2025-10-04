@@ -49,9 +49,7 @@ class LiveQueryTest : BaseDbTest() {
             .orderBy(Ordering.property(KEY).ascending())
 
         val latch = CountDownLatch(1)
-        query.addChangeListener(testSerialCoroutineContext) {
-            latch.countDown()
-        }.use {
+        query.addChangeListener(testSerialCoroutineContext) { latch.countDown() }.use {
             assertTrue(latch.await(LONG_TIMEOUT_SEC.seconds))
         }
     }
@@ -274,6 +272,7 @@ class LiveQueryTest : BaseDbTest() {
 //    }
 
     // create test docs
+    // !!! Replace with standard save routine
     private fun createDocNumbered(i: Int) {
         val docID = "doc-$i"
         val doc = MutableDocument(docID)

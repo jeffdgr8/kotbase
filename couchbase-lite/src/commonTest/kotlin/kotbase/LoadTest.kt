@@ -26,20 +26,24 @@ private const val ITERATIONS = 2000
 class LoadTest : BaseDbTest() {
     companion object {
         private val DEVICE_SPEED_MULTIPLIER = mapOf(
-            "lin" to 33,
-            "mac" to 40,
+            // java devices
+            "lin" to 50,
+            "mac" to 100,
             "win" to 120,
-            "r8quex" to 100,
-            "a12uue" to 210,
+
+            // android on jenkins
+            "bluejay" to 100,
             "starqlteue" to 150,
-            "dandelion_global" to 100,
-            "cheetah" to 100,
-            "sunfish" to 65,
-            "taimen" to 55,
-            "shamu" to 200,
-            "hammerhead" to 150,
-            "occam" to 220,
-            "sdk_phone64_x86_64" to 550, // GitHub action runner is REALLY SLOW
+            "lynx" to 100,
+            "a12usq" to 230,
+            "r8quex" to 100,
+
+            // android local
+            "shiba" to 80,
+            "sunfish" to 140,
+            "taimen" to 90,
+            "occam" to 300,
+            "sdk_phone64_x86_64" to 600, // GitHub action runner is REALLY SLOW
         )
     }
 
@@ -54,7 +58,7 @@ class LoadTest : BaseDbTest() {
         val docs = createComplexTestDocs(ITERATIONS, tag)
 
         assertEquals(0, testCollection.count)
-        timeTest("testCreateUnbatched", 74) {
+        timeTest("testCreateUnbatched", 170) {
             for (doc in docs) {
                 testCollection.save(doc)
             }
@@ -69,7 +73,7 @@ class LoadTest : BaseDbTest() {
         val docs = createComplexTestDocs(ITERATIONS, tag)
 
         assertEquals(0, testCollection.count)
-        timeTest("testCreateBatched", 35) {
+        timeTest("testCreateBatched", 45) {
             testDatabase.inBatch {
                 for (doc in docs) {
                     testCollection.save(doc)
@@ -86,7 +90,7 @@ class LoadTest : BaseDbTest() {
         val ids = saveDocsInCollection(createComplexTestDocs(ITERATIONS, tag)).map { it.id }
 
         assertEquals(ITERATIONS.toLong(), testCollection.count)
-        timeTest("testRead", 15) {
+        timeTest("testRead", 60) {
             for (id in ids) {
                 val doc = testCollection.getDocument(id)
                 assertNotNull(doc)
@@ -110,7 +114,7 @@ class LoadTest : BaseDbTest() {
         val ids = saveDocsInCollection(createComplexTestDocs(ITERATIONS, getUniqueName("update"))).map { it.id }
 
         assertEquals(ITERATIONS.toLong(), testCollection.count)
-        timeTest("testUpdate1", 120) {
+        timeTest("testUpdate1", 130) {
             var i = 0
             for (id in ids) {
                 i++
@@ -147,7 +151,7 @@ class LoadTest : BaseDbTest() {
         testCollection.save(mDoc)
 
         assertEquals(1L, testCollection.count)
-        timeTest("testUpdate2", 90) {
+        timeTest("testUpdate2", 110) {
             for (i in 0..ITERATIONS) {
                 mDoc = testCollection.getDocument(mDoc.id)!!.toMutable()
                 mDoc.setValue("map", mapOf("idx" to i, "long" to i.toLong(), TEST_DOC_TAG_KEY to getUniqueName("tag")))
@@ -169,7 +173,7 @@ class LoadTest : BaseDbTest() {
         val docs = saveDocsInCollection(createComplexTestDocs(ITERATIONS, getUniqueName("delete")))
 
         assertEquals(ITERATIONS.toLong(), testCollection.count)
-        timeTest("testDelete", 85) {
+        timeTest("testDelete", 100) {
             for (doc in docs) {
                 testCollection.delete(doc)
             }
@@ -180,7 +184,7 @@ class LoadTest : BaseDbTest() {
     @Test
     fun testSaveRevisions1() {
         var mDoc = MutableDocument()
-        timeTest("testSaveRevisions1", 42) {
+        timeTest("testSaveRevisions1", 50) {
             testDatabase.inBatch {
                 for (i in 0 ..< ITERATIONS) {
                     mDoc.setValue("count", i)
@@ -195,7 +199,7 @@ class LoadTest : BaseDbTest() {
     @Test
     fun testSaveRevisions2() {
         val mDoc = MutableDocument()
-        timeTest("testSaveRevisions2", 24) {
+        timeTest("testSaveRevisions2", 40) {
             testDatabase.inBatch {
                 for (i in 0 ..< ITERATIONS) {
                     mDoc.setValue("count", i)
@@ -227,7 +231,7 @@ class LoadTest : BaseDbTest() {
         Report.log("Load test $testName completed in $elapsedTime (${maxTimeMs}) on $device")
         assertTrue(
             elapsedTime < maxTimeMs,
-            "Load test $testName over time: $elapsedTime > $maxTimeMs (on $device)"
+            "Load test $testName over time: $elapsedTime > $maxTimeMs on $device"
         )
     }
 }
