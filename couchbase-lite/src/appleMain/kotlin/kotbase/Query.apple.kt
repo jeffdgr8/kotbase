@@ -37,7 +37,7 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
     abstract override val actual: CBLQuery
 
     override var parameters: Parameters?
-        get() = actual.parameters?.asParameters()
+        get() = actual.parameters?.asParameters(true)
         set(value) {
             actual.parameters = value?.actual
         }
