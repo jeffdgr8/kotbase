@@ -27,10 +27,9 @@ private constructor(override val actual: CBLValueIndexConfiguration) : IndexConf
         actual.where = where
     }
 
-    @Deprecated(
-        "Use ValueIndexConfiguration(List<String>)",
-        ReplaceWith("ValueIndexConfiguration(listOf(*expressions))")
-    )
+    public actual constructor(vararg expressions: String, where: String?) : this(expressions.asList(), where)
+
+    @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
     public actual constructor(vararg expressions: String) : this(expressions.asList())
 
     @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
