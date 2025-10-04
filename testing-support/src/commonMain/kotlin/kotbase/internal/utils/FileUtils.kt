@@ -34,6 +34,8 @@ expect object FileUtils {
     fun read(path: String): ByteArray
 
     val separatorChar: Char
+
+    fun lastModified(path: String): Long
 }
 
 fun FileUtils.getParentDir(path: String): String {

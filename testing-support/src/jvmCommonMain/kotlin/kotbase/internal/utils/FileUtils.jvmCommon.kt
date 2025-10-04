@@ -72,6 +72,10 @@ actual object FileUtils {
 
     actual val separatorChar: Char = File.separatorChar
 
+    actual fun lastModified(path: String): Long {
+        return File(path).lastModified()
+    }
+
     private fun deleteContents(fileOrDirectory: File?): Boolean {
         if (fileOrDirectory == null || !fileOrDirectory.isDirectory) {
             return true
