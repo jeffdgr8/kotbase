@@ -48,11 +48,10 @@ class MigrationTest : BaseTest() {
     @IgnoreLinuxMingw
     @Test
     fun testOpenExistingDBv1x() {
-        ZipUtils.unzip(PlatformUtils.getAsset("replacedb/android140-sqlite.cblite2.zip")!!, dbDir)
+        ZipUtils.unzip(PlatformUtils.getAsset("android140-sqlite.cblite2.zip")!!, dbDir)
 
         migrationTestDb = openDatabase()
         val migrationTestCollection = migrationTestDb!!.defaultCollection
-        assertNotNull(migrationTestCollection)
         assertEquals(2, migrationTestCollection.count)
         for (i in 1..2) {
             val doc = migrationTestCollection.getDocument("doc$i")
@@ -73,12 +72,10 @@ class MigrationTest : BaseTest() {
     // https://github.com/couchbase/couchbase-lite-android/issues/1237
     @Test
     fun testOpenExistingDBv1xNoAttachment() {
-        ZipUtils.unzip(PlatformUtils.getAsset("replacedb/android140-sqlite-noattachment.cblite2.zip")!!, dbDir)
+        ZipUtils.unzip(PlatformUtils.getAsset("android140-sqlite-noattachment.cblite2.zip")!!, dbDir)
 
         migrationTestDb = openDatabase()
         val migrationTestCollection = migrationTestDb!!.defaultCollection
-        assertNotNull(migrationTestCollection)
-
         assertEquals(2, migrationTestCollection.count)
         for (i in 1..2) {
             val doc = migrationTestCollection.getDocument("doc$i")
@@ -89,12 +86,10 @@ class MigrationTest : BaseTest() {
 
     @Test
     fun testOpenExistingDB() {
-        ZipUtils.unzip(PlatformUtils.getAsset("replacedb/android200-sqlite.cblite2.zip")!!, dbDir)
+        ZipUtils.unzip(PlatformUtils.getAsset("android200-sqlite.cblite2.zip")!!, dbDir)
 
         migrationTestDb = openDatabase()
         val migrationTestCollection = migrationTestDb!!.defaultCollection
-        assertNotNull(migrationTestCollection)
-
         assertEquals(2, migrationTestCollection.count)
 
         for (i in 1..2) {
