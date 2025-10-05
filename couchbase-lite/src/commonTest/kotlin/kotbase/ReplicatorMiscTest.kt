@@ -28,18 +28,20 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //        val executor = Executor { runnable -> }
 //        val listener: ReplicatorChangeListener = ReplicatorChangeListener { change -> }
 //
+//        // custom Executor
 //        ReplicatorChangeListenerToken(executor, listener) { t -> }.use { token ->
 //            assertEquals(executor, token.getExecutor())
 //        }
+//        // UI thread Executor
 //        ReplicatorChangeListenerToken(null, listener) { t -> }.use { token ->
 //            assertEquals(CouchbaseLiteInternal.getExecutionService().getDefaultExecutor(), token.getExecutor())
 //        }
 //    }
-
+//
 //    @Test
 //    fun testReplicatorChange() {
-//        val completed: Long = 10
-//        val total: Long = 20
+//        val completed = 10L
+//        val total = 20L
 //        val errorCode = CBLError.Code.BUSY
 //        val errorDomain = 1 // CBLError.Domain.CBLErrorDomain: LiteCoreDomain
 //        val c4ReplicatorStatus = C4ReplicatorStatus(
@@ -72,7 +74,7 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //        assertEquals(error.code, errorCode)
 //        assertEquals(error.domain, CBLError.Domain.CBLITE)
 //    }
-
+//
 //    @Test
 //    fun testDocumentReplication() {
 //        val docs = listOf<ReplicatedDocument>()
@@ -86,16 +88,12 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
     // https://issues.couchbase.com/browse/CBL-89
     // Thanks to @James Flather for the ready-made test code
     @Test
-    fun testStopBeforeStart() {
-        makeBasicRepl().stop()
-    }
+    fun testStopBeforeStart() { makeBasicRepl().stop() }
 
     // https://issues.couchbase.com/browse/CBL-88
     // Thanks to @James Flather for the ready-made test code
     @Test
-    fun testStatusBeforeStart() {
-        makeBasicRepl().status
-    }
+    fun testStatusBeforeStart() { makeBasicRepl().status }
 
 //    @Test
 //    fun testDocumentEndListenerTokenRemove() {
@@ -108,7 +106,7 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //        token.remove()
 //        assertEquals(0, repl.getDocEndListenerCount())
 //    }
-
+//
 //    @Test
 //    fun testReplicationListenerTokenRemove() {
 //        val repl = makeBasicRepl()
@@ -120,27 +118,27 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //        token.remove()
 //        assertEquals(0, repl.getReplicatorListenerCount())
 //    }
-
+//
 //    @Test
 //    fun testDefaultConnectionOptions() {
 //        val repl = makeDefaultConfig().testReplicator()
 //
 //        val options = mutableMapOf<String, Any?>()
 //        repl.getSocketFactory().setTestListener { c4Socket ->
-//            if (c4Socket == null) {
-//                return@setTestListener
-//            }
+//            if (c4Socket == null) { return@setTestListener }
 //            synchronized(options) {
-//                val opts: Map<String, Any> =
-//                    (c4Socket as AbstractCBLWebSocket).getOptions()
-//                if (opts != null) {
-//                    options.putAll(opts)
-//                }
+//                val opts: Map<String, Any> = (c4Socket as AbstractCBLWebSocket).getOptions()
+//                if (opts != null) { options.putAll(opts) }
 //            }
 //        }
 //
 //        // the replicator will fail because the endpoint is bogus
-//        run(repl, false, CBLError.Domain.CBLITE, CBLError.Code.UNKNOWN_HOST)
+//        repl.run(
+//            false,
+//            LONG_TIMEOUT_SEC,
+//            CouchbaseLiteException("", CBLError.Domain.CBLITE, CBLError.Code.TIMEOUT),
+//            CouchbaseLiteException("", CBLError.Domain.CBLITE, CBLError.Code.UNKNOWN_HOST)
+//        )
 //
 //        synchronized(options) {
 //            assertEquals(
@@ -165,7 +163,7 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //            )
 //        }
 //    }
-
+//
 //    @Test
 //    fun testCustomConnectionOptions() {
 //        // Caution: not disabling heartbeat
@@ -178,20 +176,20 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //
 //        val options = mutableMapOf<String, Any?>()
 //        repl.getSocketFactory().setTestListener { delegate ->
-//            if (delegate !is AbstractCBLWebSocket) {
-//                return@setTestListener
-//            }
+//            if (delegate !is AbstractCBLWebSocket) { return@setTestListener }
 //            synchronized(options) {
-//                val opts: Map<String, Any> =
-//                    (delegate as AbstractCBLWebSocket).getOptions()
-//                if (opts != null) {
-//                    options.putAll(opts)
-//                }
+//                val opts: Map<String, Any> = (delegate as AbstractCBLWebSocket).getOptions()
+//                if (opts != null) { options.putAll(opts) }
 //            }
 //        }
 //
 //        // the replicator will fail because the endpoint is bogus
-//        run(repl, false, CBLError.Domain.CBLITE, CBLError.Code.UNKNOWN_HOST)
+//        repl.run(
+//            false,
+//            STD_TIMEOUT_SEC,
+//            CouchbaseLiteException("", CBLError.Domain.CBLITE, CBLError.Code.TIMEOUT),
+//            CouchbaseLiteException("", CBLError.Domain.CBLITE, CBLError.Code.UNKNOWN_HOST)
+//        )
 //
 //        synchronized(options) {
 //            assertEquals(java.lang.Boolean.TRUE, options[C4Replicator.REPLICATOR_OPTION_ACCEPT_PARENT_COOKIES])
@@ -202,7 +200,7 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //            assertEquals(78L - 1, options[C4Replicator.REPLICATOR_OPTION_MAX_RETRIES])
 //        }
 //    }
-
+//
 //    @Test
 //    fun testBasicAuthOptions() = runBlocking {
 //        val config = makeBasicConfig()
@@ -211,20 +209,20 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //
 //        val options = mutableMapOf<String, Any?>()
 //        repl.getSocketFactory().setTestListener { c4Socket ->
-//            if (c4Socket == null) {
-//                return@setTestListener
-//            }
+//            if (c4Socket == null) { return@setTestListener }
 //            synchronized(options) {
-//                val opts: Map<String, Any> =
-//                    (c4Socket as AbstractCBLWebSocket).getOptions()
-//                if (opts != null) {
-//                    options.putAll(opts)
-//                }
+//                val opts: Map<String, Any> = (c4Socket as AbstractCBLWebSocket).getOptions()
+//                if (opts != null) { options.putAll(opts) }
 //            }
 //        }
 //
 //        // the replicator will fail because the endpoint is bogus
-//        repl.run(false, CBLError.Domain.CBLITE, CBLError.Code.UNKNOWN_HOST)
+//        repl.run(
+//            false,
+//            STD_TIMEOUT_SEC,
+//            CouchbaseLiteException("", CBLError.Domain.CBLITE, CBLError.Code.TIMEOUT),
+//            CouchbaseLiteException("", CBLError.Domain.CBLITE, CBLError.Code.UNKNOWN_HOST)
+//        )
 //
 //        synchronized(options) {
 //            val authOpts = options[C4Replicator.REPLICATOR_OPTION_AUTHENTICATION]
@@ -315,12 +313,7 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 
         closeDb(testDatabase)
 
-        assertFailsWith<IllegalStateException> {
-            repl.isDocumentPending(
-                "who-cares",
-                testCollection
-            )
-        }
+        assertFailsWith<IllegalStateException> { repl.isDocumentPending("who-cares", testCollection) }
     }
 
     // CBL-1441
@@ -355,8 +348,9 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //            getActivityLevelFor(C4ReplicatorStatus.ActivityLevel.BUSY + 1)
 //        )
 //    }
-
-    // Verify that deprecated and new ReplicatorTypes are interchangeable
+//
+//    // Verify that deprecated and new ReplicatorTypes are interchangeable
+//
 //    @Suppress("deprecation")
 //    @Test
 //    fun testDeprecatedReplicatorType() {
@@ -381,10 +375,10 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //        assertEquals(AbstractReplicatorConfiguration.ReplicatorType.PULL, config.getReplicatorType())
 //        assertEquals(ReplicatorType.PULL, config.type)
 //    }
-
-    /**
-     * The 4 tests below test replicator cookies option when specifying replicator configuration
-     */
+//
+//    /**
+//     * The 4 tests below test replicator cookies option when specifying replicator configuration
+//     */
 //    @Test
 //    fun testReplicatorWithBothAuthenticationAndHeaderCookies() {
 //        val authenticator: Authenticator = SessionAuthenticator("mysessionid")
@@ -413,7 +407,7 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //        // httpHeaders must at least include a mapping for User-Agent
 //        assertFalse((httpHeaders as Map<*, *>).containsKey(AbstractCBLWebSocket.HEADER_COOKIES))
 //    }
-
+//
 //    @Test
 //    fun testReplicatorWithNoCookie() {
 //        val config: ImmutableReplicatorConfiguration =
@@ -421,7 +415,7 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //        val options: Map<*, *> = config.getConnectionOptions()
 //        assertFalse(options.containsKey(C4Replicator.REPLICATOR_OPTION_COOKIES))
 //    }
-
+//
 //    @Test
 //    fun testReplicatorWithOnlyAuthenticationCookie() {
 //        assertEquals(
@@ -433,7 +427,7 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //                .get(C4Replicator.REPLICATOR_OPTION_COOKIES)
 //        )
 //    }
-
+//
 //    @Test
 //    fun testReplicatorWithOnlyHeaderCookie() {
 //        val header = mapOf<String, String>(
@@ -457,7 +451,104 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
 //        // httpHeaders must at least include a mapping for User-Agent
 //        assertFalse((httpHeaders as Map<*, *>).containsKey(AbstractCBLWebSocket.HEADER_COOKIES))
 //    }
-
+//
+//    // 3.1 TestCreateProxyAuthenticator
+//    //    Create a new ProxyAuthenticator object with a username and password.
+//    //    Get a username from the object and check if the returned value is correct.
+//    //    Get a password from the object and check if the returned value is correct.
+//    //    Check that the returned password object is a new copy.
+//    //    Get a password from the object again and check that the returned password object is a new copy.
+//    @Test
+//    fun testCreateProxyAuthenticator() {
+//        val password = "Xakk".toCharArray()
+//
+//        val pwd = CharArray(password.size)
+//        password.copyInto(pwd, 0, 0, password.size)
+//        val proxyAuth = ProxyAuthenticator("Stewart", pwd)
+//
+//        val pwd1 = proxyAuth.password
+//        assertContentEquals(password, pwd1)
+//        assertNotSame(pwd, pwd1)
+//
+//        pwd[0] = 'Y'
+//        val pwd2 = proxyAuth.password
+//        assertContentEquals(password, pwd2)
+//        assertNotSame(pwd1, pwd2)
+//    }
+//
+//    // 3.2 TestGetDefaultProxyAuthenticator
+//    //    Create a ReplicatorConfiguration object.
+//    //    Get the proxy authenticator object and check that the returned object is null.
+//    @Test
+//    fun testGetDefaultProxyAuthenticator() {
+//        assertNull(ReplicatorConfiguration(URLEndpoint("ws://foo.com")).proxyAuthenticator)
+//    }
+//
+//    // 3.3 TestSetNewProxyAuthenticator
+//    //    Create a ReplicatorConfiguration object.
+//    //    Create a new ProxyAuthenticator object with a username and password.
+//    //    Set the ProxyAuthenticator object to the ReplicatorConfiguration object.
+//    //    Get the ProxyAuthenticator object from the ReplicatorConfiguration object.
+//    //    Check that the returned ProxyAuthenticator object has the correct username and password.
+//    @Test
+//    fun testSetNewProxyAuthenticator() throws URISyntaxException {
+//        val proxyAuth = ProxyAuthenticator("Wilson", "Vince".toCharArray())
+//        assertEquals(
+//            proxyAuth,
+//            ReplicatorConfiguration(URLEndpoint("ws://foo.com"))
+//                .setProxyAuthenticator(proxyAuth)
+//                .proxyAuthenticator
+//        )
+//    }
+//
+//    // 3.4 TestSetNullProxyAuthenticator
+//    //    Create a ReplicatorConfiguration object.
+//    //    Set null ProxyAuthenticator to the ReplicatorConfiguration object.
+//    //    Get the ProxyAuthenticator object from the ReplicatorConfiguration object.
+//    //    Check that the returned ProxyAuthenticator is null.
+//    @Test
+//    fun testSetNullProxyAuthenticator() {
+//        assertNull(ReplicatorConfiguration(URLEndpoint("ws://foo.com"))
+//            .setProxyAuthenticator(null)
+//            .proxyAuthenticator
+//        )
+//    }
+//
+//    // 3.5 TestUpdateProxyAuthenticator
+//    //    Create a ReplicatorConfiguration object.
+//    //    Create a new ProxyAuthenticator object with a username and password.
+//    //    Set the ProxyAuthenticator object to the ReplicatorConfiguration object.
+//    //    Get the ProxyAuthenticator object from the ReplicatorConfiguration object.
+//    //    Check that the returned ProxyAuthenticator object has the correct username and password.
+//    //    Create a new ProxyAuthenticator object with a different username and password.
+//    //    Set the new ProxyAuthenticator object to the ReplicatorConfiguration object.
+//    //    Get the ProxyAuthenticator object from the ReplicatorConfiguration object.
+//    //    Check that the returned ProxyAuthenticator object has the updated correct username and password.
+//    @Test
+//    fun testUpdateProxyAuthenticator() {
+//        val config = ReplicatorConfiguration(URLEndpoint("ws://foo.com"))
+//        val proxyAuth = ProxyAuthenticator("Wilson", "Vince".toCharArray())
+//        assertEquals(proxyAuth, config.setProxyAuthenticator(proxyAuth).proxyAuthenticator)
+//        proxyAuth = ProxyAuthenticator("Matheson", "Charlie".toCharArray())
+//        assertEquals(proxyAuth, config.setProxyAuthenticator(proxyAuth).proxyAuthenticator)
+//    }
+//
+//    // 3.6 TestResetProxyAuthenticator
+//    //    Create a ReplicatorConfiguration object.
+//    //    Create a new ProxyAuthenticator object with a username and password.
+//    //    Set the ProxyAuthenticator object to the ReplicatorConfiguration object.
+//    //    Get the ProxyAuthenticator object from the ReplicatorConfiguration object.
+//    //    Check that the returned ProxyAuthenticator object has the correct username and password.
+//    //    Set null ProxyAuthenticator to the ReplicatorConfiguration object.
+//    //    Get the ProxyAuthenticator object from the ReplicatorConfiguration object.
+//    //    Check that the returned ProxyAuthenticator is null.
+//    @Test
+//    fun testResetProxyAuthenticator() {
+//        val config = ReplicatorConfiguration(URLEndpoint("ws://foo.com"))
+//        val proxyAuth = ProxyAuthenticator("Wilson", "Vince".toCharArray())
+//        assertEquals(proxyAuth, config.setProxyAuthenticator(proxyAuth).proxyAuthenticator)
+//        assertNull(config.setProxyAuthenticator(null).proxyAuthenticator)
+//    }
 
     ///////// Utility functions
 //    private fun getActivityLevelFor(activityLevel: Int): ReplicatorActivityLevel {
@@ -478,7 +569,5 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
         return config
     }
 
-    private fun makeBasicRepl(): Replicator {
-        return makeBasicConfig().testReplicator()
-    }
+    private fun makeBasicRepl(): Replicator = makeBasicConfig().testReplicator()
 }
