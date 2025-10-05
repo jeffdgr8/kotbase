@@ -42,8 +42,9 @@ public final class kotbase/ArrayFunction {
 
 public final class kotbase/ArrayIndexConfiguration : kotbase/IndexConfiguration {
 	public fun <init> (Ljava/lang/String;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;[Ljava/lang/String;)V
 	public synthetic fun getActual$couchbase_lite ()Ljava/lang/Object;
 	public final fun getPath ()Ljava/lang/String;
 }
@@ -263,7 +264,6 @@ public final class kotbase/CommonConfigurationFactoriesKt {
 	public static synthetic fun newConfig$default (Lkotbase/CollectionConfiguration;Ljava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotbase/CollectionConfiguration;
 	public static synthetic fun newConfig$default (Lkotbase/FullTextIndexConfiguration;[Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/FullTextIndexConfiguration;
 	public static synthetic fun newConfig$default (Lkotbase/LogFileConfiguration;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/Integer;Ljava/lang/Boolean;ILjava/lang/Object;)Lkotbase/LogFileConfiguration;
-	public static synthetic fun newConfig$default (Lkotbase/ValueIndexConfiguration;[Ljava/lang/String;ILjava/lang/Object;)Lkotbase/ValueIndexConfiguration;
 }
 
 public final class kotbase/CommonFlowsKt {
@@ -431,6 +431,13 @@ public final class kotbase/Defaults$Database {
 	public static final field MMAP_ENABLED Z
 }
 
+public final class kotbase/Defaults$FileLogSink {
+	public static final field INSTANCE Lkotbase/Defaults$FileLogSink;
+	public static final field MAX_KEPT_FILES I
+	public static final field MAX_SIZE J
+	public static final field USE_PLAINTEXT Z
+}
+
 public final class kotbase/Defaults$FullTextIndex {
 	public static final field IGNORE_ACCENTS Z
 	public static final field INSTANCE Lkotbase/Defaults$FullTextIndex;
@@ -446,6 +453,7 @@ public final class kotbase/Defaults$LogFile {
 
 public final class kotbase/Defaults$Replicator {
 	public static final field ACCEPT_PARENT_COOKIES Z
+	public static final field ALLOW_REPLICATING_IN_BACKGROUND Z
 	public static final field CONTINUOUS Z
 	public static final field ENABLE_AUTO_PURGE Z
 	public static final field HEARTBEAT I
@@ -654,15 +662,22 @@ public final class kotbase/FullTextIndex : kotbase/Index {
 }
 
 public final class kotbase/FullTextIndexConfiguration : kotbase/IndexConfiguration {
-	public fun <init> (Ljava/util/List;)V
-	public fun <init> ([Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/List;)V
+	public fun <init> (Ljava/util/List;Ljava/lang/String;ZLjava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/lang/String;ZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> ([Ljava/lang/String;)V
+	public fun <init> ([Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;)V
+	public synthetic fun <init> ([Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun getActual$couchbase_lite ()Ljava/lang/Object;
 	public final fun getLanguage ()Ljava/lang/String;
+	public final fun getWhere ()Ljava/lang/String;
 	public final fun ignoreAccents (Z)Lkotbase/FullTextIndexConfiguration;
 	public final fun isIgnoringAccents ()Z
 	public final fun setIgnoringAccents (Z)V
 	public final fun setLanguage (Ljava/lang/String;)Lkotbase/FullTextIndexConfiguration;
 	public final fun setLanguage (Ljava/lang/String;)V
+	public final fun setWhere (Ljava/lang/String;)Lkotbase/FullTextIndexConfiguration;
+	public final fun setWhere (Ljava/lang/String;)V
 }
 
 public abstract interface class kotbase/FullTextIndexExpression : kotbase/IndexExpression {
@@ -857,6 +872,7 @@ public final class kotbase/LogDomain : java/lang/Enum {
 }
 
 public final class kotbase/LogDomain$Companion {
+	public final fun getALL ()Ljava/util/Set;
 	public final fun getALL_DOMAINS ()Ljava/util/Set;
 }
 
@@ -1182,7 +1198,9 @@ public final class kotbase/ReplicatorConfiguration : kotbase/internal/DelegatedC
 	public fun <init> (Lkotbase/Endpoint;)V
 	public fun <init> (Lkotbase/ReplicatorConfiguration;)V
 	public final fun addCollection (Lkotbase/Collection;Lkotbase/CollectionConfiguration;)Lkotbase/ReplicatorConfiguration;
+	public static synthetic fun addCollection$default (Lkotbase/ReplicatorConfiguration;Lkotbase/Collection;Lkotbase/CollectionConfiguration;ILjava/lang/Object;)Lkotbase/ReplicatorConfiguration;
 	public final fun addCollections (Ljava/util/Collection;Lkotbase/CollectionConfiguration;)Lkotbase/ReplicatorConfiguration;
+	public static synthetic fun addCollections$default (Lkotbase/ReplicatorConfiguration;Ljava/util/Collection;Lkotbase/CollectionConfiguration;ILjava/lang/Object;)Lkotbase/ReplicatorConfiguration;
 	public final fun getAuthenticator ()Lkotbase/Authenticator;
 	public final fun getChannels ()Ljava/util/List;
 	public final fun getCollectionConfiguration (Lkotbase/Collection;)Lkotbase/CollectionConfiguration;
@@ -1244,7 +1262,10 @@ public final class kotbase/ReplicatorConfigurationKt {
 }
 
 public final class kotbase/ReplicatorConfiguration_jvmCommonKt {
+	public static final fun getAllowReplicatingInBackground (Lkotbase/ReplicatorConfiguration;)Z
 	public static final fun getPinnedServerX509Certificate (Lkotbase/ReplicatorConfiguration;)Ljava/security/cert/X509Certificate;
+	public static final fun setAllowReplicatingInBackground (Lkotbase/ReplicatorConfiguration;Z)Lkotbase/ReplicatorConfiguration;
+	public static final fun setAllowReplicatingInBackground (Lkotbase/ReplicatorConfiguration;Z)V
 	public static final fun setPinnedServerX509Certificate (Lkotbase/ReplicatorConfiguration;Ljava/security/cert/X509Certificate;)Lkotbase/ReplicatorConfiguration;
 	public static final fun setPinnedServerX509Certificate (Lkotbase/ReplicatorConfiguration;Ljava/security/cert/X509Certificate;)V
 }
@@ -1382,9 +1403,16 @@ public final class kotbase/ValueIndex : kotbase/Index {
 }
 
 public final class kotbase/ValueIndexConfiguration : kotbase/IndexConfiguration {
-	public fun <init> (Ljava/util/List;)V
-	public fun <init> ([Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/List;)V
+	public fun <init> (Ljava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> ([Ljava/lang/String;)V
+	public fun <init> ([Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> ([Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun getActual$couchbase_lite ()Ljava/lang/Object;
+	public final fun getWhere ()Ljava/lang/String;
+	public final fun setWhere (Ljava/lang/String;)Lkotbase/ValueIndexConfiguration;
+	public final fun setWhere (Ljava/lang/String;)V
 }
 
 public final class kotbase/ValueIndexItem : kotbase/internal/DelegatedClass {
@@ -1432,5 +1460,39 @@ public abstract class kotbase/internal/DelegatedClass {
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class kotbase/logging/ConsoleLogSink {
+	public fun <init> (Lcom/couchbase/lite/LogLevel;Ljava/util/Collection;)V
+	public fun <init> (Lcom/couchbase/lite/LogLevel;[Lkotbase/LogDomain;)V
+}
+
+public final class kotbase/logging/CustomLogSink {
+	public fun <init> (Lcom/couchbase/lite/LogLevel;Ljava/util/Set;Lkotbase/logging/LogSink;)V
+	public fun <init> (Lcom/couchbase/lite/LogLevel;[Lkotbase/LogDomain;Lkotbase/logging/LogSink;)V
+}
+
+public final class kotbase/logging/FileLogSink {
+	public fun <init> (Lcom/couchbase/lite/LogLevel;Ljava/lang/String;ZIJ)V
+	public synthetic fun <init> (Lcom/couchbase/lite/LogLevel;Ljava/lang/String;ZIJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDirectory ()Ljava/lang/String;
+	public final fun getLevel ()Lcom/couchbase/lite/LogLevel;
+	public final fun getMaxFileSize ()J
+	public final fun getMaxKeptFiles ()I
+	public final fun isPlainText ()Z
+}
+
+public abstract interface class kotbase/logging/LogSink {
+	public abstract fun writeLog (Lcom/couchbase/lite/LogLevel;Lkotbase/LogDomain;Ljava/lang/String;)V
+}
+
+public final class kotbase/logging/LogSinks {
+	public static final field INSTANCE Lkotbase/logging/LogSinks;
+	public final fun getConsole ()Lkotbase/logging/ConsoleLogSink;
+	public final fun getCustom ()Lkotbase/logging/CustomLogSink;
+	public final fun getFile ()Lkotbase/logging/FileLogSink;
+	public final fun setConsole (Lkotbase/logging/ConsoleLogSink;)V
+	public final fun setCustom (Lkotbase/logging/CustomLogSink;)V
+	public final fun setFile (Lkotbase/logging/FileLogSink;)V
 }
 

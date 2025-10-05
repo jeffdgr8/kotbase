@@ -6,6 +6,12 @@
 // - Show declarations: true
 
 // Library unique name: <dev.kotbase:couchbase-lite-ee-kermit>
+final class kotbase.kermit/KermitCouchbaseLiteLogSink : kotbase.logging/LogSink { // kotbase.kermit/KermitCouchbaseLiteLogSink|null[0]
+    constructor <init>(co.touchlab.kermit/Logger) // kotbase.kermit/KermitCouchbaseLiteLogSink.<init>|<init>(co.touchlab.kermit.Logger){}[0]
+
+    final fun writeLog(kotbase/LogLevel, kotbase/LogDomain, kotlin/String) // kotbase.kermit/KermitCouchbaseLiteLogSink.writeLog|writeLog(kotbase.LogLevel;kotbase.LogDomain;kotlin.String){}[0]
+}
+
 final class kotbase.kermit/KermitCouchbaseLiteLogger : kotbase/Logger { // kotbase.kermit/KermitCouchbaseLiteLogger|null[0]
     constructor <init>(co.touchlab.kermit/Logger, kotbase/LogLevel = ...) // kotbase.kermit/KermitCouchbaseLiteLogger.<init>|<init>(co.touchlab.kermit.Logger;kotbase.LogLevel){}[0]
 
