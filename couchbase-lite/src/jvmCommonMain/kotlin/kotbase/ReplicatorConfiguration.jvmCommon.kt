@@ -330,3 +330,14 @@ public var ReplicatorConfiguration.pinnedServerX509Certificate: X509Certificate?
     set(value) {
         actual.setPinnedServerX509Certificate(value)
     }
+
+public actual fun ReplicatorConfiguration.setAllowReplicatingInBackground(allowReplicatingInBackground: Boolean): ReplicatorConfiguration {
+    // no-op
+    return this
+}
+
+public actual var ReplicatorConfiguration.allowReplicatingInBackground: Boolean
+    get() = Defaults.Replicator.ALLOW_REPLICATING_IN_BACKGROUND
+    set(_) {
+        // no-op
+    }

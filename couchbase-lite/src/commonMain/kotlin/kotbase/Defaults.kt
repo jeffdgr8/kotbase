@@ -125,5 +125,10 @@ public object Defaults {
          * Whether or not a replicator only accepts cookies for the sender's parent domains
          */
         public const val ACCEPT_PARENT_COOKIES: Boolean = false
+
+        /**
+         * Replication stops when an application enters background mode on iOS
+         */
+        public const val ALLOW_REPLICATING_IN_BACKGROUND: Boolean = false
     }
 }
