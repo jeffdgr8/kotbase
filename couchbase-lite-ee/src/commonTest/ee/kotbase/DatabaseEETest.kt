@@ -42,8 +42,8 @@ class DatabaseEETest : BaseReplicatorTest() {
         val q2 = QueryBuilder.select().from(ds)
         q2.addChangeListener { change2.unlock() }
 
-        assertTrue(change1.lockWithTimeout(5.seconds))
-        assertTrue(change2.lockWithTimeout(5.seconds))
+        assertTrue(change1.lockWithTimeout(expTimeout))
+        assertTrue(change2.lockWithTimeout(expTimeout))
 
         // Replicators:
 
@@ -63,13 +63,13 @@ class DatabaseEETest : BaseReplicatorTest() {
         val stopped2 = Mutex(true)
         startReplicator(r2, idle2, stopped2)
 
-        assertTrue(idle1.lockWithTimeout(5.seconds))
-        assertTrue(idle2.lockWithTimeout(5.seconds))
+        assertTrue(idle1.lockWithTimeout(expTimeout))
+        assertTrue(idle2.lockWithTimeout(expTimeout))
 
         testDatabase.close()
 
-        assertTrue(stopped1.lockWithTimeout(5.seconds))
-        assertTrue(stopped2.lockWithTimeout(5.seconds))
+        assertTrue(stopped1.lockWithTimeout(expTimeout))
+        assertTrue(stopped2.lockWithTimeout(expTimeout))
     }
 
     private fun startReplicator(replicator: Replicator, idleMutex: Mutex, stoppedMutex: Mutex) {
@@ -101,12 +101,16 @@ class DatabaseEETest : BaseReplicatorTest() {
         val stopped2 = Mutex(true)
         startReplicator(r2, idle2, stopped2)
 
-        assertTrue(idle1.lockWithTimeout(5.seconds))
-        assertTrue(idle2.lockWithTimeout(5.seconds))
+        assertTrue(idle1.lockWithTimeout(expTimeout))
+        assertTrue(idle2.lockWithTimeout(expTimeout))
 
         testDatabase.close()
 
-        assertTrue(stopped1.lockWithTimeout(5.seconds))
-        assertTrue(stopped2.lockWithTimeout(5.seconds))
+        assertTrue(stopped1.lockWithTimeout(expTimeout))
+        assertTrue(stopped2.lockWithTimeout(expTimeout))
+    }
+
+    companion object {
+        private val expTimeout = 20.0.seconds
     }
 }

@@ -15,6 +15,9 @@
  */
 package kotbase
 
+import kotbase.logging.CustomLogSink
+import kotbase.logging.LogSink
+import kotbase.logging.LogSinks
 import kotbase.test.IgnoreLinuxMingw
 import kotbase.test.lockWithTimeout
 import kotlinx.atomicfu.locks.reentrantLock
@@ -1053,6 +1056,10 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertNull(testCollection.getDocument("doc"))
     }
 
+    /**
+     * https://github.com/couchbaselabs/couchbase-lite-api/blob/master/spec/tests/T0005-Version-Vector.md
+     * Test 4. DefaultConflictResolverDeleteWins -> testConflictResolverDeletedLocalWins + testConflictResolverDeletedRemoteWins
+     */
     @Test
     fun testConflictResolverDeletedLocalWins() {
         val remoteData = mapOf("key2" to "value2")
@@ -1225,12 +1232,32 @@ class ReplicatorEETest : BaseReplicatorTest() {
         getConfig(ReplicatorType.PULL).run()
     }
 
+    class TestCustomLogSink: LogSink {
+        var lines = mutableListOf<String>()
+
+        override fun writeLog(level: LogLevel, domain: LogDomain, message: String) {
+            lines.add(message)
+        }
+
+        fun reset() {
+            lines.clear()
+        }
+
+        fun containsString(string: String): Boolean {
+            for (line in lines) {
+                if (line.contains(string)) {
+                    return true
+                }
+            }
+            return false
+        }
+    }
+
     @Test
     fun testConflictResolverWrongDocID() {
         // use this to verify the logs generated during the conflict resolution.
-        val customLogger = CustomLogger()
-        customLogger.level = LogLevel.WARNING
-        Database.log.custom = customLogger
+        val customLogger = TestCustomLogSink()
+        LogSinks.custom = CustomLogSink(level = LogLevel.WARNING, logSink = customLogger)
 
         val docID = "doc"
         val wrongDocID = "wrong-doc-id"
@@ -1279,7 +1306,8 @@ class ReplicatorEETest : BaseReplicatorTest() {
             )
         )
 
-        Database.log.custom = null
+        LogSinks.custom = null
+        customLogger.reset()
     }
 
     @Test
@@ -1367,6 +1395,10 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertEquals(remoteData, testCollection.getDocument(docID)!!.toMap())
     }
 
+    /**
+     * https://github.com/couchbaselabs/couchbase-lite-api/blob/master/spec/tests/T0005-Version-Vector.md
+     * Test 3. DefaultConflictResolverLastWriteWins -> default resolver
+     */
     @Test
     fun testConflictResolutionDefault() {
         val localData = mapOf("key1" to "value1")
@@ -1533,7 +1565,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertNotNull(error)
         assertEquals(CBLError.Code.UNEXPECTED_ERROR, error.code)
         assertTrue(
-            error.message!!.contains(
+            error.message.contains(
                 "A document contains a blob that was saved to a different " +
                         "database. The save operation cannot complete."
             )
@@ -1637,6 +1669,586 @@ class ReplicatorEETest : BaseReplicatorTest() {
         replicator.run()
         assertNotNull(error)
         assertEquals(CBLError.Code.NOT_FOUND, error.code)
+        token.remove()
+    }
+
+    // ReplicatorTest+Collection.swift
+
+    // MARK: 8.14 Replicator
+
+    fun createDocNumbered(col: Collection, start: Int, num: Int) {
+        for (i in start..<start+num) {
+            val mdoc = MutableDocument("doc$i")
+            mdoc.setInt("number1", i)
+            col.save(mdoc)
+        }
+    }
+
+    @Test
+    fun testCollectionSingleShotPushReplication() {
+        testCollectionPushReplication(continous = false)
+    }
+
+    @Test
+    fun testCollectionContinuousPushReplication() {
+        testCollectionPushReplication(continous = true)
+    }
+
+    private fun testCollectionPushReplication(continous: Boolean) {
+        val totalDocs = 10
+
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+        val col2b = targetDatabase.createCollection("colB", "scopeA")
+
+        createDocNumbered(col1a, 0, totalDocs)
+        createDocNumbered(col1b, 10, totalDocs)
+        assertEquals(totalDocs.toLong(), col1a.count)
+        assertEquals(totalDocs.toLong(), col1b.count)
+        assertEquals(0, col2a.count)
+        assertEquals(0, col2b.count)
+
+        createDocNumbered(testCollection, 20, totalDocs)
+        assertEquals(totalDocs.toLong(), testCollection.count)
+        assertEquals(0, targetCollection.count)
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(source = listOf(col1a, col1b, testCollection), target = target, type = ReplicatorType.PUSH, continuous = continous)
+        config.run()
+
+        assertEquals(totalDocs.toLong(), col2a.count)
+        assertEquals(totalDocs.toLong(), col2b.count)
+        assertEquals(totalDocs.toLong(), col1a.count)
+        assertEquals(totalDocs.toLong(), col1b.count)
+        assertEquals(totalDocs.toLong(), testCollection.count)
+        assertEquals(totalDocs.toLong(), targetCollection.count)
+    }
+
+    @Test
+    fun testCollectionSingleShotPullReplication() {
+        testCollectionPullReplication(continous = false)
+    }
+
+    @Test
+    fun testCollectionContinuousPullReplication() {
+        testCollectionPullReplication(continous = true)
+    }
+
+    private fun testCollectionPullReplication(continous: Boolean) {
+        val totalDocs = 10
+
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+        val col2b = targetDatabase.createCollection("colB", "scopeA")
+
+        createDocNumbered(col2a, 0, totalDocs)
+        createDocNumbered(col2b, 10, totalDocs)
+        assertEquals(totalDocs.toLong(), col2a.count)
+        assertEquals(totalDocs.toLong(), col2b.count)
+        assertEquals(0, col1a.count)
+        assertEquals(0, col1b.count)
+
+        createDocNumbered(targetCollection, 20, totalDocs)
+        assertEquals(totalDocs.toLong(), targetCollection.count)
+        assertEquals(0, testCollection.count)
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(source = listOf(col1a, col1b, testCollection), target = target, type = ReplicatorType.PULL, continuous = continous)
+        config.run()
+
+        assertEquals(totalDocs.toLong(), col2a.count)
+        assertEquals(totalDocs.toLong(), col2b.count)
+        assertEquals(totalDocs.toLong(), col1a.count)
+        assertEquals(totalDocs.toLong(), col1b.count)
+        assertEquals(totalDocs.toLong(), testCollection.count)
+        assertEquals(totalDocs.toLong(), targetCollection.count)
+    }
+
+    @Test
+    fun testCollectionSingleShotPushPullReplication() {
+        testCollectionPushPullReplication(continous = false)
+    }
+
+    @Test
+    fun testCollectionContinuousPushPullReplication() {
+        testCollectionPushPullReplication(continous = true)
+    }
+
+    private fun testCollectionPushPullReplication(continous: Boolean) {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+        val col2b = targetDatabase.createCollection("colB", "scopeA")
+
+        createDocNumbered(col1a, 0, 2)
+        createDocNumbered(col2a, 10, 5)
+
+        createDocNumbered(col1b, 5, 3)
+        createDocNumbered(col2b, 15, 8)
+
+        assertEquals(2, col1a.count)
+        assertEquals(5, col2a.count)
+
+        assertEquals(3, col1b.count)
+        assertEquals(8, col2b.count)
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(source = listOf(col1a, col1b), target = target, type = ReplicatorType.PUSH_AND_PULL, continuous = continous)
+        config.run()
+
+        assertEquals(7, col1a.count)
+        assertEquals(7, col2a.count)
+        assertEquals(11, col1b.count)
+        assertEquals(11, col2b.count)
+    }
+
+    @Test
+    fun testCollectionResetReplication() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+
+        createDocNumbered(col2a, 0, 5)
+        assertEquals(0, col1a.count)
+        assertEquals(5, col2a.count)
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(source = listOf(col1a), target = target, type = ReplicatorType.PULL, continuous = false)
+        config.run()
+
+        assertEquals(5, col1a.count)
+        assertEquals(5, col2a.count)
+
+        // Purge all documents from the colA of the database A.
+        for (i in 0..<5) {
+            col1a.purge("doc$i")
+        }
+        config.run()
+
+        assertEquals(0, col1a.count)
+        assertEquals(5, col2a.count)
+
+        config.run(reset = true)
+
+        assertEquals(5, col1a.count)
+        assertEquals(5, col2a.count)
+    }
+
+    @Test
+    fun testCollectionDefaultConflictResolver() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+
+        val doc1 = MutableDocument("doc1")
+        col1a.save(doc1)
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(source = listOf(col1a), target = target, type = ReplicatorType.PUSH_AND_PULL, continuous = false)
+        config.run()
+
+        val mdoc1 = col1a.getDocument("doc1")!!.toMutable()
+        mdoc1.setString("update", "update1")
+        col1a.save(mdoc1)
+
+        var mdoc2 = col2a.getDocument("doc1")!!.toMutable()
+        mdoc2.setString("update", "update2.1")
+        col2a.save(mdoc2)
+
+        mdoc2 = col2a.getDocument("doc1")!!.toMutable()
+        mdoc2.setString("update", "update2.2")
+        col2a.save(mdoc2)
+
+        val r = Replicator(config)
+        var count = 0
+        r.addDocumentReplicationListener { docReplication ->
+            count += 1
+
+            assertEquals(1, docReplication.documents.size)
+            val doc = docReplication.documents[0]
+            if (count == 1) {
+                assertNull(doc.error)
+            } else {
+                assertEquals(CBLError.Code.HTTP_CONFLICT, doc.error?.code)
+            }
+
+        }
+        r.run()
+
+        val doc = col1a.getDocument("doc1")
+        assertEquals("update2.2", doc!!.getString("update"))
+    }
+
+    @Test
+    fun testCollectionConflictResolver() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+        val col2b = targetDatabase.createCollection("colB", "scopeA")
+
+        // Create a document with id "doc1" in colA and colB of the database A.
+        val doc1a = MutableDocument("doc1")
+        doc1a.setString("update", "update0")
+        col1a.save(doc1a)
+
+        val doc1b = MutableDocument("doc2")
+        doc1b.setString("update", "update0")
+        col1b.save(doc1b)
+
+        val conflictResolver1 = TestConflictResolver { con: Conflict ->
+            con.localDocument
+        }
+        val conflictResolver2 = TestConflictResolver { con: Conflict ->
+            con.remoteDocument
+        }
+
+        val colConfig1 = CollectionConfiguration()
+        colConfig1.conflictResolver = conflictResolver1
+
+        val colConfig2 = CollectionConfiguration()
+        colConfig2.conflictResolver = conflictResolver2
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeReplConfig(target = target, type = ReplicatorType.PUSH_AND_PULL, continuous = false)
+        config.addCollection(col1a, colConfig1)
+        config.addCollection(col1b, colConfig2)
+        config.run()
+
+        // Update "doc1" in colA and colB of database A.
+        val mdoc1a = col1a.getDocument("doc1")!!.toMutable()
+        mdoc1a.setString("update", "update1a")
+        col1a.save(mdoc1a)
+
+        val mdoc2a = col2a.getDocument("doc1")!!.toMutable()
+        mdoc2a.setString("update", "update2a")
+        col2a.save(mdoc2a)
+
+        // Update "doc1" in colA and colB of database B.
+        val mdoc1b = col1b.getDocument("doc2")!!.toMutable()
+        mdoc1b.setString("update", "update1b")
+        col1b.save(mdoc1b)
+
+        val mdoc2b = col2b.getDocument("doc2")!!.toMutable()
+        mdoc2b.setString("update", "update2b")
+        col2b.save(mdoc2b)
+
+        val r = Replicator(config)
+        r.addDocumentReplicationListener { docReplication ->
+            if (!docReplication.isPush) {
+                // Pull will resolve the conflicts:
+                val doc = docReplication.documents[0]
+                assertEquals(if (doc.collection == "colA") "doc1" else "doc2", doc.id)
+                assertNull(doc.error)
+
+            } else {
+                // Push will have conflict errors:
+                for (doc in docReplication.documents) {
+                    assertEquals(if (doc.collection == "colA") "doc1" else "doc2", doc.id)
+                    assertEquals(CBLError.Code.HTTP_CONFLICT, doc.error?.code)
+                }
+            }
+        }
+        r.run()
+
+        // verify the results
+        var docA = col1a.getDocument("doc1")
+        assertEquals("update1a", docA!!.getString("update"))
+        docA = col2a.getDocument("doc1")
+        assertEquals("update2a", docA!!.getString("update"))
+
+        var docB = col1b.getDocument("doc2")
+        assertEquals("update2b", docB!!.getString("update"))
+        docB = col2b.getDocument("doc2")
+        assertEquals("update2b", docB!!.getString("update"))
+    }
+
+    @Test
+    fun testCollectionPushFilter() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+        val col2b = targetDatabase.createCollection("colB", "scopeA")
+
+        // Create some documents in colA and colB of the database A.
+        createDocNumbered(col1a, 0, 10)
+        createDocNumbered(col1b, 10, 10)
+
+        val filter: ReplicationFilter = { doc, _ ->
+            if (doc.collection!!.name == "colA") {
+                doc.getInt("number1") < 5
+            } else {
+                doc.getInt("number1") >= 15
+            }
+        }
+
+        val config1 = CollectionConfiguration()
+        config1.pushFilter = filter
+
+        val config2 = CollectionConfiguration()
+        config2.pushFilter = filter
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeReplConfig(target = target, type = ReplicatorType.PUSH, continuous = false)
+        config.addCollection(col1a, config1)
+        config.addCollection(col1b, config2)
+        config.run()
+
+        assertEquals(10, col1a.count)
+        assertEquals(10, col1b.count)
+        assertEquals(5, col2a.count)
+        assertEquals(5, col2b.count)
+    }
+
+    @Test
+    fun testCollectionPullFilter() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+        val col2b = targetDatabase.createCollection("colB", "scopeA")
+
+        // Create some documents in colA and colB of the database A.
+        createDocNumbered(col2a, 0, 10)
+        createDocNumbered(col2b, 10, 10)
+
+        val filter: ReplicationFilter = { doc, _ ->
+            if (doc.collection!!.name == "colA") {
+                doc.getInt("number1") < 5
+            } else {
+                doc.getInt("number1") >= 15
+            }
+        }
+
+        val config1 = CollectionConfiguration()
+        config1.pullFilter = filter
+
+        val config2 = CollectionConfiguration()
+        config2.pullFilter = filter
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeReplConfig(target = target, type = ReplicatorType.PULL, continuous = false)
+        config.addCollection(col1a, config1)
+        config.addCollection(col1b, config2)
+        config.run()
+
+        assertEquals(5, col1a.count)
+        assertEquals(5, col1b.count)
+        assertEquals(10, col2a.count)
+        assertEquals(10, col2b.count)
+    }
+
+    @Test
+    fun testCollectionDocumentIDsPushFilter() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+        val col2b = targetDatabase.createCollection("colB", "scopeA")
+
+        createDocNumbered(col1a, 0, 5)
+        createDocNumbered(col1b, 10, 5)
+
+        val target = DatabaseEndpoint(targetDatabase)
+
+        val config1 = CollectionConfiguration()
+        config1.documentIDs = listOf("doc1", "doc2")
+
+        val config2 = CollectionConfiguration()
+        config2.documentIDs = listOf("doc10", "doc11", "doc13")
+
+        val config = makeReplConfig(target = target, type = ReplicatorType.PUSH, continuous = false)
+        config.addCollection(col1a, config1)
+        config.addCollection(col1b, config2)
+        config.run()
+
+        assertEquals(5, col1a.count)
+        assertEquals(5, col1b.count)
+        assertEquals(2, col2a.count)
+        assertEquals(3, col2b.count)
+    }
+
+    @Test
+    fun testCollectionDocumentIDsPullFilter() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+        val col2b = targetDatabase.createCollection("colB", "scopeA")
+
+        createDocNumbered(col2a, 0, 5)
+        createDocNumbered(col2b, 10, 5)
+
+        val target = DatabaseEndpoint(targetDatabase)
+
+        val config1 = CollectionConfiguration()
+        config1.documentIDs = listOf("doc1", "doc2")
+
+        val config2 = CollectionConfiguration()
+        config2.documentIDs = listOf("doc10", "doc11", "doc13")
+
+        val config = makeReplConfig(target = target, type = ReplicatorType.PULL, continuous = false)
+        config.addCollection(col1a, config1)
+        config.addCollection(col1b, config2)
+        config.run()
+
+        assertEquals(2, col1a.count)
+        assertEquals(3, col1b.count)
+        assertEquals(5, col2a.count)
+        assertEquals(5, col2b.count)
+    }
+
+    @Test
+    fun testCollectionGetPendingDocumentIDs() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        targetDatabase.createCollection("colA", "scopeA")
+        targetDatabase.createCollection("colB", "scopeA")
+
+        createDocNumbered(col1a, 0, 10)
+        createDocNumbered(col1b, 10, 5)
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(source = listOf(col1a, col1b), target = target, type = ReplicatorType.PUSH, continuous = false)
+        val r = Replicator(config)
+
+        var docIds1a = r.getPendingDocumentIds(col1a)
+        var docIds1b = r.getPendingDocumentIds(col1b)
+        assertEquals(10, docIds1a.size)
+        assertEquals(5, docIds1b.size)
+
+        r.run()
+
+        docIds1a = r.getPendingDocumentIds(col1a)
+        docIds1b = r.getPendingDocumentIds(col1b)
+        assertEquals(0, docIds1a.size)
+        assertEquals(0, docIds1b.size)
+
+        val mdoc1a = col1a.getDocument("doc1")!!.toMutable()
+        mdoc1a.setString("update", "update1")
+        col1a.save(mdoc1a)
+
+        docIds1a = r.getPendingDocumentIds(col1a)
+        assertEquals(1, docIds1a.size)
+        assertTrue(docIds1a.contains("doc1"))
+
+        val mdoc1b = col1b.getDocument("doc12")!!.toMutable()
+        mdoc1b.setString("update", "update2")
+        col1b.save(mdoc1b)
+
+        docIds1b = r.getPendingDocumentIds(col1b)
+        assertEquals(1, docIds1b.size)
+        assertTrue(docIds1b.contains("doc12"))
+    }
+
+    @Test
+    fun testCollectionIsDocumentPending() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        targetDatabase.createCollection("colA", "scopeA")
+        targetDatabase.createCollection("colB", "scopeA")
+
+        createDocNumbered(col1a, 0, 10)
+        createDocNumbered(col1b, 10, 5)
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(source = listOf(col1a, col1b), target = target, type = ReplicatorType.PUSH, continuous = false)
+        val r = Replicator(config)
+
+        // make sure all docs are pending
+        for (i in 0..<10) {
+            assertTrue(r.isDocumentPending("doc$i", col1a))
+        }
+        for (i in 10..<15) {
+            assertTrue(r.isDocumentPending("doc$i", col1b))
+        }
+
+        r.run()
+
+        // make sure, no document is pending
+        for (i in 0..<10) {
+            assertFalse(r.isDocumentPending("doc$i", col1a))
+        }
+        for (i in 10..<15) {
+            assertFalse(r.isDocumentPending("doc$i", col1b))
+        }
+
+        // Update a document in colA.
+        val mdoc1a = col1a.getDocument("doc1")!!.toMutable()
+        mdoc1a.setString("update", "update1")
+        col1a.save(mdoc1a)
+
+        assertTrue(r.isDocumentPending("doc1", col1a))
+
+        // Delete a document in colB.
+        val mdoc1b = col1b.getDocument("doc12")!!.toMutable()
+        col1b.delete(mdoc1b)
+
+        assertTrue(r.isDocumentPending("doc12", col1b))
+    }
+
+    @Test
+    fun testCollectionDocumentReplicationEvents() {
+        val col1a = testDatabase.createCollection("colA", "scopeA")
+        val col1b = testDatabase.createCollection("colB", "scopeA")
+
+        val col2a = targetDatabase.createCollection("colA", "scopeA")
+        val col2b = targetDatabase.createCollection("colB", "scopeA")
+
+        createDocNumbered(col1a, 0, 4)
+        createDocNumbered(col1b, 5, 5)
+
+        val target = DatabaseEndpoint(targetDatabase)
+        val config = makeSimpleReplConfig(source = listOf(col1a, col1b), target = target, type = ReplicatorType.PUSH_AND_PULL, continuous = false)
+        val r = Replicator(config)
+        var docCount = 0
+        val docs = mutableListOf<String>()
+        val token = r.addDocumentReplicationListener { docReplication ->
+            docCount += docReplication.documents.size
+            for (doc in docReplication.documents) {
+                docs.add(doc.id)
+            }
+        }
+        r.run()
+        assertEquals(4, col1a.count)
+        assertEquals(4, col2a.count)
+        assertEquals(5, col1b.count)
+        assertEquals(5, col2b.count)
+        assertEquals(9, docCount)
+        assertEquals(listOf("doc0", "doc1", "doc2", "doc3", "doc5", "doc6", "doc7", "doc8", "doc9"), docs.sorted())
+
+        // colA & colB - db1
+        val doc1 = col1a.getDocument("doc0")
+        val doc2 = col1b.getDocument("doc6")
+        assertNotNull(doc1)
+        assertNotNull(doc2)
+        col1a.delete(doc1)
+        col1b.delete(doc2)
+
+        // colA & colB - db2
+        val doc3 = col2a.getDocument("doc1")
+        val doc4 = col2b.getDocument("doc7")
+        assertNotNull(doc3)
+        assertNotNull(doc4)
+        col2a.delete(doc3)
+        col2b.delete(doc4)
+
+        docCount = 0
+        docs.clear()
+        r.run()
+        assertEquals(2, col1a.count)
+        assertEquals(2, col2a.count)
+        assertEquals(3, col1b.count)
+        assertEquals(3, col2b.count)
+        assertEquals(4, docCount)
+        assertEquals(listOf("doc0", "doc1", "doc6", "doc7"), docs.sorted())
+
         token.remove()
     }
 }
