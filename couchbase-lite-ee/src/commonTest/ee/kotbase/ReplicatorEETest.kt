@@ -29,6 +29,19 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // ReplicatorTest.swift
 
+    class TestConflictResolver(
+        // set this resolver, which will be used while resolving the conflict
+        val resolver: ConflictResolver
+    ) : ConflictResolver {
+
+        var winner: Document? = null
+
+        override fun invoke(conflict: Conflict): Document? {
+            winner = resolver(conflict)
+            return winner
+        }
+    }
+
     @Test
     fun testEmptyPush() {
         val target = DatabaseEndpoint(targetDatabase)
