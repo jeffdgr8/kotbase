@@ -44,6 +44,8 @@ final enum class kotbase/LogDomain : kotlin/Enum<kotbase/LogDomain> { // kotbase
     final fun values(): kotlin/Array<kotbase/LogDomain> // kotbase/LogDomain.values|values#static(){}[0]
 
     final object Companion { // kotbase/LogDomain.Companion|null[0]
+        final val ALL // kotbase/LogDomain.Companion.ALL|{}ALL[0]
+            final fun <get-ALL>(): kotlin.collections/Set<kotbase/LogDomain> // kotbase/LogDomain.Companion.ALL.<get-ALL>|<get-ALL>(){}[0]
         final val ALL_DOMAINS // kotbase/LogDomain.Companion.ALL_DOMAINS|{}ALL_DOMAINS[0]
             final fun <get-ALL_DOMAINS>(): kotlin.collections/Set<kotbase/LogDomain> // kotbase/LogDomain.Companion.ALL_DOMAINS.<get-ALL_DOMAINS>|<get-ALL_DOMAINS>(){}[0]
     }
@@ -113,6 +115,10 @@ final enum class kotbase/ReplicatorType : kotlin/Enum<kotbase/ReplicatorType> { 
 
     final fun valueOf(kotlin/String): kotbase/ReplicatorType // kotbase/ReplicatorType.valueOf|valueOf#static(kotlin.String){}[0]
     final fun values(): kotlin/Array<kotbase/ReplicatorType> // kotbase/ReplicatorType.values|values#static(){}[0]
+}
+
+abstract fun interface kotbase.logging/LogSink { // kotbase.logging/LogSink|null[0]
+    abstract fun writeLog(kotbase/LogLevel, kotbase/LogDomain, kotlin/String) // kotbase.logging/LogSink.writeLog|writeLog(kotbase.LogLevel;kotbase.LogDomain;kotlin.String){}[0]
 }
 
 abstract fun interface kotbase/PredictiveModel { // kotbase/PredictiveModel|null[0]
@@ -235,6 +241,31 @@ abstract interface kotbase/WhereRouter : kotbase/Query { // kotbase/WhereRouter|
     abstract fun where(kotbase/Expression): kotbase/Where // kotbase/WhereRouter.where|where(kotbase.Expression){}[0]
 }
 
+final class kotbase.logging/ConsoleLogSink { // kotbase.logging/ConsoleLogSink|null[0]
+    constructor <init>(kotbase/LogLevel, kotlin.collections/Collection<kotbase/LogDomain>?) // kotbase.logging/ConsoleLogSink.<init>|<init>(kotbase.LogLevel;kotlin.collections.Collection<kotbase.LogDomain>?){}[0]
+    constructor <init>(kotbase/LogLevel, kotlin/Array<out kotbase/LogDomain>...) // kotbase.logging/ConsoleLogSink.<init>|<init>(kotbase.LogLevel;kotlin.Array<out|kotbase.LogDomain>...){}[0]
+}
+
+final class kotbase.logging/CustomLogSink { // kotbase.logging/CustomLogSink|null[0]
+    constructor <init>(kotbase/LogLevel, kotlin.collections/Set<kotbase/LogDomain>, kotbase.logging/LogSink) // kotbase.logging/CustomLogSink.<init>|<init>(kotbase.LogLevel;kotlin.collections.Set<kotbase.LogDomain>;kotbase.logging.LogSink){}[0]
+    constructor <init>(kotbase/LogLevel, kotlin/Array<out kotbase/LogDomain>..., kotbase.logging/LogSink) // kotbase.logging/CustomLogSink.<init>|<init>(kotbase.LogLevel;kotlin.Array<out|kotbase.LogDomain>...;kotbase.logging.LogSink){}[0]
+}
+
+final class kotbase.logging/FileLogSink { // kotbase.logging/FileLogSink|null[0]
+    constructor <init>(kotbase/LogLevel = ..., kotlin/String, kotlin/Boolean = ..., kotlin/Int = ..., kotlin/Long = ...) // kotbase.logging/FileLogSink.<init>|<init>(kotbase.LogLevel;kotlin.String;kotlin.Boolean;kotlin.Int;kotlin.Long){}[0]
+
+    final val directory // kotbase.logging/FileLogSink.directory|{}directory[0]
+        final fun <get-directory>(): kotlin/String // kotbase.logging/FileLogSink.directory.<get-directory>|<get-directory>(){}[0]
+    final val isPlainText // kotbase.logging/FileLogSink.isPlainText|{}isPlainText[0]
+        final fun <get-isPlainText>(): kotlin/Boolean // kotbase.logging/FileLogSink.isPlainText.<get-isPlainText>|<get-isPlainText>(){}[0]
+    final val level // kotbase.logging/FileLogSink.level|{}level[0]
+        final fun <get-level>(): kotbase/LogLevel // kotbase.logging/FileLogSink.level.<get-level>|<get-level>(){}[0]
+    final val maxFileSize // kotbase.logging/FileLogSink.maxFileSize|{}maxFileSize[0]
+        final fun <get-maxFileSize>(): kotlin/Long // kotbase.logging/FileLogSink.maxFileSize.<get-maxFileSize>|<get-maxFileSize>(){}[0]
+    final val maxKeptFiles // kotbase.logging/FileLogSink.maxKeptFiles|{}maxKeptFiles[0]
+        final fun <get-maxKeptFiles>(): kotlin/Int // kotbase.logging/FileLogSink.maxKeptFiles.<get-maxKeptFiles>|<get-maxKeptFiles>(){}[0]
+}
+
 final class kotbase/ArrayExpressionIn { // kotbase/ArrayExpressionIn|null[0]
     final fun in(kotbase/Expression): kotbase/ArrayExpressionSatisfies // kotbase/ArrayExpressionIn.in|in(kotbase.Expression){}[0]
 }
@@ -245,8 +276,8 @@ final class kotbase/ArrayExpressionSatisfies { // kotbase/ArrayExpressionSatisfi
 
 final class kotbase/ArrayIndexConfiguration : kotbase/IndexConfiguration { // kotbase/ArrayIndexConfiguration|null[0]
     constructor <init>(kotlin/String) // kotbase/ArrayIndexConfiguration.<init>|<init>(kotlin.String){}[0]
-    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String>?) // kotbase/ArrayIndexConfiguration.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>?){}[0]
-    constructor <init>(kotlin/String, kotlin/String, kotlin/Array<out kotlin/String>...) // kotbase/ArrayIndexConfiguration.<init>|<init>(kotlin.String;kotlin.String;kotlin.Array<out|kotlin.String>...){}[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String>? = ...) // kotbase/ArrayIndexConfiguration.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>?){}[0]
+    constructor <init>(kotlin/String, kotlin/Array<out kotlin/String>...) // kotbase/ArrayIndexConfiguration.<init>|<init>(kotlin.String;kotlin.Array<out|kotlin.String>...){}[0]
 
     final val path // kotbase/ArrayIndexConfiguration.path|{}path[0]
         final fun <get-path>(): kotlin/String // kotbase/ArrayIndexConfiguration.path.<get-path>|<get-path>(){}[0]
@@ -325,7 +356,9 @@ final class kotbase/FullTextIndex : kotbase/Index { // kotbase/FullTextIndex|nul
 
 final class kotbase/FullTextIndexConfiguration : kotbase/IndexConfiguration { // kotbase/FullTextIndexConfiguration|null[0]
     constructor <init>(kotlin.collections/List<kotlin/String>) // kotbase/FullTextIndexConfiguration.<init>|<init>(kotlin.collections.List<kotlin.String>){}[0]
+    constructor <init>(kotlin.collections/List<kotlin/String>, kotlin/String? = ..., kotlin/Boolean = ..., kotlin/String? = ...) // kotbase/FullTextIndexConfiguration.<init>|<init>(kotlin.collections.List<kotlin.String>;kotlin.String?;kotlin.Boolean;kotlin.String?){}[0]
     constructor <init>(kotlin/Array<out kotlin/String>...) // kotbase/FullTextIndexConfiguration.<init>|<init>(kotlin.Array<out|kotlin.String>...){}[0]
+    constructor <init>(kotlin/Array<out kotlin/String>..., kotlin/String? = ..., kotlin/Boolean = ..., kotlin/String? = ...) // kotbase/FullTextIndexConfiguration.<init>|<init>(kotlin.Array<out|kotlin.String>...;kotlin.String?;kotlin.Boolean;kotlin.String?){}[0]
 
     final var isIgnoringAccents // kotbase/FullTextIndexConfiguration.isIgnoringAccents|{}isIgnoringAccents[0]
         final fun <get-isIgnoringAccents>(): kotlin/Boolean // kotbase/FullTextIndexConfiguration.isIgnoringAccents.<get-isIgnoringAccents>|<get-isIgnoringAccents>(){}[0]
@@ -333,9 +366,13 @@ final class kotbase/FullTextIndexConfiguration : kotbase/IndexConfiguration { //
     final var language // kotbase/FullTextIndexConfiguration.language|{}language[0]
         final fun <get-language>(): kotlin/String? // kotbase/FullTextIndexConfiguration.language.<get-language>|<get-language>(){}[0]
         final fun <set-language>(kotlin/String?) // kotbase/FullTextIndexConfiguration.language.<set-language>|<set-language>(kotlin.String?){}[0]
+    final var where // kotbase/FullTextIndexConfiguration.where|{}where[0]
+        final fun <get-where>(): kotlin/String? // kotbase/FullTextIndexConfiguration.where.<get-where>|<get-where>(){}[0]
+        final fun <set-where>(kotlin/String?) // kotbase/FullTextIndexConfiguration.where.<set-where>|<set-where>(kotlin.String?){}[0]
 
     final fun ignoreAccents(kotlin/Boolean): kotbase/FullTextIndexConfiguration // kotbase/FullTextIndexConfiguration.ignoreAccents|ignoreAccents(kotlin.Boolean){}[0]
     final fun setLanguage(kotlin/String?): kotbase/FullTextIndexConfiguration // kotbase/FullTextIndexConfiguration.setLanguage|setLanguage(kotlin.String?){}[0]
+    final fun setWhere(kotlin/String?): kotbase/FullTextIndexConfiguration // kotbase/FullTextIndexConfiguration.setWhere|setWhere(kotlin.String?){}[0]
 }
 
 final class kotbase/ListenerCertificateAuthenticator : kotbase/ListenerAuthenticator { // kotbase/ListenerCertificateAuthenticator|null[0]
@@ -584,7 +621,15 @@ final class kotbase/ValueIndex : kotbase/Index // kotbase/ValueIndex|null[0]
 
 final class kotbase/ValueIndexConfiguration : kotbase/IndexConfiguration { // kotbase/ValueIndexConfiguration|null[0]
     constructor <init>(kotlin.collections/List<kotlin/String>) // kotbase/ValueIndexConfiguration.<init>|<init>(kotlin.collections.List<kotlin.String>){}[0]
+    constructor <init>(kotlin.collections/List<kotlin/String>, kotlin/String? = ...) // kotbase/ValueIndexConfiguration.<init>|<init>(kotlin.collections.List<kotlin.String>;kotlin.String?){}[0]
     constructor <init>(kotlin/Array<out kotlin/String>...) // kotbase/ValueIndexConfiguration.<init>|<init>(kotlin.Array<out|kotlin.String>...){}[0]
+    constructor <init>(kotlin/Array<out kotlin/String>..., kotlin/String? = ...) // kotbase/ValueIndexConfiguration.<init>|<init>(kotlin.Array<out|kotlin.String>...;kotlin.String?){}[0]
+
+    final var where // kotbase/ValueIndexConfiguration.where|{}where[0]
+        final fun <get-where>(): kotlin/String? // kotbase/ValueIndexConfiguration.where.<get-where>|<get-where>(){}[0]
+        final fun <set-where>(kotlin/String?) // kotbase/ValueIndexConfiguration.where.<set-where>|<set-where>(kotlin.String?){}[0]
+
+    final fun setWhere(kotlin/String?): kotbase/ValueIndexConfiguration // kotbase/ValueIndexConfiguration.setWhere|setWhere(kotlin.String?){}[0]
 }
 
 final class kotbase/VariableExpression : kotbase/Expression // kotbase/VariableExpression|null[0]
@@ -675,6 +720,18 @@ open class kotbase/Fragment { // kotbase/Fragment|null[0]
 
     open fun get(kotlin/Int): kotbase/Fragment // kotbase/Fragment.get|get(kotlin.Int){}[0]
     open fun get(kotlin/String): kotbase/Fragment // kotbase/Fragment.get|get(kotlin.String){}[0]
+}
+
+final object kotbase.logging/LogSinks { // kotbase.logging/LogSinks|null[0]
+    final var console // kotbase.logging/LogSinks.console|{}console[0]
+        final fun <get-console>(): kotbase.logging/ConsoleLogSink? // kotbase.logging/LogSinks.console.<get-console>|<get-console>(){}[0]
+        final fun <set-console>(kotbase.logging/ConsoleLogSink?) // kotbase.logging/LogSinks.console.<set-console>|<set-console>(kotbase.logging.ConsoleLogSink?){}[0]
+    final var custom // kotbase.logging/LogSinks.custom|{}custom[0]
+        final fun <get-custom>(): kotbase.logging/CustomLogSink? // kotbase.logging/LogSinks.custom.<get-custom>|<get-custom>(){}[0]
+        final fun <set-custom>(kotbase.logging/CustomLogSink?) // kotbase.logging/LogSinks.custom.<set-custom>|<set-custom>(kotbase.logging.CustomLogSink?){}[0]
+    final var file // kotbase.logging/LogSinks.file|{}file[0]
+        final fun <get-file>(): kotbase.logging/FileLogSink? // kotbase.logging/LogSinks.file.<get-file>|<get-file>(){}[0]
+        final fun <set-file>(kotbase.logging/FileLogSink?) // kotbase.logging/LogSinks.file.<set-file>|<set-file>(kotbase.logging.FileLogSink?){}[0]
 }
 
 final object kotbase/ArrayExpression { // kotbase/ArrayExpression|null[0]
@@ -849,6 +906,15 @@ final object kotbase/Defaults { // kotbase/Defaults|null[0]
             final fun <get-MMAP_ENABLED>(): kotlin/Boolean // kotbase/Defaults.Database.MMAP_ENABLED.<get-MMAP_ENABLED>|<get-MMAP_ENABLED>(){}[0]
     }
 
+    final object FileLogSink { // kotbase/Defaults.FileLogSink|null[0]
+        final const val MAX_KEPT_FILES // kotbase/Defaults.FileLogSink.MAX_KEPT_FILES|{}MAX_KEPT_FILES[0]
+            final fun <get-MAX_KEPT_FILES>(): kotlin/Int // kotbase/Defaults.FileLogSink.MAX_KEPT_FILES.<get-MAX_KEPT_FILES>|<get-MAX_KEPT_FILES>(){}[0]
+        final const val MAX_SIZE // kotbase/Defaults.FileLogSink.MAX_SIZE|{}MAX_SIZE[0]
+            final fun <get-MAX_SIZE>(): kotlin/Long // kotbase/Defaults.FileLogSink.MAX_SIZE.<get-MAX_SIZE>|<get-MAX_SIZE>(){}[0]
+        final const val USE_PLAINTEXT // kotbase/Defaults.FileLogSink.USE_PLAINTEXT|{}USE_PLAINTEXT[0]
+            final fun <get-USE_PLAINTEXT>(): kotlin/Boolean // kotbase/Defaults.FileLogSink.USE_PLAINTEXT.<get-USE_PLAINTEXT>|<get-USE_PLAINTEXT>(){}[0]
+    }
+
     final object FullTextIndex { // kotbase/Defaults.FullTextIndex|null[0]
         final const val IGNORE_ACCENTS // kotbase/Defaults.FullTextIndex.IGNORE_ACCENTS|{}IGNORE_ACCENTS[0]
             final fun <get-IGNORE_ACCENTS>(): kotlin/Boolean // kotbase/Defaults.FullTextIndex.IGNORE_ACCENTS.<get-IGNORE_ACCENTS>|<get-IGNORE_ACCENTS>(){}[0]
@@ -868,6 +934,8 @@ final object kotbase/Defaults { // kotbase/Defaults|null[0]
     final object Replicator { // kotbase/Defaults.Replicator|null[0]
         final const val ACCEPT_PARENT_COOKIES // kotbase/Defaults.Replicator.ACCEPT_PARENT_COOKIES|{}ACCEPT_PARENT_COOKIES[0]
             final fun <get-ACCEPT_PARENT_COOKIES>(): kotlin/Boolean // kotbase/Defaults.Replicator.ACCEPT_PARENT_COOKIES.<get-ACCEPT_PARENT_COOKIES>|<get-ACCEPT_PARENT_COOKIES>(){}[0]
+        final const val ALLOW_REPLICATING_IN_BACKGROUND // kotbase/Defaults.Replicator.ALLOW_REPLICATING_IN_BACKGROUND|{}ALLOW_REPLICATING_IN_BACKGROUND[0]
+            final fun <get-ALLOW_REPLICATING_IN_BACKGROUND>(): kotlin/Boolean // kotbase/Defaults.Replicator.ALLOW_REPLICATING_IN_BACKGROUND.<get-ALLOW_REPLICATING_IN_BACKGROUND>|<get-ALLOW_REPLICATING_IN_BACKGROUND>(){}[0]
         final const val CONTINUOUS // kotbase/Defaults.Replicator.CONTINUOUS|{}CONTINUOUS[0]
             final fun <get-CONTINUOUS>(): kotlin/Boolean // kotbase/Defaults.Replicator.CONTINUOUS.<get-CONTINUOUS>|<get-CONTINUOUS>(){}[0]
         final const val ENABLE_AUTO_PURGE // kotbase/Defaults.Replicator.ENABLE_AUTO_PURGE|{}ENABLE_AUTO_PURGE[0]
@@ -1037,6 +1105,9 @@ final val kotbase/info // kotbase/info|@kotbase.CouchbaseLiteException{}info[0]
 final val kotbase/prediction // kotbase/prediction|@kotbase.Database.Companion{}prediction[0]
     final fun (kotbase/Database.Companion).<get-prediction>(): kotbase/Prediction // kotbase/prediction.<get-prediction>|<get-prediction>@kotbase.Database.Companion(){}[0]
 
+final var kotbase/allowReplicatingInBackground // kotbase/allowReplicatingInBackground|@kotbase.ReplicatorConfiguration{}allowReplicatingInBackground[0]
+    final fun (kotbase/ReplicatorConfiguration).<get-allowReplicatingInBackground>(): kotlin/Boolean // kotbase/allowReplicatingInBackground.<get-allowReplicatingInBackground>|<get-allowReplicatingInBackground>@kotbase.ReplicatorConfiguration(){}[0]
+    final fun (kotbase/ReplicatorConfiguration).<set-allowReplicatingInBackground>(kotlin/Boolean) // kotbase/allowReplicatingInBackground.<set-allowReplicatingInBackground>|<set-allowReplicatingInBackground>@kotbase.ReplicatorConfiguration(kotlin.Boolean){}[0]
 final var kotbase/encryptionKey // kotbase/encryptionKey|@kotbase.DatabaseConfiguration{}encryptionKey[0]
     final fun (kotbase/DatabaseConfiguration).<get-encryptionKey>(): kotbase/EncryptionKey? // kotbase/encryptionKey.<get-encryptionKey>|<get-encryptionKey>@kotbase.DatabaseConfiguration(){}[0]
     final fun (kotbase/DatabaseConfiguration).<set-encryptionKey>(kotbase/EncryptionKey?) // kotbase/encryptionKey.<set-encryptionKey>|<set-encryptionKey>@kotbase.DatabaseConfiguration(kotbase.EncryptionKey?){}[0]
@@ -1060,7 +1131,7 @@ final fun (kotbase/DatabaseConfiguration?).kotbase/newConfig(kotlin/String? = ..
 final fun (kotbase/DatabaseConfiguration?).kotbase/newConfig(kotlin/String? = ..., kotlin/Boolean? = ..., kotbase/EncryptionKey? = ...): kotbase/DatabaseConfiguration // kotbase/newConfig|newConfig@kotbase.DatabaseConfiguration?(kotlin.String?;kotlin.Boolean?;kotbase.EncryptionKey?){}[0]
 final fun (kotbase/Dictionary).kotbase/get(kotlin/String): kotbase/Fragment // kotbase/get|get@kotbase.Dictionary(kotlin.String){}[0]
 final fun (kotbase/Document).kotbase/get(kotlin/String): kotbase/Fragment // kotbase/get|get@kotbase.Document(kotlin.String){}[0]
-final fun (kotbase/FullTextIndexConfiguration?).kotbase/newConfig(kotlin/Array<out kotlin/String>... = ..., kotlin/String? = ..., kotlin/Boolean? = ...): kotbase/FullTextIndexConfiguration // kotbase/newConfig|newConfig@kotbase.FullTextIndexConfiguration?(kotlin.Array<out|kotlin.String>...;kotlin.String?;kotlin.Boolean?){}[0]
+final fun (kotbase/FullTextIndexConfiguration?).kotbase/newConfig(kotlin/Array<out kotlin/String>..., kotlin/String? = ..., kotlin/Boolean? = ...): kotbase/FullTextIndexConfiguration // kotbase/newConfig|newConfig@kotbase.FullTextIndexConfiguration?(kotlin.Array<out|kotlin.String>...;kotlin.String?;kotlin.Boolean?){}[0]
 final fun (kotbase/Function).kotbase/cosineDistance(kotbase/Expression, kotbase/Expression): kotbase/Expression // kotbase/cosineDistance|cosineDistance@kotbase.Function(kotbase.Expression;kotbase.Expression){}[0]
 final fun (kotbase/Function).kotbase/euclideanDistance(kotbase/Expression, kotbase/Expression): kotbase/Expression // kotbase/euclideanDistance|euclideanDistance@kotbase.Function(kotbase.Expression;kotbase.Expression){}[0]
 final fun (kotbase/Function).kotbase/prediction(kotlin/String, kotbase/Expression): kotbase/PredictionFunction // kotbase/prediction|prediction@kotbase.Function(kotlin.String;kotbase.Expression){}[0]
@@ -1078,6 +1149,7 @@ final fun (kotbase/QueryIndex).kotbase/beginUpdate(kotlin/Int): kotbase/IndexUpd
 final fun (kotbase/Replicator).kotbase/documentReplicationFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/DocumentReplication> // kotbase/documentReplicationFlow|documentReplicationFlow@kotbase.Replicator(kotlin.coroutines.CoroutineContext?){}[0]
 final fun (kotbase/Replicator).kotbase/replicatorChangesFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/ReplicatorChange> // kotbase/replicatorChangesFlow|replicatorChangesFlow@kotbase.Replicator(kotlin.coroutines.CoroutineContext?){}[0]
 final fun (kotbase/ReplicatorConfiguration).kotbase/setAcceptOnlySelfSignedServerCertificate(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/setAcceptOnlySelfSignedServerCertificate|setAcceptOnlySelfSignedServerCertificate@kotbase.ReplicatorConfiguration(kotlin.Boolean){}[0]
+final fun (kotbase/ReplicatorConfiguration).kotbase/setAllowReplicatingInBackground(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/setAllowReplicatingInBackground|setAllowReplicatingInBackground@kotbase.ReplicatorConfiguration(kotlin.Boolean){}[0]
 final fun (kotbase/ReplicatorConfiguration?).kotbase/newConfig(kotbase/Database? = ..., kotbase/Endpoint? = ..., kotbase/ReplicatorType? = ..., kotlin/Boolean? = ..., kotbase/Authenticator? = ..., kotlin.collections/Map<kotlin/String, kotlin/String>? = ..., kotlin/ByteArray? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function1<kotbase/Conflict, kotbase/Document?>? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ...): kotbase/ReplicatorConfiguration // kotbase/newConfig|newConfig@kotbase.ReplicatorConfiguration?(kotbase.Database?;kotbase.Endpoint?;kotbase.ReplicatorType?;kotlin.Boolean?;kotbase.Authenticator?;kotlin.collections.Map<kotlin.String,kotlin.String>?;kotlin.ByteArray?;kotlin.collections.List<kotlin.String>?;kotlin.collections.List<kotlin.String>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function1<kotbase.Conflict,kotbase.Document?>?;kotlin.Int?;kotlin.Int?;kotlin.Int?;kotlin.Boolean?;kotlin.Boolean?){}[0]
 final fun (kotbase/ReplicatorConfiguration?).kotbase/newConfig(kotbase/Database? = ..., kotbase/Endpoint? = ..., kotbase/ReplicatorType? = ..., kotlin/Boolean? = ..., kotbase/Authenticator? = ..., kotlin.collections/Map<kotlin/String, kotlin/String>? = ..., kotlin/ByteArray? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function1<kotbase/Conflict, kotbase/Document?>? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ...): kotbase/ReplicatorConfiguration // kotbase/newConfig|newConfig@kotbase.ReplicatorConfiguration?(kotbase.Database?;kotbase.Endpoint?;kotbase.ReplicatorType?;kotlin.Boolean?;kotbase.Authenticator?;kotlin.collections.Map<kotlin.String,kotlin.String>?;kotlin.ByteArray?;kotlin.collections.List<kotlin.String>?;kotlin.collections.List<kotlin.String>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function1<kotbase.Conflict,kotbase.Document?>?;kotlin.Int?;kotlin.Int?;kotlin.Int?;kotlin.Boolean?;kotlin.Boolean?;kotlin.Boolean?){}[0]
 final fun (kotbase/ReplicatorConfiguration?).kotbase/newConfig(kotbase/Endpoint? = ..., kotlin.collections/Map<out kotlin.collections/Collection<kotbase/Collection>, kotbase/CollectionConfiguration?>? = ..., kotbase/ReplicatorType? = ..., kotlin/Boolean? = ..., kotbase/Authenticator? = ..., kotlin.collections/Map<kotlin/String, kotlin/String>? = ..., kotlin/ByteArray? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ...): kotbase/ReplicatorConfiguration // kotbase/newConfig|newConfig@kotbase.ReplicatorConfiguration?(kotbase.Endpoint?;kotlin.collections.Map<out|kotlin.collections.Collection<kotbase.Collection>,kotbase.CollectionConfiguration?>?;kotbase.ReplicatorType?;kotlin.Boolean?;kotbase.Authenticator?;kotlin.collections.Map<kotlin.String,kotlin.String>?;kotlin.ByteArray?;kotlin.Int?;kotlin.Int?;kotlin.Int?;kotlin.Boolean?;kotlin.Boolean?){}[0]
@@ -1086,7 +1158,7 @@ final fun (kotbase/Result).kotbase/get(kotlin/Int): kotbase/Fragment // kotbase/
 final fun (kotbase/Result).kotbase/get(kotlin/String): kotbase/Fragment // kotbase/get|get@kotbase.Result(kotlin.String){}[0]
 final fun (kotbase/URLEndpointListenerConfiguration?).kotbase/newConfig(kotbase/Database? = ..., kotlin/String? = ..., kotlin/Int? = ..., kotlin/Boolean? = ..., kotbase/TLSIdentity? = ..., kotbase/ListenerAuthenticator? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ...): kotbase/URLEndpointListenerConfiguration // kotbase/newConfig|newConfig@kotbase.URLEndpointListenerConfiguration?(kotbase.Database?;kotlin.String?;kotlin.Int?;kotlin.Boolean?;kotbase.TLSIdentity?;kotbase.ListenerAuthenticator?;kotlin.Boolean?;kotlin.Boolean?){}[0]
 final fun (kotbase/URLEndpointListenerConfiguration?).kotbase/newConfig(kotlin.collections/Set<kotbase/Collection>? = ..., kotlin/String? = ..., kotlin/Int? = ..., kotlin/Boolean? = ..., kotbase/TLSIdentity? = ..., kotbase/ListenerAuthenticator? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ...): kotbase/URLEndpointListenerConfiguration // kotbase/newConfig|newConfig@kotbase.URLEndpointListenerConfiguration?(kotlin.collections.Set<kotbase.Collection>?;kotlin.String?;kotlin.Int?;kotlin.Boolean?;kotbase.TLSIdentity?;kotbase.ListenerAuthenticator?;kotlin.Boolean?;kotlin.Boolean?){}[0]
-final fun (kotbase/ValueIndexConfiguration?).kotbase/newConfig(kotlin/Array<out kotlin/String>... = ...): kotbase/ValueIndexConfiguration // kotbase/newConfig|newConfig@kotbase.ValueIndexConfiguration?(kotlin.Array<out|kotlin.String>...){}[0]
+final fun (kotbase/ValueIndexConfiguration?).kotbase/newConfig(kotlin/Array<out kotlin/String>...): kotbase/ValueIndexConfiguration // kotbase/newConfig|newConfig@kotbase.ValueIndexConfiguration?(kotlin.Array<out|kotlin.String>...){}[0]
 
 // Targets: [apple]
 abstract class <#A: platform.darwin/NSObject> kotbase.internal/AbstractDelegatedClass { // kotbase.internal/AbstractDelegatedClass|null[0]
@@ -1745,8 +1817,8 @@ final class kotbase/ReplicatorConfiguration : kotbase.internal/DelegatedClass<co
         final fun <get-type>(): kotbase/ReplicatorType // kotbase/ReplicatorConfiguration.type.<get-type>|<get-type>(){}[0]
         final fun <set-type>(kotbase/ReplicatorType) // kotbase/ReplicatorConfiguration.type.<set-type>|<set-type>(kotbase.ReplicatorType){}[0]
 
-    final fun addCollection(kotbase/Collection, kotbase/CollectionConfiguration?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollection|addCollection(kotbase.Collection;kotbase.CollectionConfiguration?){}[0]
-    final fun addCollections(kotlin.collections/Collection<kotbase/Collection>, kotbase/CollectionConfiguration?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollections|addCollections(kotlin.collections.Collection<kotbase.Collection>;kotbase.CollectionConfiguration?){}[0]
+    final fun addCollection(kotbase/Collection, kotbase/CollectionConfiguration? = ...): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollection|addCollection(kotbase.Collection;kotbase.CollectionConfiguration?){}[0]
+    final fun addCollections(kotlin.collections/Collection<kotbase/Collection>, kotbase/CollectionConfiguration? = ...): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollections|addCollections(kotlin.collections.Collection<kotbase.Collection>;kotbase.CollectionConfiguration?){}[0]
     final fun getCollectionConfiguration(kotbase/Collection): kotbase/CollectionConfiguration? // kotbase/ReplicatorConfiguration.getCollectionConfiguration|getCollectionConfiguration(kotbase.Collection){}[0]
     final fun removeCollection(kotbase/Collection): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.removeCollection|removeCollection(kotbase.Collection){}[0]
     final fun setAcceptParentDomainCookies(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setAcceptParentDomainCookies|setAcceptParentDomainCookies(kotlin.Boolean){}[0]
@@ -2066,6 +2138,7 @@ open class kotbase/Document : kotbase.internal/DelegatedClass<cocoapods.Couchbas
     final fun getNumber(kotlin/String): kotlin/Number? // kotbase/Document.getNumber|getNumber(kotlin.String){}[0]
     final fun getString(kotlin/String): kotlin/String? // kotbase/Document.getString|getString(kotlin.String){}[0]
     final fun getValue(kotlin/String): kotlin/Any? // kotbase/Document.getValue|getValue(kotlin.String){}[0]
+    final fun mutate() // kotbase/Document.mutate|mutate(){}[0]
     final fun toMap(): kotlin.collections/Map<kotlin/String, kotlin/Any?> // kotbase/Document.toMap|toMap(){}[0]
     open fun getArray(kotlin/String): kotbase/Array? // kotbase/Document.getArray|getArray(kotlin.String){}[0]
     open fun getDictionary(kotlin/String): kotbase/Dictionary? // kotbase/Document.getDictionary|getDictionary(kotlin.String){}[0]
@@ -2882,8 +2955,8 @@ final class kotbase/ReplicatorConfiguration { // kotbase/ReplicatorConfiguration
         final fun <get-type>(): kotbase/ReplicatorType // kotbase/ReplicatorConfiguration.type.<get-type>|<get-type>(){}[0]
         final fun <set-type>(kotbase/ReplicatorType) // kotbase/ReplicatorConfiguration.type.<set-type>|<set-type>(kotbase.ReplicatorType){}[0]
 
-    final fun addCollection(kotbase/Collection, kotbase/CollectionConfiguration?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollection|addCollection(kotbase.Collection;kotbase.CollectionConfiguration?){}[0]
-    final fun addCollections(kotlin.collections/Collection<kotbase/Collection>, kotbase/CollectionConfiguration?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollections|addCollections(kotlin.collections.Collection<kotbase.Collection>;kotbase.CollectionConfiguration?){}[0]
+    final fun addCollection(kotbase/Collection, kotbase/CollectionConfiguration? = ...): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollection|addCollection(kotbase.Collection;kotbase.CollectionConfiguration?){}[0]
+    final fun addCollections(kotlin.collections/Collection<kotbase/Collection>, kotbase/CollectionConfiguration? = ...): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollections|addCollections(kotlin.collections.Collection<kotbase.Collection>;kotbase.CollectionConfiguration?){}[0]
     final fun getCollectionConfiguration(kotbase/Collection): kotbase/CollectionConfiguration? // kotbase/ReplicatorConfiguration.getCollectionConfiguration|getCollectionConfiguration(kotbase.Collection){}[0]
     final fun removeCollection(kotbase/Collection): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.removeCollection|removeCollection(kotbase.Collection){}[0]
     final fun setAcceptParentDomainCookies(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setAcceptParentDomainCookies|setAcceptParentDomainCookies(kotlin.Boolean){}[0]

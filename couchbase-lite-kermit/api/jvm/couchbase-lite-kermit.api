@@ -1,3 +1,14 @@
+public final class kotbase/kermit/KermitCouchbaseLiteLogSink : kotbase/logging/LogSink {
+	public static final field TAG Ljava/lang/String;
+	public static final field TAG_DATABASE Ljava/lang/String;
+	public static final field TAG_LISTENER Ljava/lang/String;
+	public static final field TAG_NETWORK Ljava/lang/String;
+	public static final field TAG_QUERY Ljava/lang/String;
+	public static final field TAG_REPLICATOR Ljava/lang/String;
+	public fun <init> (Lco/touchlab/kermit/Logger;)V
+	public fun writeLog (Lcom/couchbase/lite/LogLevel;Lkotbase/LogDomain;Ljava/lang/String;)V
+}
+
 public final class kotbase/kermit/KermitCouchbaseLiteLogger : kotbase/Logger {
 	public static final field TAG Ljava/lang/String;
 	public static final field TAG_DATABASE Ljava/lang/String;
