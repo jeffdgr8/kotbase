@@ -422,3 +422,29 @@ private val defaultConflictResolver: ConflictResolver by lazy {
         return@cr if (remoteRevId == null || localRevId < remoteRevId) remoteDoc else localDoc
     }
 }
+
+/**
+ * Allows the replicator to continue replicating in the background on iOS.
+ * The default value is false, which means that the replicator will suspend itself
+ * when the replicator detects that the application is running in the background.
+ *
+ * If setting the value to true, please ensure that the application requests for
+ * extending the background task properly.
+ *
+ * This property has no effect on platforms other than iOS.
+ */
+public expect fun ReplicatorConfiguration.setAllowReplicatingInBackground(
+    allowReplicatingInBackground: Boolean
+): ReplicatorConfiguration
+
+/**
+ * Allows the replicator to continue replicating in the background on iOS.
+ * The default value is false, which means that the replicator will suspend itself
+ * when the replicator detects that the application is running in the background.
+ *
+ * If setting the value to true, please ensure that the application requests for
+ * extending the background task properly.
+ *
+ * This property has no effect on platforms other than iOS.
+ */
+public expect var ReplicatorConfiguration.allowReplicatingInBackground: Boolean

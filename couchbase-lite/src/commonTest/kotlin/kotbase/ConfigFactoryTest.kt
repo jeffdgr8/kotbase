@@ -233,6 +233,8 @@ class ConfigFactoryTest : BaseDbTest() {
         assertNull(config1.headers)
         assertEquals(Defaults.Replicator.MAX_ATTEMPTS_SINGLE_SHOT, config1.maxAttempts)
         assertEquals(Defaults.Replicator.HEARTBEAT, config1.heartbeat)
+        // changing this property only affects the iOS platform, always the default value on other platforms with no effect
+        assertEquals(Defaults.Replicator.ALLOW_REPLICATING_IN_BACKGROUND, config1.allowReplicatingInBackground)
         assertTrue(config1.isAutoPurgeEnabled)
 
         val config2 = config1.newConfig(maxAttempts = 200)

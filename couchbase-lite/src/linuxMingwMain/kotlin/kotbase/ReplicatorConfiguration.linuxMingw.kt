@@ -476,3 +476,14 @@ private fun CollectionConfiguration.nativePushFilter(): CBLReplicationFilter? {
         )
     }
 }
+
+public actual fun ReplicatorConfiguration.setAllowReplicatingInBackground(allowReplicatingInBackground: Boolean): ReplicatorConfiguration {
+    // no-op
+    return this
+}
+
+public actual var ReplicatorConfiguration.allowReplicatingInBackground: Boolean
+    get() = Defaults.Replicator.ALLOW_REPLICATING_IN_BACKGROUND
+    set(_) {
+        // no-op
+    }
