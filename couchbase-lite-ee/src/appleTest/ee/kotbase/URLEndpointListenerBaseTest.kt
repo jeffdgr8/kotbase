@@ -162,7 +162,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
             authenticator = auth
             pinnedServerCertificate = serverCert
         }
-        config.run(errCode = expectedError)
+        config.run(code = expectedError)
     }
 
     protected fun run(
@@ -184,7 +184,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
             serverCert,
             maxAttempts
         )
-        config.run(errCode = expectedError)
+        config.run(code = expectedError)
     }
 
     protected fun makeConfig(
