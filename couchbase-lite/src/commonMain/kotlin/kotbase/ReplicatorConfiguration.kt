@@ -53,16 +53,20 @@ public expect class ReplicatorConfiguration {
      * If the collection has been added before, the previously added collection
      * and its configuration if specified will be replaced.
      *
+     * If a null configuration is specified, a default empty configuration will be applied.
+     *
      * @param collection the collection
      * @param config     its configuration
      * @return this
      */
-    public fun addCollection(collection: Collection, config: CollectionConfiguration?): ReplicatorConfiguration
+    public fun addCollection(collection: Collection, config: CollectionConfiguration? = null): ReplicatorConfiguration
 
     /**
      * Add multiple collections used for the replication with an optional shared collection configuration.
      * If any of the collections have been added before, the previously added collections and their
      * configuration if specified will be replaced. Adding an empty collection array is a no-op.
+     *
+     * If a null configuration is specified, a default empty configuration will be applied.
      *
      * @param collections a collection of Collections
      * @param config      the configuration to be applied to all of the collections
@@ -70,7 +74,7 @@ public expect class ReplicatorConfiguration {
      */
     public fun addCollections(
         collections: kotlin.collections.Collection<Collection>,
-        config: CollectionConfiguration?
+        config: CollectionConfiguration? = null
     ): ReplicatorConfiguration
 
     /**
