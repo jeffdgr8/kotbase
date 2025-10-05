@@ -60,8 +60,47 @@ class ReplicatorOfflineTest : BaseReplicatorTest() {
         try {
             repl.start()
             assertTrue(stopped.await(LONG_TIMEOUT_SEC.seconds))
-        } finally { token.remove() }
+        }
+		finally { token.remove() }
     }
+
+//    @Test
+//    fun testAddNullDocumentReplicationListener() {
+//        val repl = makeRepl()
+//
+//        val token = repl.addDocumentReplicationListener { }
+//        assertNotNull(token)
+//        token.remove()
+//
+//        assertFailsWith<IllegalArgumentException> { repl.addDocumentReplicationListener(null) }
+//    }
+//
+//    @Test
+//    fun testAddNullDocumentReplicationListenerWithExecutor() {
+//        val repl = makeRepl()
+//
+//        val token = repl.addDocumentReplicationListener { }
+//        assertNotNull(token)
+//        token.remove()
+//
+//        assertFailsWith<IllegalArgumentException {
+//            repl.addDocumentReplicationListener(testSerialCoroutineContext, null)
+//        }
+//    }
+//
+//    @Test
+//    fun testAddNullChangeListener() {
+//        assertFailsWith<IllegalArgumentException> {
+//            val token = makeRepl().addChangeListener(null)
+//        }
+//    }
+//
+//    @Test
+//    fun testNullChangeListenerWithExecutor() {
+//        assertFailsWith<IllegalArgumentException> {
+//            val token = makeRepl().addChangeListener(testSerialCoroutineContext, null)
+//        }
+//    }
 
     private fun makeDefaultConfig(): ReplicatorConfiguration {
         return ReplicatorConfiguration(mockURLEndpoint)
@@ -74,4 +113,6 @@ class ReplicatorOfflineTest : BaseReplicatorTest() {
             .setContinuous(true)
             .setHeartbeat(ReplicatorConfiguration.DISABLE_HEARTBEAT)
     }
+
+//    private fun makeRepl() = makeConfig().testReplicator()
 }
