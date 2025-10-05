@@ -21,6 +21,9 @@ import co.touchlab.stately.collections.ConcurrentMutableList
 import com.couchbase.lite.asJSON
 import kotbase.internal.utils.Report
 import kotbase.internal.utils.paddedString
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
@@ -28,7 +31,9 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.offsetAt
+import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.fetchAndIncrement
 import kotlin.math.*
@@ -37,11 +42,19 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalAtomicApi::class)
 class QueryTest : BaseQueryTest() {
 
-    private class MathFn(val name: String, val expr: Expression, val expected: Double)
+    private class MathFn(
+        val name: String,
+        val expr: Expression,
+        val expected: Double
+    )
 
-    private class TestCase(val expr: Expression, val docIds: List<String>) {
+    private class TestCase(
+        val expr: Expression,
+        val docIds: List<String>
+    ) {
         constructor(expr: Expression, vararg documentIDs: String) : this(expr, documentIDs.asList())
 
         constructor(expr: Expression, docIds: List<String>, vararg pos: Int) : this(
@@ -53,6 +66,7 @@ class QueryTest : BaseQueryTest() {
     @Test
     fun testQueryGetColumnNameAfter32Items() {
         val value = getUniqueName("value")
+
         val document = MutableDocument()
         document.setString(TEST_DOC_TAG_KEY, value)
         saveDocInCollection(document)
@@ -69,11 +83,10 @@ class QueryTest : BaseQueryTest() {
 
         val res = arrayOfNulls<String>(33)
         res[32] = value
-        val arrayResult = res.toList()
+        val arrayResult = res.asList()
 
-        // TODO: these should be value and not "value", right? (confirm with Couchbase)
         val mapResult = mapOf(
-            TEST_DOC_TAG_KEY to value
+            TEST_DOC_TAG_KEY to "value"
         )
 
         queryBuild.execute().use { rs ->
@@ -82,9 +95,9 @@ class QueryTest : BaseQueryTest() {
                 assertEquals("{\"key\":\"value\"}", result.toJSON())
                 assertEquals(arrayResult, result.toList())
                 assertEquals(mapResult, result.toMap())
-                assertEquals(value, result.getValue(TEST_DOC_TAG_KEY).toString())
-                assertEquals(value, result.getString(TEST_DOC_TAG_KEY))
-                assertEquals(value, result.getString(32))
+                assertEquals("value", result.getValue(TEST_DOC_TAG_KEY).toString())
+                assertEquals("value", result.getString(TEST_DOC_TAG_KEY))
+                assertEquals("value", result.getString(32))
             }
         }
     }
@@ -371,7 +384,14 @@ class QueryTest : BaseQueryTest() {
                     .from(DataSource.collection(testCollection))
                     .where(testCase.expr),
                 nIds
-            ) { n, result -> if (n <= nIds) { assertEquals(testCase.docIds[n - 1], result.getString(0)) } }
+            ) { n, result ->
+                if (n <= nIds) {
+                    assertEquals(
+                        testCase.docIds[n - 1],
+                        result.getString(0)
+                    )
+                }
+            }
         }
     }
 
@@ -558,7 +578,7 @@ class QueryTest : BaseQueryTest() {
     fun testFullTextIndexConfigDefaults() {
         val idxConfig = FullTextIndexConfiguration("sentence", "nonsense")
         assertEquals(Defaults.FullTextIndex.IGNORE_ACCENTS, idxConfig.isIgnoringAccents)
-        //assertEquals(Locale.getDefault().getLanguage(), idxConfig.language)
+        assertEquals("en", idxConfig.language)
 
         idxConfig.setLanguage(null)
         assertNull(idxConfig.language)
@@ -604,11 +624,7 @@ class QueryTest : BaseQueryTest() {
                     + " WHERE MATCH(sentence, 'Dummie woman')"
         )
 
-        verifyQuery(query, 2) { _, result ->
-            assertNotNull(
-                result.getString(0)
-            )
-        }
+        verifyQuery(query, 2) { _, result -> assertNotNull(result.getString(0)) }
     }
 
     @Test
@@ -1053,7 +1069,6 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    @OptIn(ExperimentalAtomicApi::class)
     fun testQuantifiedOperators() {
         loadJSONResourceIntoCollection("names_100.json")
 
@@ -1173,6 +1188,19 @@ class QueryTest : BaseQueryTest() {
             assertFalse(result.getBoolean(1))
         }
     }
+
+//    @Test
+//    fun testArrayFunctionsEmptyArgs() {
+//        val exprArray = Expression.property("array")
+//
+//        assertFailsWith<IllegalArgumentException> {
+//            ArrayFunction.contains(null, Expression.string("650-123-0001"))
+//        }
+//
+//        assertFailsWith<IllegalArgumentException> { ArrayFunction.contains(exprArray, null) }
+//
+//        assertFailsWith<IllegalArgumentException> { ArrayFunction.length(null) }
+//    }
 
     @Test
     fun testMathFunctions() {
@@ -1582,9 +1610,7 @@ class QueryTest : BaseQueryTest() {
     }
 
     @Test
-    fun testLiveQueryNoUpdate1() = runBlocking {
-        liveQueryNoUpdate { }
-    }
+    fun testLiveQueryNoUpdate1() = runBlocking { liveQueryNoUpdate { } }
 
     @Test
     fun testLiveQueryNoUpdate2() = runBlocking {
@@ -1652,6 +1678,60 @@ class QueryTest : BaseQueryTest() {
             )
             .where(Expression.property("type").from("main").equalTo(Expression.string("bookmark")))
     }
+
+//    @Test
+//    fun testJoinWithEmptyArgs1() {
+//        assertFailsWith<IllegalArgumentException> {
+//            QueryBuilder.select(SelectResult.all())
+//                .from(DataSource.collection(testCollection).`as`("main"))
+//                .join(null)
+//        }
+//    }
+//
+//    @Test
+//    fun testJoinWithEmptyArgs2() {
+//        assertFailsWith<IllegalArgumentException> {
+//            QueryBuilder.select(SelectResult.all())
+//                .from(DataSource.collection(testCollection).`as`("main"))
+//                .where(null)
+//        }
+//    }
+//
+//    @Test
+//    fun testJoinWithEmptyArgs3() {
+//        assertFailsWith<IllegalArgumentException> {
+//            QueryBuilder.select(SelectResult.all())
+//                .from(DataSource.collection(testCollection).`as`("main"))
+//                .groupBy(null)
+//        }
+//    }
+//
+//    @Test
+//    fun testJoinWithEmptyArgs4() {
+//        assertFailsWith<IllegalArgumentException> {
+//            QueryBuilder.select(SelectResult.all())
+//                .from(DataSource.collection(testCollection).`as`("main"))
+//                .orderBy(null)
+//        }
+//    }
+//
+//    @Test
+//    fun testJoinWithEmptyArgs5() {
+//        assertFailsWith<IllegalArgumentException> {
+//            QueryBuilder.select(SelectResult.all())
+//                .from(DataSource.collection(testCollection).`as`("main"))
+//                .limit(null)
+//        }
+//    }
+//
+//    @Test
+//    fun testJoinWithEmptyArgs6() {
+//        assertFailsWith<IllegalArgumentException> {
+//            QueryBuilder.select(SelectResult.all())
+//                .from(DataSource.collection(testCollection).`as`("main"))
+//                .limit(null, null)
+//        }
+//    }
 
     //https://github.com/couchbase/couchbase-lite-android/issues/1785
     @Test
@@ -2789,6 +2869,97 @@ class QueryTest : BaseQueryTest() {
         }
     }
 
+//    @Test
+//    fun testAggregateFunctionEmptyArgs() {
+//        Function.count(null)
+//
+//        assertFailsWith<IllegalArgumentException> { Function.avg(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.min(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.max(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.sum(null) }
+//    }
+//
+//    @Test
+//    fun testMathFunctionEmptyArgs() {
+//        assertFailsWith<IllegalArgumentException> { Function.abs(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.acos(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.asin(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.atan(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.atan2(null, Expression.doubleValue(0.7)) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.atan2(Expression.doubleValue(0.7), null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.ceil(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.cos(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.degrees(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.exp(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.floor(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.ln(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.log(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.power(null, Expression.intValue(2)) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.power(Expression.intValue(2), null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.radians(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.round(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.round(null, Expression.intValue(2)) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.round(Expression.doubleValue(0.567), null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.sign(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.sin(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.sqrt(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.tan(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.trunc(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.trunc(null, Expression.intValue(1)) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.trunc(Expression.doubleValue(79.15), null) }
+//    }
+//
+//    @Test
+//    fun testStringFunctionEmptyArgs() {
+//        assertFailsWith<IllegalArgumentException> {
+//            Function.contains(null, Expression.string("someSubString"))
+//        }
+//
+//        assertFailsWith<IllegalArgumentException> {
+//            Function.contains(Expression.string("somestring"), null)
+//        }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.length(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.lower(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.ltrim(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.rtrim(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.trim(null) }
+//
+//        assertFailsWith<IllegalArgumentException> { Function.upper(null) }
+//    }
+
     @Test
     fun testStringToMillis() {
         createDateDocs()
@@ -3074,6 +3245,46 @@ class QueryTest : BaseQueryTest() {
         }
     }
 
+//    @Test
+//    fun testWhereNullOrMissing() {
+//        val doc1 = MutableDocument()
+//        doc1.setValue("name", "Scott")
+//        doc1.setValue("address", null)
+//        saveDocInCollection(doc1)
+//
+//        val doc2 = MutableDocument()
+//        doc2.setValue("name", "Tiger")
+//        doc2.setValue("address", "123 1st ave.")
+//        doc2.setValue("age", 20)
+//        saveDocInCollection(doc2)
+//
+//        val name = Expression.property("name")
+//        val address = Expression.property("address")
+//        val age = Expression.property("age")
+//        val work = Expression.property("work")
+//
+//        for (testCase in arrayOf(
+//            TestCase(name.isNullOrMissing()),
+//            TestCase(name.notNullOrMissing(), doc1.id, doc2.id),
+//            TestCase(address.isNullOrMissing(), doc1.id),
+//            TestCase(address.notNullOrMissing(), doc2.id),
+//            TestCase(age.isNullOrMissing(), doc1.id),
+//            TestCase(age.notNullOrMissing(), doc2.id),
+//            TestCase(work.isNullOrMissing(), doc1.id, doc2.id),
+//            TestCase(work.notNullOrMissing())
+//        )) {
+//            verifyQuery(
+//                QueryBuilder.select(SelectResult.expression(Meta.id))
+//                    .from(DataSource.collection(testCollection))
+//                    .where(testCase.expr),
+//                testCase.docIds.size) { n, result ->
+//                if (n <= testCase.docIds.size) {
+//                    assertEquals(testCase.docIds[n - 1], result.getString(0))
+//                }
+//            }
+//        }
+//    }
+
     @Suppress("DEPRECATION")
     @Test
     fun testLegacyIndexMatch() {
@@ -3094,6 +3305,64 @@ class QueryTest : BaseQueryTest() {
             assertNotNull(result.getString(0))
             assertNotNull(result.getString(1))
         }
+    }
+
+    @Test
+    fun testConcurrentCreateAndQuery() = runBlocking {
+        val latch1 = CountDownLatch(1) // 2nd thread waits for first to enter inBatch
+        val latch2 = CountDownLatch(1) // 1st thread waits for 2nd to run a query: should time out
+        val latch3 = CountDownLatch(2) // test is complete
+
+        val n = AtomicInt(0) // ensure strict ordering of events
+        val timeout = AtomicBoolean(false) // latch 2 should time out in the first thread
+        val err = AtomicReference<Exception?>(null) // to capture any exceptions
+
+        val t1 = async(Dispatchers.Default) {
+            try {
+                testDatabase.inBatch {
+                    // the other thread should be waiting on the first latch
+                    n.compareAndSet(0, 1)
+                    latch1.countDown() // let the other thread run its query
+                    runBlocking {
+                        timeout.store(!latch2.await(1.seconds)) // this should time out
+                    }
+                    // the other thread should be past the first latch but should not have been able to start its query
+                    n.compareAndSet(2, 3)
+                }
+            }
+            catch (e: Exception) { err.compareAndSet(null, e) }
+            finally { latch3.countDown() }
+        }
+
+        val t2 = async(Dispatchers.Default) {
+            try {
+                latch1.await()
+                // this thread is allowed to run its query only after the other thread is in inBatch
+                n.compareAndSet(1, 2)
+                // this thread should not be able to run the query until the other thread has left inBatch
+                try {
+                    testDatabase.createQuery("SELECT * FROM _").execute().use {
+                        // This latch should already have timed out in the other thread
+                        latch2.countDown()
+                        // shouldn't get here until the other thread has left inBatch
+                        n.compareAndSet(3, 4)
+                    }
+                }
+                catch (e: CouchbaseLiteException) { err.compareAndSet(null, e) }
+            }
+            catch (_: CancellationException) { }
+            finally { latch3.countDown() }
+        }
+
+        t1.start()
+        t2.start()
+
+        assertTrue(latch3.await(STD_TIMEOUT_SEC.seconds))
+
+        val e = err.load()
+        assertEquals(4, n.load(), "Events did not occur in expected order")
+        assertTrue(timeout.load(), "Latch 2 should have timed out")
+        if (e != null) { throw AssertionError("Operation failed", e) }
     }
 
     // Utility Functions
