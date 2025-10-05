@@ -28,6 +28,14 @@ import kotlin.time.Duration.Companion.seconds
 
 class QueryChangeTest : BaseQueryTest() {
 
+//    @Test
+//    fun testQueryChangeTest() {
+//        val change: QueryChange = QueryChange(null, null, null)
+//        assertNull(change.query)
+//        assertNull(change.results)
+//        assertNull(change.error)
+//    }
+
     // https://github.com/couchbase/couchbase-lite-android/issues/1615
     @Test
     @OptIn(ExperimentalAtomicApi::class)
