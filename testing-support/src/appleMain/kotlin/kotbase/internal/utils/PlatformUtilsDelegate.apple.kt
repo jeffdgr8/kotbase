@@ -32,7 +32,7 @@ actual class PlatformUtilsDelegate : PlatformUtils.Delegate {
 
     actual override fun getAsset(asset: String): Source? {
         val dotIndex = asset.lastIndexOf('.')
-        val name = asset.substring(0, dotIndex)
+        val name = asset.take(dotIndex)
         val type = asset.substring(dotIndex + 1)
         val path = NSBundle.mainBundle
             .pathForResource(name, type)
