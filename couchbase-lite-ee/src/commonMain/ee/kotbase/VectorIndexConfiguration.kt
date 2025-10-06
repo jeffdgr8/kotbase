@@ -17,11 +17,8 @@ package kotbase
 
 /**
  * Configuration for creating vector indexes.
- */
-public expect class VectorIndexConfiguration
-
-/**
- * VectorIndexConfiguration Constructor.
+ *
+ * @constructor VectorIndexConfiguration Constructor.
  *
  * The number of centroids will be based on the expected number of vectors or documents containing the vectors
  * to be indexed and the application may need to make some experiments to see find an optimal value to use; one
@@ -36,7 +33,11 @@ public expect class VectorIndexConfiguration
  *                   one suggested rule is to use  the square root of the number of vectors. The centroids must
  *                   be between 1 and 64000 inclusively.
  */
-constructor(expression: String, dimensions: Long, centroids: Long) : IndexConfiguration {
+public expect class VectorIndexConfiguration(
+    expression: String,
+    dimensions: Long,
+    centroids: Long
+) : IndexConfiguration {
 
     /**
      * Distance metric to be used in the vector indexes.

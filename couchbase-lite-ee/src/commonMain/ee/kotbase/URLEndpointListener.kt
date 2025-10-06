@@ -19,15 +19,12 @@ package kotbase
  * **ENTERPRISE EDITION API**
  *
  * A listener to which remote replicators can connect.
- */
-public expect class URLEndpointListener
-
-/**
- * Create a URLEndpointListener with the passed configuration.
+ *
+ * @constructor Create a URLEndpointListener with the passed configuration.
  *
  * @param config the listener configuration.
  */
-constructor(config: URLEndpointListenerConfiguration) {
+public expect class URLEndpointListener(config: URLEndpointListenerConfiguration) {
 
     /**
      * The listener's configuration (read only).

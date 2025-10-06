@@ -19,18 +19,15 @@ package kotbase
  * **ENTERPRISE EDITION API**
  *
  * Replication Message endpoint.
- */
-public expect class MessageEndpoint
-
-/**
- * Initializes a MessageEndpoint object.
+ *
+ * @constructor Initializes a MessageEndpoint object.
  *
  * @param uid          the unique identifier of the endpoint
  * @param target       an optional arbitrary object that represents the endpoint
  * @param protocolType the data transportation protocol
  * @param delegate     the delegate for creating MessageEndpointConnection objects
  */
-constructor(
+public expect class MessageEndpoint(
     uid: String,
     target: Any?,
     protocolType: ProtocolType,

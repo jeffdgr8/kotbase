@@ -19,15 +19,12 @@ package kotbase
  * The BasicAuthenticator class is an authenticator that will authenticate using HTTP Basic
  * auth with the given username and password. This should only be used over an SSL/TLS connection,
  * as otherwise it's very easy for anyone sniffing network traffic to read the password.
- */
-public expect class BasicAuthenticator
-
-/**
- * Create a Basic Authenticator.
+ *
+ * @constructor Create a Basic Authenticator.
  * The new instance contains a copy of the password char[] parameter:
  * the owner of the original retains the responsibility for zeroing it before releasing it.
  */
-constructor(username: String, password: CharArray) : Authenticator {
+public expect class BasicAuthenticator(username: String, password: CharArray) : Authenticator {
 
     public val username: String
 
