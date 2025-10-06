@@ -22,6 +22,7 @@ kotlin {
         afterEvaluate { summary = description }
         ios.deploymentTarget = "12.0"
         osx.deploymentTarget = "12.0"
+        noPodspec()
     }
 
     compilerOptions.freeCompilerArgs.addAll(
