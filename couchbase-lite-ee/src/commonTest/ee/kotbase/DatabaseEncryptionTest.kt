@@ -24,8 +24,7 @@ class DatabaseEncryptionTest : BaseDbTest() {
 
     private var seekrit: Database? = null
 
-    @AfterTest
-    fun tearDown() {
+    override fun tearDown() {
         eraseDb(seekrit)
         seekrit = null
     }

@@ -56,13 +56,11 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     var clientConnected: Mutex? = null
     var serverConnected: Mutex? = null
 
-    @BeforeTest
-    fun setUp() {
+    override fun setUp() {
         oDB = Database("otherdb")
     }
 
-    @AfterTest
-    fun tearDown() {
+    override fun tearDown() {
         listener?.closeAll()
 
         // Workaround to ensure that replicator's background cleaning task was done:
