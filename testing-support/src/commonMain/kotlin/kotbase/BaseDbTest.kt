@@ -148,19 +148,24 @@ abstract class BaseDbTest(useLegacyLogging: Boolean = false) : BaseTest(useLegac
             testDatabase.createCollection(getUniqueName("test_collection"), getUniqueName("test_scope"))
         Report.log("Created base test Collection: $testCollection")
         testTg = getUniqueName("db_test_tag")
-        setup()
+        setUp()
     }
 
-    open fun setup() {
+    open fun setUp() {
         // override to perform setup after setUpBaseDbTest() is run
     }
 
     @AfterTest
     fun tearDownBaseDbTest() {
+        tearDown()
         testCol.close()
         Report.log("Test collection closed: ${testCol.fullName}")
         eraseDb(testDb)
         Report.log("Test db erased: ${testDb.name}")
+    }
+
+    open fun tearDown() {
+        // override to perform teardown before tearDownBaseDbTest() is run
     }
 
     protected fun reopenTestDb() {

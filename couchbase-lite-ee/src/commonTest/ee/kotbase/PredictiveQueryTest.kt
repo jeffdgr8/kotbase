@@ -28,8 +28,7 @@ class PredictiveQueryTest : BaseQueryTest() {
 
     // PredictiveQueryTest.swift
 
-    @BeforeTest
-    fun setUp() {
+    override fun setUp() {
         Database.prediction.unregisterModel(AggregateModel.NAME)
         Database.prediction.unregisterModel(TextModel.NAME)
         Database.prediction.unregisterModel(EchoModel.NAME)

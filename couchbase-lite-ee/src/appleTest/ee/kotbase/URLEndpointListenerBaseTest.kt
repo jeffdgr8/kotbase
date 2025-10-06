@@ -204,13 +204,11 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
         }
     }
 
-    @BeforeTest
-    fun setUp() {
+    override fun setUp() {
         cleanUpIdentities()
     }
 
-    @AfterTest
-    fun tearDown() {
+    override fun tearDown() {
         stopListener()
         cleanUpIdentities()
     }
