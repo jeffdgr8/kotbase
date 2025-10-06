@@ -15,12 +15,12 @@
  */
 package kotbase
 
-import kotbase.ext.wrapError
+import kotbase.ext.wrapCBLError
 import kotlinx.cinterop.convert
 
 @Throws(CouchbaseLiteException::class)
 public actual fun QueryIndex.beginUpdate(limit: Int): IndexUpdater? {
-    return wrapError { error ->
+    return wrapCBLError { error ->
         actual.beginUpdateWithLimit(limit.convert(), error)?.asIndexUpdater()
     }
 }

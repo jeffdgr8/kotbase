@@ -17,7 +17,7 @@ package kotbase
 
 import cocoapods.CouchbaseLite.CBLIndexUpdater
 import kotbase.ext.asNumber
-import kotbase.ext.wrapError
+import kotbase.ext.wrapCBLError
 import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
@@ -117,7 +117,7 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     }
 
     override fun setVector(value: List<Float>?, index: Int) {
-        wrapError { error ->
+        wrapCBLError { error ->
             actual.setVector(value, index.convert(), error)
         }
     }
@@ -127,13 +127,13 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     }
 
     override fun finish() {
-        wrapError { error ->
+        wrapCBLError { error ->
             actual.finishWithError(error)
         }
     }
 
     override fun close() {
-        wrapError { error ->
+        wrapCBLError { error ->
             actual.finishWithError(error)
         }
     }
