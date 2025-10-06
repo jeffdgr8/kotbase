@@ -24,16 +24,13 @@ import kotlinx.io.Source
  * Blobs can be arbitrarily large, although some operations may require that the entire content be loaded into memory.
  * The containing document's JSON contains only the Blob's metadata (type, length and digest).  The data itself
  * is stored in a file whose name is the content digest (like git).
- **/
-public expect class Blob
-
-/**
- * Construct a Blob with the given in-memory data.
+ *
+ * @constructor Construct a Blob with the given in-memory data.
  *
  * @param contentType The type of content this Blob will represent
  * @param content     The data that this Blob will contain
- */
-constructor(contentType: String, content: ByteArray) {
+ **/
+public expect class Blob(contentType: String, content: ByteArray) {
 
     /**
      * Construct a Blob with the given stream of data.

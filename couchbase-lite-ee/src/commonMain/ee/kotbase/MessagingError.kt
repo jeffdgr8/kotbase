@@ -19,11 +19,8 @@ package kotbase
  * **ENTERPRISE EDITION API**
  *
  * The messaging error.
- */
-public expect class MessagingError
-
-/**
- * Creates a MessagingError with the given error and recoverable flag identifying
+ *
+ * @constructor Creates a MessagingError with the given error and recoverable flag identifying
  * if the error is recoverable or not. The replicator uses recoverable
  * flag to determine whether the replication should be retried or stopped as the error
  * is non-recoverable.
@@ -31,7 +28,7 @@ public expect class MessagingError
  * @param error       the error
  * @param recoverable the recoverable flag
  */
-constructor(error: Exception, recoverable: Boolean) {
+public expect class MessagingError(error: Exception, recoverable: Boolean) {
 
     /**
      * Is the error recoverable?

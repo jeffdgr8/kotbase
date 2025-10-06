@@ -17,18 +17,15 @@ package kotbase
 
 /**
  * URL based replication target endpoint
- */
-public expect class URLEndpoint
-
-/**
- * Constructor with the url. The supported URL schemes are
+ *
+ * @constructor Constructor with the url. The supported URL schemes are
  *
  *  * wss -- data transfer over a secure channel
  *  * ws  -- data transfer over an insecure channel
  *
  * @param url The url.
  */
-constructor(url: String) : Endpoint {
+public expect class URLEndpoint(url: String) : Endpoint {
 
     /**
      * The url.

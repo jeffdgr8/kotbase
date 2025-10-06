@@ -19,15 +19,12 @@ package kotbase
  * **ENTERPRISE EDITION API**
  *
  * Database based replication target endpoint.
- */
-public expect class DatabaseEndpoint
-
-/**
- * Constructor with the database instance
+ *
+ * @constructor Constructor with the database instance
  *
  * @param database the target database
  */
-constructor(database: Database) : Endpoint {
+public expect class DatabaseEndpoint(database: Database) : Endpoint {
 
     /**
      * The Database instance
