@@ -2,6 +2,7 @@
 couchbase-lite-java = "3.2.4"
 couchbase-lite-objc = "3.2.4"
 couchbase-lite-c = "3.2.4"
+couchbase-lite-vector-search = "1.0.0"
 dokka = "2.0.0"
 mockk = "1.14.5"
 
@@ -22,6 +23,9 @@ couchbase-lite-android = { module = "com.couchbase.lite:couchbase-lite-android",
 couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-android-ee", version.ref = "couchbase-lite-java" }
 couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", version.ref = "couchbase-lite-java" }
 couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
+couchbase-lite-android-vector-search-arm64 = { module = "com.couchbase.lite:couchbase-lite-android-vector-search-arm64", version.ref = "couchbase-lite-vector-search" }
+couchbase-lite-android-vector-search-x64 = { module = "com.couchbase.lite:couchbase-lite-android-vector-search-x86_64", version.ref = "couchbase-lite-vector-search" }
+couchbase-lite-java-vector-search = { module = "com.couchbase.lite:couchbase-lite-java-vector-search", version.ref = "couchbase-lite-vector-search" }
 dokka-versioning = { module = "org.jetbrains.dokka:versioning-plugin", version.ref = "dokka" }
 kermit = { module = "co.touchlab:kermit", version = "2.0.8" }
 korlibs-korio = { module = "com.soywiz.korlibs.korio:korio", version = "4.0.10" }

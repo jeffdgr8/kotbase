@@ -19,6 +19,10 @@ import com.couchbase.lite.CouchbaseLite
 
 public actual object Extension {
 
+    init {
+        internalInit()
+    }
+
     public actual fun enableVectorSearch() {
         CouchbaseLite.enableVectorSearch()
     }
