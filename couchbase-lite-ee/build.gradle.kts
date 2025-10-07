@@ -23,6 +23,10 @@ kotlin {
             // https://youtrack.jetbrains.com/issue/KT-41709
             extraOpts = listOf("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")
         }
+        pod("CouchbaseLiteVectorSearch") {
+            version = libs.versions.couchbase.lite.vector.search.get()
+            linkOnly = true
+        }
     }
 
     linkLibcblite()
@@ -60,9 +64,16 @@ kotlin {
         jvmMain.dependencies {
             api(libs.couchbase.lite.java.ee)
         }
+        jvmTest.dependencies {
+            implementation(libs.couchbase.lite.java.vector.search)
+        }
         androidMain.dependencies {
             api(libs.couchbase.lite.android.ee)
             implementation(libs.androidx.startup)
+        }
+        androidInstrumentedTest.dependencies {
+            implementation(libs.couchbase.lite.android.vector.search.arm64)
+            implementation(libs.couchbase.lite.android.vector.search.x64)
         }
 
         all {
