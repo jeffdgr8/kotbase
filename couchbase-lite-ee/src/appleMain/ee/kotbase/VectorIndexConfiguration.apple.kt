@@ -22,7 +22,11 @@ public actual class VectorIndexConfiguration
 private constructor(override val actual: CBLVectorIndexConfiguration) : IndexConfiguration(actual) {
 
     public actual constructor(expression: String, dimensions: Long, centroids: Long) : this(
-        CBLVectorIndexConfiguration(expression, dimensions.convert(), centroids.convert())
+        Unit.run {
+            require(dimensions in 2..4096) { "Dimensions must be 2 <= dimensions <= 4096: $dimensions" }
+            require(centroids in 1..64000) { "Centroids must be 1 <= centroids <= 64000: $centroids" }
+            CBLVectorIndexConfiguration(expression, dimensions.convert(), centroids.convert())
+        }
     )
 
     public actual enum class DistanceMetric {

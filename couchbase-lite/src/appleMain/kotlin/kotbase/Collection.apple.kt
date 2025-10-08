@@ -243,6 +243,7 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun createIndex(name: String, config: IndexConfiguration) {
+        config.verify()
         wrapCBLError { error ->
             actual.createIndexWithName(name, config.actual, error)
         }

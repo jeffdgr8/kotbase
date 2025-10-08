@@ -20,7 +20,10 @@ import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
 
 public actual class VectorEncoding
-private constructor(actual: CBLVectorEncoding) : DelegatedClass<CBLVectorEncoding>(actual) {
+private constructor(
+    actual: CBLVectorEncoding,
+    internal val subquantizers: Long = 0L
+) : DelegatedClass<CBLVectorEncoding>(actual) {
 
     public actual enum class ScalarQuantizerType {
         SQ4,
@@ -43,7 +46,13 @@ private constructor(actual: CBLVectorEncoding) : DelegatedClass<CBLVectorEncodin
         public actual fun scalarQuantizer(type: ScalarQuantizerType): VectorEncoding =
             VectorEncoding(CBLVectorEncoding.scalarQuantizerWithType(type.actual))
 
-        public actual fun productQuantizer(subquantizers: Long, bits: Long): VectorEncoding =
-            VectorEncoding(CBLVectorEncoding.productQuantizerWithSubquantizers(subquantizers.convert(), bits.convert()))
+        public actual fun productQuantizer(subquantizers: Long, bits: Long): VectorEncoding {
+            require(subquantizers >= 2) { "Subquantizers must be >= 2: $subquantizers" }
+            require((4 <= bits) && (bits <= 12)) { "Bits must be 4 <= bits <= 12: $bits" }
+            return VectorEncoding(
+                CBLVectorEncoding.productQuantizerWithSubquantizers(subquantizers.convert(), bits.convert()),
+                subquantizers
+            )
+        }
     }
 }

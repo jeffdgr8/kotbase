@@ -117,12 +117,14 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     }
 
     override fun setVector(value: List<Float>?, index: Int) {
+        checkIndex(index)
         wrapCBLError { error ->
             actual.setVector(value, index.convert(), error)
         }
     }
 
     override fun skipVector(index: Int) {
+        checkIndex(index)
         actual.skipVectorAtIndex(index.convert())
     }
 

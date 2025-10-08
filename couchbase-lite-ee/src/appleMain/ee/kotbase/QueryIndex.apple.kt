@@ -20,6 +20,7 @@ import kotlinx.cinterop.convert
 
 @Throws(CouchbaseLiteException::class)
 public actual fun QueryIndex.beginUpdate(limit: Int): IndexUpdater? {
+    require(limit > 0) { "limit must be > 0" }
     return wrapCBLError { error ->
         actual.beginUpdateWithLimit(limit.convert(), error)?.asIndexUpdater()
     }
