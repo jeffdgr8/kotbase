@@ -46,14 +46,19 @@ internal class IndexUpdaterImpl(
     private val collectionMap: MutableMap<Int, Any> = mutableMapOf()
 
     override val count: Int
-        get() = CBLIndexUpdater_Count(actual).toInt()
+        get() {
+            checkIsFinished()
+            return CBLIndexUpdater_Count(actual).toInt()
+        }
 
     private fun getFLValue(index: Int): FLValue? {
+        checkIsFinished()
         checkIndex(index)
         return CBLIndexUpdater_Value(actual, index.convert())
     }
 
     override fun getValue(index: Int): Any? {
+        checkIsFinished()
         return collectionMap[index]
             ?: getFLValue(index)?.toNative(dbContext)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
@@ -87,22 +92,28 @@ internal class IndexUpdaterImpl(
         getFLValue(index)?.toDate()
 
     override fun getArray(index: Int): Array? {
+        checkIsFinished()
         return getInternalCollection(index)
             ?: getFLValue(index)?.toArray(dbContext)
                 ?.also { collectionMap[index] = it }
     }
 
     override fun getDictionary(index: Int): Dictionary? {
+        checkIsFinished()
         return getInternalCollection(index)
             ?: getFLValue(index)?.toDictionary(dbContext)
                 ?.also { collectionMap[index] = it }
     }
 
-    override fun toList(): List<Any?> =
-        iterator().asSequence().toList()
+    override fun toList(): List<Any?> {
+        checkIsFinished()
+        return iterator().asSequence().toList()
+    }
 
-    override fun toJSON(): String =
-        FLValue_ToJSON(actual.reinterpret()).toKString()!!
+    override fun toJSON(): String {
+        checkIsFinished()
+        return FLValue_ToJSON(actual.reinterpret()).toKString()!!
+    }
 
     override fun iterator(): Iterator<Any?> =
         IndexUpdaterIterator(count)
@@ -118,6 +129,8 @@ internal class IndexUpdaterImpl(
     }
 
     override fun setVector(value: List<Float>?, index: Int) {
+        checkIsFinished()
+        checkIndex(index)
         wrapCBLError { error ->
             CBLIndexUpdater_SetVector(
                 actual,
@@ -130,19 +143,26 @@ internal class IndexUpdaterImpl(
     }
 
     override fun skipVector(index: Int) {
+        checkIsFinished()
+        checkIndex(index)
         CBLIndexUpdater_SkipVector(actual, index.convert())
     }
 
     override fun finish() {
+        checkIsFinished()
         wrapCBLError { error ->
             CBLIndexUpdater_Finish(actual, error)
         }
     }
 
     override fun close() {
-        wrapCBLError { error ->
-            CBLIndexUpdater_Finish(actual, error)
-        }
+        finish()
+    }
+
+    private var finished = false
+
+    private fun checkIsFinished() {
+        if (finished) throw CouchbaseLiteError("Called on finished updater")
     }
 
     private fun checkIndex(index: Int) {
