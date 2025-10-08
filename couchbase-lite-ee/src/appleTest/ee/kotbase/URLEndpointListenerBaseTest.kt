@@ -204,7 +204,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
         }
     }
 
-    override fun setUp() {
+    override fun setUpLast() {
         cleanUpIdentities()
     }
 
