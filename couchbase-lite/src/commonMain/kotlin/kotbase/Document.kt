@@ -21,7 +21,7 @@ import kotlin.reflect.safeCast
 /**
  * Readonly version of the Document.
  */
-public expect open class Document : Iterable<String> {
+public expect open class Document : DictionaryInterface, Iterable<String> {
 
     internal val collectionMap: MutableMap<String, Any>
 
@@ -44,14 +44,6 @@ public expect open class Document : Iterable<String> {
      */
     public val revisionID: String?
 
-    // TODO: 4.0 API
-//    /**
-//     * Get the document's timestamp.
-//     *
-//     * @return the document's timestamp
-//     */
-//    public val timestamp: Long
-
     /**
      * The sequence number of the document in the database.
      * The sequence number indicates how recently the document has been changed. Every time a document
@@ -73,22 +65,22 @@ public expect open class Document : Iterable<String> {
     /**
      * The number of the entries in the document.
      */
-    public val count: Int
+    override val count: Int
 
     /**
      * A List containing all keys, or an empty List if the document has no properties.
      */
-    public val keys: List<String>
+    override val keys: List<String>
 
     /**
      * Gets a property's value as an object. The object types are Blob, Array,
-     * Dictionary, Number, or String based on the underlying data type; or nil if the
+     * Dictionary, Number, or String based on the underlying data type; or null if the
      * property value is null or the property doesn't exist.
      *
      * @param key the key.
      * @return the object value or null.
      */
-    public fun getValue(key: String): Any?
+    override fun getValue(key: String): Any?
 
     /**
      * Gets a property's value as a String.
@@ -97,16 +89,16 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return the String or null.
      */
-    public fun getString(key: String): String?
+    override fun getString(key: String): String?
 
     /**
      * Gets a property's value as a Number.
      * Returns null if the value doesn't exist, or its value is not a Number.
      *
      * @param key the key
-     * @return the Number or nil.
+     * @return the Number or null.
      */
-    public fun getNumber(key: String): Number?
+    override fun getNumber(key: String): Number?
 
     /**
      * Gets a property's value as an int.
@@ -116,7 +108,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return the int value.
      */
-    public fun getInt(key: String): Int
+    override fun getInt(key: String): Int
 
     /**
      * Gets a property's value as a long.
@@ -126,7 +118,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return the long value.
      */
-    public fun getLong(key: String): Long
+    override fun getLong(key: String): Long
 
     /**
      * Gets a property's value as a float.
@@ -136,7 +128,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return the float value.
      */
-    public fun getFloat(key: String): Float
+    override fun getFloat(key: String): Float
 
     /**
      * Gets a property's value as a double.
@@ -146,7 +138,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return the double value.
      */
-    public fun getDouble(key: String): Double
+    override fun getDouble(key: String): Double
 
     /**
      * Gets a property's value as a boolean. Returns true if the value exists, and is either `true`
@@ -155,7 +147,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return the boolean value.
      */
-    public fun getBoolean(key: String): Boolean
+    override fun getBoolean(key: String): Boolean
 
     /**
      * Gets a property's value as a Blob.
@@ -164,7 +156,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return the Blob value or null.
      */
-    public fun getBlob(key: String): Blob?
+    override fun getBlob(key: String): Blob?
 
     /**
      * Gets a property's value as an Instant date.
@@ -177,7 +169,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return the Instant date value or null.
      */
-    public fun getDate(key: String): Instant?
+    override fun getDate(key: String): Instant?
 
     /**
      * Get a property's value as an Array.
@@ -186,7 +178,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return The Array object or null.
      */
-    public open fun getArray(key: String): Array?
+    override fun getArray(key: String): Array?
 
     /**
      * Get a property's value as a Dictionary.
@@ -195,7 +187,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return The Dictionary object or null.
      */
-    public open fun getDictionary(key: String): Dictionary?
+    override fun getDictionary(key: String): Dictionary?
 
     /**
      * Gets content of the current object as a Map. The values contained in the returned
@@ -203,9 +195,9 @@ public expect open class Document : Iterable<String> {
      *
      * @return the Map object representing the content of the current object in the JSON format.
      */
-    public fun toMap(): Map<String, Any?>
+    override fun toMap(): Map<String, Any?>
 
-    public fun toJSON(): String?
+    override fun toJSON(): String
 
     /**
      * Tests whether a property exists or not.
@@ -215,7 +207,7 @@ public expect open class Document : Iterable<String> {
      * @param key the key
      * @return the boolean value representing whether a property exists or not.
      */
-    public operator fun contains(key: String): Boolean
+    override operator fun contains(key: String): Boolean
 
     /**
      * Gets an iterator over the keys of the document's properties
@@ -225,18 +217,5 @@ public expect open class Document : Iterable<String> {
     override fun iterator(): Iterator<String>
 }
 
-/**
- * Subscript access to a Fragment object by key.
- *
- * @param key The key.
- */
-public operator fun Document.get(key: String): Fragment =
-    Fragment(this, key)
-
 internal inline fun <reified T : Any> Document.getInternalCollection(key: String): T? =
     T::class.safeCast(collectionMap[key])
-
-// TODO: 4.0 API
-//internal fun Document.compareAge(target: Document): Int {
-//    return timestamp.compareTo(target.timestamp)
-//}

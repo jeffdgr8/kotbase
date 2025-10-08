@@ -24,12 +24,12 @@ import kotlinx.datetime.Instant
  * An attempt to reference a Result after calling ResultSet.close on the ResultSet that
  * contains it will throw a CouchbaseLiteError
  */
-public expect class Result : Iterable<String> {
+public expect class Result : ArrayInterface, DictionaryInterface, Iterable<String> {
 
     /**
      * The number of the values in the result.
      */
-    public val count: Int
+    override val count: Int
 
     /**
      * The result value at the given index.
@@ -37,7 +37,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return the value.
      */
-    public fun getValue(index: Int): Any?
+    override fun getValue(index: Int): Any?
 
     /**
      * The result at the given index converted to a String
@@ -45,7 +45,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return a String value.
      */
-    public fun getString(index: Int): String?
+    override fun getString(index: Int): String?
 
     /**
      * The result at the given index interpreted as a Number.
@@ -54,7 +54,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return a Number value.
      */
-    public fun getNumber(index: Int): Number?
+    override fun getNumber(index: Int): Number?
 
     /**
      * The result at the given index interpreted as and an int.
@@ -63,7 +63,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return an int value.
      */
-    public fun getInt(index: Int): Int
+    override fun getInt(index: Int): Int
 
     /**
      * The result at the given index interpreted as a long.
@@ -72,7 +72,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return a long value.
      */
-    public fun getLong(index: Int): Long
+    override fun getLong(index: Int): Long
 
     /**
      * The result at the given index interpreted as a float.
@@ -81,7 +81,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return a float value.
      */
-    public fun getFloat(index: Int): Float
+    override fun getFloat(index: Int): Float
 
     /**
      * The result at the given index interpreted as a double.
@@ -90,7 +90,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return a double value.
      */
-    public fun getDouble(index: Int): Double
+    override fun getDouble(index: Int): Double
 
     /**
      * The result at the given index interpreted as a boolean.
@@ -99,7 +99,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return a boolean value.
      */
-    public fun getBoolean(index: Int): Boolean
+    override fun getBoolean(index: Int): Boolean
 
     /**
      * The result at the given index interpreted as a Blob.
@@ -108,7 +108,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return a Blob.
      */
-    public fun getBlob(index: Int): Blob?
+    override fun getBlob(index: Int): Blob?
 
     /**
      * The result at the given index interpreted as an Instant date.
@@ -117,7 +117,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return an Instant date.
      */
-    public fun getDate(index: Int): Instant?
+    override fun getDate(index: Int): Instant?
 
     /**
      * The result at the given index interpreted as an Array.
@@ -126,7 +126,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return an Array.
      */
-    public fun getArray(index: Int): Array?
+    override fun getArray(index: Int): Array?
 
     /**
      * The result at the given index interpreted as a Dictionary.
@@ -135,7 +135,7 @@ public expect class Result : Iterable<String> {
      * @param index the index of the required value.
      * @return a Dictionary.
      */
-    public fun getDictionary(index: Int): Dictionary?
+    override fun getDictionary(index: Int): Dictionary?
 
     /**
      * Gets all the values as a List. The types of the values contained in the returned List
@@ -143,12 +143,12 @@ public expect class Result : Iterable<String> {
      *
      * @return a List containing all values.
      */
-    public fun toList(): List<Any?>
+    override fun toList(): List<Any?>
 
     /**
      * A list of keys
      */
-    public val keys: List<String>
+    override val keys: List<String>
 
     /**
      * The result value for the given key as an Object
@@ -157,7 +157,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The Object.
      */
-    public fun getValue(key: String): Any?
+    override fun getValue(key: String): Any?
 
     /**
      * The result value for the given key as a String
@@ -166,7 +166,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The String object.
      */
-    public fun getString(key: String): String?
+    override fun getString(key: String): String?
 
     /**
      * The result value for the given key as a Number
@@ -175,7 +175,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The Number object.
      */
-    public fun getNumber(key: String): Number?
+    override fun getNumber(key: String): Number?
 
     /**
      * The result value for the given key as an int
@@ -184,7 +184,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The integer value.
      */
-    public fun getInt(key: String): Int
+    override fun getInt(key: String): Int
 
     /**
      * The result value for the given key as a long
@@ -193,7 +193,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The long value.
      */
-    public fun getLong(key: String): Long
+    override fun getLong(key: String): Long
 
     /**
      * The result value for the given key as a float
@@ -202,7 +202,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The float value.
      */
-    public fun getFloat(key: String): Float
+    override fun getFloat(key: String): Float
 
     /**
      * The result value for the given key as a double
@@ -211,7 +211,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The double value.
      */
-    public fun getDouble(key: String): Double
+    override fun getDouble(key: String): Double
 
     /**
      * The result value for the given key as a boolean
@@ -220,7 +220,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The boolean value.
      */
-    public fun getBoolean(key: String): Boolean
+    override fun getBoolean(key: String): Boolean
 
     /**
      * The result value for the given key as a Blob
@@ -229,7 +229,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The Blob object.
      */
-    public fun getBlob(key: String): Blob?
+    override fun getBlob(key: String): Blob?
 
     /**
      * The result value for the given key as an Instant date
@@ -238,7 +238,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The Instant date object.
      */
-    public fun getDate(key: String): Instant?
+    override fun getDate(key: String): Instant?
 
     /**
      * The result value for the given key as a Array
@@ -247,7 +247,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The Array object.
      */
-    public fun getArray(key: String): Array?
+    override fun getArray(key: String): Array?
 
     /**
      * The result value for the given key as a Dictionary
@@ -256,7 +256,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return The Dictionary object.
      */
-    public fun getDictionary(key: String): Dictionary?
+    override fun getDictionary(key: String): Dictionary?
 
     /**
      * Gets all values as a Map. The keys in the returned map are the names of columns that have
@@ -264,7 +264,7 @@ public expect class Result : Iterable<String> {
      *
      * @return The Map representing all values.
      */
-    public fun toMap(): Map<String, Any?>
+    override fun toMap(): Map<String, Any?>
 
     /**
      * Encode a Result as a JSON string
@@ -272,7 +272,7 @@ public expect class Result : Iterable<String> {
      * @return JSON encoded representation of the Result
      * @throws CouchbaseLiteException on encoder failure.
      */
-    public fun toJSON(): String
+    override fun toJSON(): String
 
     /**
      * Tests whether key exists or not.
@@ -280,7 +280,7 @@ public expect class Result : Iterable<String> {
      * @param key The select result key.
      * @return True if exists, otherwise false.
      */
-    public operator fun contains(key: String): Boolean
+    override operator fun contains(key: String): Boolean
 
     /**
      * Gets an iterator over the result's keys.
@@ -289,26 +289,3 @@ public expect class Result : Iterable<String> {
      */
     override fun iterator(): Iterator<String>
 }
-
-/**
- * Subscript access to a Fragment object of the projecting result
- * value at the given index.
- *
- * @param index The select result index.
- */
-public operator fun Result.get(index: Int): Fragment {
-    return if (index in 0..<count) {
-        Fragment(this, index)
-    } else {
-        Fragment()
-    }
-}
-
-/**
- * Subscript access to a Fragment object of the projecting result
- * value for the given key.
- *
- * @param key The select result key.
- */
-public operator fun Result.get(key: String): Fragment =
-    Fragment(this, key)

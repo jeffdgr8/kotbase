@@ -29,7 +29,7 @@ public actual open class Document
 internal constructor(
     actual: CPointer<CBLDocument>,
     database: Database?
-) : Iterable<String> {
+) : Iterable<String>, DictionaryInterface {
 
     private val memory = object {
         val actual = actual
@@ -83,77 +83,73 @@ internal constructor(
     public actual val revisionID: String?
         get() = if (dbContext.database != null) CBLDocument_RevisionID(actual).toKString() else null
 
-    // TODO: 4.0 API
-//    public actual val timestamp: Long
-//        get() = TODO("available in future 4.0 release")
-
     public actual val sequence: Long
         get() = CBLDocument_Sequence(actual).toLong()
 
     public actual open fun toMutable(): MutableDocument =
         MutableDocument(CBLDocument_MutableCopy(actual)!!, database)
 
-    public actual val count: Int
+    actual override val count: Int
         get() = FLDict_Count(properties).toInt()
 
-    public actual val keys: List<String>
+    actual override val keys: List<String>
         get() = properties.keys()
 
     protected fun getFLValue(key: String): FLValue? =
         properties.getValue(key)
 
-    public actual open fun getValue(key: String): Any? {
+    actual override fun getValue(key: String): Any? {
         return collectionMap[key]
             ?: getFLValue(key)?.toNative(dbContext)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
     }
 
-    public actual fun getString(key: String): String? =
+    actual override fun getString(key: String): String? =
         getFLValue(key)?.toKString()
 
-    public actual fun getNumber(key: String): Number? =
+    actual override fun getNumber(key: String): Number? =
         getFLValue(key)?.toNumber()
 
-    public actual fun getInt(key: String): Int =
+    actual override fun getInt(key: String): Int =
         getFLValue(key).toInt()
 
-    public actual fun getLong(key: String): Long =
+    actual override fun getLong(key: String): Long =
         getFLValue(key).toLong()
 
-    public actual fun getFloat(key: String): Float =
+    actual override fun getFloat(key: String): Float =
         getFLValue(key).toFloat()
 
-    public actual fun getDouble(key: String): Double =
+    actual override fun getDouble(key: String): Double =
         getFLValue(key).toDouble()
 
-    public actual fun getBoolean(key: String): Boolean =
+    actual override fun getBoolean(key: String): Boolean =
         getFLValue(key).toBoolean()
 
-    public actual open fun getBlob(key: String): Blob? =
+    actual override fun getBlob(key: String): Blob? =
         getFLValue(key)?.toBlob(dbContext)
 
-    public actual fun getDate(key: String): Instant? =
+    actual override fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
-    public actual open fun getArray(key: String): Array? {
+    actual override fun getArray(key: String): Array? {
         return getInternalCollection(key)
             ?: getFLValue(key)?.toArray(dbContext)
                 ?.also { collectionMap[key] = it }
     }
 
-    public actual open fun getDictionary(key: String): Dictionary? {
+    actual override fun getDictionary(key: String): Dictionary? {
         return getInternalCollection(key)
             ?: getFLValue(key)?.toDictionary(dbContext)
                 ?.also { collectionMap[key] = it }
     }
 
-    public actual fun toMap(): Map<String, Any?> =
+    actual override fun toMap(): Map<String, Any?> =
         properties.toMap(dbContext)
 
-    public actual open fun toJSON(): String? =
-        CBLDocument_CreateJSON(actual).toKString()
+    actual override fun toJSON(): String =
+        CBLDocument_CreateJSON(actual).toKString()!!
 
-    public actual operator fun contains(key: String): Boolean =
+    actual override operator fun contains(key: String): Boolean =
         keys.contains(key)
 
     actual override fun iterator(): Iterator<String> =

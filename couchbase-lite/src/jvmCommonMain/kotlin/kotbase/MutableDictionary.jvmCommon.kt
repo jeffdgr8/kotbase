@@ -20,7 +20,7 @@ import kotlinx.datetime.Instant
 import com.couchbase.lite.MutableDictionary as CBLMutableDictionary
 
 public actual class MutableDictionary
-internal constructor(override val actual: CBLMutableDictionary) : Dictionary(actual) {
+internal constructor(override val actual: CBLMutableDictionary) : Dictionary(actual), MutableDictionaryInterface {
 
     public actual constructor() : this(CBLMutableDictionary())
 
@@ -28,19 +28,19 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
 
     public actual constructor(json: String) : this(CBLMutableDictionary(json))
 
-    public actual fun setData(data: Map<String, Any?>): MutableDictionary {
+    actual override fun setData(data: Map<String, Any?>): MutableDictionary {
         collectionMap.clear()
         actual.setData(data.actualIfDelegated())
         return this
     }
 
-    public actual fun setJSON(json: String): MutableDictionary {
+    actual override fun setJSON(json: String): MutableDictionary {
         collectionMap.clear()
         actual.setJSON(json)
         return this
     }
 
-    public actual fun setValue(key: String, value: Any?): MutableDictionary {
+    actual override fun setValue(key: String, value: Any?): MutableDictionary {
         actual.setValue(key, value?.actualIfDelegated())
         if (value is Array || value is Dictionary && value !== this) {
             collectionMap[key] = value
@@ -50,61 +50,61 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         return this
     }
 
-    public actual fun setString(key: String, value: String?): MutableDictionary {
+    actual override fun setString(key: String, value: String?): MutableDictionary {
         actual.setString(key, value)
         collectionMap.remove(key)
         return this
     }
 
-    public actual fun setNumber(key: String, value: Number?): MutableDictionary {
+    actual override fun setNumber(key: String, value: Number?): MutableDictionary {
         actual.setNumber(key, value)
         collectionMap.remove(key)
         return this
     }
 
-    public actual fun setInt(key: String, value: Int): MutableDictionary {
+    actual override fun setInt(key: String, value: Int): MutableDictionary {
         actual.setInt(key, value)
         collectionMap.remove(key)
         return this
     }
 
-    public actual fun setLong(key: String, value: Long): MutableDictionary {
+    actual override fun setLong(key: String, value: Long): MutableDictionary {
         actual.setLong(key, value)
         collectionMap.remove(key)
         return this
     }
 
-    public actual fun setFloat(key: String, value: Float): MutableDictionary {
+    actual override fun setFloat(key: String, value: Float): MutableDictionary {
         actual.setFloat(key, value)
         collectionMap.remove(key)
         return this
     }
 
-    public actual fun setDouble(key: String, value: Double): MutableDictionary {
+    actual override fun setDouble(key: String, value: Double): MutableDictionary {
         actual.setDouble(key, value)
         collectionMap.remove(key)
         return this
     }
 
-    public actual fun setBoolean(key: String, value: Boolean): MutableDictionary {
+    actual override fun setBoolean(key: String, value: Boolean): MutableDictionary {
         actual.setBoolean(key, value)
         collectionMap.remove(key)
         return this
     }
 
-    public actual fun setBlob(key: String, value: Blob?): MutableDictionary {
+    actual override fun setBlob(key: String, value: Blob?): MutableDictionary {
         actual.setBlob(key, value?.actual)
         collectionMap.remove(key)
         return this
     }
 
-    public actual fun setDate(key: String, value: Instant?): MutableDictionary {
+    actual override fun setDate(key: String, value: Instant?): MutableDictionary {
         actual.setDate(key, value?.toDate())
         collectionMap.remove(key)
         return this
     }
 
-    public actual fun setArray(key: String, value: Array?): MutableDictionary {
+    actual override fun setArray(key: String, value: Array?): MutableDictionary {
         actual.setArray(key, value?.actual)
         if (value == null) {
             collectionMap.remove(key)
@@ -114,7 +114,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         return this
     }
 
-    public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary {
+    actual override fun setDictionary(key: String, value: Dictionary?): MutableDictionary {
         actual.setDictionary(key, value?.actual)
         if (value != null && value !== this) {
             collectionMap[key] = value
@@ -124,7 +124,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         return this
     }
 
-    public actual fun remove(key: String): MutableDictionary {
+    actual override fun remove(key: String): MutableDictionary {
         actual.remove(key)
         collectionMap.remove(key)
         return this

@@ -26,7 +26,7 @@ public actual class MutableDictionary
 internal constructor(
     override val actual: FLMutableDict,
     dbContext: DbContext? = null
-) : Dictionary(actual, dbContext) {
+) : Dictionary(actual, dbContext), MutableDictionaryInterface {
 
     public actual constructor() : this(FLMutableDict_New()!!) {
         FLMutableDict_Release(actual)
@@ -90,7 +90,7 @@ internal constructor(
         unsavedBlobs.clear()
     }
 
-    public actual fun setData(data: Map<String, Any?>): MutableDictionary {
+    actual override fun setData(data: Map<String, Any?>): MutableDictionary {
         FLMutableDict_RemoveAll(actual)
         collectionMap.clear()
         unsavedBlobs.clear()
@@ -100,7 +100,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setJSON(json: String): MutableDictionary {
+    actual override fun setJSON(json: String): MutableDictionary {
         @Suppress("UNCHECKED_CAST")
         val data = JsonUtils.parseJson(json) as? Map<String, Any?>
             ?: error("Parsed result is not a Dictionary")
@@ -108,7 +108,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setValue(key: String, value: Any?): MutableDictionary {
+    actual override fun setValue(key: String, value: Any?): MutableDictionary {
         actual.setValue(key, value, dbContext)
         if (value is Array || value is Dictionary && value !== this) {
             collectionMap[key] = value
@@ -125,56 +125,56 @@ internal constructor(
         return this
     }
 
-    public actual fun setString(key: String, value: String?): MutableDictionary {
+    actual override fun setString(key: String, value: String?): MutableDictionary {
         actual.setString(key, value)
         removeInternal(key)
         mutate()
         return this
     }
 
-    public actual fun setNumber(key: String, value: Number?): MutableDictionary {
+    actual override fun setNumber(key: String, value: Number?): MutableDictionary {
         actual.setNumber(key, value)
         removeInternal(key)
         mutate()
         return this
     }
 
-    public actual fun setInt(key: String, value: Int): MutableDictionary {
+    actual override fun setInt(key: String, value: Int): MutableDictionary {
         actual.setInt(key, value)
         removeInternal(key)
         mutate()
         return this
     }
 
-    public actual fun setLong(key: String, value: Long): MutableDictionary {
+    actual override fun setLong(key: String, value: Long): MutableDictionary {
         actual.setLong(key, value)
         removeInternal(key)
         mutate()
         return this
     }
 
-    public actual fun setFloat(key: String, value: Float): MutableDictionary {
+    actual override fun setFloat(key: String, value: Float): MutableDictionary {
         actual.setFloat(key, value)
         removeInternal(key)
         mutate()
         return this
     }
 
-    public actual fun setDouble(key: String, value: Double): MutableDictionary {
+    actual override fun setDouble(key: String, value: Double): MutableDictionary {
         actual.setDouble(key, value)
         removeInternal(key)
         mutate()
         return this
     }
 
-    public actual fun setBoolean(key: String, value: Boolean): MutableDictionary {
+    actual override fun setBoolean(key: String, value: Boolean): MutableDictionary {
         actual.setBoolean(key, value)
         removeInternal(key)
         mutate()
         return this
     }
 
-    public actual fun setBlob(key: String, value: Blob?): MutableDictionary {
+    actual override fun setBlob(key: String, value: Blob?): MutableDictionary {
         actual.setBlob(key, value, dbContext)
         collectionMap.remove(key)
         if (value != null && value.actual == null) {
@@ -187,14 +187,14 @@ internal constructor(
         return this
     }
 
-    public actual fun setDate(key: String, value: Instant?): MutableDictionary {
+    actual override fun setDate(key: String, value: Instant?): MutableDictionary {
         actual.setDate(key, value)
         removeInternal(key)
         mutate()
         return this
     }
 
-    public actual fun setArray(key: String, value: Array?): MutableDictionary {
+    actual override fun setArray(key: String, value: Array?): MutableDictionary {
         actual.setArray(key, value, dbContext)
         removeInternal(key)
         if (value != null) {
@@ -204,7 +204,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setDictionary(key: String, value: Dictionary?): MutableDictionary {
+    actual override fun setDictionary(key: String, value: Dictionary?): MutableDictionary {
         actual.setDictionary(key, value, dbContext)
         removeInternal(key)
         if (value != null && value !== this) {
@@ -214,7 +214,7 @@ internal constructor(
         return this
     }
 
-    public actual fun remove(key: String): MutableDictionary {
+    actual override fun remove(key: String): MutableDictionary {
         actual.remove(key)
         removeInternal(key)
         mutate()

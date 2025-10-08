@@ -34,7 +34,7 @@ private constructor(
     array: FLArray,
     dict: FLDict,
     private val dbContext: DbContext?
-) : Iterable<String> {
+) : ArrayInterface, DictionaryInterface, Iterable<String> {
 
     internal constructor(rs: CPointer<CBLResultSet>, dbContext: DbContext?) : this(
         CBLResultSet_GetQuery(rs)!!,
@@ -72,7 +72,7 @@ private constructor(
     private val dict: FLDict
         get() = memory.dict
 
-    public actual val count: Int
+    actual override val count: Int
         get() = CBLQuery_ColumnCount(query).toInt()
 
     private fun getFLValue(index: Int): FLValue? {
@@ -80,46 +80,46 @@ private constructor(
         return FLArray_Get(array, index.convert())
     }
 
-    public actual fun getValue(index: Int): Any? =
+    actual override fun getValue(index: Int): Any? =
         getFLValue(index)?.toNative(dbContext)
 
-    public actual fun getString(index: Int): String? =
+    actual override fun getString(index: Int): String? =
         getFLValue(index)?.toKString()
 
-    public actual fun getNumber(index: Int): Number? =
+    actual override fun getNumber(index: Int): Number? =
         getFLValue(index)?.toNumber()
 
-    public actual fun getInt(index: Int): Int =
+    actual override fun getInt(index: Int): Int =
         getFLValue(index).toInt()
 
-    public actual fun getLong(index: Int): Long =
+    actual override fun getLong(index: Int): Long =
         getFLValue(index).toLong()
 
-    public actual fun getFloat(index: Int): Float =
+    actual override fun getFloat(index: Int): Float =
         getFLValue(index).toFloat()
 
-    public actual fun getDouble(index: Int): Double =
+    actual override fun getDouble(index: Int): Double =
         getFLValue(index).toDouble()
 
-    public actual fun getBoolean(index: Int): Boolean =
+    actual override fun getBoolean(index: Int): Boolean =
         getFLValue(index).toBoolean()
 
-    public actual fun getBlob(index: Int): Blob? =
+    actual override fun getBlob(index: Int): Blob? =
         getFLValue(index)?.toBlob(dbContext)
 
-    public actual fun getDate(index: Int): Instant? =
+    actual override fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
 
-    public actual fun getArray(index: Int): Array? =
+    actual override fun getArray(index: Int): Array? =
         getFLValue(index)?.toArray(dbContext)
 
-    public actual fun getDictionary(index: Int): Dictionary? =
+    actual override fun getDictionary(index: Int): Dictionary? =
         getFLValue(index)?.toDictionary(dbContext)
 
-    public actual fun toList(): List<Any?> =
+    actual override fun toList(): List<Any?> =
         array.toList(dbContext)
 
-    public actual val keys: List<String>
+    actual override val keys: List<String>
         get() = buildList {
             repeat(count) { index ->
                 add(CBLQuery_ColumnName(query, index.convert()).toKString()!!)
@@ -132,49 +132,49 @@ private constructor(
         }
     }
 
-    public actual fun getValue(key: String): Any? =
+    actual override fun getValue(key: String): Any? =
         getFLValue(key)?.toNative(dbContext)
 
-    public actual fun getString(key: String): String? =
+    actual override fun getString(key: String): String? =
         getFLValue(key)?.toKString()
 
-    public actual fun getNumber(key: String): Number? =
+    actual override fun getNumber(key: String): Number? =
         getFLValue(key)?.toNumber()
 
-    public actual fun getInt(key: String): Int =
+    actual override fun getInt(key: String): Int =
         getFLValue(key).toInt()
 
-    public actual fun getLong(key: String): Long =
+    actual override fun getLong(key: String): Long =
         getFLValue(key).toLong()
 
-    public actual fun getFloat(key: String): Float =
+    actual override fun getFloat(key: String): Float =
         getFLValue(key).toFloat()
 
-    public actual fun getDouble(key: String): Double =
+    actual override fun getDouble(key: String): Double =
         getFLValue(key).toDouble()
 
-    public actual fun getBoolean(key: String): Boolean =
+    actual override fun getBoolean(key: String): Boolean =
         getFLValue(key).toBoolean()
 
-    public actual fun getBlob(key: String): Blob? =
+    actual override fun getBlob(key: String): Blob? =
         getFLValue(key)?.toBlob(dbContext)
 
-    public actual fun getDate(key: String): Instant? =
+    actual override fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
-    public actual fun getArray(key: String): Array? =
+    actual override fun getArray(key: String): Array? =
         getFLValue(key)?.toArray(dbContext)
 
-    public actual fun getDictionary(key: String): Dictionary? =
+    actual override fun getDictionary(key: String): Dictionary? =
         getFLValue(key)?.toDictionary(dbContext)
 
-    public actual fun toMap(): Map<String, Any?> =
+    actual override fun toMap(): Map<String, Any?> =
         dict.toMap(dbContext)
 
-    public actual fun toJSON(): String =
+    actual override fun toJSON(): String =
         FLValue_ToJSON(dict.reinterpret()).toKString()!!
 
-    public actual operator fun contains(key: String): Boolean =
+    actual override operator fun contains(key: String): Boolean =
         dict.getValue(key) != null
 
     actual override fun iterator(): Iterator<String> =

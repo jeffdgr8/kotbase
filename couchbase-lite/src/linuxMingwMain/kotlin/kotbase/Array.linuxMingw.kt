@@ -27,7 +27,7 @@ public actual open class Array
 internal constructor(
     actual: FLArray,
     dbContext: DbContext?
-) : Iterable<Any?> {
+) : ArrayInterface, Iterable<Any?> {
 
     init {
         FLArray_Retain(actual)
@@ -60,7 +60,7 @@ internal constructor(
             dbContext?.let { DbContext(it.database) }
         )
 
-    public actual val count: Int
+    actual override val count: Int
         get() = FLArray_Count(actual).toInt()
 
     protected fun getFLValue(index: Int): FLValue? {
@@ -68,55 +68,55 @@ internal constructor(
         return actual.getValue(index)
     }
 
-    public actual open fun getValue(index: Int): Any? {
+    actual override fun getValue(index: Int): Any? {
         return collectionMap[index]
             ?: getFLValue(index)?.toNative(dbContext)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
     }
 
-    public actual fun getString(index: Int): String? =
+    actual override fun getString(index: Int): String? =
         getFLValue(index)?.toKString()
 
-    public actual fun getNumber(index: Int): Number? =
+    actual override fun getNumber(index: Int): Number? =
         getFLValue(index)?.toNumber()
 
-    public actual fun getInt(index: Int): Int =
+    actual override fun getInt(index: Int): Int =
         getFLValue(index).toInt()
 
-    public actual fun getLong(index: Int): Long =
+    actual override fun getLong(index: Int): Long =
         getFLValue(index).toLong()
 
-    public actual fun getFloat(index: Int): Float =
+    actual override fun getFloat(index: Int): Float =
         getFLValue(index).toFloat()
 
-    public actual fun getDouble(index: Int): Double =
+    actual override fun getDouble(index: Int): Double =
         getFLValue(index).toDouble()
 
-    public actual fun getBoolean(index: Int): Boolean =
+    actual override fun getBoolean(index: Int): Boolean =
         getFLValue(index).toBoolean()
 
-    public actual open fun getBlob(index: Int): Blob? =
+    actual override fun getBlob(index: Int): Blob? =
         getFLValue(index)?.toBlob(dbContext)
 
-    public actual fun getDate(index: Int): Instant? =
+    actual override fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
 
-    public actual open fun getArray(index: Int): Array? {
+    actual override fun getArray(index: Int): Array? {
         return getInternalCollection(index)
             ?: getFLValue(index)?.toArray(dbContext)
                 ?.also { collectionMap[index] = it }
     }
 
-    public actual open fun getDictionary(index: Int): Dictionary? {
+    actual override fun getDictionary(index: Int): Dictionary? {
         return getInternalCollection(index)
             ?: getFLValue(index)?.toDictionary(dbContext)
                 ?.also { collectionMap[index] = it }
     }
 
-    public actual fun toList(): List<Any?> =
+    actual override fun toList(): List<Any?> =
         actual.toList(dbContext)
 
-    public actual open fun toJSON(): String =
+    actual override fun toJSON(): String =
         FLValue_ToJSON(actual.reinterpret()).toKString()!!
 
     private var mutations: Long = 0

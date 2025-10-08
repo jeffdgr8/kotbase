@@ -27,7 +27,7 @@ public actual class MutableDocument
 internal constructor(
     actual: CPointer<CBLDocument>,
     database: Database? = null
-) : Document(actual, database) {
+) : Document(actual, database), MutableDictionaryInterface {
 
     public actual constructor() : this(CBLDocument_Create()!!) {
         CBLDocument_Release(actual)
@@ -90,12 +90,12 @@ internal constructor(
             unsavedBlobs.clear()
         }
 
-    public actual fun setData(data: Map<String, Any?>): MutableDocument {
+    actual override fun setData(data: Map<String, Any?>): MutableDocument {
         properties = MutableDictionary(data).actual
         return this
     }
 
-    public actual fun setJSON(json: String): MutableDocument {
+    actual override fun setJSON(json: String): MutableDocument {
         if (!json.startsWith("{")) {
             throw IllegalArgumentException("JSON is not a Dictionary")
         }
@@ -114,7 +114,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setValue(key: String, value: Any?): MutableDocument {
+    actual override fun setValue(key: String, value: Any?): MutableDocument {
         properties.setValue(key, value, dbContext)
         if (value is Array || value is Dictionary) {
             collectionMap[key] = value
@@ -130,49 +130,49 @@ internal constructor(
         return this
     }
 
-    public actual fun setString(key: String, value: String?): MutableDocument {
+    actual override fun setString(key: String, value: String?): MutableDocument {
         properties.setString(key, value)
         removeInternal(key)
         return this
     }
 
-    public actual fun setNumber(key: String, value: Number?): MutableDocument {
+    actual override fun setNumber(key: String, value: Number?): MutableDocument {
         properties.setNumber(key, value)
         removeInternal(key)
         return this
     }
 
-    public actual fun setInt(key: String, value: Int): MutableDocument {
+    actual override fun setInt(key: String, value: Int): MutableDocument {
         properties.setInt(key, value)
         removeInternal(key)
         return this
     }
 
-    public actual fun setLong(key: String, value: Long): MutableDocument {
+    actual override fun setLong(key: String, value: Long): MutableDocument {
         properties.setLong(key, value)
         removeInternal(key)
         return this
     }
 
-    public actual fun setFloat(key: String, value: Float): MutableDocument {
+    actual override fun setFloat(key: String, value: Float): MutableDocument {
         properties.setFloat(key, value)
         removeInternal(key)
         return this
     }
 
-    public actual fun setDouble(key: String, value: Double): MutableDocument {
+    actual override fun setDouble(key: String, value: Double): MutableDocument {
         properties.setDouble(key, value)
         removeInternal(key)
         return this
     }
 
-    public actual fun setBoolean(key: String, value: Boolean): MutableDocument {
+    actual override fun setBoolean(key: String, value: Boolean): MutableDocument {
         properties.setBoolean(key, value)
         removeInternal(key)
         return this
     }
 
-    public actual fun setBlob(key: String, value: Blob?): MutableDocument {
+    actual override fun setBlob(key: String, value: Blob?): MutableDocument {
         properties.setBlob(key, value, dbContext)
         collectionMap.remove(key)
         if (value != null && value.actual == null) {
@@ -184,13 +184,13 @@ internal constructor(
         return this
     }
 
-    public actual fun setDate(key: String, value: Instant?): MutableDocument {
+    actual override fun setDate(key: String, value: Instant?): MutableDocument {
         properties.setDate(key, value)
         removeInternal(key)
         return this
     }
 
-    public actual fun setArray(key: String, value: Array?): MutableDocument {
+    actual override fun setArray(key: String, value: Array?): MutableDocument {
         properties.setArray(key, value, dbContext)
         removeInternal(key)
         if (value != null) {
@@ -199,7 +199,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setDictionary(key: String, value: Dictionary?): MutableDocument {
+    actual override fun setDictionary(key: String, value: Dictionary?): MutableDocument {
         properties.setDictionary(key, value, dbContext)
         removeInternal(key)
         if (value != null) {
@@ -208,7 +208,7 @@ internal constructor(
         return this
     }
 
-    public actual fun remove(key: String): MutableDocument {
+    actual override fun remove(key: String): MutableDocument {
         properties.remove(key)
         removeInternal(key)
         return this
@@ -238,7 +238,7 @@ internal constructor(
                 ?.also { collectionMap[key] = it }
     }
 
-    override fun toJSON(): String? {
+    override fun toJSON(): String {
         throw CouchbaseLiteError("Mutable objects may not be encoded as JSON")
     }
 }
