@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,5 @@
  */
 package kotbase
 
-import kotbase.internal.DbContext
-import kotbase.internal.wrapCBLError
-import kotlinx.cinterop.convert
-import libcblite.CBLQueryIndex_BeginUpdate
-
-@Throws(CouchbaseLiteException::class)
-public actual fun QueryIndex.beginUpdate(limit: Int): IndexUpdater? {
-    require(limit > 0) { "limit must be > 0" }
-    return wrapCBLError { error ->
-        CBLQueryIndex_BeginUpdate(actual, limit.convert(), error)
-            ?.asIndexUpdater(DbContext(collection.database))
-    }
+internal fun IndexConfiguration.verify() {
 }

@@ -29,6 +29,11 @@ public actual constructor(
     public actual val centroids: Long
 ) : IndexConfiguration(listOf(expression)) {
 
+    init {
+        require(dimensions in 2..4096) { "Dimensions must be 2 <= dimensions <= 4096: $dimensions" }
+        require(centroids in 1..64000) { "Centroids must be 1 <= centroids <= 64000: $centroids" }
+    }
+
     public actual enum class DistanceMetric {
         EUCLIDEAN_SQUARED,
         COSINE,

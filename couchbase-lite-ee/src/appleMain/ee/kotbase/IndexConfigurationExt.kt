@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Jeff Lockhart
+ * Copyright 2025 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,15 @@
  */
 package kotbase
 
-import kotbase.internal.DbContext
-import kotbase.internal.wrapCBLError
-import kotlinx.cinterop.convert
-import libcblite.CBLQueryIndex_BeginUpdate
+internal fun IndexConfiguration.verify() {
+    if (this is VectorIndexConfiguration) {
+        require(!(maxTrainingSize != 0L && minTrainingSize > maxTrainingSize)) {
+            "Attempt to create a Vector Index with minTrainingSize > maxTrainingSize: $minTrainingSize, $maxTrainingSize"
+        }
 
-@Throws(CouchbaseLiteException::class)
-public actual fun QueryIndex.beginUpdate(limit: Int): IndexUpdater? {
-    require(limit > 0) { "limit must be > 0" }
-    return wrapCBLError { error ->
-        CBLQueryIndex_BeginUpdate(actual, limit.convert(), error)
-            ?.asIndexUpdater(DbContext(collection.database))
+        val subquantizers = encoding.subquantizers
+        require(!(subquantizers != 0L && dimensions % subquantizers != 0L)) {
+            "Dimensions must be an integer multiple of subquantizers: $dimensions, $subquantizers"
+        }
     }
 }
