@@ -64,10 +64,12 @@ class KermitCouchbaseLiteLogSinkTest : BaseTest() {
         }
 
         fun checkLog(severity: Severity, tag: String, vararg messageContent: String) {
-            val logged = logs.any { log ->
-                log.severity == severity &&
-                log.tag == tag &&
-                messageContent.all { log.message.contains(it) }
+            val logged = logs.block {
+                it.any { log ->
+                    log.severity == severity &&
+                    log.tag == tag &&
+                    messageContent.all { log.message.contains(it) }
+                }
             }
 
             val concatMessage = messageContent.joinToString("...")
