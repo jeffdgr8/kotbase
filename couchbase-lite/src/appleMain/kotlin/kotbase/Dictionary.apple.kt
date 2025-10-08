@@ -22,73 +22,73 @@ import kotbase.internal.DelegatedClass
 import kotlinx.datetime.Instant
 
 public actual open class Dictionary
-internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actual), Iterable<String> {
+internal constructor(actual: CBLDictionary) : DelegatedClass<CBLDictionary>(actual), DictionaryInterface, Iterable<String> {
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
     public actual fun toMutable(): MutableDictionary =
         MutableDictionary(actual.toMutable())
 
-    public actual val count: Int
+    actual override val count: Int
         get() = actual.count.toInt()
 
     @Suppress("UNCHECKED_CAST")
-    public actual val keys: List<String>
+    actual override val keys: List<String>
         get() = actual.keys as List<String>
 
-    public actual open fun getValue(key: String): Any? {
+    actual override fun getValue(key: String): Any? {
         return collectionMap[key]
             ?: actual.valueForKey(key)?.delegateIfNecessary()
                 ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
     }
 
-    public actual fun getString(key: String): String? =
+    actual override fun getString(key: String): String? =
         actual.stringForKey(key)
 
-    public actual fun getNumber(key: String): Number? =
+    actual override fun getNumber(key: String): Number? =
         actual.numberForKey(key)?.asNumber()
 
-    public actual fun getInt(key: String): Int =
+    actual override fun getInt(key: String): Int =
         actual.integerForKey(key).toInt()
 
-    public actual fun getLong(key: String): Long =
+    actual override fun getLong(key: String): Long =
         actual.longLongForKey(key)
 
-    public actual fun getFloat(key: String): Float =
+    actual override fun getFloat(key: String): Float =
         actual.floatForKey(key)
 
-    public actual fun getDouble(key: String): Double =
+    actual override fun getDouble(key: String): Double =
         actual.doubleForKey(key)
 
-    public actual fun getBoolean(key: String): Boolean =
+    actual override fun getBoolean(key: String): Boolean =
         actual.booleanForKey(key)
 
-    public actual fun getBlob(key: String): Blob? =
+    actual override fun getBlob(key: String): Blob? =
         actual.blobForKey(key)?.asBlob()
 
-    public actual fun getDate(key: String): Instant? =
+    actual override fun getDate(key: String): Instant? =
         actual.dateForKey(key)?.toKotlinInstantMillis()
 
-    public actual open fun getArray(key: String): Array? {
+    actual override fun getArray(key: String): Array? {
         return getInternalCollection(key)
             ?: actual.arrayForKey(key)?.asArray()
                 ?.also { collectionMap[key] = it }
     }
 
-    public actual open fun getDictionary(key: String): Dictionary? {
+    actual override fun getDictionary(key: String): Dictionary? {
         return getInternalCollection(key)
             ?: actual.dictionaryForKey(key)?.asDictionary()
                 ?.also { collectionMap[key] = it }
     }
 
     @Suppress("UNCHECKED_CAST")
-    public actual fun toMap(): Map<String, Any?> =
+    actual override fun toMap(): Map<String, Any?> =
         actual.toDictionary().delegateIfNecessary() as Map<String, Any?>
 
-    public actual open fun toJSON(): String =
+    actual override fun toJSON(): String =
         actual.toJSON()
 
-    public actual operator fun contains(key: String): Boolean =
+    actual override operator fun contains(key: String): Boolean =
         actual.containsValueForKey(key)
 
     private var mutations: Long = 0

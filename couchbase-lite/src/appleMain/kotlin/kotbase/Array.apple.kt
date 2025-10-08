@@ -23,86 +23,86 @@ import kotlinx.cinterop.convert
 import kotlinx.datetime.Instant
 
 public actual open class Array
-internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), Iterable<Any?> {
+internal constructor(actual: CBLArray) : DelegatedClass<CBLArray>(actual), ArrayInterface, Iterable<Any?> {
 
     internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
 
     public actual fun toMutable(): MutableArray =
         MutableArray(actual.toMutable())
 
-    public actual val count: Int
+    actual override val count: Int
         get() = actual.count.toInt()
 
-    public actual fun getValue(index: Int): Any? {
+    actual override fun getValue(index: Int): Any? {
         checkIndex(index)
         return collectionMap[index]
             ?: actual.valueAtIndex(index.convert())?.delegateIfNecessary()
                 ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
     }
 
-    public actual fun getString(index: Int): String? {
+    actual override fun getString(index: Int): String? {
         checkIndex(index)
         return actual.stringAtIndex(index.convert())
     }
 
-    public actual fun getNumber(index: Int): Number? {
+    actual override fun getNumber(index: Int): Number? {
         checkIndex(index)
         return actual.numberAtIndex(index.convert())?.asNumber()
     }
 
-    public actual fun getInt(index: Int): Int {
+    actual override fun getInt(index: Int): Int {
         checkIndex(index)
         return actual.integerAtIndex(index.convert()).toInt()
     }
 
-    public actual fun getLong(index: Int): Long {
+    actual override fun getLong(index: Int): Long {
         checkIndex(index)
         return actual.longLongAtIndex(index.convert())
     }
 
-    public actual fun getFloat(index: Int): Float {
+    actual override fun getFloat(index: Int): Float {
         checkIndex(index)
         return actual.floatAtIndex(index.convert())
     }
 
-    public actual fun getDouble(index: Int): Double {
+    actual override fun getDouble(index: Int): Double {
         checkIndex(index)
         return actual.doubleAtIndex(index.convert())
     }
 
-    public actual fun getBoolean(index: Int): Boolean {
+    actual override fun getBoolean(index: Int): Boolean {
         checkIndex(index)
         return actual.booleanAtIndex(index.convert())
     }
 
-    public actual fun getBlob(index: Int): Blob? {
+    actual override fun getBlob(index: Int): Blob? {
         checkIndex(index)
         return actual.blobAtIndex(index.convert())?.asBlob()
     }
 
-    public actual fun getDate(index: Int): Instant? {
+    actual override fun getDate(index: Int): Instant? {
         checkIndex(index)
         return actual.dateAtIndex(index.convert())?.toKotlinInstantMillis()
     }
 
-    public actual open fun getArray(index: Int): Array? {
+    actual override fun getArray(index: Int): Array? {
         checkIndex(index)
         return getInternalCollection(index)
             ?: actual.arrayAtIndex(index.convert())?.asArray()
                 ?.also { collectionMap[index] = it }
     }
 
-    public actual open fun getDictionary(index: Int): Dictionary? {
+    actual override fun getDictionary(index: Int): Dictionary? {
         checkIndex(index)
         return getInternalCollection(index)
             ?: actual.dictionaryAtIndex(index.convert())?.asDictionary()
                 ?.also { collectionMap[index] = it }
     }
 
-    public actual fun toList(): List<Any?> =
+    actual override fun toList(): List<Any?> =
         actual.toArray().delegateIfNecessary()
 
-    public actual open fun toJSON(): String =
+    actual override fun toJSON(): String =
         actual.toJSON()
 
     private var mutations: Long = 0

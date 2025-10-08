@@ -18,49 +18,14 @@ package kotbase
 import kotlinx.datetime.Instant
 
 /**
- * **ENTERPRISE EDITION API**
- *
- * `IndexUpdater` used for updating the index in lazy mode. Currently, the vector index
- * is the only index type that can be updated lazily.
- *
- * **Note!!**
- *
- * The [finish] function implicitly closes the `IndexUpdater` if it succeeds.
- * Use of a closed `IndexUpdater` or any container ([Dictionary] or [Array]) obtained
- * from it will throw a [CouchbaseLiteError].
+ * ArrayInterface defines a set of methods for readonly accessing array data.
  */
-public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
+public interface ArrayInterface {
 
     /**
      * The number of the items in the array.
      */
-    override val count: Int
-
-    /**
-     * Gets value at the given index as an object. The object types are Blob,
-     * Array, Dictionary, Number, or String based on the underlying
-     * data type; or null if the value is null.
-     *
-     * @param index the index. This value must not exceed the bounds of the array.
-     * @return the Object or null.
-     */
-    override fun getValue(index: Int): Any?
-
-    /**
-     * Gets value at the given index as a String. Returns null if the value doesn't exist, or its value is not a String.
-     *
-     * @param index the index. This value must not exceed the bounds of the array.
-     * @return the String or null.
-     */
-    override fun getString(index: Int): String?
-
-    /**
-     * Gets value at the given index as a Number. Returns null if the value doesn't exist, or its value is not a Number.
-     *
-     * @param index the index. This value must not exceed the bounds of the array.
-     * @return the Number or null.
-     */
-    override fun getNumber(index: Int): Number?
+    public val count: Int
 
     /**
      * Gets value at the given index as an int.
@@ -70,7 +35,7 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the int value.
      */
-    override fun getInt(index: Int): Int
+    public fun getInt(index: Int): Int
 
     /**
      * Gets value at the given index as a long.
@@ -80,7 +45,7 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the long value.
      */
-    override fun getLong(index: Int): Long
+    public fun getLong(index: Int): Long
 
     /**
      * Gets value at the given index as a float.
@@ -90,7 +55,7 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the float value.
      */
-    override fun getFloat(index: Int): Float
+    public fun getFloat(index: Int): Float
 
     /**
      * Gets value at the given index as a double.
@@ -100,7 +65,7 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the double value.
      */
-    override fun getDouble(index: Int): Double
+    public fun getDouble(index: Int): Double
 
     /**
      * Gets value at the given index as a boolean.
@@ -108,16 +73,23 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the boolean value.
      */
-    override fun getBoolean(index: Int): Boolean
+    public fun getBoolean(index: Int): Boolean
 
     /**
-     * Gets value at the given index as a Blob.
-     * Returns null if the value doesn't exist, or its value is not a Blob.
+     * Gets value at the given index as a Number. Returns null if the value doesn't exist, or its value is not a Number.
      *
      * @param index the index. This value must not exceed the bounds of the array.
-     * @return the Blob value or null.
+     * @return the Number or null.
      */
-    override fun getBlob(index: Int): Blob?
+    public fun getNumber(index: Int): Number?
+
+    /**
+     * Gets value at the given index as a String. Returns null if the value doesn't exist, or its value is not a String.
+     *
+     * @param index the index. This value must not exceed the bounds of the array.
+     * @return the String or null.
+     */
+    public fun getString(index: Int): String?
 
     /**
      * Gets value at the given index as a Date.
@@ -130,7 +102,16 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the Date value or null.
      */
-    override fun getDate(index: Int): Instant?
+    public fun getDate(index: Int): Instant?
+
+    /**
+     * Gets value at the given index as a Blob.
+     * Returns null if the value doesn't exist, or its value is not a Blob.
+     *
+     * @param index the index. This value must not exceed the bounds of the array.
+     * @return the Blob value or null.
+     */
+    public fun getBlob(index: Int): Blob?
 
     /**
      * Gets value at the given index as an Array.
@@ -139,7 +120,7 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the Array object.
      */
-    override fun getArray(index: Int): Array?
+    public fun getArray(index: Int): Array?
 
     /**
      * Gets a Dictionary at the given index. Return null if the value is not a dictionary.
@@ -147,7 +128,17 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      * @param index the index. This value must not exceed the bounds of the array.
      * @return the Dictionary object.
      */
-    override fun getDictionary(index: Int): Dictionary?
+    public fun getDictionary(index: Int): Dictionary?
+
+    /**
+     * Gets value at the given index as an object. The object types are Blob,
+     * Array, Dictionary, Number, or String based on the underlying
+     * data type; or null if the value is null.
+     *
+     * @param index the index. This value must not exceed the bounds of the array.
+     * @return the Object or null.
+     */
+    public fun getValue(index: Int): Any?
 
     /**
      * Gets content of the current object as a List. The values contained in the returned
@@ -155,7 +146,7 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      *
      * @return the List object representing the content of the current object in the JSON format.
      */
-    override fun toList(): List<Any?>
+    public fun toList(): List<Any?>
 
     /**
      * Encode an Array as a JSON string
@@ -163,45 +154,20 @@ public interface IndexUpdater : ArrayInterface, Iterable<Any?>, AutoCloseable {
      * @return JSON encoded representation of the Array
      * @throws CouchbaseLiteException on encoder failure.
      */
-    override fun toJSON(): String
+    public fun toJSON(): String
+}
 
-    /**
-     * Sets the vector for the value corresponding to the index.
-     * Setting null value means that there is no vector for the value,
-     * and any existing vector will be removed when the finish() is
-     * called.
-     *
-     * @param value the vector.
-     * @param index the index at which to place the vector.
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun setVector(value: List<Float>?, index: Int)
-
-    /**
-     * Skip setting the vector for the value corresponding to
-     * the index. The vector will be required to compute and
-     * set again for the value when the QueryIndex's
-     * beginUpdate() is later called for updating the index.
-     */
-    public fun skipVector(index: Int)
-
-    /**
-     * Updates the index with the computed vectors and removes
-     * any index rows for which null vector was given.
-     * If there are any indexes that do not have their vector value
-     * set or are skipped, a [CouchbaseLiteException] will be thrown.
-     *
-     * Note: Before calling the finish() function, the
-     * set vectors are kept in the memory.
-     *
-     * @throws CouchbaseLiteException if there are any indexes that
-     * do not have their vector value set or are skipped.
-     */
-    @Throws(CouchbaseLiteException::class)
-    public fun finish()
-
-    /**
-     * Close the updater without a checked exception
-     */
-    override fun close()
+/**
+ * Subscript access to a Fragment object of the projecting result
+ * value at the given index.
+ *
+ * @param index The select result index. If the index value exceeds the bounds
+ * of the array, the Fragment object will represent a null value.
+ */
+public operator fun ArrayInterface.get(index: Int): Fragment {
+    return if (index in 0..<count) {
+        Fragment(this, index)
+    } else {
+        Fragment()
+    }
 }

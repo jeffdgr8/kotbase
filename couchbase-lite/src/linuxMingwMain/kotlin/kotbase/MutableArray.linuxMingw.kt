@@ -28,7 +28,7 @@ public actual class MutableArray
 internal constructor(
     override val actual: FLMutableArray,
     dbContext: DbContext? = null
-) : Array(actual, dbContext) {
+) : Array(actual, dbContext), MutableArrayInterface {
 
     public actual constructor() : this(FLMutableArray_New()!!) {
         FLMutableArray_Release(actual)
@@ -91,7 +91,7 @@ internal constructor(
         unsavedBlobs.clear()
     }
 
-    public actual fun setData(data: List<Any?>): MutableArray {
+    actual override fun setData(data: List<Any?>): MutableArray {
         FLMutableArray_Resize(actual, data.size.convert())
         unsavedBlobs.clear()
         data.forEachIndexed { index, value ->
@@ -100,14 +100,14 @@ internal constructor(
         return this
     }
 
-    public actual fun setJSON(json: String): MutableArray {
+    actual override fun setJSON(json: String): MutableArray {
         val data = JsonUtils.parseJson(json) as? List<Any?>
             ?: error("Parsed result is not an Array")
         setData(data)
         return this
     }
 
-    public actual fun setValue(index: Int, value: Any?): MutableArray {
+    actual override fun setValue(index: Int, value: Any?): MutableArray {
         // invalid type error expected to supersede index out of bounds
         when (value) {
             is Boolean, is ByteArray, is Blob, is String, is Instant, is Number,
@@ -137,7 +137,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setString(index: Int, value: String?): MutableArray {
+    actual override fun setString(index: Int, value: String?): MutableArray {
         checkIndex(index)
         if (value != null) {
             memScoped {
@@ -151,7 +151,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setNumber(index: Int, value: Number?): MutableArray {
+    actual override fun setNumber(index: Int, value: Number?): MutableArray {
         checkIndex(index)
         when (value) {
             is Double -> FLMutableArray_SetDouble(actual, index.convert(), value)
@@ -164,7 +164,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setInt(index: Int, value: Int): MutableArray {
+    actual override fun setInt(index: Int, value: Int): MutableArray {
         checkIndex(index)
         FLMutableArray_SetInt(actual, index.convert(), value.convert())
         removeInternal(index)
@@ -172,7 +172,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setLong(index: Int, value: Long): MutableArray {
+    actual override fun setLong(index: Int, value: Long): MutableArray {
         checkIndex(index)
         FLMutableArray_SetInt(actual, index.convert(), value.convert())
         removeInternal(index)
@@ -180,7 +180,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setFloat(index: Int, value: Float): MutableArray {
+    actual override fun setFloat(index: Int, value: Float): MutableArray {
         checkIndex(index)
         FLMutableArray_SetFloat(actual, index.convert(), value)
         removeInternal(index)
@@ -188,7 +188,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setDouble(index: Int, value: Double): MutableArray {
+    actual override fun setDouble(index: Int, value: Double): MutableArray {
         checkIndex(index)
         FLMutableArray_SetDouble(actual, index.convert(), value)
         removeInternal(index)
@@ -196,7 +196,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setBoolean(index: Int, value: Boolean): MutableArray {
+    actual override fun setBoolean(index: Int, value: Boolean): MutableArray {
         checkIndex(index)
         FLMutableArray_SetBool(actual, index.convert(), value)
         removeInternal(index)
@@ -204,7 +204,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setBlob(index: Int, value: Blob?): MutableArray {
+    actual override fun setBlob(index: Int, value: Blob?): MutableArray {
         checkIndex(index)
         collectionMap.remove(index)
         unsavedBlobs.remove(index)
@@ -222,7 +222,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setDate(index: Int, value: Instant?): MutableArray {
+    actual override fun setDate(index: Int, value: Instant?): MutableArray {
         checkIndex(index)
         if (value != null) {
             memScoped {
@@ -236,7 +236,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setArray(index: Int, value: Array?): MutableArray {
+    actual override fun setArray(index: Int, value: Array?): MutableArray {
         checkIndex(index)
         removeInternal(index)
         if (value != null) {
@@ -252,7 +252,7 @@ internal constructor(
         return this
     }
 
-    public actual fun setDictionary(index: Int, value: Dictionary?): MutableArray {
+    actual override fun setDictionary(index: Int, value: Dictionary?): MutableArray {
         checkIndex(index)
         removeInternal(index)
         if (value != null) {
@@ -265,7 +265,7 @@ internal constructor(
         return this
     }
 
-    public actual fun addValue(value: Any?): MutableArray {
+    actual override fun addValue(value: Any?): MutableArray {
         @Suppress("UNCHECKED_CAST")
         when (value) {
             is Boolean -> addBoolean(value)
@@ -285,7 +285,7 @@ internal constructor(
         return this
     }
 
-    public actual fun addString(value: String?): MutableArray {
+    actual override fun addString(value: String?): MutableArray {
         if (value != null) {
             memScoped {
                 FLMutableArray_AppendString(actual, value.toFLString(this))
@@ -297,7 +297,7 @@ internal constructor(
         return this
     }
 
-    public actual fun addNumber(value: Number?): MutableArray {
+    actual override fun addNumber(value: Number?): MutableArray {
         when (value) {
             is Double -> FLMutableArray_AppendDouble(actual, value)
             is Float -> FLMutableArray_AppendFloat(actual, value)
@@ -308,37 +308,37 @@ internal constructor(
         return this
     }
 
-    public actual fun addInt(value: Int): MutableArray {
+    actual override fun addInt(value: Int): MutableArray {
         FLMutableArray_AppendInt(actual, value.convert())
         mutate()
         return this
     }
 
-    public actual fun addLong(value: Long): MutableArray {
+    actual override fun addLong(value: Long): MutableArray {
         FLMutableArray_AppendInt(actual, value.convert())
         mutate()
         return this
     }
 
-    public actual fun addFloat(value: Float): MutableArray {
+    actual override fun addFloat(value: Float): MutableArray {
         FLMutableArray_AppendFloat(actual, value)
         mutate()
         return this
     }
 
-    public actual fun addDouble(value: Double): MutableArray {
+    actual override fun addDouble(value: Double): MutableArray {
         FLMutableArray_AppendDouble(actual, value)
         mutate()
         return this
     }
 
-    public actual fun addBoolean(value: Boolean): MutableArray {
+    actual override fun addBoolean(value: Boolean): MutableArray {
         FLMutableArray_AppendBool(actual, value)
         mutate()
         return this
     }
 
-    public actual fun addBlob(value: Blob?): MutableArray {
+    actual override fun addBlob(value: Blob?): MutableArray {
         if (value?.actual == null) {
             FLMutableArray_AppendNull(actual)
             if (value != null) {
@@ -352,7 +352,7 @@ internal constructor(
         return this
     }
 
-    public actual fun addDate(value: Instant?): MutableArray {
+    actual override fun addDate(value: Instant?): MutableArray {
         if (value != null) {
             memScoped {
                 FLMutableArray_AppendString(actual, value.toStringMillis().toFLString(this))
@@ -364,7 +364,7 @@ internal constructor(
         return this
     }
 
-    public actual fun addArray(value: Array?): MutableArray {
+    actual override fun addArray(value: Array?): MutableArray {
         if (value != null) {
             checkSelf(value.actual)
             FLMutableArray_AppendArray(actual, value.actual)
@@ -378,7 +378,7 @@ internal constructor(
         return this
     }
 
-    public actual fun addDictionary(value: Dictionary?): MutableArray {
+    actual override fun addDictionary(value: Dictionary?): MutableArray {
         if (value != null) {
             FLMutableArray_AppendDict(actual, value.actual)
             collectionMap[count - 1] = value
@@ -396,79 +396,79 @@ internal constructor(
         incrementAfter(index, unsavedBlobs)
     }
 
-    public actual fun insertValue(index: Int, value: Any?): MutableArray {
+    actual override fun insertValue(index: Int, value: Any?): MutableArray {
         insertAt(index)
         setValue(index, value)
         return this
     }
 
-    public actual fun insertString(index: Int, value: String?): MutableArray {
+    actual override fun insertString(index: Int, value: String?): MutableArray {
         insertAt(index)
         setString(index, value)
         return this
     }
 
-    public actual fun insertNumber(index: Int, value: Number?): MutableArray {
+    actual override fun insertNumber(index: Int, value: Number?): MutableArray {
         insertAt(index)
         setNumber(index, value)
         return this
     }
 
-    public actual fun insertInt(index: Int, value: Int): MutableArray {
+    actual override fun insertInt(index: Int, value: Int): MutableArray {
         insertAt(index)
         setInt(index, value)
         return this
     }
 
-    public actual fun insertLong(index: Int, value: Long): MutableArray {
+    actual override fun insertLong(index: Int, value: Long): MutableArray {
         insertAt(index)
         setLong(index, value)
         return this
     }
 
-    public actual fun insertFloat(index: Int, value: Float): MutableArray {
+    actual override fun insertFloat(index: Int, value: Float): MutableArray {
         insertAt(index)
         setFloat(index, value)
         return this
     }
 
-    public actual fun insertDouble(index: Int, value: Double): MutableArray {
+    actual override fun insertDouble(index: Int, value: Double): MutableArray {
         insertAt(index)
         setDouble(index, value)
         return this
     }
 
-    public actual fun insertBoolean(index: Int, value: Boolean): MutableArray {
+    actual override fun insertBoolean(index: Int, value: Boolean): MutableArray {
         insertAt(index)
         setBoolean(index, value)
         return this
     }
 
-    public actual fun insertBlob(index: Int, value: Blob?): MutableArray {
+    actual override fun insertBlob(index: Int, value: Blob?): MutableArray {
         insertAt(index)
         setBlob(index, value)
         return this
     }
 
-    public actual fun insertDate(index: Int, value: Instant?): MutableArray {
+    actual override fun insertDate(index: Int, value: Instant?): MutableArray {
         insertAt(index)
         setDate(index, value)
         return this
     }
 
-    public actual fun insertArray(index: Int, value: Array?): MutableArray {
+    actual override fun insertArray(index: Int, value: Array?): MutableArray {
         insertAt(index)
         setArray(index, value)
         return this
     }
 
-    public actual fun insertDictionary(index: Int, value: Dictionary?): MutableArray {
+    actual override fun insertDictionary(index: Int, value: Dictionary?): MutableArray {
         insertAt(index)
         setDictionary(index, value)
         return this
     }
 
-    public actual fun remove(index: Int): MutableArray {
+    actual override fun remove(index: Int): MutableArray {
         checkIndex(index)
         FLMutableArray_Remove(actual, index.convert(), 1.convert())
         removeInternal(index)

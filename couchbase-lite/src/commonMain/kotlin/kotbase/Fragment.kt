@@ -28,47 +28,28 @@ internal constructor(
     protected val index: Int?
 ) {
 
-    internal constructor(parent: Document, key: String) :
+    internal constructor(parent: DictionaryInterface, key: String) :
             this(parent, key, null)
 
-    internal constructor(parent: Dictionary, key: String) :
-            this(parent, key, null)
-
-    internal constructor(parent: Result, key: String) :
-            this(parent, key, null)
-
-    internal constructor(parent: Array, index: Int) :
-            this(parent, null, index)
-
-    internal constructor(parent: Result, index: Int) :
+    internal constructor(parent: ArrayInterface, index: Int) :
             this(parent, null, index)
 
     internal constructor() : this(null, null, null)
 
-    private fun <R> Result.select(keyAction: Result.(key: String) -> R, indexAction: Result.(index: Int) -> R): R {
-        return if (key != null) {
-            keyAction(key)
-        } else if (index != null) {
-            indexAction(index)
-        } else {
-            error("Either key or index should not be null")
-        }
-    }
+    protected open val dictParent: DictionaryInterface
+        get() = parent as DictionaryInterface
+
+    protected open val arrayParent: ArrayInterface
+        get() = parent as ArrayInterface
 
     /**
      * Gets the fragment value. The value types are Blob, Array, Dictionary, Number,
      * or String based on the underlying data type; or null if the value is null.
      */
     public open val value: Any?
-        get() = when (parent) {
-            is Document -> parent.getValue(key!!)
-            is Dictionary -> parent.getValue(key!!)
-            is Array -> parent.getValue(index!!)
-            is Result -> parent.select({
-                getValue(it)
-            }, {
-                getValue(it)
-            })
+        get() = when {
+            key != null -> dictParent.getValue(key)
+            index != null -> arrayParent.getValue(index)
             else -> null
         }
 
@@ -76,15 +57,9 @@ internal constructor(
      * Gets the value as a string. Returns null if the value is null, or the value is not a string.
      */
     public open val string: String?
-        get() = when (parent) {
-            is Document -> parent.getString(key!!)
-            is Dictionary -> parent.getString(key!!)
-            is Array -> parent.getString(index!!)
-            is Result -> parent.select({
-                getString(it)
-            }, {
-                getString(it)
-            })
+        get() = when {
+            key != null -> dictParent.getString(key)
+            index != null -> arrayParent.getString(index)
             else -> null
         }
 
@@ -93,15 +68,9 @@ internal constructor(
      * doesn't exist, or its value is not a Number.
      */
     public open val number: Number?
-        get() = when (parent) {
-            is Document -> parent.getNumber(key!!)
-            is Dictionary -> parent.getNumber(key!!)
-            is Array -> parent.getNumber(index!!)
-            is Result -> parent.select({
-                getNumber(it)
-            }, {
-                getNumber(it)
-            })
+        get() = when {
+            key != null -> dictParent.getNumber(key)
+            index != null -> arrayParent.getNumber(index)
             else -> null
         }
 
@@ -110,15 +79,9 @@ internal constructor(
      * returned as 1, false as 0. Returns 0 if the value is null or is not a numeric value.
      */
     public open val int: Int
-        get() = when (parent) {
-            is Document -> parent.getInt(key!!)
-            is Dictionary -> parent.getInt(key!!)
-            is Array -> parent.getInt(index!!)
-            is Result -> parent.select({
-                getInt(it)
-            }, {
-                getInt(it)
-            })
+        get() = when {
+            key != null -> dictParent.getInt(key)
+            index != null -> arrayParent.getInt(index)
             else -> 0
         }
 
@@ -127,16 +90,10 @@ internal constructor(
      * returned as 1, false as 0. Returns 0 if the value is null or is not a numeric value.
      */
     public open val long: Long
-        get() = when (parent) {
-            is Document -> parent.getLong(key!!)
-            is Dictionary -> parent.getLong(key!!)
-            is Array -> parent.getLong(index!!)
-            is Result -> parent.select({
-                getLong(it)
-            }, {
-                getLong(it)
-            })
-            else -> 0
+        get() = when {
+            key != null -> dictParent.getLong(key)
+            index != null -> arrayParent.getLong(index)
+            else -> 0L
         }
 
     /**
@@ -144,15 +101,9 @@ internal constructor(
      * returned as 1.0, false as 0.0. Returns 0.0 if the value is null or is not a numeric value.
      */
     public open val float: Float
-        get() = when (parent) {
-            is Document -> parent.getFloat(key!!)
-            is Dictionary -> parent.getFloat(key!!)
-            is Array -> parent.getFloat(index!!)
-            is Result -> parent.select({
-                getFloat(it)
-            }, {
-                getFloat(it)
-            })
+        get() = when {
+            key != null -> dictParent.getFloat(key)
+            index != null -> arrayParent.getFloat(index)
             else -> 0F
         }
 
@@ -161,15 +112,9 @@ internal constructor(
      * returned as 1.0, false as 0.0. Returns 0.0 if the value is null or is not a numeric value.
      */
     public open val double: Double
-        get() = when (parent) {
-            is Document -> parent.getDouble(key!!)
-            is Dictionary -> parent.getDouble(key!!)
-            is Array -> parent.getDouble(index!!)
-            is Result -> parent.select({
-                getDouble(it)
-            }, {
-                getDouble(it)
-            })
+        get() = when {
+            key != null -> dictParent.getDouble(key)
+            index != null -> arrayParent.getDouble(index)
             else -> 0.0
         }
 
@@ -178,15 +123,9 @@ internal constructor(
      * is not null, and is either true or a nonzero number.
      */
     public open val boolean: Boolean
-        get() = when (parent) {
-            is Document -> parent.getBoolean(key!!)
-            is Dictionary -> parent.getBoolean(key!!)
-            is Array -> parent.getBoolean(index!!)
-            is Result -> parent.select({
-                getBoolean(it)
-            }, {
-                getBoolean(it)
-            })
+        get() = when {
+            key != null -> dictParent.getBoolean(key)
+            index != null -> arrayParent.getBoolean(index)
             else -> false
         }
 
@@ -194,15 +133,9 @@ internal constructor(
      * Get the value as a Blob. Returns null if the value is null, or the value is not a Blob.
      */
     public open val blob: Blob?
-        get() = when (parent) {
-            is Document -> parent.getBlob(key!!)
-            is Dictionary -> parent.getBlob(key!!)
-            is Array -> parent.getBlob(index!!)
-            is Result -> parent.select({
-                getBlob(it)
-            }, {
-                getBlob(it)
-            })
+        get() = when {
+            key != null -> dictParent.getBlob(key)
+            index != null -> arrayParent.getBlob(index)
             else -> null
         }
 
@@ -214,15 +147,9 @@ internal constructor(
      * or without milliseconds.
      */
     public open val date: Instant?
-        get() = when (parent) {
-            is Document -> parent.getDate(key!!)
-            is Dictionary -> parent.getDate(key!!)
-            is Array -> parent.getDate(index!!)
-            is Result -> parent.select({
-                getDate(it)
-            }, {
-                getDate(it)
-            })
+        get() = when {
+            key != null -> dictParent.getDate(key)
+            index != null -> arrayParent.getDate(index)
             else -> null
         }
 
@@ -231,15 +158,9 @@ internal constructor(
      * Returns null if the value is null, or the value is not an array.
      */
     public open val array: Array?
-        get() = when (parent) {
-            is Document -> parent.getArray(key!!)
-            is Dictionary -> parent.getArray(key!!)
-            is Array -> parent.getArray(index!!)
-            is Result -> parent.select({
-                getArray(it)
-            }, {
-                getArray(it)
-            })
+        get() = when {
+            key != null -> dictParent.getArray(key)
+            index != null -> arrayParent.getArray(index)
             else -> null
         }
 
@@ -248,15 +169,9 @@ internal constructor(
      * value. Returns null if the value is null, or the value is not a dictionary.
      */
     public open val dictionary: Dictionary?
-        get() = when (parent) {
-            is Document -> parent.getDictionary(key!!)
-            is Dictionary -> parent.getDictionary(key!!)
-            is Array -> parent.getDictionary(index!!)
-            is Result -> parent.select({
-                getDictionary(it)
-            }, {
-                getDictionary(it)
-            })
+        get() = when {
+            key != null -> dictParent.getDictionary(key)
+            index != null -> arrayParent.getDictionary(index)
             else -> null
         }
 
@@ -270,21 +185,15 @@ internal constructor(
      * Subscript access to a Fragment object by index.
      *
      * @param index The index. If the index value exceeds the bounds of the array,
-     * the MutableFragment object will represent a nil value.
+     * the MutableFragment object will represent a null value.
      */
     public open operator fun get(index: Int): Fragment {
-        val parent = when (parent) {
-            is Document -> parent.getValue(key!!)
-            is Dictionary -> parent.getValue(key!!)
-            is Array -> parent.getValue(this.index!!)
-            is Result -> parent.select({
-                getValue(it)
-            }, {
-                getValue(it)
-            })
+        val parent = when {
+            key != null -> dictParent.getValue(key)
+            this.index != null -> arrayParent.getValue(this.index)
             else -> null
         }
-        return if (parent is Array && index in 0..<parent.count) {
+        return if (parent is ArrayInterface && index in 0..<parent.count) {
             Fragment(parent, null, index)
         } else {
             Fragment()
@@ -297,18 +206,12 @@ internal constructor(
      * @param key The key.
      */
     public open operator fun get(key: String): Fragment {
-        val parent = when (parent) {
-            is Document -> parent.getValue(this.key!!)
-            is Dictionary -> parent.getValue(this.key!!)
-            is Array -> parent.getValue(index!!)
-            is Result -> parent.select({
-                getValue(it)
-            }, {
-                getValue(it)
-            })
+        val parent = when {
+            this.key != null -> dictParent.getValue(this.key)
+            index != null -> arrayParent.getValue(index)
             else -> null
         }
-        return if (parent is Dictionary) {
+        return if (parent is DictionaryInterface) {
             Fragment(parent, key, null)
         } else {
             Fragment()

@@ -29,16 +29,19 @@ internal constructor(
     index: Int?
 ) : Fragment(parent, key, index) {
 
-    internal constructor(parent: MutableDocument, key: String) :
+    internal constructor(parent: MutableDictionaryInterface, key: String) :
             this(parent, key, null)
 
-    internal constructor(parent: MutableDictionary, key: String) :
-            this(parent, key, null)
-
-    internal constructor(parent: MutableArray, index: Int) :
+    internal constructor(parent: MutableArrayInterface, index: Int) :
             this(parent, null, index)
 
     internal constructor() : this(null, null, null)
+
+    override val dictParent: MutableDictionaryInterface
+        get() = parent as MutableDictionaryInterface
+
+    override val arrayParent: MutableArrayInterface
+        get() = parent as MutableArrayInterface
 
     /**
      * Gets the value from or sets the value to the fragment object.
@@ -46,10 +49,9 @@ internal constructor(
     override var value: Any?
         get() = super.value
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setValue(key!!, value)
-                is MutableDictionary -> parent.setValue(key!!, value)
-                is MutableArray -> parent.setValue(index!!, value)
+            when {
+                key != null -> dictParent.setValue(key, value)
+                index != null -> arrayParent.setValue(index, value)
             }
         }
 
@@ -59,10 +61,9 @@ internal constructor(
     override var string: String?
         get() = super.string
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setString(key!!, value)
-                is MutableDictionary -> parent.setString(key!!, value)
-                is MutableArray -> parent.setString(index!!, value)
+            when {
+                key != null -> dictParent.setString(key, value)
+                index != null -> arrayParent.setString(index, value)
             }
         }
 
@@ -72,10 +73,9 @@ internal constructor(
     override var number: Number?
         get() = super.number
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setNumber(key!!, value)
-                is MutableDictionary -> parent.setNumber(key!!, value)
-                is MutableArray -> parent.setNumber(index!!, value)
+            when {
+                key != null -> dictParent.setNumber(key, value)
+                index != null -> arrayParent.setNumber(index, value)
             }
         }
 
@@ -85,10 +85,9 @@ internal constructor(
     override var int: Int
         get() = super.int
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setInt(key!!, value)
-                is MutableDictionary -> parent.setInt(key!!, value)
-                is MutableArray -> parent.setInt(index!!, value)
+            when {
+                key != null -> dictParent.setInt(key, value)
+                index != null -> arrayParent.setInt(index, value)
             }
         }
 
@@ -98,10 +97,9 @@ internal constructor(
     override var long: Long
         get() = super.long
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setLong(key!!, value)
-                is MutableDictionary -> parent.setLong(key!!, value)
-                is MutableArray -> parent.setLong(index!!, value)
+            when {
+                key != null -> dictParent.setLong(key, value)
+                index != null -> arrayParent.setLong(index, value)
             }
         }
 
@@ -111,10 +109,9 @@ internal constructor(
     override var float: Float
         get() = super.float
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setFloat(key!!, value)
-                is MutableDictionary -> parent.setFloat(key!!, value)
-                is MutableArray -> parent.setFloat(index!!, value)
+            when {
+                key != null -> dictParent.setFloat(key, value)
+                index != null -> arrayParent.setFloat(index, value)
             }
         }
 
@@ -124,10 +121,9 @@ internal constructor(
     override var double: Double
         get() = super.double
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setDouble(key!!, value)
-                is MutableDictionary -> parent.setDouble(key!!, value)
-                is MutableArray -> parent.setDouble(index!!, value)
+            when {
+                key != null -> dictParent.setDouble(key, value)
+                index != null -> arrayParent.setDouble(index, value)
             }
         }
 
@@ -137,10 +133,9 @@ internal constructor(
     override var boolean: Boolean
         get() = super.boolean
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setBoolean(key!!, value)
-                is MutableDictionary -> parent.setBoolean(key!!, value)
-                is MutableArray -> parent.setBoolean(index!!, value)
+            when {
+                key != null -> dictParent.setBoolean(key, value)
+                index != null -> arrayParent.setBoolean(index, value)
             }
         }
 
@@ -150,10 +145,9 @@ internal constructor(
     override var blob: Blob?
         get() = super.blob
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setBlob(key!!, value)
-                is MutableDictionary -> parent.setBlob(key!!, value)
-                is MutableArray -> parent.setBlob(index!!, value)
+            when {
+                key != null -> dictParent.setBlob(key, value)
+                index != null -> arrayParent.setBlob(index, value)
             }
         }
 
@@ -163,10 +157,9 @@ internal constructor(
     override var date: Instant?
         get() = super.date
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setDate(key!!, value)
-                is MutableDictionary -> parent.setDate(key!!, value)
-                is MutableArray -> parent.setDate(index!!, value)
+            when {
+                key != null -> dictParent.setDate(key, value)
+                index != null -> arrayParent.setDate(index, value)
             }
         }
 
@@ -175,17 +168,15 @@ internal constructor(
      * value. Returns null if the value is null, or the value is not an array.
      */
     override var array: MutableArray?
-        get() = when (parent) {
-            is MutableDocument -> parent.getArray(key!!)
-            is MutableDictionary -> parent.getArray(key!!)
-            is MutableArray -> parent.getArray(index!!)
+        get() = when {
+            key != null -> dictParent.getArray(key)
+            index != null -> arrayParent.getArray(index)
             else -> null
         }
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setArray(key!!, value)
-                is MutableDictionary -> parent.setArray(key!!, value)
-                is MutableArray -> parent.setArray(index!!, value)
+            when {
+                key != null -> dictParent.setArray(key, value)
+                index != null -> arrayParent.setArray(index, value)
             }
         }
 
@@ -194,17 +185,15 @@ internal constructor(
      * value. Returns null if the value is null, or the value is not a dictionary.
      */
     override var dictionary: MutableDictionary?
-        get() = when (parent) {
-            is MutableDocument -> parent.getDictionary(key!!)
-            is MutableDictionary -> parent.getDictionary(key!!)
-            is MutableArray -> parent.getDictionary(index!!)
+        get() = when {
+            key != null -> dictParent.getDictionary(key)
+            index != null -> arrayParent.getDictionary(index)
             else -> null
         }
         set(value) {
-            when (parent) {
-                is MutableDocument -> parent.setDictionary(key!!, value)
-                is MutableDictionary -> parent.setDictionary(key!!, value)
-                is MutableArray -> parent.setDictionary(index!!, value)
+            when {
+                key != null -> dictParent.setDictionary(key, value)
+                index != null -> arrayParent.setDictionary(index, value)
             }
         }
 
@@ -212,16 +201,15 @@ internal constructor(
      * Subscript access to a Fragment object by index.
      *
      * @param index The index. If the index value exceeds the bounds of the array,
-     * the MutableFragment object will represent a nil value.
+     * the MutableFragment object will represent a null value.
      */
     override fun get(index: Int): MutableFragment {
-        val parent = when (parent) {
-            is Document -> parent.getValue(key!!)
-            is Dictionary -> parent.getValue(key!!)
-            is Array -> parent.getValue(this.index!!)
+        val parent = when {
+            key != null -> dictParent.getValue(key)
+            this.index != null -> arrayParent.getValue(this.index)
             else -> null
         }
-        return if (parent is Array && index in 0..<parent.count) {
+        return if (parent is MutableArrayInterface && index in 0..<parent.count) {
             MutableFragment(parent, null, index)
         } else {
             MutableFragment()
@@ -234,13 +222,12 @@ internal constructor(
      * @param key The key.
      */
     override fun get(key: String): MutableFragment {
-        val parent = when (parent) {
-            is Document -> parent.getValue(this.key!!)
-            is Dictionary -> parent.getValue(this.key!!)
-            is Array -> parent.getValue(index!!)
+        val parent = when {
+            this.key != null -> dictParent.getValue(this.key)
+            index != null -> arrayParent.getValue(index)
             else -> null
         }
-        return if (parent is Dictionary) {
+        return if (parent is MutableDictionaryInterface) {
             MutableFragment(parent, key, null)
         } else {
             MutableFragment()

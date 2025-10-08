@@ -27,7 +27,7 @@ public actual open class Dictionary
 internal constructor(
     actual: FLDict,
     dbContext: DbContext?
-) : Iterable<String> {
+) : DictionaryInterface, Iterable<String> {
 
     init {
         FLDict_Retain(actual)
@@ -61,67 +61,67 @@ internal constructor(
         )
     }
 
-    public actual val count: Int
+    actual override val count: Int
         get() = FLDict_Count(actual).toInt()
 
-    public actual val keys: List<String>
+    actual override val keys: List<String>
         get() = actual.keys()
 
     protected fun getFLValue(key: String): FLValue? =
         actual.getValue(key)
 
-    public actual open fun getValue(key: String): Any? {
+    actual override fun getValue(key: String): Any? {
         return collectionMap[key]
             ?: getFLValue(key)?.toNative(dbContext)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
     }
 
-    public actual fun getString(key: String): String? =
+    actual override fun getString(key: String): String? =
         getFLValue(key)?.toKString()
 
-    public actual fun getNumber(key: String): Number? =
+    actual override fun getNumber(key: String): Number? =
         getFLValue(key)?.toNumber()
 
-    public actual fun getInt(key: String): Int =
+    actual override fun getInt(key: String): Int =
         getFLValue(key).toInt()
 
-    public actual fun getLong(key: String): Long =
+    actual override fun getLong(key: String): Long =
         getFLValue(key).toLong()
 
-    public actual fun getFloat(key: String): Float =
+    actual override fun getFloat(key: String): Float =
         getFLValue(key).toFloat()
 
-    public actual fun getDouble(key: String): Double =
+    actual override fun getDouble(key: String): Double =
         getFLValue(key).toDouble()
 
-    public actual fun getBoolean(key: String): Boolean =
+    actual override fun getBoolean(key: String): Boolean =
         getFLValue(key).toBoolean()
 
-    public actual open fun getBlob(key: String): Blob? =
+    actual override fun getBlob(key: String): Blob? =
         getFLValue(key)?.toBlob(dbContext)
 
-    public actual fun getDate(key: String): Instant? =
+    actual override fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
-    public actual open fun getArray(key: String): Array? {
+    actual override fun getArray(key: String): Array? {
         return getInternalCollection(key)
             ?: getFLValue(key)?.toArray(dbContext)
                 ?.also { collectionMap[key] = it }
     }
 
-    public actual open fun getDictionary(key: String): Dictionary? {
+    actual override fun getDictionary(key: String): Dictionary? {
         return getInternalCollection(key)
             ?: getFLValue(key)?.toDictionary(dbContext)
                 ?.also { collectionMap[key] = it }
     }
 
-    public actual fun toMap(): Map<String, Any?> =
+    actual override fun toMap(): Map<String, Any?> =
         actual.toMap(dbContext)
 
-    public actual open fun toJSON(): String =
+    actual override fun toJSON(): String =
         FLValue_ToJSON(actual.reinterpret()).toKString()!!
 
-    public actual operator fun contains(key: String): Boolean =
+    actual override operator fun contains(key: String): Boolean =
         keys.contains(key)
 
     private var mutations: Long = 0

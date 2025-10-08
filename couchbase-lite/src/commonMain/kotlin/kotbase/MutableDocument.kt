@@ -20,7 +20,7 @@ import kotlinx.datetime.Instant
 /**
  * A Couchbase Lite Document. A document has key/value properties like a Map.
  */
-public expect class MutableDocument : Document {
+public expect class MutableDocument : Document, MutableDictionaryInterface {
 
     /**
      * Creates a new Document object with a new random UUID. The created document will be
@@ -30,7 +30,7 @@ public expect class MutableDocument : Document {
     public constructor()
 
     /**
-     * Creates a new Document with the given ID.  If the id is null, the document
+     * Creates a new Document with the given ID. If the id is null, the document
      * will be created with a new random UUID. The created document will be
      * saved into a database when you call the Database's save(Document) method with the document
      * object given.
@@ -85,25 +85,25 @@ public expect class MutableDocument : Document {
      * Populate a document with content from a Map.
      * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
      * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types. Setting the
-     * document content will replace the current data including the existing Array and Dictionary
+     * document content will replace the current data, including the existing Array and Dictionary
      * objects.
      *
      * @param data the dictionary object.
      * @return this Document instance
      */
-    public fun setData(data: Map<String, Any?>): MutableDocument
+    override fun setData(data: Map<String, Any?>): MutableDocument
 
     /**
      * Populate a document with content from a JSON string.
      * Allowed value types are List, Instant, Map, Number, null, String, Array, Blob, and Dictionary.
      * If present, Lists, Arrays, Maps and Dictionaries may contain only the above types. Setting the
-     * document content will replace the current data including the existing Array and Dictionary
+     * document content will replace the current data, including the existing Array and Dictionary
      * objects.
      *
      * @param json the dictionary object.
      * @return this Document instance
      */
-    public fun setJSON(json: String): MutableDocument
+    override fun setJSON(json: String): MutableDocument
 
     /**
      * Set an object value by key. Allowed value types are List, Instant, Map, Number, null, String,
@@ -114,7 +114,7 @@ public expect class MutableDocument : Document {
      * @param value the Object value.
      * @return this Document instance
      */
-    public fun setValue(key: String, value: Any?): MutableDocument
+    override fun setValue(key: String, value: Any?): MutableDocument
 
     /**
      * Set a String value for the given key
@@ -123,7 +123,7 @@ public expect class MutableDocument : Document {
      * @param value the String value.
      * @return this MutableDocument instance
      */
-    public fun setString(key: String, value: String?): MutableDocument
+    override fun setString(key: String, value: String?): MutableDocument
 
     /**
      * Set a Number value for the given key
@@ -132,7 +132,7 @@ public expect class MutableDocument : Document {
      * @param value the Number value.
      * @return this MutableDocument instance
      */
-    public fun setNumber(key: String, value: Number?): MutableDocument
+    override fun setNumber(key: String, value: Number?): MutableDocument
 
     /**
      * Set an integer value for the given key
@@ -141,7 +141,7 @@ public expect class MutableDocument : Document {
      * @param value the integer value.
      * @return this MutableDocument instance
      */
-    public fun setInt(key: String, value: Int): MutableDocument
+    override fun setInt(key: String, value: Int): MutableDocument
 
     /**
      * Set a long value for the given key
@@ -150,7 +150,7 @@ public expect class MutableDocument : Document {
      * @param value the long value.
      * @return this MutableDocument instance
      */
-    public fun setLong(key: String, value: Long): MutableDocument
+    override fun setLong(key: String, value: Long): MutableDocument
 
     /**
      * Set a float value for the given key
@@ -159,7 +159,7 @@ public expect class MutableDocument : Document {
      * @param value the float value.
      * @return this MutableDocument instance
      */
-    public fun setFloat(key: String, value: Float): MutableDocument
+    override fun setFloat(key: String, value: Float): MutableDocument
 
     /**
      * Set a double value for the given key
@@ -168,7 +168,7 @@ public expect class MutableDocument : Document {
      * @param value the double value.
      * @return this MutableDocument instance
      */
-    public fun setDouble(key: String, value: Double): MutableDocument
+    override fun setDouble(key: String, value: Double): MutableDocument
 
     /**
      * Set a boolean value for the given key
@@ -177,7 +177,7 @@ public expect class MutableDocument : Document {
      * @param value the boolean value.
      * @return this MutableDocument instance
      */
-    public fun setBoolean(key: String, value: Boolean): MutableDocument
+    override fun setBoolean(key: String, value: Boolean): MutableDocument
 
     /**
      * Set a Blob value for the given key
@@ -186,7 +186,7 @@ public expect class MutableDocument : Document {
      * @param value the Blob value.
      * @return this MutableDocument instance
      */
-    public fun setBlob(key: String, value: Blob?): MutableDocument
+    override fun setBlob(key: String, value: Blob?): MutableDocument
 
     /**
      * Set an Instant date value for the given key
@@ -195,7 +195,7 @@ public expect class MutableDocument : Document {
      * @param value the Date value.
      * @return this MutableDocument instance
      */
-    public fun setDate(key: String, value: Instant?): MutableDocument
+    override fun setDate(key: String, value: Instant?): MutableDocument
 
     /**
      * Set an Array value for the given key
@@ -204,7 +204,7 @@ public expect class MutableDocument : Document {
      * @param value the Array value.
      * @return this MutableDocument instance
      */
-    public fun setArray(key: String, value: Array?): MutableDocument
+    override fun setArray(key: String, value: Array?): MutableDocument
 
     /**
      * Set a Dictionary value for the given key
@@ -213,15 +213,15 @@ public expect class MutableDocument : Document {
      * @param value the Dictionary value.
      * @return this MutableDocument instance
      */
-    public fun setDictionary(key: String, value: Dictionary?): MutableDocument
+    override fun setDictionary(key: String, value: Dictionary?): MutableDocument
 
     /**
-     * Removes the mapping for a key from this Dictionary
+     * Removes the mapping for a key from this Document
      *
      * @param key the key.
      * @return this MutableDocument instance
      */
-    public fun remove(key: String): MutableDocument
+    override fun remove(key: String): MutableDocument
 
     /**
      * Get a property's value as an Array.
@@ -241,11 +241,3 @@ public expect class MutableDocument : Document {
      */
     override fun getDictionary(key: String): MutableDictionary?
 }
-
-/**
- * Subscripting access to a MutableFragment object that represents the value of the document by key.
- *
- * @param key The key.
- */
-public operator fun MutableDocument.get(key: String): MutableFragment =
-    MutableFragment(this, key)
