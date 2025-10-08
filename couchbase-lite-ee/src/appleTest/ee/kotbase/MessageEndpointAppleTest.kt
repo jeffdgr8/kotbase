@@ -56,7 +56,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     var clientConnected: Mutex? = null
     var serverConnected: Mutex? = null
 
-    override fun setUp() {
+    override fun setUpLast() {
         oDB = Database("otherdb")
     }
 

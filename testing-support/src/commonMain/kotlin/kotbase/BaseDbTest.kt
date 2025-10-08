@@ -140,6 +140,7 @@ abstract class BaseDbTest(useLegacyLogging: Boolean = false) : BaseTest(useLegac
 
     @BeforeTest
     fun setUpBaseDbTest() {
+        setUpFirst()
         testDb = createDb("base_db")
         Report.log("Created base test DB: $testDatabase")
         assertNotNull(testDatabase)
@@ -148,11 +149,19 @@ abstract class BaseDbTest(useLegacyLogging: Boolean = false) : BaseTest(useLegac
             testDatabase.createCollection(getUniqueName("test_collection"), getUniqueName("test_scope"))
         Report.log("Created base test Collection: $testCollection")
         testTg = getUniqueName("db_test_tag")
-        setUp()
+        setUpLast()
     }
 
-    open fun setUp() {
-        // override to perform setup after setUpBaseDbTest() is run
+    /**
+     * Override to perform setup before setUpBaseDbTest() is run
+      */
+    open fun setUpFirst() {
+    }
+
+    /**
+     * Override to perform setup after setUpBaseDbTest() is run
+     */
+    open fun setUpLast() {
     }
 
     @AfterTest
@@ -164,8 +173,10 @@ abstract class BaseDbTest(useLegacyLogging: Boolean = false) : BaseTest(useLegac
         Report.log("Test db erased: ${testDb.name}")
     }
 
+    /**
+     * Override to perform teardown before tearDownBaseDbTest() is run
+     */
     open fun tearDown() {
-        // override to perform teardown before tearDownBaseDbTest() is run
     }
 
     protected fun reopenTestDb() {

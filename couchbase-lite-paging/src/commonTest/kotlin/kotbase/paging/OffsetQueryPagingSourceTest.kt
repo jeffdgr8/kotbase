@@ -43,7 +43,7 @@ class OffsetQueryPagingSourceTest : BaseDbTest() {
 
     private lateinit var pagingSource: PagingSource<Int, TestItem>
 
-    override fun setUp() {
+    override fun setUpLast() {
         pagingSource = QueryPagingSource(
             EmptyCoroutineContext,
             select(),
