@@ -24,6 +24,7 @@ import co.touchlab.kermit.Message
 import co.touchlab.kermit.Severity
 import co.touchlab.kermit.Tag
 import co.touchlab.kermit.loggerConfigInit
+import co.touchlab.stately.collections.ConcurrentMutableList
 import kotbase.BaseTest
 import kotbase.Database
 import kotbase.LogDomain
@@ -53,7 +54,7 @@ class KermitCouchbaseLiteLoggerTest : BaseTest(useLegacyLogging = true) {
             val tag: String
         )
 
-        private val logs = mutableListOf<Log>()
+        private val logs = ConcurrentMutableList<Log>()
 
         override fun log(severity: Severity, message: String, tag: String, throwable: Throwable?) {
             super.log(severity, message, tag, throwable)
@@ -65,10 +66,12 @@ class KermitCouchbaseLiteLoggerTest : BaseTest(useLegacyLogging = true) {
         }
 
         fun checkLog(severity: Severity, tag: String, vararg messageContent: String) {
-            val logged = logs.any { log ->
-                log.severity == severity &&
-                log.tag == tag &&
-                messageContent.all { log.message.contains(it) }
+            val logged = logs.block {
+                it.any { log ->
+                    log.severity == severity &&
+                    log.tag == tag &&
+                    messageContent.all { log.message.contains(it) }
+                }
             }
 
             val concatMessage = messageContent.joinToString("...")
