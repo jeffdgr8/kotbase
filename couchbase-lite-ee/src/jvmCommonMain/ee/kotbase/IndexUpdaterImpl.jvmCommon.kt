@@ -76,7 +76,15 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     }
 
     override fun toList(): List<Any?> =
-        actual.toList().delegateIfNecessary()
+        actual.toList().delegateIfNecessary().map {
+            // TODO: remove when this bug is fixed
+            //  https://www.couchbase.com/forums/t/indexupdater-tolist-doesnt-do-a-deep-conversion-in-java-sdk/40990
+            when (it) {
+                is Array -> it.toList()
+                is Dictionary -> it.toMap()
+                else -> it
+            }
+        }
 
     override fun toJSON(): String =
         actual.toJSON()
