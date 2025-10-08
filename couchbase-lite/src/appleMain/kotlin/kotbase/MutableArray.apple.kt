@@ -28,7 +28,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual), Muta
     public actual constructor() : this(CBLMutableArray())
 
     public actual constructor(data: List<Any?>) : this(
-        CBLMutableArray(data.actualIfDelegated())
+        CBLMutableArray(data.removingBooleanValues().actualIfDelegated())
     ) {
         setBooleans(data)
     }
@@ -48,7 +48,7 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual), Muta
 
     actual override fun setData(data: List<Any?>): MutableArray {
         collectionMap.clear()
-        actual.setData(data.actualIfDelegated())
+        actual.setData(data.removingBooleanValues().actualIfDelegated())
         setBooleans(data)
         mutate()
         return this

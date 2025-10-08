@@ -33,7 +33,7 @@ internal constructor(
     public actual constructor(id: String?) : this(CBLMutableDocument(id))
 
     public actual constructor(data: Map<String, Any?>) : this(
-        CBLMutableDocument(data.actualIfDelegated())
+        CBLMutableDocument(data.removingBooleanValues().actualIfDelegated())
     ) {
         setBooleans(data)
     }
@@ -57,7 +57,7 @@ internal constructor(
 
     actual override fun setData(data: Map<String, Any?>): MutableDocument {
         collectionMap.clear()
-        actual.setData(data.actualIfDelegated())
+        actual.setData(data.removingBooleanValues().actualIfDelegated())
         setBooleans(data)
         mutate()
         return this

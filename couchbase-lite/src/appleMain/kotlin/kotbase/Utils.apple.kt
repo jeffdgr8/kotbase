@@ -73,3 +73,9 @@ internal fun checkType(value: Any?) {
         "${value::class} is not a valid type. Valid types are simple types and dictionaries and one-dimensional arrays of those types, including MutableDictionary, Dictionary, Map, MutableArray, Array, List, Blob, Instant, String, Number, Boolean and null"
     )
 }
+
+internal fun Map<String, Any?>.removingBooleanValues(): Map<String, Any?> =
+    filter { (_, value) -> value !is Boolean }
+
+internal fun List<Any?>.removingBooleanValues(): List<Any?> =
+    filter { it !is Boolean }
