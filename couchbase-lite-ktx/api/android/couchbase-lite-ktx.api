@@ -16,40 +16,42 @@ public final class kotbase/ktx/DictionaryExtKt {
 	public static final fun mutableDictOf ([Lkotlin/Pair;)Lkotbase/MutableDictionary;
 }
 
-public final class kotbase/ktx/DocumentBuilder {
-	public fun <init> ()V
-	public final fun contains (Ljava/lang/String;)Z
-	public final fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
-	public final fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
-	public final fun getBoolean (Ljava/lang/String;)Z
-	public final fun getCount ()I
-	public final fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
-	public final fun getDictionary (Ljava/lang/String;)Lkotbase/MutableDictionary;
-	public final fun getDouble (Ljava/lang/String;)D
-	public final fun getFloat (Ljava/lang/String;)F
-	public final fun getInt (Ljava/lang/String;)I
-	public final fun getKeys ()Ljava/util/List;
-	public final fun getLong (Ljava/lang/String;)J
-	public final fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
-	public final fun getString (Ljava/lang/String;)Ljava/lang/String;
-	public final fun getValue (Ljava/lang/String;)Ljava/lang/Object;
-	public final fun remove (Ljava/lang/String;)Lkotbase/MutableDocument;
-	public final fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDocument;
-	public final fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDocument;
-	public final fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDocument;
-	public final fun setData (Ljava/util/Map;)Lkotbase/MutableDocument;
-	public final fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDocument;
-	public final fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDocument;
-	public final fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDocument;
-	public final fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDocument;
-	public final fun setInt (Ljava/lang/String;I)Lkotbase/MutableDocument;
-	public final fun setJSON (Ljava/lang/String;)Lkotbase/MutableDocument;
-	public final fun setLong (Ljava/lang/String;J)Lkotbase/MutableDocument;
-	public final fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDocument;
-	public final fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDocument;
-	public final fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDocument;
+public final class kotbase/ktx/DocumentBuilder : kotbase/MutableDictionaryInterface {
+	public fun contains (Ljava/lang/String;)Z
+	public synthetic fun getArray (Ljava/lang/String;)Lkotbase/Array;
+	public fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
+	public fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
+	public fun getBoolean (Ljava/lang/String;)Z
+	public fun getCount ()I
+	public fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public synthetic fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
+	public fun getDictionary (Ljava/lang/String;)Lkotbase/MutableDictionary;
+	public fun getDouble (Ljava/lang/String;)D
+	public fun getFloat (Ljava/lang/String;)F
+	public fun getInt (Ljava/lang/String;)I
+	public fun getKeys ()Ljava/util/List;
+	public fun getLong (Ljava/lang/String;)J
+	public fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
+	public fun getString (Ljava/lang/String;)Ljava/lang/String;
+	public fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public fun remove (Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDictionaryInterface;
+	public fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDictionaryInterface;
+	public fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDictionaryInterface;
+	public fun setData (Ljava/util/Map;)Lkotbase/MutableDictionaryInterface;
+	public fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionaryInterface;
+	public fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionaryInterface;
+	public fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDictionaryInterface;
+	public fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDictionaryInterface;
+	public fun setInt (Ljava/lang/String;I)Lkotbase/MutableDictionaryInterface;
+	public fun setJSON (Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public fun setLong (Ljava/lang/String;J)Lkotbase/MutableDictionaryInterface;
+	public fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDictionaryInterface;
+	public fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDictionaryInterface;
 	public final fun to (Ljava/lang/String;Ljava/lang/Object;)V
-	public final fun toMap ()Ljava/util/Map;
+	public fun toJSON ()Ljava/lang/String;
+	public fun toMap ()Ljava/util/Map;
 }
 
 public final class kotbase/ktx/DocumentExtKt {

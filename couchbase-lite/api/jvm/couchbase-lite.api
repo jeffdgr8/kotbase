@@ -1,20 +1,20 @@
-public class kotbase/Array : kotbase/internal/DelegatedClass, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
+public class kotbase/Array : kotbase/internal/DelegatedClass, java/lang/Iterable, kotbase/ArrayInterface, kotlin/jvm/internal/markers/KMappedMarker {
 	public fun getArray (I)Lkotbase/Array;
-	public final fun getBlob (I)Lkotbase/Blob;
-	public final fun getBoolean (I)Z
-	public final fun getCount ()I
-	public final fun getDate (I)Lkotlinx/datetime/Instant;
+	public fun getBlob (I)Lkotbase/Blob;
+	public fun getBoolean (I)Z
+	public fun getCount ()I
+	public fun getDate (I)Lkotlinx/datetime/Instant;
 	public fun getDictionary (I)Lkotbase/Dictionary;
-	public final fun getDouble (I)D
-	public final fun getFloat (I)F
-	public final fun getInt (I)I
-	public final fun getLong (I)J
-	public final fun getNumber (I)Ljava/lang/Number;
-	public final fun getString (I)Ljava/lang/String;
-	public final fun getValue (I)Ljava/lang/Object;
+	public fun getDouble (I)D
+	public fun getFloat (I)F
+	public fun getInt (I)I
+	public fun getLong (I)J
+	public fun getNumber (I)Ljava/lang/Number;
+	public fun getString (I)Ljava/lang/String;
+	public fun getValue (I)Ljava/lang/Object;
 	public fun iterator ()Ljava/util/Iterator;
-	public final fun toJSON ()Ljava/lang/String;
-	public final fun toList ()Ljava/util/List;
+	public fun toJSON ()Ljava/lang/String;
+	public fun toList ()Ljava/util/List;
 	public final fun toMutable ()Lkotbase/MutableArray;
 }
 
@@ -49,8 +49,26 @@ public final class kotbase/ArrayIndexConfiguration : kotbase/IndexConfiguration 
 	public final fun getPath ()Ljava/lang/String;
 }
 
-public final class kotbase/ArrayKt {
-	public static final fun get (Lkotbase/Array;I)Lkotbase/Fragment;
+public abstract interface class kotbase/ArrayInterface {
+	public abstract fun getArray (I)Lkotbase/Array;
+	public abstract fun getBlob (I)Lkotbase/Blob;
+	public abstract fun getBoolean (I)Z
+	public abstract fun getCount ()I
+	public abstract fun getDate (I)Lkotlinx/datetime/Instant;
+	public abstract fun getDictionary (I)Lkotbase/Dictionary;
+	public abstract fun getDouble (I)D
+	public abstract fun getFloat (I)F
+	public abstract fun getInt (I)I
+	public abstract fun getLong (I)J
+	public abstract fun getNumber (I)Ljava/lang/Number;
+	public abstract fun getString (I)Ljava/lang/String;
+	public abstract fun getValue (I)Ljava/lang/Object;
+	public abstract fun toJSON ()Ljava/lang/String;
+	public abstract fun toList ()Ljava/util/List;
+}
+
+public final class kotbase/ArrayInterfaceKt {
+	public static final fun get (Lkotbase/ArrayInterface;I)Lkotbase/Fragment;
 }
 
 public abstract class kotbase/Authenticator : kotbase/internal/DelegatedClass {
@@ -466,55 +484,75 @@ public final class kotbase/Defaults$Replicator {
 	public final fun getTYPE ()Lkotbase/ReplicatorType;
 }
 
-public class kotbase/Dictionary : kotbase/internal/DelegatedClass, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
-	public final fun contains (Ljava/lang/String;)Z
+public class kotbase/Dictionary : kotbase/internal/DelegatedClass, java/lang/Iterable, kotbase/DictionaryInterface, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun contains (Ljava/lang/String;)Z
 	public fun getArray (Ljava/lang/String;)Lkotbase/Array;
-	public final fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
-	public final fun getBoolean (Ljava/lang/String;)Z
-	public final fun getCount ()I
-	public final fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
+	public fun getBoolean (Ljava/lang/String;)Z
+	public fun getCount ()I
+	public fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
 	public fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
-	public final fun getDouble (Ljava/lang/String;)D
-	public final fun getFloat (Ljava/lang/String;)F
-	public final fun getInt (Ljava/lang/String;)I
-	public final fun getKeys ()Ljava/util/List;
-	public final fun getLong (Ljava/lang/String;)J
-	public final fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
-	public final fun getString (Ljava/lang/String;)Ljava/lang/String;
+	public fun getDouble (Ljava/lang/String;)D
+	public fun getFloat (Ljava/lang/String;)F
+	public fun getInt (Ljava/lang/String;)I
+	public fun getKeys ()Ljava/util/List;
+	public fun getLong (Ljava/lang/String;)J
+	public fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
+	public fun getString (Ljava/lang/String;)Ljava/lang/String;
 	public fun getValue (Ljava/lang/String;)Ljava/lang/Object;
 	public fun iterator ()Ljava/util/Iterator;
-	public final fun toJSON ()Ljava/lang/String;
-	public final fun toMap ()Ljava/util/Map;
+	public fun toJSON ()Ljava/lang/String;
+	public fun toMap ()Ljava/util/Map;
 	public final fun toMutable ()Lkotbase/MutableDictionary;
 }
 
-public final class kotbase/DictionaryKt {
-	public static final fun get (Lkotbase/Dictionary;Ljava/lang/String;)Lkotbase/Fragment;
+public abstract interface class kotbase/DictionaryInterface {
+	public abstract fun contains (Ljava/lang/String;)Z
+	public abstract fun getArray (Ljava/lang/String;)Lkotbase/Array;
+	public abstract fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
+	public abstract fun getBoolean (Ljava/lang/String;)Z
+	public abstract fun getCount ()I
+	public abstract fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public abstract fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
+	public abstract fun getDouble (Ljava/lang/String;)D
+	public abstract fun getFloat (Ljava/lang/String;)F
+	public abstract fun getInt (Ljava/lang/String;)I
+	public abstract fun getKeys ()Ljava/util/List;
+	public abstract fun getLong (Ljava/lang/String;)J
+	public abstract fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
+	public abstract fun getString (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public abstract fun toJSON ()Ljava/lang/String;
+	public abstract fun toMap ()Ljava/util/Map;
 }
 
-public class kotbase/Document : kotbase/internal/DelegatedClass, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
-	public final fun contains (Ljava/lang/String;)Z
+public final class kotbase/DictionaryInterfaceKt {
+	public static final fun get (Lkotbase/DictionaryInterface;Ljava/lang/String;)Lkotbase/Fragment;
+}
+
+public class kotbase/Document : kotbase/internal/DelegatedClass, java/lang/Iterable, kotbase/DictionaryInterface, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun contains (Ljava/lang/String;)Z
 	public fun getArray (Ljava/lang/String;)Lkotbase/Array;
-	public final fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
-	public final fun getBoolean (Ljava/lang/String;)Z
+	public fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
+	public fun getBoolean (Ljava/lang/String;)Z
 	public final fun getCollection ()Lkotbase/Collection;
-	public final fun getCount ()I
-	public final fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public fun getCount ()I
+	public fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
 	public fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
-	public final fun getDouble (Ljava/lang/String;)D
-	public final fun getFloat (Ljava/lang/String;)F
+	public fun getDouble (Ljava/lang/String;)D
+	public fun getFloat (Ljava/lang/String;)F
 	public final fun getId ()Ljava/lang/String;
-	public final fun getInt (Ljava/lang/String;)I
-	public final fun getKeys ()Ljava/util/List;
-	public final fun getLong (Ljava/lang/String;)J
-	public final fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
+	public fun getInt (Ljava/lang/String;)I
+	public fun getKeys ()Ljava/util/List;
+	public fun getLong (Ljava/lang/String;)J
+	public fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
 	public final fun getRevisionID ()Ljava/lang/String;
 	public final fun getSequence ()J
-	public final fun getString (Ljava/lang/String;)Ljava/lang/String;
-	public final fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getString (Ljava/lang/String;)Ljava/lang/String;
+	public fun getValue (Ljava/lang/String;)Ljava/lang/Object;
 	public fun iterator ()Ljava/util/Iterator;
-	public final fun toJSON ()Ljava/lang/String;
-	public final fun toMap ()Ljava/util/Map;
+	public fun toJSON ()Ljava/lang/String;
+	public fun toMap ()Ljava/util/Map;
 	public fun toMutable ()Lkotbase/MutableDocument;
 }
 
@@ -529,10 +567,6 @@ public final class kotbase/DocumentFragment {
 	public final fun get (Ljava/lang/String;)Lkotbase/Fragment;
 	public final fun getDocument ()Lkotbase/Document;
 	public final fun getExists ()Z
-}
-
-public final class kotbase/DocumentKt {
-	public static final fun get (Lkotbase/Document;Ljava/lang/String;)Lkotbase/Fragment;
 }
 
 public final class kotbase/DocumentReplication : kotbase/internal/DelegatedClass {
@@ -605,9 +639,11 @@ public class kotbase/Fragment {
 	public fun get (I)Lkotbase/Fragment;
 	public fun get (Ljava/lang/String;)Lkotbase/Fragment;
 	public fun getArray ()Lkotbase/Array;
+	protected fun getArrayParent ()Lkotbase/ArrayInterface;
 	public fun getBlob ()Lkotbase/Blob;
 	public fun getBoolean ()Z
 	public fun getDate ()Lkotlinx/datetime/Instant;
+	protected fun getDictParent ()Lkotbase/DictionaryInterface;
 	public fun getDictionary ()Lkotbase/Dictionary;
 	public fun getDouble ()D
 	public final fun getExists ()Z
@@ -911,61 +947,144 @@ public final class kotbase/MetaExpression : kotbase/Expression {
 	public synthetic fun getActual$couchbase_lite ()Ljava/lang/Object;
 }
 
-public final class kotbase/MutableArray : kotbase/Array {
+public final class kotbase/MutableArray : kotbase/Array, kotbase/MutableArrayInterface {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/util/List;)V
-	public final fun addArray (Lkotbase/Array;)Lkotbase/MutableArray;
-	public final fun addBlob (Lkotbase/Blob;)Lkotbase/MutableArray;
-	public final fun addBoolean (Z)Lkotbase/MutableArray;
-	public final fun addDate (Lkotlinx/datetime/Instant;)Lkotbase/MutableArray;
-	public final fun addDictionary (Lkotbase/Dictionary;)Lkotbase/MutableArray;
-	public final fun addDouble (D)Lkotbase/MutableArray;
-	public final fun addFloat (F)Lkotbase/MutableArray;
-	public final fun addInt (I)Lkotbase/MutableArray;
-	public final fun addLong (J)Lkotbase/MutableArray;
-	public final fun addNumber (Ljava/lang/Number;)Lkotbase/MutableArray;
-	public final fun addString (Ljava/lang/String;)Lkotbase/MutableArray;
-	public final fun addValue (Ljava/lang/Object;)Lkotbase/MutableArray;
+	public fun addArray (Lkotbase/Array;)Lkotbase/MutableArray;
+	public synthetic fun addArray (Lkotbase/Array;)Lkotbase/MutableArrayInterface;
+	public fun addBlob (Lkotbase/Blob;)Lkotbase/MutableArray;
+	public synthetic fun addBlob (Lkotbase/Blob;)Lkotbase/MutableArrayInterface;
+	public fun addBoolean (Z)Lkotbase/MutableArray;
+	public synthetic fun addBoolean (Z)Lkotbase/MutableArrayInterface;
+	public fun addDate (Lkotlinx/datetime/Instant;)Lkotbase/MutableArray;
+	public synthetic fun addDate (Lkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public fun addDictionary (Lkotbase/Dictionary;)Lkotbase/MutableArray;
+	public synthetic fun addDictionary (Lkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
+	public fun addDouble (D)Lkotbase/MutableArray;
+	public synthetic fun addDouble (D)Lkotbase/MutableArrayInterface;
+	public fun addFloat (F)Lkotbase/MutableArray;
+	public synthetic fun addFloat (F)Lkotbase/MutableArrayInterface;
+	public fun addInt (I)Lkotbase/MutableArray;
+	public synthetic fun addInt (I)Lkotbase/MutableArrayInterface;
+	public fun addLong (J)Lkotbase/MutableArray;
+	public synthetic fun addLong (J)Lkotbase/MutableArrayInterface;
+	public fun addNumber (Ljava/lang/Number;)Lkotbase/MutableArray;
+	public synthetic fun addNumber (Ljava/lang/Number;)Lkotbase/MutableArrayInterface;
+	public fun addString (Ljava/lang/String;)Lkotbase/MutableArray;
+	public synthetic fun addString (Ljava/lang/String;)Lkotbase/MutableArrayInterface;
+	public fun addValue (Ljava/lang/Object;)Lkotbase/MutableArray;
+	public synthetic fun addValue (Ljava/lang/Object;)Lkotbase/MutableArrayInterface;
 	public synthetic fun getActual$couchbase_lite ()Ljava/lang/Object;
 	public synthetic fun getArray (I)Lkotbase/Array;
 	public fun getArray (I)Lkotbase/MutableArray;
 	public synthetic fun getDictionary (I)Lkotbase/Dictionary;
 	public fun getDictionary (I)Lkotbase/MutableDictionary;
-	public final fun insertArray (ILkotbase/Array;)Lkotbase/MutableArray;
-	public final fun insertBlob (ILkotbase/Blob;)Lkotbase/MutableArray;
-	public final fun insertBoolean (IZ)Lkotbase/MutableArray;
-	public final fun insertDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArray;
-	public final fun insertDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArray;
-	public final fun insertDouble (ID)Lkotbase/MutableArray;
-	public final fun insertFloat (IF)Lkotbase/MutableArray;
-	public final fun insertInt (II)Lkotbase/MutableArray;
-	public final fun insertLong (IJ)Lkotbase/MutableArray;
-	public final fun insertNumber (ILjava/lang/Number;)Lkotbase/MutableArray;
-	public final fun insertString (ILjava/lang/String;)Lkotbase/MutableArray;
-	public final fun insertValue (ILjava/lang/Object;)Lkotbase/MutableArray;
-	public final fun remove (I)Lkotbase/MutableArray;
-	public final fun setArray (ILkotbase/Array;)Lkotbase/MutableArray;
-	public final fun setBlob (ILkotbase/Blob;)Lkotbase/MutableArray;
-	public final fun setBoolean (IZ)Lkotbase/MutableArray;
-	public final fun setData (Ljava/util/List;)Lkotbase/MutableArray;
-	public final fun setDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArray;
-	public final fun setDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArray;
-	public final fun setDouble (ID)Lkotbase/MutableArray;
-	public final fun setFloat (IF)Lkotbase/MutableArray;
-	public final fun setInt (II)Lkotbase/MutableArray;
-	public final fun setJSON (Ljava/lang/String;)Lkotbase/MutableArray;
-	public final fun setLong (IJ)Lkotbase/MutableArray;
-	public final fun setNumber (ILjava/lang/Number;)Lkotbase/MutableArray;
-	public final fun setString (ILjava/lang/String;)Lkotbase/MutableArray;
-	public final fun setValue (ILjava/lang/Object;)Lkotbase/MutableArray;
+	public fun insertArray (ILkotbase/Array;)Lkotbase/MutableArray;
+	public synthetic fun insertArray (ILkotbase/Array;)Lkotbase/MutableArrayInterface;
+	public fun insertBlob (ILkotbase/Blob;)Lkotbase/MutableArray;
+	public synthetic fun insertBlob (ILkotbase/Blob;)Lkotbase/MutableArrayInterface;
+	public fun insertBoolean (IZ)Lkotbase/MutableArray;
+	public synthetic fun insertBoolean (IZ)Lkotbase/MutableArrayInterface;
+	public fun insertDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArray;
+	public synthetic fun insertDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public fun insertDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArray;
+	public synthetic fun insertDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
+	public fun insertDouble (ID)Lkotbase/MutableArray;
+	public synthetic fun insertDouble (ID)Lkotbase/MutableArrayInterface;
+	public fun insertFloat (IF)Lkotbase/MutableArray;
+	public synthetic fun insertFloat (IF)Lkotbase/MutableArrayInterface;
+	public fun insertInt (II)Lkotbase/MutableArray;
+	public synthetic fun insertInt (II)Lkotbase/MutableArrayInterface;
+	public fun insertLong (IJ)Lkotbase/MutableArray;
+	public synthetic fun insertLong (IJ)Lkotbase/MutableArrayInterface;
+	public fun insertNumber (ILjava/lang/Number;)Lkotbase/MutableArray;
+	public synthetic fun insertNumber (ILjava/lang/Number;)Lkotbase/MutableArrayInterface;
+	public fun insertString (ILjava/lang/String;)Lkotbase/MutableArray;
+	public synthetic fun insertString (ILjava/lang/String;)Lkotbase/MutableArrayInterface;
+	public fun insertValue (ILjava/lang/Object;)Lkotbase/MutableArray;
+	public synthetic fun insertValue (ILjava/lang/Object;)Lkotbase/MutableArrayInterface;
+	public fun remove (I)Lkotbase/MutableArray;
+	public synthetic fun remove (I)Lkotbase/MutableArrayInterface;
+	public fun setArray (ILkotbase/Array;)Lkotbase/MutableArray;
+	public synthetic fun setArray (ILkotbase/Array;)Lkotbase/MutableArrayInterface;
+	public fun setBlob (ILkotbase/Blob;)Lkotbase/MutableArray;
+	public synthetic fun setBlob (ILkotbase/Blob;)Lkotbase/MutableArrayInterface;
+	public fun setBoolean (IZ)Lkotbase/MutableArray;
+	public synthetic fun setBoolean (IZ)Lkotbase/MutableArrayInterface;
+	public fun setData (Ljava/util/List;)Lkotbase/MutableArray;
+	public synthetic fun setData (Ljava/util/List;)Lkotbase/MutableArrayInterface;
+	public fun setDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArray;
+	public synthetic fun setDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public fun setDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArray;
+	public synthetic fun setDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
+	public fun setDouble (ID)Lkotbase/MutableArray;
+	public synthetic fun setDouble (ID)Lkotbase/MutableArrayInterface;
+	public fun setFloat (IF)Lkotbase/MutableArray;
+	public synthetic fun setFloat (IF)Lkotbase/MutableArrayInterface;
+	public fun setInt (II)Lkotbase/MutableArray;
+	public synthetic fun setInt (II)Lkotbase/MutableArrayInterface;
+	public fun setJSON (Ljava/lang/String;)Lkotbase/MutableArray;
+	public synthetic fun setJSON (Ljava/lang/String;)Lkotbase/MutableArrayInterface;
+	public fun setLong (IJ)Lkotbase/MutableArray;
+	public synthetic fun setLong (IJ)Lkotbase/MutableArrayInterface;
+	public fun setNumber (ILjava/lang/Number;)Lkotbase/MutableArray;
+	public synthetic fun setNumber (ILjava/lang/Number;)Lkotbase/MutableArrayInterface;
+	public fun setString (ILjava/lang/String;)Lkotbase/MutableArray;
+	public synthetic fun setString (ILjava/lang/String;)Lkotbase/MutableArrayInterface;
+	public fun setValue (ILjava/lang/Object;)Lkotbase/MutableArray;
+	public synthetic fun setValue (ILjava/lang/Object;)Lkotbase/MutableArrayInterface;
 }
 
-public final class kotbase/MutableArrayKt {
+public abstract interface class kotbase/MutableArrayInterface : kotbase/ArrayInterface {
+	public abstract fun addArray (Lkotbase/Array;)Lkotbase/MutableArrayInterface;
+	public abstract fun addBlob (Lkotbase/Blob;)Lkotbase/MutableArrayInterface;
+	public abstract fun addBoolean (Z)Lkotbase/MutableArrayInterface;
+	public abstract fun addDate (Lkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public abstract fun addDictionary (Lkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
+	public abstract fun addDouble (D)Lkotbase/MutableArrayInterface;
+	public abstract fun addFloat (F)Lkotbase/MutableArrayInterface;
+	public abstract fun addInt (I)Lkotbase/MutableArrayInterface;
+	public abstract fun addLong (J)Lkotbase/MutableArrayInterface;
+	public abstract fun addNumber (Ljava/lang/Number;)Lkotbase/MutableArrayInterface;
+	public abstract fun addString (Ljava/lang/String;)Lkotbase/MutableArrayInterface;
+	public abstract fun addValue (Ljava/lang/Object;)Lkotbase/MutableArrayInterface;
+	public abstract fun getArray (I)Lkotbase/MutableArray;
+	public abstract fun getDictionary (I)Lkotbase/MutableDictionary;
+	public abstract fun insertArray (ILkotbase/Array;)Lkotbase/MutableArrayInterface;
+	public abstract fun insertBlob (ILkotbase/Blob;)Lkotbase/MutableArrayInterface;
+	public abstract fun insertBoolean (IZ)Lkotbase/MutableArrayInterface;
+	public abstract fun insertDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public abstract fun insertDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
+	public abstract fun insertDouble (ID)Lkotbase/MutableArrayInterface;
+	public abstract fun insertFloat (IF)Lkotbase/MutableArrayInterface;
+	public abstract fun insertInt (II)Lkotbase/MutableArrayInterface;
+	public abstract fun insertLong (IJ)Lkotbase/MutableArrayInterface;
+	public abstract fun insertNumber (ILjava/lang/Number;)Lkotbase/MutableArrayInterface;
+	public abstract fun insertString (ILjava/lang/String;)Lkotbase/MutableArrayInterface;
+	public abstract fun insertValue (ILjava/lang/Object;)Lkotbase/MutableArrayInterface;
+	public abstract fun remove (I)Lkotbase/MutableArrayInterface;
+	public abstract fun setArray (ILkotbase/Array;)Lkotbase/MutableArrayInterface;
+	public abstract fun setBlob (ILkotbase/Blob;)Lkotbase/MutableArrayInterface;
+	public abstract fun setBoolean (IZ)Lkotbase/MutableArrayInterface;
+	public abstract fun setData (Ljava/util/List;)Lkotbase/MutableArrayInterface;
+	public abstract fun setDate (ILkotlinx/datetime/Instant;)Lkotbase/MutableArrayInterface;
+	public abstract fun setDictionary (ILkotbase/Dictionary;)Lkotbase/MutableArrayInterface;
+	public abstract fun setDouble (ID)Lkotbase/MutableArrayInterface;
+	public abstract fun setFloat (IF)Lkotbase/MutableArrayInterface;
+	public abstract fun setInt (II)Lkotbase/MutableArrayInterface;
+	public abstract fun setJSON (Ljava/lang/String;)Lkotbase/MutableArrayInterface;
+	public abstract fun setLong (IJ)Lkotbase/MutableArrayInterface;
+	public abstract fun setNumber (ILjava/lang/Number;)Lkotbase/MutableArrayInterface;
+	public abstract fun setString (ILjava/lang/String;)Lkotbase/MutableArrayInterface;
+	public abstract fun setValue (ILjava/lang/Object;)Lkotbase/MutableArrayInterface;
+}
+
+public final class kotbase/MutableArrayInterfaceKt {
 	public static final fun get (Lkotbase/MutableArray;I)Lkotbase/MutableFragment;
 }
 
-public final class kotbase/MutableDictionary : kotbase/Dictionary {
+public final class kotbase/MutableDictionary : kotbase/Dictionary, kotbase/MutableDictionaryInterface {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/util/Map;)V
@@ -974,28 +1093,67 @@ public final class kotbase/MutableDictionary : kotbase/Dictionary {
 	public fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
 	public synthetic fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
 	public fun getDictionary (Ljava/lang/String;)Lkotbase/MutableDictionary;
-	public final fun remove (Ljava/lang/String;)Lkotbase/MutableDictionary;
-	public final fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDictionary;
-	public final fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDictionary;
-	public final fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDictionary;
-	public final fun setData (Ljava/util/Map;)Lkotbase/MutableDictionary;
-	public final fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionary;
-	public final fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionary;
-	public final fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDictionary;
-	public final fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDictionary;
-	public final fun setInt (Ljava/lang/String;I)Lkotbase/MutableDictionary;
-	public final fun setJSON (Ljava/lang/String;)Lkotbase/MutableDictionary;
-	public final fun setLong (Ljava/lang/String;J)Lkotbase/MutableDictionary;
-	public final fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDictionary;
-	public final fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDictionary;
-	public final fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDictionary;
+	public fun remove (Ljava/lang/String;)Lkotbase/MutableDictionary;
+	public synthetic fun remove (Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDictionary;
+	public synthetic fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDictionaryInterface;
+	public fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDictionary;
+	public synthetic fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDictionaryInterface;
+	public fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDictionary;
+	public synthetic fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDictionaryInterface;
+	public fun setData (Ljava/util/Map;)Lkotbase/MutableDictionary;
+	public synthetic fun setData (Ljava/util/Map;)Lkotbase/MutableDictionaryInterface;
+	public fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionary;
+	public synthetic fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionaryInterface;
+	public fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionary;
+	public synthetic fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionaryInterface;
+	public fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDictionary;
+	public synthetic fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDictionaryInterface;
+	public fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDictionary;
+	public synthetic fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDictionaryInterface;
+	public fun setInt (Ljava/lang/String;I)Lkotbase/MutableDictionary;
+	public synthetic fun setInt (Ljava/lang/String;I)Lkotbase/MutableDictionaryInterface;
+	public fun setJSON (Ljava/lang/String;)Lkotbase/MutableDictionary;
+	public synthetic fun setJSON (Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public fun setLong (Ljava/lang/String;J)Lkotbase/MutableDictionary;
+	public synthetic fun setLong (Ljava/lang/String;J)Lkotbase/MutableDictionaryInterface;
+	public fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDictionary;
+	public synthetic fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDictionaryInterface;
+	public fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDictionary;
+	public synthetic fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDictionary;
+	public synthetic fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDictionaryInterface;
+}
+
+public abstract interface class kotbase/MutableDictionaryInterface : kotbase/DictionaryInterface {
+	public abstract fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
+	public abstract fun getDictionary (Ljava/lang/String;)Lkotbase/MutableDictionary;
+	public abstract fun remove (Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setData (Ljava/util/Map;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setInt (Ljava/lang/String;I)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setJSON (Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setLong (Ljava/lang/String;J)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public abstract fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDictionaryInterface;
+}
+
+public final class kotbase/MutableDictionaryInterfaceKt {
+	public static final fun get (Lkotbase/MutableDictionaryInterface;Ljava/lang/String;)Lkotbase/MutableFragment;
 }
 
 public final class kotbase/MutableDictionaryKt {
 	public static final fun get (Lkotbase/MutableDictionary;Ljava/lang/String;)Lkotbase/MutableFragment;
 }
 
-public final class kotbase/MutableDocument : kotbase/Document {
+public final class kotbase/MutableDocument : kotbase/Document, kotbase/MutableDictionaryInterface {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
@@ -1006,25 +1164,36 @@ public final class kotbase/MutableDocument : kotbase/Document {
 	public fun getArray (Ljava/lang/String;)Lkotbase/MutableArray;
 	public synthetic fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
 	public fun getDictionary (Ljava/lang/String;)Lkotbase/MutableDictionary;
-	public final fun remove (Ljava/lang/String;)Lkotbase/MutableDocument;
-	public final fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDocument;
-	public final fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDocument;
-	public final fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDocument;
-	public final fun setData (Ljava/util/Map;)Lkotbase/MutableDocument;
-	public final fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDocument;
-	public final fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDocument;
-	public final fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDocument;
-	public final fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDocument;
-	public final fun setInt (Ljava/lang/String;I)Lkotbase/MutableDocument;
-	public final fun setJSON (Ljava/lang/String;)Lkotbase/MutableDocument;
-	public final fun setLong (Ljava/lang/String;J)Lkotbase/MutableDocument;
-	public final fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDocument;
-	public final fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDocument;
-	public final fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDocument;
-}
-
-public final class kotbase/MutableDocumentKt {
-	public static final fun get (Lkotbase/MutableDocument;Ljava/lang/String;)Lkotbase/MutableFragment;
+	public synthetic fun remove (Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public fun remove (Ljava/lang/String;)Lkotbase/MutableDocument;
+	public synthetic fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDictionaryInterface;
+	public fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDocument;
+	public synthetic fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDictionaryInterface;
+	public fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDocument;
+	public synthetic fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDictionaryInterface;
+	public fun setBoolean (Ljava/lang/String;Z)Lkotbase/MutableDocument;
+	public synthetic fun setData (Ljava/util/Map;)Lkotbase/MutableDictionaryInterface;
+	public fun setData (Ljava/util/Map;)Lkotbase/MutableDocument;
+	public synthetic fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDictionaryInterface;
+	public fun setDate (Ljava/lang/String;Lkotlinx/datetime/Instant;)Lkotbase/MutableDocument;
+	public synthetic fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDictionaryInterface;
+	public fun setDictionary (Ljava/lang/String;Lkotbase/Dictionary;)Lkotbase/MutableDocument;
+	public synthetic fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDictionaryInterface;
+	public fun setDouble (Ljava/lang/String;D)Lkotbase/MutableDocument;
+	public synthetic fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDictionaryInterface;
+	public fun setFloat (Ljava/lang/String;F)Lkotbase/MutableDocument;
+	public synthetic fun setInt (Ljava/lang/String;I)Lkotbase/MutableDictionaryInterface;
+	public fun setInt (Ljava/lang/String;I)Lkotbase/MutableDocument;
+	public synthetic fun setJSON (Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public fun setJSON (Ljava/lang/String;)Lkotbase/MutableDocument;
+	public synthetic fun setLong (Ljava/lang/String;J)Lkotbase/MutableDictionaryInterface;
+	public fun setLong (Ljava/lang/String;J)Lkotbase/MutableDocument;
+	public synthetic fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDictionaryInterface;
+	public fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDocument;
+	public synthetic fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
+	public fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDocument;
+	public synthetic fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDictionaryInterface;
+	public fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDocument;
 }
 
 public final class kotbase/MutableFragment : kotbase/Fragment {
@@ -1034,9 +1203,11 @@ public final class kotbase/MutableFragment : kotbase/Fragment {
 	public fun get (Ljava/lang/String;)Lkotbase/MutableFragment;
 	public synthetic fun getArray ()Lkotbase/Array;
 	public fun getArray ()Lkotbase/MutableArray;
+	public synthetic fun getArrayParent ()Lkotbase/ArrayInterface;
 	public fun getBlob ()Lkotbase/Blob;
 	public fun getBoolean ()Z
 	public fun getDate ()Lkotlinx/datetime/Instant;
+	public synthetic fun getDictParent ()Lkotbase/DictionaryInterface;
 	public synthetic fun getDictionary ()Lkotbase/Dictionary;
 	public fun getDictionary ()Lkotbase/MutableDictionary;
 	public fun getDouble ()D
@@ -1290,43 +1461,38 @@ public final class kotbase/ReplicatorType : java/lang/Enum {
 	public static fun values ()[Lkotbase/ReplicatorType;
 }
 
-public final class kotbase/Result : kotbase/internal/DelegatedClass, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
-	public final fun contains (Ljava/lang/String;)Z
-	public final fun getArray (I)Lkotbase/Array;
-	public final fun getArray (Ljava/lang/String;)Lkotbase/Array;
-	public final fun getBlob (I)Lkotbase/Blob;
-	public final fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
-	public final fun getBoolean (I)Z
-	public final fun getBoolean (Ljava/lang/String;)Z
-	public final fun getCount ()I
-	public final fun getDate (I)Lkotlinx/datetime/Instant;
-	public final fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
-	public final fun getDictionary (I)Lkotbase/Dictionary;
-	public final fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
-	public final fun getDouble (I)D
-	public final fun getDouble (Ljava/lang/String;)D
-	public final fun getFloat (I)F
-	public final fun getFloat (Ljava/lang/String;)F
-	public final fun getInt (I)I
-	public final fun getInt (Ljava/lang/String;)I
-	public final fun getKeys ()Ljava/util/List;
-	public final fun getLong (I)J
-	public final fun getLong (Ljava/lang/String;)J
-	public final fun getNumber (I)Ljava/lang/Number;
-	public final fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
-	public final fun getString (I)Ljava/lang/String;
-	public final fun getString (Ljava/lang/String;)Ljava/lang/String;
-	public final fun getValue (I)Ljava/lang/Object;
-	public final fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+public final class kotbase/Result : kotbase/internal/DelegatedClass, java/lang/Iterable, kotbase/ArrayInterface, kotbase/DictionaryInterface, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun contains (Ljava/lang/String;)Z
+	public fun getArray (I)Lkotbase/Array;
+	public fun getArray (Ljava/lang/String;)Lkotbase/Array;
+	public fun getBlob (I)Lkotbase/Blob;
+	public fun getBlob (Ljava/lang/String;)Lkotbase/Blob;
+	public fun getBoolean (I)Z
+	public fun getBoolean (Ljava/lang/String;)Z
+	public fun getCount ()I
+	public fun getDate (I)Lkotlinx/datetime/Instant;
+	public fun getDate (Ljava/lang/String;)Lkotlinx/datetime/Instant;
+	public fun getDictionary (I)Lkotbase/Dictionary;
+	public fun getDictionary (Ljava/lang/String;)Lkotbase/Dictionary;
+	public fun getDouble (I)D
+	public fun getDouble (Ljava/lang/String;)D
+	public fun getFloat (I)F
+	public fun getFloat (Ljava/lang/String;)F
+	public fun getInt (I)I
+	public fun getInt (Ljava/lang/String;)I
+	public fun getKeys ()Ljava/util/List;
+	public fun getLong (I)J
+	public fun getLong (Ljava/lang/String;)J
+	public fun getNumber (I)Ljava/lang/Number;
+	public fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
+	public fun getString (I)Ljava/lang/String;
+	public fun getString (Ljava/lang/String;)Ljava/lang/String;
+	public fun getValue (I)Ljava/lang/Object;
+	public fun getValue (Ljava/lang/String;)Ljava/lang/Object;
 	public fun iterator ()Ljava/util/Iterator;
-	public final fun toJSON ()Ljava/lang/String;
-	public final fun toList ()Ljava/util/List;
-	public final fun toMap ()Ljava/util/Map;
-}
-
-public final class kotbase/ResultKt {
-	public static final fun get (Lkotbase/Result;I)Lkotbase/Fragment;
-	public static final fun get (Lkotbase/Result;Ljava/lang/String;)Lkotbase/Fragment;
+	public fun toJSON ()Ljava/lang/String;
+	public fun toList ()Ljava/util/List;
+	public fun toMap ()Ljava/util/Map;
 }
 
 public final class kotbase/ResultSet : kotbase/internal/DelegatedClass, java/lang/AutoCloseable, java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker {
