@@ -24,6 +24,6 @@ internal constructor(actual: CBLSelect) :
     Query by DelegatedQuery(actual),
     FromRouter {
 
-    public actual override fun from(dataSource: DataSource): From =
+    actual override fun from(dataSource: DataSource): From =
         From(actual.from(dataSource.actual))
 }

@@ -30,6 +30,6 @@ internal constructor(
         database
     )
 
-    public override fun toString(): String =
+    override fun toString(): String =
         "DatabaseEndpoint{database=$database}"
 }

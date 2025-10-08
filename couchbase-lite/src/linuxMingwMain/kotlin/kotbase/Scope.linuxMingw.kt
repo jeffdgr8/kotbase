@@ -69,17 +69,17 @@ internal constructor(
         }?.asCollection(database)
     }
 
-    public override fun toString(): String =
+    override fun toString(): String =
         "${database.name}.$name"
 
-    public override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Scope) return false
         // don't use == here! The database must be the exact same instance.
         return database === other.database && name == other.name
     }
 
-    public override fun hashCode(): Int =
+    override fun hashCode(): Int =
         arrayOf(name, database).contentHashCode()
 
     public actual companion object

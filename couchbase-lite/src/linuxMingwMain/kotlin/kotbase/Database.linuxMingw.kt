@@ -795,7 +795,7 @@ private constructor(
         }
     }
 
-    public override fun toString(): String {
+    override fun toString(): String {
         return buildString {
             append("Database{@${identityHashCodeHex()}: '$name")
             if (config.isFullSync) append("!")
@@ -804,10 +804,10 @@ private constructor(
         }
     }
 
-    public override fun hashCode(): Int =
+    override fun hashCode(): Int =
         name.hashCode()
 
-    public override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Database) return false
         return path == other.path && name == other.name

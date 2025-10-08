@@ -139,7 +139,7 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     }
 
     private fun checkIndex(index: Int) {
-        if (index < 0 || index >= count) {
+        if (index !in 0..<count) {
             throw IndexOutOfBoundsException("Array index $index is out of range")
         }
     }

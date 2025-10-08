@@ -41,6 +41,6 @@ internal constructor(
         url
     )
 
-    public override fun toString(): String =
+    override fun toString(): String =
         "URLEndpoint{url=$url}"
 }

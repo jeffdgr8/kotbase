@@ -87,7 +87,7 @@ class DocumentTest : BaseDbTest() {
     }
 
     @Test
-    fun testCreateDocWithNilID() {
+    fun testCreateDocWithNullID() {
         val doc1a = MutableDocument(null as String?)
         assertNotNull(doc1a)
         assertFalse(doc1a.id.isEmpty())

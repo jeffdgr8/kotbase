@@ -24,6 +24,7 @@ import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+@Suppress("DEPRECATION")
 class ConfigFactoryTest : BaseDbTest() {
     private val testAuthenticator = SessionAuthenticator("mysessionId")
     private val testHeaders = mapOf("Cookies" to "region=nw; city=sf")

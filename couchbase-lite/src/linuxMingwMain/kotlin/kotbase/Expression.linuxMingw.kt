@@ -229,7 +229,7 @@ public actual open class Expression {
         private vararg val params: Expression
     ) : Expression() {
 
-        public override fun asJSON(): Any {
+        override fun asJSON(): Any {
             return buildList {
                 add(func)
                 add(idx.toString())

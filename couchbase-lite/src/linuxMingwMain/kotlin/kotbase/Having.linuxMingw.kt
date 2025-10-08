@@ -21,15 +21,15 @@ internal constructor(private val state: QueryState) :
     OrderByRouter,
     LimitRouter {
 
-    public actual override fun orderBy(vararg orderings: Ordering): OrderBy {
+    actual override fun orderBy(vararg orderings: Ordering): OrderBy {
         return OrderBy(state.copy(orderBy = orderings.asList()))
     }
 
-    public actual override fun limit(limit: Expression): Limit {
+    actual override fun limit(limit: Expression): Limit {
         return Limit(state.copy(limit = limit))
     }
 
-    public actual override fun limit(limit: Expression, offset: Expression?): Limit {
+    actual override fun limit(limit: Expression, offset: Expression?): Limit {
         return Limit(state.copy(limit = limit, offset = offset))
     }
 }

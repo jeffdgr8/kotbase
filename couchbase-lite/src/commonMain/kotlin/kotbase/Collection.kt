@@ -161,7 +161,7 @@ public expect class Collection : AutoCloseable {
     public fun purge(id: String)
 
     /**
-     * Set an expiration date to the document of the given id. Setting a nil date will clear the expiration.
+     * Set an expiration date to the document of the given id. Setting a null date will clear the expiration.
      */
     @Throws(CouchbaseLiteException::class)
     public fun setDocumentExpiration(id: String, expiration: Instant?)
@@ -298,7 +298,7 @@ public expect class Collection : AutoCloseable {
     @Throws(CouchbaseLiteException::class)
     public fun deleteIndex(name: String)
 
-    public override fun close()
+    override fun close()
 
     public companion object
 }

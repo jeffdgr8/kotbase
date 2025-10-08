@@ -24,7 +24,7 @@ public expect class FullTextIndex : Index {
      * The language code which is an ISO-639 language such as "en", "fr", etc.
      * Setting the language code affects how word breaks and word stems are parsed.
      * Without setting the value, the current locale's language will be used. Setting
-     * a nil or "" value to disable the language features.
+     * a null or "" value to disable the language features.
      */
     public fun setLanguage(language: String?): FullTextIndex
 
