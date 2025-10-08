@@ -78,23 +78,19 @@ internal fun UShort.toLogDomain(): Set<LogDomain> = buildSet {
 internal fun Set<LogDomain>.toCBLLogDomain(): UShort {
     var domains = 0U
     if (contains(LogDomain.DATABASE)) {
-        domains = domains or kCBLLogDomainDatabase
+        domains = domains or kCBLLogDomainMaskDatabase
     }
     if (contains(LogDomain.QUERY)) {
-        domains = domains or kCBLLogDomainQuery
+        domains = domains or kCBLLogDomainMaskQuery
     }
     if (contains(LogDomain.REPLICATOR)) {
-        domains = domains or kCBLLogDomainReplicator
+        domains = domains or kCBLLogDomainMaskReplicator
     }
     if (contains(LogDomain.NETWORK)) {
-        domains = domains or kCBLLogDomainNetwork
+        domains = domains or kCBLLogDomainMaskNetwork
     }
     if (contains(LogDomain.LISTENER)) {
-        domains = domains or kCBLLogDomainListener
+        domains = domains or kCBLLogDomainMaskListener
     }
     return domains.toUShort()
 }
-
-// This constant is enterprise only in the C SDK, but not Java
-// https://github.com/couchbase/couchbase-lite-ios/blob/master/Objective-C/CBLLogger.h#L32
-private val kCBLLogDomainListener = 1U shl 4
