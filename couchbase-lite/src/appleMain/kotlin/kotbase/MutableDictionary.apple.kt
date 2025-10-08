@@ -28,7 +28,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
     public actual constructor() : this(CBLMutableDictionary())
 
     public actual constructor(data: Map<String, Any?>) : this(
-        CBLMutableDictionary(data.actualIfDelegated())
+        CBLMutableDictionary(data.removingBooleanValues().actualIfDelegated())
     ) {
         setBooleans(data)
     }
@@ -48,7 +48,7 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
 
     actual override fun setData(data: Map<String, Any?>): MutableDictionary {
         collectionMap.clear()
-        actual.setData(data.actualIfDelegated())
+        actual.setData(data.removingBooleanValues().actualIfDelegated())
         setBooleans(data)
         mutate()
         return this
