@@ -25,11 +25,11 @@ internal constructor(private val state: QueryState) :
     Query by state,
     LimitRouter {
 
-    public actual override fun limit(limit: Expression): Limit {
+    actual override fun limit(limit: Expression): Limit {
         return Limit(state.copy(limit = CBLQueryLimit.limit(limit.actual)))
     }
 
-    public actual override fun limit(limit: Expression, offset: Expression?): Limit {
+    actual override fun limit(limit: Expression, offset: Expression?): Limit {
         return Limit(state.copy(limit = CBLQueryLimit.limit(limit.actual, offset?.actual)))
     }
 

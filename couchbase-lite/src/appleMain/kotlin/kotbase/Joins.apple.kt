@@ -28,19 +28,19 @@ internal constructor(private val state: QueryState) :
     OrderByRouter,
     LimitRouter {
 
-    public actual override fun where(expression: Expression): Where {
+    actual override fun where(expression: Expression): Where {
         return Where(state.copy(where = expression.actual))
     }
 
-    public actual override fun orderBy(vararg orderings: Ordering): OrderBy {
+    actual override fun orderBy(vararg orderings: Ordering): OrderBy {
         return OrderBy(state.copy(orderBy = orderings.actuals()))
     }
 
-    public actual override fun limit(limit: Expression): Limit {
+    actual override fun limit(limit: Expression): Limit {
         return Limit(state.copy(limit = CBLQueryLimit.limit(limit.actual)))
     }
 
-    public actual override fun limit(limit: Expression, offset: Expression?): Limit {
+    actual override fun limit(limit: Expression, offset: Expression?): Limit {
         return Limit(state.copy(limit = CBLQueryLimit.limit(limit.actual, offset?.actual)))
     }
 

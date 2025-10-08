@@ -323,7 +323,7 @@ private constructor(
         addCollection(database.defaultCollection, updated)
     }
 
-    public override fun toString(): String {
+    override fun toString(): String {
         return buildString {
             append("ReplicatorConfig{(")
             collectionConfigurations.keys.forEachIndexed { i, c ->

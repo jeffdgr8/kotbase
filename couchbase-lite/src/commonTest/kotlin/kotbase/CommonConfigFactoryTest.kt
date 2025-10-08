@@ -22,6 +22,7 @@ import kotlin.test.assertNotEquals
 
 const val CONFIG_FACTORY_TEST_STRING = "midway down the midway"
 
+@Suppress("DEPRECATION")
 class CommonConfigFactoryTest : BaseTest() {
     @Test
     fun testFullTextIndexConfigurationFactory() {

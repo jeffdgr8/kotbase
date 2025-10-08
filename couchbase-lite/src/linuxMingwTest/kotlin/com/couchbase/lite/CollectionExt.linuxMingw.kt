@@ -17,10 +17,8 @@ package com.couchbase.lite
 
 import kotbase.Collection
 import kotbase.Document
-import kotbase.internal.fleece.iterator
 import kotbase.internal.fleece.toList
 import kotbase.internal.wrapCBLError
-import kotlinx.cinterop.memScoped
 import libcblite.CBLCollection_GetIndexesInfo
 
 // TODO: implement native C getC4Document()
@@ -40,5 +38,6 @@ internal actual fun Collection.getIndexInfo(): List<Map<String, Any?>> {
             CBLCollection_GetIndexesInfo(actual, error)
         }
     }
+    @Suppress("UNCHECKED_CAST")
     return flIndexInfo?.toList(null) as List<Map<String, Any?>>
 }

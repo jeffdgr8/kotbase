@@ -27,15 +27,15 @@ internal constructor(actual: CBLWhere) :
     OrderByRouter,
     LimitRouter {
 
-    public actual override fun groupBy(vararg expressions: Expression): GroupBy =
+    actual override fun groupBy(vararg expressions: Expression): GroupBy =
         GroupBy(actual.groupBy(*expressions.actuals()))
 
-    public actual override fun orderBy(vararg orderings: Ordering): OrderBy =
+    actual override fun orderBy(vararg orderings: Ordering): OrderBy =
         OrderBy(actual.orderBy(*orderings.actuals()))
 
-    public actual override fun limit(limit: Expression): Limit =
+    actual override fun limit(limit: Expression): Limit =
         Limit(actual.limit(limit.actual))
 
-    public actual override fun limit(limit: Expression, offset: Expression?): Limit =
+    actual override fun limit(limit: Expression, offset: Expression?): Limit =
         Limit(actual.limit(limit.actual, offset?.actual))
 }

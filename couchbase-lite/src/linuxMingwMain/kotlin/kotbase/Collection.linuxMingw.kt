@@ -386,17 +386,17 @@ internal constructor(
         if (!database.isClosed) CBLCollection_Release(actual)
     }
 
-    public override fun toString(): String =
+    override fun toString(): String =
         "$database.$fullName"
 
-    public override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Collection) return false
         // don't use == here! The database must be the exact same instance.
         return database === other.database && scope == other.scope && name == other.name
     }
 
-    public override fun hashCode(): Int =
+    override fun hashCode(): Int =
         arrayOf(scope, name).contentHashCode()
 
     public actual companion object

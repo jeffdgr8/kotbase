@@ -412,13 +412,6 @@ private val defaultConflictResolver: ConflictResolver by lazy {
         } else if (localGen < remoteGen) {
             return@cr remoteDoc
         }
-        // TODO: 4.0 API
-//        val cmp = localDoc.compareAge(remoteDoc)
-//        if (cmp > 0) {
-//            return@cr localDoc
-//        } else if (cmp < 0) {
-//            return@cr remoteDoc
-//        }
 
         // otherwise, choose one randomly, but deterministically.
         val localRevId = localDoc.revisionID ?: return@cr remoteDoc

@@ -20,7 +20,7 @@ internal constructor(private val state: QueryState) :
     Query by state,
     FromRouter {
 
-    public actual override fun from(dataSource: DataSource): From {
+    actual override fun from(dataSource: DataSource): From {
         return From(state.copy(from = dataSource))
     }
 }

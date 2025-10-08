@@ -24,9 +24,9 @@ internal constructor(actual: CBLOrderBy) :
     Query by DelegatedQuery(actual),
     LimitRouter {
 
-    public actual override fun limit(limit: Expression): Limit =
+    actual override fun limit(limit: Expression): Limit =
         Limit(actual.limit(limit.actual))
 
-    public actual override fun limit(limit: Expression, offset: Expression?): Limit =
+    actual override fun limit(limit: Expression, offset: Expression?): Limit =
         Limit(actual.limit(limit.actual, offset?.actual))
 }
