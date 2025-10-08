@@ -29,9 +29,13 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     private val collectionMap: MutableMap<Int, Any> = mutableMapOf()
 
     override val count: Int
-        get() = actual.count.toInt()
+        get() {
+            checkIsFinished()
+            return actual.count.toInt()
+        }
 
     override fun getValue(index: Int): Any? {
+        checkIsFinished()
         checkIndex(index)
         return collectionMap[index]
             ?: actual.valueAtIndex(index.convert())?.delegateIfNecessary()
@@ -39,51 +43,61 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     }
 
     override fun getString(index: Int): String? {
+        checkIsFinished()
         checkIndex(index)
         return actual.stringAtIndex(index.convert())
     }
 
     override fun getNumber(index: Int): Number? {
+        checkIsFinished()
         checkIndex(index)
         return actual.numberAtIndex(index.convert())?.asNumber()
     }
 
     override fun getInt(index: Int): Int {
+        checkIsFinished()
         checkIndex(index)
         return actual.integerAtIndex(index.convert()).toInt()
     }
 
     override fun getLong(index: Int): Long {
+        checkIsFinished()
         checkIndex(index)
         return actual.longLongAtIndex(index.convert())
     }
 
     override fun getFloat(index: Int): Float {
+        checkIsFinished()
         checkIndex(index)
         return actual.floatAtIndex(index.convert())
     }
 
     override fun getDouble(index: Int): Double {
+        checkIsFinished()
         checkIndex(index)
         return actual.doubleAtIndex(index.convert())
     }
 
     override fun getBoolean(index: Int): Boolean {
+        checkIsFinished()
         checkIndex(index)
         return actual.booleanAtIndex(index.convert())
     }
 
     override fun getBlob(index: Int): Blob? {
+        checkIsFinished()
         checkIndex(index)
         return actual.blobAtIndex(index.convert())?.asBlob()
     }
 
     override fun getDate(index: Int): Instant? {
+        checkIsFinished()
         checkIndex(index)
         return actual.dateAtIndex(index.convert())?.toKotlinInstant()
     }
 
     override fun getArray(index: Int): Array? {
+        checkIsFinished()
         checkIndex(index)
         return getInternalCollection(index)
             ?: actual.arrayAtIndex(index.convert())?.asArray()
@@ -91,17 +105,22 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     }
 
     override fun getDictionary(index: Int): Dictionary? {
+        checkIsFinished()
         checkIndex(index)
         return getInternalCollection(index)
             ?: actual.dictionaryAtIndex(index.convert())?.asDictionary()
                 ?.also { collectionMap[index] = it }
     }
 
-    override fun toList(): List<Any?> =
-        actual.toArray().delegateIfNecessary()
+    override fun toList(): List<Any?> {
+        checkIsFinished()
+        return actual.toArray().delegateIfNecessary()
+    }
 
-    override fun toJSON(): String =
-        actual.toJSON()
+    override fun toJSON(): String {
+        checkIsFinished()
+        return actual.toJSON()
+    }
 
     override fun iterator(): Iterator<Any?> =
         IndexUpdaterIterator(count)
@@ -117,6 +136,7 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     }
 
     override fun setVector(value: List<Float>?, index: Int) {
+        checkIsFinished()
         checkIndex(index)
         wrapCBLError { error ->
             actual.setVector(value, index.convert(), error)
@@ -124,20 +144,27 @@ internal class IndexUpdaterImpl(actual: CBLIndexUpdater) : DelegatedClass<CBLInd
     }
 
     override fun skipVector(index: Int) {
+        checkIsFinished()
         checkIndex(index)
         actual.skipVectorAtIndex(index.convert())
     }
 
     override fun finish() {
+        checkIsFinished()
         wrapCBLError { error ->
             actual.finishWithError(error)
         }
+        finished = true
     }
 
     override fun close() {
-        wrapCBLError { error ->
-            actual.finishWithError(error)
-        }
+        finish()
+    }
+
+    private var finished = false
+
+    private fun checkIsFinished() {
+        if (finished) throw CouchbaseLiteError("Called on finished updater")
     }
 
     private fun checkIndex(index: Int) {
