@@ -792,13 +792,6 @@ class VectorSearchTestLazy : BaseVectorSearchTest() {
         assertNull(updater.getArray(9))
 
         // value:
-        println("-=( value )=-")
-        val value = updater.getValue(3)
-        println("updater.getValue(3) = $value")
-        assertNotNull(value)
-        println("type = ${value::class}")
-        println("-=( value done )=-")
-
         assertEquals("a string", updater.getValue(0))
         assertEquals(100L, updater.getValue(1))
         assertEquals(20.8, updater.getValue(2))
