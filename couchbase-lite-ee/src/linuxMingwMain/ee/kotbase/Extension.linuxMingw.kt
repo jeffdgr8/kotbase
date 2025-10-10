@@ -18,15 +18,19 @@ package kotbase
 import kotbase.internal.fleece.toFLString
 import kotbase.internal.wrapCBLError
 import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.toKString
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import libcblite.CBL_EnableVectorSearch
+import platform.posix.getenv
 
 public actual object Extension {
 
     public actual fun enableVectorSearch() {
         wrapCBLError { error ->
             memScoped {
-                // TODO: path to extension library
-                CBL_EnableVectorSearch("".toFLString(this), error)
+                val libPath = getenv("CBLITE_VECTOR_SEARCH_LIB_PATH")?.toKString() ?: "."
+                CBL_EnableVectorSearch(libPath.toFLString(this), error)
             }
         }
     }
