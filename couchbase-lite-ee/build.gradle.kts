@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
 import org.jetbrains.kotlin.konan.target.Family
 
@@ -90,4 +91,8 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
         val cblDefFile = file("src/nativeInterop/cinterop/podCouchbaseLite.def")
         defFile.get().asFile.appendText(cblDefFile.readText())
     }
+}
+
+tasks.withType<KotlinNativeTest>().configureEach {
+    environment("CBLITE_VECTOR_SEARCH_LIB_PATH", "$projectDir/$vectorSearchLibPath")
 }

@@ -17,6 +17,7 @@ import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.Project
 import org.gradle.api.internal.catalog.DelegatingProjectDependency
 import org.gradle.kotlin.dsl.withType
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.Architecture
@@ -94,3 +95,24 @@ private val KonanTarget.libcbliteLib: String
 
 private fun libcblitePath(os: String, arch: String, version: String): String =
     "vendor/libcblite/$os/$arch/libcblite-$version"
+
+val Project.vectorSearchLibPath: String
+    get() {
+        val version = libs.versions.couchbase.lite.vector.search.get()
+        val currentOs = DefaultNativePlatform.getCurrentOperatingSystem()
+        val (os, suffix) = when {
+            currentOs.isLinux -> "linux" to "/lib"
+            currentOs.isWindows -> "windows" to "/bin"
+            else -> error("Unhandled native OS: ${currentOs.name}")
+        }
+        val currentArch = DefaultNativePlatform.getCurrentArchitecture()
+        val arch = when {
+            currentArch.isAmd64 -> "x86_64"
+            currentArch.isArm64 -> "arm64"
+            else -> error("Unhandled native ARCH: ${currentArch.name}")
+        }
+        return vectorSearchPath(os, arch, version) + suffix
+    }
+
+private fun vectorSearchPath(os: String, arch: String, version: String): String =
+    "vendor/CouchbaseLiteVectorSearch/$os/$arch/CouchbaseLiteVectorSearch-$version"
