@@ -22,7 +22,7 @@ import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
-public actual class VectorEncoding
+public actual open class VectorEncoding
 private constructor(internal val actual: CPointer<CBLVectorEncoding>) {
 
     @OptIn(ExperimentalNativeApi::class)
@@ -31,10 +31,10 @@ private constructor(internal val actual: CPointer<CBLVectorEncoding>) {
         CBLVectorEncoding_Free(it)
     }
 
-    public actual enum class ScalarQuantizerType {
-        SQ4,
-        SQ6,
-        SQ8;
+    public actual enum class ScalarQuantizerType(internal val bits: Int) {
+        SQ4(4),
+        SQ6(6),
+        SQ8(8);
 
         internal val actual: CBLScalarQuantizerType
             get() = when (this) {
@@ -44,15 +44,52 @@ private constructor(internal val actual: CPointer<CBLVectorEncoding>) {
             }
     }
 
+    private class NoneVectorEncoding() : VectorEncoding(CBLVectorEncoding_CreateNone()!!) {
+
+        override fun equals(other: Any?): Boolean =
+            this === other || other is NoneVectorEncoding
+
+        override fun hashCode(): Int = 1
+    }
+
+    private class ScalarVectorEncoding(
+        private val type: ScalarQuantizerType
+    ) : VectorEncoding(CBLVectorEncoding_CreateScalarQuantizer(type.actual)!!) {
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ScalarVectorEncoding) return false
+            return type.bits == other.type.bits
+        }
+
+        override fun hashCode(): Int =
+            type.bits
+    }
+
+    private class ProductVectorEncoding(
+        private val subquantizers: Long,
+        private val bits: Long
+    ) : VectorEncoding(CBLVectorEncoding_CreateProductQuantizer(subquantizers.convert(), bits.convert())!!) {
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ProductVectorEncoding) return false
+            return (bits == other.bits) && (subquantizers == other.subquantizers)
+        }
+
+        override fun hashCode(): Int =
+            ((bits * 37) + subquantizers).toInt()
+    }
+
     public actual companion object {
 
         public actual fun none(): VectorEncoding =
-            VectorEncoding(CBLVectorEncoding_CreateNone()!!)
+            NoneVectorEncoding()
 
         public actual fun scalarQuantizer(type: ScalarQuantizerType): VectorEncoding =
-            VectorEncoding(CBLVectorEncoding_CreateScalarQuantizer(type.actual)!!)
+            ScalarVectorEncoding(type)
 
         public actual fun productQuantizer(subquantizers: Long, bits: Long): VectorEncoding =
-            VectorEncoding(CBLVectorEncoding_CreateProductQuantizer(subquantizers.convert(), bits.convert())!!)
+            ProductVectorEncoding(subquantizers, bits)
     }
 }
