@@ -24,34 +24,42 @@ import libcblite.CBLCollection_CreateValueIndex
 import libcblite.CBLCollection_CreateVectorIndex
 
 internal fun Collection.createIndexImpl(name: String, config: IndexConfiguration) {
-    wrapCBLError { error ->
-        memScoped {
-            when (config) {
-                is ValueIndexConfiguration -> CBLCollection_CreateValueIndex(
-                    actual,
-                    name.toFLString(this),
-                    config.actual,
-                    error
-                )
-                is FullTextIndexConfiguration -> CBLCollection_CreateFullTextIndex(
-                    actual,
-                    name.toFLString(this),
-                    config.actual,
-                    error
-                )
-                is ArrayIndexConfiguration -> CBLCollection_CreateArrayIndex(
-                    actual,
-                    name.toFLString(this),
-                    config.actual,
-                    error
-                )
-                is VectorIndexConfiguration -> CBLCollection_CreateVectorIndex(
-                    actual,
-                    name.toFLString(this),
-                    config.actual,
-                    error
-                )
+    try {
+        wrapCBLError { error ->
+            memScoped {
+                when (config) {
+                    is ValueIndexConfiguration -> CBLCollection_CreateValueIndex(
+                        actual,
+                        name.toFLString(this),
+                        config.actual,
+                        error
+                    )
+                    is FullTextIndexConfiguration -> CBLCollection_CreateFullTextIndex(
+                        actual,
+                        name.toFLString(this),
+                        config.actual,
+                        error
+                    )
+                    is ArrayIndexConfiguration -> CBLCollection_CreateArrayIndex(
+                        actual,
+                        name.toFLString(this),
+                        config.actual,
+                        error
+                    )
+                    is VectorIndexConfiguration -> CBLCollection_CreateVectorIndex(
+                        actual,
+                        name.toFLString(this),
+                        config.actual,
+                        error
+                    )
+                }
             }
+        }
+    } catch (e: CouchbaseLiteException) {
+        if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.INVALID_PARAMETER) {
+            throw IllegalArgumentException(e.message, e)
+        } else {
+            throw e
         }
     }
 }

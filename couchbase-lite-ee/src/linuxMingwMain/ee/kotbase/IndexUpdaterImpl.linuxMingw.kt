@@ -107,7 +107,15 @@ internal class IndexUpdaterImpl(
 
     override fun toList(): List<Any?> {
         checkIsFinished()
-        return iterator().asSequence().toList()
+        return iterator().asSequence().toList().map {
+            // TODO: remove when this bug is fixed
+            //  https://www.couchbase.com/forums/t/indexupdater-tolist-doesnt-do-a-deep-conversion-in-java-sdk/40990
+            when (it) {
+                is Array -> it.toList()
+                is Dictionary -> it.toMap()
+                else -> it
+            }
+        }
     }
 
     override fun toJSON(): String {
@@ -153,6 +161,7 @@ internal class IndexUpdaterImpl(
         wrapCBLError { error ->
             CBLIndexUpdater_Finish(actual, error)
         }
+        finished = true
     }
 
     override fun close() {
