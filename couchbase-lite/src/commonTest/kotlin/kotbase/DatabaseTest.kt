@@ -1906,7 +1906,7 @@ class DatabaseTest : BaseDbTest() {
      * 5. Set the config's mmapEnabled property true
      * 6. Create a database with the config.
      * 7. Get the configuration object from the database and verify that mmapEnabled is true
-     * 8. Use c4db_config2 to confirm that its config doesn't contains the kC4DB_MmapDisabled flag
+     * 8. Use c4db_config2 to confirm that its config doesn't contain the kC4DB_MmapDisabled flag
      */
     @Test
     fun testDatabaseWithConfiguredMMap() {

@@ -240,7 +240,6 @@ internal constructor(
         checkIndex(index)
         removeInternal(index)
         if (value != null) {
-            checkSelf(value.actual)
             FLMutableArray_SetArray(actual, index.convert(), value.actual)
             if (value !== this) {
                 collectionMap[index] = value
@@ -366,7 +365,6 @@ internal constructor(
 
     actual override fun addArray(value: Array?): MutableArray {
         if (value != null) {
-            checkSelf(value.actual)
             FLMutableArray_AppendArray(actual, value.actual)
             if (value !== this) {
                 collectionMap[count - 1] = value
@@ -502,11 +500,5 @@ internal constructor(
 
     override fun toJSON(): String {
         throw CouchbaseLiteError("Mutable objects may not be encoded as JSON")
-    }
-
-    private fun checkSelf(value: FLMutableArray) {
-        if (value === actual) {
-            throw IllegalArgumentException("Arrays cannot ba added to themselves")
-        }
     }
 }

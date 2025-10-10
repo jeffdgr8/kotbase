@@ -152,8 +152,29 @@ internal constructor(
     actual override operator fun contains(key: String): Boolean =
         keys.contains(key)
 
+    private var mutations: Long = 0
+
+    protected fun mutate() {
+        mutations++
+    }
+
     actual override fun iterator(): Iterator<String> =
-        keys.iterator()
+        DocumentIterator(keys.iterator(), mutations)
+
+    private inner class DocumentIterator(
+        private val iterator: Iterator<String>,
+        private val mutations: Long
+    ) : Iterator<String> {
+
+        override fun hasNext(): Boolean = iterator.hasNext()
+
+        override fun next(): String {
+            if (this@Document.mutations != mutations) {
+                throw ConcurrentModificationException("Document modified during iteration")
+            }
+            return iterator.next()
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -233,6 +233,10 @@ private constructor(
 
     private fun nativeDocumentReplicationListener(): CBLDocumentReplicationListener {
         return staticCFunction { ref, _, isPush, numDocuments, docs ->
+            // ReplicatorEETest.testCollectionDefaultConflictResolver()
+            // receives listener callbacks with no documents
+            // Java and Objective-C SDKs don't do this
+            if (numDocuments == 0U) return@staticCFunction
             val documents = docs!!.toList(numDocuments) { ReplicatedDocument(it) }
             with(ref.to<DocumentReplicationListenerHolder>()) {
                 val replication = DocumentReplication(replicator, isPush, documents)

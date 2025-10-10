@@ -26,14 +26,21 @@ import kotlin.native.ref.createCleaner
 public actual open class Dictionary
 internal constructor(
     actual: FLDict,
-    dbContext: DbContext?
+    dbContext: DbContext?,
+    retain: Boolean = true
 ) : DictionaryInterface, Iterable<String> {
 
     init {
-        FLDict_Retain(actual)
+        if (retain) FLDict_Retain(actual)
     }
 
-    internal open val actual: FLDict = actual
+    private val memory = object {
+        val actual = actual
+        val retain = retain
+    }
+
+    internal open val actual: FLDict
+        get() = memory.actual
 
     internal open var dbContext: DbContext? = dbContext
         set(value) {
@@ -48,8 +55,8 @@ internal constructor(
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
-    private val cleaner = createCleaner(actual) {
-        FLDict_Release(it)
+    private val cleaner = createCleaner(memory) {
+        if (it.retain) FLDict_Release(it.actual)
     }
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()

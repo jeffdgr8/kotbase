@@ -27,25 +27,9 @@ internal actual val Document.content: Dictionary
     get() = Dictionary(properties, dbContext)
 
 internal actual fun Document.exists(): Boolean {
-    val c4Doc = c4Doc ?: return false
-    return (c4Doc.pointed.flags and kDocExists) != 0u
+    // TODO: use CBLDocument_Exists private API once added to SDK
+    return true
 }
-
-@OptIn(ExperimentalNativeApi::class)
-internal val Document.c4Doc: CPointer<C4Document>?
-    get() {
-        // TODO: have Couchbase add private API CBLDocument_Exists, similar to CBLDocument_Generation
-        // hack to address _c4doc field of C++ object CBLDocument
-        // C4Document* is 2nd field (CBLDatabase* is 1st, both pointers)
-        // found to be at index 12 for Windows and 8 for Linux (1st is index 3 for both)
-        val offset = when (Platform.osFamily) {
-            OsFamily.LINUX -> 9
-            OsFamily.WINDOWS -> 13
-            else -> error("Unhandled OS: ${Platform.osFamily}")
-        }
-        val ptrs = actual.reinterpret<LongVar>()
-        return ptrs[offset].toCPointer()
-    }
 
 internal actual val Document.revisionHistory: String?
     get() = CBLDocument_GetRevisionHistory(actual).toKString()
