@@ -25,13 +25,13 @@ import libcblite.*
 private inline val FLValue.type: FLValueType
     get() = FLValue_GetType(this)
 
-internal fun FLValue.toNative(ctxt: DbContext?): Any? = when (type) {
-    kFLArray -> asArray(ctxt)
+internal fun FLValue.toNative(ctxt: DbContext?, retain: Boolean = true): Any? = when (type) {
+    kFLArray -> asArray(ctxt, retain)
     kFLDict -> {
         if (FLValue_IsBlob(this)) {
             asBlob(ctxt)
         } else {
-            asDictionary(ctxt)
+            asDictionary(ctxt, retain)
         }
     }
     kFLData -> asDataBlob()
@@ -51,11 +51,11 @@ internal fun FLValue.toMutableNative(ctxt: DbContext?, saveMutableCopy: (Any) ->
     else -> toObject(ctxt)
 }
 
-private fun FLValue.asArray(ctxt: DbContext?): Array =
-    Array(FLValue_AsArray(this)!!, ctxt)
+private fun FLValue.asArray(ctxt: DbContext?, retain: Boolean = true): Array =
+    Array(FLValue_AsArray(this)!!, ctxt, retain = retain)
 
-private fun FLValue.asDictionary(ctxt: DbContext?): Dictionary =
-    Dictionary(FLValue_AsDict(this)!!, ctxt)
+private fun FLValue.asDictionary(ctxt: DbContext?, retain: Boolean = true): Dictionary =
+    Dictionary(FLValue_AsDict(this)!!, ctxt, retain = retain)
 
 private fun FLValue.asMutableArray(
     ctxt: DbContext?,

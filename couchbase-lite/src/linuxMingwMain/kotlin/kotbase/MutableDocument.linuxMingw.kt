@@ -92,6 +92,7 @@ internal constructor(
 
     actual override fun setData(data: Map<String, Any?>): MutableDocument {
         properties = MutableDictionary(data).actual
+        mutate()
         return this
     }
 
@@ -111,6 +112,7 @@ internal constructor(
                 throw IllegalArgumentException("Failed parsing JSON", e)
             }
         }
+        mutate()
         return this
     }
 
@@ -127,48 +129,56 @@ internal constructor(
             unsavedBlobs.remove(key)
         }
         updateUnsavedBlobContext()
+        mutate()
         return this
     }
 
     actual override fun setString(key: String, value: String?): MutableDocument {
         properties.setString(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     actual override fun setNumber(key: String, value: Number?): MutableDocument {
         properties.setNumber(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     actual override fun setInt(key: String, value: Int): MutableDocument {
         properties.setInt(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     actual override fun setLong(key: String, value: Long): MutableDocument {
         properties.setLong(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     actual override fun setFloat(key: String, value: Float): MutableDocument {
         properties.setFloat(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     actual override fun setDouble(key: String, value: Double): MutableDocument {
         properties.setDouble(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
     actual override fun setBoolean(key: String, value: Boolean): MutableDocument {
         properties.setBoolean(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
@@ -181,12 +191,14 @@ internal constructor(
             unsavedBlobs.remove(key)
         }
         updateUnsavedBlobContext()
+        mutate()
         return this
     }
 
     actual override fun setDate(key: String, value: Instant?): MutableDocument {
         properties.setDate(key, value)
         removeInternal(key)
+        mutate()
         return this
     }
 
@@ -196,6 +208,7 @@ internal constructor(
         if (value != null) {
             collectionMap[key] = value
         }
+        mutate()
         return this
     }
 
@@ -205,12 +218,14 @@ internal constructor(
         if (value != null) {
             collectionMap[key] = value
         }
+        mutate()
         return this
     }
 
     actual override fun remove(key: String): MutableDocument {
         properties.remove(key)
         removeInternal(key)
+        mutate()
         return this
     }
 

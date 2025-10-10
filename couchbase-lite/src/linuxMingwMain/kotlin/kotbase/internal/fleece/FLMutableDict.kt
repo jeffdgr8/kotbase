@@ -137,18 +137,11 @@ internal fun FLMutableDict.setArray(key: String, value: Array?, ctxt: DbContext?
 internal fun FLMutableDict.setDictionary(key: String, value: Dictionary?, ctxt: DbContext?) {
     memScoped {
         if (value != null) {
-            checkSelf(value.actual)
             value.dbContext = ctxt
             FLMutableDict_SetDict(this@setDictionary, key.toFLString(this), value.actual)
         } else {
             FLMutableDict_SetNull(this@setDictionary, key.toFLString(this))
         }
-    }
-}
-
-private fun FLMutableDict.checkSelf(value: FLMutableDict) {
-    if (value === this) {
-        throw IllegalArgumentException("Dictionaries cannot ba added to themselves")
     }
 }
 

@@ -840,6 +840,10 @@ class ResultTest : BaseQueryTest() {
         }
     }
 
+    // behavior differs between platforms because of caching in Kotbase,
+    // iOS not implementing ResultSet.close(),
+    // and C releasing memory with CBLResultSet_Release
+    @Ignore
     @Test
     fun testResultRefAfterClose() {
         val mDoc = makeDocument()
@@ -868,10 +872,9 @@ class ResultTest : BaseQueryTest() {
         results.close()
 
         assertNull(results.next())
-        // behavior differs between platforms because of caching in Kotbase and native platforms not implementing ResultSet.close()
-        //assertFailsWith<CouchbaseLiteError> { result.getDictionary(0) }
-        //assertFailsWith<CouchbaseLiteError> { dict.getArray("doc-25") }
-        //assertFailsWith<CouchbaseLiteError> { array.getString(20) }
+        assertFailsWith<CouchbaseLiteError> { result.getDictionary(0) }
+        assertFailsWith<CouchbaseLiteError> { dict.getArray("doc-25") }
+        assertFailsWith<CouchbaseLiteError> { array.getString(20) }
     }
 
 

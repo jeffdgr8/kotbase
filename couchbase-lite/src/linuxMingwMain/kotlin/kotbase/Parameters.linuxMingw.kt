@@ -23,18 +23,20 @@ import kotlin.native.ref.createCleaner
 
 public actual class Parameters
 internal constructor(
-    internal val actual: FLDict,
-    private val readonly: Boolean
+    actual: FLDict,
+    readonly: Boolean
 ) {
 
-    init {
-        FLDict_Retain(actual)
+    private val memory = object {
+        val actual = actual
+        val readonly = readonly
     }
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
-    private val cleaner = createCleaner(actual) {
-        FLDict_Release(it)
+    private val cleaner = createCleaner(memory) {
+        // don't release FLDict from Query.parameters
+        if (!it.readonly) FLDict_Release(it.actual)
     }
 
     public actual constructor() : this(null)
@@ -46,12 +48,13 @@ internal constructor(
             FLMutableDict_New()
         }!!,
         false
-    ) {
-        FLDict_Release(actual)
-    }
+    )
+
+    internal val actual: FLDict
+        get() = memory.actual
 
     public actual fun getValue(name: String): Any? =
-        actual.getValue(name)?.toNative(null)
+        actual.getValue(name)?.toNative(null, retain = false)
 
     public actual fun setString(name: String, value: String?): Parameters {
         checkReadOnly()
@@ -126,7 +129,7 @@ internal constructor(
     }
 
     private fun checkReadOnly() {
-        if (readonly) throw IllegalStateException("Parameters is readonly mode.")
+        if (memory.readonly) throw CouchbaseLiteError("Parameters is readonly mode.")
     }
 }
 

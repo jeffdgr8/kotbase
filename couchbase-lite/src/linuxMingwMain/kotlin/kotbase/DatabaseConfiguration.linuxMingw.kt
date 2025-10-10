@@ -82,6 +82,8 @@ public actual constructor(config: DatabaseConfiguration?) {
 
     init {
         setActualDirectory(directory)
+        actual.pointed.fullSync = config?.isFullSync ?: Defaults.Database.FULL_SYNC
+        actual.pointed.mmapDisabled = !(config?.isMMapEnabled ?: Defaults.Database.MMAP_ENABLED)
     }
 
     private fun setActualDirectory(directory: String) {

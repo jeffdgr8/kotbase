@@ -190,7 +190,14 @@ class ParameterTest : BaseDbTest() {
         assertNull(params.getValue("param-16"))
 
         //#16 param.setNumber(0);
-        assertEquals(0, params.getValue("param-17"))
+        when (val param17 = params.getValue("param-17")) {
+            // JVM and iOS are Int
+            is Int -> assertEquals(0, param17)
+            // C is Long
+            is Long -> assertEquals(0L, param17)
+            null -> fail("param-17 is null")
+            else -> fail("param-17 is $param17 (${param17::class})")
+        }
 
         //#17 param.setNumber(Float.MIN_VALUE);
         assertEquals(Float.MIN_VALUE, params.getValue("param-18"))

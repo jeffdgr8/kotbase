@@ -167,8 +167,9 @@ abstract class BaseDbTest(useLegacyLogging: Boolean = false) : BaseTest(useLegac
     @AfterTest
     fun tearDownBaseDbTest() {
         tearDown()
+        val name = testCol.fullName
         testCol.close()
-        Report.log("Test collection closed: ${testCol.fullName}")
+        Report.log("Test collection closed: $name")
         eraseDb(testDb)
         Report.log("Test db erased: ${testDb.name}")
     }

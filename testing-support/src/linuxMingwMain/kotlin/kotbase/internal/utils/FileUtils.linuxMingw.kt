@@ -21,6 +21,7 @@ import kotbase.LogDomain
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.IOException
 import kotlinx.io.buffered
+import kotlinx.io.files.FileNotFoundException
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.io.files.SystemPathSeparator
@@ -43,8 +44,14 @@ actual object FileUtils {
         }
     }
 
-    actual fun getCanonicalPath(path: String): String =
-        SystemFileSystem.resolve(Path(path)).toString()
+    actual fun getCanonicalPath(path: String): String {
+        return try {
+            SystemFileSystem.resolve(Path(path)).toString()
+        } catch (e: FileNotFoundException) {
+            // canonical path is in message when file doesn't exist
+            e.message!!
+        }
+    }
 
     actual fun verifyDir(dirPath: String): String {
         val dir = Path(dirPath)

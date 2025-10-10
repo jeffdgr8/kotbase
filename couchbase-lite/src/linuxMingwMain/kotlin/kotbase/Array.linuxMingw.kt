@@ -26,14 +26,21 @@ import kotlin.native.ref.createCleaner
 public actual open class Array
 internal constructor(
     actual: FLArray,
-    dbContext: DbContext?
+    dbContext: DbContext?,
+    retain: Boolean = true
 ) : ArrayInterface, Iterable<Any?> {
 
     init {
-        FLArray_Retain(actual)
+        if (retain) FLArray_Retain(actual)
     }
 
-    public open val actual: FLArray = actual
+    private val memory = object {
+        val actual = actual
+        val retain = retain
+    }
+
+    public open val actual: FLArray
+        get() = memory.actual
 
     internal open var dbContext: DbContext? = dbContext
         set(value) {
@@ -48,8 +55,8 @@ internal constructor(
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
-    private val cleaner = createCleaner(actual) {
-        FLArray_Release(it)
+    private val cleaner = createCleaner(memory) {
+        if (it.retain) FLArray_Release(it.actual)
     }
 
     internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
