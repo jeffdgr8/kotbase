@@ -1,3 +1,4 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.DefFileTask
@@ -94,5 +95,9 @@ tasks.named<DefFileTask>("generateDefCouchbaseLite") {
 }
 
 tasks.withType<KotlinNativeTest>().configureEach {
-    environment("CBLITE_VECTOR_SEARCH_LIB_PATH", "$projectDir/$vectorSearchLibPath")
+    with (DefaultNativePlatform.getCurrentOperatingSystem()) {
+        if (isLinux || isWindows) {
+            environment("CBLITE_VECTOR_SEARCH_LIB_PATH", "$projectDir/$vectorSearchLibPath")
+        }
+    }
 }
