@@ -325,8 +325,8 @@ class PredictiveQueryTest : BaseQueryTest() {
 
             val pred = r.getDictionary(1)!!
             assertEquals(numbers.sum(), pred.getInt("sum"))
-            assertEquals(numbers.min(), pred.getInt("min"))
-            assertEquals(numbers.max(), pred.getInt("max"))
+            assertEquals(numbers.min().toInt(), pred.getInt("min"))
+            assertEquals(numbers.max().toInt(), pred.getInt("max"))
             assertEquals(numbers.average().toInt(), pred.getInt("avg"))
         }
 
