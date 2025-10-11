@@ -172,7 +172,7 @@ class KermitCouchbaseLiteLoggerTest : BaseTest(useLegacyLogging = true) {
     }
 
     private fun allowLogsToWrite() = runBlocking {
-        delay(1)
+        delay(5)
     }
 
     private fun Set<LogDomain>.toTags() = map { "CBL-${it.name}" }.toSet()
