@@ -678,9 +678,6 @@ final class kotbase/PredictionFunction : kotbase/Expression { // kotbase/Predict
 
     // Targets: [apple]
     constructor <init>(cocoapods.CouchbaseLite/CBLQueryPredictionFunction) // kotbase/PredictionFunction.<init>|<init>(cocoapods.CouchbaseLite.CBLQueryPredictionFunction){}[0]
-
-    // Targets: [linux, mingwX64]
-    constructor <init>() // kotbase/PredictionFunction.<init>|<init>(){}[0]
 }
 
 final class kotbase/PredictiveIndex : kotbase/Index { // kotbase/PredictiveIndex|null[0]
@@ -1139,6 +1136,11 @@ final object kotbase/Meta { // kotbase/Meta|null[0]
         final fun <get-revisionID>(): kotbase/MetaExpression // kotbase/Meta.revisionID.<get-revisionID>|<get-revisionID>(){}[0]
     final val sequence // kotbase/Meta.sequence|{}sequence[0]
         final fun <get-sequence>(): kotbase/MetaExpression // kotbase/Meta.sequence.<get-sequence>|<get-sequence>(){}[0]
+}
+
+final object kotbase/Prediction { // kotbase/Prediction|null[0]
+    final fun registerModel(kotlin/String, kotbase/PredictiveModel) // kotbase/Prediction.registerModel|registerModel(kotlin.String;kotbase.PredictiveModel){}[0]
+    final fun unregisterModel(kotlin/String) // kotbase/Prediction.unregisterModel|unregisterModel(kotlin.String){}[0]
 }
 
 final object kotbase/QueryBuilder { // kotbase/QueryBuilder|null[0]
@@ -1784,14 +1786,6 @@ final class kotbase/Parameters : kotbase.internal/DelegatedClass<cocoapods.Couch
     final fun setNumber(kotlin/String, kotlin/Number?): kotbase/Parameters // kotbase/Parameters.setNumber|setNumber(kotlin.String;kotlin.Number?){}[0]
     final fun setString(kotlin/String, kotlin/String?): kotbase/Parameters // kotbase/Parameters.setString|setString(kotlin.String;kotlin.String?){}[0]
     final fun setValue(kotlin/String, kotlin/Any?): kotbase/Parameters // kotbase/Parameters.setValue|setValue(kotlin.String;kotlin.Any?){}[0]
-}
-
-// Targets: [apple]
-final class kotbase/Prediction : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLPrediction> { // kotbase/Prediction|null[0]
-    constructor <init>(cocoapods.CouchbaseLite/CBLPrediction) // kotbase/Prediction.<init>|<init>(cocoapods.CouchbaseLite.CBLPrediction){}[0]
-
-    final fun registerModel(kotlin/String, kotbase/PredictiveModel) // kotbase/Prediction.registerModel|registerModel(kotlin.String;kotbase.PredictiveModel){}[0]
-    final fun unregisterModel(kotlin/String) // kotbase/Prediction.unregisterModel|unregisterModel(kotlin.String){}[0]
 }
 
 // Targets: [apple]
@@ -2926,14 +2920,6 @@ final class kotbase/Parameters { // kotbase/Parameters|null[0]
 }
 
 // Targets: [linux, mingwX64]
-final class kotbase/Prediction { // kotbase/Prediction|null[0]
-    constructor <init>() // kotbase/Prediction.<init>|<init>(){}[0]
-
-    final fun registerModel(kotlin/String, kotbase/PredictiveModel) // kotbase/Prediction.registerModel|registerModel(kotlin.String;kotbase.PredictiveModel){}[0]
-    final fun unregisterModel(kotlin/String) // kotbase/Prediction.unregisterModel|unregisterModel(kotlin.String){}[0]
-}
-
-// Targets: [linux, mingwX64]
 final class kotbase/QueryChange { // kotbase/QueryChange|null[0]
     final val error // kotbase/QueryChange.error|{}error[0]
         final fun <get-error>(): kotlin/Throwable? // kotbase/QueryChange.error.<get-error>|<get-error>(){}[0]
@@ -3261,27 +3247,6 @@ final class kotbase/ValueIndexItem { // kotbase/ValueIndexItem|null[0]
 }
 
 // Targets: [linux, mingwX64]
-final class kotbase/VectorEncoding { // kotbase/VectorEncoding|null[0]
-    final enum class ScalarQuantizerType : kotlin/Enum<kotbase/VectorEncoding.ScalarQuantizerType> { // kotbase/VectorEncoding.ScalarQuantizerType|null[0]
-        enum entry SQ4 // kotbase/VectorEncoding.ScalarQuantizerType.SQ4|null[0]
-        enum entry SQ6 // kotbase/VectorEncoding.ScalarQuantizerType.SQ6|null[0]
-        enum entry SQ8 // kotbase/VectorEncoding.ScalarQuantizerType.SQ8|null[0]
-
-        final val entries // kotbase/VectorEncoding.ScalarQuantizerType.entries|#static{}entries[0]
-            final fun <get-entries>(): kotlin.enums/EnumEntries<kotbase/VectorEncoding.ScalarQuantizerType> // kotbase/VectorEncoding.ScalarQuantizerType.entries.<get-entries>|<get-entries>#static(){}[0]
-
-        final fun valueOf(kotlin/String): kotbase/VectorEncoding.ScalarQuantizerType // kotbase/VectorEncoding.ScalarQuantizerType.valueOf|valueOf#static(kotlin.String){}[0]
-        final fun values(): kotlin/Array<kotbase/VectorEncoding.ScalarQuantizerType> // kotbase/VectorEncoding.ScalarQuantizerType.values|values#static(){}[0]
-    }
-
-    final object Companion { // kotbase/VectorEncoding.Companion|null[0]
-        final fun none(): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.none|none(){}[0]
-        final fun productQuantizer(kotlin/Long, kotlin/Long): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.productQuantizer|productQuantizer(kotlin.Long;kotlin.Long){}[0]
-        final fun scalarQuantizer(kotbase/VectorEncoding.ScalarQuantizerType): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.scalarQuantizer|scalarQuantizer(kotbase.VectorEncoding.ScalarQuantizerType){}[0]
-    }
-}
-
-// Targets: [linux, mingwX64]
 final class kotbase/Where : kotbase/GroupByRouter, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query { // kotbase/Where|null[0]
     final var parameters // kotbase/Where.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/Where.parameters.<get-parameters>|<get-parameters>(){}[0]
@@ -3392,6 +3357,7 @@ open class kotbase/Document : kotbase/DictionaryInterface, kotlin.collections/It
         open fun <get-keys>(): kotlin.collections/List<kotlin/String> // kotbase/Document.keys.<get-keys>|<get-keys>(){}[0]
 
     final fun getFLValue(kotlin/String): kotlinx.cinterop/CPointer<cnames.structs/_FLValue>? // kotbase/Document.getFLValue|getFLValue(kotlin.String){}[0]
+    final fun mutate() // kotbase/Document.mutate|mutate(){}[0]
     open fun contains(kotlin/String): kotlin/Boolean // kotbase/Document.contains|contains(kotlin.String){}[0]
     open fun equals(kotlin/Any?): kotlin/Boolean // kotbase/Document.equals|equals(kotlin.Any?){}[0]
     open fun getArray(kotlin/String): kotbase/Array? // kotbase/Document.getArray|getArray(kotlin.String){}[0]
@@ -3502,6 +3468,27 @@ open class kotbase/SelectResult { // kotbase/SelectResult|null[0]
         final fun all(): kotbase/SelectResult.From // kotbase/SelectResult.Companion.all|all(){}[0]
         final fun expression(kotbase/Expression): kotbase/SelectResult.As // kotbase/SelectResult.Companion.expression|expression(kotbase.Expression){}[0]
         final fun property(kotlin/String): kotbase/SelectResult.As // kotbase/SelectResult.Companion.property|property(kotlin.String){}[0]
+    }
+}
+
+// Targets: [linux, mingwX64]
+open class kotbase/VectorEncoding { // kotbase/VectorEncoding|null[0]
+    final enum class ScalarQuantizerType : kotlin/Enum<kotbase/VectorEncoding.ScalarQuantizerType> { // kotbase/VectorEncoding.ScalarQuantizerType|null[0]
+        enum entry SQ4 // kotbase/VectorEncoding.ScalarQuantizerType.SQ4|null[0]
+        enum entry SQ6 // kotbase/VectorEncoding.ScalarQuantizerType.SQ6|null[0]
+        enum entry SQ8 // kotbase/VectorEncoding.ScalarQuantizerType.SQ8|null[0]
+
+        final val entries // kotbase/VectorEncoding.ScalarQuantizerType.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<kotbase/VectorEncoding.ScalarQuantizerType> // kotbase/VectorEncoding.ScalarQuantizerType.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): kotbase/VectorEncoding.ScalarQuantizerType // kotbase/VectorEncoding.ScalarQuantizerType.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<kotbase/VectorEncoding.ScalarQuantizerType> // kotbase/VectorEncoding.ScalarQuantizerType.values|values#static(){}[0]
+    }
+
+    final object Companion { // kotbase/VectorEncoding.Companion|null[0]
+        final fun none(): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.none|none(){}[0]
+        final fun productQuantizer(kotlin/Long, kotlin/Long): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.productQuantizer|productQuantizer(kotlin.Long;kotlin.Long){}[0]
+        final fun scalarQuantizer(kotbase/VectorEncoding.ScalarQuantizerType): kotbase/VectorEncoding // kotbase/VectorEncoding.Companion.scalarQuantizer|scalarQuantizer(kotbase.VectorEncoding.ScalarQuantizerType){}[0]
     }
 }
 
