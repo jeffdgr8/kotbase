@@ -59,15 +59,16 @@ private constructor(
 
     private fun checkCollection(collection: Collection) {
         val database = collectionConfigurations.keys.firstOrNull()?.database ?: db ?: collection.database
-        if (database != collection.database) {
-            throw IllegalArgumentException("Cannot add collection $collection because it does not belong to database ${database.name}.")
+        require(database == collection.database) {
+            "Cannot add collection $collection because it does not belong to database ${database.name}."
         }
-        if (database.actual.isClosed()) {
-            throw IllegalArgumentException("Cannot add collection $collection because database ${collection.database} is closed.")
+        require(!database.actual.isClosed()) {
+            "Cannot add collection $collection because database ${collection.database} is closed."
         }
         try {
-            database.getCollection(collection.name, collection.scope.name)
-                ?: throw IllegalArgumentException("Cannot add collection $collection because it has been deleted.")
+            requireNotNull(database.getCollection(collection.name, collection.scope.name)) {
+                "Cannot add collection $collection because it has been deleted."
+            }
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed getting collection $collection", e)
         }
@@ -234,21 +235,21 @@ private constructor(
     public actual var maxAttempts: Int
         get() = actual.maxAttempts.toInt()
         set(value) {
-            if (value < 0) throw IllegalArgumentException("max attempts must be >=0")
+            require(value >= 0) { "max attempts must be >=0" }
             actual.maxAttempts = value.convert()
         }
 
     public actual var maxAttemptWaitTime: Int
         get() = actual.maxAttemptWaitTime.toInt()
         set(value) {
-            if (value < 0) throw IllegalArgumentException("max attempt wait time must be >=0")
+            require(value >= 0) { "max attempt wait time must be >=0" }
             actual.maxAttemptWaitTime = value.toDouble()
         }
 
     public actual var heartbeat: Int
         get() = actual.heartbeat.toInt()
         set(value) {
-            if (value < 0) throw IllegalArgumentException("heartbeat must be >=0")
+            require(value >= 0) { "heartbeat must be >=0" }
             val millis = value * 1000L
             require(millis <= Int.MAX_VALUE) { "heartbeat too large" }
             actual.heartbeat = value.toDouble()
@@ -309,10 +310,9 @@ private constructor(
 
     @Suppress("DEPRECATION")
     private fun getDefaultCollectionConfiguration(): CollectionConfiguration {
-        return collectionConfigurations[database.defaultCollection]
-            ?: throw IllegalArgumentException(
-                "Cannot use legacy parameters when the default collection has no configuration"
-            )
+        return requireNotNull(collectionConfigurations[database.defaultCollection]) {
+            "Cannot use legacy parameters when the default collection has no configuration"
+        }
     }
 
     @Suppress("DEPRECATION")

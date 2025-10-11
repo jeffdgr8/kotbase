@@ -34,8 +34,8 @@ internal constructor(
 ) : DelegatedClass<CBLReplicator>(actual), AutoCloseable {
 
     public actual constructor(config: ReplicatorConfiguration) : this(
-        if (config.collections.isEmpty()) throw IllegalArgumentException("Attempt to configure a replicator with no source collections")
-        else CBLReplicator(config.actual),
+        if (config.collections.isNotEmpty()) CBLReplicator(config.actual)
+        else throw IllegalArgumentException("Attempt to configure a replicator with no source collections"),
         config
     )
 

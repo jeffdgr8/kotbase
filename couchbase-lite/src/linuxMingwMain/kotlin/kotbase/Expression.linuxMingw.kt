@@ -372,7 +372,7 @@ public actual open class Expression {
         CollationExpression(this, collation)
 
     public actual fun `in`(vararg expressions: Expression): Expression {
-        if (expressions.isEmpty()) throw IllegalArgumentException("empty 'IN'.")
+        require(expressions.isNotEmpty()) { "empty 'IN'." }
         val aggr = AggregateExpression(expressions.asList())
         return BinaryExpression(this, aggr, BinaryExpression.OP_IN)
     }
