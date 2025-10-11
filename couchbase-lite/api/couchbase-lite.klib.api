@@ -2803,6 +2803,7 @@ open class kotbase/Document : kotbase/DictionaryInterface, kotlin.collections/It
         open fun <get-keys>(): kotlin.collections/List<kotlin/String> // kotbase/Document.keys.<get-keys>|<get-keys>(){}[0]
 
     final fun getFLValue(kotlin/String): kotlinx.cinterop/CPointer<cnames.structs/_FLValue>? // kotbase/Document.getFLValue|getFLValue(kotlin.String){}[0]
+    final fun mutate() // kotbase/Document.mutate|mutate(){}[0]
     open fun contains(kotlin/String): kotlin/Boolean // kotbase/Document.contains|contains(kotlin.String){}[0]
     open fun equals(kotlin/Any?): kotlin/Boolean // kotbase/Document.equals|equals(kotlin.Any?){}[0]
     open fun getArray(kotlin/String): kotbase/Array? // kotbase/Document.getArray|getArray(kotlin.String){}[0]

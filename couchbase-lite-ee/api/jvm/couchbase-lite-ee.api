@@ -1467,8 +1467,8 @@ public final class kotbase/Parameters : kotbase/internal/DelegatedClass {
 	public final fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/Parameters;
 }
 
-public final class kotbase/Prediction : kotbase/internal/DelegatedClass {
-	public fun <init> (Lcom/couchbase/lite/Prediction;)V
+public final class kotbase/Prediction {
+	public static final field INSTANCE Lkotbase/Prediction;
 	public final fun registerModel (Ljava/lang/String;Lkotbase/PredictiveModel;)V
 	public final fun unregisterModel (Ljava/lang/String;)V
 }
