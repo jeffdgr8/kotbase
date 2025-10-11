@@ -17,11 +17,13 @@ package kotbase
 
 public actual object IndexBuilder {
 
-    public actual fun valueIndex(vararg items: ValueIndexItem): ValueIndex =
-        if (items.isNotEmpty()) ValueIndex(items.asList())
-        else throw IllegalArgumentException("items must not be 0")
+    public actual fun valueIndex(vararg items: ValueIndexItem): ValueIndex {
+        require(items.isNotEmpty()) { "items must not be 0" }
+        return ValueIndex(items.asList())
+    }
 
-    public actual fun fullTextIndex(vararg items: FullTextIndexItem): FullTextIndex =
-        if (items.isNotEmpty()) FullTextIndex(items.asList())
-        else throw IllegalArgumentException("items must not be 0")
+    public actual fun fullTextIndex(vararg items: FullTextIndexItem): FullTextIndex {
+        require(items.isNotEmpty()) { "items must not be 0" }
+        return FullTextIndex(items.asList())
+    }
 }

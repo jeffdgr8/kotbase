@@ -15,16 +15,15 @@
  */
 package kotbase
 
-import kotbase.internal.DelegatedClass
-import com.couchbase.lite.Prediction as CBLPrediction
+import com.couchbase.lite.Database as CBLDatabase
 
-public actual class Prediction(actual: CBLPrediction) : DelegatedClass<CBLPrediction>(actual) {
+public actual object Prediction {
 
     public actual fun registerModel(name: String, model: PredictiveModel) {
-        actual.registerModel(name, model.convert())
+        CBLDatabase.prediction.registerModel(name, model.convert())
     }
 
     public actual fun unregisterModel(name: String) {
-        actual.unregisterModel(name)
+        CBLDatabase.prediction.unregisterModel(name)
     }
 }

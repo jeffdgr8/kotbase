@@ -16,22 +16,28 @@
 package kotbase
 
 public actual fun Function.prediction(model: String, input: Expression): PredictionFunction =
-    predictiveQueryUnsupported()
+    PredictionFunction(model, input)
 
 public actual fun Function.euclideanDistance(
     expression1: Expression,
     expression2: Expression
-): Expression =
-    predictiveQueryUnsupported()
+): Expression {
+    return Expression.FunctionExpression("EUCLIDEAN_DISTANCE()", listOf(expression1, expression2))
+}
 
 public actual fun Function.squaredEuclideanDistance(
     expression1: Expression,
     expression2: Expression
-): Expression =
-    predictiveQueryUnsupported()
+): Expression {
+    return Expression.FunctionExpression(
+        "EUCLIDEAN_DISTANCE()",
+        listOf(expression1, expression2, Expression.intValue(2))
+    )
+}
 
 public actual fun Function.cosineDistance(
     expression1: Expression,
     expression2: Expression
-): Expression =
-    predictiveQueryUnsupported()
+): Expression {
+    return Expression.FunctionExpression("COSINE_DISTANCE()", listOf(expression1, expression2))
+}

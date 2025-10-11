@@ -15,8 +15,21 @@
  */
 package kotbase
 
-public actual class PredictionFunction : Expression() {
+public actual class PredictionFunction
+internal constructor(
+    model: String,
+    private val input: Expression
+) : Expression() {
+
+    private val model = string(model)
 
     public actual fun propertyPath(path: String): Expression =
-        predictiveQueryUnsupported()
+        getPredictionFunction(model, input, string(".$path"))
+
+    override fun asJSON(): Any {
+        return getPredictionFunction(model, input).asJSON()
+    }
+
+    private fun getPredictionFunction(vararg params: Expression): FunctionExpression =
+        FunctionExpression("PREDICTION()", params.asList())
 }
