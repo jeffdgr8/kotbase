@@ -42,16 +42,16 @@ internal constructor(actual: CPointer<CBLEncryptionKey>? = null) {
         }.ptr
 
     public actual constructor(key: ByteArray) : this() {
-        if (key.size.toUInt() != kCBLEncryptionKeySizeAES256) {
-            throw IllegalArgumentException("Key size is invalid. Key must be a 256-bit (32-byte) key.")
+        require(key.size.toUInt() == kCBLEncryptionKeySizeAES256) {
+            "Key size is invalid. Key must be a 256-bit (32-byte) key."
         }
         memcpy(actual.pointed.bytes, key.refTo(0), kCBLEncryptionKeySizeAES256.convert())
     }
 
     public actual constructor(password: String) : this() {
         memScoped {
-            if (!CBLEncryptionKey_FromPassword(actual, password.toFLString(this))) {
-                throw IllegalArgumentException("Error deriving key from password")
+            require(CBLEncryptionKey_FromPassword(actual, password.toFLString(this))) {
+                "Error deriving key from password"
             }
         }
     }

@@ -77,11 +77,11 @@ private constructor(
 
     private fun checkCollection(collection: Collection) {
         val database = collectionConfigurations.keys.firstOrNull()?.database ?: db ?: collection.database
-        if (database != collection.database) {
-            throw IllegalArgumentException("Cannot add collection $collection because it does not belong to database ${database.name}.")
+        require(database == collection.database) {
+            "Cannot add collection $collection because it does not belong to database ${database.name}."
         }
-        if (database.isClosed) {
-            throw IllegalArgumentException("Cannot add collection $collection because database ${collection.database} is closed.")
+        require(!database.isClosed) {
+            "Cannot add collection $collection because database ${collection.database} is closed."
         }
         try {
             database.getCollection(collection.name, collection.scope.name)
@@ -220,19 +220,19 @@ private constructor(
 
     public actual var maxAttempts: Int = Defaults.Replicator.MAX_ATTEMPTS_SINGLE_SHOT
         set(value) {
-            if (value < 0) throw IllegalArgumentException("max attempts must be >=0")
+            require(value >= 0) { "max attempts must be >=0" }
             field = value
         }
 
     public actual var maxAttemptWaitTime: Int = Defaults.Replicator.MAX_ATTEMPTS_WAIT_TIME
         set(value) {
-            if (value < 0) throw IllegalArgumentException("max attempt wait time must be >=0")
+            require(value >= 0) { "max attempt wait time must be >=0" }
             field = value
         }
 
     public actual var heartbeat: Int = Defaults.Replicator.HEARTBEAT
         set(value) {
-            if (value < 0) throw IllegalArgumentException("heartbeat must be >=0")
+            require(value >= 0) { "heartbeat must be >=0" }
             val millis = value * 1000L
             require(millis <= Int.MAX_VALUE) { "heartbeat too large" }
             field = value
@@ -293,10 +293,9 @@ private constructor(
 
     @Suppress("DEPRECATION")
     private fun getDefaultCollectionConfiguration(): CollectionConfiguration =
-        collectionConfigurations[database.defaultCollection]
-            ?: throw IllegalArgumentException(
-                "Cannot use legacy parameters when the default collection has no configuration"
-            )
+        requireNotNull(collectionConfigurations[database.defaultCollection]) {
+            "Cannot use legacy parameters when the default collection has no configuration"
+        }
 
     @Suppress("DEPRECATION")
     private fun updateDefaultConfig(updater: CollectionConfiguration.() -> Unit) {

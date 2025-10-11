@@ -101,7 +101,7 @@ public fun ReplicatorConfiguration?.newConfig(
 ): ReplicatorConfiguration {
     val orig = this
     return ReplicatorConfiguration(
-        target ?: this?.target ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify an endpoint")
+        requireNotNull(target ?: this?.target) { "A ReplicatorConfiguration must specify an endpoint" }
     ).apply {
         (type ?: orig?.type)?.let { this.type = it }
         (continuous ?: orig?.isContinuous)?.let { this.isContinuous = it }
@@ -185,8 +185,8 @@ public fun ReplicatorConfiguration?.newConfig(
 ): ReplicatorConfiguration {
     val orig = this
     return ReplicatorConfiguration(
-        database ?: this?.database ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify a database"),
-        target ?: this?.target ?: throw IllegalArgumentException("A ReplicatorConfiguration must specify an endpoint")
+        requireNotNull(database ?: this?.database) { "A ReplicatorConfiguration must specify a database" },
+        requireNotNull(target ?: this?.target) { "A ReplicatorConfiguration must specify an endpoint" }
     ).apply {
         val origDefaultConfig = orig?.database?.defaultCollection?.let { orig.getCollectionConfiguration(it) }
         (type ?: orig?.type)?.let { this.type = it }

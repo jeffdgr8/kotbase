@@ -53,8 +53,8 @@ private constructor(
     }
 
     public actual constructor(config: ReplicatorConfiguration) : this(
-        if (config.collections.isEmpty()) throw IllegalArgumentException("Attempt to configure a replicator with no source collections")
-        else ImmutableReplicatorConfiguration(config)
+        if (config.collections.isNotEmpty()) ImmutableReplicatorConfiguration(config)
+        else throw IllegalArgumentException("Attempt to configure a replicator with no source collections")
     )
 
     private constructor(config: ImmutableReplicatorConfiguration) : this(

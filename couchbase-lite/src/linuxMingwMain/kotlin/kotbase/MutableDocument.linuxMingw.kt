@@ -97,9 +97,7 @@ internal constructor(
     }
 
     actual override fun setJSON(json: String): MutableDocument {
-        if (!json.startsWith("{")) {
-            throw IllegalArgumentException("JSON is not a Dictionary")
-        }
+        require(json.startsWith("{")) { "JSON is not a Dictionary" }
         try {
             wrapCBLError { error ->
                 memScoped {

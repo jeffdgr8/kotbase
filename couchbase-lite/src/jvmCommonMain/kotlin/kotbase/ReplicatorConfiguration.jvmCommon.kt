@@ -289,10 +289,9 @@ private constructor(
 
     @Suppress("DEPRECATION")
     private fun getDefaultCollectionConfiguration(): CollectionConfiguration {
-        return collectionConfigurations[database.defaultCollection]
-            ?: throw IllegalArgumentException(
-                "Cannot use legacy parameters when the default collection has no configuration"
-            )
+        return requireNotNull(collectionConfigurations[database.defaultCollection]) {
+            "Cannot use legacy parameters when the default collection has no configuration"
+        }
     }
 
     @Suppress("DEPRECATION")

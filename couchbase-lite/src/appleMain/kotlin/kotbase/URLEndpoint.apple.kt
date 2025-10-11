@@ -32,15 +32,15 @@ internal constructor(override val actual: CBLURLEndpoint) : Endpoint(actual) {
         private const val SCHEME_TLS = "wss"
 
         private fun validate(url: String): NSURL {
-            val nsUrl = NSURL.URLWithString(url) ?: throw IllegalArgumentException("Invalid URLEndpoint url ($url)")
+            val nsUrl = requireNotNull(NSURL.URLWithString(url)) { "Invalid URLEndpoint url ($url)" }
 
             val scheme = nsUrl.scheme
-            if (!((SCHEME_STD == scheme) || (SCHEME_TLS == scheme))) {
-                throw IllegalArgumentException("Invalid scheme for URLEndpoint url ($url). It must be either 'ws:' or 'wss:'.")
+            require((SCHEME_STD == scheme) || (SCHEME_TLS == scheme)) {
+                "Invalid scheme for URLEndpoint url ($url). It must be either 'ws:' or 'wss:'."
             }
 
-            if (nsUrl.user != null || nsUrl.password != null) {
-                throw IllegalArgumentException("Embedded credentials in a URL (username:password@url) are not allowed. Use the BasicAuthenticator class instead.")
+            require(nsUrl.user == null && nsUrl.password == null) {
+                "Embedded credentials in a URL (username:password@url) are not allowed. Use the BasicAuthenticator class instead."
             }
 
             return nsUrl

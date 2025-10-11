@@ -28,8 +28,6 @@ internal actual fun Database.saveBlob(blob: Blob) {
 
 @Suppress("UNCHECKED_CAST")
 internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? {
-    if (!Blob.isBlob(props)) {
-        throw IllegalArgumentException("getBlob arg does not specify a blob")
-    }
+    require(Blob.isBlob(props)) { "getBlob arg does not specify a blob" }
     return actual.getBlob(props as Map<Any?, *>)?.asBlob()
 }
