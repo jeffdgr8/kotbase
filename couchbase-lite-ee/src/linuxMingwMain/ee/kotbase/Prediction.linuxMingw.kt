@@ -15,13 +15,22 @@
  */
 package kotbase
 
-public actual class Prediction {
+import kotbase.internal.fleece.toFLString
+import kotlinx.cinterop.memScoped
+import libcblite.CBL_RegisterPredictiveModel
+import libcblite.CBL_UnregisterPredictiveModel
+
+public actual object Prediction {
 
     public actual fun registerModel(name: String, model: PredictiveModel) {
-        predictiveQueryUnsupported()
+        memScoped {
+            CBL_RegisterPredictiveModel(name.toFLString(this), model.convert())
+        }
     }
 
     public actual fun unregisterModel(name: String) {
-        predictiveQueryUnsupported()
+        memScoped {
+            CBL_UnregisterPredictiveModel(name.toFLString(this))
+        }
     }
 }

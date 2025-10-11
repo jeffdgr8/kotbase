@@ -20,7 +20,7 @@ package kotbase
  *
  * The prediction model manager for registering and unregistering predictive models.
  */
-public expect class Prediction {
+public expect object Prediction {
 
     /**
      * Register a predictive model by the given name.

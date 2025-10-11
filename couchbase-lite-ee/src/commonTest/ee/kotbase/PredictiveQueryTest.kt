@@ -22,8 +22,6 @@ import kotbase.test.assertIntContentEquals
 import kotlinx.datetime.Clock
 import kotlin.test.*
 
-// predictive queries not supported in CBL C SDK
-@IgnoreLinuxMingw
 class PredictiveQueryTest : BaseQueryTest() {
 
     // PredictiveQueryTest.swift
@@ -200,6 +198,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         echoModel.unregisterModel()
     }
 
+    // crashes during query in linuxMingw
+    @IgnoreLinuxMingw
     @Test
     fun testPredictionWithBlobPropertyInput() {
         val texts = listOf(
@@ -237,6 +237,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         textModel.unregisterModel()
     }
 
+    // crashes during query in linuxMingw
+    @IgnoreLinuxMingw
     @Test
     fun testPredictionWithBlobParameterInput() {
         testCollection.save(MutableDocument())
@@ -323,8 +325,8 @@ class PredictiveQueryTest : BaseQueryTest() {
 
             val pred = r.getDictionary(1)!!
             assertEquals(numbers.sum(), pred.getInt("sum"))
-            assertEquals(numbers.min().toInt(), pred.getInt("min"))
-            assertEquals(numbers.max().toInt(), pred.getInt("max"))
+            assertEquals(numbers.min(), pred.getInt("min"))
+            assertEquals(numbers.max(), pred.getInt("max"))
             assertEquals(numbers.average().toInt(), pred.getInt("avg"))
         }
 
@@ -604,6 +606,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertEquals(4, aggregateModel.numberOfCalls)
     }
 
+    // predictive indexes are not supported in CBL C SDK
+    @IgnoreLinuxMingw
     @Test
     fun testIndexPredictionResultUsingPredictiveIndex() {
         createDocument(listOf(1, 2, 3, 4, 5))
@@ -642,6 +646,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         aggregateModel.unregisterModel()
     }
 
+    // predictive indexes are not supported in CBL C SDK
+    @IgnoreLinuxMingw
     @Test
     fun testIndexPredictionValueUsingPredictiveIndex() {
         createDocument(listOf(1, 2, 3, 4, 5))
@@ -680,6 +686,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         aggregateModel.unregisterModel()
     }
 
+    // predictive indexes are not supported in CBL C SDK
+    @IgnoreLinuxMingw
     @Test
     fun testIndexMultiplePredictionValuesUsingPredictiveIndex() {
         createDocument(listOf(1, 2, 3, 4, 5))
@@ -721,6 +729,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         aggregateModel.unregisterModel()
     }
 
+    // predictive indexes are not supported in CBL C SDK
+    @IgnoreLinuxMingw
     @Test
     fun testIndexCompoundPredictiveValuesUsingPredictiveIndex() {
         createDocument(listOf(1, 2, 3, 4, 5))
@@ -759,6 +769,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         aggregateModel.unregisterModel()
     }
 
+    // predictive indexes are not supported in CBL C SDK
+    @IgnoreLinuxMingw
     @Test
     fun testDeletePredictiveIndex() {
         createDocument(listOf(1, 2, 3, 4, 5))
@@ -813,6 +825,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         aggregateModel.unregisterModel()
     }
 
+    // predictive indexes are not supported in CBL C SDK
+    @IgnoreLinuxMingw
     @Test
     fun testDeletePredictiveIndexesSharingSameCacheTable() {
         createDocument(listOf(1, 2, 3, 4, 5))

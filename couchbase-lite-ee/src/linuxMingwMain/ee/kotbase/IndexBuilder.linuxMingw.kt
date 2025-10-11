@@ -20,4 +20,4 @@ public actual fun IndexBuilder.predictiveIndex(
     input: Expression,
     properties: List<String>?
 ): PredictiveIndex =
-    predictiveQueryUnsupported()
+    throw UnsupportedOperationException("Predictive indexes are not supported in CBL C SDK")
