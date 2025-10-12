@@ -4,7 +4,7 @@ couchbase-lite-objc = "3.2.4"
 couchbase-lite-c = "3.2.4"
 couchbase-lite-vector-search = "1.0.0"
 dokka = "2.0.0"
-mockk = "1.14.5"
+mockk = "1.14.6"
 
 [plugins]
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version = "8.12.3" }
@@ -15,7 +15,7 @@ kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-co
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.34.0" }
 
 [libraries]
-androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.9.3" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version = "2.9.4" }
 androidx-startup = { module = "androidx.startup:startup-runtime", version = "1.2.0" }
 androidx-test-core-ktx = { module = "androidx.test:core-ktx", version = "1.7.0" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.7.0" }
