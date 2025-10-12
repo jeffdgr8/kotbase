@@ -42,6 +42,9 @@ internal constructor(
     internal open val actual: FLDict
         get() = memory.actual
 
+    private val retain: Boolean
+        get() = memory.retain
+
     internal open var dbContext: DbContext? = dbContext
         set(value) {
             field = value
@@ -79,7 +82,7 @@ internal constructor(
 
     actual override fun getValue(key: String): Any? {
         return collectionMap[key]
-            ?: getFLValue(key)?.toNative(dbContext)
+            ?: getFLValue(key)?.toNative(dbContext, retain)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
     }
 
@@ -105,20 +108,20 @@ internal constructor(
         getFLValue(key).toBoolean()
 
     actual override fun getBlob(key: String): Blob? =
-        getFLValue(key)?.toBlob(dbContext)
+        getFLValue(key)?.toBlob(dbContext, retain)
 
     actual override fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
     actual override fun getArray(key: String): Array? {
         return getInternalCollection(key)
-            ?: getFLValue(key)?.toArray(dbContext)
+            ?: getFLValue(key)?.toArray(dbContext, retain)
                 ?.also { collectionMap[key] = it }
     }
 
     actual override fun getDictionary(key: String): Dictionary? {
         return getInternalCollection(key)
-            ?: getFLValue(key)?.toDictionary(dbContext)
+            ?: getFLValue(key)?.toDictionary(dbContext, retain)
                 ?.also { collectionMap[key] = it }
     }
 

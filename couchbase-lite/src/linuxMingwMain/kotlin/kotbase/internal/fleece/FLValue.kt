@@ -29,7 +29,7 @@ internal fun FLValue.toNative(ctxt: DbContext?, retain: Boolean = true): Any? = 
     kFLArray -> asArray(ctxt, retain)
     kFLDict -> {
         if (FLValue_IsBlob(this)) {
-            asBlob(ctxt)
+            asBlob(ctxt, retain)
         } else {
             asDictionary(ctxt, retain)
         }
@@ -85,7 +85,7 @@ private fun FLValue.asMutableDictionary(
     }
 }
 
-private fun FLValue.asBlob(ctxt: DbContext?): Blob? {
+private fun FLValue.asBlob(ctxt: DbContext?, retain: Boolean = true): Blob? {
     if (!FLValue_IsBlob(this)) return null
     val db = ctxt?.database
     if (db != null) {
@@ -97,7 +97,7 @@ private fun FLValue.asBlob(ctxt: DbContext?): Blob? {
             if (e.code == CBLError.Code.NOT_OPEN && e.domain == CBLError.Domain.CBLITE) {
                 return Blob(
                     // database is closed, just use blob dictionary, content won't be available
-                    Dictionary(FLValue_AsDict(this)!!, null),
+                    Dictionary(FLValue_AsDict(this)!!, null, retain = retain),
                     ctxt
                 )
             } else {
@@ -118,11 +118,11 @@ private fun FLValue.asBlob(ctxt: DbContext?): Blob? {
 private fun FLValue.asDataBlob(): Blob =
     Blob(content = FLValue_AsData(this))
 
-internal fun FLValue.toArray(ctxt: DbContext?): Array? =
-    if (type == kFLArray) asArray(ctxt) else null
+internal fun FLValue.toArray(ctxt: DbContext?, retain: Boolean = true): Array? =
+    if (type == kFLArray) asArray(ctxt, retain) else null
 
-internal fun FLValue.toDictionary(ctxt: DbContext?): Dictionary? =
-    if (type == kFLDict && !FLValue_IsBlob(this)) asDictionary(ctxt) else null
+internal fun FLValue.toDictionary(ctxt: DbContext?, retain: Boolean = true): Dictionary? =
+    if (type == kFLDict && !FLValue_IsBlob(this)) asDictionary(ctxt, retain) else null
 
 internal fun FLValue.toMutableArray(
     ctxt: DbContext?,
@@ -142,8 +142,8 @@ internal fun FLValue.toMutableDictionary(
     } else null
 }
 
-internal fun FLValue.toBlob(ctxt: DbContext?): Blob? = when (type) {
-    kFLDict -> asBlob(ctxt)
+internal fun FLValue.toBlob(ctxt: DbContext?, retain: Boolean = true): Blob? = when (type) {
+    kFLDict -> asBlob(ctxt, retain)
     kFLData -> asDataBlob()
     else -> null
 }
