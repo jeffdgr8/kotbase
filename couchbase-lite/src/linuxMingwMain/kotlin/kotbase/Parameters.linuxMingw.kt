@@ -53,8 +53,11 @@ internal constructor(
     internal val actual: FLDict
         get() = memory.actual
 
+    private val readonly: Boolean
+        get() = memory.readonly
+
     public actual fun getValue(name: String): Any? =
-        actual.getValue(name)?.toNative(null, retain = false)
+        actual.getValue(name)?.toNative(null, retain = !readonly)
 
     public actual fun setString(name: String, value: String?): Parameters {
         checkReadOnly()
@@ -129,7 +132,7 @@ internal constructor(
     }
 
     private fun checkReadOnly() {
-        if (memory.readonly) throw CouchbaseLiteError("Parameters is readonly mode.")
+        if (readonly) throw CouchbaseLiteError("Parameters is readonly mode.")
     }
 }
 

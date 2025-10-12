@@ -22,13 +22,17 @@ import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.staticCFunction
 import libcblite.CBLPredictiveModel
+import libcblite.FLDict_Retain
 
 internal fun PredictiveModel.convert(): CValue<CBLPredictiveModel> {
     return cValue {
         context = StableRef.create(PredictiveModelHolder(this@convert)).asCPointer()
         prediction = staticCFunction { ref, input ->
             with(ref.to<PredictiveModelHolder>()) {
-                model.predict(Dictionary(input!!, null))?.actual
+                model.predict(Dictionary(input!!, null, retain = false))?.actual.also {
+                    // FLDict should not be released by the Dictionary object
+                    FLDict_Retain(it)
+                }
             }
         }
         unregistered = staticCFunction { ref ->

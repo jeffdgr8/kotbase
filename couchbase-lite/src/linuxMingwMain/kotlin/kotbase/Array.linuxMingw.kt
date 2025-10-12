@@ -42,6 +42,9 @@ internal constructor(
     public open val actual: FLArray
         get() = memory.actual
 
+    private val retain: Boolean
+        get() = memory.retain
+
     internal open var dbContext: DbContext? = dbContext
         set(value) {
             field = value
@@ -77,7 +80,7 @@ internal constructor(
 
     actual override fun getValue(index: Int): Any? {
         return collectionMap[index]
-            ?: getFLValue(index)?.toNative(dbContext)
+            ?: getFLValue(index)?.toNative(dbContext, retain)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
     }
 
@@ -103,20 +106,20 @@ internal constructor(
         getFLValue(index).toBoolean()
 
     actual override fun getBlob(index: Int): Blob? =
-        getFLValue(index)?.toBlob(dbContext)
+        getFLValue(index)?.toBlob(dbContext, retain)
 
     actual override fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
 
     actual override fun getArray(index: Int): Array? {
         return getInternalCollection(index)
-            ?: getFLValue(index)?.toArray(dbContext)
+            ?: getFLValue(index)?.toArray(dbContext, retain)
                 ?.also { collectionMap[index] = it }
     }
 
     actual override fun getDictionary(index: Int): Dictionary? {
         return getInternalCollection(index)
-            ?: getFLValue(index)?.toDictionary(dbContext)
+            ?: getFLValue(index)?.toDictionary(dbContext, retain)
                 ?.also { collectionMap[index] = it }
     }
 
