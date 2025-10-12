@@ -12,6 +12,8 @@ plugins {
 description = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform"
 
 kotlin {
+    android.namespace = "dev.kotbase"
+
     cocoapods {
         framework {
             binaryOption("bundleId", "dev.kotbase")
@@ -73,7 +75,7 @@ kotlin {
             api(libs.couchbase.lite.android.ee)
             implementation(libs.androidx.startup)
         }
-        androidInstrumentedTest.dependencies {
+        androidDeviceTest.dependencies {
             implementation(libs.couchbase.lite.android.vector.search.arm64)
             implementation(libs.couchbase.lite.android.vector.search.x64)
         }
@@ -83,8 +85,6 @@ kotlin {
         }
     }
 }
-
-android.namespace = "dev.kotbase"
 
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {

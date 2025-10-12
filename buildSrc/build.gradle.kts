@@ -13,7 +13,7 @@ dependencies {
     implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
     implementation(plugin(libs.plugins.kotlin.multiplatform))
     implementation(plugin(libs.plugins.kotlinx.atomicfu))
-    implementation(plugin(libs.plugins.android.library))
+    implementation(plugin(libs.plugins.android.kotlin.multiplatform.library))
     implementation(plugin(libs.plugins.dokka))
     implementation(libs.dokka.versioning)
     implementation(plugin(libs.plugins.vanniktech.maven.publish))

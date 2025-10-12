@@ -4,6 +4,8 @@ plugins {
 }
 
 kotlin {
+    android.namespace = "dev.kotbase.testingsupport"
+
     cocoapods {
         framework {
             binaryOption("bundleId", "dev.kotbase.testingsupport")
@@ -35,5 +37,3 @@ kotlin {
         }
     }
 }
-
-android.namespace = "dev.kotbase.testingsupport"

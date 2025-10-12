@@ -8,11 +8,30 @@ import rules.applyCouchbaseLiteRule
 plugins {
     `kotlin-multiplatform`
     `kotlin-native-cocoapods`
-    `android-library`
+    com.android.kotlin.multiplatform.library
     org.jetbrains.kotlinx.atomicfu
 }
 
 kotlin {
+    android {
+        compileSdk = 36
+        minSdk = 22
+        withDeviceTestBuilder {
+            sourceSetTreeName = "test"
+        }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            targetSdk {
+                version = release(36)
+            }
+        }
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
+        }
+        // required by coroutines 1.7.0+ to avoid errors:
+        // 6 files found with path 'META-INF/LICENSE.md'
+        packaging.resources.pickFirsts += "META-INF/**"
+    }
+
     cocoapods {
         version = project.version.toString()
         homepage = "https://kotbase.dev/"
@@ -68,24 +87,6 @@ kotlin {
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
-}
-
-android {
-    compileSdk = 36
-    defaultConfig {
-        minSdk = 22
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    testOptions {
-        targetSdk = 36
-    }
-    // required by coroutines 1.7.0+ to avoid errors:
-    // 6 files found with path 'META-INF/LICENSE.md'.
-    packaging.resources.pickFirsts += "META-INF/**"
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
 }
 
 dependencies {

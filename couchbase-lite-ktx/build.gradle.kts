@@ -6,6 +6,8 @@ plugins {
 description = "Couchbase Lite Community Edition for Kotlin Multiplatform – Kotlin Extensions"
 
 kotlin {
+    android.namespace = "dev.kotbase.ktx"
+
     cocoapods {
         framework {
             binaryOption("bundleId", "dev.kotbase.ktx")
@@ -32,10 +34,8 @@ kotlin {
         androidMain.dependencies {
             compileOnly(libs.androidx.lifecycle.runtime.ktx)
         }
-        androidInstrumentedTest.dependencies {
+        androidDeviceTest.dependencies {
             implementation(libs.mockk.android)
         }
     }
 }
-
-android.namespace = "dev.kotbase.ktx"
