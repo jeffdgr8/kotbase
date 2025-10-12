@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.KotlinMultiplatformAndroidCompilation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -32,7 +33,7 @@ kotlin {
     applyDefaultHierarchyTemplate {
         common {
             group("jvmCommon") {
-                withAndroidTarget()
+                withCompilations { it is KotlinMultiplatformAndroidCompilation }
                 withJvm()
             }
             group("native") {
@@ -44,7 +45,7 @@ kotlin {
         }
     }
 
-    androidTarget()
+    android
     jvm()
     iosArm64()
     iosSimulatorArm64()

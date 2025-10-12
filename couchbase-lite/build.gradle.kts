@@ -10,6 +10,8 @@ plugins {
 description = "Couchbase Lite Community Edition for Kotlin Multiplatform"
 
 kotlin {
+    android.namespace = "dev.kotbase"
+
     cocoapods {
         framework {
             binaryOption("bundleId", "dev.kotbase")
@@ -63,8 +65,6 @@ kotlin {
         }
     }
 }
-
-android.namespace = "dev.kotbase"
 
 // Internal headers required for tests
 tasks.named<DefFileTask>("generateDefCouchbaseLite") {

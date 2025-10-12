@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
-
 plugins {
     id("base-convention")
     id("dokka-convention")
@@ -9,13 +6,6 @@ plugins {
 
 kotlin {
     explicitApiWarning()
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    androidTarget {
-        publishLibraryVariants("release")
-        instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-        unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.unitTest)
-    }
 }
 
 mavenPublishing {

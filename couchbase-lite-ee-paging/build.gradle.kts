@@ -6,6 +6,11 @@ plugins {
 description = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform – AndroidX Paging Extensions"
 
 kotlin {
+    android {
+        namespace = "dev.kotbase.paging"
+        minSdk = 23
+    }
+
     cocoapods {
         framework {
             binaryOption("bundleId", "dev.kotbase.paging")
@@ -29,9 +34,4 @@ kotlin {
             implementation(libs.stately)
         }
     }
-}
-
-android {
-    namespace = "dev.kotbase.paging"
-    defaultConfig.minSdk = 23
 }
