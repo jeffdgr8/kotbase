@@ -385,9 +385,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertNull(targetCollection.getDocument("doc3"))
     }
 
-    // TODO: native C fails sometimes
-    //  AssertionError: Expected <3>, actual <2>.
-    @IgnoreLinuxMingw
     @Test
     fun testPullFilter() {
         // Add a document to db database so that it can pull the deleted docs from:
@@ -502,17 +499,11 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // Removed Doc with Filter
 
-    // TODO: native C fails sometimes
-    //  AssertionError: Expected <2>, actual <1>.
-    @IgnoreLinuxMingw
     @Test
     fun testPullRemovedDocWithFilterSingleShot() {
         testPullRemovedDocWithFilter(false)
     }
 
-    // TODO: native C fails sometimes
-    //  AssertionError: Expected <2>, actual <1>.
-    @IgnoreLinuxMingw
     @Test
     fun testPullRemovedDocWithFilterContinuous() {
         testPullRemovedDocWithFilter(true)
@@ -586,18 +577,11 @@ class ReplicatorEETest : BaseReplicatorTest() {
         testPushDeletedDocWithFilter(true)
     }
 
-    // TODO: native C fails sometimes
-    //  AssertionError: Expected <2>, actual <1>.
-    @IgnoreLinuxMingw
     @Test
     fun testPullDeletedDocWithFilterSingleShot() {
         testPullDeletedDocWithFilter(false)
     }
 
-    // TODO: native C fails sometimes
-    //  AssertionError: Expected <2>, actual <1>.
-    //  or AssertionError: Expected value to be true.
-    @IgnoreLinuxMingw
     @Test
     fun testPullDeletedDocWithFilterContinuous() {
         testPullDeletedDocWithFilter(true)
@@ -755,9 +739,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
         assertEquals(2, targetCollection.count)
     }
 
-    // TODO: native C fails sometimes
-    //  AssertionError: Expected <2>, actual <1>.
-    @IgnoreLinuxMingw
     @Test
     fun testStopAndRestartPullReplicationWithFilter() {
         // Create documents:
@@ -951,7 +932,6 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
     // ReplicatorTest+CustomConflict.swift
 
-    @IgnoreLinuxMingw
     @Test
     fun testConflictResolverConfigProperty() {
         val target = URLEndpoint("wss://foo/db")
