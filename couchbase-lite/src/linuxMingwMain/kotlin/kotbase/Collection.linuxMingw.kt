@@ -115,12 +115,12 @@ internal constructor(
         }
     }
 
-    private var conflictHandler: StableRef<ConflictHandlerWrapper>? = null
+    private var conflictHandler: StableRef<ConflictHandlerHolder>? = null
 
     @Throws(CouchbaseLiteException::class)
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
         document.willSave(database)
-        val wrapper = ConflictHandlerWrapper(database, conflictHandler)
+        val wrapper = ConflictHandlerHolder(database, conflictHandler)
         this.conflictHandler = StableRef.create(wrapper)
         return try {
             wrapCBLError { error ->

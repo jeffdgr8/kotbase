@@ -388,7 +388,7 @@ private constructor(
         }
     }
 
-    private var conflictHandler: StableRef<ConflictHandlerWrapper>? = null
+    private var conflictHandler: StableRef<ConflictHandlerHolder>? = null
 
     @Deprecated(
         "Use defaultCollection.save()",
@@ -398,7 +398,7 @@ private constructor(
     public actual fun save(document: MutableDocument, conflictHandler: ConflictHandler): Boolean {
         return mustBeOpen {
             document.willSave(this)
-            val wrapper = ConflictHandlerWrapper(this, conflictHandler)
+            val wrapper = ConflictHandlerHolder(this, conflictHandler)
             this.conflictHandler = StableRef.create(wrapper)
             try {
                 wrapCBLError { error ->
