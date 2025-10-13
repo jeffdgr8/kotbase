@@ -32,7 +32,9 @@ jobs:
         if: failure()
         with:
           name: macos-test-results
-          path: ./**/build/reports/tests
+          path: |
+            ./**/build/reports/tests
+            ./**/*.log
 
   linux-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
@@ -60,7 +62,9 @@ jobs:
         if: failure()
         with:
           name: linux-test-results
-          path: ./**/build/reports/tests
+          path: |
+            ./**/build/reports/tests
+            ./**/*.log
 
   windows-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
@@ -83,7 +87,9 @@ jobs:
         if: failure()
         with:
           name: windows-test-results
-          path: ./**/build/reports/tests
+          path: |
+            ./**/build/reports/tests
+            ./**/*.log
 
   android-tests:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
@@ -116,4 +122,6 @@ jobs:
         if: failure()
         with:
           name: android-test-results
-          path: ./**/build/reports/androidTests
+          path: |
+            ./**/build/reports/androidTests/connected/debug
+            ./**/*.log
