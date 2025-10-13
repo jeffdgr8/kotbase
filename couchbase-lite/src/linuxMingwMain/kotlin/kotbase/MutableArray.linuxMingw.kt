@@ -130,10 +130,10 @@ internal constructor(
             null -> {
                 FLMutableArray_SetNull(actual, index.convert())
                 removeInternal(index)
-                mutate()
             }
             else -> invalidTypeError(value)
         }
+        mutate()
         return this
     }
 
@@ -278,12 +278,10 @@ internal constructor(
             is Array -> addArray(value)
             is Map<*, *> -> addDictionary(MutableDictionary(value as Map<String, Any?>))
             is Dictionary -> addDictionary(value)
-            null -> {
-                FLMutableArray_AppendNull(actual)
-                mutate()
-            }
+            null -> FLMutableArray_AppendNull(actual)
             else -> invalidTypeError(value)
         }
+        mutate()
         return this
     }
 
