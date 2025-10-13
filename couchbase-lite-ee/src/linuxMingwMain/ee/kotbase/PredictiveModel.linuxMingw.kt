@@ -22,6 +22,7 @@ import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.staticCFunction
 import libcblite.CBLPredictiveModel
+import libcblite.FLArray_Retain
 import libcblite.FLDict_Retain
 
 internal fun PredictiveModel.convert(): CValue<CBLPredictiveModel> {
@@ -29,14 +30,34 @@ internal fun PredictiveModel.convert(): CValue<CBLPredictiveModel> {
         context = StableRef.create(this@convert).asCPointer()
         prediction = staticCFunction { ref, input ->
             with(ref.to<PredictiveModel>()) {
-                predict(Dictionary(input!!, null, retain = false))?.actual?.also {
-                    // FLDict should not be released by the Dictionary object
-                    FLDict_Retain(it)
-                }
+                val output = predict(Dictionary(input!!, null, retain = false))
+                // FLDict and its values should not be released by the Dictionary object
+                output?.retain()
+                output?.actual
             }
         }
         unregistered = staticCFunction { ref ->
             ref?.asStableRef<PredictiveModel>()?.dispose()
+        }
+    }
+}
+
+private fun Dictionary.retain() {
+    FLDict_Retain(actual)
+    forEach { key ->
+        when (val value = getValue(key)) {
+            is Array -> value.retain()
+            is Dictionary -> value.retain()
+        }
+    }
+}
+
+private fun Array.retain() {
+    FLArray_Retain(actual)
+    forEach { value ->
+        when (value) {
+            is Array -> value.retain()
+            is Dictionary -> value.retain()
         }
     }
 }
