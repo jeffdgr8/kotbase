@@ -168,7 +168,7 @@ class KermitCouchbaseLiteLogSinkTest : BaseTest() {
     }
 
     private fun allowLogsToWrite() = runBlocking {
-        delay(5)
+        delay(10)
     }
 
     private fun Array<out LogDomain>.toTags() = ifEmpty { LogDomain.ALL.toTypedArray() }
