@@ -26,19 +26,17 @@ import libcblite.FLDict_Retain
 
 internal fun PredictiveModel.convert(): CValue<CBLPredictiveModel> {
     return cValue {
-        context = StableRef.create(PredictiveModelHolder(this@convert)).asCPointer()
+        context = StableRef.create(this@convert).asCPointer()
         prediction = staticCFunction { ref, input ->
-            with(ref.to<PredictiveModelHolder>()) {
-                model.predict(Dictionary(input!!, null, retain = false))?.actual.also {
+            with(ref.to<PredictiveModel>()) {
+                predict(Dictionary(input!!, null, retain = false))?.actual?.also {
                     // FLDict should not be released by the Dictionary object
                     FLDict_Retain(it)
                 }
             }
         }
         unregistered = staticCFunction { ref ->
-            ref?.asStableRef<PredictiveModelHolder>()?.dispose()
+            ref?.asStableRef<PredictiveModel>()?.dispose()
         }
     }
 }
-
-internal class PredictiveModelHolder(val model: PredictiveModel)
