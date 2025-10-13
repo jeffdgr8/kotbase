@@ -19,7 +19,7 @@ import kotbase.util.to
 import kotlinx.cinterop.staticCFunction
 import libcblite.CBLConflictHandler
 
-internal class ConflictHandlerWrapper(
+internal class ConflictHandlerHolder(
     val db: Database,
     val handler: ConflictHandler,
     var exception: Exception? = null
@@ -27,7 +27,7 @@ internal class ConflictHandlerWrapper(
 
 internal fun nativeConflictHandler(): CBLConflictHandler {
     return staticCFunction { ref, document, oldDocument ->
-        with(ref.to<ConflictHandlerWrapper>()) {
+        with(ref.to<ConflictHandlerHolder>()) {
             try {
                 handler(
                     MutableDocument(document!!, db),
