@@ -79,7 +79,7 @@ abstract class BaseVectorSearchTest : BaseDbTest() {
 
     lateinit var extWordsCollection: Collection
 
-    val directory = getScratchDirectoryPath("CouchbaseLite-EE")
+    val directory = getScratchDirectoryPath(getUniqueName("CouchbaseLite-EE"))
 
     class TestCustomLogSink : LogSink {
         val lines = ConcurrentMutableList<String>()
