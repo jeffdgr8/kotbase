@@ -1774,6 +1774,11 @@ class DatabaseTest : BaseDbTest() {
         try {
             withTimeout(STD_TIMEOUT_SEC.seconds) { future.await() }
         } catch (e: Exception) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
             throw AssertionError("Batch execution failed", e)
         }
 

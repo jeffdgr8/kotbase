@@ -167,11 +167,19 @@ abstract class BaseDbTest(useLegacyLogging: Boolean = false) : BaseTest(useLegac
     @AfterTest
     fun tearDownBaseDbTest() {
         tearDown()
-        val name = testCol.fullName
-        testCol.close()
-        Report.log("Test collection closed: $name")
-        eraseDb(testDb)
-        Report.log("Test db erased: ${testDb.name}")
+        if (::testCol.isInitialized) {
+            val name = testCol.fullName
+            testCol.close()
+            Report.log("Test collection closed: $name")
+        } else {
+            Report.log("Test collection was not initialized")
+        }
+        if (::testDb.isInitialized) {
+            eraseDb(testDb)
+            Report.log("Test db erased: ${testDb.name}")
+        } else {
+            Report.log("Test db was not initialized")
+        }
     }
 
     /**
@@ -282,6 +290,11 @@ abstract class BaseDbTest(useLegacyLogging: Boolean = false) : BaseTest(useLegac
                 }
             }
         } catch (e: Exception) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
             throw AssertionError("Failed reading JSON resource $resName into collection $collection", e)
         }
     }

@@ -70,6 +70,11 @@ internal constructor(
                 actual.setJSON(json, error)
             }
         } catch (e: CouchbaseLiteException) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
             throw IllegalArgumentException("Failed parsing JSON", e)
         }
         mutate()

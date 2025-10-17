@@ -70,6 +70,11 @@ private constructor(
                 "Cannot add collection $collection because it has been deleted."
             }
         } catch (e: CouchbaseLiteException) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
             throw IllegalArgumentException("Failed getting collection $collection", e)
         }
     }

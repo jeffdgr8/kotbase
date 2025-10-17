@@ -52,7 +52,14 @@ abstract class BaseQueryTest : BaseDbTest() {
                     verifier.check(++n, result)
                 }
             }
-        } catch (e: Exception) { throw AssertionError("Failed verifying query (enumerator)", e) }
+        } catch (e: Exception) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
+            throw AssertionError("Failed verifying query (enumerator)", e)
+        }
         return n
     }
 
@@ -64,7 +71,14 @@ abstract class BaseQueryTest : BaseDbTest() {
                     verifier.check(++n, result)
                 }
             }
-        } catch (e: Exception) { throw AssertionError("Failed verifying query (iterable)", e) }
+        } catch (e: Exception) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
+            throw AssertionError("Failed verifying query (iterable)", e)
+        }
         return n
     }
 }

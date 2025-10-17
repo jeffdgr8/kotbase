@@ -1605,6 +1605,11 @@ class QueryTest : BaseQueryTest() {
             }
         } // Catch clause prevents Windows compiler error
         catch (e: Exception) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
             throw AssertionError("Unexpected exception", e)
         }
     }
@@ -3362,7 +3367,14 @@ class QueryTest : BaseQueryTest() {
         val e = err.load()
         assertEquals(4, n.load(), "Events did not occur in expected order")
         assertTrue(timeout.load(), "Latch 2 should have timed out")
-        if (e != null) { throw AssertionError("Operation failed", e) }
+        if (e != null) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
+            throw AssertionError("Operation failed", e)
+        }
     }
 
     // Utility Functions

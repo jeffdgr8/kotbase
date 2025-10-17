@@ -2816,6 +2816,11 @@ class DocumentTest : BaseDbTest() {
             validator.validate(doc)
             return doc
         } catch (e: Exception) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
             throw AssertionError("Failed saving document in test collection: $mDoc", e)
         }
     }
