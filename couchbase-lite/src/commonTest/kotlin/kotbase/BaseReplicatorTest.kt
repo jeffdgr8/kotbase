@@ -259,7 +259,16 @@ abstract class BaseReplicatorTest : BaseDbTest() {
             }
         } else {
             if (!containsWithComparator(expectedErrs.toList(), err, BaseTest::compareExceptions)) {
-                throw AssertionError("Expecting error in $expectedErrs but got", err)
+                // Cause isn't logged on native platforms...
+                // https://youtrack.jetbrains.com/issue/KT-62794
+                println("Cause:")
+                println(err.message)
+                println(err.stackTraceToString())
+                if (expectedErrs.isNotEmpty()) {
+                    throw AssertionError("Expecting error in ${expectedErrs.toList()} but got", err)
+                } else {
+                    throw AssertionError("Expecting no error but got", err)
+                }
             }
         }
 

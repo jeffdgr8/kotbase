@@ -45,6 +45,11 @@ class ConcurrencyTest : BaseDbTest() {
                 }
             }
             catch (e: CouchbaseLiteException) {
+                // Cause isn't logged on native platforms...
+                // https://youtrack.jetbrains.com/issue/KT-62794
+                println("Cause:")
+                println(e.message)
+                println(e.stackTraceToString())
                 throw AssertionError("Failed saving doc", e)
             }
         }
@@ -67,6 +72,11 @@ class ConcurrencyTest : BaseDbTest() {
                 }
             }
             catch (e: CouchbaseLiteException) {
+                // Cause isn't logged on native platforms...
+                // https://youtrack.jetbrains.com/issue/KT-62794
+                println("Cause:")
+                println(e.message)
+                println(e.stackTraceToString())
                 throw AssertionError("Failed saving doc in batch", e)
             }
         }
@@ -90,7 +100,14 @@ class ConcurrencyTest : BaseDbTest() {
         runConcurrentCopies(4) {
             try {
                 testDatabase.inBatch { readDocs(docIDs, 50) }
-            } catch (e: CouchbaseLiteException) { throw AssertionError("Failed reading docs in batch", e) }
+            } catch (e: CouchbaseLiteException) {
+                // Cause isn't logged on native platforms...
+                // https://youtrack.jetbrains.com/issue/KT-62794
+                println("Cause:")
+                println(e.message)
+                println(e.stackTraceToString())
+                throw AssertionError("Failed reading docs in batch", e)
+            }
         }
     }
 
@@ -122,7 +139,14 @@ class ConcurrencyTest : BaseDbTest() {
                             testCollection.delete(doc)
                         }
                     }
-                    catch (e: CouchbaseLiteException) { throw AssertionError("Failed deleting doc: $docID", e) }
+                    catch (e: CouchbaseLiteException) {
+                        // Cause isn't logged on native platforms...
+                        // https://youtrack.jetbrains.com/issue/KT-62794
+                        println("Cause:")
+                        println(e.message)
+                        println(e.stackTraceToString())
+                        throw AssertionError("Failed deleting doc: $docID", e)
+                    }
                 }
             },
             task2 = {
@@ -131,7 +155,14 @@ class ConcurrencyTest : BaseDbTest() {
                         val doc = testCollection.getDocument(docID)
                         if (doc != null) { testCollection.delete(doc) }
                     }
-                    catch (e: CouchbaseLiteException) { throw AssertionError("Failed deleting doc: $docID", e) }
+                    catch (e: CouchbaseLiteException) {
+                        // Cause isn't logged on native platforms...
+                        // https://youtrack.jetbrains.com/issue/KT-62794
+                        println("Cause:")
+                        println(e.message)
+                        println(e.stackTraceToString())
+                        throw AssertionError("Failed deleting doc: $docID", e)
+                    }
                 }
             }
         )
@@ -151,7 +182,14 @@ class ConcurrencyTest : BaseDbTest() {
                         if (doc != null) { testCollection.purge(doc) }
                     }
                     catch (e: CouchbaseLiteException) {
-                        if (e.code != 404) { throw AssertionError("Failed purging doc: $docID", e) }
+                        if (e.code != 404) {
+                            // Cause isn't logged on native platforms...
+                            // https://youtrack.jetbrains.com/issue/KT-62794
+                            println("Cause:")
+                            println(e.message)
+                            println(e.stackTraceToString())
+                            throw AssertionError("Failed purging doc: $docID", e)
+                        }
                     }
                 }
             },
@@ -162,7 +200,14 @@ class ConcurrencyTest : BaseDbTest() {
                         if (doc != null) { testCollection.purge(doc) }
                     }
                     catch (e: CouchbaseLiteException) {
-                        if (e.code != 404) { throw AssertionError("Failed purging doc: $docID", e) }
+                        if (e.code != 404) {
+                            // Cause isn't logged on native platforms...
+                            // https://youtrack.jetbrains.com/issue/KT-62794
+                            println("Cause:")
+                            println(e.message)
+                            println(e.stackTraceToString())
+                            throw AssertionError("Failed purging doc: $docID", e)
+                        }
                     }
                 }
             }
@@ -198,6 +243,11 @@ class ConcurrencyTest : BaseDbTest() {
                         if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) {
                             break
                         }
+                        // Cause isn't logged on native platforms...
+                        // https://youtrack.jetbrains.com/issue/KT-62794
+                        println("Cause:")
+                        println(e.message)
+                        println(e.stackTraceToString())
                         throw AssertionError("Failed saving document: $mDoc", e)
                     }
                 }
@@ -223,6 +273,11 @@ class ConcurrencyTest : BaseDbTest() {
                         if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) {
                             break
                         }
+                        // Cause isn't logged on native platforms...
+                        // https://youtrack.jetbrains.com/issue/KT-62794
+                        println("Cause:")
+                        println(e.message)
+                        println(e.stackTraceToString())
                         throw AssertionError("Failed saving document: $mDoc", e)
                     }
                 }
@@ -243,7 +298,14 @@ class ConcurrencyTest : BaseDbTest() {
                         throw CouchbaseLiteException("Compaction failed")
                     }
                 }
-                catch (e: CouchbaseLiteException) { throw AssertionError("Failed compacting database", e) }
+                catch (e: CouchbaseLiteException) {
+                    // Cause isn't logged on native platforms...
+                    // https://youtrack.jetbrains.com/issue/KT-62794
+                    println("Cause:")
+                    println(e.message)
+                    println(e.stackTraceToString())
+                    throw AssertionError("Failed compacting database", e)
+                }
             },
             task2 = {
                 for (doc in docs) {
@@ -252,6 +314,11 @@ class ConcurrencyTest : BaseDbTest() {
                         if (e.domain == CBLError.Domain.CBLITE && e.code == CBLError.Code.NOT_OPEN) {
                             break
                         }
+                        // Cause isn't logged on native platforms...
+                        // https://youtrack.jetbrains.com/issue/KT-62794
+                        println("Cause:")
+                        println(e.message)
+                        println(e.stackTraceToString())
                         throw AssertionError("Failed saving document: $doc", e)
                     }
                 }
@@ -274,7 +341,14 @@ class ConcurrencyTest : BaseDbTest() {
                         IndexBuilder.fullTextIndex(FullTextIndexItem.property("sentence"))
                     )
                 }
-                catch (e: CouchbaseLiteException) { throw AssertionError("Failed creating index", e) }
+                catch (e: CouchbaseLiteException) {
+                    // Cause isn't logged on native platforms...
+                    // https://youtrack.jetbrains.com/issue/KT-62794
+                    println("Cause:")
+                    println(e.message)
+                    println(e.stackTraceToString())
+                    throw AssertionError("Failed creating index", e)
+                }
             },
             task2 = { saveDocs(docs) }
         )
@@ -296,7 +370,14 @@ class ConcurrencyTest : BaseDbTest() {
         }
 
         val e = error.load()
-        if (e != null) { throw AssertionError("Error saving document", e) }
+        if (e != null) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
+            throw AssertionError("Error saving document", e)
+        }
     }
 
     @Test
@@ -316,7 +397,14 @@ class ConcurrencyTest : BaseDbTest() {
         }
 
         val e = error.load()
-        if (e != null) { throw AssertionError("Error saving document", e) }
+        if (e != null) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
+            throw AssertionError("Error saving document", e)
+        }
     }
 
     // https://github.com/couchbase/couchbase-lite-android/issues/1407
@@ -330,7 +418,14 @@ class ConcurrencyTest : BaseDbTest() {
         val nResults: MutableList<Int> = ConcurrentMutableList()
         runConcurrentCopies(10) {
             try { query.execute().use { rs -> nResults.add(rs.allResults().size) } }
-            catch (e: CouchbaseLiteException) { throw AssertionError("Failed executing query", e) }
+            catch (e: CouchbaseLiteException) {
+                // Cause isn't logged on native platforms...
+                // https://youtrack.jetbrains.com/issue/KT-62794
+                println("Cause:")
+                println(e.message)
+                println(e.stackTraceToString())
+                throw AssertionError("Failed executing query", e)
+            }
         }
 
         assertEquals(10, nResults.size)
@@ -339,14 +434,28 @@ class ConcurrencyTest : BaseDbTest() {
 
     private fun saveDocs(mDocs: List<MutableDocument>): List<String> {
         return try { ConcurrentMutableList<String>().apply { saveDocsInCollection(mDocs).forEach { add(it.id) } } }
-        catch (e: Exception) { throw AssertionError("Failed saving documents", e) }
+        catch (e: Exception) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
+            throw AssertionError("Failed saving documents", e)
+        }
     }
 
     private fun updateDocs(docIds: List<String>, rounds: Int, tag: String) {
         for (i in 1..rounds) {
             for (docId in docIds) {
                 val mDoc = try { testCollection.getDocument(docId)!!.toMutable() }
-                catch (e: CouchbaseLiteException) { throw AssertionError("Failed getting document: $docId", e) }
+                catch (e: CouchbaseLiteException) {
+                    // Cause isn't logged on native platforms...
+                    // https://youtrack.jetbrains.com/issue/KT-62794
+                    println("Cause:")
+                    println(e.message)
+                    println(e.stackTraceToString())
+                    throw AssertionError("Failed getting document: $docId", e)
+                }
 
                 mDoc.setValue(TEST_DOC_TAG_KEY, tag)
 
@@ -363,7 +472,14 @@ class ConcurrencyTest : BaseDbTest() {
 
                 mDoc.setValue("updated", Clock.System.now())
                 try { testCollection.save(mDoc) }
-                catch (e: CouchbaseLiteException) { throw AssertionError("Failed saving document: $docId", e) }
+                catch (e: CouchbaseLiteException) {
+                    // Cause isn't logged on native platforms...
+                    // https://youtrack.jetbrains.com/issue/KT-62794
+                    println("Cause:")
+                    println(e.message)
+                    println(e.stackTraceToString())
+                    throw AssertionError("Failed saving document: $docId", e)
+                }
             }
         }
     }
@@ -372,7 +488,14 @@ class ConcurrencyTest : BaseDbTest() {
         for (i in 1..rounds) {
             for (docID in docIDs) {
                 val doc = try { testCollection.getDocument(docID) }
-                catch (e: CouchbaseLiteException) { throw AssertionError("Failed reading document: $docID", e) }
+                catch (e: CouchbaseLiteException) {
+                    // Cause isn't logged on native platforms...
+                    // https://youtrack.jetbrains.com/issue/KT-62794
+                    println("Cause:")
+                    println(e.message)
+                    println(e.stackTraceToString())
+                    throw AssertionError("Failed reading document: $docID", e)
+                }
                 assertNotNull(doc)
                 assertEquals(docID, doc.id)
             }

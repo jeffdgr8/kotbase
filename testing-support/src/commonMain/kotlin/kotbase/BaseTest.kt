@@ -188,6 +188,11 @@ abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLeg
         val db = try {
             Database(dbName, config)
         } catch (e: Exception) {
+            // Cause isn't logged on native platforms...
+            // https://youtrack.jetbrains.com/issue/KT-62794
+            println("Cause:")
+            println(e.message)
+            println(e.stackTraceToString())
             throw AssertionError("Failed creating database $name", e)
         }
         assertTrue(FileUtils.dirExists(dbDir))
