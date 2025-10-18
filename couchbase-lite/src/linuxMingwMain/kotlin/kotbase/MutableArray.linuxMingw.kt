@@ -30,9 +30,7 @@ internal constructor(
     dbContext: DbContext? = null
 ) : Array(actual, dbContext), MutableArrayInterface {
 
-    public actual constructor() : this(FLMutableArray_New()!!) {
-        FLMutableArray_Release(actual)
-    }
+    public actual constructor() : this(debug.FLMutableArray_New()!!)
 
     public actual constructor(data: List<Any?>) : this() {
         setData(data)
@@ -48,9 +46,7 @@ internal constructor(
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)
         }
-    ) {
-        FLMutableArray_Release(actual)
-    }
+    )
 
     override var dbContext: DbContext?
         get() = super.dbContext

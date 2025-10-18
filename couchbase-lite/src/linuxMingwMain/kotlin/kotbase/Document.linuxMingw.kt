@@ -28,24 +28,19 @@ import kotlin.native.ref.createCleaner
 public actual open class Document
 internal constructor(
     actual: CPointer<CBLDocument>,
-    database: Database?
+    database: Database?,
+    release: Boolean = true
 ) : Iterable<String>, DictionaryInterface {
 
     private val memory = object {
         val actual = actual
-        var properties = CBLDocument_Properties(actual)!!
-    }
-
-    init {
-        CBLDocument_Retain(actual)
-        FLDict_Retain(memory.properties)
+        val release = release
     }
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        CBLDocument_Release(it.actual)
-        FLDict_Release(it.properties)
+        if (it.release) debug.CBLDocument_Release(it.actual)
     }
 
     internal val actual: CPointer<CBLDocument>
@@ -65,11 +60,8 @@ internal constructor(
 
     internal open var properties: FLDict = CBLDocument_Properties(actual)!!
         set(value) {
-            FLDict_Release(field)
             field = value
             CBLDocument_SetProperties(actual, value)
-            FLDict_Retain(value)
-            memory.properties = value
         }
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
@@ -191,7 +183,7 @@ internal constructor(
         if (id != other.id) return false
 
         // Step 3: Check content
-        return Dictionary(properties, dbContext) == Dictionary(other.properties, other.dbContext)
+        return Dictionary(properties, dbContext, release = false) == Dictionary(other.properties, other.dbContext, release = false)
     }
 
     override fun hashCode(): Int {
@@ -204,7 +196,7 @@ internal constructor(
             }
         }
         result = 31 * result + id.hashCode()
-        result = 31 * result + Dictionary(properties, dbContext).hashCode()
+        result = 31 * result + Dictionary(properties, dbContext, release = false).hashCode()
         return result
     }
 
@@ -230,5 +222,5 @@ internal constructor(
     }
 }
 
-internal fun CPointer<CBLDocument>.asDocument(database: Database?) =
-    Document(this, database)
+internal fun CPointer<CBLDocument>.asDocument(database: Database?, release: Boolean = true) =
+    Document(this, database, release)

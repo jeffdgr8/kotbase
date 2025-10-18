@@ -15,6 +15,7 @@
  */
 package kotbase
 
+import com.couchbase.lite.copyImmutable
 import kotbase.logging.CustomLogSink
 import kotbase.logging.LogSink
 import kotbase.logging.LogSinks
@@ -40,7 +41,8 @@ class ReplicatorEETest : BaseReplicatorTest() {
         var winner: Document? = null
 
         override fun invoke(conflict: Conflict): Document? {
-            winner = resolver(conflict)
+            // linuxMingw cannot retain returned immutable doc, so copy
+            winner = resolver(conflict)?.copyImmutable()
             return winner
         }
     }

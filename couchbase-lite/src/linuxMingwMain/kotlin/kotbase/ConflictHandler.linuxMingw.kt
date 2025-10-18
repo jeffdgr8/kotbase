@@ -30,8 +30,8 @@ internal fun nativeConflictHandler(): CBLConflictHandler {
         with(ref.to<ConflictHandlerHolder>()) {
             try {
                 handler(
-                    MutableDocument(document!!, db),
-                    oldDocument?.asDocument(db)
+                    MutableDocument(document!!, db, release = false),
+                    oldDocument?.asDocument(db, release = false)
                 )
             } catch (e: Exception) {
                 // save a reference, as Linux will propagate

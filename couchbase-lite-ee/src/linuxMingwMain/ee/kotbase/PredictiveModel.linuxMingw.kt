@@ -30,7 +30,7 @@ internal fun PredictiveModel.convert(): CValue<CBLPredictiveModel> {
         context = StableRef.create(this@convert).asCPointer()
         prediction = staticCFunction { ref, input ->
             with(ref.to<PredictiveModel>()) {
-                val output = predict(Dictionary(input!!, null, retain = false))
+                val output = predict(Dictionary(input!!, null, release = false))
                 // FLDict and its values should not be released by the Dictionary object
                 output?.retain()
                 output?.actual
