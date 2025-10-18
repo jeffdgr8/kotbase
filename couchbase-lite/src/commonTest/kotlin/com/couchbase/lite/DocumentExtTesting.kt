@@ -23,3 +23,5 @@ internal expect val Document.content: Dictionary
 internal expect fun Document.exists(): Boolean
 
 internal expect val Document.revisionHistory: String?
+
+internal expect fun Document.copyImmutable(): Document

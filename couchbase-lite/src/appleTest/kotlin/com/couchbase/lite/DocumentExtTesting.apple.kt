@@ -33,3 +33,6 @@ internal actual fun Document.exists(): Boolean {
 
 internal actual val Document.revisionHistory: String?
     get() = actual._getRevisionHistory()
+
+// copy only needed on linuxMingw platform
+internal actual fun Document.copyImmutable(): Document = this

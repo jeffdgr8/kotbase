@@ -15,6 +15,7 @@
  */
 package com.couchbase.lite
 
+import debug.FLMutableArray_Release
 import kotbase.Collection
 import kotbase.Document
 import kotbase.internal.fleece.toList
@@ -39,5 +40,7 @@ internal actual fun Collection.getIndexInfo(): List<Map<String, Any?>> {
         }
     }
     @Suppress("UNCHECKED_CAST")
-    return flIndexInfo?.toList(null) as List<Map<String, Any?>>
+    return (flIndexInfo?.toList(null) as List<Map<String, Any?>>).also {
+        FLMutableArray_Release(flIndexInfo)
+    }
 }

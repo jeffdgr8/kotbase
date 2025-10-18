@@ -27,23 +27,19 @@ public actual open class Array
 internal constructor(
     actual: FLArray,
     dbContext: DbContext?,
-    retain: Boolean = true
+    release: Boolean = true
 ) : ArrayInterface, Iterable<Any?> {
-
-    init {
-        if (retain) FLArray_Retain(actual)
-    }
 
     private val memory = object {
         val actual = actual
-        val retain = retain
+        val release = release
     }
 
     public open val actual: FLArray
         get() = memory.actual
 
-    private val retain: Boolean
-        get() = memory.retain
+    private val release: Boolean
+        get() = memory.release
 
     internal open var dbContext: DbContext? = dbContext
         set(value) {
@@ -59,16 +55,17 @@ internal constructor(
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        if (it.retain) FLArray_Release(it.actual)
+        if (it.release) FLArray_Release(it.actual)
     }
 
     internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
 
-    public actual fun toMutable(): MutableArray =
-        MutableArray(
+    public actual fun toMutable(): MutableArray {
+        return MutableArray(
             FLArray_MutableCopy(actual, kFLDeepCopy)!!,
             dbContext?.let { DbContext(it.database) }
         )
+    }
 
     actual override val count: Int
         get() = FLArray_Count(actual).toInt()
@@ -80,7 +77,7 @@ internal constructor(
 
     actual override fun getValue(index: Int): Any? {
         return collectionMap[index]
-            ?: getFLValue(index)?.toNative(dbContext, retain)
+            ?: getFLValue(index)?.toNative(dbContext, release)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
     }
 
@@ -106,20 +103,20 @@ internal constructor(
         getFLValue(index).toBoolean()
 
     actual override fun getBlob(index: Int): Blob? =
-        getFLValue(index)?.toBlob(dbContext, retain)
+        getFLValue(index)?.toBlob(dbContext, release)
 
     actual override fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
 
     actual override fun getArray(index: Int): Array? {
         return getInternalCollection(index)
-            ?: getFLValue(index)?.toArray(dbContext, retain)
+            ?: getFLValue(index)?.toArray(dbContext, release)
                 ?.also { collectionMap[index] = it }
     }
 
     actual override fun getDictionary(index: Int): Dictionary? {
         return getInternalCollection(index)
-            ?: getFLValue(index)?.toDictionary(dbContext, retain)
+            ?: getFLValue(index)?.toDictionary(dbContext, release)
                 ?.also { collectionMap[index] = it }
     }
 

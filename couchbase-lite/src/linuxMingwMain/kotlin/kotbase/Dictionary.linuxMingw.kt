@@ -27,23 +27,19 @@ public actual open class Dictionary
 internal constructor(
     actual: FLDict,
     dbContext: DbContext?,
-    retain: Boolean = true
+    release: Boolean = true
 ) : DictionaryInterface, Iterable<String> {
-
-    init {
-        if (retain) FLDict_Retain(actual)
-    }
 
     private val memory = object {
         val actual = actual
-        val retain = retain
+        val release = release
     }
 
     internal open val actual: FLDict
         get() = memory.actual
 
-    private val retain: Boolean
-        get() = memory.retain
+    private val release: Boolean
+        get() = memory.release
 
     internal open var dbContext: DbContext? = dbContext
         set(value) {
@@ -59,7 +55,7 @@ internal constructor(
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        if (it.retain) FLDict_Release(it.actual)
+        if (it.release) FLDict_Release(it.actual)
     }
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
@@ -82,7 +78,7 @@ internal constructor(
 
     actual override fun getValue(key: String): Any? {
         return collectionMap[key]
-            ?: getFLValue(key)?.toNative(dbContext, retain)
+            ?: getFLValue(key)?.toNative(dbContext, release)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
     }
 
@@ -108,20 +104,20 @@ internal constructor(
         getFLValue(key).toBoolean()
 
     actual override fun getBlob(key: String): Blob? =
-        getFLValue(key)?.toBlob(dbContext, retain)
+        getFLValue(key)?.toBlob(dbContext, release)
 
     actual override fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
     actual override fun getArray(key: String): Array? {
         return getInternalCollection(key)
-            ?: getFLValue(key)?.toArray(dbContext, retain)
+            ?: getFLValue(key)?.toArray(dbContext, release)
                 ?.also { collectionMap[key] = it }
     }
 
     actual override fun getDictionary(key: String): Dictionary? {
         return getInternalCollection(key)
-            ?: getFLValue(key)?.toDictionary(dbContext, retain)
+            ?: getFLValue(key)?.toDictionary(dbContext, release)
                 ?.also { collectionMap[key] = it }
     }
 

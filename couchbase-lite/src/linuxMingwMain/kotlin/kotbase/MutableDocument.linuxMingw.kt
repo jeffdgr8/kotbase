@@ -26,20 +26,17 @@ import libcblite.*
 public actual class MutableDocument
 internal constructor(
     actual: CPointer<CBLDocument>,
-    database: Database? = null
-) : Document(actual, database), MutableDictionaryInterface {
+    database: Database? = null,
+    release: Boolean = true
+) : Document(actual, database, release), MutableDictionaryInterface {
 
-    public actual constructor() : this(CBLDocument_Create()!!) {
-        CBLDocument_Release(actual)
-    }
+    public actual constructor() : this(debug.CBLDocument_Create()!!)
 
     public actual constructor(id: String?) : this(
         memScoped {
             CBLDocument_CreateWithID(id.toFLString(this))!!
         }
-    ) {
-        CBLDocument_Release(actual)
-    }
+    )
 
     public actual constructor(data: Map<String, Any?>) : this() {
         setData(data)

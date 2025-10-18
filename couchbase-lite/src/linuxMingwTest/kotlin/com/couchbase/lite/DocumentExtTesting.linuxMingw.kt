@@ -17,11 +17,9 @@ package com.couchbase.lite
 
 import kotbase.*
 import kotbase.internal.fleece.toKString
-import kotlinx.cinterop.*
-import libcblite.C4Document
 import libcblite.CBLDocument_GetRevisionHistory
 import libcblite.kDocExists
-import kotlin.experimental.ExperimentalNativeApi
+import libcblite.CBLDocument_Retain
 
 internal actual val Document.content: Dictionary
     get() = Dictionary(properties, dbContext)
@@ -33,3 +31,10 @@ internal actual fun Document.exists(): Boolean {
 
 internal actual val Document.revisionHistory: String?
     get() = CBLDocument_GetRevisionHistory(actual).toKString()
+
+internal actual fun Document.copyImmutable(): Document {
+    return toMutable().also {
+        // conflict resolver will release, so retain to keep alive
+        CBLDocument_Retain(it.actual)
+    }
+}

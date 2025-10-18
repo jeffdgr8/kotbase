@@ -28,9 +28,7 @@ internal constructor(
     dbContext: DbContext? = null
 ) : Dictionary(actual, dbContext), MutableDictionaryInterface {
 
-    public actual constructor() : this(FLMutableDict_New()!!) {
-        FLMutableDict_Release(actual)
-    }
+    public actual constructor() : this(debug.FLMutableDict_New()!!)
 
     public actual constructor(data: Map<String, Any?>) : this() {
         setData(data)
@@ -46,9 +44,7 @@ internal constructor(
         } catch (e: CouchbaseLiteException) {
             throw IllegalArgumentException("Failed parsing JSON", e)
         }
-    ) {
-        FLMutableDict_Release(actual)
-    }
+    )
 
     override var dbContext: DbContext?
         get() = super.dbContext

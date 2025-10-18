@@ -25,13 +25,13 @@ import libcblite.*
 private inline val FLValue.type: FLValueType
     get() = FLValue_GetType(this)
 
-internal fun FLValue.toNative(ctxt: DbContext?, retain: Boolean = true): Any? = when (type) {
-    kFLArray -> asArray(ctxt, retain)
+internal fun FLValue.toNative(ctxt: DbContext?, release: Boolean = true): Any? = when (type) {
+    kFLArray -> asArray(ctxt, release)
     kFLDict -> {
         if (FLValue_IsBlob(this)) {
-            asBlob(ctxt, retain)
+            asBlob(ctxt, release)
         } else {
-            asDictionary(ctxt, retain)
+            asDictionary(ctxt, release)
         }
     }
     kFLData -> asDataBlob()
@@ -51,11 +51,11 @@ internal fun FLValue.toMutableNative(ctxt: DbContext?, saveMutableCopy: (Any) ->
     else -> toObject(ctxt)
 }
 
-private fun FLValue.asArray(ctxt: DbContext?, retain: Boolean = true): Array =
-    Array(FLValue_AsArray(this)!!, ctxt, retain = retain)
+private fun FLValue.asArray(ctxt: DbContext?, release: Boolean = true): Array =
+    Array(FLValue_AsArray(this)!!, ctxt, release = release)
 
-private fun FLValue.asDictionary(ctxt: DbContext?, retain: Boolean = true): Dictionary =
-    Dictionary(FLValue_AsDict(this)!!, ctxt, retain = retain)
+private fun FLValue.asDictionary(ctxt: DbContext?, release: Boolean = true): Dictionary =
+    Dictionary(FLValue_AsDict(this)!!, ctxt, release = release)
 
 private fun FLValue.asMutableArray(
     ctxt: DbContext?,
@@ -85,7 +85,7 @@ private fun FLValue.asMutableDictionary(
     }
 }
 
-private fun FLValue.asBlob(ctxt: DbContext?, retain: Boolean = true): Blob? {
+private fun FLValue.asBlob(ctxt: DbContext?, release: Boolean = true): Blob? {
     if (!FLValue_IsBlob(this)) return null
     val db = ctxt?.database
     if (db != null) {
@@ -97,7 +97,7 @@ private fun FLValue.asBlob(ctxt: DbContext?, retain: Boolean = true): Blob? {
             if (e.code == CBLError.Code.NOT_OPEN && e.domain == CBLError.Domain.CBLITE) {
                 return Blob(
                     // database is closed, just use blob dictionary, content won't be available
-                    Dictionary(FLValue_AsDict(this)!!, null, retain = retain),
+                    Dictionary(FLValue_AsDict(this)!!, null, release = release),
                     ctxt
                 )
             } else {
@@ -111,18 +111,18 @@ private fun FLValue.asBlob(ctxt: DbContext?, retain: Boolean = true): Blob? {
     return FLValue_GetBlob(this)?.asBlob(ctxt)
         ?: Blob(
             // last resort if still null, just use blob dictionary, content won't be available
-            Dictionary(FLValue_AsDict(this)!!, null)
+            Dictionary(FLValue_AsDict(this)!!, null, release = release)
         )
 }
 
 private fun FLValue.asDataBlob(): Blob =
     Blob(content = FLValue_AsData(this))
 
-internal fun FLValue.toArray(ctxt: DbContext?, retain: Boolean = true): Array? =
-    if (type == kFLArray) asArray(ctxt, retain) else null
+internal fun FLValue.toArray(ctxt: DbContext?, release: Boolean = true): Array? =
+    if (type == kFLArray) asArray(ctxt, release = release) else null
 
-internal fun FLValue.toDictionary(ctxt: DbContext?, retain: Boolean = true): Dictionary? =
-    if (type == kFLDict && !FLValue_IsBlob(this)) asDictionary(ctxt, retain) else null
+internal fun FLValue.toDictionary(ctxt: DbContext?, release: Boolean = true): Dictionary? =
+    if (type == kFLDict && !FLValue_IsBlob(this)) asDictionary(ctxt, release = release) else null
 
 internal fun FLValue.toMutableArray(
     ctxt: DbContext?,
@@ -142,8 +142,8 @@ internal fun FLValue.toMutableDictionary(
     } else null
 }
 
-internal fun FLValue.toBlob(ctxt: DbContext?, retain: Boolean = true): Blob? = when (type) {
-    kFLDict -> asBlob(ctxt, retain)
+internal fun FLValue.toBlob(ctxt: DbContext?, release: Boolean = true): Blob? = when (type) {
+    kFLDict -> asBlob(ctxt, release = release)
     kFLData -> asDataBlob()
     else -> null
 }

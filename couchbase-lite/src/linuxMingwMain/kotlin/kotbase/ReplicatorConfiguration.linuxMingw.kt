@@ -427,8 +427,8 @@ private fun CollectionConfiguration.nativeConflictResolver(): CBLConflictResolve
     if (conflictResolver == null) return null
     return staticCFunction { ref, documentId, localDoc, remoteDoc ->
         val config = ref.to<ImmutableReplicatorConfiguration>()
-        val localDocument = localDoc?.asDocument(config.database)
-        val remoteDocument = remoteDoc?.asDocument(config.database)
+        val localDocument = localDoc?.asDocument(config.database, release = false)
+        val remoteDocument = remoteDoc?.asDocument(config.database, release = false)
         val collection = localDocument?.collection
             ?: remoteDocument?.collection
             ?: return@staticCFunction null
@@ -448,7 +448,7 @@ private fun CollectionConfiguration.nativePullFilter(): CBLReplicationFilter? {
     if (pullFilter == null) return null
     return staticCFunction { ref, doc, flags ->
         val config = ref.to<ImmutableReplicatorConfiguration>()
-        val document = Document(doc!!, config.database)
+        val document = Document(doc!!, config.database, release = false)
         val collection = document.collection
             ?: return@staticCFunction true
         val collectionConfig = config.collectionConfigurations[collection]
@@ -464,7 +464,7 @@ private fun CollectionConfiguration.nativePushFilter(): CBLReplicationFilter? {
     if (pushFilter == null) return null
     return staticCFunction { ref, doc, flags ->
         val config = ref.to<ImmutableReplicatorConfiguration>()
-        val document = Document(doc!!, config.database)
+        val document = Document(doc!!, config.database, release = false)
         val collection = document.collection
             ?: return@staticCFunction true
         val collectionConfig = config.collectionConfigurations[collection]

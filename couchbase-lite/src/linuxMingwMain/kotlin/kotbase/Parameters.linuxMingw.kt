@@ -57,7 +57,7 @@ internal constructor(
         get() = memory.readonly
 
     public actual fun getValue(name: String): Any? =
-        actual.getValue(name)?.toNative(null, retain = !readonly)
+        actual.getValue(name)?.toNative(null, release = !readonly)
 
     public actual fun setString(name: String, value: String?): Parameters {
         checkReadOnly()
