@@ -20,6 +20,7 @@ package kotbase
 import com.couchbase.lite.dbPath
 import com.couchbase.lite.isOpen
 import kotbase.internal.utils.FileUtils
+import kotbase.internal.utils.PlatformUtils
 import kotbase.internal.utils.Report
 import kotbase.internal.utils.StringUtils
 import kotbase.internal.utils.paddedString
@@ -165,6 +166,8 @@ abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLeg
     @AfterTest
     fun tearDownBaseTest() {
         Report.log("<<<<<<<< Test completed(${formatInterval(Clock.System.now() - startTime)})")
+        PlatformUtils.gc()
+        println("GC completed!")
     }
 
     protected fun getScratchDirectoryPath(name: String): String {
