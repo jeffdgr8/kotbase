@@ -285,8 +285,10 @@ private class BlobReadStreamSource(actual: CPointer<CBLBlobReadStream>) : RawSou
         get() = memory.actual
 
     override fun close() {
+        if (!memory.closeCalled) {
+            CBLBlobReader_Close(actual)
+        }
         memory.closeCalled = true
-        CBLBlobReader_Close(actual)
     }
 
     override fun readAtMostTo(sink: Buffer, byteCount: Long): Long {
