@@ -46,6 +46,9 @@ internal constructor(
     internal val actual: CPointer<CBLDocument>
         get() = memory.actual
 
+    protected val release: Boolean
+        get() = memory.release
+
     internal var database: Database?
         get() = dbContext.database
         set(value) {
@@ -67,7 +70,7 @@ internal constructor(
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
     public actual val collection: Collection?
-        get() = CBLDocument_Collection(actual)?.asCollection(database!!)
+        get() = CBLCollection_Retain(CBLDocument_Collection(actual))?.asCollection(database!!)
 
     public actual val id: String
         get() = CBLDocument_ID(actual).toKString()!!
@@ -92,7 +95,7 @@ internal constructor(
 
     actual override fun getValue(key: String): Any? {
         return collectionMap[key]
-            ?: getFLValue(key)?.toNative(dbContext)
+            ?: getFLValue(key)?.toNative(dbContext, release)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
     }
 
@@ -118,20 +121,20 @@ internal constructor(
         getFLValue(key).toBoolean()
 
     actual override fun getBlob(key: String): Blob? =
-        getFLValue(key)?.toBlob(dbContext)
+        getFLValue(key)?.toBlob(dbContext, release)
 
     actual override fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
     actual override fun getArray(key: String): Array? {
         return getInternalCollection(key)
-            ?: getFLValue(key)?.toArray(dbContext)
+            ?: getFLValue(key)?.toArray(dbContext, release)
                 ?.also { collectionMap[key] = it }
     }
 
     actual override fun getDictionary(key: String): Dictionary? {
         return getInternalCollection(key)
-            ?: getFLValue(key)?.toDictionary(dbContext)
+            ?: getFLValue(key)?.toDictionary(dbContext, release)
                 ?.also { collectionMap[key] = it }
     }
 

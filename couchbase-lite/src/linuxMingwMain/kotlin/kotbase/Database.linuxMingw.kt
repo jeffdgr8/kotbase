@@ -38,7 +38,7 @@ import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 
 public actual class Database
-private constructor(
+internal constructor(
     internal val actual: CPointer<CBLDatabase>,
     private val _config: DatabaseConfiguration
 ) : AutoCloseable {

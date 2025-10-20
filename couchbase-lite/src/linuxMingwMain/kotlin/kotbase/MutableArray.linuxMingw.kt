@@ -26,7 +26,7 @@ import libcblite.*
 
 public actual class MutableArray
 internal constructor(
-    override val actual: FLMutableArray,
+    actual: FLMutableArray,
     dbContext: DbContext? = null
 ) : Array(actual, dbContext), MutableArrayInterface {
 
@@ -472,7 +472,7 @@ internal constructor(
 
     override fun getValue(index: Int): Any? {
         return collectionMap[index]
-            ?: getFLValue(index)?.toMutableNative(dbContext) { setValue(index, it) }
+            ?: getFLValue(index)?.toMutableNative(dbContext, release) { setValue(index, it) }
                 ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
             ?: unsavedBlobs[index]
     }
@@ -484,13 +484,13 @@ internal constructor(
 
     actual override fun getArray(index: Int): MutableArray? {
         return getInternalCollection(index)
-            ?: getFLValue(index)?.toMutableArray(dbContext) { setArray(index, it) }
+            ?: getFLValue(index)?.toMutableArray(dbContext, release) { setArray(index, it) }
                 ?.also { collectionMap[index] = it }
     }
 
     actual override fun getDictionary(index: Int): MutableDictionary? {
         return getInternalCollection(index)
-            ?: getFLValue(index)?.toMutableDictionary(dbContext) { setDictionary(index, it) }
+            ?: getFLValue(index)?.toMutableDictionary(dbContext, release) { setDictionary(index, it) }
                 ?.also { collectionMap[index] = it }
     }
 
