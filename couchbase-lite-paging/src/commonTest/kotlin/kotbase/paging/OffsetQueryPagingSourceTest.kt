@@ -34,6 +34,8 @@ import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.*
 
+// ignore while tracking memory references
+@Ignore
 @ExperimentalCoroutinesApi
 class OffsetQueryPagingSourceTest : BaseDbTest() {
 

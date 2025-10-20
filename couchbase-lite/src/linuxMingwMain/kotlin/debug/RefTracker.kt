@@ -89,6 +89,9 @@ import kotlin.experimental.ExperimentalNativeApi
  *
  * * Set `TRACK = true` to track references when running tests.
  *
+ * * It's a good idea to `@Ignore` slow-running tests and set `org.gradle.parallel=false`
+ * while tracking is enabled.
+ *
  * * Optionally set Sync Gateway URL and credentials, set `TRACK = false`, and call
  * `pushSync()` to sync results to Couchbase Server.
  *
@@ -98,7 +101,7 @@ import kotlin.experimental.ExperimentalNativeApi
  */
 internal object RefTracker {
 
-    private const val TRACK = false
+    private const val TRACK = true
     private const val INCLUDE_STACK_TRACES = true
 
     // Optional Sync Gateway config

@@ -23,6 +23,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 private const val ITERATIONS = 2000
 
+// ignore while tracking memory references
+@Ignore
 class LoadTest : BaseDbTest() {
     companion object {
         private val DEVICE_SPEED_MULTIPLIER = mapOf(
