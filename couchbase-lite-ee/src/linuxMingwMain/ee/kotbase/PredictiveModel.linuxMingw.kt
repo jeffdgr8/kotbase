@@ -33,7 +33,7 @@ internal fun PredictiveModel.convert(): CValue<CBLPredictiveModel> {
                 output?.actual?.also {
                     if (output.release) {
                         // output FLDict should not be released by the Dictionary object
-                        debug.FLDict_Retain(it)
+                        FLDict_Retain(it)
                     }
                 }
             }
