@@ -53,8 +53,8 @@ kotlin {
         // https://youtrack.jetbrains.com/issue/IDEABKL-6745
         commonMain.dependencies {
             api(libs.kotlinx.coroutines.core)
-            api(libs.kotlinx.datetime)
             api(libs.kotlinx.io)
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(projects.testingSupportEe)
