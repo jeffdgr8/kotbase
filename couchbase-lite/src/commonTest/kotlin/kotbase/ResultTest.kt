@@ -18,6 +18,7 @@ package kotbase
 import kotbase.ext.toStringMillis
 import kotbase.internal.utils.JsonObject
 import kotbase.internal.utils.paddedString
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
