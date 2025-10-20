@@ -23,9 +23,13 @@ import kotlin.native.ref.createCleaner
 
 public actual sealed class Endpoint(internal val actual: CPointer<CBLEndpoint>) {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLEndpoint")
+    }
+
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
-        CBLEndpoint_Free(it)
+        debug.CBLEndpoint_Free(it)
     }
 }

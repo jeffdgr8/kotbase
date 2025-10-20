@@ -36,11 +36,11 @@ internal actual class C4Document(private val doc: Document?) {
 internal actual fun Collection.getIndexInfo(): List<Map<String, Any?>> {
     val flIndexInfo = database.withLock {
         wrapCBLError { error ->
-            CBLCollection_GetIndexesInfo(actual, error)
+            debug.CBLCollection_GetIndexesInfo(actual, error)
         }
     }
     @Suppress("UNCHECKED_CAST")
     return (flIndexInfo?.toList(null) as List<Map<String, Any?>>).also {
-        FLMutableArray_Release(flIndexInfo)
+        debug.FLMutableArray_Release(flIndexInfo)
     }
 }

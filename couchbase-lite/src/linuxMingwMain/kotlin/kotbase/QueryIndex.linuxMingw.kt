@@ -29,10 +29,14 @@ internal constructor(
     public actual val collection: Collection
 ) {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLQueryIndex")
+    }
+
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
-        CBLQueryIndex_Release(it)
+        debug.CBLQueryIndex_Release(it)
     }
 
     public actual val name: String

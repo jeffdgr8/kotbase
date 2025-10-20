@@ -23,9 +23,13 @@ import kotlin.native.ref.createCleaner
 
 public actual sealed class Authenticator(internal val actual: CPointer<CBLAuthenticator>) {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLAuthenticator")
+    }
+
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
-        CBLAuth_Free(it)
+        debug.CBLAuth_Free(it)
     }
 }

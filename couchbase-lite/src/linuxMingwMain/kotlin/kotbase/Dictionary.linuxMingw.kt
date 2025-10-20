@@ -30,6 +30,10 @@ internal constructor(
     release: Boolean = true
 ) : DictionaryInterface, Iterable<String> {
 
+    init {
+        debug.RefTracker.trackInit(actual, "FLDict")
+    }
+
     private val memory = object {
         val actual = actual
         val release = release
@@ -55,14 +59,14 @@ internal constructor(
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        if (it.release) FLDict_Release(it.actual)
+        if (it.release) debug.FLDict_Release(it.actual)
     }
 
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
     public actual fun toMutable(): MutableDictionary {
         return MutableDictionary(
-            FLDict_MutableCopy(actual, kFLDeepCopy)!!,
+            debug.FLDict_MutableCopy(actual, kFLDeepCopy)!!,
             dbContext?.let { DbContext(it.database) }
         )
     }
@@ -125,7 +129,7 @@ internal constructor(
         actual.toMap(dbContext)
 
     actual override fun toJSON(): String =
-        FLValue_ToJSON(actual.reinterpret()).toKString()!!
+        debug.FLValue_ToJSON(actual.reinterpret()).toKString()!!
 
     actual override operator fun contains(key: String): Boolean =
         keys.contains(key)

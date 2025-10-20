@@ -361,10 +361,10 @@ internal class ImmutableReplicatorConfiguration(config: ReplicatorConfiguration)
         with(it) {
             arena.clear()
             arrays.forEach { array ->
-                FLArray_Release(array)
+                debug.FLArray_Release(array)
             }
             dicts.forEach { dict ->
-                FLDict_Release(dict)
+                debug.FLDict_Release(dict)
             }
             ref.dispose()
         }

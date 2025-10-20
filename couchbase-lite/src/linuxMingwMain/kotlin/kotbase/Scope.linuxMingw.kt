@@ -32,10 +32,14 @@ internal constructor(
     public actual val database: Database
 ) {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLScope")
+    }
+
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
-        CBLScope_Release(it)
+        debug.CBLScope_Release(it)
     }
 
     public actual val name: String
@@ -46,17 +50,17 @@ internal constructor(
     public actual val collections: Set<Collection>
         get() {
             val names = wrapCBLError { error ->
-                CBLScope_CollectionNames(actual, error)
+                debug.CBLScope_CollectionNames(actual, error)
             }
             return buildSet {
                 memScoped {
                     names?.iterator(this)?.forEach {
                         wrapCBLError { error ->
-                            CBLScope_Collection(actual, FLValue_AsString(it), error)
+                            debug.CBLScope_Collection(actual, FLValue_AsString(it), error)
                         }?.asCollection(database)?.let(::add)
                     }
                 }
-                FLMutableArray_Release(names)
+                debug.FLMutableArray_Release(names)
             }
         }
 
@@ -64,7 +68,7 @@ internal constructor(
     public actual fun getCollection(collectionName: String): Collection? {
         return wrapCBLError { error ->
             memScoped {
-                CBLScope_Collection(actual, collectionName.toFLString(this), error)
+                debug.CBLScope_Collection(actual, collectionName.toFLString(this), error)
             }
         }?.asCollection(database)
     }

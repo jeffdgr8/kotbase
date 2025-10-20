@@ -32,7 +32,7 @@ private constructor(
         username,
         password,
         memScoped {
-            CBLAuth_CreatePassword(
+            debug.CBLAuth_CreatePassword(
                 username.toFLString(this),
                 password.concatToString().toFLString(this)
             )!!

@@ -34,7 +34,7 @@ private constructor(
         sessionID,
         cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME,
         memScoped {
-            CBLAuth_CreateSession(
+            debug.CBLAuth_CreateSession(
                 sessionID.toFLString(this),
                 (cookieName ?: DEFAULT_SYNC_GATEWAY_SESSION_ID_NAME).toFLString(this)
             )!!

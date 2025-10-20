@@ -39,7 +39,7 @@ private fun FLSliceResult.toByteArray(): ByteArray = ByteArray(size.toInt()).app
 
 internal fun CValue<FLSliceResult>.toByteArray(): ByteArray {
     val result = useContents { toByteArray() }
-    FLSliceResult_Release(this)
+    debug.FLSliceResult_Release(this)
     return result
 }
 

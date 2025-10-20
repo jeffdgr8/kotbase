@@ -33,7 +33,7 @@ internal actual fun Database.getBlob(props: Map<String, Any?>): Blob? {
     return try {
         wrapCBLError { error ->
             val dict = MutableDictionary(props)
-            CBLDatabase_GetBlob(actual, dict.actual, error)
+            debug.CBLDatabase_GetBlob(actual, dict.actual, error)
                 ?.asBlob(DbContext(this), true)
         }
     } catch (e: CouchbaseLiteException) {

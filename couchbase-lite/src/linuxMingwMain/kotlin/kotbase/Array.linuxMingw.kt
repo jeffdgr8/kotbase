@@ -30,6 +30,10 @@ internal constructor(
     release: Boolean = true
 ) : ArrayInterface, Iterable<Any?> {
 
+    init {
+        debug.RefTracker.trackInit(actual, "FLArray")
+    }
+
     private val memory = object {
         val actual = actual
         val release = release
@@ -55,14 +59,14 @@ internal constructor(
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        if (it.release) FLArray_Release(it.actual)
+        if (it.release) debug.FLArray_Release(it.actual)
     }
 
     internal actual val collectionMap: MutableMap<Int, Any> = mutableMapOf()
 
     public actual fun toMutable(): MutableArray {
         return MutableArray(
-            FLArray_MutableCopy(actual, kFLDeepCopy)!!,
+            debug.FLArray_MutableCopy(actual, kFLDeepCopy)!!,
             dbContext?.let { DbContext(it.database) }
         )
     }
@@ -124,7 +128,7 @@ internal constructor(
         actual.toList(dbContext)
 
     actual override fun toJSON(): String =
-        FLValue_ToJSON(actual.reinterpret()).toKString()!!
+        debug.FLValue_ToJSON(actual.reinterpret()).toKString()!!
 
     private var mutations: Long = 0
 

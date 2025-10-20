@@ -24,7 +24,7 @@ import libcblite.CBLQueryIndex_BeginUpdate
 public actual fun QueryIndex.beginUpdate(limit: Int): IndexUpdater? {
     require(limit > 0) { "limit must be > 0" }
     return wrapCBLError { error ->
-        CBLQueryIndex_BeginUpdate(actual, limit.convert(), error)
+        debug.CBLQueryIndex_BeginUpdate(actual, limit.convert(), error)
             ?.asIndexUpdater(DbContext(collection.database))
     }
 }

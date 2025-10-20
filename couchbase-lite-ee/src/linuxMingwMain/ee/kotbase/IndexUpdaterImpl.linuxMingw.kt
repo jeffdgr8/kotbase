@@ -52,10 +52,14 @@ internal class IndexUpdaterImpl(
     private val dbContext: DbContext?
 ) : IndexUpdater {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLIndexUpdater")
+    }
+
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
-        CBLIndexUpdater_Release(it)
+        debug.CBLIndexUpdater_Release(it)
     }
 
     private val collectionMap: MutableMap<Int, Any> = mutableMapOf()
@@ -135,7 +139,7 @@ internal class IndexUpdaterImpl(
 
     override fun toJSON(): String {
         checkIsFinished()
-        return FLValue_ToJSON(actual.reinterpret()).toKString()!!
+        return debug.FLValue_ToJSON(actual.reinterpret()).toKString()!!
     }
 
     override fun iterator(): Iterator<Any?> =

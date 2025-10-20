@@ -29,6 +29,10 @@ internal constructor(
     private val dbContext: DbContext? = null
 ) : Iterable<Result>, AutoCloseable {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLResultSet")
+    }
+
     private val memory = object {
         var closeCalled = false
         val actual = actual
@@ -38,7 +42,7 @@ internal constructor(
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         if (!it.closeCalled) {
-            CBLResultSet_Release(it.actual)
+            debug.CBLResultSet_Release(it.actual)
         }
     }
 
@@ -65,7 +69,7 @@ internal constructor(
 
     actual override fun close() {
         memory.closeCalled = true
-        CBLResultSet_Release(actual)
+        debug.CBLResultSet_Release(actual)
     }
 }
 
