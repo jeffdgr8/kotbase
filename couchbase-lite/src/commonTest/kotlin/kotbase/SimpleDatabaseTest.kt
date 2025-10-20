@@ -15,7 +15,6 @@
  */
 package kotbase
 
-import kotbase.DatabaseConfiguration
 import kotbase.internal.utils.FileUtils
 import kotlin.test.*
 
@@ -40,7 +39,7 @@ class SimpleDatabaseTest : BaseTest() {
         var config = DatabaseConfiguration()
 
         // # 1.2 TestSQLiteFullSyncDefault
-        assertEquals(Defaults.Database.FULL_SYNC, config.isFullSync);
+        assertEquals(Defaults.Database.FULL_SYNC, config.isFullSync)
 
         config = DatabaseConfiguration()
 

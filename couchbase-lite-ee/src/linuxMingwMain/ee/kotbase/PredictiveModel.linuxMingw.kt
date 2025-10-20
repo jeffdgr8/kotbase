@@ -22,7 +22,6 @@ import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.staticCFunction
 import libcblite.CBLPredictiveModel
-import libcblite.FLArray_Retain
 import libcblite.FLDict_Retain
 
 internal fun PredictiveModel.convert(): CValue<CBLPredictiveModel> {
