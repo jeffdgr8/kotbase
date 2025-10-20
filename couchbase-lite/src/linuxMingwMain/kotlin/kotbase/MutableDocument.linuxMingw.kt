@@ -30,7 +30,7 @@ internal constructor(
     release: Boolean = true
 ) : Document(actual, database, release), MutableDictionaryInterface {
 
-    public actual constructor() : this(debug.CBLDocument_Create()!!)
+    public actual constructor() : this(CBLDocument_Create()!!)
 
     public actual constructor(id: String?) : this(
         memScoped {

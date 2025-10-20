@@ -30,7 +30,7 @@ internal constructor(
     dbContext: DbContext? = null
 ) : Array(actual, dbContext), MutableArrayInterface {
 
-    public actual constructor() : this(debug.FLMutableArray_New()!!)
+    public actual constructor() : this(FLMutableArray_New()!!)
 
     public actual constructor(data: List<Any?>) : this() {
         setData(data)
