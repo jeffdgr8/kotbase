@@ -31,33 +31,13 @@ internal fun PredictiveModel.convert(): CValue<CBLPredictiveModel> {
         prediction = staticCFunction { ref, input ->
             with(ref.to<PredictiveModel>()) {
                 val output = predict(Dictionary(input!!, null, release = false))
-                // FLDict and its values should not be released by the Dictionary object
-                output?.retain()
+                // output FLDict should not be released by the Dictionary object
+                FLDict_Retain(output?.actual)
                 output?.actual
             }
         }
         unregistered = staticCFunction { ref ->
             ref?.asStableRef<PredictiveModel>()?.dispose()
-        }
-    }
-}
-
-private fun Dictionary.retain() {
-    FLDict_Retain(actual)
-    forEach { key ->
-        when (val value = getValue(key)) {
-            is Array -> value.retain()
-            is Dictionary -> value.retain()
-        }
-    }
-}
-
-private fun Array.retain() {
-    FLArray_Retain(actual)
-    forEach { value ->
-        when (value) {
-            is Array -> value.retain()
-            is Dictionary -> value.retain()
         }
     }
 }
