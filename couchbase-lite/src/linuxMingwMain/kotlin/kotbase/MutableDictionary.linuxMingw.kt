@@ -24,7 +24,7 @@ import libcblite.*
 
 public actual class MutableDictionary
 internal constructor(
-    override val actual: FLMutableDict,
+    actual: FLMutableDict,
     dbContext: DbContext? = null
 ) : Dictionary(actual, dbContext), MutableDictionaryInterface {
 
@@ -219,7 +219,7 @@ internal constructor(
 
     override fun getValue(key: String): Any? {
         return collectionMap[key]
-            ?: getFLValue(key)?.toMutableNative(dbContext) { setValue(key, it) }
+            ?: getFLValue(key)?.toMutableNative(dbContext, release) { setValue(key, it) }
                 ?.also { if (it is Array || it is Dictionary) collectionMap[key] = it }
             ?: unsavedBlobs[key]
     }
@@ -231,13 +231,13 @@ internal constructor(
 
     actual override fun getArray(key: String): MutableArray? {
         return getInternalCollection(key)
-            ?: getFLValue(key)?.toMutableArray(dbContext) { setArray(key, it) }
+            ?: getFLValue(key)?.toMutableArray(dbContext, release) { setArray(key, it) }
                 ?.also { collectionMap[key] = it }
     }
 
     actual override fun getDictionary(key: String): MutableDictionary? {
         return getInternalCollection(key)
-            ?: getFLValue(key)?.toMutableDictionary(dbContext) { setDictionary(key, it) }
+            ?: getFLValue(key)?.toMutableDictionary(dbContext, release) { setDictionary(key, it) }
                 ?.also { collectionMap[key] = it }
     }
 

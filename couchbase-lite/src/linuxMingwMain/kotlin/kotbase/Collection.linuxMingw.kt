@@ -382,8 +382,10 @@ internal constructor(
     }
 
     actual override fun close() {
+        if (!memory.closeCalled && !database.isClosed) {
+            debug.CBLCollection_Release(actual)
+        }
         memory.closeCalled = true
-        if (!database.isClosed) CBLCollection_Release(actual)
     }
 
     override fun toString(): String =

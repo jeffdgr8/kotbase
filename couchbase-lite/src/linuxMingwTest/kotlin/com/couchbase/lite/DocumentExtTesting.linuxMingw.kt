@@ -18,11 +18,10 @@ package com.couchbase.lite
 import kotbase.*
 import kotbase.internal.fleece.toKString
 import libcblite.CBLDocument_GetRevisionHistory
-import libcblite.kDocExists
 import libcblite.CBLDocument_Retain
 
 internal actual val Document.content: Dictionary
-    get() = Dictionary(properties, dbContext)
+    get() = Dictionary(properties, dbContext, release = false)
 
 internal actual fun Document.exists(): Boolean {
     // TODO: use CBLDocument_Exists private API once added to SDK

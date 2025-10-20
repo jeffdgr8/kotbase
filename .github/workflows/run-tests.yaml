@@ -123,5 +123,5 @@ jobs:
         with:
           name: android-test-results
           path: |
-            ./**/build/reports/androidTests/connected/debug
+            ./**/build/reports/androidTests
             ./**/*.log

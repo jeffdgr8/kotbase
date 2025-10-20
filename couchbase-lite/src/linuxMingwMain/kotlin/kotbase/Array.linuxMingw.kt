@@ -35,10 +35,10 @@ internal constructor(
         val release = release
     }
 
-    public open val actual: FLArray
+    internal val actual: FLArray
         get() = memory.actual
 
-    private val release: Boolean
+    protected val release: Boolean
         get() = memory.release
 
     internal open var dbContext: DbContext? = dbContext

@@ -46,21 +46,19 @@ public actual class Blob
 private constructor(
     actual: CPointer<CBLBlob>?,
     dbContext: DbContext? = null,
-    private val dict: Dictionary? = null
+    private val dict: Dictionary? = null,
+    release: Boolean = true
 ) {
-
-    init {
-        CBLBlob_Retain(actual)
-    }
 
     private val memory = object {
         var actual = actual
+        val release = release
     }
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        CBLBlob_Release(it.actual)
+        if (it.release) CBLBlob_Release(it.actual)
     }
 
     public actual constructor(contentType: String, content: ByteArray) : this(
@@ -79,15 +77,13 @@ private constructor(
         memScoped {
             CBLBlob_CreateWithData(contentType.toFLString(this), content)!!
         }
-    ) {
-        CBLBlob_Release(actual)
-    }
+    )
 
-    internal constructor(actual: CPointer<CBLBlob>?, dbContext: DbContext? = null) :
-            this(actual, dbContext, null)
+    internal constructor(actual: CPointer<CBLBlob>?, dbContext: DbContext? = null, release: Boolean = true) :
+            this(actual, dbContext, null, release)
 
-    internal constructor(dict: Dictionary?, ctxt: DbContext? = null) :
-            this(actual = null, dbContext = ctxt, dict = dict)
+    internal constructor(dict: Dictionary?, ctxt: DbContext? = null, release: Boolean = true) :
+            this(actual = null, dbContext = ctxt, dict = dict, release)
 
     public actual constructor(contentType: String, stream: Source) : this(actual = null) {
         blobContentType = contentType
@@ -264,7 +260,8 @@ private constructor(
     }
 }
 
-internal fun CPointer<CBLBlob>.asBlob(ctxt: DbContext?) = Blob(this, ctxt)
+internal fun CPointer<CBLBlob>.asBlob(ctxt: DbContext?, release: Boolean) =
+    Blob(this, ctxt, release)
 
 private fun CPointer<CBLBlobReadStream>.asSource(): RawSource =
     BlobReadStreamSource(this)

@@ -198,7 +198,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         echoModel.unregisterModel()
     }
 
-    // crashes during query in linuxMingw
+    // TODO: crashes during query in linuxMingw
     @IgnoreLinuxMingw
     @Test
     fun testPredictionWithBlobPropertyInput() {
@@ -237,7 +237,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         textModel.unregisterModel()
     }
 
-    // crashes during query in linuxMingw
+    // TODO: crashes during query in linuxMingw
     @IgnoreLinuxMingw
     @Test
     fun testPredictionWithBlobParameterInput() {

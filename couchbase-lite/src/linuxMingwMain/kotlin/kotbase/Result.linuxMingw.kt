@@ -81,7 +81,7 @@ private constructor(
     }
 
     actual override fun getValue(index: Int): Any? =
-        getFLValue(index)?.toNative(dbContext)
+        getFLValue(index)?.toNative(dbContext, release = false)
 
     actual override fun getString(index: Int): String? =
         getFLValue(index)?.toKString()
@@ -105,16 +105,16 @@ private constructor(
         getFLValue(index).toBoolean()
 
     actual override fun getBlob(index: Int): Blob? =
-        getFLValue(index)?.toBlob(dbContext)
+        getFLValue(index)?.toBlob(dbContext, release = false)
 
     actual override fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
 
     actual override fun getArray(index: Int): Array? =
-        getFLValue(index)?.toArray(dbContext)
+        getFLValue(index)?.toArray(dbContext, release = false)
 
     actual override fun getDictionary(index: Int): Dictionary? =
-        getFLValue(index)?.toDictionary(dbContext)
+        getFLValue(index)?.toDictionary(dbContext, release = false)
 
     actual override fun toList(): List<Any?> =
         array.toList(dbContext)
@@ -133,7 +133,7 @@ private constructor(
     }
 
     actual override fun getValue(key: String): Any? =
-        getFLValue(key)?.toNative(dbContext)
+        getFLValue(key)?.toNative(dbContext, release = false)
 
     actual override fun getString(key: String): String? =
         getFLValue(key)?.toKString()
@@ -157,16 +157,16 @@ private constructor(
         getFLValue(key).toBoolean()
 
     actual override fun getBlob(key: String): Blob? =
-        getFLValue(key)?.toBlob(dbContext)
+        getFLValue(key)?.toBlob(dbContext, release = false)
 
     actual override fun getDate(key: String): Instant? =
         getFLValue(key)?.toDate()
 
     actual override fun getArray(key: String): Array? =
-        getFLValue(key)?.toArray(dbContext)
+        getFLValue(key)?.toArray(dbContext, release = false)
 
     actual override fun getDictionary(key: String): Dictionary? =
-        getFLValue(key)?.toDictionary(dbContext)
+        getFLValue(key)?.toDictionary(dbContext, release = false)
 
     actual override fun toMap(): Map<String, Any?> =
         dict.toMap(dbContext)

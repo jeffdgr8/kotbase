@@ -35,10 +35,10 @@ internal constructor(
         val release = release
     }
 
-    internal open val actual: FLDict
+    internal val actual: FLDict
         get() = memory.actual
 
-    private val release: Boolean
+    protected val release: Boolean
         get() = memory.release
 
     internal open var dbContext: DbContext? = dbContext

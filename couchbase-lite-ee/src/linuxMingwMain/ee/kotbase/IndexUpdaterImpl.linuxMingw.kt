@@ -75,7 +75,7 @@ internal class IndexUpdaterImpl(
     override fun getValue(index: Int): Any? {
         checkIsFinished()
         return collectionMap[index]
-            ?: getFLValue(index)?.toNative(dbContext)
+            ?: getFLValue(index)?.toNative(dbContext, true)
                 ?.also { if (it is Array || it is Dictionary) collectionMap[index] = it }
     }
 
@@ -101,7 +101,7 @@ internal class IndexUpdaterImpl(
         getFLValue(index).toBoolean()
 
     override fun getBlob(index: Int): Blob? =
-        getFLValue(index)?.toBlob(dbContext)
+        getFLValue(index)?.toBlob(dbContext, true)
 
     override fun getDate(index: Int): Instant? =
         getFLValue(index)?.toDate()
@@ -109,14 +109,14 @@ internal class IndexUpdaterImpl(
     override fun getArray(index: Int): Array? {
         checkIsFinished()
         return getInternalCollection(index)
-            ?: getFLValue(index)?.toArray(dbContext)
+            ?: getFLValue(index)?.toArray(dbContext, true)
                 ?.also { collectionMap[index] = it }
     }
 
     override fun getDictionary(index: Int): Dictionary? {
         checkIsFinished()
         return getInternalCollection(index)
-            ?: getFLValue(index)?.toDictionary(dbContext)
+            ?: getFLValue(index)?.toDictionary(dbContext, true)
                 ?.also { collectionMap[index] = it }
     }
 
