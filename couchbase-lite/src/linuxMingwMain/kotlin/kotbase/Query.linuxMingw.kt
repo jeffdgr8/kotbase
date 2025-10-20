@@ -44,14 +44,14 @@ internal abstract class AbstractQuery : Query {
     @Throws(CouchbaseLiteException::class)
     override fun execute(): ResultSet {
         val resultSet = wrapCBLError { error ->
-            CBLQuery_Execute(actual, error)
+            debug.CBLQuery_Execute(actual, error)
         }
         return ResultSet(resultSet!!, dbContext)
     }
 
     @Throws(CouchbaseLiteException::class)
     override fun explain(): String =
-        CBLQuery_Explain(actual).toKString()!!
+        debug.CBLQuery_Explain(actual).toKString()!!
 
     override fun addChangeListener(listener: QueryChangeListener): ListenerToken {
         val holder = QueryChangeDefaultListenerHolder(listener, this)
@@ -84,7 +84,7 @@ internal abstract class AbstractQuery : Query {
                 val change = {
                     try {
                         val resultSet = wrapCBLError { error ->
-                            CBLQuery_CopyCurrentResults(cblQuery, token, error)
+                            debug.CBLQuery_CopyCurrentResults(cblQuery, token, error)
                         }!!.asResultSet()
                         QueryChange(query, resultSet, null)
                     } catch (e: CouchbaseLiteException) {
@@ -132,7 +132,7 @@ internal data class QueryState(
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        CBLQuery_Release(it.actual)
+        debug.CBLQuery_Release(it.actual)
     }
 
     override val actual: CPointer<CBLQuery>
@@ -205,7 +205,7 @@ internal class DelegatedQuery(
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
-        CBLQuery_Release(it)
+        debug.CBLQuery_Release(it)
     }
 
     override val dbContext: DbContext = DbContext(database)

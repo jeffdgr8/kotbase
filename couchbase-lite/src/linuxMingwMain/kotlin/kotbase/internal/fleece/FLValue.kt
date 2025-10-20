@@ -61,10 +61,10 @@ private fun FLValue.asDictionary(ctxt: DbContext?, release: Boolean): Dictionary
     Dictionary(FLValue_AsDict(this)!!.retain(release), ctxt, release)
 
 private fun FLArray.retain(retain: Boolean): FLArray =
-    if (retain) FLArray_Retain(this)!! else this
+    if (retain) debug.FLArray_Retain(this)!! else this
 
 private fun FLDict.retain(retain: Boolean): FLDict =
-    if (retain) FLDict_Retain(this)!! else this
+    if (retain) debug.FLDict_Retain(this)!! else this
 
 private fun FLValue.asMutableArray(
     ctxt: DbContext?,
@@ -76,7 +76,7 @@ private fun FLValue.asMutableArray(
     return if (mutableArray != null) {
         MutableArray(mutableArray.retain(release), ctxt)
     } else {
-        MutableArray(FLArray_MutableCopy(array, kFLDefaultCopy)!!, ctxt)
+        MutableArray(debug.FLArray_MutableCopy(array, kFLDefaultCopy)!!, ctxt)
             .also(saveMutableCopy)
     }
 }
@@ -91,7 +91,7 @@ private fun FLValue.asMutableDictionary(
     return if (mutableDict != null) {
         MutableDictionary(mutableDict.retain(release), ctxt)
     } else {
-        MutableDictionary(FLDict_MutableCopy(dict, kFLDefaultCopy)!!, ctxt)
+        MutableDictionary(debug.FLDict_MutableCopy(dict, kFLDefaultCopy)!!, ctxt)
             .also(saveMutableCopy)
     }
 }
@@ -102,7 +102,7 @@ private fun FLValue.asBlob(ctxt: DbContext?, release: Boolean): Blob? {
     if (db != null) {
         val dbBlob = try {
             wrapCBLError { error ->
-                CBLDatabase_GetBlob(db.actual, FLValue_AsDict(this), error)
+                debug.CBLDatabase_GetBlob(db.actual, FLValue_AsDict(this), error)
             }
         } catch (e: CouchbaseLiteException) {
             if (e.code == CBLError.Code.NOT_OPEN && e.domain == CBLError.Domain.CBLITE) {
@@ -128,7 +128,7 @@ private fun FLValue.asBlob(ctxt: DbContext?, release: Boolean): Blob? {
 }
 
 private fun CPointer<CBLBlob>.retain(retain: Boolean): CPointer<CBLBlob> =
-    if (retain) CBLBlob_Retain(this)!! else this
+    if (retain) debug.CBLBlob_Retain(this)!! else this
 
 private fun FLValue.asDataBlob(): Blob =
     Blob(content = FLValue_AsData(this))

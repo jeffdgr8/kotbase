@@ -64,7 +64,7 @@ internal fun CBLError.toException(info: Map<String, Any?>? = null): CouchbaseLit
         else -> "UnknownDomain"
     }
     return CouchbaseLiteException(
-        CBLError_Message(readValue()).toKString() ?: "",
+        debug.CBLError_Message(readValue()).toKString() ?: "",
         null,
         domain,
         code,

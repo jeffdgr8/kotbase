@@ -39,6 +39,10 @@ private constructor(
     private val immutableConfig: ImmutableReplicatorConfiguration
 ) : AutoCloseable {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLReplicator")
+    }
+
     private val memory = object {
         var closeCalled = false
         val actual = actual
@@ -48,7 +52,7 @@ private constructor(
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         if (!it.closeCalled) {
-            CBLReplicator_Release(it.actual)
+            debug.CBLReplicator_Release(it.actual)
         }
     }
 
@@ -59,7 +63,7 @@ private constructor(
 
     private constructor(config: ImmutableReplicatorConfiguration) : this(
         wrapCBLError { error ->
-            CBLReplicator_Create(config.actual, error)
+            debug.CBLReplicator_Create(config.actual, error)
         }!!,
         config
     )
@@ -113,9 +117,9 @@ private constructor(
             checkPullOnlyPendingDocIds()
             config.database.mustBeOpen()
             return wrapCBLError { error ->
-                val dict = CBLReplicator_PendingDocumentIDs(actual, error)
+                val dict = debug.CBLReplicator_PendingDocumentIDs(actual, error)
                 dict?.keys()?.also {
-                    FLDict_Release(dict)
+                    debug.FLDict_Release(dict)
                 }?.toSet() ?: emptySet()
             }
         }
@@ -126,9 +130,9 @@ private constructor(
         checkPullOnlyPendingDocIds()
         config.database.mustBeOpen()
         return wrapCBLError { error ->
-            val dict = CBLReplicator_PendingDocumentIDs2(actual, collection.actual, error)
+            val dict = debug.CBLReplicator_PendingDocumentIDs2(actual, collection.actual, error)
             dict?.keys()?.also {
-                FLDict_Release(dict)
+                debug.FLDict_Release(dict)
             }?.toSet() ?: emptySet()
         }
     }
@@ -261,7 +265,7 @@ private constructor(
     actual override fun close() {
         memory.closeCalled = true
         stop()
-        CBLReplicator_Release(actual)
+        debug.CBLReplicator_Release(actual)
     }
 
     public actual val isClosed: Boolean

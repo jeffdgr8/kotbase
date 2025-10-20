@@ -32,7 +32,7 @@ internal constructor(
         try {
             wrapCBLError { error ->
                 memScoped {
-                    CBLEndpoint_CreateWithURL(url.toFLString(this), error)
+                    debug.CBLEndpoint_CreateWithURL(url.toFLString(this), error)
                 }
             }!!
         } catch (e: CouchbaseLiteException) {

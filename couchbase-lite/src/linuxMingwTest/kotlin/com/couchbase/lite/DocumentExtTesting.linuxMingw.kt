@@ -29,7 +29,7 @@ internal actual fun Document.exists(): Boolean {
 }
 
 internal actual val Document.revisionHistory: String?
-    get() = CBLDocument_GetRevisionHistory(actual).toKString()
+    get() = debug.CBLDocument_GetRevisionHistory(actual).toKString()
 
 internal actual fun Document.copyImmutable(): Document {
     return toMutable().also {

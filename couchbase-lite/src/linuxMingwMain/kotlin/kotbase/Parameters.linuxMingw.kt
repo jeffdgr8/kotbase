@@ -36,16 +36,16 @@ internal constructor(
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         // don't release FLDict from Query.parameters
-        if (!it.readonly) FLDict_Release(it.actual)
+        if (!it.readonly) debug.FLDict_Release(it.actual)
     }
 
     public actual constructor() : this(null)
 
     public actual constructor(parameters: Parameters?) : this(
         if (parameters != null) {
-            FLDict_MutableCopy(parameters.actual, kFLDefaultCopy)
+            debug.FLDict_MutableCopy(parameters.actual, kFLDefaultCopy)
         } else {
-            FLMutableDict_New()
+            debug.FLMutableDict_New()
         }!!,
         false
     )

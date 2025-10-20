@@ -50,6 +50,10 @@ private constructor(
     release: Boolean = true
 ) {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLBlob")
+    }
+
     private val memory = object {
         var actual = actual
         val release = release
@@ -58,7 +62,7 @@ private constructor(
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        if (it.release) CBLBlob_Release(it.actual)
+        if (it.release) debug.CBLBlob_Release(it.actual)
     }
 
     public actual constructor(contentType: String, content: ByteArray) : this(
@@ -75,7 +79,7 @@ private constructor(
         content: CValue<FLSlice>
     ) : this(
         memScoped {
-            CBLBlob_CreateWithData(contentType.toFLString(this), content)!!
+            debug.CBLBlob_CreateWithData(contentType.toFLString(this), content)!!
         }
     )
 
@@ -113,7 +117,7 @@ private constructor(
     internal fun saveToDb(db: Database) {
         if (actual == null) {
             memScoped {
-                memory.actual = CBLBlob_CreateWithStream(
+                memory.actual = debug.CBLBlob_CreateWithStream(
                     blobContentType.toFLString(this),
                     blobContentStream!!.blobWriteStream(db)
                 )
@@ -132,7 +136,7 @@ private constructor(
                     }
                     blobContentStream = null
                     memScoped {
-                        memory.actual = CBLBlob_CreateWithData(
+                        memory.actual = debug.CBLBlob_CreateWithData(
                             blobContentType.toFLString(this),
                             blobContent!!.toFLSlice()
                         )
@@ -141,7 +145,7 @@ private constructor(
                     dbContext?.database?.mustBeOpen()
                     if (actual != null) {
                         blobContent = wrapCBLError { error ->
-                            CBLBlob_Content(actual, error).toByteArray()
+                            debug.CBLBlob_Content(actual, error).toByteArray()
                         }
                     }
                 }
@@ -180,7 +184,7 @@ private constructor(
             throw CouchbaseLiteError("A Blob may be encoded as JSON only after it has been saved in a database")
         }
         return if (actual != null) {
-            FLValue_ToJSON(CBLBlob_Properties(actual)?.reinterpret()).toKString()!!
+            debug.FLValue_ToJSON(CBLBlob_Properties(actual)?.reinterpret()).toKString()!!
         } else {
             dict!!.toJSON()
         }

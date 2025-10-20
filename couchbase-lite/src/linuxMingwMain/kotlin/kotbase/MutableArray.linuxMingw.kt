@@ -30,7 +30,7 @@ internal constructor(
     dbContext: DbContext? = null
 ) : Array(actual, dbContext), MutableArrayInterface {
 
-    public actual constructor() : this(FLMutableArray_New()!!)
+    public actual constructor() : this(debug.FLMutableArray_New()!!)
 
     public actual constructor(data: List<Any?>) : this() {
         setData(data)
@@ -40,7 +40,7 @@ internal constructor(
         try {
             wrapFLError { error ->
                 memScoped {
-                    FLMutableArray_NewFromJSON(json.toFLString(this), error)!!
+                    debug.FLMutableArray_NewFromJSON(json.toFLString(this), error)!!
                 }
             }
         } catch (e: CouchbaseLiteException) {

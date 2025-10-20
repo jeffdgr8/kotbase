@@ -26,7 +26,7 @@ internal constructor(
 ) : Endpoint(actual) {
 
     public actual constructor(database: Database) : this(
-        CBLEndpoint_CreateWithLocalDB(database.actual)!!,
+        debug.CBLEndpoint_CreateWithLocalDB(database.actual)!!,
         database
     )
 

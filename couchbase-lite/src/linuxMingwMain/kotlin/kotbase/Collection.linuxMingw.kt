@@ -39,6 +39,10 @@ internal constructor(
     database: Database
 ) : AutoCloseable {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLCollection")
+    }
+
     private val memory = object {
         var closeCalled = false
         val actual = actual
@@ -49,7 +53,7 @@ internal constructor(
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
         if (!it.closeCalled && !it.database.isClosed) {
-            CBLCollection_Release(it.actual)
+            debug.CBLCollection_Release(it.actual)
         }
     }
 
@@ -60,7 +64,7 @@ internal constructor(
         get() = memory.database
 
     public actual val scope: Scope
-        get() = CBLCollection_Scope(actual)!!.asScope(database)
+        get() = debug.CBLCollection_Scope(actual)!!.asScope(database)
 
     public actual val name: String
         get() = CBLCollection_Name(actual).toKString()!!
@@ -77,7 +81,7 @@ internal constructor(
     public actual fun getDocument(id: String): Document? {
         return wrapCBLError { error ->
             memScoped {
-                CBLCollection_GetDocument(actual, id.toFLString(this), error)
+                debug.CBLCollection_GetDocument(actual, id.toFLString(this), error)
             }
         }?.asDocument(database)
     }
@@ -326,10 +330,10 @@ internal constructor(
     public actual val indexes: Set<String>
         get() {
             return wrapCBLError { error ->
-                val names = CBLCollection_GetIndexNames(actual, error)
+                val names = debug.CBLCollection_GetIndexNames(actual, error)
                 @Suppress("UNCHECKED_CAST")
                 (names?.toList(null) as List<String>?)?.also {
-                    FLMutableArray_Release(names)
+                    debug.FLMutableArray_Release(names)
                 }?.toSet() ?: emptySet()
             }
         }
@@ -338,7 +342,7 @@ internal constructor(
     public actual fun getIndex(name: String): QueryIndex? {
         return wrapCBLError { error ->
             memScoped {
-                CBLCollection_GetIndex(actual, name.toFLString(this), error)?.asQueryIndex(this@Collection)
+                debug.CBLCollection_GetIndex(actual, name.toFLString(this), error)?.asQueryIndex(this@Collection)
             }
         }
     }

@@ -43,10 +43,14 @@ internal constructor(
     private val _config: DatabaseConfiguration
 ) : AutoCloseable {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLDatabase")
+    }
+
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
-        CBLDatabase_Release(it)
+        debug.CBLDatabase_Release(it)
     }
 
     internal var isClosed = false
@@ -59,7 +63,7 @@ internal constructor(
         try {
             wrapCBLError { error ->
                 memScoped {
-                    CBLDatabase_Open(name.toFLString(this), config.actual, error)
+                    debug.CBLDatabase_Open(name.toFLString(this), config.actual, error)
                 }
             }!!
         } catch (e: CouchbaseLiteException) {
@@ -124,7 +128,7 @@ internal constructor(
         get() = CBLDatabase_Name(actual).toKString()!!
 
     public actual val path: String?
-        get() = if (isClosed) null else CBLDatabase_Path(actual).toKString()
+        get() = if (isClosed) null else debug.CBLDatabase_Path(actual).toKString()
 
     public actual val config: DatabaseConfiguration
         get() = DatabaseConfiguration(_config)
@@ -153,17 +157,17 @@ internal constructor(
     public actual val scopes: Set<Scope>
         get() {
             val names = wrapCBLError { error ->
-                CBLDatabase_ScopeNames(actual, error)
+                debug.CBLDatabase_ScopeNames(actual, error)
             }
             return buildSet {
                 memScoped {
                     names?.iterator(this)?.forEach {
                         wrapCBLError { error ->
-                            CBLDatabase_Scope(actual, FLValue_AsString(it), error)
+                            debug.CBLDatabase_Scope(actual, FLValue_AsString(it), error)
                         }?.asScope(this@Database)?.let(::add)
                     }
                 }
-                FLMutableArray_Release(names)
+                debug.FLMutableArray_Release(names)
             }
         }
 
@@ -171,7 +175,7 @@ internal constructor(
     public actual fun getScope(name: String): Scope? {
         return wrapCBLError { error ->
             memScoped {
-                CBLDatabase_Scope(actual, name.toFLString(this), error)
+                debug.CBLDatabase_Scope(actual, name.toFLString(this), error)
             }
         }?.asScope(this)
     }
@@ -181,7 +185,7 @@ internal constructor(
     public actual val defaultScope: Scope
         get() {
             return wrapCBLError { error ->
-                CBLDatabase_DefaultScope(actual, error)
+                debug.CBLDatabase_DefaultScope(actual, error)
             }!!.asScope(this)
         }
 
@@ -193,7 +197,7 @@ internal constructor(
     public actual fun createCollection(collectionName: String, scopeName: String?): Collection {
         return wrapCBLError { error ->
             memScoped {
-                CBLDatabase_CreateCollection(
+                debug.CBLDatabase_CreateCollection(
                     actual,
                     collectionName.toFLString(this),
                     scopeName.toFLString(this),
@@ -213,17 +217,17 @@ internal constructor(
         return memScoped {
             val scope = scopeName.toFLString(this)
             val names = wrapCBLError { error ->
-                CBLDatabase_CollectionNames(actual, scope, error)
+                debug.CBLDatabase_CollectionNames(actual, scope, error)
             }
             buildSet {
                 memScoped {
                     names?.iterator(this)?.forEach {
                         wrapCBLError { error ->
-                            CBLDatabase_Collection(actual, FLValue_AsString(it), scope, error)
+                            debug.CBLDatabase_Collection(actual, FLValue_AsString(it), scope, error)
                         }?.asCollection(this@Database)?.let(::add)
                     }
                 }
-                FLMutableArray_Release(names)
+                debug.FLMutableArray_Release(names)
             }
         }
     }
@@ -236,7 +240,7 @@ internal constructor(
     public actual fun getCollection(collectionName: String, scopeName: String?): Collection? {
         return wrapCBLError { error ->
             memScoped {
-                CBLDatabase_Collection(
+                debug.CBLDatabase_Collection(
                     actual,
                     collectionName.toFLString(this),
                     scopeName.toFLString(this),
@@ -250,7 +254,7 @@ internal constructor(
     //@get:Throws(CouchbaseLiteException::class)
     public actual val defaultCollection: Collection by lazy {
         wrapCBLError { error ->
-            CBLDatabase_DefaultCollection(actual, error)
+            debug.CBLDatabase_DefaultCollection(actual, error)
         }!!.asCollection(this)
     }
 
@@ -306,7 +310,7 @@ internal constructor(
             }) { error ->
                 mustBeOpen {
                     memScoped {
-                        CBLDatabase_CreateQuery(
+                        debug.CBLDatabase_CreateQuery(
                             actual,
                             language,
                             queryString.toFLString(this),
@@ -334,7 +338,7 @@ internal constructor(
         return mustBeOpen {
             wrapCBLError { error ->
                 memScoped {
-                    CBLDatabase_GetDocument(actual, id.toFLString(this), error)
+                    debug.CBLDatabase_GetDocument(actual, id.toFLString(this), error)
                 }
             }?.asDocument(this@Database)
         }
@@ -701,10 +705,10 @@ internal constructor(
     public actual val indexes: List<String>
         get() {
             return mustBeOpen {
-                val names = CBLDatabase_GetIndexNames(actual)
+                val names = debug.CBLDatabase_GetIndexNames(actual)
                 @Suppress("UNCHECKED_CAST")
                 (names?.toList(null) as List<String>?)?.also {
-                    FLArray_Release(names)
+                    debug.FLArray_Release(names)
                 } ?: emptyList()
             }
         }

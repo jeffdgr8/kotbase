@@ -32,6 +32,10 @@ internal constructor(
     release: Boolean = true
 ) : Iterable<String>, DictionaryInterface {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLDocument")
+    }
+
     private val memory = object {
         val actual = actual
         val release = release
@@ -40,7 +44,7 @@ internal constructor(
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        if (it.release) CBLDocument_Release(it.actual)
+        if (it.release) debug.CBLDocument_Release(it.actual)
     }
 
     internal val actual: CPointer<CBLDocument>
@@ -70,7 +74,7 @@ internal constructor(
     internal actual val collectionMap: MutableMap<String, Any> = mutableMapOf()
 
     public actual val collection: Collection?
-        get() = CBLCollection_Retain(CBLDocument_Collection(actual))?.asCollection(database!!)
+        get() = debug.CBLCollection_Retain(CBLDocument_Collection(actual))?.asCollection(database!!)
 
     public actual val id: String
         get() = CBLDocument_ID(actual).toKString()!!
@@ -82,7 +86,7 @@ internal constructor(
         get() = CBLDocument_Sequence(actual).toLong()
 
     public actual open fun toMutable(): MutableDocument =
-        MutableDocument(CBLDocument_MutableCopy(actual)!!, database)
+        MutableDocument(debug.CBLDocument_MutableCopy(actual)!!, database)
 
     actual override val count: Int
         get() = FLDict_Count(properties).toInt()
@@ -142,7 +146,7 @@ internal constructor(
         properties.toMap(dbContext)
 
     actual override fun toJSON(): String =
-        CBLDocument_CreateJSON(actual).toKString()!!
+        debug.CBLDocument_CreateJSON(actual).toKString()!!
 
     actual override operator fun contains(key: String): Boolean =
         keys.contains(key)

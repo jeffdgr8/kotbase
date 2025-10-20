@@ -25,10 +25,14 @@ import kotlin.native.ref.createCleaner
 public actual open class VectorEncoding
 private constructor(internal val actual: CPointer<CBLVectorEncoding>) {
 
+    init {
+        debug.RefTracker.trackInit(actual, "CBLVectorEncoding")
+    }
+
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(actual) {
-        CBLVectorEncoding_Free(it)
+        debug.CBLVectorEncoding_Free(it)
     }
 
     public actual enum class ScalarQuantizerType(internal val bits: Int) {
@@ -44,7 +48,7 @@ private constructor(internal val actual: CPointer<CBLVectorEncoding>) {
             }
     }
 
-    private class NoneVectorEncoding() : VectorEncoding(CBLVectorEncoding_CreateNone()!!) {
+    private class NoneVectorEncoding() : VectorEncoding(debug.CBLVectorEncoding_CreateNone()!!) {
 
         override fun equals(other: Any?): Boolean =
             this === other || other is NoneVectorEncoding
@@ -54,7 +58,7 @@ private constructor(internal val actual: CPointer<CBLVectorEncoding>) {
 
     private class ScalarVectorEncoding(
         private val type: ScalarQuantizerType
-    ) : VectorEncoding(CBLVectorEncoding_CreateScalarQuantizer(type.actual)!!) {
+    ) : VectorEncoding(debug.CBLVectorEncoding_CreateScalarQuantizer(type.actual)!!) {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -69,7 +73,7 @@ private constructor(internal val actual: CPointer<CBLVectorEncoding>) {
     private class ProductVectorEncoding(
         private val subquantizers: Long,
         private val bits: Long
-    ) : VectorEncoding(CBLVectorEncoding_CreateProductQuantizer(subquantizers.convert(), bits.convert())!!) {
+    ) : VectorEncoding(debug.CBLVectorEncoding_CreateProductQuantizer(subquantizers.convert(), bits.convert())!!) {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

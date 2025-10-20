@@ -50,17 +50,17 @@ private constructor(
     }
 
     init {
-        CBLQuery_Retain(query)
-        FLArray_Retain(array)
-        FLDict_Retain(dict)
+        debug.CBLQuery_Retain(query)
+        debug.FLArray_Retain(array)
+        debug.FLDict_Retain(dict)
     }
 
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        CBLQuery_Release(it.query)
-        FLArray_Release(it.array)
-        FLDict_Release(it.dict)
+        debug.CBLQuery_Release(it.query)
+        debug.FLArray_Release(it.array)
+        debug.FLDict_Release(it.dict)
     }
 
     private val query: CPointer<CBLQuery>
@@ -172,7 +172,7 @@ private constructor(
         dict.toMap(dbContext)
 
     actual override fun toJSON(): String =
-        FLValue_ToJSON(dict.reinterpret()).toKString()!!
+        debug.FLValue_ToJSON(dict.reinterpret()).toKString()!!
 
     actual override operator fun contains(key: String): Boolean =
         dict.getValue(key) != null

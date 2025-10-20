@@ -36,7 +36,7 @@ private fun FLStringResult.toKString(): String? =
 
 internal fun CValue<FLStringResult>.toKString(): String? {
     val result = useContents { toKString() }
-    FLSliceResult_Release(this)
+    debug.FLSliceResult_Release(this)
     return result
 }
 
