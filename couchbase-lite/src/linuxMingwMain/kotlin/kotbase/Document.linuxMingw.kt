@@ -40,7 +40,7 @@ internal constructor(
     @OptIn(ExperimentalNativeApi::class)
     @Suppress("unused")
     private val cleaner = createCleaner(memory) {
-        if (it.release) debug.CBLDocument_Release(it.actual)
+        if (it.release) CBLDocument_Release(it.actual)
     }
 
     internal val actual: CPointer<CBLDocument>

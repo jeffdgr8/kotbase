@@ -28,7 +28,7 @@ internal constructor(
     dbContext: DbContext? = null
 ) : Dictionary(actual, dbContext), MutableDictionaryInterface {
 
-    public actual constructor() : this(debug.FLMutableDict_New()!!)
+    public actual constructor() : this(FLMutableDict_New()!!)
 
     public actual constructor(data: Map<String, Any?>) : this() {
         setData(data)

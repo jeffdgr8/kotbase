@@ -15,12 +15,12 @@
  */
 package com.couchbase.lite
 
-import debug.FLMutableArray_Release
 import kotbase.Collection
 import kotbase.Document
 import kotbase.internal.fleece.toList
 import kotbase.internal.wrapCBLError
 import libcblite.CBLCollection_GetIndexesInfo
+import libcblite.FLMutableArray_Release
 
 // TODO: implement native C getC4Document()
 
