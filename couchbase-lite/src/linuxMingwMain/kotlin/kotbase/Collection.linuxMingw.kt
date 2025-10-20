@@ -383,7 +383,7 @@ internal constructor(
 
     actual override fun close() {
         if (!memory.closeCalled && !database.isClosed) {
-            CBLCollection_Release(actual)
+            debug.CBLCollection_Release(actual)
         }
         memory.closeCalled = true
     }
