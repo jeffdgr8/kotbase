@@ -16,7 +16,6 @@
 package kotbase
 
 import com.couchbase.lite.compareAge
-import com.couchbase.lite.generation
 import com.couchbase.lite.isOpen
 import kotbase.ext.nowMillis
 import kotbase.internal.utils.FileUtils

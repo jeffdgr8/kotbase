@@ -28,8 +28,6 @@ import platform.Foundation.NSUserDefaults
 import platform.Security.SecCertificateCopyCommonName
 import platform.Security.errSecSuccess
 import kotlin.experimental.ExperimentalNativeApi
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalNativeApi::class)
