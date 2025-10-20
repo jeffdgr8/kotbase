@@ -23,7 +23,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v5
         with:
-          distribution: temurin
+          distribution: zulu
           java-version: 21
       - name: Run tests
         run: ./gradlew check
@@ -48,7 +48,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v5
         with:
-          distribution: temurin
+          distribution: zulu
           java-version: 21
       - name: Install libicu
         run: |
@@ -78,7 +78,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v5
         with:
-          distribution: temurin
+          distribution: zulu
           java-version: 21
       - name: Run tests
         run: ./gradlew check
@@ -103,7 +103,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v5
         with:
-          distribution: temurin
+          distribution: zulu
           java-version: 21
       - name: Enable KVM group perms
         run: |
