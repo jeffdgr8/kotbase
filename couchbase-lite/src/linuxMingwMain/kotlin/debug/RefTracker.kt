@@ -87,7 +87,10 @@ import kotlin.experimental.ExperimentalNativeApi
  * * Replace calls to the Couchbase Lite C SDK API with the equivalent functions
  * in the debug package to track object retain and release in ref-tracker.cblite2.
  *
- * * Set TRACK to true to track references when running tests.
+ * * Set `TRACK = true` to track references when running tests.
+ *
+ * * Optionally set Sync Gateway URL and credentials, set `TRACK = false`, and call
+ * `pushSync()` to sync results to Couchbase Server.
  *
  * **Note:** This class intentionally does not reference or use the Kotbase API for its
  * database use to avoid cyclical references and infinite recursion.
@@ -97,6 +100,11 @@ internal object RefTracker {
 
     private const val TRACK = false
     private const val INCLUDE_STACK_TRACES = true
+
+    // Optional Sync Gateway config
+    private const val URL_ENDPOINT = "ws://127.0.0.1:4984/db"
+    private const val USERNAME = "user"
+    private const val PASSWORD = "password"
 
     private const val DB_NAME = "ref-tracker"
 
@@ -166,6 +174,36 @@ internal object RefTracker {
             val doc = ref.toMutableDocument()
             collection.save(doc)
             CBLDocument_Release(doc)
+        }
+    }
+
+    fun pushSync() {
+        if (!TRACK) {
+            println("Pushing debug ref tracker docs to server...")
+            val config = ReplicatorConfiguration(URLEndpoint(URL_ENDPOINT))
+                .setType(ReplicatorType.PUSH)
+                .setContinuous(false)
+                .setAuthenticator(BasicAuthenticator(USERNAME, PASSWORD.toCharArray()))
+                .addCollection(Collection(collection, Database(this@RefTracker.database, DatabaseConfiguration())))
+            val replicator = Replicator(config)
+            val changeFlow = replicator.replicatorChangesFlow(Dispatchers.Default)
+            replicator.start()
+            runBlocking {
+                launch {
+                    changeFlow.collect {
+                        it.status.error?.let { print(it) }
+                        with(it.status) {
+                            println("$activityLevel: ${progress.completed}/${progress.total}")
+                            if (activityLevel == ReplicatorActivityLevel.STOPPED) {
+                                cancel()
+                            }
+                        }
+                    }
+                }
+            }
+            println("Done")
+        } else {
+            throw IllegalStateException("Tracking is enabled! Disable before syncing results to server.")
         }
     }
 }
