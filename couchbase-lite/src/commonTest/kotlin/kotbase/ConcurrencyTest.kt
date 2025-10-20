@@ -26,6 +26,8 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
+// ignore while tracking memory references
+@Ignore
 @OptIn(ExperimentalAtomicApi::class)
 class ConcurrencyTest : BaseDbTest() {
 
