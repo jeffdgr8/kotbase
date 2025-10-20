@@ -557,10 +557,6 @@ final class kotbase/MutableArray : kotbase/Array, kotbase/MutableArrayInterface 
     final fun toJSON(): kotlin/String // kotbase/MutableArray.toJSON|toJSON(){}[0]
 
     // Targets: [linux, mingwX64]
-    final val actual // kotbase/MutableArray.actual|{}actual[0]
-        final fun <get-actual>(): kotlinx.cinterop/CPointer<cnames.structs/_FLArray> // kotbase/MutableArray.actual.<get-actual>|<get-actual>(){}[0]
-
-    // Targets: [linux, mingwX64]
     final fun getBlob(kotlin/Int): kotbase/Blob? // kotbase/MutableArray.getBlob|getBlob(kotlin.Int){}[0]
 
     // Targets: [linux, mingwX64]
@@ -3266,8 +3262,8 @@ final class kotbase/Where : kotbase/GroupByRouter, kotbase/LimitRouter, kotbase/
 
 // Targets: [linux, mingwX64]
 open class kotbase/Array : kotbase/ArrayInterface, kotlin.collections/Iterable<kotlin/Any?> { // kotbase/Array|null[0]
-    open val actual // kotbase/Array.actual|{}actual[0]
-        open fun <get-actual>(): kotlinx.cinterop/CPointer<cnames.structs/_FLArray> // kotbase/Array.actual.<get-actual>|<get-actual>(){}[0]
+    final val release // kotbase/Array.release|{}release[0]
+        final fun <get-release>(): kotlin/Boolean // kotbase/Array.release.<get-release>|<get-release>(){}[0]
     open val count // kotbase/Array.count|{}count[0]
         open fun <get-count>(): kotlin/Int // kotbase/Array.count.<get-count>|<get-count>(){}[0]
 
@@ -3312,6 +3308,8 @@ open class kotbase/DataSource { // kotbase/DataSource|null[0]
 
 // Targets: [linux, mingwX64]
 open class kotbase/Dictionary : kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Dictionary|null[0]
+    final val release // kotbase/Dictionary.release|{}release[0]
+        final fun <get-release>(): kotlin/Boolean // kotbase/Dictionary.release.<get-release>|<get-release>(){}[0]
     open val count // kotbase/Dictionary.count|{}count[0]
         open fun <get-count>(): kotlin/Int // kotbase/Dictionary.count.<get-count>|<get-count>(){}[0]
     open val keys // kotbase/Dictionary.keys|{}keys[0]
@@ -3347,6 +3345,8 @@ open class kotbase/Document : kotbase/DictionaryInterface, kotlin.collections/It
         final fun <get-collection>(): kotbase/Collection? // kotbase/Document.collection.<get-collection>|<get-collection>(){}[0]
     final val id // kotbase/Document.id|{}id[0]
         final fun <get-id>(): kotlin/String // kotbase/Document.id.<get-id>|<get-id>(){}[0]
+    final val release // kotbase/Document.release|{}release[0]
+        final fun <get-release>(): kotlin/Boolean // kotbase/Document.release.<get-release>|<get-release>(){}[0]
     final val revisionID // kotbase/Document.revisionID|{}revisionID[0]
         final fun <get-revisionID>(): kotlin/String? // kotbase/Document.revisionID.<get-revisionID>|<get-revisionID>(){}[0]
     final val sequence // kotbase/Document.sequence|{}sequence[0]
