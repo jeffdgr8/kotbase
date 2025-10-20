@@ -26,6 +26,8 @@ import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.*
 import libcblite.*
 import kotlin.coroutines.CoroutineContext
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
 internal abstract class AbstractQuery : Query {
 
@@ -121,9 +123,20 @@ internal data class QueryState(
     val offset: Expression? = null
 ) : AbstractQuery() {
 
-    override val actual: CPointer<CBLQuery> by lazy {
-        database.createQuery(kCBLJSONLanguage, toJSON())
+    private val memory = object {
+        val actual: CPointer<CBLQuery> by lazy {
+            database.createQuery(kCBLJSONLanguage, toJSON())
+        }
     }
+
+    @OptIn(ExperimentalNativeApi::class)
+    @Suppress("unused")
+    private val cleaner = createCleaner(memory) {
+        CBLQuery_Release(it.actual)
+    }
+
+    override val actual: CPointer<CBLQuery>
+        get() = memory.actual
 
     override val dbContext: DbContext by lazy {
         DbContext(database)
@@ -188,6 +201,12 @@ internal class DelegatedQuery(
     override val actual: CPointer<CBLQuery>,
     database: Database
 ) : AbstractQuery() {
+
+    @OptIn(ExperimentalNativeApi::class)
+    @Suppress("unused")
+    private val cleaner = createCleaner(actual) {
+        CBLQuery_Release(it)
+    }
 
     override val dbContext: DbContext = DbContext(database)
 }
