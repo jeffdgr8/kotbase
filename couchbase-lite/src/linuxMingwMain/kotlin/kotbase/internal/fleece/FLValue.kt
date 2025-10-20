@@ -21,6 +21,7 @@ import kotbase.CBLError
 import kotbase.internal.DbContext
 import kotbase.internal.wrapCBLError
 import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.CPointer
 import kotlin.time.Instant
 import libcblite.*
 
