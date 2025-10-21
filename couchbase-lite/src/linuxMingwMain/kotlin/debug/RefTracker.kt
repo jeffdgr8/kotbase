@@ -46,8 +46,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import libcblite.CBLCollection_CreateValueIndex
 import libcblite.CBLCollection_GetDocument
 import libcblite.CBLCollection_SaveDocument
@@ -80,6 +78,8 @@ import libcblite.kCBLN1QLLanguage
 import platform.posix.strdup
 import platform.posix.strlen
 import kotlin.experimental.ExperimentalNativeApi
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 /**
  * Reference tracker for debugging native memory management issues.
