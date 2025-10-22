@@ -15,11 +15,12 @@
  */
 package kotbase
 
+import kotlinx.cinterop.AutofreeScope
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.cstr
 import libcblite.CBLFullTextIndexConfiguration
 import libcblite.kCBLN1QLLanguage
-import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class FullTextIndexConfiguration
@@ -65,22 +66,21 @@ public actual constructor(
 
     public actual var where: String? = where
 
-    internal val actual: CValue<CBLFullTextIndexConfiguration>
-        get() {
-            val exp = expressions.joinToString(separator = ",")
-            val lang = language
-            val whr = where
-            return cValue {
-                expressionLanguage = kCBLN1QLLanguage
-                expressions.buf = strdup(exp)
-                expressions.size = strlen(exp)
-                language.buf = lang?.let { strdup(it) }
-                language.size = lang?.let { strlen(it) } ?: 0U
-                where.buf = whr?.let { strdup(it) }
-                where.size = whr?.let { strlen(it) } ?: 0U
-                ignoreAccents = isIgnoringAccents
-            }
+    internal fun actual(scope: AutofreeScope): CValue<CBLFullTextIndexConfiguration> {
+        val exp = expressions.joinToString(separator = ",")
+        val lang = language
+        val whr = where
+        return cValue {
+            expressionLanguage = kCBLN1QLLanguage
+            expressions.buf = exp.cstr.getPointer(scope)
+            expressions.size = strlen(exp)
+            language.buf = lang?.cstr?.getPointer(scope)
+            language.size = lang?.let { strlen(it) } ?: 0U
+            where.buf = whr?.cstr?.getPointer(scope)
+            where.size = whr?.let { strlen(it) } ?: 0U
+            ignoreAccents = isIgnoringAccents
         }
+    }
 
     internal actual companion object
 }

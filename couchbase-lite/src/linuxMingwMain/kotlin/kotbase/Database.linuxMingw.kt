@@ -723,13 +723,13 @@ internal constructor(
                         is ValueIndex -> CBLDatabase_CreateValueIndex(
                             actual,
                             name.toFLString(this),
-                            index.actual,
+                            index.actual(this),
                             error
                         )
                         is FullTextIndex -> CBLDatabase_CreateFullTextIndex(
                             actual,
                             name.toFLString(this),
-                            index.actual,
+                            index.actual(this),
                             error
                         )
                         else -> error("Unhandled Index type ${index::class}")

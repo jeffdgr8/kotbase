@@ -15,6 +15,7 @@
  */
 package kotbase.logging
 
+import kotlinx.cinterop.memScoped
 import libcblite.CBLLogSinks_Console
 import libcblite.CBLLogSinks_File
 import libcblite.CBLLogSinks_SetConsole
@@ -26,7 +27,9 @@ public actual object LogSinks {
     public actual var file: FileLogSink?
         get() = CBLLogSinks_File().asFileLogSink()
         set(value) {
-            CBLLogSinks_SetFile(value.actual)
+            memScoped {
+                CBLLogSinks_SetFile(value.actual(this))
+            }
         }
 
     public actual var console: ConsoleLogSink?

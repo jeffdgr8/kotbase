@@ -15,11 +15,12 @@
  */
 package kotbase
 
+import kotlinx.cinterop.AutofreeScope
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.cstr
 import libcblite.CBLArrayIndexConfiguration
 import libcblite.kCBLN1QLLanguage
-import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class ArrayIndexConfiguration
@@ -41,16 +42,15 @@ public actual constructor(
         }
     }
 
-    internal val actual: CValue<CBLArrayIndexConfiguration>
-        get() {
-            val exp = expressions.joinToString(separator = ",")
-            val path = path
-            return cValue {
-                expressionLanguage = kCBLN1QLLanguage
-                expressions.buf = strdup(exp)
-                expressions.size = strlen(exp)
-                this.path.buf = strdup(path)
-                this.path.size = strlen(path)
-            }
+    internal fun actual(scope: AutofreeScope): CValue<CBLArrayIndexConfiguration> {
+        val exp = expressions.joinToString(separator = ",")
+        val path = path
+        return cValue {
+            expressionLanguage = kCBLN1QLLanguage
+            expressions.buf = exp.cstr.getPointer(scope)
+            expressions.size = strlen(exp)
+            this.path.buf = path.cstr.getPointer(scope)
+            this.path.size = strlen(path)
         }
+    }
 }

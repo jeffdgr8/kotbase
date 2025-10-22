@@ -16,11 +16,12 @@
 package kotbase
 
 import kotbase.internal.JsonUtils
+import kotlinx.cinterop.AutofreeScope
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.cstr
 import libcblite.CBLFullTextIndexConfiguration
 import libcblite.kCBLJSONLanguage
-import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class FullTextIndex
@@ -50,17 +51,16 @@ internal constructor(private val items: List<FullTextIndexItem>) : Index() {
         return JsonUtils.toJson(data)
     }
 
-    internal val actual: CValue<CBLFullTextIndexConfiguration>
-        get() {
-            val json = getJson()
-            val lang = language
-            return cValue {
-                expressionLanguage = kCBLJSONLanguage
-                expressions.buf = strdup(json)
-                expressions.size = strlen(json)
-                language.buf = lang?.let { strdup(it) }
-                language.size = lang?.let { strlen(it) } ?: 0U
-                ignoreAccents = isIgnoringAccents
-            }
+    internal fun actual(scope: AutofreeScope): CValue<CBLFullTextIndexConfiguration> {
+        val json = getJson()
+        val lang = language
+        return cValue {
+            expressionLanguage = kCBLJSONLanguage
+            expressions.buf = json.cstr.getPointer(scope)
+            expressions.size = strlen(json)
+            language.buf = lang?.cstr?.getPointer(scope)
+            language.size = lang?.let { strlen(it) } ?: 0U
+            ignoreAccents = isIgnoringAccents
         }
+    }
 }

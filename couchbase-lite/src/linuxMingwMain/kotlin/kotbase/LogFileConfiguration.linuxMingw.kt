@@ -15,11 +15,12 @@
  */
 package kotbase
 
+import kotlinx.cinterop.AutofreeScope
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.convert
+import kotlinx.cinterop.cstr
 import libcblite.CBLLogFileConfiguration
-import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class LogFileConfiguration
@@ -84,11 +85,11 @@ public actual constructor(public actual val directory: String) {
 
     override fun hashCode(): Int = directory.hashCode()
 
-    internal fun getActual(level: LogLevel): CValue<CBLLogFileConfiguration> {
+    internal fun getActual(level: LogLevel, scope: AutofreeScope): CValue<CBLLogFileConfiguration> {
         readonly = true
         return cValue {
             with(directory) {
-                buf = strdup(this@LogFileConfiguration.directory)
+                buf = this@LogFileConfiguration.directory.cstr.getPointer(scope)
                 size = strlen(this@LogFileConfiguration.directory)
             }
             this.level = level.actual

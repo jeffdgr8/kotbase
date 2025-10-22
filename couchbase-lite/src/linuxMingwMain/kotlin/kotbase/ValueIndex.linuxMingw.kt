@@ -16,11 +16,12 @@
 package kotbase
 
 import kotbase.internal.JsonUtils
+import kotlinx.cinterop.AutofreeScope
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.cstr
 import libcblite.CBLValueIndexConfiguration
 import libcblite.kCBLJSONLanguage
-import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class ValueIndex
@@ -35,13 +36,12 @@ internal constructor(private val items: List<ValueIndexItem>) : Index() {
         return JsonUtils.toJson(data)
     }
 
-    internal val actual: CValue<CBLValueIndexConfiguration>
-        get() {
-            val json = getJson()
-            return cValue {
-                expressionLanguage = kCBLJSONLanguage
-                expressions.buf = strdup(json)
-                expressions.size = strlen(json)
-            }
+    internal fun actual(scope: AutofreeScope): CValue<CBLValueIndexConfiguration> {
+        val json = getJson()
+        return cValue {
+            expressionLanguage = kCBLJSONLanguage
+            expressions.buf = json.cstr.getPointer(scope)
+            expressions.size = strlen(json)
         }
+    }
 }
