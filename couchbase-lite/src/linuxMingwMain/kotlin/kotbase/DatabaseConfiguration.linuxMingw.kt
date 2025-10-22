@@ -21,6 +21,7 @@ import kotlinx.io.files.SystemPathSeparator
 import libcblite.CBLDatabaseConfiguration
 import libcblite.CBLDatabaseConfiguration_Default
 import platform.posix.free
+import platform.posix.memset
 import platform.posix.strdup
 import platform.posix.strlen
 import kotlin.experimental.ExperimentalNativeApi
@@ -33,7 +34,10 @@ public actual constructor(config: DatabaseConfiguration?) {
 
     private val memory = object {
         val arena = Arena()
-        val actual = arena.alloc<CBLDatabaseConfiguration>().ptr
+        val actual = arena.alloc<CBLDatabaseConfiguration>().ptr.also {
+            // zero out struct to ensure free() isn't called on a garbage pointer
+            memset(it, 0, sizeOf<CBLDatabaseConfiguration>().convert())
+        }
     }
 
     @OptIn(ExperimentalNativeApi::class)
