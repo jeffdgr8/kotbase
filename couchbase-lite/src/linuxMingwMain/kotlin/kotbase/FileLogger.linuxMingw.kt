@@ -33,9 +33,11 @@ public actual class FileLogger internal constructor() : Logger {
             if (value != null) {
                 SystemFileSystem.createDirectories(Path(value.directory), false)
             }
-            val actual = value?.getActual(level) ?: LogFileConfiguration.getNullActual()
-            wrapCBLError { error ->
-                CBLLog_SetFileConfig(actual, error)
+            memScoped {
+                val actual = value?.getActual(level, this) ?: LogFileConfiguration.getNullActual()
+                wrapCBLError { error ->
+                    CBLLog_SetFileConfig(actual, error)
+                }
             }
         }
 

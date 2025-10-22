@@ -29,19 +29,19 @@ internal fun Collection.createIndexImpl(name: String, config: IndexConfiguration
                 is ValueIndexConfiguration -> CBLCollection_CreateValueIndex(
                     actual,
                     name.toFLString(this),
-                    config.actual,
+                    config.actual(this),
                     error
                 )
                 is FullTextIndexConfiguration -> CBLCollection_CreateFullTextIndex(
                     actual,
                     name.toFLString(this),
-                    config.actual,
+                    config.actual(this),
                     error
                 )
                 is ArrayIndexConfiguration -> CBLCollection_CreateArrayIndex(
                     actual,
                     name.toFLString(this),
-                    config.actual,
+                    config.actual(this),
                     error
                 )
             }

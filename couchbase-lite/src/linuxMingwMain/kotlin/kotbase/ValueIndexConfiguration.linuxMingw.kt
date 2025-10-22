@@ -15,11 +15,12 @@
  */
 package kotbase
 
+import kotlinx.cinterop.AutofreeScope
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.cstr
 import libcblite.CBLValueIndexConfiguration
 import libcblite.kCBLN1QLLanguage
-import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class ValueIndexConfiguration
@@ -43,16 +44,15 @@ public actual constructor(
 
     public actual var where: String? = null
 
-    internal val actual: CValue<CBLValueIndexConfiguration>
-        get() {
-            val exp = expressions.joinToString(separator = ",")
-            val whr = where
-            return cValue {
-                expressionLanguage = kCBLN1QLLanguage
-                expressions.buf = strdup(exp)
-                expressions.size = strlen(exp)
-                where.buf = whr?.let { strdup(whr) }
-                where.size = whr?.let { strlen(whr) } ?: 0U
-            }
+    internal fun actual(scope: AutofreeScope): CValue<CBLValueIndexConfiguration> {
+        val exp = expressions.joinToString(separator = ",")
+        val whr = where
+        return cValue {
+            expressionLanguage = kCBLN1QLLanguage
+            expressions.buf = exp.cstr.getPointer(scope)
+            expressions.size = strlen(exp)
+            where.buf = whr?.cstr?.getPointer(scope)
+            where.size = whr?.let { strlen(whr) } ?: 0U
         }
+    }
 }

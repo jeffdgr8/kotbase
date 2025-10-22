@@ -15,11 +15,12 @@
  */
 package kotbase
 
+import kotlinx.cinterop.AutofreeScope
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.convert
+import kotlinx.cinterop.cstr
 import libcblite.*
-import platform.posix.strdup
 import platform.posix.strlen
 
 public actual class VectorIndexConfiguration
@@ -103,21 +104,20 @@ public actual constructor(
         return this
     }
 
-    internal val actual: CValue<CBLVectorIndexConfiguration>
-        get() {
-            val exp = expression
-            return cValue {
-                centroids = this@VectorIndexConfiguration.centroids.convert()
-                dimensions = this@VectorIndexConfiguration.dimensions.convert()
-                encoding = this@VectorIndexConfiguration.encoding.actual
-                expression.buf = strdup(exp)
-                expression.size = strlen(exp)
-                expressionLanguage = kCBLN1QLLanguage
-                isLazy = this@VectorIndexConfiguration.isLazy
-                maxTrainingSize = this@VectorIndexConfiguration.maxTrainingSize.convert()
-                metric = this@VectorIndexConfiguration.metric.actual
-                minTrainingSize = this@VectorIndexConfiguration.minTrainingSize.convert()
-                numProbes = this@VectorIndexConfiguration.numProbes.convert()
-            }
+    internal fun actual(scope: AutofreeScope): CValue<CBLVectorIndexConfiguration> {
+        val exp = expression
+        return cValue {
+            centroids = this@VectorIndexConfiguration.centroids.convert()
+            dimensions = this@VectorIndexConfiguration.dimensions.convert()
+            encoding = this@VectorIndexConfiguration.encoding.actual
+            expression.buf = exp.cstr.getPointer(scope)
+            expression.size = strlen(exp)
+            expressionLanguage = kCBLN1QLLanguage
+            isLazy = this@VectorIndexConfiguration.isLazy
+            maxTrainingSize = this@VectorIndexConfiguration.maxTrainingSize.convert()
+            metric = this@VectorIndexConfiguration.metric.actual
+            minTrainingSize = this@VectorIndexConfiguration.minTrainingSize.convert()
+            numProbes = this@VectorIndexConfiguration.numProbes.convert()
         }
+    }
 }

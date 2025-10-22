@@ -17,13 +17,14 @@ package kotbase.logging
 
 import kotbase.LogLevel
 import kotbase.internal.fleece.toKString
+import kotlinx.cinterop.AutofreeScope
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.convert
+import kotlinx.cinterop.cstr
 import kotlinx.cinterop.useContents
 import libcblite.CBLFileLogSink
 import libcblite.kCBLLogNone
-import platform.posix.strdup
 import platform.posix.strlen
 
 internal fun CValue<CBLFileLogSink>.asFileLogSink(): FileLogSink? {
@@ -42,12 +43,13 @@ internal fun CValue<CBLFileLogSink>.asFileLogSink(): FileLogSink? {
     }
 }
 
-internal val FileLogSink?.actual: CValue<CBLFileLogSink>
-    get() = cValue {
+internal fun FileLogSink?.actual(scope: AutofreeScope): CValue<CBLFileLogSink> {
+    return cValue {
         level = this@actual?.level?.actual ?: kCBLLogNone.convert()
-        directory.buf = this@actual?.directory?.let { strdup(it) }
+        directory.buf = this@actual?.directory?.cstr?.getPointer(scope)
         directory.size = this@actual?.directory?.let { strlen(it) } ?: 0U
         usePlaintext = this@actual?.isPlainText ?: false
         maxKeptFiles = this@actual?.maxKeptFiles?.convert() ?: 0U
         maxSize = this@actual?.maxFileSize?.convert() ?: 0UL
     }
+}
