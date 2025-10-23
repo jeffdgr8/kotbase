@@ -10,8 +10,7 @@ as straightforward as changing the import package from `com.couchbase.lite` to `
 
 * Java callback functional interfaces are implemented as Kotlin function types.
 * `File`, `URL`, and `URI` APIs are represented as strings.
-* `Date` APIs use [kotlinx-datetime's `Instant`](
-  https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/).
+* `Date` APIs use Kotlin's `Instant`.
 * `InputStream` APIs use [kotlinx-io's `Source`](
   https://kotlinlang.org/api/kotlinx-io/kotlinx-io-core/kotlinx.io/-source/).
 * `Executor` APIs use Kotlin's `CoroutineContext`.
@@ -27,3 +26,5 @@ as straightforward as changing the import package from `com.couchbase.lite` to `
   https://docs.couchbase.com/mobile/3.1.10/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
   https://docs.couchbase.com/mobile/3.1.10/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
   https://docs.couchbase.com/mobile/3.1.10/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
+* Configuration factory APIs from the Android KTX SDK have been deprecated in favor of using constructors directly,
+  which support Kotlin named arguments themselves.
