@@ -106,7 +106,7 @@ When using the `SELECT *` option the column name (key) of the SQL++ string is on
 
 This behavior is inline with that of Couchbase Server SQL++ — see example in [Table 1](#table-1).
 
-**Table 1. Example Column Names for SELECT \***
+<span id='table-1'>**Table 1. Example Column Names for SELECT \***</span>
 
 | Query                       | Column Name |
 |:----------------------------|:------------|
