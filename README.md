@@ -19,15 +19,15 @@ standalone client database, or paired with [Couchbase Server](https://www.couchb
 Gateway](https://www.couchbase.com/products/sync-gateway/) or [Capella App Services](
 https://www.couchbase.com/products/capella/app-services/) for cloud to edge data synchronization. Features include:
 
-* [SQL++](https://www.couchbase.com/products/n1ql/), key/value, and full-text search queries
+* [SQL++](https://www.couchbase.com/products/n1ql/), key/value, full-text search, and vector search queries
 * Observable queries, documents, databases, and replicators
 * Binary document attachments (blobs)
 * Peer-to-peer and cloud-to-edge data sync
 
 Kotbase provides full Enterprise and Community Edition API support for Android and JVM ([via Java SDK](
 https://github.com/couchbase/couchbase-lite-java-ce-root)), native iOS and macOS ([via Objective-C SDK](
-https://github.com/couchbase/couchbase-lite-ios)), and experimental support for available APIs in native Linux and
-Windows ([via C SDK](https://github.com/couchbase/couchbase-lite-C)).
+https://github.com/couchbase/couchbase-lite-ios)), and experimental support for native Linux and Windows ([via C SDK](
+https://github.com/couchbase/couchbase-lite-C)).
 
 ## Installation
 
@@ -89,8 +89,7 @@ as straightforward as changing the import package from `com.couchbase.lite` to `
 
 * Java callback functional interfaces are implemented as Kotlin function types.
 * `File`, `URL`, and `URI` APIs are represented as strings.
-* `Date` APIs use [kotlinx-datetime's `Instant`](
-https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-instant/).
+* `Date` APIs use Kotlin's `Instant`.
 * `InputStream` APIs use [kotlinx-io's `Source`](
   https://kotlinlang.org/api/kotlinx-io/kotlinx-io-core/kotlinx.io/-source/).
 * `Executor` APIs use Kotlin's `CoroutineContext`.
@@ -106,6 +105,8 @@ https://kotlinlang.org/api/kotlinx-datetime/kotlinx-datetime/kotlinx.datetime/-i
   https://docs.couchbase.com/mobile/3.1.10/couchbase-lite-swift/Classes/Fragment.html), [Objective-C](
   https://docs.couchbase.com/mobile/3.1.10/couchbase-lite-objc/Protocols/CBLFragment.html), and [.NET](
   https://docs.couchbase.com/mobile/3.1.10/couchbase-lite-net/api/Couchbase.Lite.IFragment.html).
+* Configuration factory APIs from the Android KTX SDK have been deprecated in favor of using constructors directly,
+  which support Kotlin named arguments themselves.
 
 ## Extension Libraries
 
@@ -169,8 +170,10 @@ implementation("dev.kotbase:couchbase-lite-ee-paging:3.1.11-1.1.2")
     * [ ] SwiftUI for Kotbase Notes
 * [x] Couchbase Lite [3.1 API](https://docs.couchbase.com/couchbase-lite/3.1/cbl-whatsnew.html) - Scopes and Collections
 * [x] Versioned docs
-* [ ] Couchbase Lite [3.2 API](https://docs.couchbase.com/couchbase-lite/3.2/cbl-whatsnew.html) - [Vector Search](
+* [x] Couchbase Lite [3.2 API](https://docs.couchbase.com/couchbase-lite/3.2/cbl-whatsnew.html) - [Vector Search](
   https://www.couchbase.com/products/vector-search/)
+* [ ] Couchbase Lite [3.3 API](https://docs.couchbase.com/couchbase-lite/3.3/cbl-whatsnew.html) - Multipeer Replicator
+* [ ] URLEndpointListener on Linux & MinGW platforms
 * [ ] Improve Swift API alignment with Couchbase Lite using [Swift
   export](https://youtrack.jetbrains.com/issue/KT-64572), `@ObjCName`, and/or `@ShouldRefineInSwift`
 * [ ] Async coroutines API

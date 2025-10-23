@@ -13,10 +13,10 @@ standalone client database, or paired with [Couchbase Server](https://www.couchb
 Gateway](https://www.couchbase.com/products/sync-gateway/) or [Capella App Services](
 https://www.couchbase.com/products/capella/app-services/) for cloud to edge data synchronization. Features include:
 
-* [SQL++](https://www.couchbase.com/products/n1ql/), key/value, and full-text search queries
+* [SQL++](https://www.couchbase.com/products/n1ql/), key/value, full-text search, and vector search queries
 * Observable queries, documents, databases, and replicators
 * Binary document attachments (blobs)
 * Peer-to-peer and cloud-to-edge data sync
 
 Kotbase provides full Enterprise and Community Edition API support for Android and JVM, native iOS and macOS, and
-experimental support for available APIs in native Linux and Windows.
+experimental support for native Linux and Windows.

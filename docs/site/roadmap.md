@@ -16,8 +16,9 @@ hide:
     * [ ] SwiftUI for Kotbase Notes
 * [x] Couchbase Lite [3.1 API](https://docs.couchbase.com/couchbase-lite/3.1/cbl-whatsnew.html) - Scopes and Collections
 * [x] Versioned docs
-* [ ] Couchbase Lite [3.2 API](https://docs.couchbase.com/couchbase-lite/3.2/cbl-whatsnew.html) - [Vector Search](
+* [x] Couchbase Lite [3.2 API](https://docs.couchbase.com/couchbase-lite/3.2/cbl-whatsnew.html) - [Vector Search](
   https://www.couchbase.com/products/vector-search/)
+* [ ] Couchbase Lite [3.3 API](https://docs.couchbase.com/couchbase-lite/3.3/cbl-whatsnew.html) - Multipeer Replicator
 * [ ] Improve Swift API alignment with Couchbase Lite using [Swift
   export](https://youtrack.jetbrains.com/issue/KT-64572), `@ObjCName`, and/or `@ShouldRefineInSwift`
 * [ ] Async coroutines API
