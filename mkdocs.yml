@@ -125,7 +125,11 @@ nav:
       - Query Result Sets: query-result-sets.md
       - Live Queries: live-queries.md
       - Query Troubleshooting: query-troubleshooting.md
-    - Full Text Search: full-text-search.md
+    - Search:
+      - Full Text Search: full-text-search.md
+      - Vector Search:
+        - About Vector Search: vector-search.md
+        - Working with Vector Search: working-with-vector-search.md
     - Indexing: indexing.md
     - Data Sync:
       - Remote Sync Gateway: remote-sync-gateway.md
