@@ -69,11 +69,12 @@ https://www.couchbase.com/downloads/?family=couchbase-lite) or added via [Cartha
 https://docs.couchbase.com/couchbase-lite/current/objc/gs-install.html#lbl-install-tabs). The version should match the
 major and minor version of Kotbase, e.g. CouchbaseLite {{ version_short }}.x for Kotbase {{ version_full }}.
 
-The [Kotlin CocoaPods Gradle plugin](https://kotlinlang.org/docs/native-cocoapods.html) can also be used to generate a
-[Podspec](https://guides.cocoapods.org/syntax/podspec.html) for your project that includes the `CouchbaseLite`
-dependency. Use `linkOnly = true` to link the dependency without generating Kotlin Objective-C interop:
+The [Kotlin CocoaPods Gradle plugin](
+https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-cocoapods-overview.html) can also be used to
+generate a [Podspec](https://guides.cocoapods.org/syntax/podspec.html) for your project that includes the
+`CouchbaseLite` dependency. Use `linkOnly = true` to link the dependency without generating Kotlin Objective-C interop:
 
-??? example "CocoaPods plugin"
+!!! example "CocoaPods plugin"
 
     === "Enterprise Edition"
     
@@ -149,6 +150,65 @@ https://github.com/unicode-org/icu/releases).
 |     Debian      |   9+    | :material-check: | :material-check: |
 | Raspberry Pi OS |   10+   |                  | :material-check: |
 |     Ubuntu      | 20.04+  | :material-check: | :material-check: |
+
+#### Using APT
+
+Using the Advanced Package Tool (apt) is the easiest way to install Couchbase Lite on Ubuntu and Debian platforms. Just
+download the meta package that apt requires to automatically get and install Couchbase Lite, including any dependencies.
+
+1. Download the meta package
+
+    === "curl"
+
+        ```
+        curl -O https://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-noarch.deb
+        ```
+
+    === "wget"
+
+        ```
+        wget https://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-noarch.deb
+        ```
+
+2. Install the meta package
+
+    === "apt"
+
+        ```
+        sudo apt install ./couchbase-release-1.0-noarch.deb
+        ```
+
+    === "dpkg"
+
+        ```
+        sudo dpkg -i ./couchbase-release-1.0-noarch.deb
+        ```
+
+3. Update the local package database
+
+    ```
+    sudo apt update
+    ```
+
+4. Install the required release package(s)
+
+    === "Enterprise"
+
+        ```title="Runtime Only"
+        sudo apt install libcblite
+        ```
+        ```title="Development"
+        sudo apt install libcblite-dev
+        ```
+
+    === "Community"
+
+        ```title="Runtime Only"
+        sudo apt install libcblite-community
+        ```
+        ```title="Development"
+        sudo apt install libcblite-dev-community
+        ```
 
 ### Windows
 
