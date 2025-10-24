@@ -1219,11 +1219,10 @@ activity related to replication with Sync Gateway — see [Example 20](#example-
 !!! example "Example 20. Set logging verbosity"
 
     ```kotlin
-    Database.log.console.setDomains(LogDomain.REPLICATOR)
-    Database.log.console.level = LogLevel.DEBUG
+    LogSinks.console = ConsoleLogSink(LogLevel.DEBUG, LogDomain.REPLICATOR)
     ```
 
-For more on troubleshooting with logs, see [Using Logs](using-logs.md).
+For more on troubleshooting with logs, see [Using Logs](new-logging-api.md).
 
 ### Authentication Errors
 

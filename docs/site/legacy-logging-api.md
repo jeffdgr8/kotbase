@@ -17,7 +17,7 @@ Log output is split into the following streams:
 * [Console based logging](#console-based-logging)<br><br>
   You can independently configure and control console logs, which provides a convenient method of accessing diagnostic
   information during debugging scenarios. With console logging, you can fine-tune diagnostic output to suit specific
-  debug scenarios, without interfering with any logging required by Couchbase Support for the investigation of issues.
+  debug scenarios and capture them for Couchbase Support for the investigation of issues.
 * [File based logging](#file-based-logging)<br><br>
   Here logs are written to separate log files, filtered by log level, with each log level supporting individual
   retention policies.
@@ -86,7 +86,7 @@ With file based logging you can also use the [`LogFileConfiguration`](
 
 * Path to the directory to store the log files
 * Log file format  
-  The default is binary. You can override that where necessary and output a plain text log.
+  The default is _binary_. You can override that where necessary and output a plain text log.
 * Maximum number of rotated log files to keep
 * Maximum size of the log file (bytes). Once this limit is exceeded a new log file is started.
 
@@ -94,12 +94,11 @@ With file based logging you can also use the [`LogFileConfiguration`](
 
     ```kotlin
     Database.log.file.apply {
-        config = LogFileConfigurationFactory.newConfig(
-            directory = "temp/cbl-logs",
-            maxSize = 10240,
-            maxRotateCount = 5,
-            usePlainText = false
-        )
+        config = LogFileConfiguration(directory = "temp/cbl-logs").apply {
+            maxSize = 10240
+            maxRotateCount = 5
+            usesPlaintext = false
+        }
         level = LogLevel.INFO
     }
     ```
@@ -163,7 +162,13 @@ You can use the **cbl-log** tool to decode binary log files — see [Example 5](
         Download the **cbl-log** tool using `wget`.
 
         ```title="console"
-        wget https://packages.couchbase.com/releases/couchbase-lite-log/3.1.1/couchbase-lite-log-3.1.1-macos.zip
+        wget https://packages.couchbase.com/releases/couchbase-lite-log/3.0.0/couchbase-lite-log-3.0.0-macos.zip
+        ```
+
+        Extract the downloaded zip file.
+
+        ```title="console"
+        unzip couchbase-lite-log-3.0.0-macos.zip
         ```
 
         Navigate to the **bin** directory and run the `cbl-log` executable.
@@ -177,7 +182,13 @@ You can use the **cbl-log** tool to decode binary log files — see [Example 5](
         Download the **cbl-log** tool using `wget`.
 
         ```title="console"
-        wget https://packages.couchbase.com/releases/couchbase-lite-log/3.1.1/couchbase-lite-log-3.1.1-centos.zip
+        wget https://packages.couchbase.com/releases/couchbase-lite-log/3.0.0/couchbase-lite-log-3.0.0-centos.zip
+        ```
+
+        Extract the downloaded zip file.
+
+        ```title="console"
+        unzip couchbase-lite-log-3.0.0-centos.zip
         ```
 
         Navigate to the **bin** directory and run the `cbl-log` executable.
@@ -191,10 +202,16 @@ You can use the **cbl-log** tool to decode binary log files — see [Example 5](
         Download the **cbl-log** tool using PowerShell.
 
         ```title="PowerShell"
-        Invoke-WebRequest https://packages.couchbase.com/releases/couchbase-lite-log/3.1.1/couchbase-lite-log-3.1.1-windows.zip -OutFile couchbase-lite-log-3.1.1-windows.zip
+        Invoke-WebRequest https://packages.couchbase.com/releases/couchbase-lite-log/3.0.0/couchbase-lite-log-3.0.0-windows.zip -OutFile couchbase-lite-log-3.0.0-windows.zip
         ```
 
-        Navigate to the **bin** directory and run the `cbl-log` executable.
+        Extract the downloaded zip file.
+
+        ```title="PowerShell"
+        Expand-Archive -Path couchbase-lite-log-3.0.0-windows.zip -DestinationPath .
+        ```
+
+        Run the cbl-log executable.
 
         ```title="PowerShell"
         .\cbl-log.exe logcat LOGFILE <OUTPUT_PATH>
