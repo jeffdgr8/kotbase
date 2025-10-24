@@ -31,10 +31,11 @@ class ParameterTest : BaseDbTest() {
         val params = Parameters()
         params.setString("param", "value")
 
-        val query = testDatabase.createQuery(
-            "SELECT  meta().id"
-                    + " FROM _default._default"
-                    + " WHERE test = \$param"
+        val query = testDatabase.createQuery($$"""
+            SELECT  meta().id
+            FROM _default._default
+            WHERE test = $param
+        """.trimIndent()
         )
 
         query.parameters = params
@@ -47,10 +48,11 @@ class ParameterTest : BaseDbTest() {
         val params = Parameters()
         params.setString("param", "value")
 
-        val query = testDatabase.createQuery(
-            "SELECT  meta().id"
-                    + " FROM _default._default"
-                    + " WHERE test = \$param"
+        val query = testDatabase.createQuery($$"""
+            SELECT  meta().id
+            FROM _default._default
+            WHERE test = $param
+        """.trimIndent()
         )
 
         query.parameters = params
@@ -63,10 +65,11 @@ class ParameterTest : BaseDbTest() {
     fun testParamContents() {
         val params = makeParams()
 
-        val query = testDatabase.createQuery(
-            "SELECT  meta().id"
-                    + " FROM _default._default"
-                    + " WHERE test = \$param"
+        val query = testDatabase.createQuery($$"""
+            SELECT  meta().id
+            FROM _default._default
+            WHERE test = $param
+        """.trimIndent()
         )
 
         query.parameters = params

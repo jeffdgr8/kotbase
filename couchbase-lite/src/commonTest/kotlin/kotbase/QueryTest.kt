@@ -3141,19 +3141,19 @@ class QueryTest : BaseQueryTest() {
     @Test
     fun testQueryDocumentWithDollarSign() {
         saveDocInCollection(MutableDocument()
-            .setString("\$type", "book")
-            .setString("\$description", "about cats")
-            .setString("\$price", "$100")
+            .setString($$"$type", "book")
+            .setString($$"$description", "about cats")
+            .setString($$"$price", "$100")
         )
         saveDocInCollection(MutableDocument()
-            .setString("\$type", "book")
-            .setString("\$description", "about dogs")
-            .setString("\$price", "$95")
+            .setString($$"$type", "book")
+            .setString($$"$description", "about dogs")
+            .setString($$"$price", "$95")
         )
         saveDocInCollection(MutableDocument()
-            .setString("\$type", "animal")
-            .setString("\$description", "puppy")
-            .setString("\$price", "$195")
+            .setString($$"$type", "animal")
+            .setString($$"$description", "puppy")
+            .setString($$"$price", "$195")
         )
 
         var cheapBooks = 0
@@ -3161,16 +3161,16 @@ class QueryTest : BaseQueryTest() {
 
         val q = QueryBuilder.select(
             SelectResult.expression(Meta.id),
-            SelectResult.expression(Expression.property("\$type")),
-            SelectResult.expression(Expression.property("\$price"))
+            SelectResult.expression(Expression.property($$"$type")),
+            SelectResult.expression(Expression.property($$"$price"))
         )
             .from(DataSource.collection(testCollection))
-            .where(Expression.property("\$type").equalTo(Expression.string("book")))
+            .where(Expression.property($$"$type").equalTo(Expression.string("book")))
 
         q.execute().use { res ->
             for (r in res) {
                 books++
-                val p = r.getString("\$price")!!
+                val p = r.getString($$"$price")!!
                 if (p.substring(1).toInt() < 100) { cheapBooks++ }
             }
             assertEquals(2, books)

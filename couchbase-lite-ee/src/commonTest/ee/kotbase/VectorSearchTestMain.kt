@@ -1078,7 +1078,7 @@ class VectorSearchTestMain : BaseVectorSearchTest() {
         createWordsIndex(config)
 
         assertThrowsCBLException(CBLError.Domain.CBLITE, CBLError.Code.INVALID_QUERY) {
-            executeWordsQuery(limit = 300, whereExpression = "APPROX_VECTOR_DISTANCE(vector, \$vector) < 0.5 OR catid = 'cat1'")
+            executeWordsQuery(limit = 300, whereExpression = $$"APPROX_VECTOR_DISTANCE(vector, $vector) < 0.5 OR catid = 'cat1'")
         }
     }
 

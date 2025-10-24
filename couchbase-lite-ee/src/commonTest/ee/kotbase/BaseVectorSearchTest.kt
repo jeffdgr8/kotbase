@@ -216,9 +216,9 @@ abstract class BaseVectorSearchTest : BaseDbTest() {
             val expr = vectorExpression ?: wordsQueryDefaultExpression()
 
             if (metric != null) {
-                append("ORDER BY APPROX_VECTOR_DISTANCE($expr, \$vector, \"$metric\") ")
+                append($$"""ORDER BY APPROX_VECTOR_DISTANCE($$expr, $vector, "$$metric") """)
             } else {
-                append("ORDER BY APPROX_VECTOR_DISTANCE($expr, \$vector) ")
+                append($$"ORDER BY APPROX_VECTOR_DISTANCE($$expr, $vector) ")
             }
 
             append("LIMIT $limit")
