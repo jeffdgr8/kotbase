@@ -234,6 +234,104 @@ SELECT * FROM route r JOIN airline a ON r.airlineid = meta(a).id WHERE a.country
     SELECT * FROM travel-sample r JOIN travel-sample a ON r.airlineid = a.meta.id WHERE a.country = "France"
     ```
 
+## Array UNNEST
+
+### Purpose
+
+You can use `UNNEST` in queries to unpack arrays within a document into individual rows. This functionality makes it
+possible to join them with its parent object in the query.
+
+`UNNEST` is used within the `FROM` clause and can be chained to perform multi-level `UNNEST`.
+
+You can also use a new type of index, the [Array Index](indexing.md#array-indexing), to allow querying with `UNNEST`
+more efficiently.
+
+!!! note
+
+    Couchbase Lite currently supports inner `UNNEST` only.
+
+### Syntax
+
+The syntax for `UNNEST` is shown below:
+
+```sql
+unnestClause = UNNEST expr ( ‘AS’? alias)?
+```
+
+!!! warning "Caution"
+
+    `"unnest"` will be defined as a new keyword in the SQL++ syntax. You cannot use the term as an identifier for a property name or data source unless you escape it using backticks.
+
+### Examples
+
+For examples of using Array Indexes in conjunction with `UNNEST`, see [Array Index](indexing.md#array-indexing).
+
+We are also accessing the current database using the shorthand notation `_` — see the [FROM](#from) clause for more on
+data source selection and [Query Parameters](#query-parameters) for more on parameterized queries.
+
+The following examples will use the example JSON document below to query results from:
+
+```json
+{
+  "Name": "Sam",
+  "contacts": [
+    {
+      "type": "primary",
+      "address": { "street": "1 St", "city": "San Pedro", "state": "CA" },
+      "phones": [
+        { "type": "home", "number": "310-123-4567" },
+        { "type": "mobile", "number": "310-123-6789" }
+      ]
+    },
+    {
+      "type": "secondary",
+      "address": { "street": "5 St", "city": "Seattle", "state": "WA" },
+      "phones": [
+        { "type": "home", "number": "206-123-4567" },
+        { "type": "mobile", "number": "206-123-6789" }
+      ]
+    }
+  ],
+  "likes": ["soccer", "travel"]
+}
+```
+
+Using the document above we can perform queries on a single nested array like so:
+
+```sql
+SELECT name, interest FROM _ UNNEST likes as interest WHERE interest = "travel"
+```
+
+The query above will produce the following output from the document:
+
+```json
+{ "name": "Sam", "like": "travel" }
+```
+
+You can perform similar operations on nested arrays:
+
+```sql
+SELECT name, contact.type, phone.number
+FROM profiles
+UNNEST contacts as contact
+UNNEST contact.phones as phone
+WHERE phone.type = "mobile"
+```
+
+The query above will then produce the following output:
+
+```json
+{ "name": "Sam", "type": "primary", "number": "310-123-6789" }
+{ "name": "Sam", "type": "secondary", "number": "206-123-6789" }
+```
+
+The output demonstrates retrieval of both primary and secondary contact numbers listed as type `"mobile"`.
+
+!!! important
+
+    Array literals are not supported in CBL {{ version_short }}. Attempting to create a query with array literals will
+    return an error.
+
 ## WHERE statement
 
 ### Purpose
@@ -1088,12 +1186,18 @@ parenExprs = '(' ( expression (_ ',' _ expression )* )? ')'
 
 **Table 13. Date and Time Functions**
 
-| <div style="min-width:144px">Function</div> | Description                                                                                                                       |
-|:--------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------|
-| `STR_TO_MILLIS(expr)`                       | Returns the number of milliseconds since the unix epoch of the given ISO 8601 date input string.                                  |
-| `STR_TO_UTC(expr)`                          | Returns the ISO 8601 UTC date time string of the given ISO 8601 date input string.                                                |
-| `MILLIS_TO_STR(expr)`                       | Returns a ISO 8601 date time string in device local timezone of the given number of milliseconds since the unix epoch expression. |
-| `MILLIS_TO_UTC(expr)`                       | Returns the UTC ISO 8601 date time string of the given number of milliseconds since the unix epoch expression.                    |
+| <div style="min-width:144px">Function</div>                                                                                                                                                                         | Arguments                                                                                                                                                                                                                                                                                                                                                       | Return Value                                                                                                                                                                                                                                                                                    |
+|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `STR_TO_MILLIS(date1)`<br><br>Coverts a date string to Epoch/UNIX milliseconds.                                                                                                                                     | <ul><li>`date1` - A valid date string.</li></ul>                                                                                                                                                                                                                                                                                                                | Returns an integer containing the converted date string into Epoch/UNIX milliseconds.                                                                                                                                                                                                           |
+| `STR_TO_UTC(date1)`<br><br>Converts a date string into the equivalent date in UTC.                                                                                                                                  | <ul><li>`date1` - A valid date string.</li></ul>                                                                                                                                                                                                                                                                                                                | Returns a date string representing the date string converted to UTC.<br><br>The output date format follows the date format of the input date. Returns `null` if an invalid date format is provided.                                                                                             |
+| `STR_TO_TZ(date1, tz)`<br><br>Converts a date string to it’s equivalent in the specified timezone.                                                                                                                  | <ul><li>`date1` - A valid date string. This is converted to UTC.</li><li>`tz` - An integer that represents minutes offset from UTC. For example, `UTC-5` would be represented as `-300`.</li></ul>                                                                                                                                                              | Returns a date string representing the date string converted to the specified timezone.<br><br>Returns `null` if an invalid date format is provided.                                                                                                                                            |
+| `MILLIS_TO_STR(date1)`<br><br>Converts an Epoch/UNIX timestamp into the specified date string format.                                                                                                               | <ul><li>`date1` - An integer representing an Epoch/UNIX timestamp in millseconds.                                                                                                                                                                                                                                                                               | Returns a date string representing the local date.<br><br>Returns `null` if an invalid timestamp is provided.                                                                                                                                                                                   |
+| `MILLIS_TO_UTC(date1)`<br><br>Converts an Epoch/UNIX timestamp into a local time date string.                                                                                                                       | <ul><li>`date1` - An integer representing an Epoch/UNIX timestamp in millseconds.</li></ul>                                                                                                                                                                                                                                                                     | Returns a date string representing the date in UTC.<br><br>Returns `null` if an invalid timestamp is provided.                                                                                                                                                                                  |
+| `MILLIS_TO_TZ(date1,tz, [fmt])`<br><br>Converts an Epoch/UNIX timestamp into the specified time zone in the specified date string format.                                                                           | <ul><li>`date1` - An integer representing an Epoch/UNIX timestamp in milliseconds.</li><li>`tz` - An integer that represents minutes offset from UTC. For example, `UTC-5` would be represented as `-300`.</li><li>`fmt` - An optional string parameter representing a date format to output the result as.</li></ul>                                           | Returns a date string representing the date in the specified timezone in the specified format.<br><br>If `fmt` is not specified, the output default to the combined full date and time.                                                                                                         |
+| `DATE_DIFF_STR(date1, date2, part)`<br><br>Finds the elapsed time between two date strings. This is measured from `date2` to `date1`.                                                                               | <ul><li>`date1` - A valid date string. This is converted to UTC.</li><li>`date2` - A valid date string. This is converted to UTC.</li><li>`part` - A string representing the date component units to return.</li></ul>                                                                                                                                          | Returns an integer representing the elapsed time measured from `date2` to `date1` (in units based on the specified `part`) between both dates.<br><br>The value is positive if `date1` is greater than `date2`, negative otherwise.<br><br>Returns `null` if any of the parameters are invalid. |
+| `DATE_DIFF_MILLIS(date1, date2, part)`<br><br>Finds the elapsed time between two Epoch/UNIX timestamps.                                                                                                             | <ul><li>`date1` - An integer representing an Epoch/UNIX timestamp in milliseconds.</li><li>`date2` - An integer representing an Epoch/UNIX timestamp in milliseconds.</li><li>`part` - A string representing the date component units to return.</li></ul>                                                                                                      | Returns an integer representing the elapsed time measured from `date2` to `date1` (in units based on the specified `part`) between both dates.<br><br>The value is positive if `date1` is greater than `date2`, negative otherwise.<br><br>Returns `null` if any of the parameters are invalid. |
+| `DATE_ADD_STR(date1, n, part)`<br><br>Performs date arithmetic on a date string. For example `DATE_ADD_STR("2024-03-20T15:43:01+0000", 3, "day")` adds 3 days to the provided date.                                 | <ul><li>`date1` - A valid date string. This is converted to UTC.</li><li>`n` - An integer or expression that evaluates to an integer. A positive value will increment the date component whereas a negative value will decrement the date component.</li><li>`part` - A string representing the component of the date to increment.</li></ul>                   | Returns an integer representing the calculation result as an Epoch/UNIX timestamp in milliseconds.<br><br>Returns `null` if any of the parameters are invalid.                                                                                                                                  |
+| `DATE_ADD_MILLIS(date1, n, part)`<br><br>Performs date arithmetic on a particular component of an Epoch/UNIX timestamp value. For example `DATE_ADD_STR(1710946158819, 3, 'day')` adds 3 days to the provided date. | <ul><li>`date1` - An integer representing an Epoch/UNIX timestamp in milliseconds.</li><li>`n` - An integer or expression that evaluates to an integer. A positive value will increment the date component whereas a negative value will decrement the date component.</li><li>`part` - A string representing the component of the date to increment.</li></ul> | Returns an integer representing the calculation result as an Epoch/UNIX timestamp in milliseconds.<br><br>Returns `null` if any of the parameters are invalid.                                                                                                                                  |
 
 ### Full Text Search Functions
 
