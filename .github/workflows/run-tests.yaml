@@ -56,7 +56,9 @@ jobs:
           sudo dpkg -i libicu71_71.1-3ubuntu1_amd64.deb
           rm libicu71_71.1-3ubuntu1_amd64.deb
       - name: Run tests
-        run: ./gradlew check
+        # Only run linuxX64Test for now, JVM tests are crashing on Linux
+        # https://www.couchbase.com/forums/t/java-sdk-native-crash-on-linux/41006
+        run: ./gradlew linuxX64Test #./gradlew check
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: failure()
