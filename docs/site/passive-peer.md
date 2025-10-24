@@ -50,9 +50,8 @@ Subsequent sections provide additional details and examples for the main configu
 
 ## Configuration Summary
 
-You should configure and initialize a listener for each Couchbase Lite database instance you want to sync. There is no
-limit on the number of listeners you may configure — [Example 1](#example-1) shows a simple initialization and
-configuration process.
+You should configure and initialize the Listener with a list of collections to sync. There is no limit on the number of
+Listeners you may configure — [Example 1](#example-1) shows a simple initialization and configuration process.
 
 !!! example "<span id='example-1'>Example 1. Listener configuration and initialization</span>"
 
@@ -83,7 +82,7 @@ configuration process.
     listener.start()
     ```
 
-1. Identify the collections from the local database to be used — see [Initialize the Listener
+1. Identify the local database and the collections to be used — see [Initialize the Listener
    Configuration](#initialize-the-listener-configuration)
 2. Optionally, choose a port to use. By default, the system will automatically assign a port — to override this, see
    [Set Port and Network Interface](#set-port-and-network-interface)
@@ -116,23 +115,17 @@ the Passive Peer has authenticated and accepted an Active Peer’s invitation.
 
 ## Initialize the Listener Configuration
 
-Initialize the listener configuration with the collections to sync from the local database — see [Example 
-2](#example-2). All other configuration values take their default setting.
+Initialize the Listener configuration with a list of collections from the local database — see [Example 2](#example-2).
+All other configuration values take their default setting.
 
-Each listener instance serves one Couchbase Lite database. Couchbase sets no hard limit on the number of listeners you
-can initialize.
-
-!!! example "<span id='example-2'>Example 2. Specify Local Database</span>"
+!!! example "<span id='example-2'>Example 2. Specify Local Collections</span>"
 
     ```kotlin
     collections = collections,
     ```
 
-Set the local database using the [`URLEndpointListenerConfiguration`](
-/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/)'s constructor
-[`URLEndpointListenerConfiguration(Database)`](
-/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/-u-r-l-endpoint-listener-configuration.html).  
-The database must be opened before the listener is started.  
+Set the list of local collections using the [`URLEndpointListenerConfiguration`](
+/api/couchbase-lite-ee/kotbase/-u-r-l-endpoint-listener-configuration/).
 
 ## Set Port and Network Interface
 
@@ -238,7 +231,7 @@ re-generate it.
 !!! note
 
     Typically, you will configure the listener’s TLS Identity once during the initial launch and re-use it (from secure
-    storage on any subsequent starts.
+    storage) on any subsequent starts.
 
 Here are some example code snippets showing:
 
@@ -385,8 +378,8 @@ Valid options are:
 * [`ListenerCertificateAuthenticator`](/api/couchbase-lite-ee/kotbase/-listener-certificate-authenticator/) — which
   authenticates the client using a client supplied chain of one or more certificates. You should initialize the
   authenticator using one of the following constructors:
-    * A list of one or more root certificates — the client supplied certificate must end at a certificate in this list
-      if it is to be authenticated
+    * A root certificate, or a list of intermediate certificates and a root certificate — the client supplied
+      certificate must end at a certificate in this list if it is to be authenticated.
     * A block of code that assumes total responsibility for authentication — it must return a boolean response (`true`
       for an authenticated client, or `false` for a failed authentication).
 
