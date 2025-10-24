@@ -140,6 +140,8 @@ nav:
         - Active Peer: active-peer.md
         - Integrate Custom Listener: integrate-custom-listener.md
     - Handling Data Conflicts: handling-data-conflicts.md
-    - Using Logs: using-logs.md
+    - Using Logs:
+      - Legacy Logging API: legacy-logging-api.md
+      - New Logging API: new-logging-api.md
     - Kotlin Extensions: kotlin-extensions.md
   - API Reference: ../api" target="_blank
