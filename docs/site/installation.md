@@ -67,7 +67,7 @@ download it from [GitHub](https://github.com/unicode-org/icu/releases).
 
 !!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
 
-Enterprise users can also download the Couchbase Lite Vector Search extension library.
+Enterprise users can also download the Couchbase Lite [Vector Search](vector-search.md) extension library.
 
 !!! note
 
@@ -77,9 +77,11 @@ Enterprise users can also download the Couchbase Lite Vector Search extension li
     set, [follow these instructions](
     https://www.intel.com/content/www/us/en/support/articles/000090473/processors/intel-core-processors.html).
 
-Install the Vector Search library for each of the platforms your KMP project targets.
+### Install Vector Search Extension Libraries
 
-### Android
+Install the [Vector Search](vector-search.md) library for each of the platforms your KMP project targets.
+
+#### Android
 
 ```kotlin title="build.gradle.kts"
 kotlin {
@@ -95,7 +97,7 @@ kotlin {
 }
 ```
 
-### Java
+#### Java
 
 ```kotlin title="build.gradle.kts"
 kotlin {
@@ -108,7 +110,7 @@ kotlin {
 }
 ```
 
-### iOS + macOS
+#### iOS + macOS
 
 === "Direct Download"
 
@@ -166,7 +168,7 @@ kotlin {
     Xcode displays the name, version and URL of the added `CouchbaseLiteVectorSearch` package.
 
 
-### Linux + Mingw
+#### Linux + Mingw
 
 Before you can use Vector Search, you must [download and install the Vector Search library](
 https://docs.couchbase.com/couchbase-lite/3.2/c/gs-install.html#vs-release-1-0-0) to the location in your project where
@@ -177,7 +179,7 @@ You need to set the `CBLITE_VECTOR_SEARCH_LIB_PATH` environment variable to the 
 the libraries yourself. If this environment variable is not set, then Kotbase will attempt to find the library in the
 current directory.
 
-### Enable vector search extension
+### Enable Vector Search Extension
 
 Enable the vector search extension using the following snippet:
 
