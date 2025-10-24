@@ -38,7 +38,7 @@ internal constructor(
     internal val actual: FLDict
         get() = memory.actual
 
-    protected val release: Boolean
+    internal val release: Boolean
         get() = memory.release
 
     internal open var dbContext: DbContext? = dbContext
