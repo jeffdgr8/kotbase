@@ -730,7 +730,8 @@ in bandwidth consumption as well as throughput improvements, especially when net
 Replications to a Server (for example, a Sync Gateway, or passive listener) automatically use delta sync if the property
 is enabled at database level by the server — see Admin REST API [`delta_sync.enabled`](
 https://docs.couchbase.com/sync-gateway/current/configuration-schema-database.html#delta_sync-enabled) or legacy JSON
-configuration [`databases.$db.delta_sync.enabled`](https://docs.couchbase.com/sync-gateway/current/configuration-properties-legacy.html#databases-this_db-delta_sync-enabled).
+configuration [`databases.$db.delta_sync.enabled`](
+https://docs.couchbase.com/sync-gateway/current/configuration-properties-legacy.html#databases-this_db-delta_sync-enabled).
 
 [Intra-Device](intra-device-sync.md) replications automatically **disable** delta sync, whilst [Peer-to-Peer](
 peer-to-peer-sync.md) replications automatically **enable** delta sync.

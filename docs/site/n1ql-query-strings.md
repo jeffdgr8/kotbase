@@ -807,7 +807,7 @@ $IDENTIFIER
 !!! example "Example 14. Using a Parameter"
 
     ```kotlin
-    val query = database.createQuery("SELECT name WHERE department = \$department")
+    val query = database.createQuery($$"SELECT name WHERE department = $department")
     query.parameters = Parameters().setValue("department", "E001")
     val result = query.execute()
     ```
@@ -1186,7 +1186,7 @@ parenExprs = '(' ( expression (_ ',' _ expression )* )? ')'
 
 **Table 13. Date and Time Functions**
 
-| <div style="min-width:144px">Function</div>                                                                                                                                                                         | Arguments                                                                                                                                                                                                                                                                                                                                                       | Return Value                                                                                                                                                                                                                                                                                    |
+| <div style="min-width:105px">Function</div>                                                                                                                                                                         | Arguments                                                                                                                                                                                                                                                                                                                                                       | Return Value                                                                                                                                                                                                                                                                                    |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `STR_TO_MILLIS(date1)`<br><br>Coverts a date string to Epoch/UNIX milliseconds.                                                                                                                                     | <ul><li>`date1` - A valid date string.</li></ul>                                                                                                                                                                                                                                                                                                                | Returns an integer containing the converted date string into Epoch/UNIX milliseconds.                                                                                                                                                                                                           |
 | `STR_TO_UTC(date1)`<br><br>Converts a date string into the equivalent date in UTC.                                                                                                                                  | <ul><li>`date1` - A valid date string.</li></ul>                                                                                                                                                                                                                                                                                                                | Returns a date string representing the date string converted to UTC.<br><br>The output date format follows the date format of the input date. Returns `null` if an invalid date format is provided.                                                                                             |
@@ -1331,7 +1331,7 @@ To specify substitutable parameters within your query string prefix the name wit
 
     ```kotlin
     val query = database.createQuery(
-        "SELECT META().id AS id FROM _ WHERE type = \$type"
+        $$"SELECT META().id AS id FROM _ WHERE type = $type"
     ) 
     
     query.parameters = Parameters().setString("type", "hotel") 
