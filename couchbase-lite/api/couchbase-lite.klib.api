@@ -2754,8 +2754,6 @@ open class kotbase/DataSource { // kotbase/DataSource|null[0]
 
 // Targets: [linux, mingwX64]
 open class kotbase/Dictionary : kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Dictionary|null[0]
-    final val release // kotbase/Dictionary.release|{}release[0]
-        final fun <get-release>(): kotlin/Boolean // kotbase/Dictionary.release.<get-release>|<get-release>(){}[0]
     open val count // kotbase/Dictionary.count|{}count[0]
         open fun <get-count>(): kotlin/Int // kotbase/Dictionary.count.<get-count>|<get-count>(){}[0]
     open val keys // kotbase/Dictionary.keys|{}keys[0]
