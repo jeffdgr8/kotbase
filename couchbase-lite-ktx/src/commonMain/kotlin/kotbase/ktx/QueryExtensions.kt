@@ -75,7 +75,7 @@ public fun <T : Any> Query.asObjectsFlow(
 
 @Deprecated("For binary compatibility", level = DeprecationLevel.HIDDEN)
 @JvmSynthetic
-@JvmName("asObjectsFlow\$default")
+@JvmName($$"asObjectsFlow$default")
 public fun <T : Any> Query.asObjectsFlow(
     coroutineContext: CoroutineContext?,
     factory: (Map<String, Any?>) -> T?,

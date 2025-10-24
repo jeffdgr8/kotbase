@@ -238,7 +238,7 @@ class LegacyLogTest : BaseDbTest(useLegacyLogging = true) {
 //    @Test
 //    fun testFileLoggingLogFilename() {
 //        testWithConfiguration(LogLevel.DEBUG, LogFileConfiguration(scratchDirPath!!)) {
-//            Log.e(LogDomain.DATABASE, "$$\$TEST MESSAGE")
+//            Log.e(LogDomain.DATABASE, $$$$"$$$TEST MESSAGE")
 //
 //            val files = logFiles
 //            assertTrue(files.size >= 4)

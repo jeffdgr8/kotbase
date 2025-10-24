@@ -52,6 +52,7 @@ kotlin {
     sourceSets.configureEach {
         languageSettings {
             optIn("kotlin.time.ExperimentalTime")
+            enableLanguageFeature("MultiDollarInterpolation")
             if (!name.startsWith("common") &&
                 !name.startsWith("jvm") &&
                 !name.startsWith("android")
