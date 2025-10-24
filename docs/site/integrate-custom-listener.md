@@ -30,7 +30,7 @@ In addition to initializing the database, the Passive Peer must initialize the [
 
 ```kotlin
 val listener = MessageEndpointListener(
-    MessageEndpointListenerConfigurationFactory.newConfig(collections, ProtocolType.MESSAGE_STREAM)
+    MessageEndpointListenerConfiguration(collections, ProtocolType.MESSAGE_STREAM)
 )
 ```
 
@@ -86,10 +86,8 @@ Then, a [`Replicator`](/api/couchbase-lite-ee/kotbase/-replicator/) is instantia
 ```kotlin
 // Create the replicator object.
 val repl = Replicator(
-    ReplicatorConfigurationFactory.newConfig(
-        collections = mapOf(collections to null),
-        target = messageEndpoint
-    )
+    ReplicatorConfiguration(messageEndpoint)
+        .addCollections(collections)
 )
 
 // Start the replication.

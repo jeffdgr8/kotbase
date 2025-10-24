@@ -183,12 +183,10 @@ the default conflict resolution will be applied.
 !!! example "Example 3. A Conflict Resolver"
 
     ```kotlin
-    val collectionConfig = CollectionConfigurationFactory.newConfig(conflictResolver = localWinsResolver)
+    val collectionConfig = CollectionConfiguration(conflictResolver = localWinsResolver)
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("ws://localhost:4984/mydatabase"),
-            collections = mapOf(srcCollections to collectionConfig)
-        )
+        ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+            .addCollections(srcCollections, collectionConfig)
     )
     
     // Start the replicator

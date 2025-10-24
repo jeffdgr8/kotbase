@@ -57,7 +57,7 @@ Listeners you may configure — [Example 1](#example-1) shows a simple initializ
 
     ```kotlin
     val listener = URLEndpointListener(
-        URLEndpointListenerConfigurationFactory.newConfig(
+        URLEndpointListenerConfiguration(
             collections = collections,
             port = 55990,
             networkInterface = "wlan0",
@@ -432,7 +432,7 @@ There are two ways to authenticate a client:
     
     // accept only clients signed by the corp cert
     val listener = URLEndpointListener(
-        URLEndpointListenerConfigurationFactory.newConfig(
+        URLEndpointListenerConfiguration(
             // get the identity 
             collections = collections,
             identity = validId,
@@ -505,7 +505,7 @@ running — see [Example 13](#example-13).
     ```kotlin
     // Initialize the listener
     val listener = URLEndpointListener(
-        URLEndpointListenerConfigurationFactory.newConfig(
+        URLEndpointListenerConfiguration(
             collections = collections,
             port = 55990,
             networkInterface = "wlan0",

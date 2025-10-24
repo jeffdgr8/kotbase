@@ -125,29 +125,26 @@ You should configure and initialize a replicator for each Couchbase Lite databas
     ```kotlin
     val repl = Replicator(
         // initialize the replicator configuration
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("wss://listener.com:8954"),
+        ReplicatorConfiguration(URLEndpoint("wss://listener.com:8954"))
+            .addCollections(collections).apply {
+                // Set replicator type
+                type = ReplicatorType.PUSH_AND_PULL
     
-            collections = mapOf(collections to null),
+                // Configure Sync Mode
+                isContinuous = false // default value
     
-            // Set replicator type
-            type = ReplicatorType.PUSH_AND_PULL,
+                // set auto-purge behavior
+                // (here we override default)
+                isAutoPurgeEnabled = false
     
-            // Configure Sync Mode
-            continuous = false, // default value
+                // Configure Server Authentication --
+                // only accept self-signed certs
+                isAcceptOnlySelfSignedServerCertificate = true
     
-            // set auto-purge behavior
-            // (here we override default)
-            enableAutoPurge = false,
-    
-            // Configure Server Authentication --
-            // only accept self-signed certs
-            acceptOnlySelfSignedServerCertificate = true,
-    
-            // Configure the credentials the
-            // client will provide if prompted
-            authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
-        )
+                // Configure the credentials the
+                // client will provide if prompted
+                authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
+            }
     )
     
     // Optionally add a change listener
@@ -293,14 +290,14 @@ When necessary you can adjust any or all of those configurable values — see [E
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("ws://localhost:4984/mydatabase"),
-            collections = mapOf(collections to null),
-            //  other config params as required . .
-            heartbeat = 150, 
-            maxAttempts = 20,
-            maxAttemptWaitTime = 600
-        )
+        ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+            .addCollections(collections)
+            .apply {
+                //  other config params as required . .
+                heartbeat = 150
+                maxAttempts = 20
+                maxAttemptWaitTime = 600
+            }
     )
     repl.start()
     this.replicator = repl
@@ -417,11 +414,9 @@ shows how to initiate a one-shot replication as the user **username** with the p
     ```kotlin
     // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("ws://localhost:4984/mydatabase"),
-            collections = mapOf(collections to null),
-            authenticator = BasicAuthenticator("username", "password".toCharArray())
-        )
+        ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+            .addCollections(collections)
+            .setAuthenticator(BasicAuthenticator("username", "password".toCharArray()))
     )
     repl.start()
     this.replicator = repl
@@ -446,11 +441,9 @@ endpoint.
     ```kotlin
     // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("ws://localhost:4984/mydatabase"),
-            collections = mapOf(collections to null),
-            authenticator = SessionAuthenticator("904ac010862f37c8dd99015a33ab5a3565fd8447")
-        )
+        ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+            .addCollections(collections)
+            .setAuthenticator(SessionAuthenticator("904ac010862f37c8dd99015a33ab5a3565fd8447"))
     )
     repl.start()
     this.replicator = repl
@@ -468,11 +461,9 @@ done by a proxy server (between Couchbase Lite and Sync Gateway) — see [Exampl
     ```kotlin
     // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("ws://localhost:4984/mydatabase"),
-            collections = mapOf(collections to null),
-            headers = mapOf("CustomHeaderName" to "Value")
-        )
+        ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+            .addCollections(collections)
+            .setHeaders(mapOf("CustomHeaderName" to "Value"))
     )
     repl.start()
     this.replicator = repl
@@ -489,16 +480,14 @@ The push filter allows an app to push a subset of a database to the server. This
 high-priority documents could be pushed first, or documents in a "draft" state could be skipped.
 
 ```kotlin
-val collectionConfig = CollectionConfigurationFactory.newConfig(
+val collectionConfig = CollectionConfiguration(
     pushFilter = { _, flags -> flags.contains(DocumentFlag.DELETED) }
 )
 
 // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
 val repl = Replicator(
-    ReplicatorConfigurationFactory.newConfig(
-        target = URLEndpoint("ws://localhost:4984/mydatabase"),
-        collections = mapOf(collections to collectionConfig)
-    )
+    ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+        .addCollections(collections, collectionConfig)
 )
 repl.start()
 this.replicator = repl
@@ -520,16 +509,14 @@ important security mechanism in a peer-to-peer topology with peers that are not 
     on the server) whereas a pull replication filter is applied to a document once it has been downloaded.
 
 ```kotlin
-val collectionConfig = CollectionConfigurationFactory.newConfig(
+val collectionConfig = CollectionConfiguration(
     pullFilter = { document, _ -> "draft" == document.getString("type") }
 )
 
 // Create replicator (be sure to hold a reference somewhere that will prevent the Replicator from being GCed)
 val repl = Replicator(
-    ReplicatorConfigurationFactory.newConfig(
-        target = URLEndpoint("ws://localhost:4984/mydatabase"),
-        collections = mapOf(collections to collectionConfig)
-    )
+    ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+        .addCollections(collections, collectionConfig)
 )
 repl.start()
 this.replicator = repl
@@ -769,29 +756,27 @@ replicator running using [`start()`](/api/couchbase-lite-ee/kotbase/-replicator/
     val repl = Replicator( 
     
         // initialize the replicator configuration
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("wss://listener.com:8954"),
-    
-            collections = mapOf(collections to null),
-    
-            // Set replicator type
-            type = ReplicatorType.PUSH_AND_PULL,
-    
-            // Configure Sync Mode
-            continuous = false, // default value
-    
-            // set auto-purge behavior
-            // (here we override default)
-            enableAutoPurge = false,
-    
-            // Configure Server Authentication --
-            // only accept self-signed certs
-            acceptOnlySelfSignedServerCertificate = true,
-    
-            // Configure the credentials the
-            // client will provide if prompted
-            authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
-        )
+        ReplicatorConfiguration(URLEndpoint("wss://listener.com:8954"))
+            .addCollections(collections)
+            .apply {
+                // Set replicator type
+                type = ReplicatorType.PUSH_AND_PULL
+
+                // Configure Sync Mode
+                isContinuous = false // default value
+
+                // set auto-purge behavior
+                // (here we override default)
+                isAutoPurgeEnabled = false
+
+                // Configure Server Authentication --
+                // only accept self-signed certs
+                isAcceptOnlySelfSignedServerCertificate = true
+
+                // Configure the credentials the
+                // client will provide if prompted
+                authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
+            }
     )
     
     // Start replicator
@@ -1028,11 +1013,9 @@ methods:
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("ws://localhost:4984/mydatabase"),
-            collections = mapOf(setOf(collection) to null),
-            type = ReplicatorType.PUSH
-        )
+        ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+            .addCollection(collection)
+            .setType(ReplicatorType.PUSH)
     )
     
     val pendingDocs = repl.getPendingDocumentIds()
@@ -1189,11 +1172,9 @@ This example loads the certificate from the application sandbox, then converts i
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("wss://localhost:4984/mydatabase"),
-            collections = mapOf(collections to null),
-            pinnedServerCertificate = PlatformUtils.getAsset("cert.cer")?.readByteArray()
-        )
+        ReplicatorConfiguration(URLEndpoint("wss://localhost:4984/mydatabase"))
+            .addCollections(collections)
+            .setPinnedServerCertificate(PlatformUtils.getAsset("cert.cer")?.readByteArray())
     )
     repl.start()
     this.replicator = repl

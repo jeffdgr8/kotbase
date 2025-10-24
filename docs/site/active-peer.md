@@ -53,29 +53,27 @@ You should configure and initialize a replicator for each Couchbase Lite databas
     ```kotlin
     val repl = Replicator(
         // initialize the replicator configuration
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("wss://listener.com:8954"),
-    
-            collections = mapOf(
-                collections to CollectionConfiguration(
+        ReplicatorConfiguration(URLEndpoint("wss://listener.com:8954"))
+            .addCollections(
+                collections,
+                CollectionConfiguration(
                     conflictResolver = ReplicatorConfiguration.DEFAULT_CONFLICT_RESOLVER
                 )
-            ),
+            ).apply {
+                // Set replicator type
+                type = ReplicatorType.PUSH_AND_PULL
     
-            // Set replicator type
-            type = ReplicatorType.PUSH_AND_PULL,
+                // Configure Sync Mode
+                isContinuous = false // default value
     
-            // Configure Sync Mode
-            continuous = false, // default value
+                // Configure Server Authentication --
+                // only accept self-signed certs
+                isAcceptOnlySelfSignedServerCertificate = true
     
-            // Configure Server Authentication --
-            // only accept self-signed certs
-            acceptOnlySelfSignedServerCertificate = true,
-    
-            // Configure the credentials the
-            // client will provide if prompted
-            authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
-        )
+                // Configure the credentials the
+                // client will provide if prompted
+                authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
+            }
     )
     
     // Optionally add a change listener
@@ -151,10 +149,8 @@ configuration values, found in [`Defaults.Replicator`](/api/couchbase-lite-ee/ko
 
     ```kotlin
     // initialize the replicator configuration
-    val config = ReplicatorConfigurationFactory.newConfig(
-        target = URLEndpoint("wss://10.0.2.2:8954/travel-sample"),
-        collections = mapOf(collections to null)
-    )
+    val config = ReplicatorConfiguration(URLEndpoint("wss://10.0.2.2:8954/travel-sample"))
+        .addCollections(collections)
     ```
 
 Note use of the scheme prefix (`wss://` to ensure TLS encryption — strongly recommended in production — or `ws://`).
@@ -220,14 +216,14 @@ When necessary you can adjust any or all of those configurable values — see [E
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("ws://localhost:4984/mydatabase"),
-            collections = mapOf(collections to null),
-            //  other config params as required . .
-            heartbeat = 150, 
-            maxAttempts = 20,
-            maxAttemptWaitTime = 600
-        )
+        ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+            .addCollections(collections)
+            .apply {
+                //  other config params as required . .
+                heartbeat = 150
+                maxAttempts = 20
+                maxAttemptWaitTime = 600
+            }
     )
     repl.start()
     this.replicator = repl
@@ -367,29 +363,27 @@ starting the replicator running using [`start()`](/api/couchbase-lite-ee/kotbase
     // to prevent the Replicator from being GCed
     val repl = Replicator(
         // initialize the replicator configuration
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("wss://listener.com:8954"),
-    
-            collections = mapOf(collections to null),
-    
-            // Set replicator type
-            type = ReplicatorType.PUSH_AND_PULL,
-    
-            // Configure Sync Mode
-            continuous = false, // default value
-    
-            // set auto-purge behavior
-            // (here we override default)
-            enableAutoPurge = false,
-    
-            // Configure Server Authentication --
-            // only accept self-signed certs
-            acceptOnlySelfSignedServerCertificate = true,
-    
-            // Configure the credentials the
-            // client will provide if prompted
-            authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
-        )
+        ReplicatorConfiguration(URLEndpoint("wss://listener.com:8954"))
+            .addCollections(collections)
+            .apply {
+                // Set replicator type
+                type = ReplicatorType.PUSH_AND_PULL
+
+                // Configure Sync Mode
+                isContinuous = false // default value
+
+                // set auto-purge behavior
+                // (here we override default)
+                isAutoPurgeEnabled = false
+
+                // Configure Server Authentication --
+                // only accept self-signed certs
+                isAcceptOnlySelfSignedServerCertificate = true
+
+                // Configure the credentials the
+                // client will provide if prompted
+                authenticator = BasicAuthenticator("PRIVUSER", "let me in".toCharArray())
+            }
     )
     
     // Start replicator
@@ -554,11 +548,9 @@ methods:
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = URLEndpoint("ws://localhost:4984/mydatabase"),
-            collections = mapOf(setOf(collection) to null),
-            type = ReplicatorType.PUSH
-        )
+        ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/mydatabase"))
+            .addCollections(collections)
+            .setType(ReplicatorType.PUSH)
     )
     
     val pendingDocs = repl.getPendingDocumentIds(collection)
