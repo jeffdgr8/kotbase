@@ -77,7 +77,7 @@ Enterprise users can also download the Couchbase Lite [Vector Search](vector-sea
     set, [follow these instructions](
     https://www.intel.com/content/www/us/en/support/articles/000090473/processors/intel-core-processors.html).
 
-### Install Vector Search Extension Libraries
+### Install Extension Libraries
 
 Install the [Vector Search](vector-search.md) library for each of the platforms your KMP project targets.
 
@@ -179,7 +179,7 @@ You need to set the `CBLITE_VECTOR_SEARCH_LIB_PATH` environment variable to the 
 the libraries yourself. If this environment variable is not set, then Kotbase will attempt to find the library in the
 current directory.
 
-### Enable Vector Search Extension
+### Enable Extension
 
 Enable the vector search extension using the following snippet:
 
