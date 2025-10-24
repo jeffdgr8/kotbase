@@ -12,11 +12,9 @@ damaged and its data is moved to a different device.
 
     ```kotlin
     val repl = Replicator(
-        ReplicatorConfigurationFactory.newConfig(
-            target = DatabaseEndpoint(targetDb),
-            collections = mapOf(srcCollections to null),
-            type = ReplicatorType.PUSH
-        )
+        ReplicatorConfiguration(DatabaseEndpoint(targetDb))
+            .setType(ReplicatorType.PUSH)
+            .addCollection(srcCollection)
     )
 
     // Start the replicator

@@ -76,9 +76,8 @@ See also [Finding a Database File](#finding-a-database-file).
     ```kotlin
     val database = Database(
         "my-db",
-        DatabaseConfigurationFactory.newConfig(
-            "path/to/database"
-        )
+        DatabaseConfiguration()
+            .setDirectory("path/to/database")
     )
     ```
 
@@ -124,9 +123,8 @@ encryption key every time the database is opened — see [Example 3](#example-3)
     ```kotlin
     val db = Database(
         "my-db",
-        DatabaseConfigurationFactory.newConfig(
-            encryptionKey = EncryptionKey("PASSWORD")
-        )
+        DatabaseConfiguration()
+            .setEncryptionKey(EncryptionKey("PASSWORD"))
     )
     ```
 
