@@ -26,3 +26,6 @@ expect annotation class IgnoreApple()
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 expect annotation class IgnoreLinuxMingw()
+
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+expect annotation class IgnoreMingw()

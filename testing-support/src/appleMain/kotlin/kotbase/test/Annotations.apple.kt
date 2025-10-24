@@ -23,3 +23,6 @@ actual typealias IgnoreApple = kotlin.test.Ignore
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 actual annotation class IgnoreLinuxMingw
+
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+actual annotation class IgnoreMingw
