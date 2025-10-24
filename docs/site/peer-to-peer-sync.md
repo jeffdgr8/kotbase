@@ -55,14 +55,14 @@ https://docs.couchbase.com/tutorials/cbl-p2p-sync-websockets/swift/cbl-p2p-sync-
 Couchbase Lite’s Peer-to-Peer synchronization solution provides support for cross-platform synchronization, for example,
 between Android and iOS devices.
 
-Each listener instance serves one Couchbase Lite database. However, there is no hard limit on the number of listener
-instances you can associate with a database.
+Each listener instance serves a single Couchbase Lite database, enabling synchronization for documents within specified
+collections of that database.
 
-Having a listener on a database still allows you to open replications to the other clients. For example, a listener can
-actively begin replicating to other listeners while listening for connections. These replications can be for the same or
+Having a Listener on a database still allows you to open replications to the other clients. For example, a Listener can
+actively begin replicating to other Listeners while listening for connections. These replications can be for the same or
 a different database.
 
-The listener will automatically select a port to use or a user-specified port. It will also listen on all available
+The Listener will automatically select a port to use or a user-specified port. It will also listen on all available
 networks, unless you specify a specific network.
 
 ### Security
@@ -107,7 +107,7 @@ reconnection.
 Optional delta-sync support is provided but is inactive by default.
 
 Delta-sync can be enabled on a per-replication basis provided that the databases involved are also configured to permit
-it. Statistics on delta-sync usage are available, including the total number of revisions sent as deltas.
+it.
 
 ### Conflict Resolution
 
@@ -257,43 +257,161 @@ level. The default value is `false`.
 
 ## Security
 
-### Authentication
+Couchbase Lite’s Peer-to-Peer synchronization ensures secure communication through TLS and supports multiple
+authentication mechanisms.
 
-Peer-to-Peer sync supports [Basic Authentication](/api/couchbase-lite-ee/kotbase/-listener-password-authenticator/) and
-[TLS Authentication](/api/couchbase-lite-ee/kotbase/-listener-certificate-authenticator/). For anything other than test
-deployments, we strongly encourage the use of TLS. In fact, Peer-to-Peer sync using `URLEndpointListener` is encrypted
-using TLS by default.
+### TLS Identity
 
-The authentication mechanism is defined at the endpoint level, meaning that it is independent of the database being
-replicated. For example, you may use basic authentication on one instance and TLS authentication on another when
-replicating multiple database instances.
+The URLEndpointListener uses a TLS identity to establish secure connections. (A TLS identity is an RSA public/private
+key pair and certificate.) The identity can include either a certificate signed by a trusted Certificate Authority (CA),
+or a self-signed certificate. If no identity is specified, the listener automatically generates an anonymous,
+self-signed certificate, which is primarily used for encryption, but not for authentication.
+
+When replicating with a listener that uses a self-signed certificate, the replicator (client) can be configured to skip
+certificate validation. This option is useful for development or testing, but not recommended for production.
 
 !!! note
 
     The minimum supported version of TLS is TLS 1.2.
 
-Peer-to-Peer synchronization using `URLEndpointListener` supports certificate based authentication of the server and-or
-listener:
+### Authentication Mechanisms
 
-* Replicator certificates can be: self-signed, from trusted CA, or anonymous (system generated).
-* Listeners certificates may be: self-signed or trusted CA signed.<br><br>
-  Where a TLS certificate is not explicitly specified for the listener, the listener implementation will generate
-  anonymous certificate to use for encryption.
-* The `URLEndpointListener` supports the ability to opt out of TLS encryption communication.<br><br>
-  Active clients replicating with a URLEndpointListener have the option to skip validation of server certificates when
-  the listener is configured with self-signed certificates.<br><br>
-  This option is ignored when dealing with CA certificates.
+The URLEndpointListener supports two authentication mechanisms:
+
+* Basic Authentication, using a username and password.
+* Certificate Authentication, which authenticates clients using client certificates, and is only available when TLS is
+  enabled.
 
 ### Using Secure Storage
 
 TLS and its associated keys and certificates might require using secure storage to minimize the chances of a security
-breach. The implementation of this storage differs from platform to platform. [Table 1](#table-1) summarizes the secure
-storage used to store keys and certificates for each platform.
+breach. The implementation of this storage differs from platform to platform. This table summarizes the secure storage
+used to store keys and certificates.
 
-<span id='table-1'>**Table 1. Secure storage details**</span>
+=== "Android"
 
-| Platform  | Key & Certificate Storage | Notes                                                                                                                                                                                                                                                                                   | Reference                                                                     |
-|:---------:|:-------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------|
-|  Android  |  Android System KeyStore  | <ul><li>Android KeyStore was introduced from Android API 18.</li><li>Android KeyStore security has evolved over time to provide more secure support. Please check [this document](https://source.android.com/security/keystore) for more info.</li></ul>                                | [link](https://developer.android.com/training/articles/keystore)              |
-| MacOS/iOS |         KeyChain          | Use `kSecAttrLabel` of the `SecCertificate` to store the `TLSIdentity`’s label                                                                                                                                                                                                          | [link](https://developer.apple.com/documentation/security/keychain_services)  |
-|   Java    |  User Specified KeyStore  | <ul><li>The KeyStore represents a storage facility for cryptographic keys and certificates. It’s users’ choice to decide whether to persist the KeyStore or not.</li><li>The supported KeyStore types are PKCS12 (Default from Java 9) and JKS (Default on Java 8 and below).</li></ul> | [link](https://docs.oracle.com/javase/7/docs/api/java/security/KeyStore.html) |
+    **Secure storage details**
+
+    <!-- can't have no headers in markdown table, so using raw html -->
+    <table><tbody>
+    <tr>
+    <th>Platform</th>
+    <td>Android</td>
+    </tr>
+    <tr>
+    <th>Key Storage</th>
+    <td>Android System KeyStore</td>
+    </tr>
+    <tr>
+    <th>Certificate Storage</th>
+    <td>Android System KeyStore</td>
+    </tr>
+    <tr>
+    <th>Notes</th>
+    <td><ul>
+    <li>Android KeyStore was introduced from Android API 18.</li>
+    <li>Android KeyStore security has evolved over time to provide more secure support. Please check this document for
+    more info: [Hardware-backed Keystore](https://source.android.com/security/keystore).</li>
+    </ul></td>
+    </tr>
+    <tr>
+    <th>Reference</th>
+    <td>[Android Keystore system](https://developer.android.com/training/articles/keystore)</td>
+    </tr>
+    </tbody></table>
+
+=== "macOS/iOS"
+
+    **Secure storage details**
+
+    <!-- can't have no headers in markdown table, so using raw html -->
+    <table><tbody>
+    <tr>
+    <th>Platform</th>
+    <td>macOS/iOS</td>
+    </tr>
+    <tr>
+    <th>Key Storage</th>
+    <td>KeyChain</td>
+    </tr>
+    <tr>
+    <th>Certificate Storage</th>
+    <td>KeyChain</td>
+    </tr>
+    <tr>
+    <th>Notes</th>
+    <td>Use kSecAttrLabel of the SecCertificate to store the TLSIdentity’s label</td>
+    </tr>
+    <tr>
+    <th>Reference</th>
+    <td>[Keychain services](https://developer.apple.com/documentation/security/keychain_services)</td>
+    </tr>
+    </tbody></table>
+
+=== "Java"
+
+    **Secure storage details**
+
+    <!-- can't have no headers in markdown table, so using raw html -->
+    <table><tbody>
+    <tr>
+    <th>Platform</th>
+    <td>Java</td>
+    </tr>
+    <tr>
+    <th>Key Storage</th>
+    <td>User Specified KeyStore</td>
+    </tr>
+    <tr>
+    <th>Certificate Storage</th>
+    <td>User Specified KeyStore</td>
+    </tr>
+    <tr>
+    <th>Notes</th>
+    <td><ul>
+    <li>The KeyStore represents a storage facility for cryptographic keys and certificates. It’s users' choice to decide
+    whether to persist the KeyStore or not.</li>
+    <li>The supported KeyStore types are PKCS12 (Default from Java 9) and JKS (Default on Java 8 and below).</li>
+    </ul></td>
+    </tr>
+    <tr>
+    <th>Reference</th>
+    <td>[Class KeyStore](https://docs.oracle.com/javase/7/docs/api/java/security/KeyStore.html)</td>
+    </tr>
+    </tbody></table>
+
+=== "Windows"
+
+    **Secure storage details**
+
+    <!-- can't have no headers in markdown table, so using raw html -->
+    <table><tbody>
+    <tr>
+    <th>Platform</th>
+    <td>Windows</td>
+    </tr>
+    <tr>
+    <th>Key Storage</th>
+    <td>CNG Key Storage Provider</td>
+    </tr>
+    <tr>
+    <th>Certificate Storage</th>
+    <td>CNG Key Storage Provider</td>
+    </tr>
+    <th>Reference</th>
+    <td>[Key Storage and Retrieval](https://learn.microsoft.com/en-us/windows/win32/seccng/key-storage-and-retrieval)
+    </td>
+    </tr>
+    </tbody></table>
+
+=== "Linux"
+
+    As Linux-based operating systems do not have a standard or common secure key storage, Couchbase Lite C does not
+    support persisting generated identities with the specified label on this platform.
+    
+    As an alternative, Couchbase Lite C enables developers to implement their own cryptographic operations through a set
+    of callbacks, enabling certificate signing and other cryptographic tasks during the TLS handshake using a private
+    key stored in their preferred secure key storage. These callbacks allow operations like signing data, with the
+    private key remaining securely stored and never exposed. The key idea is that all cryptographic operations are
+    performed within secure key storage, ensuring that the private key is protected throughout the TLS handshake
+    process.
