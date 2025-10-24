@@ -220,9 +220,9 @@ where the `public_likes` array property contains a value equal to "Armani Langwo
 
 ```json
 {
-    "_id": "hotel123",
-    "name": "Apple Droid",
-    "public_likes": ["Armani Langworth", "Elfrieda Gutkowski", "Maureen Ruecker"]
+  "_id": "hotel123",
+  "name": "Apple Droid",
+  "public_likes": ["Armani Langworth", "Elfrieda Gutkowski", "Maureen Ruecker"]
 }
 ```
 
@@ -504,11 +504,11 @@ country and timezone.
 
 ```json title="Data Model for Example"
 {
-    "_id": "airport123",
-    "type": "airport",
-    "country": "United States",
-    "geo": { "alt": 456 },
-    "tz": "America/Anchorage"
+  "_id": "airport123",
+  "type": "airport",
+  "country": "United States",
+  "geo": { "alt": 456 },
+  "tz": "America/Anchorage"
 }
 ```
 
