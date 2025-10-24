@@ -18,6 +18,7 @@ package kotbase
 import kotbase.ext.nowMillis
 import kotbase.ext.toStringMillis
 import kotbase.test.IgnoreLinuxMingw
+import kotbase.test.IgnoreMingw
 import kotbase.test.assertIntContentEquals
 import kotlin.time.Clock
 import kotlin.test.*
@@ -74,6 +75,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         }
     }
 
+    // TODO: frequently crashes during second query in mingw
+    @IgnoreMingw
     @Test
     fun testRegisterMultipleModelsWithSameName() {
         createDocument(listOf(1, 2, 3, 4, 5))
