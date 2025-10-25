@@ -466,11 +466,11 @@ public final class kotbase/DatabaseConfiguration : kotbase/internal/DelegatedCla
 	public final fun setMMapEnabled (Z)V
 }
 
-public final class kotbase/DatabaseConfigurationKt {
+public final class kotbase/DatabaseConfigurationEEKt {
 	public static final fun setEncryptionKey (Lkotbase/DatabaseConfiguration;Lcom/couchbase/lite/EncryptionKey;)Lkotbase/DatabaseConfiguration;
 }
 
-public final class kotbase/DatabaseConfiguration_jvmCommonKt {
+public final class kotbase/DatabaseConfigurationEE_jvmCommonKt {
 	public static final fun getEncryptionKey (Lkotbase/DatabaseConfiguration;)Lcom/couchbase/lite/EncryptionKey;
 	public static final fun setEncryptionKey (Lkotbase/DatabaseConfiguration;Lcom/couchbase/lite/EncryptionKey;)V
 }
@@ -535,7 +535,7 @@ public final class kotbase/Defaults$Replicator {
 	public final fun getTYPE ()Lkotbase/ReplicatorType;
 }
 
-public final class kotbase/DefaultsKt {
+public final class kotbase/DefaultsEEKt {
 	public static final fun getListener (Lkotbase/Defaults;)Lkotbase/DefaultsListener;
 	public static final fun getVectorIndex (Lkotbase/Defaults;)Lkotbase/DefaultsVectorIndex;
 }
@@ -855,7 +855,7 @@ public final class kotbase/Function {
 	public final fun upper (Lkotbase/Expression;)Lkotbase/Expression;
 }
 
-public final class kotbase/Function_jvmCommonKt {
+public final class kotbase/FunctionEE_jvmCommonKt {
 	public static final fun cosineDistance (Lkotbase/Function;Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
 	public static final fun euclideanDistance (Lkotbase/Function;Lkotbase/Expression;Lkotbase/Expression;)Lkotbase/Expression;
 	public static final fun prediction (Lkotbase/Function;Ljava/lang/String;Lkotbase/Expression;)Lkotbase/PredictionFunction;
@@ -909,7 +909,7 @@ public final class kotbase/IndexBuilder {
 	public final fun valueIndex ([Lkotbase/ValueIndexItem;)Lkotbase/ValueIndex;
 }
 
-public final class kotbase/IndexBuilder_jvmCommonKt {
+public final class kotbase/IndexBuilderEE_jvmCommonKt {
 	public static final fun predictiveIndex (Lkotbase/IndexBuilder;Ljava/lang/String;Lkotbase/Expression;Ljava/util/List;)Lkotbase/PredictiveIndex;
 	public static synthetic fun predictiveIndex$default (Lkotbase/IndexBuilder;Ljava/lang/String;Lkotbase/Expression;Ljava/util/List;ILjava/lang/Object;)Lkotbase/PredictiveIndex;
 }
