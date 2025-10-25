@@ -48,14 +48,22 @@ $dokka.location:kotbase/ReplicatorStatus/toString/#/PointingToDeclaration/couch
 $dokka.location:kotbase/ReplicatorType/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[linux-mingw]entries.html
 $dokka.location:kotbase/ReplicatorType/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[linux-mingw]value-of.html
 $dokka.location:kotbase/ReplicatorType/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-replicator-type/[linux-mingw]values.html
+$dokka.location:kotbase/VectorEncoding.ScalarQuantizerType/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-vector-encoding/-scalar-quantizer-type/[linux-mingw]entries.html
+$dokka.location:kotbase/VectorEncoding.ScalarQuantizerType/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-vector-encoding/-scalar-quantizer-type/[linux-mingw]value-of.html
+$dokka.location:kotbase/VectorEncoding.ScalarQuantizerType/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-vector-encoding/-scalar-quantizer-type/[linux-mingw]values.html
+$dokka.location:kotbase/VectorIndexConfiguration.DistanceMetric/entries/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-vector-index-configuration/-distance-metric/[linux-mingw]entries.html
+$dokka.location:kotbase/VectorIndexConfiguration.DistanceMetric/valueOf/#kotlin.String/PointingToDeclaration/couchbase-lite-ee/kotbase/-vector-index-configuration/-distance-metric/[linux-mingw]value-of.html
+$dokka.location:kotbase/VectorIndexConfiguration.DistanceMetric/values/#/PointingToDeclaration/couchbase-lite-ee/kotbase/-vector-index-configuration/-distance-metric/[linux-mingw]values.html
 module:couchbase-lite
 kotbase
 kotbase.ext
 kotbase.internal
+kotbase.logging
 module:couchbase-lite-ee
 kotbase
 kotbase.ext
 kotbase.internal
+kotbase.logging
 module:couchbase-lite-ee-kermit
 kotbase.kermit
 module:couchbase-lite-ee-ktx

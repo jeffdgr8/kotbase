@@ -1,0 +1,244 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>LimitRouter</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../styles/multimodule.css" rel="Stylesheet">
+<link href="../../../images/logo-icon.svg"></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../../index.html">
+                    kotbase
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;kotbase/-limit-router/index.html&quot;}"><div class="dropdown versions-dropdown" data-role="dropdown">
+  <div class="button button_dropdown versions-dropdown-button" role="combobox" data-role="dropdown-toggle" aria-controls="versions-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Select version" tabindex="0">3.1</div>
+  <div class="dropdown--list dropdown--list_positioned_left versions-dropdown-data" role="listbox" data-role="dropdown-listbox" aria-label="Versions" id="versions-listbox">
+    <div class="dropdown--header" data-remove-style="true" style="display: none"><span>Select version</span><button class="button" data-role="dropdown-toggle" aria-label="Close versions selection"><i class="ui-kit-icon ui-kit-icon_cross"></i></button></div>
+    <div><a href="../../../../../couchbase-lite-ee/kotbase/-limit-router/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.2</a></div>
+    <div><a href="index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.1</a></div>
+    <div><a href="../../../../3.0/couchbase-lite-ee/kotbase/-limit-router/index.html" class="dropdown--option dropdown--option-link" style="display: block; padding: 5px; color: #fff" data-remove-style="true" role="option">3.0</a></div>
+  </div>
+  <div class="dropdown--overlay"></div>
+</div>
+</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":couchbase-lite-ee/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":couchbase-lite-ee/commonMain" data-filter=":couchbase-lite-ee/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    kotbase
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="couchbase-lite-ee::kotbase/LimitRouter///PointingToDeclaration//-934490742">
+  <div class="breadcrumbs"><a href="../../index.html">couchbase-lite-ee</a><span class="delimiter">/</span><a href="../index.html">kotbase</a><span class="delimiter">/</span><span class="current">LimitRouter</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Limit</span><wbr><span><span>Router</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">LimitRouter</a> : <a href="../-query/index.html">Query</a><span class="clearfix"><span class="floating-right">(<a href="https://github.com/jeffdgr8/kotbase/tree/main/couchbase-lite-ee/src/commonMain/kotlin/kotbase/LimitRouter.kt#L18">source</a>)</span></span></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-from/index.html">From</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-group-by/index.html">GroupBy</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-having/index.html">Having</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-joins/index.html">Joins</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-order-by/index.html">OrderBy</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-where/index.html">Where</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="304537854%2FProperties%2F-934490742" anchor-label="parameters" id="304537854%2FProperties%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-query/parameters.html"><span><span>parameters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="304537854%2FProperties%2F-934490742"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">var </span><a href="../-query/parameters.html">parameters</a><span class="token operator">: </span><a href="../-parameters/index.html">Parameters</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">A copy of the current parameters.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1275503372%2FFunctions%2F-934490742" anchor-label="addChangeListener" id="1275503372%2FFunctions%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-query/add-change-listener.html"><span>add</span><wbr><span>Change</span><wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1275503372%2FFunctions%2F-934490742"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="../-query/add-change-listener.html"><span class="token function">addChangeListener</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">listener<span class="token operator">: </span><a href="../-query-change-listener/index.html">QueryChangeListener</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-listener-token/index.html">ListenerToken</a></div><div class="brief "><p class="paragraph">Adds a change listener for the changes that occur in the query results.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="../-query/add-change-listener.html"><span class="token function">addChangeListener</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a><span class="token punctuation">, </span></span><span class="parameter ">listener<span class="token operator">: </span><a href="../-query-change-suspend-listener/index.html">QueryChangeSuspendListener</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-listener-token/index.html">ListenerToken</a></div><div class="brief "><p class="paragraph">Adds a change listener for the changes that occur in the query results with a <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> that will be used to launch coroutines the listener will be called on. Coroutines will be launched in a <a href="https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html">CoroutineScope</a> that is canceled when the listener is removed.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="../-query/add-change-listener.html"><span class="token function">addChangeListener</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html">CoroutineScope</a><span class="token punctuation">, </span></span><span class="parameter ">listener<span class="token operator">: </span><a href="../-query-change-suspend-listener/index.html">QueryChangeSuspendListener</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Adds a change listener for the changes that occur in the query results with a <a href="https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/index.html">CoroutineScope</a> that will be used to launch coroutines the listener will be called on. The listener is removed when the scope is canceled.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1075127773%2FFunctions%2F-934490742" anchor-label="execute" id="1075127773%2FFunctions%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-query/execute.html"><span><span>execute</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1075127773%2FFunctions%2F-934490742"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="../-query/execute.html"><span class="token function">execute</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-result-set/index.html">ResultSet</a></div><div class="brief "><p class="paragraph">Executes the query returning a result set that enumerates result rows one at a time. You can run the query any number of times, and you can even have multiple ResultSet active at once.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2061291877%2FFunctions%2F-934490742" anchor-label="explain" id="-2061291877%2FFunctions%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-query/explain.html"><span><span>explain</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2061291877%2FFunctions%2F-934490742"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="../-query/explain.html"><span class="token function">explain</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Returns a string describing the implementation of the compiled query. This is intended to be read by a developer for purposes of optimizing the query, especially to add database indexes. It's not machine-readable and its format may change. As currently implemented, the result is two or more lines separated by newline characters:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1720673353%2FFunctions%2F-934490742" anchor-label="limit" id="1720673353%2FFunctions%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="limit.html"><span><span>limit</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1720673353%2FFunctions%2F-934490742"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="limit.html"><span class="token function">limit</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">limit<span class="token operator">: </span><a href="../-expression/index.html">Expression</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-limit/index.html">Limit</a></div><div class="brief "><p class="paragraph">Creates and chains a Limit object to limit the number query results.</p></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="limit.html"><span class="token function">limit</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">limit<span class="token operator">: </span><a href="../-expression/index.html">Expression</a><span class="token punctuation">, </span></span><span class="parameter ">offset<span class="token operator">: </span><a href="../-expression/index.html">Expression</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-limit/index.html">Limit</a></div><div class="brief "><p class="paragraph">Creates and chains a Limit object to skip the returned results for the given offset position and to limit the number of results to not more than the given limit value.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="588759809%2FFunctions%2F-934490742" anchor-label="queryChangeFlow" id="588759809%2FFunctions%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../query-change-flow.html"><span>query</span><wbr><span>Change</span><wbr><span><span>Flow</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="588759809%2FFunctions%2F-934490742"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-query/index.html">Query</a><span class="token punctuation">.</span><a href="../query-change-flow.html"><span class="token function">queryChangeFlow</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">coroutineContext<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html">Flow</a><span class="token operator">&lt;</span><a href="../-query-change/index.html">QueryChange</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A Flow of query changes.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-587279606%2FFunctions%2F-934490742" anchor-label="removeChangeListener" id="-587279606%2FFunctions%2F-934490742" data-filterable-set=":couchbase-lite-ee/commonMain"></a>
+          <div class="table-row" data-filterable-current=":couchbase-lite-ee/commonMain" data-filterable-set=":couchbase-lite-ee/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-query/remove-change-listener.html"><span>remove</span><wbr><span>Change</span><wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-587279606%2FFunctions%2F-934490742"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":couchbase-lite-ee/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="../-query/remove-change-listener.html"><span class="token function"><strike>removeChangeListener</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">token<span class="token operator">: </span><a href="../-listener-token/index.html">ListenerToken</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Removes a change listener wih the given listener token.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2022-2025 Jeff Lockhart</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
