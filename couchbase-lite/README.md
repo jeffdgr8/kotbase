@@ -10,7 +10,7 @@ Kotbase core Couchbase Lite Community Edition library
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.kotbase:couchbase-lite:3.1.11-1.1.2")
+            implementation("dev.kotbase:couchbase-lite:3.2.4-1.2.0")
         }
     }
 }

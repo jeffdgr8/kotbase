@@ -13,7 +13,7 @@ limit/offset paging queries based on a user-supplied database query.
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.kotbase:couchbase-lite-paging:3.1.11-1.1.2")
+            implementation("dev.kotbase:couchbase-lite-paging:3.2.4-1.2.0")
         }
     }
 }

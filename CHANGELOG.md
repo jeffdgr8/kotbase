@@ -1,5 +1,28 @@
 # Change Log
 
+## 3.2.4-1.2.0
+> 24 Oct 2025
+
+* [Vector Search](https://kotbase.dev/current/vector-search/) ([#57](
+  https://github.com/jeffdgr8/kotbase/pull/57)) — Couchbase Lite [3.2 API](
+  https://docs.couchbase.com/couchbase-lite/3.2/cbl-whatsnew.html) ([#54](https://github.com/jeffdgr8/kotbase/pull/54))
+    * [Android SDK](https://docs.couchbase.com/couchbase-lite/3.2/android/releasenotes.html#maint-3-2-4)
+    * [Java SDK](https://docs.couchbase.com/couchbase-lite/3.2/java/releasenotes.html#maint-3-2-4)
+    * [Objective-C SDK](https://docs.couchbase.com/couchbase-lite/3.2/objc/releasenotes.html#maint-3-2-4)
+    * [C SDK](https://docs.couchbase.com/couchbase-lite/3.2/c/releasenotes.html#maint-3-2-4)
+* [Support](https://jira.issues.couchbase.com/browse/CBL-6884) 16 KB page sizes ([#47](
+  https://github.com/jeffdgr8/kotbase/issues/47))
+* New log sink API ([#55](https://github.com/jeffdgr8/kotbase/pull/55))
+* Paging extensions now use AndroidX Paging directly ([#52](https://github.com/jeffdgr8/kotbase/pull/52))
+* Predictive model registration now available on Linux and Mingw platforms ([#57](
+  https://github.com/jeffdgr8/kotbase/pull/57))
+* Migrate kotlinx-datetime to 0.7.1 ([#48](https://github.com/jeffdgr8/kotbase/pull/48))
+    * `kotlinx.datetime.Instant` is now `kotlin.time.Instant` in the Kotbase API
+    * kotlinx-datetime is no longer an API dependency
+* Update other dependencies
+* Fix some memory allocation bugs on Linux & Mingw platforms ([#58](https://github.com/jeffdgr8/kotbase/pull/58), [#60](
+  https://github.com/jeffdgr8/kotbase/pull/60))
+
 ## 3.1.11-1.1.2
 > 1 Sep 2025
 
