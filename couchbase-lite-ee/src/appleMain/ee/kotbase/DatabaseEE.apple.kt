@@ -16,7 +16,6 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.changeEncryptionKey
-import cocoapods.CouchbaseLite.prediction
 import kotbase.ext.wrapCBLError
 
 @Throws(CouchbaseLiteException::class)
