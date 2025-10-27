@@ -3,7 +3,8 @@
 ## Couchbase Lite Community Edition – Kotlin Extensions
 
 The KTX extensions include the excellent [Kotlin extensions by MOLO17](https://github.com/MOLO17/couchbase-lite-kotlin),
-as well as other convenience functions for composing queries, observing change `Flow`s, and creating indexes.
+as well as other convenience functions for composing queries, mapping query results, creating documents, and observing
+change `Flow`s.
 
 ### Installation
 
@@ -156,7 +157,7 @@ val usersFlow: Flow<List<User>> = query.asObjectsFlow(::User)
 
 ##### JSON deserialization
 
-Kotbase KTX also provides extensions for mapping documents from a JSON string to Kotlin class. This works well
+Kotbase KTX also provides extensions for mapping documents from a JSON string to a Kotlin class. This works well
 together with a serialization library, like [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization), to
 decode the JSON string to a Kotlin object.
 
@@ -175,15 +176,6 @@ val users: List<User> = query.execute().toObjects { json: String ->
 val usersFlow: Flow<List<User>> = query.asObjectsFlow { json: String ->
     Json.decodeFromString<User>(json)
 }
-```
-
-##### Index creation
-
-Kotbase KTX provides concise top-level functions for index creation:
-
-```kotlin
-collection.createIndex("typeNameIndex", valueIndex("type", "name"))
-collection.createIndex("overviewFTSIndex", fullTextIndex("overview"))
 ```
 
 ##### Replicator extensions

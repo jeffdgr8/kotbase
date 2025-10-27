@@ -115,7 +115,8 @@ Kotbase includes some convenient extensions on top of Couchbase Lite's official 
 ### Kotbase KTX
 
 The [KTX extensions](couchbase-lite-ktx/README.md) include the excellent [Kotlin extensions by MOLO17](https://github.com/MOLO17/couchbase-lite-kotlin),
-as well as other convenience functions for composing queries, observing change `Flow`s, and creating indexes.
+as well as other convenience functions for composing queries, mapping query results, creating documents, and observing
+change `Flow`s.
 
 #### Installation
 
