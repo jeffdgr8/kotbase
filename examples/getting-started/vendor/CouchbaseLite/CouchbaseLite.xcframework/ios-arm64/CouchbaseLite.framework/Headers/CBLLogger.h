@@ -2,7 +2,7 @@
 //  CBLLogger.h
 //  CouchbaseLite
 //
-//  Copyright (c) 2017 Couchbase, Inc All rights reserved.
+//  Copyright (c) 2024 Couchbase, Inc All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -17,33 +17,9 @@
 //  limitations under the License.
 //
 
+#import <CouchbaseLite/CBLLogTypes.h>
+
 NS_ASSUME_NONNULL_BEGIN
-
-/**
- Log domain.
- */
-typedef NS_OPTIONS(NSUInteger, CBLLogDomain) {
-    kCBLLogDomainAll            = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4, ///< All domains
-    kCBLLogDomainDatabase       = 1 << 0, ///< Database domain.
-    kCBLLogDomainQuery          = 1 << 1, ///< Query domain.
-    kCBLLogDomainReplicator     = 1 << 2, ///< Replicator domain.
-    kCBLLogDomainNetwork        = 1 << 3, ///< Network domain.
-#ifdef COUCHBASE_ENTERPRISE
-    kCBLLogDomainListener       = 1 << 4  ///< Listener domain.
-#endif
-};
-
-/**
- Log level.
- */
-typedef NS_ENUM(NSUInteger, CBLLogLevel) {
-    kCBLLogLevelDebug,      ///< Debug log messages. Only present in debug builds of CouchbaseLite.
-    kCBLLogLevelVerbose,    ///< Verbose log messages.
-    kCBLLogLevelInfo,       ///< Informational log messages.
-    kCBLLogLevelWarning,    ///< Warning log messages.
-    kCBLLogLevelError,      ///< Error log messages.
-    kCBLLogLevelNone        ///< Disabling log messages of a given log domain.
-};
 
 /**
  Logger protocol
