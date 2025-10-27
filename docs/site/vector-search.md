@@ -4,6 +4,8 @@ _Use Vector Search to build adaptive and user-focused applications using Generat
 
 ## About Vector Search
 
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
+
 Vector Search is a technique to retrieve semantically similar items based on vector embedding representations of the
 items in a multi-dimensional space. You can use Vector Search to find the top N items similar to a given item based on
 their vector representations. Vector Search is an essential component of Generative AI and Predictive AI applications.

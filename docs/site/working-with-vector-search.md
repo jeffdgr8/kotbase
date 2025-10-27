@@ -2,6 +2,8 @@ _Use Vector Search with Full Text Search and Query._
 
 ## Use Vector Search
 
+!!! important "This is an [Enterprise Edition](https://www.couchbase.com/products/editions/mobile/) feature."
+
 To configure a project to use vector search, follow the [installation instructions](installation.md#vector-search) to
 add the Vector Search extension.
 
