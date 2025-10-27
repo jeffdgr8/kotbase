@@ -2,7 +2,7 @@
 //  CBLReplicatorConfiguration.h
 //  CouchbaseLite
 //
-//  Copyright (c) 2017 Couchbase, Inc All rights reserved.
+//  Copyright (c) 2024 Couchbase, Inc All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 
 #import <Foundation/Foundation.h>
 #import <Security/SecCertificate.h>
-#import "CBLDocumentFlags.h"
-#import "CBLReplicatorTypes.h"
+#import <CouchbaseLite/CBLDocumentFlags.h>
+#import <CouchbaseLite/CBLReplicatorTypes.h>
 
 @class CBLAuthenticator;
 @class CBLCollection;
@@ -178,7 +178,7 @@ __deprecated_msg(" Use [... initWithTarget:] and [config addCollection: config:]
  Max wait time for the next attempt(retry).
  
  The exponential backoff for calculating the wait time will be used by default and cannot be customized.
- Default max attempts is ``kCBLDefaultReplicatorMaxAttemptWaitTime`` seconds.
+ Default max attempts is ``kCBLDefaultReplicatorMaxAttemptsWaitTime`` seconds.
  
  @Note: Set the maxAttemptWaitTime to negative value will result in InvalidArgumentException being thrown.
  For backward compatibility, setting it to zero will result in default maxAttemptWaitTime internally.

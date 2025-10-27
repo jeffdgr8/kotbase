@@ -2,7 +2,7 @@
 //  CBLDocument.h
 //  CouchbaseLite
 //
-//  Copyright (c) 2017 Couchbase, Inc All rights reserved.
+//  Copyright (c) 2024 Couchbase, Inc All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CBLDictionary.h"
+#import <CouchbaseLite/CBLDictionary.h>
+
 @class CBLMutableDocument;
 @class CBLCollection;
 
@@ -56,6 +57,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** Return document data as JSON String. */
 - (NSString*) toJSON;
+
+/** <Unsupported API> Internally used for testing purpose. */
+- (nullable NSString*) _getRevisionHistory;
 
 @end
 

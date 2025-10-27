@@ -2,7 +2,7 @@
 //  CBLCollection.h
 //  CouchbaseLite
 //
-//  Copyright (c) 2022 Couchbase, Inc All rights reserved.
+//  Copyright (c) 2024 Couchbase, Inc All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@
 //  limitations under the License.
 //
 
-#import "CBLCollectionChangeObservable.h"
-#import "CBLIndexable.h"
-#import "CBLCollectionTypes.h"
+#import <Foundation/Foundation.h>
+#import <CouchbaseLite/CBLCollectionChangeObservable.h>
+#import <CouchbaseLite/CBLIndexable.h>
+#import <CouchbaseLite/CBLCollectionTypes.h>
 
+@class CBLDatabase;
 @class CBLDocument;
 @class CBLDocumentChange;
 @class CBLDocumentFragment;
@@ -70,11 +72,17 @@ extern NSString* const kCBLDefaultCollectionName;
  */
 @interface CBLCollection : NSObject<CBLCollectionChangeObservable, CBLIndexable, NSCopying>
 
-/** Collection name.*/
+/** Collection's name.*/
 @property (readonly, nonatomic) NSString* name;
 
-/** The scope of the collection. */
+/** Collection's fully qualified name in the '<scope-name>.<collection-name>' format. */
+@property (readonly, nonatomic) NSString* fullName;
+
+/** Collection's scope. */
 @property (readonly, nonatomic) CBLScope* scope;
+
+/** Collection's database. */
+@property (readonly, nonatomic) CBLDatabase* database;
 
 #pragma mark - Document Management
 
@@ -166,7 +174,7 @@ extern NSString* const kCBLDefaultCollectionName;
  
  @param document The document.
  @param error On return, the error if any.
- @return /True on success, false on failure.
+ @return True on success, false on failure.
  */
 - (BOOL) deleteDocument: (CBLDocument*)document error: (NSError**)error;
 

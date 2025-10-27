@@ -2,7 +2,7 @@
 //  CBLDictionary.h
 //  CouchbaseLite
 //
-//  Copyright (c) 2017 Couchbase, Inc All rights reserved.
+//  Copyright (c) 2024 Couchbase, Inc All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CBLDictionaryFragment.h"
+#import <CouchbaseLite/CBLDictionaryFragment.h>
+
 @class CBLBlob;
 @class CBLArray;
 @class CBLDictionary;
 @class CBLMutableDictionary;
-
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -43,12 +43,12 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Type Setters
 
 /**
- Gets a property's value. The object types are CBLBlob, CBLArray,
- CBLDictionary, NSNumber, or NSString based on the underlying data type; or nil if the
- property value is NSNull or the property doesn't exist.
+ Gets a property's value. The object types are CBLBlob, CBLArray, CBLDictionary,
+ NSNumber, NSString, or NSNull based on the underlying data type; or nil if the
+ the property doesn't exist.
  
  @param key The key.
- @return The object value or nil.
+ @return The value or nil.
  */
 - (nullable id) valueForKey: (NSString*)key;
 

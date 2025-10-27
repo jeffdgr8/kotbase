@@ -2,7 +2,7 @@
 //  CBLReplicator.h
 //  CouchbaseLite
 //
-//  Copyright (c) 2017 Couchbase, Inc All rights reserved.
+//  Copyright (c) 2024 Couchbase, Inc All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CBLReplicatorTypes.h"
+#import <CouchbaseLite/CBLReplicatorTypes.h>
 
 @class CBLCollection;
 @class CBLDatabase;
@@ -75,6 +75,8 @@ NS_ASSUME_NONNULL_BEGIN
 /** 
  Starts the replicator. This method returns immediately; the replicator runs asynchronously
  and will report its progress through the replicator change notification.
+ 
+ @note This method MUST NOT be called within database's inBatch() block, as it will enter deadlock.
  */
 - (void) start;
 
