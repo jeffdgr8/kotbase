@@ -39,9 +39,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.kotbase)
+            implementation(libs.kotlinx.datetime)
         }
         configureEach {
             languageSettings {
+                optIn("kotlin.time.ExperimentalTime")
                 if (!name.startsWith("common") &&
                     !name.startsWith("jvm") &&
                     !name.startsWith("android")

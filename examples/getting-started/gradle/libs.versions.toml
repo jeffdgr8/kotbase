@@ -1,16 +1,16 @@
 [versions]
-android-gradle-plugin = "8.11.1"
+android-gradle-plugin = "8.12.3"
 androidx-appcompat = "1.7.1"
 androidx-constraintlayout = "2.2.1"
 androidx-core-ktx = "1.17.0"
-androidx-lifecycle-ktx = "2.9.3"
-androidx-material = "1.12.0"
-compose-plugin = "1.8.2"
-couchbase-lite-c = "3.1.10"
-kmp-native-coroutines = "1.0.0-ALPHA-46"
-kotbase = "3.1.11-1.1.2"
-kotlin = "2.2.10"
-ksp = "2.2.10-2.0.2"
+androidx-lifecycle-ktx = "2.9.4"
+androidx-material = "1.13.0"
+compose-plugin = "1.9.1"
+couchbase-lite-c = "3.2.4"
+kmp-native-coroutines = "1.0.0-ALPHA-48"
+kotbase = "3.2.4-1.2.0"
+kotlin = "2.2.21"
+ksp = "2.3.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
@@ -30,3 +30,4 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx
 androidx-lifecycle-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-ktx" }
 androidx-material = { module = "com.google.android.material:material", version.ref = "androidx-material" }
 kotbase = { module = "dev.kotbase:couchbase-lite-ktx", version.ref = "kotbase" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.7.1" }

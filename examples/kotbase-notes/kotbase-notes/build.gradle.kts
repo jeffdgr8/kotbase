@@ -78,6 +78,10 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
+
+        configureEach {
+            languageSettings.optIn("kotlin.time.ExperimentalTime")
+        }
     }
 }
 
