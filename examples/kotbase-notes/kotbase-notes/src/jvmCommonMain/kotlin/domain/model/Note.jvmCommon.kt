@@ -1,13 +1,13 @@
 package domain.model
 
 import kotlin.time.Instant
-import kotlinx.datetime.toJavaInstant
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.YearMonth
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.time.toJavaInstant
 
 actual fun Instant.toLocalizedString(): String {
     val javaInstant = toJavaInstant()

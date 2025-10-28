@@ -38,6 +38,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
+            implementation(libs.kotlinx.datetime)
         }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
@@ -45,6 +46,10 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
+        }
+
+        configureEach {
+            languageSettings.optIn("kotlin.time.ExperimentalTime")
         }
     }
 }

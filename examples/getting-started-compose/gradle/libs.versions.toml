@@ -1,11 +1,11 @@
 [versions]
-activity-compose = "1.10.1"
-android-gradle-plugin = "8.11.1"
-compose = "1.9.0"
-compose-plugin = "1.8.2"
-couchbase-lite-objc = "3.1.10"
-kotbase = "3.1.11-1.1.2"
-kotlin = "2.2.10"
+activity-compose = "1.11.0"
+android-gradle-plugin = "8.12.3"
+compose = "1.9.4"
+compose-plugin = "1.9.1"
+couchbase-lite-objc = "3.2.4"
+kotbase = "3.2.4-1.2.0"
+kotlin = "2.2.21"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
@@ -18,3 +18,4 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 kotbase = { module = "dev.kotbase:couchbase-lite-ktx", version.ref = "kotbase" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.7.1" }

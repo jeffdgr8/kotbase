@@ -94,12 +94,11 @@ class SharedDbWork {
         )
 
         val repl = Replicator(
-            ReplicatorConfigurationFactory.newConfig(
-                target = URLEndpoint("ws://localhost:4984/getting-started-db"),
-                collections = mapOf(setOf(coll) to collConfig),
-                type = ReplicatorType.PUSH_AND_PULL,
-                authenticator = BasicAuthenticator("sync-gateway", "password".toCharArray())
-            )
+            ReplicatorConfiguration(URLEndpoint("ws://localhost:4984/getting-started-db"))
+                .addCollection(coll, collConfig).apply {
+                    type = ReplicatorType.PUSH_AND_PULL
+                    authenticator = BasicAuthenticator("sync-gateway", "password".toCharArray())
+                }
         )
 
         // Listen to replicator change events.

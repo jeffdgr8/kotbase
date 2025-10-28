@@ -1,18 +1,18 @@
 [versions]
 android-compileSdk = "36"
-android-minSdk = "24"
+android-minSdk = "26"
 android-targetSdk = "36"
-compose = "1.9.0"
-compose-plugin = "1.8.2"
+compose = "1.9.4"
+compose-plugin = "1.9.1"
 coroutines = "1.10.2"
-couchbase-lite-objc = "3.1.10"
-kotbase = "3.1.11-1.1.2"
-koin = "4.1.0"
-kotlin = "2.2.10"
-ktor = "3.2.3"
+couchbase-lite-objc = "3.2.4"
+kotbase = "3.2.4-1.2.0"
+koin = "4.1.1"
+kotlin = "2.2.21"
+ktor = "3.3.1"
 
 [plugins]
-android-application = { id = "com.android.application", version = "8.11.1" }
+android-application = { id = "com.android.application", version = "8.12.3" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -20,7 +20,7 @@ kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", versio
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [libraries]
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.10.1" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.11.0" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
@@ -30,7 +30,7 @@ kotbase = { module = "dev.kotbase:couchbase-lite-ktx", version.ref = "kotbase" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.9.0" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.2" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.7.1" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
