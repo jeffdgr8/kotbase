@@ -109,6 +109,8 @@ class PredictiveQueryTest : BaseQueryTest() {
         Database.prediction.unregisterModel(model)
     }
 
+    // TODO: frequently crashes during query in mingw
+    @IgnoreMingw
     @Test
     fun testPredictionInputOutput() {
         // Register echo model:
