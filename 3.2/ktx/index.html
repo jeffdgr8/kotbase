@@ -891,15 +891,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#index-creation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Index creation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#replicator-extensions" class="md-nav__link">
     <span class="md-ellipsis">
       Replicator extensions
@@ -2088,15 +2079,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#index-creation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Index creation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#replicator-extensions" class="md-nav__link">
     <span class="md-ellipsis">
       Replicator extensions
@@ -2132,7 +2114,8 @@
   <h1>KTX</h1>
 
 <p>The KTX extensions include the excellent <a href="https://github.com/MOLO17/couchbase-lite-kotlin">Kotlin extensions by MOLO17</a>,
-as well as other convenience functions for composing queries, observing change <code>Flow</code>s, and creating indexes.</p>
+as well as other convenience functions for composing queries, mapping query results, creating documents, and observing
+change <code>Flow</code>s.</p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link"></a></h2>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Enterprise Edition</label><label for="__tabbed_1_2">Community Edition</label></div>
 <div class="tabbed-content">
@@ -2268,23 +2251,18 @@ decode the JSON string to a Kotlin object.</p>
 </span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">    </span><span class="n">Json</span><span class="p">.</span><span class="na">decodeFromString</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
 </span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="index-creation">Index creation<a class="headerlink" href="#index-creation" title="Permanent link"></a></h3>
-<p>Kotbase KTX provides concise top-level functions for index creation:</p>
-<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">collection</span><span class="p">.</span><span class="na">createIndex</span><span class="p">(</span><span class="s">&quot;typeNameIndex&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">valueIndex</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;name&quot;</span><span class="p">))</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">collection</span><span class="p">.</span><span class="na">createIndex</span><span class="p">(</span><span class="s">&quot;overviewFTSIndex&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fullTextIndex</span><span class="p">(</span><span class="s">&quot;overview&quot;</span><span class="p">))</span>
-</span></code></pre></div>
 <h3 id="replicator-extensions">Replicator extensions<a class="headerlink" href="#replicator-extensions" title="Permanent link"></a></h3>
 <p>For the Android platform, you can bind the <code>Replicator</code> <code>start()</code> and <code>stop()</code> methods to be performed automatically
 when your <a href="https://developer.android.com/jetpack/androidx/releases/lifecycle"><code>Lifecycle</code></a>-enabled component gets
 resumed or paused.</p>
-<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// Binds the Replicator to the Application lifecycle.</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">replicator</span><span class="p">.</span><span class="na">bindToLifecycle</span><span class="p">(</span><span class="n">ProcessLifecycleOwner</span><span class="p">.</span><span class="na">get</span><span class="p">().</span><span class="na">lifecycle</span><span class="p">)</span>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// Binds the Replicator to the Application lifecycle.</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">replicator</span><span class="p">.</span><span class="na">bindToLifecycle</span><span class="p">(</span><span class="n">ProcessLifecycleOwner</span><span class="p">.</span><span class="na">get</span><span class="p">().</span><span class="na">lifecycle</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1">// Binds the Replicator to the Activity/Fragment lifecycle.</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1">// inside an Activity or Fragment...</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span><span class="w"> </span><span class="n">Bundle?)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="n">replicator</span><span class="p">.</span><span class="na">bindToLifecycle</span><span class="p">(</span><span class="n">lifecycle</span><span class="p">)</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="p">}</span>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// Binds the Replicator to the Activity/Fragment lifecycle.</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1">// inside an Activity or Fragment...</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span><span class="w"> </span><span class="n">Bundle?)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="n">replicator</span><span class="p">.</span><span class="na">bindToLifecycle</span><span class="p">(</span><span class="n">lifecycle</span><span class="p">)</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>That's it! The <code>Replicator</code> will be automatically started when your component passes the <code>ON_RESUME</code> state, and it will
 be stopped when the component passes the <code>ON_PAUSED</code> state. As you may imagine, no further action will be made after the
