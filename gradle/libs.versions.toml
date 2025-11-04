@@ -1,6 +1,7 @@
 [versions]
+couchbase-lite-android = "3.3.0"
 couchbase-lite-java = "3.2.4"
-couchbase-lite-objc = "3.2.4"
+couchbase-lite-objc = "3.3.0"
 couchbase-lite-c = "3.2.4"
 couchbase-lite-vector-search = "1.0.0"
 dokka = "2.0.0"
@@ -19,8 +20,8 @@ androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtim
 androidx-startup = { module = "androidx.startup:startup-runtime", version = "1.2.0" }
 androidx-test-core-ktx = { module = "androidx.test:core-ktx", version = "1.7.0" }
 androidx-test-runner = { module = "androidx.test:runner", version = "1.7.0" }
-couchbase-lite-android = { module = "com.couchbase.lite:couchbase-lite-android", version.ref = "couchbase-lite-java" }
-couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-android-ee", version.ref = "couchbase-lite-java" }
+couchbase-lite-android = { module = "com.couchbase.lite:couchbase-lite-android", version.ref = "couchbase-lite-android" }
+couchbase-lite-android-ee = { module = "com.couchbase.lite:couchbase-lite-android-ee", version.ref = "couchbase-lite-android" }
 couchbase-lite-java = { module = "com.couchbase.lite:couchbase-lite-java", version.ref = "couchbase-lite-java" }
 couchbase-lite-java-ee = { module = "com.couchbase.lite:couchbase-lite-java-ee", version.ref = "couchbase-lite-java" }
 couchbase-lite-android-vector-search-arm64 = { module = "com.couchbase.lite:couchbase-lite-android-vector-search-arm64", version.ref = "couchbase-lite-vector-search" }

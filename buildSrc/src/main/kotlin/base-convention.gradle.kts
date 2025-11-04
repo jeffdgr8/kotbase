@@ -39,8 +39,8 @@ kotlin {
         authors = "Jeff Lockhart"
         license = "Apache License, Version 2.0"
         afterEvaluate { summary = description }
-        ios.deploymentTarget = "12.0"
-        osx.deploymentTarget = "12.0"
+        ios.deploymentTarget = "15.0"
+        osx.deploymentTarget = "13.0"
         noPodspec()
     }
 
