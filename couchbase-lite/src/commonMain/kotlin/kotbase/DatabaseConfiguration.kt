@@ -81,21 +81,4 @@ public expect class DatabaseConfiguration {
      * very safe, but it is also **dramatically** slower.
      */
     public var isFullSync: Boolean
-
-    /**
-     * Advises Core to enable or disable memory-mapped Database files, if possible.
-     * Memory-mapped database files are, currently, enabled by default, except on macOS
-     * where they **cannot** be enabled at all.
-     *
-     * @param mmapEnabled true if memory-mapped database files should be enabled
-     * @return this
-     */
-    public fun setMMapEnabled(mmapEnabled: Boolean): DatabaseConfiguration
-
-    /**
-     * Advises Core to enable or disable memory-mapped Database files, if possible.
-     * Memory-mapped database files are, currently, enabled by default, except on macOS
-     * where they **cannot** be enabled at all.
-     */
-    public var isMMapEnabled: Boolean
 }

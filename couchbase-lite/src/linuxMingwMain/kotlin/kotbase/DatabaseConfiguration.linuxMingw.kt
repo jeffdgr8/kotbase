@@ -73,21 +73,9 @@ public actual constructor(config: DatabaseConfiguration?) {
             actual.pointed.fullSync = value
         }
 
-    public actual fun setMMapEnabled(mmapEnabled: Boolean): DatabaseConfiguration {
-        actual.pointed.mmapDisabled = !mmapEnabled
-        return this
-    }
-
-    public actual var isMMapEnabled: Boolean
-        get() = !actual.pointed.mmapDisabled
-        set(value) {
-            actual.pointed.mmapDisabled = !value
-        }
-
     init {
         setActualDirectory(directory)
         actual.pointed.fullSync = config?.isFullSync ?: Defaults.Database.FULL_SYNC
-        actual.pointed.mmapDisabled = !(config?.isMMapEnabled ?: Defaults.Database.MMAP_ENABLED)
     }
 
     private fun setActualDirectory(directory: String) {
