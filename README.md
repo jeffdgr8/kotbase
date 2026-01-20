@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=jeffdgr8&project=kotbase&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 [![Maven Central](https://img.shields.io/maven-central/v/dev.kotbase/couchbase-lite)](
 https://central.sonatype.com/namespace/dev.kotbase)
 [![Kotlin](https://img.shields.io/badge/kotlin-2.2.20-blue.svg?logo=kotlin)](http://kotlinlang.org)
