@@ -2701,7 +2701,7 @@ class DocumentTest : BaseDbTest() {
     fun testDocToJSON() {
         val mDoc = makeDocument()
         saveDocInCollection(mDoc)
-        verifyDocument(JsonObject(testCollection.getDocument(mDoc.id)!!.toJSON()!!))
+        verifyDocument(JsonObject(testCollection.getDocument(mDoc.id)!!.toJSON()))
     }
 
     // JSON 3.5.?
@@ -2719,7 +2719,7 @@ class DocumentTest : BaseDbTest() {
         val dbDoc = saveDocInCollection(MutableDocument("fromJSON", readJSONResource("document.json")))
         testDatabase.saveBlob(makeBlob()) // be sure the blob is there...
         verifyDocument(dbDoc.content, true)
-        verifyDocument(JsonObject(dbDoc.toJSON()!!))
+        verifyDocument(JsonObject(dbDoc.toJSON()))
     }
 
     // JSON 3.5.d.1

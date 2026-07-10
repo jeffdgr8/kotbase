@@ -108,7 +108,7 @@ internal constructor(
         actual.toMap().delegateIfNecessary()
 
     actual override fun toJSON(): String =
-        actual.toJSON() ?: throw CouchbaseLiteException("Failed encoding document as JSON")
+        actual.toJSON()
 
     actual override operator fun contains(key: String): Boolean =
         actual.contains(key)

@@ -40,6 +40,9 @@ internal constructor(actual: CBLQueryParameters, private val readonly: Boolean =
         return this
     }
 
+    // Kotlin/Native bridges the Kotlin Number to an NSNumber; the frontend
+    // warning does not account for the interop cast conversion
+    @Suppress("UNSAFE_CAST_RELYING_ON_NULL")
     public actual fun setNumber(name: String, value: Number?): Parameters {
         checkReadOnly()
         actual.setNumber(value as NSNumber?, name)
