@@ -2681,6 +2681,19 @@ class DocumentTest : BaseDbTest() {
         assertNotEquals(docRevID, mdoc.revisionID)
     }
 
+    @Test
+    fun testRevisionIDIncrement() {
+        val mdoc = MutableDocument("doc1")
+        testCollection.save(mdoc)
+        val mdocTimestamp = mdoc.timestamp
+
+        val updatedMdoc = testCollection.getDocument("doc1")!!.toMutable()
+        testCollection.save(updatedMdoc)
+        val updatedMdocTimestamp = updatedMdoc.timestamp
+
+        assertTrue(updatedMdocTimestamp > mdocTimestamp)
+    }
+
     ///////////////  JSON tests
 
     // JSON 3.2
