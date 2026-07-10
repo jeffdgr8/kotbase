@@ -38,7 +38,7 @@ import kotlin.test.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-abstract class BaseTest(useLegacyLogging: Boolean = false) : PlatformTest(useLegacyLogging) {
+abstract class BaseTest : PlatformTest() {
 
     @Suppress("unused")
     companion object {

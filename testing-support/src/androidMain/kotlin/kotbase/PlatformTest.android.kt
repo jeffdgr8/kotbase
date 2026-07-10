@@ -26,8 +26,7 @@ import java.io.IOException
 /**
  * Platform test class for Android.
  */
-actual abstract class PlatformTest
-actual constructor(private val useLegacyLogging: Boolean) {
+actual abstract class PlatformTest {
 
     companion object {
 
@@ -51,14 +50,7 @@ actual constructor(private val useLegacyLogging: Boolean) {
     actual fun setupPlatform() {
         CouchbaseLite.init(appContext, true)
 
-        if (!useLegacyLogging) {
-            LogSinks.console = ConsoleLogSink(LogLevel.INFO, LogDomain.ALL)
-        } else {
-            @Suppress("DEPRECATION")
-            val console = Database.log.console
-            console.level = LogLevel.INFO
-            console.domains = LogDomain.ALL
-        }
+        LogSinks.console = ConsoleLogSink(LogLevel.INFO, LogDomain.ALL)
     }
 
     actual val tmpDir: String
