@@ -33,7 +33,9 @@ final enum class kotbase/DocumentFlag : kotlin/Enum<kotbase/DocumentFlag> { // k
 final enum class kotbase/LogDomain : kotlin/Enum<kotbase/LogDomain> { // kotbase/LogDomain|null[0]
     enum entry DATABASE // kotbase/LogDomain.DATABASE|null[0]
     enum entry LISTENER // kotbase/LogDomain.LISTENER|null[0]
+    enum entry MULTIPEER // kotbase/LogDomain.MULTIPEER|null[0]
     enum entry NETWORK // kotbase/LogDomain.NETWORK|null[0]
+    enum entry PEER_DISCOVERY // kotbase/LogDomain.PEER_DISCOVERY|null[0]
     enum entry QUERY // kotbase/LogDomain.QUERY|null[0]
     enum entry REPLICATOR // kotbase/LogDomain.REPLICATOR|null[0]
 
@@ -180,13 +182,6 @@ abstract interface kotbase/LimitRouter : kotbase/Query { // kotbase/LimitRouter|
     abstract fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/LimitRouter.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
 }
 
-abstract interface kotbase/Logger { // kotbase/Logger|null[0]
-    abstract val level // kotbase/Logger.level|{}level[0]
-        abstract fun <get-level>(): kotbase/LogLevel // kotbase/Logger.level.<get-level>|<get-level>(){}[0]
-
-    abstract fun log(kotbase/LogLevel, kotbase/LogDomain, kotlin/String) // kotbase/Logger.log|log(kotbase.LogLevel;kotbase.LogDomain;kotlin.String){}[0]
-}
-
 abstract interface kotbase/MutableArrayInterface : kotbase/ArrayInterface { // kotbase/MutableArrayInterface|null[0]
     abstract fun addArray(kotbase/Array?): kotbase/MutableArrayInterface // kotbase/MutableArrayInterface.addArray|addArray(kotbase.Array?){}[0]
     abstract fun addBlob(kotbase/Blob?): kotbase/MutableArrayInterface // kotbase/MutableArrayInterface.addBlob|addBlob(kotbase.Blob?){}[0]
@@ -265,7 +260,6 @@ abstract interface kotbase/Query { // kotbase/Query|null[0]
     abstract fun addChangeListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/QueryChange, kotlin/Unit>) // kotbase/Query.addChangeListener|addChangeListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.QueryChange,kotlin.Unit>){}[0]
     abstract fun execute(): kotbase/ResultSet // kotbase/Query.execute|execute(){}[0]
     abstract fun explain(): kotlin/String // kotbase/Query.explain|explain(){}[0]
-    abstract fun removeChangeListener(kotbase/ListenerToken) // kotbase/Query.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 abstract interface kotbase/WhereRouter : kotbase/Query { // kotbase/WhereRouter|null[0]
@@ -325,7 +319,7 @@ final class kotbase/BasicAuthenticator : kotbase/Authenticator { // kotbase/Basi
 
 final class kotbase/CouchbaseLiteError : kotlin/IllegalStateException { // kotbase/CouchbaseLiteError|null[0]
     constructor <init>(kotlin/String) // kotbase/CouchbaseLiteError.<init>|<init>(kotlin.String){}[0]
-    constructor <init>(kotlin/String, kotlin/Exception?) // kotbase/CouchbaseLiteError.<init>|<init>(kotlin.String;kotlin.Exception?){}[0]
+    constructor <init>(kotlin/String, kotlin/Throwable?) // kotbase/CouchbaseLiteError.<init>|<init>(kotlin.String;kotlin.Throwable?){}[0]
 }
 
 final class kotbase/CouchbaseLiteException : kotlin/Exception { // kotbase/CouchbaseLiteException|null[0]
@@ -844,8 +838,6 @@ final object kotbase/Defaults { // kotbase/Defaults|null[0]
             final fun <get-MAX_SIZE>(): kotlin/Long // kotbase/Defaults.LogFile.MAX_SIZE.<get-MAX_SIZE>|<get-MAX_SIZE>(){}[0]
         final const val USE_PLAINTEXT // kotbase/Defaults.LogFile.USE_PLAINTEXT|{}USE_PLAINTEXT[0]
             final fun <get-USE_PLAINTEXT>(): kotlin/Boolean // kotbase/Defaults.LogFile.USE_PLAINTEXT.<get-USE_PLAINTEXT>|<get-USE_PLAINTEXT>(){}[0]
-        final const val USE_PLAIN_TEXT // kotbase/Defaults.LogFile.USE_PLAIN_TEXT|{}USE_PLAIN_TEXT[0]
-            final fun <get-USE_PLAIN_TEXT>(): kotlin/Boolean // kotbase/Defaults.LogFile.USE_PLAIN_TEXT.<get-USE_PLAIN_TEXT>|<get-USE_PLAIN_TEXT>(){}[0]
     }
 
     final object Replicator { // kotbase/Defaults.Replicator|null[0]
@@ -865,8 +857,6 @@ final object kotbase/Defaults { // kotbase/Defaults|null[0]
             final fun <get-MAX_ATTEMPTS_SINGLE_SHOT>(): kotlin/Int // kotbase/Defaults.Replicator.MAX_ATTEMPTS_SINGLE_SHOT.<get-MAX_ATTEMPTS_SINGLE_SHOT>|<get-MAX_ATTEMPTS_SINGLE_SHOT>(){}[0]
         final const val MAX_ATTEMPTS_WAIT_TIME // kotbase/Defaults.Replicator.MAX_ATTEMPTS_WAIT_TIME|{}MAX_ATTEMPTS_WAIT_TIME[0]
             final fun <get-MAX_ATTEMPTS_WAIT_TIME>(): kotlin/Int // kotbase/Defaults.Replicator.MAX_ATTEMPTS_WAIT_TIME.<get-MAX_ATTEMPTS_WAIT_TIME>|<get-MAX_ATTEMPTS_WAIT_TIME>(){}[0]
-        final const val MAX_ATTEMPT_WAIT_TIME // kotbase/Defaults.Replicator.MAX_ATTEMPT_WAIT_TIME|{}MAX_ATTEMPT_WAIT_TIME[0]
-            final fun <get-MAX_ATTEMPT_WAIT_TIME>(): kotlin/Int // kotbase/Defaults.Replicator.MAX_ATTEMPT_WAIT_TIME.<get-MAX_ATTEMPT_WAIT_TIME>|<get-MAX_ATTEMPT_WAIT_TIME>(){}[0]
         final const val SELF_SIGNED_CERTIFICATE_ONLY // kotbase/Defaults.Replicator.SELF_SIGNED_CERTIFICATE_ONLY|{}SELF_SIGNED_CERTIFICATE_ONLY[0]
             final fun <get-SELF_SIGNED_CERTIFICATE_ONLY>(): kotlin/Boolean // kotbase/Defaults.Replicator.SELF_SIGNED_CERTIFICATE_ONLY.<get-SELF_SIGNED_CERTIFICATE_ONLY>|<get-SELF_SIGNED_CERTIFICATE_ONLY>(){}[0]
 
@@ -877,7 +867,6 @@ final object kotbase/Defaults { // kotbase/Defaults|null[0]
 
 final object kotbase/FullTextFunction { // kotbase/FullTextFunction|null[0]
     final fun match(kotbase/IndexExpression, kotlin/String): kotbase/Expression // kotbase/FullTextFunction.match|match(kotbase.IndexExpression;kotlin.String){}[0]
-    final fun match(kotlin/String, kotlin/String): kotbase/Expression // kotbase/FullTextFunction.match|match(kotlin.String;kotlin.String){}[0]
     final fun rank(kotbase/IndexExpression): kotbase/Expression // kotbase/FullTextFunction.rank|rank(kotbase.IndexExpression){}[0]
     final fun rank(kotlin/String): kotbase/Expression // kotbase/FullTextFunction.rank|rank(kotlin.String){}[0]
 }
@@ -949,8 +938,6 @@ final object kotbase/QueryBuilder { // kotbase/QueryBuilder|null[0]
     final fun selectDistinct(kotlin/Array<out kotbase/SelectResult>...): kotbase/Select // kotbase/QueryBuilder.selectDistinct|selectDistinct(kotlin.Array<out|kotbase.SelectResult>...){}[0]
 }
 
-final val kotbase/CollectionConfigurationFactory // kotbase/CollectionConfigurationFactory|{}CollectionConfigurationFactory[0]
-    final fun <get-CollectionConfigurationFactory>(): kotbase/CollectionConfiguration? // kotbase/CollectionConfigurationFactory.<get-CollectionConfigurationFactory>|<get-CollectionConfigurationFactory>(){}[0]
 final val kotbase/DEFAULT_CONFLICT_RESOLVER // kotbase/DEFAULT_CONFLICT_RESOLVER|@kotbase.ReplicatorConfiguration.Companion{}DEFAULT_CONFLICT_RESOLVER[0]
     final fun (kotbase/ReplicatorConfiguration.Companion).<get-DEFAULT_CONFLICT_RESOLVER>(): kotlin/Function1<kotbase/Conflict, kotbase/Document?> // kotbase/DEFAULT_CONFLICT_RESOLVER.<get-DEFAULT_CONFLICT_RESOLVER>|<get-DEFAULT_CONFLICT_RESOLVER>@kotbase.ReplicatorConfiguration.Companion(){}[0]
 final val kotbase/DEFAULT_NAME // kotbase/DEFAULT_NAME|@kotbase.Collection.Companion{}DEFAULT_NAME[0]
@@ -959,16 +946,6 @@ final val kotbase/DEFAULT_NAME // kotbase/DEFAULT_NAME|@kotbase.Scope.Companion{
     final fun (kotbase/Scope.Companion).<get-DEFAULT_NAME>(): kotlin/String // kotbase/DEFAULT_NAME.<get-DEFAULT_NAME>|<get-DEFAULT_NAME>@kotbase.Scope.Companion(){}[0]
 final val kotbase/DISABLE_HEARTBEAT // kotbase/DISABLE_HEARTBEAT|@kotbase.ReplicatorConfiguration.Companion{}DISABLE_HEARTBEAT[0]
     final fun (kotbase/ReplicatorConfiguration.Companion).<get-DISABLE_HEARTBEAT>(): kotlin/Int // kotbase/DISABLE_HEARTBEAT.<get-DISABLE_HEARTBEAT>|<get-DISABLE_HEARTBEAT>@kotbase.ReplicatorConfiguration.Companion(){}[0]
-final val kotbase/DatabaseConfigurationFactory // kotbase/DatabaseConfigurationFactory|{}DatabaseConfigurationFactory[0]
-    final fun <get-DatabaseConfigurationFactory>(): kotbase/DatabaseConfiguration? // kotbase/DatabaseConfigurationFactory.<get-DatabaseConfigurationFactory>|<get-DatabaseConfigurationFactory>(){}[0]
-final val kotbase/FullTextIndexConfigurationFactory // kotbase/FullTextIndexConfigurationFactory|{}FullTextIndexConfigurationFactory[0]
-    final fun <get-FullTextIndexConfigurationFactory>(): kotbase/FullTextIndexConfiguration? // kotbase/FullTextIndexConfigurationFactory.<get-FullTextIndexConfigurationFactory>|<get-FullTextIndexConfigurationFactory>(){}[0]
-final val kotbase/LogFileConfigurationFactory // kotbase/LogFileConfigurationFactory|{}LogFileConfigurationFactory[0]
-    final fun <get-LogFileConfigurationFactory>(): kotbase/LogFileConfiguration? // kotbase/LogFileConfigurationFactory.<get-LogFileConfigurationFactory>|<get-LogFileConfigurationFactory>(){}[0]
-final val kotbase/ReplicatorConfigurationFactory // kotbase/ReplicatorConfigurationFactory|{}ReplicatorConfigurationFactory[0]
-    final fun <get-ReplicatorConfigurationFactory>(): kotbase/ReplicatorConfiguration? // kotbase/ReplicatorConfigurationFactory.<get-ReplicatorConfigurationFactory>|<get-ReplicatorConfigurationFactory>(){}[0]
-final val kotbase/ValueIndexConfigurationFactory // kotbase/ValueIndexConfigurationFactory|{}ValueIndexConfigurationFactory[0]
-    final fun <get-ValueIndexConfigurationFactory>(): kotbase/ValueIndexConfiguration? // kotbase/ValueIndexConfigurationFactory.<get-ValueIndexConfigurationFactory>|<get-ValueIndexConfigurationFactory>(){}[0]
 final val kotbase/code // kotbase/code|@kotbase.CouchbaseLiteException{}code[0]
     final fun (kotbase/CouchbaseLiteException).<get-code>(): kotlin/Int // kotbase/code.<get-code>|<get-code>@kotbase.CouchbaseLiteException(){}[0]
 final val kotbase/domain // kotbase/domain|@kotbase.CouchbaseLiteException{}domain[0]
@@ -984,15 +961,7 @@ final fun (kotbase/ArrayInterface).kotbase/get(kotlin/Int): kotbase/Fragment // 
 final fun (kotbase/Collection).kotbase/collectionChangeFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/CollectionChange> // kotbase/collectionChangeFlow|collectionChangeFlow@kotbase.Collection(kotlin.coroutines.CoroutineContext?){}[0]
 final fun (kotbase/Collection).kotbase/documentChangeFlow(kotlin/String, kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/DocumentChange> // kotbase/documentChangeFlow|documentChangeFlow@kotbase.Collection(kotlin.String;kotlin.coroutines.CoroutineContext?){}[0]
 final fun (kotbase/Collection).kotbase/get(kotlin/String): kotbase/DocumentFragment // kotbase/get|get@kotbase.Collection(kotlin.String){}[0]
-final fun (kotbase/CollectionConfiguration?).kotbase/newConfig(kotlin.collections/List<kotlin/String>? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function1<kotbase/Conflict, kotbase/Document?>? = ...): kotbase/CollectionConfiguration // kotbase/newConfig|newConfig@kotbase.CollectionConfiguration?(kotlin.collections.List<kotlin.String>?;kotlin.collections.List<kotlin.String>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function1<kotbase.Conflict,kotbase.Document?>?){}[0]
-final fun (kotbase/Database).kotbase/databaseChangeFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/DatabaseChange> // kotbase/databaseChangeFlow|databaseChangeFlow@kotbase.Database(kotlin.coroutines.CoroutineContext?){}[0]
-final fun (kotbase/Database).kotbase/documentChangeFlow(kotlin/String, kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/DocumentChange> // kotbase/documentChangeFlow|documentChangeFlow@kotbase.Database(kotlin.String;kotlin.coroutines.CoroutineContext?){}[0]
-final fun (kotbase/Database).kotbase/get(kotlin/String): kotbase/DocumentFragment // kotbase/get|get@kotbase.Database(kotlin.String){}[0]
-final fun (kotbase/DatabaseConfiguration?).kotbase/newConfig(kotlin/String? = ...): kotbase/DatabaseConfiguration // kotbase/newConfig|newConfig@kotbase.DatabaseConfiguration?(kotlin.String?){}[0]
-final fun (kotbase/DatabaseConfiguration?).kotbase/newConfig(kotlin/String? = ..., kotlin/Boolean? = ...): kotbase/DatabaseConfiguration // kotbase/newConfig|newConfig@kotbase.DatabaseConfiguration?(kotlin.String?;kotlin.Boolean?){}[0]
 final fun (kotbase/DictionaryInterface).kotbase/get(kotlin/String): kotbase/Fragment // kotbase/get|get@kotbase.DictionaryInterface(kotlin.String){}[0]
-final fun (kotbase/FullTextIndexConfiguration?).kotbase/newConfig(kotlin/Array<out kotlin/String>..., kotlin/String? = ..., kotlin/Boolean? = ...): kotbase/FullTextIndexConfiguration // kotbase/newConfig|newConfig@kotbase.FullTextIndexConfiguration?(kotlin.Array<out|kotlin.String>...;kotlin.String?;kotlin.Boolean?){}[0]
-final fun (kotbase/LogFileConfiguration?).kotbase/newConfig(kotlin/String? = ..., kotlin/Long? = ..., kotlin/Int? = ..., kotlin/Boolean? = ...): kotbase/LogFileConfiguration // kotbase/newConfig|newConfig@kotbase.LogFileConfiguration?(kotlin.String?;kotlin.Long?;kotlin.Int?;kotlin.Boolean?){}[0]
 final fun (kotbase/MutableArray).kotbase/get(kotlin/Int): kotbase/MutableFragment // kotbase/get|get@kotbase.MutableArray(kotlin.Int){}[0]
 final fun (kotbase/MutableDictionary).kotbase/get(kotlin/String): kotbase/MutableFragment // kotbase/get|get@kotbase.MutableDictionary(kotlin.String){}[0]
 final fun (kotbase/MutableDictionaryInterface).kotbase/get(kotlin/String): kotbase/MutableFragment // kotbase/get|get@kotbase.MutableDictionaryInterface(kotlin.String){}[0]
@@ -1000,9 +969,6 @@ final fun (kotbase/Query).kotbase/queryChangeFlow(kotlin.coroutines/CoroutineCon
 final fun (kotbase/Replicator).kotbase/documentReplicationFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/DocumentReplication> // kotbase/documentReplicationFlow|documentReplicationFlow@kotbase.Replicator(kotlin.coroutines.CoroutineContext?){}[0]
 final fun (kotbase/Replicator).kotbase/replicatorChangesFlow(kotlin.coroutines/CoroutineContext? = ...): kotlinx.coroutines.flow/Flow<kotbase/ReplicatorChange> // kotbase/replicatorChangesFlow|replicatorChangesFlow@kotbase.Replicator(kotlin.coroutines.CoroutineContext?){}[0]
 final fun (kotbase/ReplicatorConfiguration).kotbase/setAllowReplicatingInBackground(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/setAllowReplicatingInBackground|setAllowReplicatingInBackground@kotbase.ReplicatorConfiguration(kotlin.Boolean){}[0]
-final fun (kotbase/ReplicatorConfiguration?).kotbase/newConfig(kotbase/Database? = ..., kotbase/Endpoint? = ..., kotbase/ReplicatorType? = ..., kotlin/Boolean? = ..., kotbase/Authenticator? = ..., kotlin.collections/Map<kotlin/String, kotlin/String>? = ..., kotlin/ByteArray? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function1<kotbase/Conflict, kotbase/Document?>? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ...): kotbase/ReplicatorConfiguration // kotbase/newConfig|newConfig@kotbase.ReplicatorConfiguration?(kotbase.Database?;kotbase.Endpoint?;kotbase.ReplicatorType?;kotlin.Boolean?;kotbase.Authenticator?;kotlin.collections.Map<kotlin.String,kotlin.String>?;kotlin.ByteArray?;kotlin.collections.List<kotlin.String>?;kotlin.collections.List<kotlin.String>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function1<kotbase.Conflict,kotbase.Document?>?;kotlin.Int?;kotlin.Int?;kotlin.Int?;kotlin.Boolean?;kotlin.Boolean?){}[0]
-final fun (kotbase/ReplicatorConfiguration?).kotbase/newConfig(kotbase/Endpoint? = ..., kotlin.collections/Map<out kotlin.collections/Collection<kotbase/Collection>, kotbase/CollectionConfiguration?>? = ..., kotbase/ReplicatorType? = ..., kotlin/Boolean? = ..., kotbase/Authenticator? = ..., kotlin.collections/Map<kotlin/String, kotlin/String>? = ..., kotlin/ByteArray? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Int? = ..., kotlin/Boolean? = ..., kotlin/Boolean? = ...): kotbase/ReplicatorConfiguration // kotbase/newConfig|newConfig@kotbase.ReplicatorConfiguration?(kotbase.Endpoint?;kotlin.collections.Map<out|kotlin.collections.Collection<kotbase.Collection>,kotbase.CollectionConfiguration?>?;kotbase.ReplicatorType?;kotlin.Boolean?;kotbase.Authenticator?;kotlin.collections.Map<kotlin.String,kotlin.String>?;kotlin.ByteArray?;kotlin.Int?;kotlin.Int?;kotlin.Int?;kotlin.Boolean?;kotlin.Boolean?){}[0]
-final fun (kotbase/ValueIndexConfiguration?).kotbase/newConfig(kotlin/Array<out kotlin/String>...): kotbase/ValueIndexConfiguration // kotbase/newConfig|newConfig@kotbase.ValueIndexConfiguration?(kotlin.Array<out|kotlin.String>...){}[0]
 
 // Targets: [apple]
 abstract class <#A: platform.darwin/NSObject> kotbase.internal/AbstractDelegatedClass { // kotbase.internal/AbstractDelegatedClass|null[0]
@@ -1108,7 +1074,10 @@ final class kotbase/CollectionChange : kotbase.internal/DelegatedClass<cocoapods
 
 // Targets: [apple]
 final class kotbase/CollectionConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLCollectionConfiguration> { // kotbase/CollectionConfiguration|null[0]
-    constructor <init>(kotlin.collections/List<kotlin/String>? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function1<kotbase/Conflict, kotbase/Document?>? = ...) // kotbase/CollectionConfiguration.<init>|<init>(kotlin.collections.List<kotlin.String>?;kotlin.collections.List<kotlin.String>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function1<kotbase.Conflict,kotbase.Document?>?){}[0]
+    constructor <init>(kotbase/Collection) // kotbase/CollectionConfiguration.<init>|<init>(kotbase.Collection){}[0]
+
+    final val collection // kotbase/CollectionConfiguration.collection|{}collection[0]
+        final fun <get-collection>(): kotbase/Collection // kotbase/CollectionConfiguration.collection.<get-collection>|<get-collection>(){}[0]
 
     final var channels // kotbase/CollectionConfiguration.channels|{}channels[0]
         final fun <get-channels>(): kotlin.collections/List<kotlin/String>? // kotbase/CollectionConfiguration.channels.<get-channels>|<get-channels>(){}[0]
@@ -1131,6 +1100,10 @@ final class kotbase/CollectionConfiguration : kotbase.internal/DelegatedClass<co
     final fun setDocumentIDs(kotlin.collections/List<kotlin/String>?): kotbase/CollectionConfiguration // kotbase/CollectionConfiguration.setDocumentIDs|setDocumentIDs(kotlin.collections.List<kotlin.String>?){}[0]
     final fun setPullFilter(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/CollectionConfiguration // kotbase/CollectionConfiguration.setPullFilter|setPullFilter(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
     final fun setPushFilter(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/CollectionConfiguration // kotbase/CollectionConfiguration.setPushFilter|setPushFilter(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
+
+    final object Companion { // kotbase/CollectionConfiguration.Companion|null[0]
+        final fun fromCollections(kotlin.collections/Collection<kotbase/Collection>): kotlin.collections/Set<kotbase/CollectionConfiguration> // kotbase/CollectionConfiguration.Companion.fromCollections|fromCollections(kotlin.collections.Collection<kotbase.Collection>){}[0]
+    }
 }
 
 // Targets: [apple]
@@ -1144,19 +1117,6 @@ final class kotbase/Conflict : kotbase.internal/DelegatedClass<cocoapods.Couchba
 }
 
 // Targets: [apple]
-final class kotbase/ConsoleLogger : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLConsoleLogger>, kotbase/Logger { // kotbase/ConsoleLogger|null[0]
-    final var domains // kotbase/ConsoleLogger.domains|{}domains[0]
-        final fun <get-domains>(): kotlin.collections/Set<kotbase/LogDomain> // kotbase/ConsoleLogger.domains.<get-domains>|<get-domains>(){}[0]
-        final fun <set-domains>(kotlin.collections/Set<kotbase/LogDomain>) // kotbase/ConsoleLogger.domains.<set-domains>|<set-domains>(kotlin.collections.Set<kotbase.LogDomain>){}[0]
-    final var level // kotbase/ConsoleLogger.level|{}level[0]
-        final fun <get-level>(): kotbase/LogLevel // kotbase/ConsoleLogger.level.<get-level>|<get-level>(){}[0]
-        final fun <set-level>(kotbase/LogLevel) // kotbase/ConsoleLogger.level.<set-level>|<set-level>(kotbase.LogLevel){}[0]
-
-    final fun log(kotbase/LogLevel, kotbase/LogDomain, kotlin/String) // kotbase/ConsoleLogger.log|log(kotbase.LogLevel;kotbase.LogDomain;kotlin.String){}[0]
-    final fun setDomains(kotlin/Array<out kotbase/LogDomain>...) // kotbase/ConsoleLogger.setDomains|setDomains(kotlin.Array<out|kotbase.LogDomain>...){}[0]
-}
-
-// Targets: [apple]
 final class kotbase/Database : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDatabase>, kotlin/AutoCloseable { // kotbase/Database|null[0]
     constructor <init>(kotlin/String) // kotbase/Database.<init>|<init>(kotlin.String){}[0]
     constructor <init>(kotlin/String, kotbase/DatabaseConfiguration) // kotbase/Database.<init>|<init>(kotlin.String;kotbase.DatabaseConfiguration){}[0]
@@ -1165,14 +1125,10 @@ final class kotbase/Database : kotbase.internal/DelegatedClass<cocoapods.Couchba
         final fun <get-collections>(): kotlin.collections/Set<kotbase/Collection> // kotbase/Database.collections.<get-collections>|<get-collections>(){}[0]
     final val config // kotbase/Database.config|{}config[0]
         final fun <get-config>(): kotbase/DatabaseConfiguration // kotbase/Database.config.<get-config>|<get-config>(){}[0]
-    final val count // kotbase/Database.count|{}count[0]
-        final fun <get-count>(): kotlin/Long // kotbase/Database.count.<get-count>|<get-count>(){}[0]
     final val defaultCollection // kotbase/Database.defaultCollection|{}defaultCollection[0]
         final fun <get-defaultCollection>(): kotbase/Collection // kotbase/Database.defaultCollection.<get-defaultCollection>|<get-defaultCollection>(){}[0]
     final val defaultScope // kotbase/Database.defaultScope|{}defaultScope[0]
         final fun <get-defaultScope>(): kotbase/Scope // kotbase/Database.defaultScope.<get-defaultScope>|<get-defaultScope>(){}[0]
-    final val indexes // kotbase/Database.indexes|{}indexes[0]
-        final fun <get-indexes>(): kotlin.collections/List<kotlin/String> // kotbase/Database.indexes.<get-indexes>|<get-indexes>(){}[0]
     final val name // kotbase/Database.name|{}name[0]
         final fun <get-name>(): kotlin/String // kotbase/Database.name.<get-name>|<get-name>(){}[0]
     final val path // kotbase/Database.path|{}path[0]
@@ -1181,60 +1137,28 @@ final class kotbase/Database : kotbase.internal/DelegatedClass<cocoapods.Couchba
         final fun <get-scopes>(): kotlin.collections/Set<kotbase/Scope> // kotbase/Database.scopes.<get-scopes>|<get-scopes>(){}[0]
 
     final fun <#A1: kotlin/Any?> inBatch(kotlin/Function1<kotbase/Database, #A1>): #A1 // kotbase/Database.inBatch|inBatch(kotlin.Function1<kotbase.Database,0:0>){0§<kotlin.Any?>}[0]
-    final fun addChangeListener(kotlin.coroutines/CoroutineContext, kotlin.coroutines/SuspendFunction1<kotbase/DatabaseChange, kotlin/Unit>): kotbase/ListenerToken // kotbase/Database.addChangeListener|addChangeListener(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotbase.DatabaseChange,kotlin.Unit>){}[0]
-    final fun addChangeListener(kotlin/Function1<kotbase/DatabaseChange, kotlin/Unit>): kotbase/ListenerToken // kotbase/Database.addChangeListener|addChangeListener(kotlin.Function1<kotbase.DatabaseChange,kotlin.Unit>){}[0]
-    final fun addChangeListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/DatabaseChange, kotlin/Unit>) // kotbase/Database.addChangeListener|addChangeListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.DatabaseChange,kotlin.Unit>){}[0]
-    final fun addDocumentChangeListener(kotlin/String, kotlin.coroutines/CoroutineContext, kotlin.coroutines/SuspendFunction1<kotbase/DocumentChange, kotlin/Unit>): kotbase/ListenerToken // kotbase/Database.addDocumentChangeListener|addDocumentChangeListener(kotlin.String;kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotbase.DocumentChange,kotlin.Unit>){}[0]
-    final fun addDocumentChangeListener(kotlin/String, kotlin/Function1<kotbase/DocumentChange, kotlin/Unit>): kotbase/ListenerToken // kotbase/Database.addDocumentChangeListener|addDocumentChangeListener(kotlin.String;kotlin.Function1<kotbase.DocumentChange,kotlin.Unit>){}[0]
-    final fun addDocumentChangeListener(kotlin/String, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/DocumentChange, kotlin/Unit>) // kotbase/Database.addDocumentChangeListener|addDocumentChangeListener(kotlin.String;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.DocumentChange,kotlin.Unit>){}[0]
     final fun close() // kotbase/Database.close|close(){}[0]
     final fun collections(): kotlin.collections/Set<kotbase/Collection> // kotbase/Database.collections|collections(){}[0]
     final fun createCollection(kotlin/String): kotbase/Collection // kotbase/Database.createCollection|createCollection(kotlin.String){}[0]
     final fun createCollection(kotlin/String, kotlin/String?): kotbase/Collection // kotbase/Database.createCollection|createCollection(kotlin.String;kotlin.String?){}[0]
-    final fun createIndex(kotlin/String, kotbase/Index) // kotbase/Database.createIndex|createIndex(kotlin.String;kotbase.Index){}[0]
-    final fun createIndex(kotlin/String, kotbase/IndexConfiguration) // kotbase/Database.createIndex|createIndex(kotlin.String;kotbase.IndexConfiguration){}[0]
     final fun createQuery(kotlin/String): kotbase/Query // kotbase/Database.createQuery|createQuery(kotlin.String){}[0]
     final fun defaultCollection(): kotbase/Collection // kotbase/Database.defaultCollection|defaultCollection(){}[0]
     final fun defaultScope(): kotbase/Scope // kotbase/Database.defaultScope|defaultScope(){}[0]
     final fun delete() // kotbase/Database.delete|delete(){}[0]
-    final fun delete(kotbase/Document) // kotbase/Database.delete|delete(kotbase.Document){}[0]
-    final fun delete(kotbase/Document, kotbase/ConcurrencyControl): kotlin/Boolean // kotbase/Database.delete|delete(kotbase.Document;kotbase.ConcurrencyControl){}[0]
     final fun deleteCollection(kotlin/String) // kotbase/Database.deleteCollection|deleteCollection(kotlin.String){}[0]
     final fun deleteCollection(kotlin/String, kotlin/String?) // kotbase/Database.deleteCollection|deleteCollection(kotlin.String;kotlin.String?){}[0]
-    final fun deleteIndex(kotlin/String) // kotbase/Database.deleteIndex|deleteIndex(kotlin.String){}[0]
     final fun getCollection(kotlin/String): kotbase/Collection? // kotbase/Database.getCollection|getCollection(kotlin.String){}[0]
     final fun getCollection(kotlin/String, kotlin/String?): kotbase/Collection? // kotbase/Database.getCollection|getCollection(kotlin.String;kotlin.String?){}[0]
     final fun getCollections(kotlin/String?): kotlin.collections/Set<kotbase/Collection> // kotbase/Database.getCollections|getCollections(kotlin.String?){}[0]
-    final fun getDocument(kotlin/String): kotbase/Document? // kotbase/Database.getDocument|getDocument(kotlin.String){}[0]
-    final fun getDocumentExpiration(kotlin/String): kotlin.time/Instant? // kotbase/Database.getDocumentExpiration|getDocumentExpiration(kotlin.String){}[0]
     final fun getScope(kotlin/String): kotbase/Scope? // kotbase/Database.getScope|getScope(kotlin.String){}[0]
-    final fun indexes(): kotlin.collections/List<kotlin/String> // kotbase/Database.indexes|indexes(){}[0]
     final fun performMaintenance(kotbase/MaintenanceType): kotlin/Boolean // kotbase/Database.performMaintenance|performMaintenance(kotbase.MaintenanceType){}[0]
-    final fun purge(kotbase/Document) // kotbase/Database.purge|purge(kotbase.Document){}[0]
-    final fun purge(kotlin/String) // kotbase/Database.purge|purge(kotlin.String){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Database.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
-    final fun save(kotbase/MutableDocument) // kotbase/Database.save|save(kotbase.MutableDocument){}[0]
-    final fun save(kotbase/MutableDocument, kotbase/ConcurrencyControl): kotlin/Boolean // kotbase/Database.save|save(kotbase.MutableDocument;kotbase.ConcurrencyControl){}[0]
-    final fun save(kotbase/MutableDocument, kotlin/Function2<kotbase/MutableDocument, kotbase/Document?, kotlin/Boolean>): kotlin/Boolean // kotbase/Database.save|save(kotbase.MutableDocument;kotlin.Function2<kotbase.MutableDocument,kotbase.Document?,kotlin.Boolean>){}[0]
     final fun scopes(): kotlin.collections/Set<kotbase/Scope> // kotbase/Database.scopes|scopes(){}[0]
-    final fun setDocumentExpiration(kotlin/String, kotlin.time/Instant?) // kotbase/Database.setDocumentExpiration|setDocumentExpiration(kotlin.String;kotlin.time.Instant?){}[0]
 
     final object Companion { // kotbase/Database.Companion|null[0]
-        final val log // kotbase/Database.Companion.log|{}log[0]
-            final fun <get-log>(): kotbase/Log // kotbase/Database.Companion.log.<get-log>|<get-log>(){}[0]
-
         final fun copy(kotlin/String, kotlin/String, kotbase/DatabaseConfiguration? = ...) // kotbase/Database.Companion.copy|copy(kotlin.String;kotlin.String;kotbase.DatabaseConfiguration?){}[0]
         final fun delete(kotlin/String, kotlin/String? = ...) // kotbase/Database.Companion.delete|delete(kotlin.String;kotlin.String?){}[0]
         final fun exists(kotlin/String, kotlin/String? = ...): kotlin/Boolean // kotbase/Database.Companion.exists|exists(kotlin.String;kotlin.String?){}[0]
     }
-}
-
-// Targets: [apple]
-final class kotbase/DatabaseChange : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDatabaseChange> { // kotbase/DatabaseChange|null[0]
-    final val database // kotbase/DatabaseChange.database|{}database[0]
-        final fun <get-database>(): kotbase/Database // kotbase/DatabaseChange.database.<get-database>|<get-database>(){}[0]
-    final val documentIDs // kotbase/DatabaseChange.documentIDs|{}documentIDs[0]
-        final fun <get-documentIDs>(): kotlin.collections/List<kotlin/String> // kotbase/DatabaseChange.documentIDs.<get-documentIDs>|<get-documentIDs>(){}[0]
 }
 
 // Targets: [apple]
@@ -1248,21 +1172,15 @@ final class kotbase/DatabaseConfiguration : kotbase.internal/DelegatedClass<coco
     final var isFullSync // kotbase/DatabaseConfiguration.isFullSync|{}isFullSync[0]
         final fun <get-isFullSync>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isFullSync.<get-isFullSync>|<get-isFullSync>(){}[0]
         final fun <set-isFullSync>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isFullSync.<set-isFullSync>|<set-isFullSync>(kotlin.Boolean){}[0]
-    final var isMMapEnabled // kotbase/DatabaseConfiguration.isMMapEnabled|{}isMMapEnabled[0]
-        final fun <get-isMMapEnabled>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isMMapEnabled.<get-isMMapEnabled>|<get-isMMapEnabled>(){}[0]
-        final fun <set-isMMapEnabled>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isMMapEnabled.<set-isMMapEnabled>|<set-isMMapEnabled>(kotlin.Boolean){}[0]
 
     final fun setDirectory(kotlin/String): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setDirectory|setDirectory(kotlin.String){}[0]
     final fun setFullSync(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setFullSync|setFullSync(kotlin.Boolean){}[0]
-    final fun setMMapEnabled(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setMMapEnabled|setMMapEnabled(kotlin.Boolean){}[0]
 }
 
 // Targets: [apple]
 final class kotbase/DocumentChange : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDocumentChange> { // kotbase/DocumentChange|null[0]
     final val collection // kotbase/DocumentChange.collection|{}collection[0]
         final fun <get-collection>(): kotbase/Collection // kotbase/DocumentChange.collection.<get-collection>|<get-collection>(){}[0]
-    final val database // kotbase/DocumentChange.database|{}database[0]
-        final fun <get-database>(): kotbase/Database // kotbase/DocumentChange.database.<get-database>|<get-database>(){}[0]
     final val documentID // kotbase/DocumentChange.documentID|{}documentID[0]
         final fun <get-documentID>(): kotlin/String // kotbase/DocumentChange.documentID.<get-documentID>|<get-documentID>(){}[0]
 }
@@ -1277,18 +1195,6 @@ final class kotbase/DocumentReplication : kotbase.internal/DelegatedClass<cocoap
         final fun <get-replicator>(): kotbase/Replicator // kotbase/DocumentReplication.replicator.<get-replicator>|<get-replicator>(){}[0]
 
     final fun toString(): kotlin/String // kotbase/DocumentReplication.toString|toString(){}[0]
-}
-
-// Targets: [apple]
-final class kotbase/FileLogger : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLFileLogger>, kotbase/Logger { // kotbase/FileLogger|null[0]
-    final var config // kotbase/FileLogger.config|{}config[0]
-        final fun <get-config>(): kotbase/LogFileConfiguration? // kotbase/FileLogger.config.<get-config>|<get-config>(){}[0]
-        final fun <set-config>(kotbase/LogFileConfiguration?) // kotbase/FileLogger.config.<set-config>|<set-config>(kotbase.LogFileConfiguration?){}[0]
-    final var level // kotbase/FileLogger.level|{}level[0]
-        final fun <get-level>(): kotbase/LogLevel // kotbase/FileLogger.level.<get-level>|<get-level>(){}[0]
-        final fun <set-level>(kotbase/LogLevel) // kotbase/FileLogger.level.<set-level>|<set-level>(kotbase.LogLevel){}[0]
-
-    final fun log(kotbase/LogLevel, kotbase/LogDomain, kotlin/String) // kotbase/FileLogger.log|log(kotbase.LogLevel;kotbase.LogDomain;kotlin.String){}[0]
 }
 
 // Targets: [apple]
@@ -1307,7 +1213,6 @@ final class kotbase/From : kotbase.internal/AbstractDelegatedClass<cocoapods.Cou
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/From.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/From.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/From.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/From.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
     final fun where(kotbase/Expression): kotbase/Where // kotbase/From.where|where(kotbase.Expression){}[0]
 }
 
@@ -1333,7 +1238,6 @@ final class kotbase/GroupBy : kotbase.internal/AbstractDelegatedClass<cocoapods.
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/GroupBy.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/GroupBy.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/GroupBy.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/GroupBy.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [apple]
@@ -1350,7 +1254,6 @@ final class kotbase/Having : kotbase.internal/AbstractDelegatedClass<cocoapods.C
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/Having.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/Having.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/Having.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Having.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [apple]
@@ -1367,7 +1270,6 @@ final class kotbase/Joins : kotbase.internal/AbstractDelegatedClass<cocoapods.Co
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/Joins.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/Joins.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/Joins.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Joins.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
     final fun where(kotbase/Expression): kotbase/Where // kotbase/Joins.where|where(kotbase.Expression){}[0]
 }
 
@@ -1382,45 +1284,6 @@ final class kotbase/Limit : kotbase.internal/AbstractDelegatedClass<cocoapods.Co
     final fun addChangeListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/QueryChange, kotlin/Unit>) // kotbase/Limit.addChangeListener|addChangeListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.QueryChange,kotlin.Unit>){}[0]
     final fun execute(): kotbase/ResultSet // kotbase/Limit.execute|execute(){}[0]
     final fun explain(): kotlin/String // kotbase/Limit.explain|explain(){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Limit.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
-}
-
-// Targets: [apple]
-final class kotbase/Log : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLLog> { // kotbase/Log|null[0]
-    final val console // kotbase/Log.console|{}console[0]
-        final fun <get-console>(): kotbase/ConsoleLogger // kotbase/Log.console.<get-console>|<get-console>(){}[0]
-    final val file // kotbase/Log.file|{}file[0]
-        final fun <get-file>(): kotbase/FileLogger // kotbase/Log.file.<get-file>|<get-file>(){}[0]
-
-    final var custom // kotbase/Log.custom|{}custom[0]
-        final fun <get-custom>(): kotbase/Logger? // kotbase/Log.custom.<get-custom>|<get-custom>(){}[0]
-        final fun <set-custom>(kotbase/Logger?) // kotbase/Log.custom.<set-custom>|<set-custom>(kotbase.Logger?){}[0]
-}
-
-// Targets: [apple]
-final class kotbase/LogFileConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLLogFileConfiguration> { // kotbase/LogFileConfiguration|null[0]
-    constructor <init>(kotbase/LogFileConfiguration) // kotbase/LogFileConfiguration.<init>|<init>(kotbase.LogFileConfiguration){}[0]
-    constructor <init>(kotlin/String) // kotbase/LogFileConfiguration.<init>|<init>(kotlin.String){}[0]
-    constructor <init>(kotlin/String, kotbase/LogFileConfiguration?) // kotbase/LogFileConfiguration.<init>|<init>(kotlin.String;kotbase.LogFileConfiguration?){}[0]
-
-    final val directory // kotbase/LogFileConfiguration.directory|{}directory[0]
-        final fun <get-directory>(): kotlin/String // kotbase/LogFileConfiguration.directory.<get-directory>|<get-directory>(){}[0]
-
-    final var maxRotateCount // kotbase/LogFileConfiguration.maxRotateCount|{}maxRotateCount[0]
-        final fun <get-maxRotateCount>(): kotlin/Int // kotbase/LogFileConfiguration.maxRotateCount.<get-maxRotateCount>|<get-maxRotateCount>(){}[0]
-        final fun <set-maxRotateCount>(kotlin/Int) // kotbase/LogFileConfiguration.maxRotateCount.<set-maxRotateCount>|<set-maxRotateCount>(kotlin.Int){}[0]
-    final var maxSize // kotbase/LogFileConfiguration.maxSize|{}maxSize[0]
-        final fun <get-maxSize>(): kotlin/Long // kotbase/LogFileConfiguration.maxSize.<get-maxSize>|<get-maxSize>(){}[0]
-        final fun <set-maxSize>(kotlin/Long) // kotbase/LogFileConfiguration.maxSize.<set-maxSize>|<set-maxSize>(kotlin.Long){}[0]
-    final var usesPlaintext // kotbase/LogFileConfiguration.usesPlaintext|{}usesPlaintext[0]
-        final fun <get-usesPlaintext>(): kotlin/Boolean // kotbase/LogFileConfiguration.usesPlaintext.<get-usesPlaintext>|<get-usesPlaintext>(){}[0]
-        final fun <set-usesPlaintext>(kotlin/Boolean) // kotbase/LogFileConfiguration.usesPlaintext.<set-usesPlaintext>|<set-usesPlaintext>(kotlin.Boolean){}[0]
-
-    final fun equals(kotlin/Any?): kotlin/Boolean // kotbase/LogFileConfiguration.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // kotbase/LogFileConfiguration.hashCode|hashCode(){}[0]
-    final fun setMaxRotateCount(kotlin/Int): kotbase/LogFileConfiguration // kotbase/LogFileConfiguration.setMaxRotateCount|setMaxRotateCount(kotlin.Int){}[0]
-    final fun setMaxSize(kotlin/Long): kotbase/LogFileConfiguration // kotbase/LogFileConfiguration.setMaxSize|setMaxSize(kotlin.Long){}[0]
-    final fun setUsePlaintext(kotlin/Boolean): kotbase/LogFileConfiguration // kotbase/LogFileConfiguration.setUsePlaintext|setUsePlaintext(kotlin.Boolean){}[0]
 }
 
 // Targets: [apple]
@@ -1436,7 +1299,6 @@ final class kotbase/OrderBy : kotbase.internal/AbstractDelegatedClass<cocoapods.
     final fun explain(): kotlin/String // kotbase/OrderBy.explain|explain(){}[0]
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/OrderBy.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/OrderBy.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/OrderBy.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [apple]
@@ -1499,10 +1361,10 @@ final class kotbase/Replicator : kotbase.internal/DelegatedClass<cocoapods.Couch
 
     final val config // kotbase/Replicator.config|{}config[0]
         final fun <get-config>(): kotbase/ReplicatorConfiguration // kotbase/Replicator.config.<get-config>|<get-config>(){}[0]
+    final val correlationId // kotbase/Replicator.correlationId|{}correlationId[0]
+        final fun <get-correlationId>(): kotlin/String? // kotbase/Replicator.correlationId.<get-correlationId>|<get-correlationId>(){}[0]
     final val isClosed // kotbase/Replicator.isClosed|{}isClosed[0]
         final fun <get-isClosed>(): kotlin/Boolean // kotbase/Replicator.isClosed.<get-isClosed>|<get-isClosed>(){}[0]
-    final val pendingDocumentIds // kotbase/Replicator.pendingDocumentIds|{}pendingDocumentIds[0]
-        final fun <get-pendingDocumentIds>(): kotlin.collections/Set<kotlin/String> // kotbase/Replicator.pendingDocumentIds.<get-pendingDocumentIds>|<get-pendingDocumentIds>(){}[0]
     final val serverCertificates // kotbase/Replicator.serverCertificates|{}serverCertificates[0]
         final fun <get-serverCertificates>(): kotlin.collections/List<kotlin/ByteArray>? // kotbase/Replicator.serverCertificates.<get-serverCertificates>|<get-serverCertificates>(){}[0]
     final val status // kotbase/Replicator.status|{}status[0]
@@ -1516,10 +1378,7 @@ final class kotbase/Replicator : kotbase.internal/DelegatedClass<cocoapods.Couch
     final fun addDocumentReplicationListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/DocumentReplication, kotlin/Unit>) // kotbase/Replicator.addDocumentReplicationListener|addDocumentReplicationListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.DocumentReplication,kotlin.Unit>){}[0]
     final fun close() // kotbase/Replicator.close|close(){}[0]
     final fun getPendingDocumentIds(kotbase/Collection): kotlin.collections/Set<kotlin/String> // kotbase/Replicator.getPendingDocumentIds|getPendingDocumentIds(kotbase.Collection){}[0]
-    final fun isDocumentPending(kotlin/String): kotlin/Boolean // kotbase/Replicator.isDocumentPending|isDocumentPending(kotlin.String){}[0]
     final fun isDocumentPending(kotlin/String, kotbase/Collection): kotlin/Boolean // kotbase/Replicator.isDocumentPending|isDocumentPending(kotlin.String;kotbase.Collection){}[0]
-    final fun pendingDocumentIds(): kotlin.collections/Set<kotlin/String> // kotbase/Replicator.pendingDocumentIds|pendingDocumentIds(){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Replicator.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
     final fun start() // kotbase/Replicator.start|start(){}[0]
     final fun start(kotlin/Boolean) // kotbase/Replicator.start|start(kotlin.Boolean){}[0]
     final fun stop() // kotbase/Replicator.stop|stop(){}[0]
@@ -1537,29 +1396,17 @@ final class kotbase/ReplicatorChange : kotbase.internal/DelegatedClass<cocoapods
 
 // Targets: [apple]
 final class kotbase/ReplicatorConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLReplicatorConfiguration> { // kotbase/ReplicatorConfiguration|null[0]
-    constructor <init>(kotbase/Database, kotbase/Endpoint) // kotbase/ReplicatorConfiguration.<init>|<init>(kotbase.Database;kotbase.Endpoint){}[0]
-    constructor <init>(kotbase/Endpoint) // kotbase/ReplicatorConfiguration.<init>|<init>(kotbase.Endpoint){}[0]
     constructor <init>(kotbase/ReplicatorConfiguration) // kotbase/ReplicatorConfiguration.<init>|<init>(kotbase.ReplicatorConfiguration){}[0]
+    constructor <init>(kotlin.collections/Collection<kotbase/CollectionConfiguration>, kotbase/Endpoint) // kotbase/ReplicatorConfiguration.<init>|<init>(kotlin.collections.Collection<kotbase.CollectionConfiguration>;kotbase.Endpoint){}[0]
 
     final val collections // kotbase/ReplicatorConfiguration.collections|{}collections[0]
-        final fun <get-collections>(): kotlin.collections/Set<kotbase/Collection> // kotbase/ReplicatorConfiguration.collections.<get-collections>|<get-collections>(){}[0]
-    final val database // kotbase/ReplicatorConfiguration.database|{}database[0]
-        final fun <get-database>(): kotbase/Database // kotbase/ReplicatorConfiguration.database.<get-database>|<get-database>(){}[0]
+        final fun <get-collections>(): kotlin.collections/Set<kotbase/CollectionConfiguration> // kotbase/ReplicatorConfiguration.collections.<get-collections>|<get-collections>(){}[0]
     final val target // kotbase/ReplicatorConfiguration.target|{}target[0]
         final fun <get-target>(): kotbase/Endpoint // kotbase/ReplicatorConfiguration.target.<get-target>|<get-target>(){}[0]
 
     final var authenticator // kotbase/ReplicatorConfiguration.authenticator|{}authenticator[0]
         final fun <get-authenticator>(): kotbase/Authenticator? // kotbase/ReplicatorConfiguration.authenticator.<get-authenticator>|<get-authenticator>(){}[0]
         final fun <set-authenticator>(kotbase/Authenticator?) // kotbase/ReplicatorConfiguration.authenticator.<set-authenticator>|<set-authenticator>(kotbase.Authenticator?){}[0]
-    final var channels // kotbase/ReplicatorConfiguration.channels|{}channels[0]
-        final fun <get-channels>(): kotlin.collections/List<kotlin/String>? // kotbase/ReplicatorConfiguration.channels.<get-channels>|<get-channels>(){}[0]
-        final fun <set-channels>(kotlin.collections/List<kotlin/String>?) // kotbase/ReplicatorConfiguration.channels.<set-channels>|<set-channels>(kotlin.collections.List<kotlin.String>?){}[0]
-    final var conflictResolver // kotbase/ReplicatorConfiguration.conflictResolver|{}conflictResolver[0]
-        final fun <get-conflictResolver>(): kotlin/Function1<kotbase/Conflict, kotbase/Document?>? // kotbase/ReplicatorConfiguration.conflictResolver.<get-conflictResolver>|<get-conflictResolver>(){}[0]
-        final fun <set-conflictResolver>(kotlin/Function1<kotbase/Conflict, kotbase/Document?>?) // kotbase/ReplicatorConfiguration.conflictResolver.<set-conflictResolver>|<set-conflictResolver>(kotlin.Function1<kotbase.Conflict,kotbase.Document?>?){}[0]
-    final var documentIDs // kotbase/ReplicatorConfiguration.documentIDs|{}documentIDs[0]
-        final fun <get-documentIDs>(): kotlin.collections/List<kotlin/String>? // kotbase/ReplicatorConfiguration.documentIDs.<get-documentIDs>|<get-documentIDs>(){}[0]
-        final fun <set-documentIDs>(kotlin.collections/List<kotlin/String>?) // kotbase/ReplicatorConfiguration.documentIDs.<set-documentIDs>|<set-documentIDs>(kotlin.collections.List<kotlin.String>?){}[0]
     final var headers // kotbase/ReplicatorConfiguration.headers|{}headers[0]
         final fun <get-headers>(): kotlin.collections/Map<kotlin/String, kotlin/String>? // kotbase/ReplicatorConfiguration.headers.<get-headers>|<get-headers>(){}[0]
         final fun <set-headers>(kotlin.collections/Map<kotlin/String, kotlin/String>?) // kotbase/ReplicatorConfiguration.headers.<set-headers>|<set-headers>(kotlin.collections.Map<kotlin.String,kotlin.String>?){}[0]
@@ -1584,34 +1431,19 @@ final class kotbase/ReplicatorConfiguration : kotbase.internal/DelegatedClass<co
     final var pinnedServerCertificate // kotbase/ReplicatorConfiguration.pinnedServerCertificate|{}pinnedServerCertificate[0]
         final fun <get-pinnedServerCertificate>(): kotlin/ByteArray? // kotbase/ReplicatorConfiguration.pinnedServerCertificate.<get-pinnedServerCertificate>|<get-pinnedServerCertificate>(){}[0]
         final fun <set-pinnedServerCertificate>(kotlin/ByteArray?) // kotbase/ReplicatorConfiguration.pinnedServerCertificate.<set-pinnedServerCertificate>|<set-pinnedServerCertificate>(kotlin.ByteArray?){}[0]
-    final var pullFilter // kotbase/ReplicatorConfiguration.pullFilter|{}pullFilter[0]
-        final fun <get-pullFilter>(): kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? // kotbase/ReplicatorConfiguration.pullFilter.<get-pullFilter>|<get-pullFilter>(){}[0]
-        final fun <set-pullFilter>(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?) // kotbase/ReplicatorConfiguration.pullFilter.<set-pullFilter>|<set-pullFilter>(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
-    final var pushFilter // kotbase/ReplicatorConfiguration.pushFilter|{}pushFilter[0]
-        final fun <get-pushFilter>(): kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? // kotbase/ReplicatorConfiguration.pushFilter.<get-pushFilter>|<get-pushFilter>(){}[0]
-        final fun <set-pushFilter>(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?) // kotbase/ReplicatorConfiguration.pushFilter.<set-pushFilter>|<set-pushFilter>(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
     final var type // kotbase/ReplicatorConfiguration.type|{}type[0]
         final fun <get-type>(): kotbase/ReplicatorType // kotbase/ReplicatorConfiguration.type.<get-type>|<get-type>(){}[0]
         final fun <set-type>(kotbase/ReplicatorType) // kotbase/ReplicatorConfiguration.type.<set-type>|<set-type>(kotbase.ReplicatorType){}[0]
 
-    final fun addCollection(kotbase/Collection, kotbase/CollectionConfiguration? = ...): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollection|addCollection(kotbase.Collection;kotbase.CollectionConfiguration?){}[0]
-    final fun addCollections(kotlin.collections/Collection<kotbase/Collection>, kotbase/CollectionConfiguration? = ...): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollections|addCollections(kotlin.collections.Collection<kotbase.Collection>;kotbase.CollectionConfiguration?){}[0]
-    final fun getCollectionConfiguration(kotbase/Collection): kotbase/CollectionConfiguration? // kotbase/ReplicatorConfiguration.getCollectionConfiguration|getCollectionConfiguration(kotbase.Collection){}[0]
-    final fun removeCollection(kotbase/Collection): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.removeCollection|removeCollection(kotbase.Collection){}[0]
     final fun setAcceptParentDomainCookies(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setAcceptParentDomainCookies|setAcceptParentDomainCookies(kotlin.Boolean){}[0]
     final fun setAuthenticator(kotbase/Authenticator?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setAuthenticator|setAuthenticator(kotbase.Authenticator?){}[0]
     final fun setAutoPurgeEnabled(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setAutoPurgeEnabled|setAutoPurgeEnabled(kotlin.Boolean){}[0]
-    final fun setChannels(kotlin.collections/List<kotlin/String>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setChannels|setChannels(kotlin.collections.List<kotlin.String>?){}[0]
-    final fun setConflictResolver(kotlin/Function1<kotbase/Conflict, kotbase/Document?>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setConflictResolver|setConflictResolver(kotlin.Function1<kotbase.Conflict,kotbase.Document?>?){}[0]
     final fun setContinuous(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setContinuous|setContinuous(kotlin.Boolean){}[0]
-    final fun setDocumentIDs(kotlin.collections/List<kotlin/String>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setDocumentIDs|setDocumentIDs(kotlin.collections.List<kotlin.String>?){}[0]
     final fun setHeaders(kotlin.collections/Map<kotlin/String, kotlin/String>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setHeaders|setHeaders(kotlin.collections.Map<kotlin.String,kotlin.String>?){}[0]
     final fun setHeartbeat(kotlin/Int): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setHeartbeat|setHeartbeat(kotlin.Int){}[0]
     final fun setMaxAttemptWaitTime(kotlin/Int): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setMaxAttemptWaitTime|setMaxAttemptWaitTime(kotlin.Int){}[0]
     final fun setMaxAttempts(kotlin/Int): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setMaxAttempts|setMaxAttempts(kotlin.Int){}[0]
     final fun setPinnedServerCertificate(kotlin/ByteArray?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setPinnedServerCertificate|setPinnedServerCertificate(kotlin.ByteArray?){}[0]
-    final fun setPullFilter(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setPullFilter|setPullFilter(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
-    final fun setPushFilter(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setPushFilter|setPushFilter(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
     final fun setType(kotbase/ReplicatorType): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setType|setType(kotbase.ReplicatorType){}[0]
     final fun toString(): kotlin/String // kotbase/ReplicatorConfiguration.toString|toString(){}[0]
 
@@ -1703,7 +1535,6 @@ final class kotbase/Select : kotbase.internal/AbstractDelegatedClass<cocoapods.C
     final fun execute(): kotbase/ResultSet // kotbase/Select.execute|execute(){}[0]
     final fun explain(): kotlin/String // kotbase/Select.explain|explain(){}[0]
     final fun from(kotbase/DataSource): kotbase/From // kotbase/Select.from|from(kotbase.DataSource){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Select.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [apple]
@@ -1729,7 +1560,6 @@ final class kotbase/Where : kotbase.internal/AbstractDelegatedClass<cocoapods.Co
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/Where.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/Where.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/Where.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Where.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [apple]
@@ -1765,7 +1595,6 @@ open class kotbase/DataSource : kotbase.internal/DelegatedClass<cocoapods.Couchb
 
     final object Companion { // kotbase/DataSource.Companion|null[0]
         final fun collection(kotbase/Collection): kotbase/DataSource.As // kotbase/DataSource.Companion.collection|collection(kotbase.Collection){}[0]
-        final fun database(kotbase/Database): kotbase/DataSource.As // kotbase/DataSource.Companion.database|database(kotbase.Database){}[0]
     }
 }
 
@@ -1807,6 +1636,8 @@ open class kotbase/Document : kotbase.internal/DelegatedClass<cocoapods.Couchbas
         final fun <get-revisionID>(): kotlin/String? // kotbase/Document.revisionID.<get-revisionID>|<get-revisionID>(){}[0]
     final val sequence // kotbase/Document.sequence|{}sequence[0]
         final fun <get-sequence>(): kotlin/Long // kotbase/Document.sequence.<get-sequence>|<get-sequence>(){}[0]
+    final val timestamp // kotbase/Document.timestamp|{}timestamp[0]
+        final fun <get-timestamp>(): kotlin/Long // kotbase/Document.timestamp.<get-timestamp>|<get-timestamp>(){}[0]
     open val count // kotbase/Document.count|{}count[0]
         open fun <get-count>(): kotlin/Int // kotbase/Document.count.<get-count>|<get-count>(){}[0]
     open val keys // kotbase/Document.keys|{}keys[0]
@@ -2083,7 +1914,10 @@ final class kotbase/CollectionChange { // kotbase/CollectionChange|null[0]
 
 // Targets: [linux, mingwX64]
 final class kotbase/CollectionConfiguration { // kotbase/CollectionConfiguration|null[0]
-    constructor <init>(kotlin.collections/List<kotlin/String>? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function1<kotbase/Conflict, kotbase/Document?>? = ...) // kotbase/CollectionConfiguration.<init>|<init>(kotlin.collections.List<kotlin.String>?;kotlin.collections.List<kotlin.String>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function1<kotbase.Conflict,kotbase.Document?>?){}[0]
+    constructor <init>(kotbase/Collection) // kotbase/CollectionConfiguration.<init>|<init>(kotbase.Collection){}[0]
+
+    final val collection // kotbase/CollectionConfiguration.collection|{}collection[0]
+        final fun <get-collection>(): kotbase/Collection // kotbase/CollectionConfiguration.collection.<get-collection>|<get-collection>(){}[0]
 
     final var channels // kotbase/CollectionConfiguration.channels|{}channels[0]
         final fun <get-channels>(): kotlin.collections/List<kotlin/String>? // kotbase/CollectionConfiguration.channels.<get-channels>|<get-channels>(){}[0]
@@ -2106,6 +1940,10 @@ final class kotbase/CollectionConfiguration { // kotbase/CollectionConfiguration
     final fun setDocumentIDs(kotlin.collections/List<kotlin/String>?): kotbase/CollectionConfiguration // kotbase/CollectionConfiguration.setDocumentIDs|setDocumentIDs(kotlin.collections.List<kotlin.String>?){}[0]
     final fun setPullFilter(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/CollectionConfiguration // kotbase/CollectionConfiguration.setPullFilter|setPullFilter(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
     final fun setPushFilter(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/CollectionConfiguration // kotbase/CollectionConfiguration.setPushFilter|setPushFilter(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
+
+    final object Companion { // kotbase/CollectionConfiguration.Companion|null[0]
+        final fun fromCollections(kotlin.collections/Collection<kotbase/Collection>): kotlin.collections/Set<kotbase/CollectionConfiguration> // kotbase/CollectionConfiguration.Companion.fromCollections|fromCollections(kotlin.collections.Collection<kotbase.Collection>){}[0]
+    }
 }
 
 // Targets: [linux, mingwX64]
@@ -2119,19 +1957,6 @@ final class kotbase/Conflict { // kotbase/Conflict|null[0]
 }
 
 // Targets: [linux, mingwX64]
-final class kotbase/ConsoleLogger : kotbase/Logger { // kotbase/ConsoleLogger|null[0]
-    final var domains // kotbase/ConsoleLogger.domains|{}domains[0]
-        final fun <get-domains>(): kotlin.collections/Set<kotbase/LogDomain> // kotbase/ConsoleLogger.domains.<get-domains>|<get-domains>(){}[0]
-        final fun <set-domains>(kotlin.collections/Set<kotbase/LogDomain>) // kotbase/ConsoleLogger.domains.<set-domains>|<set-domains>(kotlin.collections.Set<kotbase.LogDomain>){}[0]
-    final var level // kotbase/ConsoleLogger.level|{}level[0]
-        final fun <get-level>(): kotbase/LogLevel // kotbase/ConsoleLogger.level.<get-level>|<get-level>(){}[0]
-        final fun <set-level>(kotbase/LogLevel) // kotbase/ConsoleLogger.level.<set-level>|<set-level>(kotbase.LogLevel){}[0]
-
-    final fun log(kotbase/LogLevel, kotbase/LogDomain, kotlin/String) // kotbase/ConsoleLogger.log|log(kotbase.LogLevel;kotbase.LogDomain;kotlin.String){}[0]
-    final fun setDomains(kotlin/Array<out kotbase/LogDomain>...) // kotbase/ConsoleLogger.setDomains|setDomains(kotlin.Array<out|kotbase.LogDomain>...){}[0]
-}
-
-// Targets: [linux, mingwX64]
 final class kotbase/Database : kotlin/AutoCloseable { // kotbase/Database|null[0]
     constructor <init>(kotlin/String) // kotbase/Database.<init>|<init>(kotlin.String){}[0]
     constructor <init>(kotlin/String, kotbase/DatabaseConfiguration) // kotbase/Database.<init>|<init>(kotlin.String;kotbase.DatabaseConfiguration){}[0]
@@ -2140,14 +1965,10 @@ final class kotbase/Database : kotlin/AutoCloseable { // kotbase/Database|null[0
         final fun <get-collections>(): kotlin.collections/Set<kotbase/Collection> // kotbase/Database.collections.<get-collections>|<get-collections>(){}[0]
     final val config // kotbase/Database.config|{}config[0]
         final fun <get-config>(): kotbase/DatabaseConfiguration // kotbase/Database.config.<get-config>|<get-config>(){}[0]
-    final val count // kotbase/Database.count|{}count[0]
-        final fun <get-count>(): kotlin/Long // kotbase/Database.count.<get-count>|<get-count>(){}[0]
     final val defaultCollection // kotbase/Database.defaultCollection|{}defaultCollection[0]
         final fun <get-defaultCollection>(): kotbase/Collection // kotbase/Database.defaultCollection.<get-defaultCollection>|<get-defaultCollection>(){}[0]
     final val defaultScope // kotbase/Database.defaultScope|{}defaultScope[0]
         final fun <get-defaultScope>(): kotbase/Scope // kotbase/Database.defaultScope.<get-defaultScope>|<get-defaultScope>(){}[0]
-    final val indexes // kotbase/Database.indexes|{}indexes[0]
-        final fun <get-indexes>(): kotlin.collections/List<kotlin/String> // kotbase/Database.indexes.<get-indexes>|<get-indexes>(){}[0]
     final val name // kotbase/Database.name|{}name[0]
         final fun <get-name>(): kotlin/String // kotbase/Database.name.<get-name>|<get-name>(){}[0]
     final val path // kotbase/Database.path|{}path[0]
@@ -2156,58 +1977,27 @@ final class kotbase/Database : kotlin/AutoCloseable { // kotbase/Database|null[0
         final fun <get-scopes>(): kotlin.collections/Set<kotbase/Scope> // kotbase/Database.scopes.<get-scopes>|<get-scopes>(){}[0]
 
     final fun <#A1: kotlin/Any?> inBatch(kotlin/Function1<kotbase/Database, #A1>): #A1 // kotbase/Database.inBatch|inBatch(kotlin.Function1<kotbase.Database,0:0>){0§<kotlin.Any?>}[0]
-    final fun addChangeListener(kotlin.coroutines/CoroutineContext, kotlin.coroutines/SuspendFunction1<kotbase/DatabaseChange, kotlin/Unit>): kotbase/ListenerToken // kotbase/Database.addChangeListener|addChangeListener(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotbase.DatabaseChange,kotlin.Unit>){}[0]
-    final fun addChangeListener(kotlin/Function1<kotbase/DatabaseChange, kotlin/Unit>): kotbase/ListenerToken // kotbase/Database.addChangeListener|addChangeListener(kotlin.Function1<kotbase.DatabaseChange,kotlin.Unit>){}[0]
-    final fun addChangeListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/DatabaseChange, kotlin/Unit>) // kotbase/Database.addChangeListener|addChangeListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.DatabaseChange,kotlin.Unit>){}[0]
-    final fun addDocumentChangeListener(kotlin/String, kotlin.coroutines/CoroutineContext, kotlin.coroutines/SuspendFunction1<kotbase/DocumentChange, kotlin/Unit>): kotbase/ListenerToken // kotbase/Database.addDocumentChangeListener|addDocumentChangeListener(kotlin.String;kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotbase.DocumentChange,kotlin.Unit>){}[0]
-    final fun addDocumentChangeListener(kotlin/String, kotlin/Function1<kotbase/DocumentChange, kotlin/Unit>): kotbase/ListenerToken // kotbase/Database.addDocumentChangeListener|addDocumentChangeListener(kotlin.String;kotlin.Function1<kotbase.DocumentChange,kotlin.Unit>){}[0]
-    final fun addDocumentChangeListener(kotlin/String, kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/DocumentChange, kotlin/Unit>) // kotbase/Database.addDocumentChangeListener|addDocumentChangeListener(kotlin.String;kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.DocumentChange,kotlin.Unit>){}[0]
     final fun close() // kotbase/Database.close|close(){}[0]
     final fun createCollection(kotlin/String): kotbase/Collection // kotbase/Database.createCollection|createCollection(kotlin.String){}[0]
     final fun createCollection(kotlin/String, kotlin/String?): kotbase/Collection // kotbase/Database.createCollection|createCollection(kotlin.String;kotlin.String?){}[0]
-    final fun createIndex(kotlin/String, kotbase/Index) // kotbase/Database.createIndex|createIndex(kotlin.String;kotbase.Index){}[0]
-    final fun createIndex(kotlin/String, kotbase/IndexConfiguration) // kotbase/Database.createIndex|createIndex(kotlin.String;kotbase.IndexConfiguration){}[0]
     final fun createQuery(kotlin/String): kotbase/Query // kotbase/Database.createQuery|createQuery(kotlin.String){}[0]
     final fun delete() // kotbase/Database.delete|delete(){}[0]
-    final fun delete(kotbase/Document) // kotbase/Database.delete|delete(kotbase.Document){}[0]
-    final fun delete(kotbase/Document, kotbase/ConcurrencyControl): kotlin/Boolean // kotbase/Database.delete|delete(kotbase.Document;kotbase.ConcurrencyControl){}[0]
     final fun deleteCollection(kotlin/String) // kotbase/Database.deleteCollection|deleteCollection(kotlin.String){}[0]
     final fun deleteCollection(kotlin/String, kotlin/String?) // kotbase/Database.deleteCollection|deleteCollection(kotlin.String;kotlin.String?){}[0]
-    final fun deleteIndex(kotlin/String) // kotbase/Database.deleteIndex|deleteIndex(kotlin.String){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // kotbase/Database.equals|equals(kotlin.Any?){}[0]
     final fun getCollection(kotlin/String): kotbase/Collection? // kotbase/Database.getCollection|getCollection(kotlin.String){}[0]
     final fun getCollection(kotlin/String, kotlin/String?): kotbase/Collection? // kotbase/Database.getCollection|getCollection(kotlin.String;kotlin.String?){}[0]
     final fun getCollections(kotlin/String?): kotlin.collections/Set<kotbase/Collection> // kotbase/Database.getCollections|getCollections(kotlin.String?){}[0]
-    final fun getDocument(kotlin/String): kotbase/Document? // kotbase/Database.getDocument|getDocument(kotlin.String){}[0]
-    final fun getDocumentExpiration(kotlin/String): kotlin.time/Instant? // kotbase/Database.getDocumentExpiration|getDocumentExpiration(kotlin.String){}[0]
     final fun getScope(kotlin/String): kotbase/Scope? // kotbase/Database.getScope|getScope(kotlin.String){}[0]
     final fun hashCode(): kotlin/Int // kotbase/Database.hashCode|hashCode(){}[0]
     final fun performMaintenance(kotbase/MaintenanceType): kotlin/Boolean // kotbase/Database.performMaintenance|performMaintenance(kotbase.MaintenanceType){}[0]
-    final fun purge(kotbase/Document) // kotbase/Database.purge|purge(kotbase.Document){}[0]
-    final fun purge(kotlin/String) // kotbase/Database.purge|purge(kotlin.String){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Database.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
-    final fun save(kotbase/MutableDocument) // kotbase/Database.save|save(kotbase.MutableDocument){}[0]
-    final fun save(kotbase/MutableDocument, kotbase/ConcurrencyControl): kotlin/Boolean // kotbase/Database.save|save(kotbase.MutableDocument;kotbase.ConcurrencyControl){}[0]
-    final fun save(kotbase/MutableDocument, kotlin/Function2<kotbase/MutableDocument, kotbase/Document?, kotlin/Boolean>): kotlin/Boolean // kotbase/Database.save|save(kotbase.MutableDocument;kotlin.Function2<kotbase.MutableDocument,kotbase.Document?,kotlin.Boolean>){}[0]
-    final fun setDocumentExpiration(kotlin/String, kotlin.time/Instant?) // kotbase/Database.setDocumentExpiration|setDocumentExpiration(kotlin.String;kotlin.time.Instant?){}[0]
     final fun toString(): kotlin/String // kotbase/Database.toString|toString(){}[0]
 
     final object Companion { // kotbase/Database.Companion|null[0]
-        final val log // kotbase/Database.Companion.log|{}log[0]
-            final fun <get-log>(): kotbase/Log // kotbase/Database.Companion.log.<get-log>|<get-log>(){}[0]
-
         final fun copy(kotlin/String, kotlin/String, kotbase/DatabaseConfiguration? = ...) // kotbase/Database.Companion.copy|copy(kotlin.String;kotlin.String;kotbase.DatabaseConfiguration?){}[0]
         final fun delete(kotlin/String, kotlin/String? = ...) // kotbase/Database.Companion.delete|delete(kotlin.String;kotlin.String?){}[0]
         final fun exists(kotlin/String, kotlin/String? = ...): kotlin/Boolean // kotbase/Database.Companion.exists|exists(kotlin.String;kotlin.String?){}[0]
     }
-}
-
-// Targets: [linux, mingwX64]
-final class kotbase/DatabaseChange { // kotbase/DatabaseChange|null[0]
-    final val database // kotbase/DatabaseChange.database|{}database[0]
-        final fun <get-database>(): kotbase/Database // kotbase/DatabaseChange.database.<get-database>|<get-database>(){}[0]
-    final val documentIDs // kotbase/DatabaseChange.documentIDs|{}documentIDs[0]
-        final fun <get-documentIDs>(): kotlin.collections/List<kotlin/String> // kotbase/DatabaseChange.documentIDs.<get-documentIDs>|<get-documentIDs>(){}[0]
 }
 
 // Targets: [linux, mingwX64]
@@ -2221,21 +2011,15 @@ final class kotbase/DatabaseConfiguration { // kotbase/DatabaseConfiguration|nul
     final var isFullSync // kotbase/DatabaseConfiguration.isFullSync|{}isFullSync[0]
         final fun <get-isFullSync>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isFullSync.<get-isFullSync>|<get-isFullSync>(){}[0]
         final fun <set-isFullSync>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isFullSync.<set-isFullSync>|<set-isFullSync>(kotlin.Boolean){}[0]
-    final var isMMapEnabled // kotbase/DatabaseConfiguration.isMMapEnabled|{}isMMapEnabled[0]
-        final fun <get-isMMapEnabled>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isMMapEnabled.<get-isMMapEnabled>|<get-isMMapEnabled>(){}[0]
-        final fun <set-isMMapEnabled>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isMMapEnabled.<set-isMMapEnabled>|<set-isMMapEnabled>(kotlin.Boolean){}[0]
 
     final fun setDirectory(kotlin/String): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setDirectory|setDirectory(kotlin.String){}[0]
     final fun setFullSync(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setFullSync|setFullSync(kotlin.Boolean){}[0]
-    final fun setMMapEnabled(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setMMapEnabled|setMMapEnabled(kotlin.Boolean){}[0]
 }
 
 // Targets: [linux, mingwX64]
 final class kotbase/DocumentChange { // kotbase/DocumentChange|null[0]
     final val collection // kotbase/DocumentChange.collection|{}collection[0]
         final fun <get-collection>(): kotbase/Collection // kotbase/DocumentChange.collection.<get-collection>|<get-collection>(){}[0]
-    final val database // kotbase/DocumentChange.database|{}database[0]
-        final fun <get-database>(): kotbase/Database // kotbase/DocumentChange.database.<get-database>|<get-database>(){}[0]
     final val documentID // kotbase/DocumentChange.documentID|{}documentID[0]
         final fun <get-documentID>(): kotlin/String // kotbase/DocumentChange.documentID.<get-documentID>|<get-documentID>(){}[0]
 }
@@ -2250,18 +2034,6 @@ final class kotbase/DocumentReplication { // kotbase/DocumentReplication|null[0]
         final fun <get-replicator>(): kotbase/Replicator // kotbase/DocumentReplication.replicator.<get-replicator>|<get-replicator>(){}[0]
 
     final fun toString(): kotlin/String // kotbase/DocumentReplication.toString|toString(){}[0]
-}
-
-// Targets: [linux, mingwX64]
-final class kotbase/FileLogger : kotbase/Logger { // kotbase/FileLogger|null[0]
-    final var config // kotbase/FileLogger.config|{}config[0]
-        final fun <get-config>(): kotbase/LogFileConfiguration? // kotbase/FileLogger.config.<get-config>|<get-config>(){}[0]
-        final fun <set-config>(kotbase/LogFileConfiguration?) // kotbase/FileLogger.config.<set-config>|<set-config>(kotbase.LogFileConfiguration?){}[0]
-    final var level // kotbase/FileLogger.level|{}level[0]
-        final fun <get-level>(): kotbase/LogLevel // kotbase/FileLogger.level.<get-level>|<get-level>(){}[0]
-        final fun <set-level>(kotbase/LogLevel) // kotbase/FileLogger.level.<set-level>|<set-level>(kotbase.LogLevel){}[0]
-
-    final fun log(kotbase/LogLevel, kotbase/LogDomain, kotlin/String) // kotbase/FileLogger.log|log(kotbase.LogLevel;kotbase.LogDomain;kotlin.String){}[0]
 }
 
 // Targets: [linux, mingwX64]
@@ -2280,7 +2052,6 @@ final class kotbase/From : kotbase/GroupByRouter, kotbase/JoinRouter, kotbase/Li
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/From.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/From.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/From.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/From.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
     final fun where(kotbase/Expression): kotbase/Where // kotbase/From.where|where(kotbase.Expression){}[0]
 }
 
@@ -2306,7 +2077,6 @@ final class kotbase/GroupBy : kotbase/HavingRouter, kotbase/LimitRouter, kotbase
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/GroupBy.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/GroupBy.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/GroupBy.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/GroupBy.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [linux, mingwX64]
@@ -2323,7 +2093,6 @@ final class kotbase/Having : kotbase/LimitRouter, kotbase/OrderByRouter, kotbase
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/Having.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/Having.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/Having.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Having.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [linux, mingwX64]
@@ -2340,7 +2109,6 @@ final class kotbase/Joins : kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/Joins.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/Joins.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/Joins.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Joins.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
     final fun where(kotbase/Expression): kotbase/Where // kotbase/Joins.where|where(kotbase.Expression){}[0]
 }
 
@@ -2355,45 +2123,6 @@ final class kotbase/Limit : kotbase/Query { // kotbase/Limit|null[0]
     final fun addChangeListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/QueryChange, kotlin/Unit>) // kotbase/Limit.addChangeListener|addChangeListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.QueryChange,kotlin.Unit>){}[0]
     final fun execute(): kotbase/ResultSet // kotbase/Limit.execute|execute(){}[0]
     final fun explain(): kotlin/String // kotbase/Limit.explain|explain(){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Limit.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
-}
-
-// Targets: [linux, mingwX64]
-final class kotbase/Log { // kotbase/Log|null[0]
-    final val console // kotbase/Log.console|{}console[0]
-        final fun <get-console>(): kotbase/ConsoleLogger // kotbase/Log.console.<get-console>|<get-console>(){}[0]
-    final val file // kotbase/Log.file|{}file[0]
-        final fun <get-file>(): kotbase/FileLogger // kotbase/Log.file.<get-file>|<get-file>(){}[0]
-
-    final var custom // kotbase/Log.custom|{}custom[0]
-        final fun <get-custom>(): kotbase/Logger? // kotbase/Log.custom.<get-custom>|<get-custom>(){}[0]
-        final fun <set-custom>(kotbase/Logger?) // kotbase/Log.custom.<set-custom>|<set-custom>(kotbase.Logger?){}[0]
-}
-
-// Targets: [linux, mingwX64]
-final class kotbase/LogFileConfiguration { // kotbase/LogFileConfiguration|null[0]
-    constructor <init>(kotbase/LogFileConfiguration) // kotbase/LogFileConfiguration.<init>|<init>(kotbase.LogFileConfiguration){}[0]
-    constructor <init>(kotlin/String) // kotbase/LogFileConfiguration.<init>|<init>(kotlin.String){}[0]
-    constructor <init>(kotlin/String, kotbase/LogFileConfiguration?) // kotbase/LogFileConfiguration.<init>|<init>(kotlin.String;kotbase.LogFileConfiguration?){}[0]
-
-    final val directory // kotbase/LogFileConfiguration.directory|{}directory[0]
-        final fun <get-directory>(): kotlin/String // kotbase/LogFileConfiguration.directory.<get-directory>|<get-directory>(){}[0]
-
-    final var maxRotateCount // kotbase/LogFileConfiguration.maxRotateCount|{}maxRotateCount[0]
-        final fun <get-maxRotateCount>(): kotlin/Int // kotbase/LogFileConfiguration.maxRotateCount.<get-maxRotateCount>|<get-maxRotateCount>(){}[0]
-        final fun <set-maxRotateCount>(kotlin/Int) // kotbase/LogFileConfiguration.maxRotateCount.<set-maxRotateCount>|<set-maxRotateCount>(kotlin.Int){}[0]
-    final var maxSize // kotbase/LogFileConfiguration.maxSize|{}maxSize[0]
-        final fun <get-maxSize>(): kotlin/Long // kotbase/LogFileConfiguration.maxSize.<get-maxSize>|<get-maxSize>(){}[0]
-        final fun <set-maxSize>(kotlin/Long) // kotbase/LogFileConfiguration.maxSize.<set-maxSize>|<set-maxSize>(kotlin.Long){}[0]
-    final var usesPlaintext // kotbase/LogFileConfiguration.usesPlaintext|{}usesPlaintext[0]
-        final fun <get-usesPlaintext>(): kotlin/Boolean // kotbase/LogFileConfiguration.usesPlaintext.<get-usesPlaintext>|<get-usesPlaintext>(){}[0]
-        final fun <set-usesPlaintext>(kotlin/Boolean) // kotbase/LogFileConfiguration.usesPlaintext.<set-usesPlaintext>|<set-usesPlaintext>(kotlin.Boolean){}[0]
-
-    final fun equals(kotlin/Any?): kotlin/Boolean // kotbase/LogFileConfiguration.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // kotbase/LogFileConfiguration.hashCode|hashCode(){}[0]
-    final fun setMaxRotateCount(kotlin/Int): kotbase/LogFileConfiguration // kotbase/LogFileConfiguration.setMaxRotateCount|setMaxRotateCount(kotlin.Int){}[0]
-    final fun setMaxSize(kotlin/Long): kotbase/LogFileConfiguration // kotbase/LogFileConfiguration.setMaxSize|setMaxSize(kotlin.Long){}[0]
-    final fun setUsePlaintext(kotlin/Boolean): kotbase/LogFileConfiguration // kotbase/LogFileConfiguration.setUsePlaintext|setUsePlaintext(kotlin.Boolean){}[0]
 }
 
 // Targets: [linux, mingwX64]
@@ -2409,7 +2138,6 @@ final class kotbase/OrderBy : kotbase/LimitRouter, kotbase/Query { // kotbase/Or
     final fun explain(): kotlin/String // kotbase/OrderBy.explain|explain(){}[0]
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/OrderBy.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/OrderBy.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/OrderBy.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [linux, mingwX64]
@@ -2472,10 +2200,10 @@ final class kotbase/Replicator : kotlin/AutoCloseable { // kotbase/Replicator|nu
 
     final val config // kotbase/Replicator.config|{}config[0]
         final fun <get-config>(): kotbase/ReplicatorConfiguration // kotbase/Replicator.config.<get-config>|<get-config>(){}[0]
+    final val correlationId // kotbase/Replicator.correlationId|{}correlationId[0]
+        final fun <get-correlationId>(): kotlin/String? // kotbase/Replicator.correlationId.<get-correlationId>|<get-correlationId>(){}[0]
     final val isClosed // kotbase/Replicator.isClosed|{}isClosed[0]
         final fun <get-isClosed>(): kotlin/Boolean // kotbase/Replicator.isClosed.<get-isClosed>|<get-isClosed>(){}[0]
-    final val pendingDocumentIds // kotbase/Replicator.pendingDocumentIds|{}pendingDocumentIds[0]
-        final fun <get-pendingDocumentIds>(): kotlin.collections/Set<kotlin/String> // kotbase/Replicator.pendingDocumentIds.<get-pendingDocumentIds>|<get-pendingDocumentIds>(){}[0]
     final val serverCertificates // kotbase/Replicator.serverCertificates|{}serverCertificates[0]
         final fun <get-serverCertificates>(): kotlin.collections/List<kotlin/ByteArray>? // kotbase/Replicator.serverCertificates.<get-serverCertificates>|<get-serverCertificates>(){}[0]
     final val status // kotbase/Replicator.status|{}status[0]
@@ -2489,9 +2217,7 @@ final class kotbase/Replicator : kotlin/AutoCloseable { // kotbase/Replicator|nu
     final fun addDocumentReplicationListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/DocumentReplication, kotlin/Unit>) // kotbase/Replicator.addDocumentReplicationListener|addDocumentReplicationListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.DocumentReplication,kotlin.Unit>){}[0]
     final fun close() // kotbase/Replicator.close|close(){}[0]
     final fun getPendingDocumentIds(kotbase/Collection): kotlin.collections/Set<kotlin/String> // kotbase/Replicator.getPendingDocumentIds|getPendingDocumentIds(kotbase.Collection){}[0]
-    final fun isDocumentPending(kotlin/String): kotlin/Boolean // kotbase/Replicator.isDocumentPending|isDocumentPending(kotlin.String){}[0]
     final fun isDocumentPending(kotlin/String, kotbase/Collection): kotlin/Boolean // kotbase/Replicator.isDocumentPending|isDocumentPending(kotlin.String;kotbase.Collection){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Replicator.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
     final fun start() // kotbase/Replicator.start|start(){}[0]
     final fun start(kotlin/Boolean) // kotbase/Replicator.start|start(kotlin.Boolean){}[0]
     final fun stop() // kotbase/Replicator.stop|stop(){}[0]
@@ -2509,29 +2235,17 @@ final class kotbase/ReplicatorChange { // kotbase/ReplicatorChange|null[0]
 
 // Targets: [linux, mingwX64]
 final class kotbase/ReplicatorConfiguration { // kotbase/ReplicatorConfiguration|null[0]
-    constructor <init>(kotbase/Database, kotbase/Endpoint) // kotbase/ReplicatorConfiguration.<init>|<init>(kotbase.Database;kotbase.Endpoint){}[0]
-    constructor <init>(kotbase/Endpoint) // kotbase/ReplicatorConfiguration.<init>|<init>(kotbase.Endpoint){}[0]
     constructor <init>(kotbase/ReplicatorConfiguration) // kotbase/ReplicatorConfiguration.<init>|<init>(kotbase.ReplicatorConfiguration){}[0]
+    constructor <init>(kotlin.collections/Collection<kotbase/CollectionConfiguration>, kotbase/Endpoint) // kotbase/ReplicatorConfiguration.<init>|<init>(kotlin.collections.Collection<kotbase.CollectionConfiguration>;kotbase.Endpoint){}[0]
 
     final val collections // kotbase/ReplicatorConfiguration.collections|{}collections[0]
-        final fun <get-collections>(): kotlin.collections/Set<kotbase/Collection> // kotbase/ReplicatorConfiguration.collections.<get-collections>|<get-collections>(){}[0]
-    final val database // kotbase/ReplicatorConfiguration.database|{}database[0]
-        final fun <get-database>(): kotbase/Database // kotbase/ReplicatorConfiguration.database.<get-database>|<get-database>(){}[0]
+        final fun <get-collections>(): kotlin.collections/Set<kotbase/CollectionConfiguration> // kotbase/ReplicatorConfiguration.collections.<get-collections>|<get-collections>(){}[0]
     final val target // kotbase/ReplicatorConfiguration.target|{}target[0]
         final fun <get-target>(): kotbase/Endpoint // kotbase/ReplicatorConfiguration.target.<get-target>|<get-target>(){}[0]
 
     final var authenticator // kotbase/ReplicatorConfiguration.authenticator|{}authenticator[0]
         final fun <get-authenticator>(): kotbase/Authenticator? // kotbase/ReplicatorConfiguration.authenticator.<get-authenticator>|<get-authenticator>(){}[0]
         final fun <set-authenticator>(kotbase/Authenticator?) // kotbase/ReplicatorConfiguration.authenticator.<set-authenticator>|<set-authenticator>(kotbase.Authenticator?){}[0]
-    final var channels // kotbase/ReplicatorConfiguration.channels|{}channels[0]
-        final fun <get-channels>(): kotlin.collections/List<kotlin/String>? // kotbase/ReplicatorConfiguration.channels.<get-channels>|<get-channels>(){}[0]
-        final fun <set-channels>(kotlin.collections/List<kotlin/String>?) // kotbase/ReplicatorConfiguration.channels.<set-channels>|<set-channels>(kotlin.collections.List<kotlin.String>?){}[0]
-    final var conflictResolver // kotbase/ReplicatorConfiguration.conflictResolver|{}conflictResolver[0]
-        final fun <get-conflictResolver>(): kotlin/Function1<kotbase/Conflict, kotbase/Document?>? // kotbase/ReplicatorConfiguration.conflictResolver.<get-conflictResolver>|<get-conflictResolver>(){}[0]
-        final fun <set-conflictResolver>(kotlin/Function1<kotbase/Conflict, kotbase/Document?>?) // kotbase/ReplicatorConfiguration.conflictResolver.<set-conflictResolver>|<set-conflictResolver>(kotlin.Function1<kotbase.Conflict,kotbase.Document?>?){}[0]
-    final var documentIDs // kotbase/ReplicatorConfiguration.documentIDs|{}documentIDs[0]
-        final fun <get-documentIDs>(): kotlin.collections/List<kotlin/String>? // kotbase/ReplicatorConfiguration.documentIDs.<get-documentIDs>|<get-documentIDs>(){}[0]
-        final fun <set-documentIDs>(kotlin.collections/List<kotlin/String>?) // kotbase/ReplicatorConfiguration.documentIDs.<set-documentIDs>|<set-documentIDs>(kotlin.collections.List<kotlin.String>?){}[0]
     final var headers // kotbase/ReplicatorConfiguration.headers|{}headers[0]
         final fun <get-headers>(): kotlin.collections/Map<kotlin/String, kotlin/String>? // kotbase/ReplicatorConfiguration.headers.<get-headers>|<get-headers>(){}[0]
         final fun <set-headers>(kotlin.collections/Map<kotlin/String, kotlin/String>?) // kotbase/ReplicatorConfiguration.headers.<set-headers>|<set-headers>(kotlin.collections.Map<kotlin.String,kotlin.String>?){}[0]
@@ -2556,34 +2270,19 @@ final class kotbase/ReplicatorConfiguration { // kotbase/ReplicatorConfiguration
     final var pinnedServerCertificate // kotbase/ReplicatorConfiguration.pinnedServerCertificate|{}pinnedServerCertificate[0]
         final fun <get-pinnedServerCertificate>(): kotlin/ByteArray? // kotbase/ReplicatorConfiguration.pinnedServerCertificate.<get-pinnedServerCertificate>|<get-pinnedServerCertificate>(){}[0]
         final fun <set-pinnedServerCertificate>(kotlin/ByteArray?) // kotbase/ReplicatorConfiguration.pinnedServerCertificate.<set-pinnedServerCertificate>|<set-pinnedServerCertificate>(kotlin.ByteArray?){}[0]
-    final var pullFilter // kotbase/ReplicatorConfiguration.pullFilter|{}pullFilter[0]
-        final fun <get-pullFilter>(): kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? // kotbase/ReplicatorConfiguration.pullFilter.<get-pullFilter>|<get-pullFilter>(){}[0]
-        final fun <set-pullFilter>(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?) // kotbase/ReplicatorConfiguration.pullFilter.<set-pullFilter>|<set-pullFilter>(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
-    final var pushFilter // kotbase/ReplicatorConfiguration.pushFilter|{}pushFilter[0]
-        final fun <get-pushFilter>(): kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? // kotbase/ReplicatorConfiguration.pushFilter.<get-pushFilter>|<get-pushFilter>(){}[0]
-        final fun <set-pushFilter>(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?) // kotbase/ReplicatorConfiguration.pushFilter.<set-pushFilter>|<set-pushFilter>(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
     final var type // kotbase/ReplicatorConfiguration.type|{}type[0]
         final fun <get-type>(): kotbase/ReplicatorType // kotbase/ReplicatorConfiguration.type.<get-type>|<get-type>(){}[0]
         final fun <set-type>(kotbase/ReplicatorType) // kotbase/ReplicatorConfiguration.type.<set-type>|<set-type>(kotbase.ReplicatorType){}[0]
 
-    final fun addCollection(kotbase/Collection, kotbase/CollectionConfiguration? = ...): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollection|addCollection(kotbase.Collection;kotbase.CollectionConfiguration?){}[0]
-    final fun addCollections(kotlin.collections/Collection<kotbase/Collection>, kotbase/CollectionConfiguration? = ...): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.addCollections|addCollections(kotlin.collections.Collection<kotbase.Collection>;kotbase.CollectionConfiguration?){}[0]
-    final fun getCollectionConfiguration(kotbase/Collection): kotbase/CollectionConfiguration? // kotbase/ReplicatorConfiguration.getCollectionConfiguration|getCollectionConfiguration(kotbase.Collection){}[0]
-    final fun removeCollection(kotbase/Collection): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.removeCollection|removeCollection(kotbase.Collection){}[0]
     final fun setAcceptParentDomainCookies(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setAcceptParentDomainCookies|setAcceptParentDomainCookies(kotlin.Boolean){}[0]
     final fun setAuthenticator(kotbase/Authenticator?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setAuthenticator|setAuthenticator(kotbase.Authenticator?){}[0]
     final fun setAutoPurgeEnabled(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setAutoPurgeEnabled|setAutoPurgeEnabled(kotlin.Boolean){}[0]
-    final fun setChannels(kotlin.collections/List<kotlin/String>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setChannels|setChannels(kotlin.collections.List<kotlin.String>?){}[0]
-    final fun setConflictResolver(kotlin/Function1<kotbase/Conflict, kotbase/Document?>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setConflictResolver|setConflictResolver(kotlin.Function1<kotbase.Conflict,kotbase.Document?>?){}[0]
     final fun setContinuous(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setContinuous|setContinuous(kotlin.Boolean){}[0]
-    final fun setDocumentIDs(kotlin.collections/List<kotlin/String>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setDocumentIDs|setDocumentIDs(kotlin.collections.List<kotlin.String>?){}[0]
     final fun setHeaders(kotlin.collections/Map<kotlin/String, kotlin/String>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setHeaders|setHeaders(kotlin.collections.Map<kotlin.String,kotlin.String>?){}[0]
     final fun setHeartbeat(kotlin/Int): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setHeartbeat|setHeartbeat(kotlin.Int){}[0]
     final fun setMaxAttemptWaitTime(kotlin/Int): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setMaxAttemptWaitTime|setMaxAttemptWaitTime(kotlin.Int){}[0]
     final fun setMaxAttempts(kotlin/Int): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setMaxAttempts|setMaxAttempts(kotlin.Int){}[0]
     final fun setPinnedServerCertificate(kotlin/ByteArray?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setPinnedServerCertificate|setPinnedServerCertificate(kotlin.ByteArray?){}[0]
-    final fun setPullFilter(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setPullFilter|setPullFilter(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
-    final fun setPushFilter(kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setPushFilter|setPushFilter(kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
     final fun setType(kotbase/ReplicatorType): kotbase/ReplicatorConfiguration // kotbase/ReplicatorConfiguration.setType|setType(kotbase.ReplicatorType){}[0]
     final fun toString(): kotlin/String // kotbase/ReplicatorConfiguration.toString|toString(){}[0]
 
@@ -2677,7 +2376,6 @@ final class kotbase/Select : kotbase/FromRouter, kotbase/Query { // kotbase/Sele
     final fun execute(): kotbase/ResultSet // kotbase/Select.execute|execute(){}[0]
     final fun explain(): kotlin/String // kotbase/Select.explain|explain(){}[0]
     final fun from(kotbase/DataSource): kotbase/From // kotbase/Select.from|from(kotbase.DataSource){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Select.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [linux, mingwX64]
@@ -2703,7 +2401,6 @@ final class kotbase/Where : kotbase/GroupByRouter, kotbase/LimitRouter, kotbase/
     final fun limit(kotbase/Expression): kotbase/Limit // kotbase/Where.limit|limit(kotbase.Expression){}[0]
     final fun limit(kotbase/Expression, kotbase/Expression?): kotbase/Limit // kotbase/Where.limit|limit(kotbase.Expression;kotbase.Expression?){}[0]
     final fun orderBy(kotlin/Array<out kotbase/Ordering>...): kotbase/OrderBy // kotbase/Where.orderBy|orderBy(kotlin.Array<out|kotbase.Ordering>...){}[0]
-    final fun removeChangeListener(kotbase/ListenerToken) // kotbase/Where.removeChangeListener|removeChangeListener(kotbase.ListenerToken){}[0]
 }
 
 // Targets: [linux, mingwX64]
@@ -2748,7 +2445,6 @@ open class kotbase/DataSource { // kotbase/DataSource|null[0]
 
     final object Companion { // kotbase/DataSource.Companion|null[0]
         final fun collection(kotbase/Collection): kotbase/DataSource.As // kotbase/DataSource.Companion.collection|collection(kotbase.Collection){}[0]
-        final fun database(kotbase/Database): kotbase/DataSource.As // kotbase/DataSource.Companion.database|database(kotbase.Database){}[0]
     }
 }
 
@@ -2795,6 +2491,8 @@ open class kotbase/Document : kotbase/DictionaryInterface, kotlin.collections/It
         final fun <get-revisionID>(): kotlin/String? // kotbase/Document.revisionID.<get-revisionID>|<get-revisionID>(){}[0]
     final val sequence // kotbase/Document.sequence|{}sequence[0]
         final fun <get-sequence>(): kotlin/Long // kotbase/Document.sequence.<get-sequence>|<get-sequence>(){}[0]
+    final val timestamp // kotbase/Document.timestamp|{}timestamp[0]
+        final fun <get-timestamp>(): kotlin/Long // kotbase/Document.timestamp.<get-timestamp>|<get-timestamp>(){}[0]
     open val count // kotbase/Document.count|{}count[0]
         open fun <get-count>(): kotlin/Int // kotbase/Document.count.<get-count>|<get-count>(){}[0]
     open val keys // kotbase/Document.keys|{}keys[0]

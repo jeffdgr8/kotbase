@@ -7,11 +7,6 @@ public final class kotbase/ktx/CollectionExtKt {
 	public static synthetic fun documentFlow$default (Lkotbase/Collection;Ljava/lang/String;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 }
 
-public final class kotbase/ktx/DatabaseExtKt {
-	public static final fun documentFlow (Lkotbase/Database;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
-	public static final fun documentFlow (Lkotbase/Database;Ljava/lang/String;Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/flow/Flow;
-}
-
 public final class kotbase/ktx/DictionaryExtKt {
 	public static final fun mutableDictOf ([Lkotlin/Pair;)Lkotbase/MutableDictionary;
 }
@@ -109,7 +104,6 @@ public final class kotbase/ktx/OrderByBuilder {
 
 public final class kotbase/ktx/QueryBuilderExtKt {
 	public static final fun as (Lkotbase/Collection;Ljava/lang/String;)Lkotbase/DataSource;
-	public static final fun as (Lkotbase/Database;Ljava/lang/String;)Lkotbase/DataSource;
 	public static final fun as (Lkotbase/Expression;Ljava/lang/String;)Lkotbase/SelectResult$As;
 	public static final fun from (Ljava/lang/String;Ljava/lang/String;)Lkotbase/Expression;
 	public static final fun groupBy (Lkotbase/GroupByRouter;[Ljava/lang/String;)Lkotbase/GroupBy;
@@ -137,7 +131,6 @@ public final class kotbase/ktx/QueryBuilderExtensionsKt {
 	public static final fun equalTo (Lkotbase/Expression;Lkotlin/time/Instant;)Lkotbase/Expression;
 	public static final fun equalTo (Lkotbase/Expression;Z)Lkotbase/Expression;
 	public static final fun from (Lkotbase/FromRouter;Lkotbase/Collection;)Lkotbase/From;
-	public static final fun from (Lkotbase/FromRouter;Lkotbase/Database;)Lkotbase/From;
 	public static final fun greaterThan (Lkotbase/Expression;D)Lkotbase/Expression;
 	public static final fun greaterThan (Lkotbase/Expression;F)Lkotbase/Expression;
 	public static final fun greaterThan (Lkotbase/Expression;I)Lkotbase/Expression;
