@@ -16,7 +16,8 @@
 package kotbase
 
 public actual class CollectionConfiguration
-public actual constructor(
+internal constructor(
+    public actual val collection: Collection,
     public actual var channels: List<String>?,
     public actual var documentIDs: List<String>?,
     public actual var pullFilter: ReplicationFilter?,
@@ -24,7 +25,10 @@ public actual constructor(
     public actual var conflictResolver: ConflictResolver?
 ) {
 
+    public actual constructor(collection: Collection) : this(collection, null, null, null, null, null)
+
     internal constructor(config: CollectionConfiguration) : this(
+        config.collection,
         config.channels?.toList(),
         config.documentIDs?.toList(),
         config.pullFilter,
@@ -55,5 +59,13 @@ public actual constructor(
     public actual fun setPushFilter(pushFilter: ReplicationFilter?): CollectionConfiguration {
         this.pushFilter = pushFilter
         return this
+    }
+
+    public actual companion object {
+
+        public actual fun fromCollections(
+            collections: kotlin.collections.Collection<Collection>
+        ): Set<CollectionConfiguration> =
+            collections.map { CollectionConfiguration(it) }.toSet()
     }
 }
