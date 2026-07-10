@@ -18,13 +18,17 @@ package kotbase
 /**
  * The collection configuration that can be configured specifically for the replication.
  */
-public expect class CollectionConfiguration(
-    channels: List<String>? = null,
-    documentIDs: List<String>? = null,
-    pullFilter: ReplicationFilter? = null,
-    pushFilter: ReplicationFilter? = null,
-    conflictResolver: ConflictResolver? = null
-) {
+public expect class CollectionConfiguration
+
+/**
+ * Creates a new configuration instance for the given collection.
+ *
+ * Use setter methods to customize the configuration such as channels, filters or
+ * a custom conflict resolver.
+ *
+ * @param collection The [Collection] instance to replicate.
+ */
+constructor(collection: Collection) {
 
     /**
      * Sets a collection of document IDs to filter by: if given, only documents
@@ -80,6 +84,11 @@ public expect class CollectionConfiguration(
     public fun setPushFilter(pushFilter: ReplicationFilter?): CollectionConfiguration
 
     /**
+     * The collection this configuration replicates.
+     */
+    public val collection: Collection
+
+    /**
      * A collection of Sync Gateway channel names from which to pull Documents.
      * If unset, all accessible channels will be pulled.
      * Default is empty: pull from all accessible channels.
@@ -116,4 +125,24 @@ public expect class CollectionConfiguration(
      * to the remote endpoint.
      */
     public var pushFilter: ReplicationFilter?
+
+    public companion object {
+
+        /**
+         * Creates a set of [CollectionConfiguration] instances from the given collections.
+         *
+         * Each specified collection will be wrapped in a [CollectionConfiguration]
+         * using default settings (no filters and no custom conflict resolvers).
+         *
+         * This is a convenience method for configuring multiple collections with
+         * default replication settings. If custom configurations are needed,
+         * construct [CollectionConfiguration] instances directly instead.
+         *
+         * @param collections A collection of [Collection] instances to replicate.
+         * @return A set of [CollectionConfiguration] instances for the provided collections.
+         */
+        public fun fromCollections(
+            collections: kotlin.collections.Collection<Collection>
+        ): Set<CollectionConfiguration>
+    }
 }

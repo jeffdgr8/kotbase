@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2026 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.couchbase.lite
+package kotbase
 
-import cocoapods.CouchbaseLite.generation
-import kotbase.Document
+/**
+ * **ENTERPRISE EDITION API**
+ *
+ * Key usage for a [TLSIdentity] certificate.
+ */
+public expect enum class KeyUsage {
 
-internal actual val Document.generation: Long
-    get() = actual.generation.toLong()
+    /**
+     * For Server Authentication
+     */
+    SERVER_AUTH,
+
+    /**
+     * For Client Authentication
+     */
+    CLIENT_AUTH
+}

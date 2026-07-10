@@ -21,8 +21,6 @@ import kotbase.internal.actuals
 
 public actual class MessageEndpointListenerConfiguration
 internal constructor(
-    actual: CBLMessageEndpointListenerConfiguration,
-    public actual val database: Database,
     public actual val collections: Set<Collection>
 ) : DelegatedClass<CBLMessageEndpointListenerConfiguration>(actual) {
 

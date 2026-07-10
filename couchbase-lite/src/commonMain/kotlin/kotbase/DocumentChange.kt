@@ -30,9 +30,4 @@ public expect class DocumentChange {
      */
     public val documentID: String
 
-    /**
-     * The Database instance
-     */
-    @Deprecated("Use DocumentChange.collection")
-    public val database: Database
 }

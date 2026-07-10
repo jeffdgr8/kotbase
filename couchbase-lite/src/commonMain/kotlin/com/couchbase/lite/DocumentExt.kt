@@ -17,7 +17,5 @@ package com.couchbase.lite
 
 import kotbase.Document
 
-internal expect val Document.generation: Long
-
-internal fun Document.compareAge(target: Document) =
-    generation - target.generation
+internal fun Document.compareAge(target: Document): Int =
+    timestamp.compareTo(target.timestamp)

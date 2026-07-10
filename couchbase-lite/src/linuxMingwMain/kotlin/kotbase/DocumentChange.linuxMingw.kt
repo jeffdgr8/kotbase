@@ -30,8 +30,4 @@ internal constructor(
         collection,
         actual.pointed.docID.toKString()!!
     )
-
-    @Deprecated("Use DocumentChange.collection")
-    public actual val database: Database
-        get() = collection.database
 }

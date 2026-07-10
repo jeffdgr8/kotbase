@@ -17,7 +17,6 @@ package kotbase
 
 public actual class MessageEndpointListenerConfiguration
 internal constructor(
-    public actual val database: Database,
     public actual val collections: Set<Collection>,
     public actual val protocolType: ProtocolType
 ) {

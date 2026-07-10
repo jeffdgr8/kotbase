@@ -23,7 +23,9 @@ public expect enum class LogDomain {
     QUERY,
     REPLICATOR,
     NETWORK,
-    LISTENER;
+    LISTENER,
+    PEER_DISCOVERY,
+    MULTIPEER;
 
     public companion object {
 

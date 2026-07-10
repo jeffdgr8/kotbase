@@ -35,9 +35,4 @@ public expect class Limit : Query {
 
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
 
-    @Deprecated(
-        "Use ListenerToken.remove()",
-        ReplaceWith("token.remove()")
-    )
-    override fun removeChangeListener(token: ListenerToken)
 }

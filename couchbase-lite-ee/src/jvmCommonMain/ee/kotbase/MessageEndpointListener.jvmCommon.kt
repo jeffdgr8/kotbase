@@ -65,11 +65,4 @@ internal constructor(actual: CBLMessageEndpointListener) : DelegatedClass<CBLMes
         }
     }
 
-    @Deprecated(
-        "Use ListenerToken.remove()",
-        ReplaceWith("token.remove()")
-    )
-    public actual fun removeChangeListener(token: ListenerToken) {
-        token.remove()
-    }
 }

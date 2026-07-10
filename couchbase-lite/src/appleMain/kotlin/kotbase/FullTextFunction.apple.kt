@@ -32,11 +32,4 @@ public actual object FullTextFunction {
     )
     public actual fun rank(indexName: String): Expression =
         Expression(CBLQueryFullTextFunction.rank(indexName))
-
-    @Deprecated(
-        "Use FullTextFunction.match(IndexExpression)",
-        ReplaceWith("FullTextFunction.match(Expression.fullTextIndex(indexName), query)")
-    )
-    public actual fun match(indexName: String, query: String): Expression =
-        Expression(CBLQueryFullTextFunction.matchWithIndexName(indexName, query))
 }

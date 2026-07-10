@@ -142,14 +142,6 @@ internal constructor(
         }
     }
 
-    @Deprecated(
-        "Use ListenerToken.remove",
-        ReplaceWith("token.remove()")
-    )
-    public actual fun removeChangeListener(token: ListenerToken) {
-        token.remove()
-    }
-
     actual override fun close() {
         actual.close()
     }

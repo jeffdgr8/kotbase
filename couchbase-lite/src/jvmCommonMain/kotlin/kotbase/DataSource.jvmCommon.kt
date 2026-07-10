@@ -32,14 +32,6 @@ private constructor(actual: CBLDataSource) : DelegatedClass<CBLDataSource>(actua
 
     public actual companion object {
 
-        @Suppress("DEPRECATION")
-        @Deprecated(
-            "Use DataSource.collection(Collection)",
-            ReplaceWith("collection(database.defaultCollection)")
-        )
-        public actual fun database(database: Database): As =
-            As(CBLDataSource.database(database.actual))
-
         public actual fun collection(collection: Collection): As =
             As(CBLDataSource.collection(collection.actual))
     }

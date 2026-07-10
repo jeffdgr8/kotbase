@@ -82,13 +82,6 @@ internal abstract class AbstractQuery : AbstractDelegatedClass<CBLQuery>(), Quer
         }
     }
 
-    @Deprecated(
-        "Use ListenerToken.remove()",
-        ReplaceWith("token.remove()")
-    )
-    override fun removeChangeListener(token: ListenerToken) {
-        token.remove()
-    }
 }
 
 internal data class QueryState(

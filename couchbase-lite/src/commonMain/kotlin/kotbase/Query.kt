@@ -101,14 +101,4 @@ public interface Query {
      */
     public fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
 
-    /**
-     * Removes a change listener wih the given listener token.
-     *
-     * @param token The listener token.
-     */
-    @Deprecated(
-        "Use ListenerToken.remove()",
-        ReplaceWith("token.remove()")
-    )
-    public fun removeChangeListener(token: ListenerToken)
 }

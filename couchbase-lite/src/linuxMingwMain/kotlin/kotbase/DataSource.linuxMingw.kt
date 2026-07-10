@@ -41,15 +41,6 @@ private constructor(
 
     public actual companion object {
 
-        @Deprecated(
-            "Use DataSource.collection(Collection)",
-            ReplaceWith("collection(database.defaultCollection)")
-        )
-        public actual fun database(database: Database): As =
-            As(database.defaultCollection).apply {
-                `as`(database.name)
-            }
-
         public actual fun collection(collection: Collection): As =
             As(collection)
     }
