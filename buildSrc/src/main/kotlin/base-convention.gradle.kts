@@ -59,9 +59,6 @@ kotlin {
                 optIn("kotlinx.cinterop.BetaInteropApi")
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
             }
-            if (name.endsWith("Test")) {
-                enableLanguageFeature("MultiDollarInterpolation")
-            }
         }
     }
 
