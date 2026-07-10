@@ -61,12 +61,12 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
 
         @Throws(CouchbaseLiteException::class)
         public actual fun createIdentity(
-            isServer: Boolean,
+            usage: Set<KeyUsage>,
             attributes: Map<String, String>,
             expiration: Instant?,
             alias: String
         ): TLSIdentity = CBLTLSIdentity.createIdentity(
-            isServer,
+            usage,
             attributes,
             expiration?.toDate(),
             keyStore(),
@@ -100,7 +100,7 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
          * Create a self-signed certificate TLSIdentity object. The generated private key
          * will be stored in the KeyStore along with its self-signed certificate.
          *
-         * @param isServer    The flag indicating that the certificate is for server or client.
+         * @param usage       certificate usage: server or client.
          * @param attributes  The certificate attributes.
          * @param expiration  The certificate expiration date.
          * @param keyStore    The KeyStore object for storing the generated private key and certificate.
@@ -111,14 +111,14 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
          */
         @Throws(CouchbaseLiteException::class)
         public fun createIdentity(
-            isServer: Boolean,
+            usage: Set<KeyUsage>,
             attributes: Map<String, String>,
             expiration: Instant?,
             keyStore: KeyStore,
             alias: String,
             keyPassword: CharArray?
         ): TLSIdentity = CBLTLSIdentity.createIdentity(
-            isServer,
+            usage,
             attributes,
             expiration?.toDate(),
             keyStore,

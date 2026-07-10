@@ -21,43 +21,11 @@ import com.couchbase.lite.URLEndpointListenerConfiguration as CBLURLEndpointList
 
 public actual class URLEndpointListenerConfiguration
 private constructor(
-    @Deprecated("Use collections")
-    public actual val database: Database,
     public actual val collections: Set<Collection>,
     identity: TLSIdentity?,
     authenticator: ListenerAuthenticator?,
     actual: CBLURLEndpointListenerConfiguration
 ) : DelegatedClass<CBLURLEndpointListenerConfiguration>(actual) {
-
-    @Suppress("DEPRECATION")
-    @Deprecated(
-        "Use URLEndpointListenerConfiguration(Collections)",
-        ReplaceWith("URLEndpointListenerConfiguration(setOf(database.defaultCollection), networkInterface, port, disableTls, identity, authenticator, readOnly, enableDeltaSync)")
-    )
-    public actual constructor(
-        database: Database,
-        networkInterface: String?,
-        port: Int,
-        disableTls: Boolean,
-        identity: TLSIdentity?,
-        authenticator: ListenerAuthenticator?,
-        readOnly: Boolean,
-        enableDeltaSync: Boolean
-    ) : this(
-        database,
-        setOf(database.defaultCollection),
-        identity,
-        authenticator,
-        CBLURLEndpointListenerConfiguration(database.actual).apply {
-            this.networkInterface = networkInterface
-            this.port = port
-            this.setDisableTls(disableTls)
-            this.tlsIdentity = identity?.actual
-            this.authenticator = authenticator?.actual
-            this.isReadOnly = readOnly
-            this.setEnableDeltaSync(enableDeltaSync)
-        }
-    )
 
     public actual constructor(
         collections: Set<Collection>,
@@ -69,7 +37,6 @@ private constructor(
         readOnly: Boolean,
         enableDeltaSync: Boolean
     ) : this(
-        collections.first().database,
         collections,
         identity,
         authenticator,
@@ -85,9 +52,7 @@ private constructor(
         )
     )
 
-    @Suppress("DEPRECATION")
     public actual constructor(config: URLEndpointListenerConfiguration) : this(
-        config.database,
         config.collections,
         config.tlsIdentity,
         config.authenticator,

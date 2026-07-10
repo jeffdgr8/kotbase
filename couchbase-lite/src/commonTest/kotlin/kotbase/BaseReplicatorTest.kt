@@ -138,13 +138,14 @@ abstract class BaseReplicatorTest : BaseDbTest() {
     }
 
     protected fun makeCollectionConfig(
+        collection: Collection = testCollection,
         channels: List<String>? = null,
         docIds: List<String>? = null,
         pullFilter: ReplicationFilter? = null,
         pushFilter: ReplicationFilter? = null,
         resolver: ConflictResolver? = null
     ): CollectionConfiguration {
-        val config = CollectionConfiguration()
+        val config = CollectionConfiguration(collection)
         channels?.let { config.channels = it }
         docIds?.let { config.documentIDs = it }
         pullFilter?.let { config.pullFilter = it }
@@ -167,7 +168,7 @@ abstract class BaseReplicatorTest : BaseDbTest() {
         autoPurge: Boolean = true
     ) = makeReplConfig(
         target,
-        mapOf(source to srcConfig),
+        srcConfig?.let { listOf(it) } ?: CollectionConfiguration.fromCollections(source),
         type,
         continuous,
         authenticator,
@@ -180,8 +181,8 @@ abstract class BaseReplicatorTest : BaseDbTest() {
 
     protected fun makeReplConfig(
         target: Endpoint = mockURLEndpoint,
-        source: Map<out kotlin.collections.Collection<Collection>, CollectionConfiguration?> =
-            mapOf(setOf(testCollection) to null),
+        source: kotlin.collections.Collection<CollectionConfiguration> =
+            CollectionConfiguration.fromCollections(setOf(testCollection)),
         type: ReplicatorType? = null,
         continuous: Boolean? = null,
         authenticator: Authenticator? = null,
@@ -191,9 +192,8 @@ abstract class BaseReplicatorTest : BaseDbTest() {
         maxAttemptWaitTime: Int = 1,
         autoPurge: Boolean = true
     ): ReplicatorConfiguration {
-        val config = ReplicatorConfiguration(target)
+        val config = ReplicatorConfiguration(source, target)
 
-        source.forEach { config.addCollections(it.key, it.value) }
         type?.let { config.type = it }
         continuous?.let { config.isContinuous = it }
         authenticator?.let { config.setAuthenticator(it) }

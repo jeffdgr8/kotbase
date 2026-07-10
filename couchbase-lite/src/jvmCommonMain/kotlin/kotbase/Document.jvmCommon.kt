@@ -44,6 +44,9 @@ internal constructor(
     public actual val revisionID: String?
         get() = actual.revisionID
 
+    public actual val timestamp: Long
+        get() = actual.timestamp
+
     public actual val sequence: Long
         get() = actual.sequence
 

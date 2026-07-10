@@ -40,9 +40,16 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
         var winner: Document? = null
 
+        // The winner document's content, snapshotted at resolution time.
+        // As of CBL 4.1, conflicts are resolved in place: resolution may invalidate
+        // the conflict documents' backing data, so the winner document's content
+        // cannot be reliably read after the replicator has finished.
+        var winnerData: Map<String, Any?>? = null
+
         override fun invoke(conflict: Conflict): Document? {
             // linuxMingw cannot retain returned immutable doc, so copy
             winner = resolver(conflict)?.copyImmutable()
+            winnerData = winner?.toMap()
             return winner
         }
     }
@@ -345,7 +352,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create replicator with push filter:
         val docIds = mutableSetOf<String>()
         val target = DatabaseEndpoint(targetDatabase)
-        val colConfig = CollectionConfiguration(
+        val colConfig = makeCollectionConfig(
             pushFilter = { doc, flags ->
                 assertNotNull(doc.id)
                 val isDeleted = flags.contains(DocumentFlag.DELETED)
@@ -420,7 +427,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create replicator with pull filter:
         val docIds = mutableSetOf<String>()
         val target = DatabaseEndpoint(targetDatabase)
-        val colConfig = CollectionConfiguration(
+        val colConfig = makeCollectionConfig(
             pullFilter = { doc, flags ->
                 assertNotNull(doc.id)
                 val isDeleted = flags.contains(DocumentFlag.DELETED)
@@ -524,7 +531,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create replicator with push filter:
         val docIds = mutableSetOf<String>()
         val target = DatabaseEndpoint(targetDatabase)
-        val colConfig = CollectionConfiguration(
+        val colConfig = makeCollectionConfig(
             pullFilter = { doc, flags ->
                 assertNotNull(doc.id)
 
@@ -602,7 +609,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create replicator with push filter:
         val docIds = mutableSetOf<String>()
         val target = DatabaseEndpoint(targetDatabase)
-        val colConfig = CollectionConfiguration(
+        val colConfig = makeCollectionConfig(
             pushFilter = { doc, flags ->
                 assertNotNull(doc.id)
 
@@ -651,7 +658,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create replicator with push filter:
         val docIds = mutableSetOf<String>()
         val target = DatabaseEndpoint(targetDatabase)
-        val colConfig = CollectionConfiguration(
+        val colConfig = makeCollectionConfig(
             pullFilter = { doc, flags ->
                 assertNotNull(doc.id)
 
@@ -699,7 +706,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create replicator with pull filter:
         val docIds = mutableSetOf<String>()
         val target = DatabaseEndpoint(targetDatabase)
-        val colConfig = CollectionConfiguration(
+        val colConfig = makeCollectionConfig(
             pushFilter = { doc, _ ->
                 assertNotNull(doc.id)
                 docIds.add(doc.id)
@@ -751,7 +758,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         // Create replicator with pull filter:
         val docIds = mutableSetOf<String>()
         val target = DatabaseEndpoint(targetDatabase)
-        val colConfig = CollectionConfiguration(
+        val colConfig = makeCollectionConfig(
             pullFilter = { doc, _ ->
                 assertNotNull(doc.id)
                 docIds.add(doc.id)
@@ -817,7 +824,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
     }
 
     private fun validatePendingDocumentIDs(docIds: Set<String>, pushOnlyDocIds: Set<String>? = null) {
-        val colConfig = CollectionConfiguration()
+        val colConfig = makeCollectionConfig()
         if (pushOnlyDocIds?.isNotEmpty() == true) {
             colConfig.pushFilter = { doc, _ ->
                 pushOnlyDocIds.contains(doc.id)
@@ -938,21 +945,21 @@ class ReplicatorEETest : BaseReplicatorTest() {
     fun testConflictResolverConfigProperty() {
         val target = URLEndpoint("wss://foo/db")
 
-        val colConfig = CollectionConfiguration(
-            conflictResolver = { conflict ->
+        val colConfig = makeCollectionConfig(
+            resolver = { conflict ->
                 conflict.remoteDocument
             }
         )
         val pullConfig = makeSimpleReplConfig(target, srcConfig = colConfig, type = ReplicatorType.PULL, continuous = false)
         val repl = pullConfig.testReplicator()
 
-        assertNotNull(pullConfig.getCollectionConfiguration(testCollection)!!.conflictResolver)
-        assertNotNull(repl.config.getCollectionConfiguration(testCollection)!!.conflictResolver)
+        assertNotNull(pullConfig.collections.first().conflictResolver)
+        assertNotNull(repl.config.collections.first().conflictResolver)
     }
 
     private fun getConfig(type: ReplicatorType, conflictResolver: ConflictResolver? = null): ReplicatorConfiguration {
         val target = DatabaseEndpoint(targetDatabase)
-        val colConfig = conflictResolver?.let { CollectionConfiguration(conflictResolver = it) }
+        val colConfig = conflictResolver?.let { makeCollectionConfig(resolver = it) }
         return makeSimpleReplConfig(target, srcConfig = colConfig, type = type, continuous = false)
     }
 
@@ -1017,7 +1024,11 @@ class ReplicatorEETest : BaseReplicatorTest() {
         config.run()
 
         assertEquals(1, testCollection.count)
-        assertEquals(testCollection.getDocument("doc")!!, resolver.winner!!)
+        // The local document instance returned from the resolver may no longer be
+        // readable after resolution (CBL 4.1 resolves the conflict in place),
+        // so compare the content snapshotted at resolution time.
+        assertEquals("doc", resolver.winner!!.id)
+        assertEquals(testCollection.getDocument("doc")!!.toMap(), resolver.winnerData)
         assertEquals(localData, testCollection.getDocument("doc")!!.toMap())
     }
 
@@ -1142,9 +1153,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             doc?.setString("edit", "remote")
             doc
         }
-        var colConfig = CollectionConfiguration(conflictResolver = resolver)
-        config.addCollection(testCollection, colConfig)
-        config.run()
+        getConfig(ReplicatorType.PULL, resolver).run()
 
         expectedDocDict = remoteData.toMutableMap()
         expectedDocDict["edit"] = "remote"
@@ -1157,9 +1166,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             doc.setString("docType", "new-with-same-ID")
             doc
         }
-        colConfig = CollectionConfiguration(conflictResolver = resolver)
-        config.addCollection(testCollection, colConfig)
-        config.run()
+        getConfig(ReplicatorType.PULL, resolver).run()
 
         value = testCollection.getDocument(docID)!!.toMap()
         assertEquals(mapOf("docType" to "new-with-same-ID"), value)
@@ -1327,9 +1334,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         resolver = TestConflictResolver { conflict ->
             conflict.remoteDocument
         }
-        val colConfig = CollectionConfiguration(conflictResolver = resolver)
-        config.addCollection(testCollection, colConfig)
-        config.run()
+        getConfig(ReplicatorType.PULL, resolver).run()
         assertEquals(remoteData, testCollection.getDocument(docID)!!.toMap())
     }
 
@@ -1370,10 +1375,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         resolver = TestConflictResolver { conflict ->
             conflict.remoteDocument
         }
-        val colConfig = CollectionConfiguration(conflictResolver = resolver)
-        config.addCollection(testCollection, colConfig)
-
-        config.run()
+        getConfig(ReplicatorType.PULL, resolver).run()
         assertEquals(remoteData, testCollection.getDocument(docID)!!.toMap())
     }
 
@@ -1459,10 +1461,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         resolver = TestConflictResolver { conflict ->
             conflict.localDocument
         }
-        var colConfig = CollectionConfiguration(conflictResolver = resolver)
-        config.addCollection(testCollection, colConfig)
-
-        config.run()
+        getConfig(ReplicatorType.PULL, resolver).run()
 
         assertEquals(blob, testCollection.getDocument(docID)?.getBlob("blob"))
         assertEquals("value1", testCollection.getDocument(docID)?.getString("key1"))
@@ -1475,10 +1474,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         resolver = TestConflictResolver { conflict ->
             conflict.localDocument
         }
-        colConfig = CollectionConfiguration(conflictResolver = resolver)
-        config.addCollection(testCollection, colConfig)
-
-        config.run()
+        getConfig(ReplicatorType.PULL, resolver).run()
 
         assertNull(testCollection.getDocument(docID)?.getBlob("blob"))
         assertEquals(localData, testCollection.getDocument(docID)!!.toMap())
@@ -1488,10 +1484,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
         resolver = TestConflictResolver { conflict ->
             conflict.remoteDocument
         }
-        colConfig = CollectionConfiguration(conflictResolver = resolver)
-        config.addCollection(testCollection, colConfig)
-
-        config.run()
+        getConfig(ReplicatorType.PULL, resolver).run()
 
         assertEquals(blob, testCollection.getDocument(docID)?.getBlob("blob"))
         assertEquals("value2", testCollection.getDocument(docID)?.getString("key2"))
@@ -1531,9 +1524,7 @@ class ReplicatorEETest : BaseReplicatorTest() {
             mDoc?.setBlob("blob", oDBDoc.getBlob("blob"))
             mDoc
         }
-        val colConfig = CollectionConfiguration(conflictResolver = resolver)
-        config.addCollection(testCollection, colConfig)
-        replicator = config.testReplicator()
+        replicator = getConfig(ReplicatorType.PULL, resolver).testReplicator()
         var error: CouchbaseLiteException? = null
         token = replicator.addDocumentReplicationListener { docRepl ->
             val err = docRepl.documents.firstOrNull()?.error
@@ -1888,16 +1879,14 @@ class ReplicatorEETest : BaseReplicatorTest() {
             con.remoteDocument
         }
 
-        val colConfig1 = CollectionConfiguration()
+        val colConfig1 = CollectionConfiguration(col1a)
         colConfig1.conflictResolver = conflictResolver1
 
-        val colConfig2 = CollectionConfiguration()
+        val colConfig2 = CollectionConfiguration(col1b)
         colConfig2.conflictResolver = conflictResolver2
 
         val target = DatabaseEndpoint(targetDatabase)
-        val config = makeReplConfig(target = target, type = ReplicatorType.PUSH_AND_PULL, continuous = false)
-        config.addCollection(col1a, colConfig1)
-        config.addCollection(col1b, colConfig2)
+        val config = makeReplConfig(target = target, source = listOf(CollectionConfiguration(testCollection), colConfig1, colConfig2), type = ReplicatorType.PUSH_AND_PULL, continuous = false)
         config.run()
 
         // Update "doc1" in colA and colB of database A.
@@ -1968,16 +1957,14 @@ class ReplicatorEETest : BaseReplicatorTest() {
             }
         }
 
-        val config1 = CollectionConfiguration()
+        val config1 = CollectionConfiguration(col1a)
         config1.pushFilter = filter
 
-        val config2 = CollectionConfiguration()
+        val config2 = CollectionConfiguration(col1b)
         config2.pushFilter = filter
 
         val target = DatabaseEndpoint(targetDatabase)
-        val config = makeReplConfig(target = target, type = ReplicatorType.PUSH, continuous = false)
-        config.addCollection(col1a, config1)
-        config.addCollection(col1b, config2)
+        val config = makeReplConfig(target = target, source = listOf(CollectionConfiguration(testCollection), config1, config2), type = ReplicatorType.PUSH, continuous = false)
         config.run()
 
         assertEquals(10, col1a.count)
@@ -2006,16 +1993,14 @@ class ReplicatorEETest : BaseReplicatorTest() {
             }
         }
 
-        val config1 = CollectionConfiguration()
+        val config1 = CollectionConfiguration(col1a)
         config1.pullFilter = filter
 
-        val config2 = CollectionConfiguration()
+        val config2 = CollectionConfiguration(col1b)
         config2.pullFilter = filter
 
         val target = DatabaseEndpoint(targetDatabase)
-        val config = makeReplConfig(target = target, type = ReplicatorType.PULL, continuous = false)
-        config.addCollection(col1a, config1)
-        config.addCollection(col1b, config2)
+        val config = makeReplConfig(target = target, source = listOf(CollectionConfiguration(testCollection), config1, config2), type = ReplicatorType.PULL, continuous = false)
         config.run()
 
         assertEquals(5, col1a.count)
@@ -2037,15 +2022,13 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
         val target = DatabaseEndpoint(targetDatabase)
 
-        val config1 = CollectionConfiguration()
+        val config1 = CollectionConfiguration(col1a)
         config1.documentIDs = listOf("doc1", "doc2")
 
-        val config2 = CollectionConfiguration()
+        val config2 = CollectionConfiguration(col1b)
         config2.documentIDs = listOf("doc10", "doc11", "doc13")
 
-        val config = makeReplConfig(target = target, type = ReplicatorType.PUSH, continuous = false)
-        config.addCollection(col1a, config1)
-        config.addCollection(col1b, config2)
+        val config = makeReplConfig(target = target, source = listOf(CollectionConfiguration(testCollection), config1, config2), type = ReplicatorType.PUSH, continuous = false)
         config.run()
 
         assertEquals(5, col1a.count)
@@ -2067,15 +2050,13 @@ class ReplicatorEETest : BaseReplicatorTest() {
 
         val target = DatabaseEndpoint(targetDatabase)
 
-        val config1 = CollectionConfiguration()
+        val config1 = CollectionConfiguration(col1a)
         config1.documentIDs = listOf("doc1", "doc2")
 
-        val config2 = CollectionConfiguration()
+        val config2 = CollectionConfiguration(col1b)
         config2.documentIDs = listOf("doc10", "doc11", "doc13")
 
-        val config = makeReplConfig(target = target, type = ReplicatorType.PULL, continuous = false)
-        config.addCollection(col1a, config1)
-        config.addCollection(col1b, config2)
+        val config = makeReplConfig(target = target, source = listOf(CollectionConfiguration(testCollection), config1, config2), type = ReplicatorType.PULL, continuous = false)
         config.run()
 
         assertEquals(2, col1a.count)

@@ -133,13 +133,13 @@ class KermitCouchbaseLiteLogSinkTest : BaseTest() {
             "{DB#", "}==>", "litecore", "SQLiteDataFile", "log-test-db", ".cblite2", "db.sqlite3"
         )
         logWriter.checkLog(Severity.Info, CBL_DATABASE, "Obj=/DB#", "File=Shared#", "Opening database")
-        logWriter.checkLog(Severity.Info, CBL_DATABASE, "Instantiated")
+        logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "Instantiated")
         logWriter.clearCache()
 
         database.defaultCollection.save(MutableDocument("doc-1", """{"foo":"bar","baz":42}"""))
         allowLogsToWrite()
         logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "Obj=/DB#", "begin transaction")
-        logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "Obj=/DB#", "Saved 'doc-1' rev #1-", "as seq 1")
+        logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "Obj=/DB#", "Saved 'doc-1' rev #", "as seq 1")
         logWriter.checkLog(Severity.Verbose, CBL_DATABASE, "Obj=/DB#", "commit transaction")
         logWriter.clearCache()
 
@@ -156,7 +156,7 @@ class KermitCouchbaseLiteLogSinkTest : BaseTest() {
             Severity.Info,
             CBL_QUERY,
             "Obj=/Query#",
-            "Compiled as SELECT fl_result(fl_root(_.body)) FROM kv_default AS _ WHERE (fl_value(_.body, 'foo') = 'bar') AND (_.flags & 1 = 0)"
+            "Compiled as SELECT fl_result(fl_root(_.body)) FROM kv_default AS _ WHERE fl_value(_.body, 'foo') = 'bar' AND (_.flags & 1 = 0)"
         )
         logWriter.clearCache()
 

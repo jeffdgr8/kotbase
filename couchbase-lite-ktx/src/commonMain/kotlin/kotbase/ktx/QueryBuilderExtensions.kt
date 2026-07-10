@@ -63,19 +63,6 @@ public fun all(): SelectResult.From = SelectResult.all()
 /**
  * Create and chain a FROM component for specifying the query's data source.
  *
- * @param database the database source.
- * @return the From component.
- */
-@Suppress("DEPRECATION")
-@Deprecated(
-    "Use from(Collection)",
-    ReplaceWith("from(database.defaultCollection)")
-)
-public infix fun FromRouter.from(database: Database): From = from(DataSource.database(database))
-
-/**
- * Create and chain a FROM component for specifying the query's data source.
- *
  * @param collection the collection source.
  * @return the From component.
  */

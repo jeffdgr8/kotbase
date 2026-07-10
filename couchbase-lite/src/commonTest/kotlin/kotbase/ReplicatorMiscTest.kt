@@ -560,7 +560,7 @@ class ReplicatorMiscTest : BaseReplicatorTest() {
     // Note that this does not set heartbeat.  This config is likely to cause flaky tests
     // when used in test with a live replicator
     private fun makeDefaultConfig(): ReplicatorConfiguration {
-        return ReplicatorConfiguration(mockURLEndpoint).addCollection(testCollection, null)
+        return ReplicatorConfiguration(listOf(CollectionConfiguration(testCollection)), mockURLEndpoint)
     }
 
     private fun makeBasicConfig(): ReplicatorConfiguration {

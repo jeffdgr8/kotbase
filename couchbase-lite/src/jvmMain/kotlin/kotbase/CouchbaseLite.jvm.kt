@@ -92,6 +92,23 @@ public object CouchbaseLite {
     }
 
     /**
+     * Shuts down Couchbase Lite's shared executors.
+     * Call when shutting down your application/container to allow clean JVM exit.
+     *
+     * This method releases shared executors used by Couchbase Lite.
+     * It should be called when the host application or container is shutting down
+     * to allow the process to terminate cleanly without being blocked by
+     * active executors.
+     *
+     * After this call, internal shared executors are stopped and no longer perform work.
+     * Couchbase Lite should not be used again until the process restarts.
+     */
+    public fun shutdown() {
+        CBLCouchbaseLite.shutdown()
+        initCalled.value = false
+    }
+
+    /**
      * Allow default internalInit() to be overridden by manual init() call
      */
     private fun resetInit() {

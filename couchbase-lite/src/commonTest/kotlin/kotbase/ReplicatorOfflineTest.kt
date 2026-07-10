@@ -103,8 +103,7 @@ class ReplicatorOfflineTest : BaseReplicatorTest() {
 //    }
 
     private fun makeDefaultConfig(): ReplicatorConfiguration {
-        return ReplicatorConfiguration(mockURLEndpoint)
-            .addCollection(testCollection, null)
+        return ReplicatorConfiguration(listOf(CollectionConfiguration(testCollection)), mockURLEndpoint)
     }
 
     private fun makeConfig(): ReplicatorConfiguration {
