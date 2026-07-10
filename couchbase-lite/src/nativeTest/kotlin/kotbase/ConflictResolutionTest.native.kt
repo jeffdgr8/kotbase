@@ -15,7 +15,6 @@
  */
 package kotbase
 
-import com.couchbase.lite.generation
 import com.couchbase.lite.getC4Document
 import kotlin.test.*
 
@@ -37,7 +36,7 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         saveDocInCollection(doc)
         val docID = doc.id
 
-        assertEquals(1, testCollection.getNonNullDoc(docID).generation)
+        var ts1 = testCollection.getNonNullDoc(docID).timestamp
 
         val doc1a = testCollection.getNonNullDoc(docID).toMutable()
         val doc1b = testCollection.getNonNullDoc(docID).toMutable()
@@ -45,22 +44,24 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         doc1a.setString("artist", "Sheep Jones")
         testCollection.save(doc1a)
 
-        assertEquals(2, testCollection.getNonNullDoc(docID).generation)
+        assertTrue(ts1 < testCollection.getNonNullDoc(docID).timestamp)
+        var ts = testCollection.getNonNullDoc(docID).timestamp
 
         doc1b.setString("artist", "Holly Sears")
 
         var succeeded = testCollection.save(doc1b) { cur: MutableDocument, old: Document? ->
             assertEquals(doc1b, cur)
             assertEquals(doc1a, old)
-            assertEquals(2L, cur.generation)
-            assertEquals(2L, old?.generation)
+            assertEquals(ts1, cur.timestamp)
+            assertEquals(ts, old?.timestamp)
             true
         }
         assertTrue(succeeded)
 
         val newDoc = testCollection.getNonNullDoc(docID)
         assertEquals(doc1b, newDoc)
-        assertEquals(3L, newDoc.generation)
+        assertTrue(ts < newDoc.timestamp)
+        ts1 = newDoc.timestamp
 
         val doc1c = testCollection.getNonNullDoc(docID).toMutable()
         val doc1d = testCollection.getNonNullDoc(docID).toMutable()
@@ -68,15 +69,16 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         doc1c.setString("artist", "Marjorie Morgan")
         testCollection.save(doc1c)
 
-        assertEquals(4L, testCollection.getNonNullDoc(docID).generation)
+        assertTrue(ts1 < testCollection.getNonNullDoc(docID).timestamp)
+        ts = testCollection.getNonNullDoc(docID).timestamp
 
         doc1d.setString("artist", "G. Charnelet-Vasselon")
 
         succeeded = testCollection.save(doc1d) { cur: MutableDocument, old: Document? ->
             assertEquals(doc1d, cur)
             assertEquals(doc1c, old)
-            assertEquals(4L, cur.generation)
-            assertEquals(4L, old?.generation)
+            assertEquals(ts1, cur.timestamp)
+            assertEquals(ts, old?.timestamp)
             cur.setString("artist", "Sheep Jones")
             true
         }
@@ -85,7 +87,7 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         val curDoc = testCollection.getNonNullDoc(docID)
         assertEquals("Olympia", curDoc.getString("location"))
         assertEquals("Sheep Jones", curDoc.getString("artist"))
-        assertEquals(5L, curDoc.generation)
+        assertTrue(ts < curDoc.timestamp)
     }
 
     /**
@@ -99,7 +101,7 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         saveDocInCollection(doc)
         val docID = doc.id
 
-        assertEquals(1, testCollection.getNonNullDoc(docID).generation)
+        var ts = testCollection.getNonNullDoc(docID).timestamp
 
         val doc1a = testCollection.getNonNullDoc(docID).toMutable()
         val doc1b = testCollection.getNonNullDoc(docID).toMutable()
@@ -107,7 +109,8 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         doc1a.setString("artist", "Sheep Jones")
         testCollection.save(doc1a)
 
-        assertEquals(2, testCollection.getNonNullDoc(docID).generation)
+        assertTrue(ts < testCollection.getNonNullDoc(docID).timestamp)
+        ts = testCollection.getNonNullDoc(docID).timestamp
 
         doc1b.setString("artist", "Holly Sears")
 
@@ -128,9 +131,9 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         val curDoc = testCollection.getNonNullDoc(docID)
         assertEquals(curDoc, doc1a)
 
-        // make sure no update to revision and generation
+        // make sure no update to revision and timestamp
         assertEquals(doc1a.revisionID, curDoc.revisionID)
-        assertEquals(2, curDoc.generation)
+        assertEquals(ts, curDoc.timestamp)
 
         val doc1c = testCollection.getNonNullDoc(docID).toMutable()
         val doc1d = testCollection.getNonNullDoc(docID).toMutable()
@@ -138,7 +141,8 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         doc1c.setString("artist", "Marjorie Morgan")
         testCollection.save(doc1c)
 
-        assertEquals(3, testCollection.getNonNullDoc(docID).generation)
+        assertTrue(ts < testCollection.getNonNullDoc(docID).timestamp)
+        ts = testCollection.getNonNullDoc(docID).timestamp
 
         doc1d.setString("artist", "G. Charnelet-Vasselon")
 
@@ -154,11 +158,11 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         }
         assertFalse(succeeded)
 
-        // make sure no update to revision and generation
+        // make sure no update to revision and timestamp
         val newDoc = testCollection.getNonNullDoc(docID)
         assertEquals(newDoc, doc1c)
         assertEquals(doc1c.revisionID, newDoc.revisionID)
-        assertEquals(3, newDoc.generation)
+        assertEquals(ts, newDoc.timestamp)
     }
 
     /**
@@ -172,8 +176,6 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         val doc = createTestDoc()
         saveDocInCollection(doc)
         val docID = doc.id
-
-        assertEquals(1, testCollection.getNonNullDoc(docID).generation)
 
         val doc1a = testCollection.getNonNullDoc(docID)
         val doc1b = testCollection.getNonNullDoc(docID).toMutable()
@@ -203,8 +205,6 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         val doc = createTestDoc()
         saveDocInCollection(doc)
         val docID = doc.id
-
-        assertEquals(1, testCollection.getNonNullDoc(docID).generation)
 
         val doc1a = testCollection.getNonNullDoc(docID).toMutable()
         val doc1b = testCollection.getNonNullDoc(docID).toMutable()
@@ -244,7 +244,7 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         saveDocInCollection(doc)
         val docID = doc.id
 
-        assertEquals(1L, testCollection.getNonNullDoc(docID).generation)
+        var ts = testCollection.getNonNullDoc(docID).timestamp
 
         val doc1a = testCollection.getNonNullDoc(docID).toMutable()
         val doc1b = testCollection.getNonNullDoc(docID).toMutable()
@@ -252,7 +252,8 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         doc1a.setString("artist", "Sheep Jones")
         testCollection.save(doc1a)
 
-        assertEquals(2L, testCollection.getNonNullDoc(docID).generation)
+        assertTrue(ts < testCollection.getNonNullDoc(docID).timestamp)
+        ts = testCollection.getNonNullDoc(docID).timestamp
 
         doc1b.setString("artist", "Holly Sears")
 
@@ -270,7 +271,7 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         assertFalse(succeeded)
 
         assertEquals(doc1a, testCollection.getNonNullDoc(docID))
-        assertEquals(2L, testCollection.getNonNullDoc(docID).generation)
+        assertEquals(ts, testCollection.getNonNullDoc(docID).timestamp)
     }
 
     /**
@@ -286,14 +287,15 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         doc.setString("location", "Olympia")
         saveDocInCollection(doc)
         val docID = doc.id
-        assertEquals(1, testCollection.getNonNullDoc(docID).generation)
+        val ts1 = testCollection.getNonNullDoc(docID).timestamp
 
         val doc1a = testCollection.getNonNullDoc(docID).toMutable()
         val doc1b = testCollection.getNonNullDoc(docID).toMutable()
 
         doc1a.setString("artist", "Sheep Jones")
         testCollection.save(doc1a)
-        assertEquals(2, testCollection.getNonNullDoc(docID).generation)
+        assertTrue(ts1 < testCollection.getNonNullDoc(docID).timestamp)
+        var ts = testCollection.getNonNullDoc(docID).timestamp
 
         doc1b.setString("artist", "Holly Sears")
 
@@ -302,10 +304,12 @@ class ConflictResolutionTest : BaseReplicatorTest() {
             count++
             val doc1c = testCollection.getNonNullDoc(docID).toMutable()
             if (!doc1c.getBoolean("second update")) {
-                assertEquals(2L, cur.generation)
-                assertEquals(2L, old?.generation)
+                assertEquals(ts1, cur.timestamp)
+                assertEquals(ts, old?.timestamp)
                 doc1c.setBoolean("second update", true)
-                assertEquals(3L, saveDocInCollection(doc1c).generation)
+                val nDoc = saveDocInCollection(doc1c)
+                assertTrue(ts < nDoc.timestamp)
+                ts = nDoc.timestamp
             }
 
             val data = old?.toMap()?.toMutableMap() ?: mutableMapOf()
@@ -321,7 +325,7 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         assertEquals(2, count)
 
         val newDoc = testCollection.getNonNullDoc(docID)
-        assertEquals(4, newDoc.generation)
+        assertTrue(ts < newDoc.timestamp)
         assertEquals(newDoc.getString("location"), "Olympia")
         assertEquals(newDoc.getString("artist"), "Holly Sears")
         assertEquals(newDoc.getString("edit"), "local")
@@ -338,8 +342,6 @@ class ConflictResolutionTest : BaseReplicatorTest() {
         doc.setString("location", "Olympia")
         saveDocInCollection(doc)
         val docID = doc.id
-
-        assertEquals(1L, testCollection.getNonNullDoc(docID).generation)
 
         val doc1a = testCollection.getNonNullDoc(docID).toMutable()
 

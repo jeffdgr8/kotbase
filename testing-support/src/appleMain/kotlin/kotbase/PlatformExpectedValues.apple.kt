@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2026 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,4 @@
  */
 package kotbase
 
-@Deprecated(
-    "Use CollectionChange",
-    ReplaceWith("CollectionChange")
-)
-public actual class DatabaseChange
-internal constructor(
-    public actual val database: Database,
-    public actual val documentIDs: List<String>
-)
+actual fun intWhenLongOutOfRange(value: Long): Int = value.toInt()

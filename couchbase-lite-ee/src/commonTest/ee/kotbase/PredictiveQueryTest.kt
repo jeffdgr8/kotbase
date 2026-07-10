@@ -328,8 +328,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
 
         verifyQuery(q, 2) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val pred = r.getDictionary(1)!!
@@ -363,8 +362,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             ).from(DataSource.collection(testCollection))
 
         verifyQuery(q, 2) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -408,8 +406,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -528,8 +525,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertTrue(queryUsesIndex(explain, "SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -643,8 +639,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertFalse(queryUsesIndex(explain, "AggIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -683,8 +678,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertTrue(queryUsesIndex(explain, "SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -805,8 +799,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertTrue(queryUsesIndex(explain, "SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(aggregateModel.numberOfCalls, 2)
@@ -824,8 +817,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertFalse(queryUsesIndex(explain, "SumIndex"))
 
         val rows = verifyQueryWithEnumerator(q) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(1, rows)
@@ -874,8 +866,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertTrue(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(2, aggregateModel.numberOfCalls)
@@ -895,8 +886,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertFalse(queryUsesIndex(explain, "SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(0, aggregateModel.numberOfCalls)
@@ -910,8 +900,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertTrue(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(0, aggregateModel.numberOfCalls)
@@ -928,8 +917,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertFalse(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(0, aggregateModel.numberOfCalls)
@@ -951,8 +939,7 @@ class PredictiveQueryTest : BaseQueryTest() {
         assertFalse(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+                        val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertTrue(aggregateModel.numberOfCalls > 0)
@@ -1111,8 +1098,7 @@ class AggregateModel : TestPredictiveModel() {
     override val name = NAME
 
     override fun doPredict(input: Dictionary): Dictionary? {
-        @Suppress("UNCHECKED_CAST")
-        val numbers = input.getArray("numbers")?.toList() as List<Int>? ?: return null
+        val numbers = input.getArray("numbers")?.toList()?.map { (it as Number).toInt() } ?: return null
 
         val output = MutableDictionary()
         output.setValue("sum", numbers.sum())

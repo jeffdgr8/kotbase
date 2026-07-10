@@ -16,7 +16,6 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLCollection
-import cocoapods.CouchbaseLite.CBLDatabase
 import cocoapods.CouchbaseLite.CBLQueryDataSource
 import kotbase.internal.DelegatedClass
 
@@ -25,22 +24,11 @@ private constructor(override var actual: CBLQueryDataSource) : DelegatedClass<CB
 
     public actual class As
     internal constructor(
-        private val database: CBLDatabase? = null,
-        private val collection: CBLCollection? = null
-    ) : DataSource(
-        if (collection != null) {
-            CBLQueryDataSource.collection(collection)
-        } else {
-            CBLQueryDataSource.database(database!!)
-        }
-    ) {
+        private val collection: CBLCollection
+    ) : DataSource(CBLQueryDataSource.collection(collection)) {
 
         public actual infix fun `as`(alias: String): DataSource {
-            actual = if (collection != null) {
-                CBLQueryDataSource.collection(collection, alias)
-            } else {
-                CBLQueryDataSource.database(database!!, alias)
-            }
+            actual = CBLQueryDataSource.collection(collection, alias)
             return this
         }
     }
@@ -48,6 +36,6 @@ private constructor(override var actual: CBLQueryDataSource) : DelegatedClass<CB
     public actual companion object {
 
         public actual fun collection(collection: Collection): As =
-            As(collection = collection.actual)
+            As(collection.actual)
     }
 }

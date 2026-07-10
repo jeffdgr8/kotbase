@@ -31,5 +31,5 @@ public actual object FullTextFunction {
         ReplaceWith("FullTextFunction.rank(Expression.fullTextIndex(indexName))")
     )
     public actual fun rank(indexName: String): Expression =
-        Expression(CBLQueryFullTextFunction.rank(indexName))
+        rank(Expression.fullTextIndex(indexName))
 }

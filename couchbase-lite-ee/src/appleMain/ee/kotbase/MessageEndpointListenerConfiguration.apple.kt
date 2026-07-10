@@ -21,25 +21,12 @@ import kotbase.internal.actuals
 
 public actual class MessageEndpointListenerConfiguration
 internal constructor(
+    actual: CBLMessageEndpointListenerConfiguration,
     public actual val collections: Set<Collection>
 ) : DelegatedClass<CBLMessageEndpointListenerConfiguration>(actual) {
 
-    @Deprecated(
-        "Use MessageEndpointListener(Collection, ProtocolType)",
-        ReplaceWith("MessageEndpointListener(setOf(database.defaultCollection), protocolType)")
-    )
-    public actual constructor(
-        database: Database,
-        protocolType: ProtocolType
-    ) : this(
-        CBLMessageEndpointListenerConfiguration(database.actual, protocolType.actual),
-        database,
-        setOf(database.defaultCollection)
-    )
-
     public actual constructor(collections: Set<Collection>, protocolType: ProtocolType) : this(
         CBLMessageEndpointListenerConfiguration(collections.actuals(), protocolType.actual),
-        collections.first().database,
         collections
     )
 

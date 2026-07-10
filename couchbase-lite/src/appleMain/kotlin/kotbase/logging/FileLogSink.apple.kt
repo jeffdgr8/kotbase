@@ -23,8 +23,8 @@ internal fun CBLFileLogSink.asFileLogSink() = FileLogSink(
     directory,
     usePlaintext,
     maxKeptFiles.toInt(),
-    maxFileSize
+    maxFileSize.toLong()
 )
 
 internal val FileLogSink.actual: CBLFileLogSink
-    get() = CBLFileLogSink(level.actual, directory, isPlainText, maxKeptFiles.toLong(), maxFileSize)
+    get() = CBLFileLogSink(level.actual, directory, isPlainText, maxKeptFiles.toLong(), maxFileSize.toULong())

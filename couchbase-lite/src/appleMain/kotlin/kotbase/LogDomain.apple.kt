@@ -22,7 +22,9 @@ public actual enum class LogDomain {
     QUERY,
     REPLICATOR,
     NETWORK,
-    LISTENER;
+    LISTENER,
+    PEER_DISCOVERY,
+    MULTIPEER;
 
     internal val actual: CBLLogDomain
         get() = when (this) {
@@ -31,6 +33,8 @@ public actual enum class LogDomain {
             REPLICATOR -> kCBLLogDomainReplicator
             NETWORK -> kCBLLogDomainNetwork
             LISTENER -> kCBLLogDomainListener
+            PEER_DISCOVERY -> kCBLLogDomainPeerDiscovery
+            MULTIPEER -> kCBLLogDomainMultipeer
         }
 
     public actual companion object {
@@ -50,6 +54,8 @@ public actual enum class LogDomain {
             kCBLLogDomainReplicator -> REPLICATOR
             kCBLLogDomainNetwork -> NETWORK
             kCBLLogDomainListener -> LISTENER
+            kCBLLogDomainPeerDiscovery -> PEER_DISCOVERY
+            kCBLLogDomainMultipeer -> MULTIPEER
             else -> error("Unexpected CBLLogDomain ($logDomain)")
         }
     }
@@ -72,6 +78,12 @@ internal fun CBLLogDomain.toLogDomain(): Set<LogDomain> = buildSet {
     if (domains and kCBLLogDomainListener != 0UL) {
         add(LogDomain.LISTENER)
     }
+    if (domains and kCBLLogDomainPeerDiscovery != 0UL) {
+        add(LogDomain.PEER_DISCOVERY)
+    }
+    if (domains and kCBLLogDomainMultipeer != 0UL) {
+        add(LogDomain.MULTIPEER)
+    }
 }
 
 internal fun Set<LogDomain>.toCBLLogDomain(): CBLLogDomain {
@@ -91,9 +103,11 @@ internal fun Set<LogDomain>.toCBLLogDomain(): CBLLogDomain {
     if (contains(LogDomain.LISTENER)) {
         domains = domains or kCBLLogDomainListener
     }
+    if (contains(LogDomain.PEER_DISCOVERY)) {
+        domains = domains or kCBLLogDomainPeerDiscovery
+    }
+    if (contains(LogDomain.MULTIPEER)) {
+        domains = domains or kCBLLogDomainMultipeer
+    }
     return domains
 }
-
-// This constant is enterprise only in the Objective-C SDK, but not Java
-// https://github.com/couchbase/couchbase-lite-ios/blob/master/Objective-C/CBLLogger.h#L32
-private val kCBLLogDomainListener = 1UL shl 4
