@@ -341,7 +341,6 @@ internal constructor(
         return buildString {
             append("Database{@${identityHashCodeHex()}: '$name")
             if (config.isFullSync) append("!")
-            if (config.isMMapEnabled) append("*")
             append("'}")
         }
     }

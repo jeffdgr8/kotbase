@@ -78,25 +78,4 @@ class CommonConfigFactoryTest : BaseTest() {
         assertEquals(1, config2.expressions.size)
         assertEquals(CONFIG_FACTORY_TEST_STRING, config2.expressions[0])
     }
-
-    @Test
-    fun testLogFileConfigurationFactory() {
-        val config = LogFileConfigurationFactory.newConfig(directory = CONFIG_FACTORY_TEST_STRING, maxSize = 4096L)
-        assertEquals(CONFIG_FACTORY_TEST_STRING, config.directory)
-        assertEquals(4096L, config.maxSize)
-    }
-
-    @Test
-    fun testLogFileConfigurationFactoryNullDir() {
-        assertFailsWith<IllegalArgumentException> { LogFileConfigurationFactory.newConfig() }
-    }
-
-    @Test
-    fun testLogFileConfigurationFactoryCopy() {
-        val config1 = LogFileConfigurationFactory.newConfig(directory = CONFIG_FACTORY_TEST_STRING, maxSize = 4096L)
-        val config2 = config1.newConfig(maxSize = 1024L)
-        assertNotEquals(config1, config2)
-        assertEquals(CONFIG_FACTORY_TEST_STRING, config2.directory)
-        assertEquals(1024L, config2.maxSize)
-    }
 }

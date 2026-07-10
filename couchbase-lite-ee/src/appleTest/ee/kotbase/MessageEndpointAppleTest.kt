@@ -282,18 +282,18 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPushDoc() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
-        oDB.save(doc2)
+        oDB.defaultCollection.save(doc2)
 
         val target = MessageEndpoint("UID:123", null, ProtocolType.MESSAGE_STREAM, messageEndpointDelegate)
         val config = config(target, ReplicatorType.PUSH, false)
         run(config)
 
-        assertEquals(2, oDB.count)
-        val savedDoc = oDB.getDocument("doc1")!!
+        assertEquals(2, oDB.defaultCollection.count)
+        val savedDoc = oDB.defaultCollection.getDocument("doc1")!!
         assertEquals("Tiger", savedDoc.getString("name"))
     }
 
@@ -301,18 +301,18 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPullDoc() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
-        oDB.save(doc2)
+        oDB.defaultCollection.save(doc2)
 
         val target = MessageEndpoint("UID:123", null, ProtocolType.MESSAGE_STREAM, messageEndpointDelegate)
         val config = config(target, ReplicatorType.PULL, false)
         run(config)
 
-        assertEquals(2, testDatabase.count)
-        val savedDoc = testDatabase.getDocument("doc2")!!
+        assertEquals(2, testDatabase.defaultCollection.count)
+        val savedDoc = testDatabase.defaultCollection.getDocument("doc2")!!
         assertEquals("Cat", savedDoc.getString("name"))
     }
 
@@ -320,22 +320,22 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPushPullDoc() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
-        oDB.save(doc2)
+        oDB.defaultCollection.save(doc2)
 
         val target = MessageEndpoint("UID:123", null, ProtocolType.MESSAGE_STREAM, messageEndpointDelegate)
         val config = config(target, ReplicatorType.PUSH_AND_PULL, false)
         run(config)
 
-        assertEquals(2, oDB.count)
-        val savedDoc1 = oDB.getDocument("doc1")!!
+        assertEquals(2, oDB.defaultCollection.count)
+        val savedDoc1 = oDB.defaultCollection.getDocument("doc1")!!
         assertEquals("Tiger", savedDoc1.getString("name"))
 
-        assertEquals(2, testDatabase.count)
-        val savedDoc2 = testDatabase.getDocument("doc2")!!
+        assertEquals(2, testDatabase.defaultCollection.count)
+        val savedDoc2 = testDatabase.defaultCollection.getDocument("doc2")!!
         assertEquals("Cat", savedDoc2.getString("name"))
     }
 
@@ -343,18 +343,18 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPushDocContinuous() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
-        oDB.save(doc2)
+        oDB.defaultCollection.save(doc2)
 
         val target = MessageEndpoint("UID:123", null, ProtocolType.MESSAGE_STREAM, messageEndpointDelegate)
         val config = config(target, ReplicatorType.PUSH, true)
         run(config)
 
-        assertEquals(2, oDB.count)
-        val savedDoc = oDB.getDocument("doc1")!!
+        assertEquals(2, oDB.defaultCollection.count)
+        val savedDoc = oDB.defaultCollection.getDocument("doc1")!!
         assertEquals("Tiger", savedDoc.getString("name"))
     }
 
@@ -362,18 +362,18 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPullDocContinuous() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
-        oDB.save(doc2)
+        oDB.defaultCollection.save(doc2)
 
         val target = MessageEndpoint("UID:123", null, ProtocolType.MESSAGE_STREAM, messageEndpointDelegate)
         val config = config(target, ReplicatorType.PULL, true)
         run(config)
 
-        assertEquals(2, testDatabase.count)
-        val savedDoc = testDatabase.getDocument("doc2")!!
+        assertEquals(2, testDatabase.defaultCollection.count)
+        val savedDoc = testDatabase.defaultCollection.getDocument("doc2")!!
         assertEquals("Cat", savedDoc.getString("name"))
     }
 
@@ -381,22 +381,22 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
     fun testPushPullDocContinuous() {
         val doc1 = MutableDocument("doc1")
         doc1.setString("name", "Tiger")
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
 
         val doc2 = MutableDocument("doc2")
         doc2.setString("name", "Cat")
-        oDB.save(doc2)
+        oDB.defaultCollection.save(doc2)
 
         val target = MessageEndpoint("UID:123", null, ProtocolType.MESSAGE_STREAM, messageEndpointDelegate)
         val config = config(target, ReplicatorType.PUSH_AND_PULL, true)
         run(config)
 
-        assertEquals(2, oDB.count)
-        val savedDoc1 = oDB.getDocument("doc1")!!
+        assertEquals(2, oDB.defaultCollection.count)
+        val savedDoc1 = oDB.defaultCollection.getDocument("doc1")!!
         assertEquals("Tiger", savedDoc1.getString("name"))
 
-        assertEquals(2, testDatabase.count)
-        val savedDoc2 = testDatabase.getDocument("doc2")!!
+        assertEquals(2, testDatabase.defaultCollection.count)
+        val savedDoc2 = testDatabase.defaultCollection.getDocument("doc2")!!
         assertEquals("Cat", savedDoc2.getString("name"))
     }
 
