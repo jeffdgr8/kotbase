@@ -1,8 +1,5 @@
-import kotlinx.validation.ExperimentalBCVApi
-
 plugins {
     `dokka-convention`
-    alias(libs.plugins.kotlinx.binary.compatibility.validator)
 }
 
 dependencies {
@@ -71,18 +68,6 @@ tasks.dokkaGeneratePublicationHtml {
         }
         removeExtraNewlines(olderDir)
     }
-}
-
-apiValidation {
-    ignoredProjects += listOf("testing-support", "testing-support-ee")
-    ignoredClasses += listOf(
-        "dev.kotbase.BuildConfig",
-        "dev.kotbase.ktx.BuildConfig",
-        "dev.kotbase.paging.BuildConfig",
-        "dev.kotbase.kermit.BuildConfig"
-    )
-    @OptIn(ExperimentalBCVApi::class)
-    klib.enabled = true
 }
 
 // Workaround to avoid potential configuration error.
