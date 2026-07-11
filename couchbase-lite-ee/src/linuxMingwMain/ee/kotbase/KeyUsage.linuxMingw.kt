@@ -15,7 +15,20 @@
  */
 package kotbase
 
+import libcblite.CBLKeyUsages
+import libcblite.kCBLKeyUsagesClientAuth
+import libcblite.kCBLKeyUsagesServerAuth
+
 public actual enum class KeyUsage {
     SERVER_AUTH,
-    CLIENT_AUTH
+    CLIENT_AUTH;
+
+    internal val actual: UInt
+        get() = when (this) {
+            SERVER_AUTH -> kCBLKeyUsagesServerAuth
+            CLIENT_AUTH -> kCBLKeyUsagesClientAuth
+        }
 }
+
+internal fun Set<KeyUsage>.toCBLKeyUsages(): CBLKeyUsages =
+    fold(0U) { acc, usage -> acc or usage.actual }.toUShort()

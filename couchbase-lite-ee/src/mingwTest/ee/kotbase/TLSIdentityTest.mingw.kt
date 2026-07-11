@@ -15,8 +15,8 @@
  */
 package kotbase
 
-// TLSIdentity is not supported on Linux or Windows (tests are ignored)
 internal actual fun initPlatformKeyStore() = Unit
 
-internal actual val keyStoreAccessAllowed: Boolean = false
-
+// On Windows, the CBL C SDK persists identities in the CNG Key Storage Provider
+// (see CBLTLSIdentity.h)
+internal actual val keyStoreAccessAllowed: Boolean = true

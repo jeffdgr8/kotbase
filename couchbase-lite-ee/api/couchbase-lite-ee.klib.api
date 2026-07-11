@@ -3036,8 +3036,6 @@ final class kotbase/Select : kotbase/FromRouter, kotbase/Query { // kotbase/Sele
 
 // Targets: [linux, mingwX64]
 final class kotbase/TLSIdentity { // kotbase/TLSIdentity|null[0]
-    constructor <init>() // kotbase/TLSIdentity.<init>|<init>(){}[0]
-
     final val certs // kotbase/TLSIdentity.certs|{}certs[0]
         final fun <get-certs>(): kotlin.collections/List<kotlin/ByteArray> // kotbase/TLSIdentity.certs.<get-certs>|<get-certs>(){}[0]
     final val expiration // kotbase/TLSIdentity.expiration|{}expiration[0]

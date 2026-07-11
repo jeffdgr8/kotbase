@@ -15,15 +15,12 @@
  */
 package kotbase
 
-import kotbase.test.IgnoreLinuxMingw
 import kotlin.test.*
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 
 // TLSIdentityTest.m
 
-// TLSIdentity is not supported on Linux or Windows
-@IgnoreLinuxMingw
 class TLSIdentityTest : BaseTest() {
 
     private val serverCertAttrs = mapOf(TLSIdentity.CERT_ATTRIBUTE_COMMON_NAME to "CBL-Server")
