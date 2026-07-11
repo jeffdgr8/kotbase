@@ -15,4 +15,30 @@
  */
 package kotbase
 
-public actual sealed class ListenerAuthenticator
+import cnames.structs.CBLListenerAuthenticator
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.StableRef
+import libcblite.CBLListenerAuth_Free
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
+
+public actual sealed class ListenerAuthenticator(
+    actual: CPointer<CBLListenerAuthenticator>,
+    ref: StableRef<*>? = null
+) {
+
+    private val memory = object {
+        val authenticator = actual
+        val stableRef = ref
+    }
+
+    @OptIn(ExperimentalNativeApi::class)
+    @Suppress("unused")
+    private val cleaner = createCleaner(memory) {
+        CBLListenerAuth_Free(it.authenticator)
+        it.stableRef?.dispose()
+    }
+
+    internal val actual: CPointer<CBLListenerAuthenticator>
+        get() = memory.authenticator
+}

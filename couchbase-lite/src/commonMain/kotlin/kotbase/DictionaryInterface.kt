@@ -28,6 +28,12 @@ public interface DictionaryInterface {
     public val count: Int
 
     /**
+     * Whether the dictionary is empty: `count == 0`.
+     */
+    public val isEmpty: Boolean
+        get() = count == 0
+
+    /**
      * A List containing all keys, or an empty List if the dictionary has no properties.
      */
     public val keys: List<String>

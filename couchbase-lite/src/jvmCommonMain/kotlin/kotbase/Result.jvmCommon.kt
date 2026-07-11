@@ -26,6 +26,9 @@ internal constructor(actual: CBLResult) : DelegatedClass<CBLResult>(actual), Arr
     actual override val count: Int
         get() = actual.count()
 
+    actual override val isEmpty: Boolean
+        get() = actual.isEmpty
+
     actual override fun getValue(index: Int): Any? =
         actual.getValue(index)?.delegateIfNecessary()
 

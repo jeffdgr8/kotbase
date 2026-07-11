@@ -75,6 +75,9 @@ private constructor(
     actual override val count: Int
         get() = CBLQuery_ColumnCount(query).toInt()
 
+    actual override val isEmpty: Boolean
+        get() = count == 0
+
     private fun getFLValue(index: Int): FLValue? {
         assertInBounds(index)
         return FLArray_Get(array, index.convert())

@@ -9,6 +9,8 @@
 final class kotbase.ktx/DocumentBuilder : kotbase/MutableDictionaryInterface { // kotbase.ktx/DocumentBuilder|null[0]
     final val count // kotbase.ktx/DocumentBuilder.count|{}count[0]
         final fun <get-count>(): kotlin/Int // kotbase.ktx/DocumentBuilder.count.<get-count>|<get-count>(){}[0]
+    final val isEmpty // kotbase.ktx/DocumentBuilder.isEmpty|{}isEmpty[0]
+        final fun <get-isEmpty>(): kotlin/Boolean // kotbase.ktx/DocumentBuilder.isEmpty.<get-isEmpty>|<get-isEmpty>(){}[0]
     final val keys // kotbase.ktx/DocumentBuilder.keys|{}keys[0]
         final fun <get-keys>(): kotlin.collections/List<kotlin/String> // kotbase.ktx/DocumentBuilder.keys.<get-keys>|<get-keys>(){}[0]
 

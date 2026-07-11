@@ -15,13 +15,53 @@
  */
 package kotbase
 
-public actual class ListenerCertificateAuthenticator : ListenerAuthenticator {
+import cnames.structs.CBLCert
+import kotbase.internal.fleece.toByteArray
+import kotbase.internal.wrapCBLError
+import kotbase.util.to
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.StableRef
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.staticCFunction
+import libcblite.CBLCert_Release
+import libcblite.CBLListenerAuth_CreateCertificate
+import libcblite.CBLListenerAuth_CreateCertificateWithRootCerts
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.createCleaner
 
-    init {
-        urlEndpointListenerUnsupported()
+public actual class ListenerCertificateAuthenticator
+private constructor(
+    actual: CPointer<cnames.structs.CBLListenerAuthenticator>,
+    ref: StableRef<*>? = null,
+    rootCerts: CPointer<CBLCert>? = null
+) : ListenerAuthenticator(actual, ref) {
+
+    @OptIn(ExperimentalNativeApi::class)
+    @Suppress("unused")
+    private val certCleaner = createCleaner(rootCerts) { certs ->
+        certs?.let { CBLCert_Release(it) }
     }
 
-    public actual constructor(rootCerts: List<ByteArray>)
+    public actual constructor(rootCerts: List<ByteArray>) : this(rootCerts.toCBLCertChain())
 
-    public actual constructor(delegate: ListenerCertificateAuthenticatorDelegate)
+    private constructor(rootCerts: CPointer<CBLCert>) : this(
+        CBLListenerAuth_CreateCertificateWithRootCerts(rootCerts)!!,
+        rootCerts = rootCerts
+    )
+
+    public actual constructor(delegate: ListenerCertificateAuthenticatorDelegate) : this(
+        StableRef.create(delegate)
+    )
+
+    private constructor(ref: StableRef<ListenerCertificateAuthenticatorDelegate>) : this(
+        CBLListenerAuth_CreateCertificate(
+            staticCFunction { context, cert ->
+                context.to<ListenerCertificateAuthenticatorDelegate>().invoke(
+                    cert?.toCertsData() ?: emptyList()
+                )
+            },
+            ref.asCPointer()
+        )!!,
+        ref
+    )
 }

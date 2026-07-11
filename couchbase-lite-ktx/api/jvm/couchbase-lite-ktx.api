@@ -29,6 +29,7 @@ public final class kotbase/ktx/DocumentBuilder : kotbase/MutableDictionaryInterf
 	public fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
 	public fun getString (Ljava/lang/String;)Ljava/lang/String;
 	public fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public fun isEmpty ()Z
 	public fun remove (Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
 	public fun setArray (Ljava/lang/String;Lkotbase/Array;)Lkotbase/MutableDictionaryInterface;
 	public fun setBlob (Ljava/lang/String;Lkotbase/Blob;)Lkotbase/MutableDictionaryInterface;

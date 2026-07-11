@@ -15,10 +15,27 @@
  */
 package kotbase
 
-public actual class ListenerPasswordAuthenticator
-actual constructor(delegate: ListenerPasswordAuthenticatorDelegate) : ListenerAuthenticator() {
+import kotbase.internal.fleece.toKString
+import kotbase.util.to
+import kotlinx.cinterop.StableRef
+import kotlinx.cinterop.staticCFunction
+import libcblite.CBLListenerAuth_CreatePassword
 
-    init {
-        urlEndpointListenerUnsupported()
-    }
+public actual class ListenerPasswordAuthenticator
+private constructor(ref: StableRef<ListenerPasswordAuthenticatorDelegate>) : ListenerAuthenticator(
+    CBLListenerAuth_CreatePassword(
+        staticCFunction { context, username, password ->
+            context.to<ListenerPasswordAuthenticatorDelegate>().invoke(
+                username.toKString() ?: "",
+                (password.toKString() ?: "").toCharArray()
+            )
+        },
+        ref.asCPointer()
+    )!!,
+    ref
+) {
+
+    public actual constructor(delegate: ListenerPasswordAuthenticatorDelegate) : this(
+        StableRef.create(delegate)
+    )
 }
