@@ -12,7 +12,6 @@ android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version = "2.4.0" }
 kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version = "0.33.0" }
-kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.18.1" }
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.37.0" }
 
 [libraries]
