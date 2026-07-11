@@ -33,17 +33,17 @@ class ArrayIndexTest : BaseDbTest() {
     @Test
     fun testArrayIndexConfigValidExpressions1() = assertEquals("", ArrayIndexConfiguration("foo").indexSpec)
 
-//    @Test
-//    fun testArrayIndexConfigValidExpressions3() =
-//        assertEquals("", ArrayIndexConfiguration("foo", null).indexSpec)
+    @Test
+    fun testArrayIndexConfigValidExpressions3() =
+        assertEquals("", ArrayIndexConfiguration("foo", null).indexSpec)
 
     @Test
     fun testArrayIndexConfigValidExpressions4() =
         assertEquals("bar", ArrayIndexConfiguration("foo", listOf("bar")).indexSpec)
 
-//    @Test
-//    fun testArrayIndexConfigValidExpressions5() =
-//        assertEquals("bar,baz", ArrayIndexConfiguration("foo", "bar", "baz").indexSpec)
+    @Test
+    fun testArrayIndexConfigValidExpressions5() =
+        assertEquals("bar,baz", ArrayIndexConfiguration("foo", "bar", "baz").indexSpec)
 
     @Test
     fun testArrayIndexConfigValidExpressions7() =
@@ -84,19 +84,15 @@ class ArrayIndexTest : BaseDbTest() {
         }
     }
 
-//    @Test
-//    fun testArrayIndexConfigInvalidExpressions3b() {
-//        assertFailsWith<IllegalArgumentException> {
-//            ArrayIndexConfiguration("contacts", "")
-//        }
-//    }
+    @Test
+    fun testArrayIndexConfigInvalidExpressions3b() {
+        assertFailsWith<IllegalArgumentException> {
+            ArrayIndexConfiguration("contacts", "")
+        }
+    }
 
-//    @Test
-//    fun testArrayIndexConfigInvalidExpressions5() {
-//        assertFailsWith<IllegalArgumentException> {
-//            ArrayIndexConfiguration("contacts", listOf("address.state", null, "address.city"))
-//        }
-//    }
+    // testArrayIndexConfigInvalidExpressions5 is not portable:
+    // Kotlin's List<String> cannot contain null (upstream spec allows skipping when null is disallowed)
 
     /**
      * 2. TestCreateArrayIndexWithPath

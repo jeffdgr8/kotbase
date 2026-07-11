@@ -54,6 +54,9 @@ class ReplicatorConfigurationTest : BaseReplicatorTest() {
         assertFailsWith<IllegalArgumentException> { makeSimpleReplConfig().heartbeat = 2147484 }
     }
 
+    // testCreateConfigDefaults and testCreateConfigCompatibility are not portable:
+    // they use the internal ImmutableReplicatorConfiguration and C4Replicator connection options
+
     /****************** Scopes and Collections Section 8.13 ****************/
 
     // 8.13.2 Create a config object with

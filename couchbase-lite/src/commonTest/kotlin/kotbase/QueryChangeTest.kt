@@ -17,8 +17,13 @@ package kotbase
 
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.CountDownLatch
+import kotlinx.coroutines.sync.CyclicBarrier
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.test.Test
@@ -73,5 +78,47 @@ class QueryChangeTest : BaseQueryTest() {
         }
 
         assertNull(token.load())
+    }
+
+    // https://issues.couchbase.com/browse/CBL-5647
+    // This test is utterly non-deterministic.  Passing it doesn't prove anything.
+    @Test
+    fun testQueryObserverRace() = runBlocking {
+        val ids = loadDocuments(10).map { Expression.string(it.id) }.subList(3, 7)
+
+        val query: Query = QueryBuilder
+            .select(SelectResult.expression(Meta.id))
+            .from(DataSource.collection(testCollection))
+            .where(Meta.id.`in`(*ids.toTypedArray()))
+
+        val nTasks = 1000
+        val tokens = ArrayDeque<ListenerToken>()
+        val lock = reentrantLock()
+        val barrier = CyclicBarrier(nTasks)
+        try {
+            withTimeout(LONG_TIMEOUT_SEC.seconds) {
+                withContext(Dispatchers.Default) {
+                    repeat(nTasks) { i ->
+                        val add = i % 2 == 0
+                        launch {
+                            barrier.await()
+                            if (add) {
+                                val token = query.addChangeListener { }
+                                lock.withLock { tokens.addFirst(token) }
+                            }
+                            else {
+                                val token = lock.withLock { tokens.removeFirstOrNull() }
+                                token?.close()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        finally {
+            lock.withLock {
+                while (tokens.isNotEmpty()) { tokens.removeFirst().close() }
+            }
+        }
     }
 }

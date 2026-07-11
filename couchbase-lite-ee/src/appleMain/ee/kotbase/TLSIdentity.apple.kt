@@ -23,15 +23,27 @@ import kotbase.ext.toNSData
 import kotbase.ext.wrapCBLError
 import kotlin.time.Instant
 import kotlinx.datetime.toNSDate
+import kotlinx.cinterop.reinterpret
+import platform.CoreFoundation.CFRelease
+import platform.Foundation.CFBridgingRetain
 import platform.Security.SecCertificateRef
 import platform.Security.SecIdentityRef
 
 public actual class TLSIdentity
 internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(actual) {
 
-    @Suppress("UNCHECKED_CAST")
     public actual val certs: List<ByteArray>
-        get() = (actual.certs as List<SecCertificateRef>).map { it.toByteArray() }
+        // NSArray elements of CF type aren't bridged to CPointer (KT-61470):
+        // round-trip through CFBridgingRetain to recover the SecCertificateRef
+        get() = actual.certs.map { cert ->
+            val ref = CFBridgingRetain(cert)!!
+            try {
+                val certRef: SecCertificateRef = ref.reinterpret()
+                certRef.toByteArray()
+            } finally {
+                CFRelease(ref)
+            }
+        }
 
     public actual val expiration: Instant
         get() = actual.expiration.toKotlinInstantMillis()
