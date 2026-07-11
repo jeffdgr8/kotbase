@@ -40,12 +40,12 @@ internal constructor(actual: CBLTLSIdentity) : DelegatedClass<CBLTLSIdentity>(ac
 
         @Throws(CouchbaseLiteException::class)
         public actual fun createIdentity(
-            isServer: Boolean,
+            usage: Set<KeyUsage>,
             attributes: Map<String, String>,
             expiration: Instant?,
             alias: String
         ): TLSIdentity = CBLTLSIdentity.createIdentity(
-            isServer,
+            usage,
             attributes,
             expiration?.toDate(),
             alias

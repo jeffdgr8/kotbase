@@ -21,33 +21,25 @@ import com.couchbase.lite.CollectionConfiguration as CBLCollectionConfiguration
 public actual class CollectionConfiguration
 internal constructor(
     actual: CBLCollectionConfiguration,
+    public actual val collection: Collection,
     pullFilter: ReplicationFilter? = null,
     pushFilter: ReplicationFilter? = null,
     conflictResolver: ConflictResolver? = null
 ) : DelegatedClass<CBLCollectionConfiguration>(actual) {
 
-    public actual constructor(
-        channels: List<String>?,
-        documentIDs: List<String>?,
-        pullFilter: ReplicationFilter?,
-        pushFilter: ReplicationFilter?,
-        conflictResolver: ConflictResolver?
-    ) : this(
-        CBLCollectionConfiguration(
-            channels,
-            documentIDs,
-            pullFilter?.convert(),
-            pushFilter?.convert(),
-            conflictResolver?.convert()
-        ),
-        pullFilter,
-        pushFilter,
-        conflictResolver
+    public actual constructor(collection: Collection) : this(
+        CBLCollectionConfiguration(collection.actual),
+        collection
     )
 
     internal constructor(config: CollectionConfiguration) : this(
-        config.channels?.toList(),
-        config.documentIDs?.toList(),
+        CBLCollectionConfiguration(config.collection.actual)
+            .setChannels(config.channels)
+            .setDocumentIDs(config.documentIDs)
+            .setPullFilter(config.pullFilter?.convert())
+            .setPushFilter(config.pushFilter?.convert())
+            .setConflictResolver(config.conflictResolver?.convert()),
+        config.collection,
         config.pullFilter,
         config.pushFilter,
         config.conflictResolver
@@ -107,4 +99,12 @@ internal constructor(
             field = value
             actual.setPushFilter(value?.convert())
         }
+
+    public actual companion object {
+
+        public actual fun fromCollections(
+            collections: kotlin.collections.Collection<Collection>
+        ): Set<CollectionConfiguration> =
+            collections.map { CollectionConfiguration(it) }.toSet()
+    }
 }

@@ -587,7 +587,7 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(testDatabase.isOpen)
         testDatabase.close()
         assertFalse(testDatabase.isOpen)
-        assertFailsWith<CouchbaseLiteError> {
+        assertFailsWith<CouchbaseLiteException> {
             testDatabase.inBatch { }
         }
     }
@@ -607,7 +607,7 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(testDatabase.isOpen)
         testDatabase.close()
         assertFalse(testDatabase.isOpen)
-        assertFailsWith<CouchbaseLiteError> { testDatabase.delete() }
+        assertFailsWith<CouchbaseLiteException> { testDatabase.delete() }
     }
 
     //---------------------------------------------
@@ -631,7 +631,7 @@ class DatabaseTest : BaseDbTest() {
         assertFalse(FileUtils.dirExists(path))
 
         // second delete should fail
-        assertFailsWith<CouchbaseLiteError> { testDatabase.delete() }
+        assertFailsWith<CouchbaseLiteException> { testDatabase.delete() }
     }
 
     @Test
@@ -710,7 +710,7 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(FileUtils.dirExists(path))
         testDatabase.delete()
         assertFalse(FileUtils.dirExists(path))
-        assertFailsWith<CouchbaseLiteError> {
+        assertFailsWith<CouchbaseLiteException> {
             testDatabase.inBatch { }
         }
     }
@@ -1236,9 +1236,13 @@ class DatabaseTest : BaseDbTest() {
 
         val dbName = getUniqueName("test_copy_db")
         val config = testDatabase.config
+        val dbPath = testDatabase.path!!
+
+        // Close the db before copying
+        closeDb(testDatabase)
 
         // Copy the db
-        Database.copy(testDatabase.path!!, dbName, config)
+        Database.copy(dbPath, dbName, config)
 
         // Verify that it exists
         assertTrue(Database.exists(dbName, config.directory))
@@ -1253,7 +1257,7 @@ class DatabaseTest : BaseDbTest() {
             assertEquals(n + docs.size.toLong(), otherCollection.count)
 
             QueryBuilder.select(SelectResult.expression(Meta.id))
-                .from(DataSource.collection(testCollection))
+                .from(DataSource.collection(otherCollection))
                 .execute()
                 .use { rs ->
                     for (r in rs) {

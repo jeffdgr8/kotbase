@@ -188,20 +188,6 @@ public infix fun Expression.`as`(alias: String): SelectResult.As =
     SelectResult.expression(this).`as`(alias)
 
 /**
- * Set an alias to the database as a data source.
- *
- * @param alias the alias to set.
- * @return the data source object with the given alias set.
- */
-@Suppress("DEPRECATION")
-@Deprecated(
-    "Use Collection.`as`(String)",
-    ReplaceWith("defaultCollection.`as`(alias)")
-)
-public infix fun Database.`as`(alias: String): DataSource =
-    DataSource.database(this).`as`(alias)
-
-/**
  * Set an alias to the collection as a data source.
  *
  * @param alias the alias to set.

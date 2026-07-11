@@ -34,7 +34,7 @@ class DatabaseEETest : BaseReplicatorTest() {
         val change1 = Mutex(true)
         val change2 = Mutex(true)
 
-        val ds = DataSource.database(testDatabase)
+        val ds = DataSource.collection(testDatabase.defaultCollection)
 
         val q1 = QueryBuilder.select().from(ds)
         q1.addChangeListener { change1.unlock() }
@@ -48,7 +48,7 @@ class DatabaseEETest : BaseReplicatorTest() {
         // Replicators:
 
         val target = DatabaseEndpoint(targetDatabase)
-        val config = ReplicatorConfiguration(testDatabase, target)
+        val config = ReplicatorConfiguration(listOf(CollectionConfiguration(testDatabase.defaultCollection)), target)
         config.isContinuous = true
 
         config.type = ReplicatorType.PUSH
@@ -86,7 +86,7 @@ class DatabaseEETest : BaseReplicatorTest() {
     @Test
     fun testCloseWithActiveLiveQueriesAndReplicators() = runBlocking {
         val target = DatabaseEndpoint(targetDatabase)
-        val config = ReplicatorConfiguration(testDatabase, target)
+        val config = ReplicatorConfiguration(listOf(CollectionConfiguration(testDatabase.defaultCollection)), target)
         config.isContinuous = true
 
         config.type = ReplicatorType.PUSH

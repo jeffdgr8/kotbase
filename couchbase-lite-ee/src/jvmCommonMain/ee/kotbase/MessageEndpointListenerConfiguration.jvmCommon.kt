@@ -21,26 +21,12 @@ import com.couchbase.lite.MessageEndpointListenerConfiguration as CBLMessageEndp
 
 public actual class MessageEndpointListenerConfiguration
 internal constructor(
+    actual: CBLMessageEndpointListenerConfiguration,
     public actual val collections: Set<Collection>
 ) : DelegatedClass<CBLMessageEndpointListenerConfiguration>(actual) {
 
-    @Suppress("DEPRECATION")
-    @Deprecated(
-        "Use MessageEndpointListener(Collection, ProtocolType)",
-        ReplaceWith("MessageEndpointListener(setOf(database.defaultCollection), protocolType)")
-    )
-    public actual constructor(
-        database: Database,
-        protocolType: ProtocolType
-    ) : this(
-        CBLMessageEndpointListenerConfiguration(database.actual, protocolType),
-        database,
-        setOf(database.defaultCollection)
-    )
-
     public actual constructor(collections: Set<Collection>, protocolType: ProtocolType) : this(
         CBLMessageEndpointListenerConfiguration(collections.actualSet(), protocolType),
-        collections.first().database,
         collections
     )
 

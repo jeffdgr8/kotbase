@@ -43,6 +43,10 @@ class PredictiveQueryTest : BaseQueryTest() {
     private fun blobForString(text: String): Blob =
         Blob("text/plain", text.encodeToByteArray())
 
+    // Checks whether the explain plan contains either USING INDEX or USING COVERING INDEX for the given index name
+    private fun queryUsesIndex(explain: String, indexName: String): Boolean =
+        explain.contains("USING INDEX $indexName") || explain.contains("USING COVERING INDEX $indexName")
+
     @Test
     fun testRegisterAndUnregisterModel() {
         createDocument(listOf(1, 2, 3, 4, 5))
@@ -521,7 +525,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertTrue(queryUsesIndex(explain, "SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
@@ -564,8 +568,8 @@ class PredictiveQueryTest : BaseQueryTest() {
             )
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
-        assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertTrue(queryUsesIndex(explain, "SumIndex"))
+        assertTrue(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
             assertTrue(r.getInt(0) == 15 || r.getInt(1) == 8)
@@ -602,7 +606,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             )
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumAvgIndex"))
+        assertTrue(queryUsesIndex(explain, "SumAvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
             assertEquals(15, r.getInt(0))
@@ -636,7 +640,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         val explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX AggIndex"))
+        assertFalse(queryUsesIndex(explain, "AggIndex"))
 
         verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
@@ -676,7 +680,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertTrue(queryUsesIndex(explain, "SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
@@ -723,8 +727,8 @@ class PredictiveQueryTest : BaseQueryTest() {
             )
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
-        assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertTrue(queryUsesIndex(explain, "SumIndex"))
+        assertTrue(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
             assertTrue(r.getInt(0) == 15 || r.getInt(1) == 8)
@@ -763,7 +767,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             )
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumAvgIndex"))
+        assertTrue(queryUsesIndex(explain, "SumAvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
             assertEquals(r.getInt(0), 15)
@@ -798,7 +802,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
         var explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertTrue(queryUsesIndex(explain, "SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
@@ -817,7 +821,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
         explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertFalse(queryUsesIndex(explain, "SumIndex"))
 
         val rows = verifyQueryWithEnumerator(q) { _, r ->
             @Suppress("UNCHECKED_CAST")
@@ -866,8 +870,8 @@ class PredictiveQueryTest : BaseQueryTest() {
                 )
             )
         var explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
-        assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertTrue(queryUsesIndex(explain, "SumIndex"))
+        assertTrue(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
             @Suppress("UNCHECKED_CAST")
@@ -888,7 +892,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertFalse(queryUsesIndex(explain, "SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
@@ -903,7 +907,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("avg").equalTo(Expression.value(8)))
         explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertTrue(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
@@ -921,7 +925,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("avg").equalTo(Expression.value(8)))
         explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertFalse(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
             @Suppress("UNCHECKED_CAST")
@@ -943,8 +947,8 @@ class PredictiveQueryTest : BaseQueryTest() {
                 )
             )
         explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX SumIndex"))
-        assertEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertFalse(queryUsesIndex(explain, "SumIndex"))
+        assertFalse(queryUsesIndex(explain, "AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
             @Suppress("UNCHECKED_CAST")

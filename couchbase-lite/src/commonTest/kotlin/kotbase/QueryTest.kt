@@ -3300,7 +3300,7 @@ class QueryTest : BaseQueryTest() {
         val query= QueryBuilder
             .select(SelectResult.expression(Meta.id), SelectResult.property("sentence"))
             .from(DataSource.collection(testCollection))
-            .where(FullTextFunction.match("sentence", "'Dummie woman'"))
+            .where(FullTextFunction.match(Expression.fullTextIndex("sentence"), "'Dummie woman'"))
             .orderBy(Ordering.expression(FullTextFunction.rank("sentence")).descending())
 
         verifyQuery(
