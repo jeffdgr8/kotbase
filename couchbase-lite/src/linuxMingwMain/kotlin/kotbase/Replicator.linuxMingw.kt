@@ -18,6 +18,7 @@ package kotbase
 import cnames.structs.CBLReplicator
 import kotbase.internal.fleece.keys
 import kotbase.internal.fleece.toFLString
+import kotbase.internal.fleece.toKString
 import kotbase.internal.wrapCBLError
 import kotbase.util.to
 import kotbase.util.toList
@@ -69,9 +70,8 @@ private constructor(
     internal val actual: CPointer<CBLReplicator>
         get() = memory.actual
 
-    @Suppress("DEPRECATION")
     public actual fun start() {
-        config.database.mustBeOpen()
+        sourceDatabase.mustBeOpen()
         CBLReplicator_Start(actual, false)
     }
 
@@ -89,6 +89,12 @@ private constructor(
     public actual val status: ReplicatorStatus
         get() = ReplicatorStatus(CBLReplicator_Status(actual))
 
+    public actual val correlationId: String?
+        get() = CBLReplicator_CorrelationID(actual).toKString()
+
+    private val sourceDatabase: Database
+        get() = immutableConfig.collectionConfigurations.keys.first().database
+
     public actual val serverCertificates: List<ByteArray>?
         get() = null
 
@@ -102,58 +108,24 @@ private constructor(
         }
     }
 
-    @Deprecated(
-        "Use getPendingDocumentIds(Collection)",
-        ReplaceWith("getPendingDocumentIds(config.database.defaultCollection)")
-    )
-    @Suppress("DEPRECATION", "ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
-    //@get:Throws(CouchbaseLiteException::class)
-    public actual val pendingDocumentIds: Set<String>
-        get() {
-            checkPullOnlyPendingDocIds()
-            config.database.mustBeOpen()
-            return wrapCBLError { error ->
-                val dict = CBLReplicator_PendingDocumentIDs(actual, error)
-                dict?.keys()?.also {
-                    FLDict_Release(dict)
-                }?.toSet() ?: emptySet()
-            }
-        }
-
-    @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(collection: Collection): Set<String> {
         checkPullOnlyPendingDocIds()
-        config.database.mustBeOpen()
+        sourceDatabase.mustBeOpen()
         return wrapCBLError { error ->
-            val dict = CBLReplicator_PendingDocumentIDs2(actual, collection.actual, error)
+            val dict = CBLReplicator_PendingDocumentIDs(actual, collection.actual, error)
             dict?.keys()?.also {
                 FLDict_Release(dict)
             }?.toSet() ?: emptySet()
         }
     }
 
-    @Deprecated(
-        "Use isDocumentPending(String, Collection)",
-        ReplaceWith("isDocumentPending(docId, config.database.defaultCollection)")
-    )
-    @Throws(CouchbaseLiteException::class)
-    public actual fun isDocumentPending(docId: String): Boolean {
-        checkPullOnlyPendingDocIds()
-        return wrapCBLError { error ->
-            memScoped {
-                CBLReplicator_IsDocumentPending(actual, docId.toFLString(this), error)
-            }
-        }
-    }
-
-    @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
     public actual fun isDocumentPending(docId: String, collection: Collection): Boolean {
-        config.database.mustBeOpen()
+        sourceDatabase.mustBeOpen()
         return wrapCBLError { error ->
             memScoped {
-                CBLReplicator_IsDocumentPending2(actual, docId.toFLString(this), collection.actual, error)
+                CBLReplicator_IsDocumentPending(actual, docId.toFLString(this), collection.actual, error)
             }
         }
     }

@@ -53,8 +53,6 @@ typedef struct C4Document {
 // TODO: have this private API added to cblite C SDK to simplify this
 //bool CBLDocument_Exists(const CBLDocument* doc);
 
-unsigned CBLDocument_Generation(const CBLDocument*);
-
 FLMutableArray CBLCollection_GetIndexesInfo(const CBLCollection* collection, CBLError* outError);
 
 FLSliceResult CBLDocument_GetRevisionHistory(const CBLDocument* doc);

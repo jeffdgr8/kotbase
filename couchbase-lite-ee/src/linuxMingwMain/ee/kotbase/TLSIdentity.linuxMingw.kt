@@ -32,7 +32,7 @@ public actual class TLSIdentity {
 
         @Throws(CouchbaseLiteException::class)
         public actual fun createIdentity(
-            isServer: Boolean,
+            usage: Set<KeyUsage>,
             attributes: Map<String, String>,
             expiration: Instant?,
             alias: String

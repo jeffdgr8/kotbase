@@ -23,7 +23,9 @@ public actual enum class LogDomain {
     QUERY,
     REPLICATOR,
     NETWORK,
-    LISTENER;
+    LISTENER,
+    PEER_DISCOVERY,
+    MULTIPEER;
 
     internal val actual: CBLLogDomain
         get() = when (this) {
@@ -32,6 +34,8 @@ public actual enum class LogDomain {
             REPLICATOR -> kCBLLogDomainReplicator
             NETWORK -> kCBLLogDomainNetwork
             LISTENER -> kCBLLogDomainListener
+            // The C SDK has no peer discovery or multipeer log domains
+            PEER_DISCOVERY, MULTIPEER -> error("LogDomain $this is not supported by the C SDK")
         }.convert()
 
     public actual companion object {
