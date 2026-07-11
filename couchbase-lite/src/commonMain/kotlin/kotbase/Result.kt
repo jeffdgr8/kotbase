@@ -32,6 +32,11 @@ public expect class Result : ArrayInterface, DictionaryInterface, Iterable<Strin
     override val count: Int
 
     /**
+     * Whether the result is empty: `count == 0`.
+     */
+    override val isEmpty: Boolean
+
+    /**
      * The result value at the given index.
      *
      * @param index the index of the required value.

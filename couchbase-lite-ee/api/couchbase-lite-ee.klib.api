@@ -141,6 +141,8 @@ abstract fun interface kotbase/PredictiveModel { // kotbase/PredictiveModel|null
 abstract interface kotbase/ArrayInterface { // kotbase/ArrayInterface|null[0]
     abstract val count // kotbase/ArrayInterface.count|{}count[0]
         abstract fun <get-count>(): kotlin/Int // kotbase/ArrayInterface.count.<get-count>|<get-count>(){}[0]
+    open val isEmpty // kotbase/ArrayInterface.isEmpty|{}isEmpty[0]
+        open fun <get-isEmpty>(): kotlin/Boolean // kotbase/ArrayInterface.isEmpty.<get-isEmpty>|<get-isEmpty>(){}[0]
 
     abstract fun getArray(kotlin/Int): kotbase/Array? // kotbase/ArrayInterface.getArray|getArray(kotlin.Int){}[0]
     abstract fun getBlob(kotlin/Int): kotbase/Blob? // kotbase/ArrayInterface.getBlob|getBlob(kotlin.Int){}[0]
@@ -189,6 +191,8 @@ abstract interface kotbase/DictionaryInterface { // kotbase/DictionaryInterface|
         abstract fun <get-count>(): kotlin/Int // kotbase/DictionaryInterface.count.<get-count>|<get-count>(){}[0]
     abstract val keys // kotbase/DictionaryInterface.keys|{}keys[0]
         abstract fun <get-keys>(): kotlin.collections/List<kotlin/String> // kotbase/DictionaryInterface.keys.<get-keys>|<get-keys>(){}[0]
+    open val isEmpty // kotbase/DictionaryInterface.isEmpty|{}isEmpty[0]
+        open fun <get-isEmpty>(): kotlin/Boolean // kotbase/DictionaryInterface.isEmpty.<get-isEmpty>|<get-isEmpty>(){}[0]
 
     abstract fun contains(kotlin/String): kotlin/Boolean // kotbase/DictionaryInterface.contains|contains(kotlin.String){}[0]
     abstract fun getArray(kotlin/String): kotbase/Array? // kotbase/DictionaryInterface.getArray|getArray(kotlin.String){}[0]
@@ -356,11 +360,23 @@ abstract interface kotbase/WhereRouter : kotbase/Query { // kotbase/WhereRouter|
 final class kotbase.logging/ConsoleLogSink { // kotbase.logging/ConsoleLogSink|null[0]
     constructor <init>(kotbase/LogLevel, kotlin.collections/Collection<kotbase/LogDomain>?) // kotbase.logging/ConsoleLogSink.<init>|<init>(kotbase.LogLevel;kotlin.collections.Collection<kotbase.LogDomain>?){}[0]
     constructor <init>(kotbase/LogLevel, kotlin/Array<out kotbase/LogDomain>...) // kotbase.logging/ConsoleLogSink.<init>|<init>(kotbase.LogLevel;kotlin.Array<out|kotbase.LogDomain>...){}[0]
+
+    final val domains // kotbase.logging/ConsoleLogSink.domains|{}domains[0]
+        final fun <get-domains>(): kotlin.collections/Set<kotbase/LogDomain> // kotbase.logging/ConsoleLogSink.domains.<get-domains>|<get-domains>(){}[0]
+    final val level // kotbase.logging/ConsoleLogSink.level|{}level[0]
+        final fun <get-level>(): kotbase/LogLevel // kotbase.logging/ConsoleLogSink.level.<get-level>|<get-level>(){}[0]
 }
 
 final class kotbase.logging/CustomLogSink { // kotbase.logging/CustomLogSink|null[0]
     constructor <init>(kotbase/LogLevel, kotlin.collections/Set<kotbase/LogDomain>, kotbase.logging/LogSink) // kotbase.logging/CustomLogSink.<init>|<init>(kotbase.LogLevel;kotlin.collections.Set<kotbase.LogDomain>;kotbase.logging.LogSink){}[0]
     constructor <init>(kotbase/LogLevel, kotlin/Array<out kotbase/LogDomain>..., kotbase.logging/LogSink) // kotbase.logging/CustomLogSink.<init>|<init>(kotbase.LogLevel;kotlin.Array<out|kotbase.LogDomain>...;kotbase.logging.LogSink){}[0]
+
+    final val domains // kotbase.logging/CustomLogSink.domains|{}domains[0]
+        final fun <get-domains>(): kotlin.collections/Set<kotbase/LogDomain> // kotbase.logging/CustomLogSink.domains.<get-domains>|<get-domains>(){}[0]
+    final val level // kotbase.logging/CustomLogSink.level|{}level[0]
+        final fun <get-level>(): kotbase/LogLevel // kotbase.logging/CustomLogSink.level.<get-level>|<get-level>(){}[0]
+    final val logSink // kotbase.logging/CustomLogSink.logSink|{}logSink[0]
+        final fun <get-logSink>(): kotbase.logging/LogSink // kotbase.logging/CustomLogSink.logSink.<get-logSink>|<get-logSink>(){}[0]
 }
 
 final class kotbase.logging/FileLogSink { // kotbase.logging/FileLogSink|null[0]
@@ -1011,8 +1027,6 @@ final object kotbase/Defaults { // kotbase/Defaults|null[0]
     final object Database { // kotbase/Defaults.Database|null[0]
         final const val FULL_SYNC // kotbase/Defaults.Database.FULL_SYNC|{}FULL_SYNC[0]
             final fun <get-FULL_SYNC>(): kotlin/Boolean // kotbase/Defaults.Database.FULL_SYNC.<get-FULL_SYNC>|<get-FULL_SYNC>(){}[0]
-        final const val MMAP_ENABLED // kotbase/Defaults.Database.MMAP_ENABLED|{}MMAP_ENABLED[0]
-            final fun <get-MMAP_ENABLED>(): kotlin/Boolean // kotbase/Defaults.Database.MMAP_ENABLED.<get-MMAP_ENABLED>|<get-MMAP_ENABLED>(){}[0]
     }
 
     final object FileLogSink { // kotbase/Defaults.FileLogSink|null[0]
@@ -1965,6 +1979,8 @@ final class kotbase/ReplicatorStatus : kotbase.internal/DelegatedClass<cocoapods
 final class kotbase/Result : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryResult>, kotbase/ArrayInterface, kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Result|null[0]
     final val count // kotbase/Result.count|{}count[0]
         final fun <get-count>(): kotlin/Int // kotbase/Result.count.<get-count>|<get-count>(){}[0]
+    final val isEmpty // kotbase/Result.isEmpty|{}isEmpty[0]
+        final fun <get-isEmpty>(): kotlin/Boolean // kotbase/Result.isEmpty.<get-isEmpty>|<get-isEmpty>(){}[0]
     final val keys // kotbase/Result.keys|{}keys[0]
         final fun <get-keys>(): kotlin.collections/List<kotlin/String> // kotbase/Result.keys.<get-keys>|<get-keys>(){}[0]
 
@@ -2961,6 +2977,8 @@ final class kotbase/ReplicatorStatus { // kotbase/ReplicatorStatus|null[0]
 final class kotbase/Result : kotbase/ArrayInterface, kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Result|null[0]
     final val count // kotbase/Result.count|{}count[0]
         final fun <get-count>(): kotlin/Int // kotbase/Result.count.<get-count>|<get-count>(){}[0]
+    final val isEmpty // kotbase/Result.isEmpty|{}isEmpty[0]
+        final fun <get-isEmpty>(): kotlin/Boolean // kotbase/Result.isEmpty.<get-isEmpty>|<get-isEmpty>(){}[0]
     final val keys // kotbase/Result.keys|{}keys[0]
         final fun <get-keys>(): kotlin.collections/List<kotlin/String> // kotbase/Result.keys.<get-keys>|<get-keys>(){}[0]
 

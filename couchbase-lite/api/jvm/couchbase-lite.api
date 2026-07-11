@@ -12,6 +12,7 @@ public class kotbase/Array : kotbase/internal/DelegatedClass, java/lang/Iterable
 	public fun getNumber (I)Ljava/lang/Number;
 	public fun getString (I)Ljava/lang/String;
 	public fun getValue (I)Ljava/lang/Object;
+	public fun isEmpty ()Z
 	public fun iterator ()Ljava/util/Iterator;
 	public fun toJSON ()Ljava/lang/String;
 	public fun toList ()Ljava/util/List;
@@ -63,8 +64,13 @@ public abstract interface class kotbase/ArrayInterface {
 	public abstract fun getNumber (I)Ljava/lang/Number;
 	public abstract fun getString (I)Ljava/lang/String;
 	public abstract fun getValue (I)Ljava/lang/Object;
+	public fun isEmpty ()Z
 	public abstract fun toJSON ()Ljava/lang/String;
 	public abstract fun toList ()Ljava/util/List;
+}
+
+public final class kotbase/ArrayInterface$DefaultImpls {
+	public static fun isEmpty (Lkotbase/ArrayInterface;)Z
 }
 
 public final class kotbase/ArrayInterfaceKt {
@@ -375,7 +381,6 @@ public final class kotbase/Defaults {
 public final class kotbase/Defaults$Database {
 	public static final field FULL_SYNC Z
 	public static final field INSTANCE Lkotbase/Defaults$Database;
-	public static final field MMAP_ENABLED Z
 }
 
 public final class kotbase/Defaults$FileLogSink {
@@ -427,6 +432,7 @@ public class kotbase/Dictionary : kotbase/internal/DelegatedClass, java/lang/Ite
 	public fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
 	public fun getString (Ljava/lang/String;)Ljava/lang/String;
 	public fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public fun isEmpty ()Z
 	public fun iterator ()Ljava/util/Iterator;
 	public fun toJSON ()Ljava/lang/String;
 	public fun toMap ()Ljava/util/Map;
@@ -449,8 +455,13 @@ public abstract interface class kotbase/DictionaryInterface {
 	public abstract fun getNumber (Ljava/lang/String;)Ljava/lang/Number;
 	public abstract fun getString (Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public fun isEmpty ()Z
 	public abstract fun toJSON ()Ljava/lang/String;
 	public abstract fun toMap ()Ljava/util/Map;
+}
+
+public final class kotbase/DictionaryInterface$DefaultImpls {
+	public static fun isEmpty (Lkotbase/DictionaryInterface;)Z
 }
 
 public final class kotbase/DictionaryInterfaceKt {
@@ -478,6 +489,7 @@ public class kotbase/Document : kotbase/internal/DelegatedClass, java/lang/Itera
 	public fun getString (Ljava/lang/String;)Ljava/lang/String;
 	public final fun getTimestamp ()J
 	public fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public fun isEmpty ()Z
 	public fun iterator ()Ljava/util/Iterator;
 	public fun toJSON ()Ljava/lang/String;
 	public fun toMap ()Ljava/util/Map;
@@ -968,6 +980,10 @@ public abstract interface class kotbase/MutableArrayInterface : kotbase/ArrayInt
 	public abstract fun setValue (ILjava/lang/Object;)Lkotbase/MutableArrayInterface;
 }
 
+public final class kotbase/MutableArrayInterface$DefaultImpls {
+	public static fun isEmpty (Lkotbase/MutableArrayInterface;)Z
+}
+
 public final class kotbase/MutableArrayInterfaceKt {
 	public static final fun get (Lkotbase/MutableArray;I)Lkotbase/MutableFragment;
 }
@@ -1033,6 +1049,10 @@ public abstract interface class kotbase/MutableDictionaryInterface : kotbase/Dic
 	public abstract fun setNumber (Ljava/lang/String;Ljava/lang/Number;)Lkotbase/MutableDictionaryInterface;
 	public abstract fun setString (Ljava/lang/String;Ljava/lang/String;)Lkotbase/MutableDictionaryInterface;
 	public abstract fun setValue (Ljava/lang/String;Ljava/lang/Object;)Lkotbase/MutableDictionaryInterface;
+}
+
+public final class kotbase/MutableDictionaryInterface$DefaultImpls {
+	public static fun isEmpty (Lkotbase/MutableDictionaryInterface;)Z
 }
 
 public final class kotbase/MutableDictionaryInterfaceKt {
@@ -1352,6 +1372,7 @@ public final class kotbase/Result : kotbase/internal/DelegatedClass, java/lang/I
 	public fun getString (Ljava/lang/String;)Ljava/lang/String;
 	public fun getValue (I)Ljava/lang/Object;
 	public fun getValue (Ljava/lang/String;)Ljava/lang/Object;
+	public fun isEmpty ()Z
 	public fun iterator ()Ljava/util/Iterator;
 	public fun toJSON ()Ljava/lang/String;
 	public fun toList ()Ljava/util/List;
@@ -1492,11 +1513,16 @@ public abstract class kotbase/internal/DelegatedClass {
 public final class kotbase/logging/ConsoleLogSink {
 	public fun <init> (Lcom/couchbase/lite/LogLevel;Ljava/util/Collection;)V
 	public fun <init> (Lcom/couchbase/lite/LogLevel;[Lkotbase/LogDomain;)V
+	public final fun getDomains ()Ljava/util/Set;
+	public final fun getLevel ()Lcom/couchbase/lite/LogLevel;
 }
 
 public final class kotbase/logging/CustomLogSink {
 	public fun <init> (Lcom/couchbase/lite/LogLevel;Ljava/util/Set;Lkotbase/logging/LogSink;)V
 	public fun <init> (Lcom/couchbase/lite/LogLevel;[Lkotbase/LogDomain;Lkotbase/logging/LogSink;)V
+	public final fun getDomains ()Ljava/util/Set;
+	public final fun getLevel ()Lcom/couchbase/lite/LogLevel;
+	public final fun getLogSink ()Lkotbase/logging/LogSink;
 }
 
 public final class kotbase/logging/FileLogSink {

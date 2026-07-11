@@ -22,9 +22,18 @@ import kotbase.LogLevel
  * A log sink that writes log messages the system console.
  */
 public class ConsoleLogSink
-public constructor(internal val level: LogLevel, domains: Collection<LogDomain>?) {
+public constructor(
+    /**
+     * The minimum log level of the log messages to be logged.
+     */
+    public val level: LogLevel,
+    domains: Collection<LogDomain>?
+) {
 
-    internal val domains = domains?.toSet().orEmpty().ifEmpty { LogDomain.ALL }
+    /**
+     * The set of log domains of the log messages to be logged.
+     */
+    public val domains: Set<LogDomain> = domains?.toSet().orEmpty().ifEmpty { LogDomain.ALL }
 
     public constructor(level: LogLevel, vararg domains: LogDomain) : this(level, domains.toSet())
 }

@@ -28,6 +28,9 @@ internal constructor(actual: CBLQueryResult) : DelegatedClass<CBLQueryResult>(ac
     actual override val count: Int
         get() = actual.count().toInt()
 
+    actual override val isEmpty: Boolean
+        get() = count == 0
+
     actual override fun getValue(index: Int): Any? {
         assertInBounds(index)
         return actual.valueAtIndex(index.convert())?.delegateIfNecessary()

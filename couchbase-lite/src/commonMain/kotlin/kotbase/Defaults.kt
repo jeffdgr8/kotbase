@@ -21,11 +21,6 @@ public object Defaults {
          * Full sync is off by default because the performance hit is seldom worth the benefit
          */
         public const val FULL_SYNC: Boolean = false
-
-        /**
-         * Memory mapped database files are enabled by default
-         */
-        public const val MMAP_ENABLED: Boolean = true
     }
 
     public object LogFile {

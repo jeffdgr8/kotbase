@@ -28,6 +28,12 @@ public interface ArrayInterface {
     public val count: Int
 
     /**
+     * Whether the array is empty: `count == 0`.
+     */
+    public val isEmpty: Boolean
+        get() = count == 0
+
+    /**
      * Gets value at the given index as an int.
      * Floating point values will be rounded. The value `true` is returned as 1, `false` as 0.
      * Returns 0 if the value doesn't exist or does not have a numeric value.
