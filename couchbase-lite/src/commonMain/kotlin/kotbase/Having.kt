@@ -36,12 +36,6 @@ public expect class Having : Query, OrderByRouter, LimitRouter {
 
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
 
-    @Deprecated(
-        "Use ListenerToken.remove()",
-        ReplaceWith("token.remove()")
-    )
-    override fun removeChangeListener(token: ListenerToken)
-
     override fun orderBy(vararg orderings: Ordering): OrderBy
 
     override fun limit(limit: Expression): Limit

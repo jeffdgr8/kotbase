@@ -19,5 +19,5 @@ public expect class CouchbaseLiteError : IllegalStateException {
 
     public constructor(msg: String)
 
-    public constructor(msg: String, e: Exception?)
+    public constructor(msg: String, e: Throwable?)
 }

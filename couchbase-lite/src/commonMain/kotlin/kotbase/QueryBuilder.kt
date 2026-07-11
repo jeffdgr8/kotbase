@@ -42,5 +42,6 @@ public expect object QueryBuilder {
      * @param database The database against which the query will be run.
      * @return the Query object
      */
+    @Throws(CouchbaseLiteException::class)
     public fun createQuery(query: String, database: Database): Query
 }

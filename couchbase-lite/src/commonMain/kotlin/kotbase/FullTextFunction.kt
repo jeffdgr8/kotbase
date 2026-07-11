@@ -53,16 +53,4 @@ public expect object FullTextFunction {
     )
     public fun rank(indexName: String): Expression
 
-    /**
-     * Creates a full-text expression with the given full-text index name and search text.
-     *
-     * @param indexName The full-text index name.
-     * @param query     The query string.
-     * @return The full-text match expression
-     */
-    @Deprecated(
-        "Use FullTextFunction.match(IndexExpression)",
-        ReplaceWith("FullTextFunction.match(Expression.fullTextIndex(indexName), query)")
-    )
-    public fun match(indexName: String, query: String): Expression
 }

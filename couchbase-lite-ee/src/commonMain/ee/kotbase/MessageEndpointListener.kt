@@ -78,14 +78,4 @@ public expect class MessageEndpointListener(config: MessageEndpointListenerConfi
      */
     public fun addChangeListener(scope: CoroutineScope, listener: MessageEndpointListenerChangeSuspendListener)
 
-    /**
-     * Remove a change listener.
-     *
-     * @param token identifier for the listener to be removed
-     */
-    @Deprecated(
-        "Use ListenerToken.remove()",
-        ReplaceWith("token.remove()")
-    )
-    public fun removeChangeListener(token: ListenerToken)
 }

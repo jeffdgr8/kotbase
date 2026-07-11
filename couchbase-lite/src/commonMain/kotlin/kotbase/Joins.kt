@@ -35,12 +35,6 @@ public expect class Joins : Query, WhereRouter, OrderByRouter, LimitRouter {
 
     override fun addChangeListener(scope: CoroutineScope, listener: QueryChangeSuspendListener)
 
-    @Deprecated(
-        "Use ListenerToken.remove()",
-        ReplaceWith("token.remove()")
-    )
-    override fun removeChangeListener(token: ListenerToken)
-
     override fun where(expression: Expression): Where
 
     override fun orderBy(vararg orderings: Ordering): OrderBy

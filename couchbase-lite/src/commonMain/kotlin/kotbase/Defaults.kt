@@ -33,12 +33,6 @@ public object Defaults {
          * Plaintext is not used, and instead binary encoding is used in log files
          */
         public const val USE_PLAINTEXT: Boolean = false
-        @Deprecated(
-            "Use USE_PLAINTEXT",
-            ReplaceWith("USE_PLAINTEXT")
-        )
-        public const val USE_PLAIN_TEXT: Boolean = USE_PLAINTEXT
-
         /**
          * 512 KiB for the size of a log file
          */
@@ -105,12 +99,6 @@ public object Defaults {
          * Max wait time between retry attempts in seconds
          */
         public const val MAX_ATTEMPTS_WAIT_TIME: Int = 300
-        @Deprecated(
-            "Use MAX_ATTEMPTS_WAIT_TIME",
-            ReplaceWith("MAX_ATTEMPTS_WAIT_TIME")
-        )
-        public const val MAX_ATTEMPT_WAIT_TIME: Int = MAX_ATTEMPTS_WAIT_TIME
-
         /**
          * Purge documents when a user loses access
          */

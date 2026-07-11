@@ -24,26 +24,6 @@ package kotbase
 public expect class URLEndpointListenerConfiguration {
 
     /**
-     * Create a listener configuration, for the specified database, with default values.
-     *
-     * @param database the database to which the listener is attached
-     */
-    @Deprecated(
-        "Use URLEndpointListenerConfiguration(Collections)",
-        ReplaceWith("URLEndpointListenerConfiguration(setOf(database.defaultCollection), networkInterface, port, disableTls, identity, authenticator, readOnly, enableDeltaSync)")
-    )
-    public constructor(
-        database: Database,
-        networkInterface: String? = null,
-        port: Int = Defaults.Listener.PORT,
-        disableTls: Boolean = Defaults.Listener.DISABLE_TLS,
-        identity: TLSIdentity? = null,
-        authenticator: ListenerAuthenticator? = null,
-        readOnly: Boolean = Defaults.Listener.READ_ONLY,
-        enableDeltaSync: Boolean = Defaults.Listener.ENABLE_DELTA_SYNC
-    )
-
-    /**
      * Create a URLEndpointListenerConfiguration with the passed properties. The set of passed Collections
      * must contain at least one collection and all of the collections it contains must belong
      * to the same scope and the same database, otherwise an InvalidArgumentException will be thrown.
@@ -76,12 +56,6 @@ public expect class URLEndpointListenerConfiguration {
      * @param config the configuration to duplicate
      */
     public constructor(config: URLEndpointListenerConfiguration)
-
-    /**
-     * The configured database.
-     */
-    @Deprecated("Use collections")
-    public val database: Database
 
     /**
      * Get the configured collections.

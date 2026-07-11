@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import com.couchbase.lite.generation
+import com.couchbase.lite.compareAge
 
 /**
  * Configuration for a Replicator
@@ -23,23 +23,13 @@ import com.couchbase.lite.generation
 public expect class ReplicatorConfiguration {
 
     /**
-     * Create a Replicator Configuration
+     * Creates a Replicator Configuration with a set of collection configurations and
+     * the target endpoint.
      *
-     * @param database the database to be synchronized
-     * @param target   the endpoint with which to synchronize it
-     */
-    @Deprecated(
-        "Use ReplicatorConfiguration(Endpoint)",
-        ReplaceWith("ReplicatorConfiguration(target).addCollection(database.defaultCollection, null)")
-    )
-    public constructor(database: Database, target: Endpoint)
-
-    /**
-     * Create a Replicator Configuration
-     *
+     * @param collections the collections with configurations to replicate
      * @param target the target endpoint
      */
-    public constructor(target: Endpoint)
+    public constructor(collections: kotlin.collections.Collection<CollectionConfiguration>, target: Endpoint)
 
     /**
      * Create a Replicator Configuration
@@ -47,43 +37,6 @@ public expect class ReplicatorConfiguration {
      * @param config the config to copy
      */
     public constructor(config: ReplicatorConfiguration)
-
-    /**
-     * Add a collection used for the replication with an optional collection configuration.
-     * If the collection has been added before, the previously added collection
-     * and its configuration if specified will be replaced.
-     *
-     * If a null configuration is specified, a default empty configuration will be applied.
-     *
-     * @param collection the collection
-     * @param config     its configuration
-     * @return this
-     */
-    public fun addCollection(collection: Collection, config: CollectionConfiguration? = null): ReplicatorConfiguration
-
-    /**
-     * Add multiple collections used for the replication with an optional shared collection configuration.
-     * If any of the collections have been added before, the previously added collections and their
-     * configuration if specified will be replaced. Adding an empty collection array is a no-op.
-     *
-     * If a null configuration is specified, a default empty configuration will be applied.
-     *
-     * @param collections a collection of Collections
-     * @param config      the configuration to be applied to all of the collections
-     * @return this
-     */
-    public fun addCollections(
-        collections: kotlin.collections.Collection<Collection>,
-        config: CollectionConfiguration? = null
-    ): ReplicatorConfiguration
-
-    /**
-     * Remove a collection from the replication.
-     *
-     * @param collection the collection to be removed
-     * @return this
-     */
-    public fun removeCollection(collection: Collection): ReplicatorConfiguration
 
     /**
      * Sets the replicator type indicating the direction of the replicator.
@@ -186,84 +139,14 @@ public expect class ReplicatorConfiguration {
     public fun setHeartbeat(heartbeat: Int): ReplicatorConfiguration
 
     /**
-     * A collection of document IDs identifying documents to be replicated.
-     * If non-empty, only documents with IDs in this collection will be pushed and/or pulled.
-     * Default is empty: do not filter documents.
-     *
-     * @param documentIDs The document IDs.
-     * @return this.
-     */
-    @Deprecated("Use CollectionConfiguration.setDocumentIDs")
-    public fun setDocumentIDs(documentIDs: List<String>?): ReplicatorConfiguration
-
-    /**
-     * Sets a collection of Sync Gateway channel names from which to pull Documents.
-     * If unset, all accessible channels will be pulled.
-     * Default is empty: pull from all accessible channels.
-     *
-     * Note: Channel specifications apply only to replications
-     * pulling from a SyncGateway and only the channels visible
-     * to the authenticated user. Channel specs are ignored:
-     *
-     *  * during a push replication.
-     *  * during peer-to-peer or database-to-database replication
-     *  * when the specified channel is not accessible to the user
-     *
-     * @param channels The Sync Gateway channel names.
-     * @return this.
-     */
-    @Deprecated("Use CollectionConfiguration.setChannels")
-    public fun setChannels(channels: List<String>?): ReplicatorConfiguration
-
-    /**
-     * Sets the conflict resolver.
-     * Default is `ReplicatorConfiguration.DEFAULT_CONFLICT_RESOLVER`
-     *
-     * @param conflictResolver A conflict resolver.
-     * @return this.
-     */
-    @Deprecated("Use CollectionConfiguration.setConflictResolver")
-    public fun setConflictResolver(conflictResolver: ConflictResolver?): ReplicatorConfiguration
-
-    /**
-     * Sets a filter object for validating whether the documents can be pulled from the
-     * remote endpoint. Only documents for which the object returns true are replicated.
-     * Default is no filter.
-     *
-     * @param pullFilter The filter to filter the document to be pulled.
-     * @return this.
-     */
-    @Deprecated("Use CollectionConfiguration.setPullFilter")
-    public fun setPullFilter(pullFilter: ReplicationFilter?): ReplicatorConfiguration
-
-    /**
-     * Sets a filter object for validating whether the documents can be pushed
-     * to the remote endpoint.
-     * Default is no filter.
-     *
-     * @param pushFilter The filter to filter the document to be pushed.
-     * @return this.
-     */
-    @Deprecated("Use CollectionConfiguration.setPushFilter")
-    public fun setPushFilter(pushFilter: ReplicationFilter?): ReplicatorConfiguration
-
-    /**
      * The replication target to replicate with.
      */
     public val target: Endpoint
 
     /**
-     * Get the CollectionConfiguration for the passed Collection.
-     *
-     * @param collection a collection whose configuration is sought.
-     * @return the collections configuration
+     * A copy of the collection configurations associated with this replicator configuration.
      */
-    public fun getCollectionConfiguration(collection: Collection): CollectionConfiguration?
-
-    /**
-     * The list of collections in the replicator configuration
-     */
-    public val collections: Set<Collection>
+    public val collections: Set<CollectionConfiguration>
 
     /**
      * Replicator type indicating the direction of the replicator.
@@ -330,55 +213,6 @@ public expect class ReplicatorConfiguration {
      */
     public var heartbeat: Int
 
-    /**
-     * The local database to replicate with the replication target.
-     */
-    @Deprecated("Use CollectionConfiguration.collections")
-    public val database: Database
-
-    /**
-     * A collection of document IDs to filter: if not null, only documents with these IDs will be pushed
-     * and/or pulled.
-     */
-    @Deprecated("Use CollectionConfiguration.documentIDs")
-    public var documentIDs: List<String>?
-
-    /**
-     * Gets the collection of Sync Gateway channel names from which to pull documents.
-     * If unset, all accessible channels will be pulled.
-     * Default is empty: pull from all accessible channels.
-     *
-     * Note:  Channel specifications apply only to replications
-     * pulling from a SyncGateway and only the channels visible
-     * to the authenticated user.  Channel specs are ignored:
-     *
-     *  * during a push replication.
-     *  * during peer-to-peer or database-to-database replication
-     *  * when the specified channel is not accessible to the user
-     */
-    @Deprecated("Use CollectionConfiguration.channels")
-    public var channels: List<String>?
-
-    /**
-     * The conflict resolver.
-     */
-    @Deprecated("Use CollectionConfiguration.conflictResolver")
-    public var conflictResolver: ConflictResolver?
-
-    /**
-     * The filter used to determine whether a document will be pulled
-     * from the remote endpoint.
-     */
-    @Deprecated("Use CollectionConfiguration.pullFilter")
-    public var pullFilter: ReplicationFilter?
-
-    /**
-     * The filter used to determine whether a document will be pushed
-     * to the remote endpoint.
-     */
-    @Deprecated("Use CollectionConfiguration.pushFilter")
-    public var pushFilter: ReplicationFilter?
-
     public companion object
 }
 
@@ -404,19 +238,8 @@ private val defaultConflictResolver: ConflictResolver by lazy {
         val remoteDoc = conflict.remoteDocument
         if (localDoc == null || remoteDoc == null) return@cr null
 
-        // if one of the docs is newer, return it
-        val localGen = localDoc.generation
-        val remoteGen = remoteDoc.generation
-        if (localGen > remoteGen) {
-            return@cr localDoc
-        } else if (localGen < remoteGen) {
-            return@cr remoteDoc
-        }
-
-        // otherwise, choose one randomly, but deterministically.
-        val localRevId = localDoc.revisionID ?: return@cr remoteDoc
-        val remoteRevId = remoteDoc.revisionID
-        return@cr if (remoteRevId == null || localRevId < remoteRevId) remoteDoc else localDoc
+        // return the newer of the two docs.
+        if (localDoc.compareAge(remoteDoc) > 0) localDoc else remoteDoc
     }
 }
 

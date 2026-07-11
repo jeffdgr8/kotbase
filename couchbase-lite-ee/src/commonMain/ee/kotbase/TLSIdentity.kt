@@ -50,7 +50,7 @@ public expect class TLSIdentity {
          * The identity will be stored in the secure storage using the specified alias
          * and can be recovered using that alias, after this method returns.
          *
-         * @param isServer   true if this is a server certificate
+         * @param usage      certificate usage: server or client
          * @param attributes certificate attributes
          * @param expiration expiration date
          * @param alias      alias used to identify the key/certificate entry, in the keystore
@@ -59,7 +59,7 @@ public expect class TLSIdentity {
          */
         @Throws(CouchbaseLiteException::class)
         public fun createIdentity(
-            isServer: Boolean,
+            usage: Set<KeyUsage>,
             attributes: Map<String, String>,
             expiration: Instant?,
             alias: String

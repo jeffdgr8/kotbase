@@ -26,8 +26,4 @@ internal constructor(
 
     public actual val documentID: String
         get() = actual.documentID!!
-
-    @Deprecated("Use DocumentChange.collection")
-    public actual val database: Database
-        get() = collection.database
 }

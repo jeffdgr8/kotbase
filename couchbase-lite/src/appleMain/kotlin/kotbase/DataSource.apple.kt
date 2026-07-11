@@ -47,13 +47,6 @@ private constructor(override var actual: CBLQueryDataSource) : DelegatedClass<CB
 
     public actual companion object {
 
-        @Deprecated(
-            "Use DataSource.collection(Collection)",
-            ReplaceWith("collection(database.defaultCollection)")
-        )
-        public actual fun database(database: Database): As =
-            As(database = database.actual)
-
         public actual fun collection(collection: Collection): As =
             As(collection = collection.actual)
     }

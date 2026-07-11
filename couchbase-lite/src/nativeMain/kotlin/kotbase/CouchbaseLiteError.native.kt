@@ -15,7 +15,7 @@
  */
 package kotbase
 
-public actual class CouchbaseLiteError actual constructor(msg: String, e: Exception?) : IllegalStateException(msg, e) {
+public actual class CouchbaseLiteError actual constructor(msg: String, e: Throwable?) : IllegalStateException(msg, e) {
 
     public actual constructor(msg: String) : this(msg, null)
 }

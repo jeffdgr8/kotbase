@@ -46,11 +46,4 @@ actual constructor(config: MessageEndpointListenerConfiguration) {
         messageEndpointUnsupported()
     }
 
-    @Deprecated(
-        "Use ListenerToken.remove()",
-        ReplaceWith("token.remove()")
-    )
-    public actual fun removeChangeListener(token: ListenerToken) {
-        token.remove()
-    }
 }
