@@ -71,6 +71,28 @@ internal constructor(actual: CPointer<CBLTLSIdentity>) {
         public actual fun deleteIdentity(alias: String) {
             deleteTLSIdentity(alias)
         }
+
+        /**
+         * Create an anonymous, self-signed TLS identity with the given certificate
+         * attributes. The identity is not persisted and lives only as long as the
+         * returned object.
+         *
+         * This is the only way to construct a [TLSIdentity] on Linux, which has no
+         * standard secure key storage for persisted, alias-based identities.
+         *
+         * @param usage      certificate usage: server or client
+         * @param attributes certificate attributes; the Common Name
+         * ([CERT_ATTRIBUTE_COMMON_NAME]) attribute is required
+         * @param expiration expiration date: default is one year
+         * @return the new identity
+         * @throws CouchbaseLiteException on failure to create the identity
+         */
+        @Throws(CouchbaseLiteException::class)
+        public fun createAnonymousIdentity(
+            usage: Set<KeyUsage>,
+            attributes: Map<String, String>,
+            expiration: Instant? = null
+        ): TLSIdentity = createTLSIdentity(usage, attributes, expiration, null)
     }
 }
 

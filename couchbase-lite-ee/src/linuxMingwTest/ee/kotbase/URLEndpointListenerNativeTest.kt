@@ -34,7 +34,7 @@ class URLEndpointListenerNativeTest : BaseDbTest() {
     private fun createAnonymousIdentity(
         usage: KeyUsage = KeyUsage.SERVER_AUTH,
         attributes: Map<String, String> = serverCertAttrs
-    ): TLSIdentity = createTLSIdentity(setOf(usage), attributes, null, null)
+    ): TLSIdentity = TLSIdentity.createAnonymousIdentity(setOf(usage), attributes)
 
     // Configuration
 
@@ -239,11 +239,10 @@ class URLEndpointListenerNativeTest : BaseDbTest() {
     @Test
     fun testAnonymousIdentityCertsAndExpiration() {
         val expiration = Clock.System.now() + 300.seconds
-        val identity = createTLSIdentity(
+        val identity = TLSIdentity.createAnonymousIdentity(
             setOf(KeyUsage.SERVER_AUTH),
             serverCertAttrs,
-            expiration,
-            null
+            expiration
         )
         assertEquals(1, identity.certs.size)
 
@@ -266,7 +265,7 @@ class URLEndpointListenerNativeTest : BaseDbTest() {
     @Test
     fun testCreateIdentityRequiresCommonName() {
         assertFailsWith<IllegalArgumentException> {
-            createTLSIdentity(setOf(KeyUsage.SERVER_AUTH), emptyMap(), null, null)
+            TLSIdentity.createAnonymousIdentity(setOf(KeyUsage.SERVER_AUTH), emptyMap())
         }
     }
 
