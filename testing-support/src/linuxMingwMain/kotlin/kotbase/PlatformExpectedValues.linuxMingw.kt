@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2026 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION")
-
 package kotbase
 
-import kotbase.internal.DelegatedClass
-import com.couchbase.lite.DatabaseChange as CBLDatabaseChange
-
-@Deprecated(
-    "Use CollectionChange",
-    ReplaceWith("CollectionChange")
-)
-public actual class DatabaseChange
-internal constructor(
-    actual: CBLDatabaseChange,
-    public actual val database: Database
-) : DelegatedClass<CBLDatabaseChange>(actual) {
-
-    public actual val documentIDs: List<String>
-        get() = actual.documentIDs
-}
+actual fun intWhenLongOutOfRange(value: Long): Int = value.toInt()

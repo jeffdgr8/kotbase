@@ -1,7 +1,7 @@
 [versions]
 couchbase-lite-android = "4.1.0"
 couchbase-lite-java = "4.1.0"
-couchbase-lite-objc = "3.3.0"
+couchbase-lite-objc = "4.1.0"
 couchbase-lite-c = "3.2.4"
 couchbase-lite-vector-search = "2.0.0"
 dokka = "2.2.0"

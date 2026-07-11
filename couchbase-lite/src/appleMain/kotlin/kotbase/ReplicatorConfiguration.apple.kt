@@ -16,7 +16,6 @@
 package kotbase
 
 import cocoapods.CouchbaseLite.CBLReplicatorConfiguration
-import cocoapods.CouchbaseLite.isClosed
 import kotbase.ext.toByteArray
 import kotbase.ext.toSecCertificate
 import kotbase.internal.DelegatedClass
@@ -27,81 +26,27 @@ public actual class ReplicatorConfiguration
 private constructor(
     actual: CBLReplicatorConfiguration,
     public actual val target: Endpoint,
-    private var db: Database? = null,
-    private val collectionConfigurations: MutableMap<Collection, CollectionConfiguration> = mutableMapOf(),
+    private val collectionConfigurations: MutableMap<Collection, CollectionConfiguration>,
     authenticator: Authenticator? = null
 ) : DelegatedClass<CBLReplicatorConfiguration>(actual) {
 
-    @Deprecated(
-        "Use ReplicatorConfiguration(Endpoint)",
-        ReplaceWith("ReplicatorConfiguration(target).addCollection(database.defaultCollection, null)")
-    )
-    public actual constructor(database: Database, target: Endpoint) : this(
-        CBLReplicatorConfiguration(database.actual, target.actual),
+    public actual constructor(
+        collections: kotlin.collections.Collection<CollectionConfiguration>,
+        target: Endpoint
+    ) : this(
+        // CBLReplicatorConfiguration throws an uncatchable NSInvalidArgumentException
+        // for collections from different database instances: validate first
+        CBLReplicatorConfiguration(collections.validated().map { it.actual }, target.actual),
         target,
-        database
-    ) {
-        addCollection(database.defaultCollection, null)
-    }
-
-    public actual constructor(target: Endpoint) : this(
-        CBLReplicatorConfiguration(target.actual),
-        target
+        collections.associateByTo(mutableMapOf()) { it.collection }
     )
 
     public actual constructor(config: ReplicatorConfiguration) : this(
         CBLReplicatorConfiguration(config.actual),
         config.target,
-        config.db,
         config.collectionConfigurations.toMutableMap(),
         config.authenticator
     )
-
-    private fun checkCollection(collection: Collection) {
-        val database = collectionConfigurations.keys.firstOrNull()?.database ?: db ?: collection.database
-        require(database == collection.database) {
-            "Cannot add collection $collection because it does not belong to database ${database.name}."
-        }
-        require(!database.actual.isClosed()) {
-            "Cannot add collection $collection because database ${collection.database} is closed."
-        }
-        try {
-            requireNotNull(database.getCollection(collection.name, collection.scope.name)) {
-                "Cannot add collection $collection because it has been deleted."
-            }
-        } catch (e: CouchbaseLiteException) {
-            // Cause isn't logged on native platforms...
-            // https://youtrack.jetbrains.com/issue/KT-62794
-            println("Cause:")
-            println(e.message)
-            println(e.stackTraceToString())
-            throw IllegalArgumentException("Failed getting collection $collection", e)
-        }
-    }
-
-    public actual fun addCollection(collection: Collection, config: CollectionConfiguration?): ReplicatorConfiguration {
-        checkCollection(collection)
-        val configNotNull = config?.let(::CollectionConfiguration) ?: CollectionConfiguration()
-        collectionConfigurations[collection] = configNotNull
-        actual.addCollection(collection.actual, configNotNull.actual)
-        return this
-    }
-
-    public actual fun addCollections(
-        collections: kotlin.collections.Collection<Collection>,
-        config: CollectionConfiguration?
-    ): ReplicatorConfiguration {
-        collections.forEach { collection ->
-            addCollection(collection, config)
-        }
-        return this
-    }
-
-    public actual fun removeCollection(collection: Collection): ReplicatorConfiguration {
-        actual.removeCollection(collection.actual)
-        collectionConfigurations.remove(collection)
-        return this
-    }
 
     public actual fun setType(type: ReplicatorType): ReplicatorConfiguration {
         this@ReplicatorConfiguration.type = type
@@ -153,46 +98,8 @@ private constructor(
         return this
     }
 
-    @Suppress("DEPRECATION")
-    @Deprecated("Use CollectionConfiguration.setDocumentIDs")
-    public actual fun setDocumentIDs(documentIDs: List<String>?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.documentIDs = documentIDs
-        return this
-    }
-
-    @Suppress("DEPRECATION")
-    @Deprecated("Use CollectionConfiguration.setChannels")
-    public actual fun setChannels(channels: List<String>?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.channels = channels
-        return this
-    }
-
-    @Suppress("DEPRECATION")
-    @Deprecated("Use CollectionConfiguration.setConflictResolver")
-    public actual fun setConflictResolver(conflictResolver: ConflictResolver?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.conflictResolver = conflictResolver
-        return this
-    }
-
-    @Suppress("DEPRECATION")
-    @Deprecated("Use CollectionConfiguration.setPullFilter")
-    public actual fun setPullFilter(pullFilter: ReplicationFilter?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.pullFilter = pullFilter
-        return this
-    }
-
-    @Suppress("DEPRECATION")
-    @Deprecated("Use CollectionConfiguration.setPushFilter")
-    public actual fun setPushFilter(pushFilter: ReplicationFilter?): ReplicatorConfiguration {
-        this@ReplicatorConfiguration.pushFilter = pushFilter
-        return this
-    }
-
-    public actual fun getCollectionConfiguration(collection: Collection): CollectionConfiguration? =
-        collectionConfigurations[collection]?.let(::CollectionConfiguration)
-
-    public actual val collections: Set<Collection>
-        get() = collectionConfigurations.keys
+    public actual val collections: Set<CollectionConfiguration>
+        get() = collectionConfigurations.values.toSet()
 
     public actual var type: ReplicatorType
         get() = ReplicatorType.from(actual.replicatorType)
@@ -260,74 +167,6 @@ private constructor(
             actual.heartbeat = value.toDouble()
         }
 
-    @Deprecated("Use CollectionConfiguration.collections")
-    public actual val database: Database
-        get() {
-            return collectionConfigurations.keys.firstOrNull()?.database
-                ?: db
-                ?: throw CouchbaseLiteError("No database or collections provided for replication configuration")
-        }
-
-    @Deprecated("Use CollectionConfiguration.documentIDs")
-    public actual var documentIDs: List<String>?
-        get() = getDefaultCollectionConfiguration().documentIDs?.toList()
-        set(value) {
-            updateDefaultConfig {
-                documentIDs = value
-            }
-        }
-
-    @Deprecated("Use CollectionConfiguration.channels")
-    public actual var channels: List<String>?
-        get() = getDefaultCollectionConfiguration().channels?.toList()
-        set(value) {
-            updateDefaultConfig {
-                channels = value
-            }
-        }
-
-    @Deprecated("Use CollectionConfiguration.conflictResolver")
-    public actual var conflictResolver: ConflictResolver?
-        get() = getDefaultCollectionConfiguration().conflictResolver
-        set(value) {
-            updateDefaultConfig {
-                conflictResolver = value
-            }
-        }
-
-    @Deprecated("Use CollectionConfiguration.pullFilter")
-    public actual var pullFilter: ReplicationFilter?
-        get() = getDefaultCollectionConfiguration().pullFilter
-        set(value) {
-            updateDefaultConfig {
-                pullFilter = value
-            }
-        }
-
-    @Deprecated("Use CollectionConfiguration.pushFilter")
-    public actual var pushFilter: ReplicationFilter?
-        get() = getDefaultCollectionConfiguration().pushFilter
-        set(value) {
-            updateDefaultConfig {
-                pushFilter = value
-            }
-        }
-
-    @Suppress("DEPRECATION")
-    private fun getDefaultCollectionConfiguration(): CollectionConfiguration {
-        return requireNotNull(collectionConfigurations[database.defaultCollection]) {
-            "Cannot use legacy parameters when the default collection has no configuration"
-        }
-    }
-
-    @Suppress("DEPRECATION")
-    private fun updateDefaultConfig(updater: CollectionConfiguration.() -> Unit) {
-        val config = getDefaultCollectionConfiguration()
-        val updated = CollectionConfiguration(config)
-        updated.updater()
-        addCollection(database.defaultCollection, updated)
-    }
-
     override fun toString(): String {
         return buildString {
             append("ReplicatorConfig{(")
@@ -383,3 +222,13 @@ public var ReplicatorConfiguration.pinnedServerSecCertificate: SecCertificateRef
     set(value) {
         actual.pinnedServerCertificate = value
     }
+
+private fun kotlin.collections.Collection<CollectionConfiguration>.validated(): kotlin.collections.Collection<CollectionConfiguration> {
+    val db = firstOrNull()?.collection?.database?.actual
+    forEach { config ->
+        require(config.collection.database.actual == db) {
+            "Cannot create a configuration for collections from different databases"
+        }
+    }
+    return this
+}

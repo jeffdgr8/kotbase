@@ -25,7 +25,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
-import kotlin.experimental.ExperimentalObjCRefinement
 
 public actual class Replicator
 internal constructor(
@@ -41,9 +40,8 @@ internal constructor(
 
     internal actual constructor(config: ReplicatorConfiguration, test: Boolean) : this(config)
 
-    @Suppress("DEPRECATION")
     public actual fun start() {
-        config.database.mustBeOpen()
+        sourceDatabase.mustBeOpen()
         actual.start()
     }
 
@@ -61,72 +59,35 @@ internal constructor(
     public actual val status: ReplicatorStatus
         get() = ReplicatorStatus(actual.status)
 
+    public actual val correlationId: String?
+        get() = actual.correlationID
+
+    private val sourceDatabase: Database
+        get() = _config.collections.first().collection.database
+
     public actual val serverCertificates: List<ByteArray>?
         get() = actual.serverCertificate?.toByteArray()?.let { listOf(it) }
 
-    @OptIn(ExperimentalObjCRefinement::class)
-    @HiddenFromObjC
-    @Deprecated(
-        "Use getPendingDocumentIds(Collection)",
-        ReplaceWith("getPendingDocumentIds(config.database.defaultCollection)")
-    )
-    @Suppress("DEPRECATION", "ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT") // https://youtrack.jetbrains.com/issue/KT-63047
-    //@get:Throws(CouchbaseLiteException::class)
-    public actual val pendingDocumentIds: Set<String>
-        get() {
-            config.database.mustBeOpen()
-            return wrapCBLError { error ->
-                @Suppress("UNCHECKED_CAST")
-                actual.pendingDocumentIDs(error) as Set<String>
-            }
-        }
-
-    /**
-     * Get a best effort set of document IDs in the default collection, that are still pending replication.
-     */
-    // For Objective-C/Swift throws
-    @Suppress("DEPRECATION")
-    @Deprecated(
-        "Use getPendingDocumentIds(Collection)",
-        ReplaceWith("getPendingDocumentIds(config.database.defaultCollection())")
-    )
-    @Throws(CouchbaseLiteException::class)
-    public fun pendingDocumentIds(): Set<String> = pendingDocumentIds
-
-    @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
     public actual fun getPendingDocumentIds(collection: Collection): Set<String> {
-        config.database.mustBeOpen()
+        sourceDatabase.mustBeOpen()
         return wrapCBLError { error ->
             @Suppress("UNCHECKED_CAST")
             actual.pendingDocumentIDsForCollection(collection.actual, error) as Set<String>
         }
     }
 
-    @Deprecated(
-        "Use isDocumentPending(String, Collection)",
-        ReplaceWith("isDocumentPending(docId, config.database.defaultCollection)")
-    )
-    @Throws(CouchbaseLiteException::class)
-    public actual fun isDocumentPending(docId: String): Boolean {
-        return wrapCBLError { error ->
-            actual.isDocumentPending(docId, error)
-        }
-    }
-
-    @Suppress("DEPRECATION")
     @Throws(CouchbaseLiteException::class)
     public actual fun isDocumentPending(docId: String, collection: Collection): Boolean {
-        config.database.mustBeOpen()
+        sourceDatabase.mustBeOpen()
         return wrapCBLError { error ->
             actual.isDocumentPending(docId, collection.actual, error)
         }
     }
 
     public actual fun addChangeListener(listener: ReplicatorChangeListener): ListenerToken {
-        return ReplicatorListenerToken(
-            actual.addChangeListener(listener.convert(this)),
-            actual
+        return DelegatedListenerToken(
+            actual.addChangeListener(listener.convert(this))
         )
     }
 
@@ -139,7 +100,7 @@ internal constructor(
             context.dispatcher?.asDispatchQueue(),
             listener.convert(this, scope)
         )
-        return SuspendReplicatorListenerToken(scope, token, actual)
+        return SuspendListenerToken(scope, token)
     }
 
     public actual fun addChangeListener(scope: CoroutineScope, listener: ReplicatorChangeSuspendListener) {
@@ -153,9 +114,8 @@ internal constructor(
     }
 
     public actual fun addDocumentReplicationListener(listener: DocumentReplicationListener): ListenerToken {
-        return ReplicatorListenerToken(
-            actual.addDocumentReplicationListener(listener.convert(this)),
-            actual
+        return DelegatedListenerToken(
+            actual.addDocumentReplicationListener(listener.convert(this))
         )
     }
 
@@ -168,7 +128,7 @@ internal constructor(
             context.dispatcher?.asDispatchQueue(),
             listener.convert(this, scope)
         )
-        return SuspendReplicatorListenerToken(scope, token, actual)
+        return SuspendListenerToken(scope, token)
     }
 
     public actual fun addDocumentReplicationListener(scope: CoroutineScope, listener: DocumentReplicationSuspendListener) {

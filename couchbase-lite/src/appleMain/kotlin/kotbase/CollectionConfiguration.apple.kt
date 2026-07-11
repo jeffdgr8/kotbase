@@ -21,33 +21,26 @@ import kotbase.internal.DelegatedClass
 public actual class CollectionConfiguration
 internal constructor(
     actual: CBLCollectionConfiguration,
+    public actual val collection: Collection,
     pullFilter: ReplicationFilter? = null,
     pushFilter: ReplicationFilter? = null,
     conflictResolver: ConflictResolver? = null
 ) : DelegatedClass<CBLCollectionConfiguration>(actual) {
 
-    public actual constructor(
-        channels: List<String>?,
-        documentIDs: List<String>?,
-        pullFilter: ReplicationFilter?,
-        pushFilter: ReplicationFilter?,
-        conflictResolver: ConflictResolver?
-    ) : this(
-        CBLCollectionConfiguration().apply {
-            this.channels = channels
-            this.documentIDs = documentIDs
-            this.pullFilter = pullFilter?.convert()
-            this.pushFilter = pushFilter?.convert()
-            this.conflictResolver = conflictResolver?.convert()
-        },
-        pullFilter,
-        pushFilter,
-        conflictResolver
+    public actual constructor(collection: Collection) : this(
+        CBLCollectionConfiguration(collection.actual),
+        collection
     )
 
     internal constructor(config: CollectionConfiguration) : this(
-        config.channels?.toList(),
-        config.documentIDs?.toList(),
+        CBLCollectionConfiguration(config.collection.actual).apply {
+            this.channels = config.channels
+            this.documentIDs = config.documentIDs
+            this.pullFilter = config.pullFilter?.convert()
+            this.pushFilter = config.pushFilter?.convert()
+            this.conflictResolver = config.conflictResolver?.convert()
+        },
+        config.collection,
         config.pullFilter,
         config.pushFilter,
         config.conflictResolver
@@ -109,4 +102,12 @@ internal constructor(
             field = value
             actual.setPushFilter(value?.convert())
         }
+
+    public actual companion object {
+
+        public actual fun fromCollections(
+            collections: kotlin.collections.Collection<Collection>
+        ): Set<CollectionConfiguration> =
+            collections.map { CollectionConfiguration(it) }.toSet()
+    }
 }

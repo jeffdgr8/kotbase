@@ -57,7 +57,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     ) = runBlocking {
         val mutex1 = Mutex(true)
         val mutex2 = Mutex(true)
-        val count = listener.config.database.defaultCollection.count
+        val count = listener.config.collections.first().count
 
         // open DBs
         Database.delete("db1")
@@ -98,7 +98,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         )
         val changeListener = { change: ReplicatorChange ->
             if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
-                if (change.replicator.config.database.name == "db1") {
+                if (change.replicator.config.collections.first().collection.database.name == "db1") {
                     mutex1.unlock()
                 } else {
                     mutex2.unlock()
@@ -115,7 +115,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // pushAndPull might cause race, so only checking push
         if (type == ReplicatorType.PUSH) {
-            assertEquals(count + 2, listener.config.database.defaultCollection.count)
+            assertEquals(count + 2, listener.config.collections.first().count)
         }
 
         // pushAndPull might cause race, so only checking pull
@@ -124,8 +124,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             assertEquals(count + 1, db2.defaultCollection.count) // existing docs + pulls one doc from db#1
         }
 
-        repl1.removeChangeListener(token1)
-        repl2.removeChangeListener(token2)
+        token1.remove()
+        token2.remove()
 
         db1.close()
         db2.close()
@@ -165,13 +165,13 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             if (change.status.activityLevel == ReplicatorActivityLevel.IDLE
                 && change.status.progress.completed == change.status.progress.total
             ) {
-                if (change.replicator.config.database.name == "db2") {
+                if (change.replicator.config.collections.first().collection.database.name == "db2") {
                     idleMutex2.unlock()
                 } else {
                     idleMutex1.unlock()
                 }
             } else if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
-                if (change.replicator.config.database.name == "db2") {
+                if (change.replicator.config.collections.first().collection.database.name == "db2") {
                     stopMutex2.unlock()
                 } else {
                     stopMutex1.unlock()
@@ -197,8 +197,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         // TODO: FIXME
         assertTrue(stopMutex1.lockWithTimeout(10.seconds))
         assertTrue(stopMutex2.lockWithTimeout(10.seconds))
-        repl1.removeChangeListener(token1)
-        repl2.removeChangeListener(token2)
+        token1.remove()
+        token2.remove()
         stopListener()
     }
 
@@ -208,7 +208,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val idleMutex = Mutex(true)
         val stopMutex = Mutex(true)
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         val listener1 = URLEndpointListener(config)
         val listener2 = URLEndpointListener(config)
 
@@ -249,7 +249,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertTrue(stopMutex.lockWithTimeout(5.seconds))
 
         // cleanup
-        repl1.removeChangeListener(token1)
+        token1.remove()
         stopListener(listener1)
         stopListener(listener2)
     }
@@ -260,7 +260,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testPort() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.port = wsPort
         listener = URLEndpointListener(config)
         assertNull(listener!!.port)
@@ -277,7 +277,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testEmptyPort() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         listener = URLEndpointListener(config)
         assertNull(listener!!.port)
 
@@ -295,7 +295,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         startListener()
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.port = listener!!.port
         val listener2 = URLEndpointListener(config)
 
@@ -308,7 +308,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testURLs() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.port = wsPort
         listener = URLEndpointListener(config)
         assertTrue(listener!!.urls.isEmpty())
@@ -328,7 +328,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val doc = MutableDocument("doc-1")
         targetDatabase.defaultCollection.save(doc)
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         val listener = URLEndpointListener(config)
         assertNull(listener.tlsIdentity)
         listener.start()
@@ -343,7 +343,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         // Different pinned cert
         TLSIdentity.deleteIdentity("dummy")
         val tlsID = TLSIdentity.createIdentity(
-            false,
+            setOf(KeyUsage.CLIENT_AUTH),
             mapOf(kCBLCertAttrCommonName to "client"),
             null,
             "dummy"
@@ -371,7 +371,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         targetDatabase.defaultCollection.save(doc)
 
         val tls = createTLSIdentity()
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.tlsIdentity = tls
         val listener = URLEndpointListener(config)
         assertNull(listener.tlsIdentity)
@@ -386,7 +386,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         // Different pinned cert
         TLSIdentity.deleteIdentity("dummy")
         val tlsID = TLSIdentity.createIdentity(
-            false,
+            setOf(KeyUsage.CLIENT_AUTH),
             mapOf(kCBLCertAttrCommonName to "client"),
             null,
             "dummy"
@@ -615,7 +615,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         val replicatorStop = Mutex(true)
         val pullFilterBusy = Mutex(true)
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.port = wsPort
         config.isTlsDisabled = true
         listener = URLEndpointListener(config)
@@ -632,16 +632,17 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         var maxConnectionCount = 0
         var maxActiveCount = 0
-        val rConfig = ReplicatorConfiguration(testDatabase, listener!!.localURLEndpoint)
-        rConfig.type = ReplicatorType.PULL
-        rConfig.isContinuous = false
-        rConfig.pullFilter = { _, _ ->
+        val colConfig = CollectionConfiguration(testDatabase.defaultCollection)
+        colConfig.pullFilter = { _, _ ->
             val s = listener!!.status!!
             maxConnectionCount = max(s.connectionCount, maxConnectionCount)
             maxActiveCount = max(s.activeConnectionCount, maxActiveCount)
             pullFilterBusy.unlock()
             true
         }
+        val rConfig = ReplicatorConfiguration(listOf(colConfig), listener!!.localURLEndpoint)
+        rConfig.type = ReplicatorType.PULL
+        rConfig.isContinuous = false
 
         val repl = Replicator(rConfig)
         val token = repl.addChangeListener { change ->
@@ -653,7 +654,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         repl.start()
         assertTrue(pullFilterBusy.lockWithTimeout(5.seconds))
         assertTrue(replicatorStop.lockWithTimeout(5.seconds))
-        repl.removeChangeListener(token)
+        token.remove()
 
         assertEquals(1, maxConnectionCount)
         assertEquals(1, maxActiveCount)
@@ -668,7 +669,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testMultipleListenersOnSameDatabase() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         val listener1 = URLEndpointListener(config)
         val listener2 = URLEndpointListener(config)
 
@@ -726,7 +727,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             }
 
             if (change.status.activityLevel == ReplicatorActivityLevel.STOPPED) {
-                if (change.replicator.config.database.name == "db2") {
+                if (change.replicator.config.collections.first().collection.database.name == "db2") {
                     mutex2.unlock()
                 } else {
                     mutex1.unlock()
@@ -746,8 +747,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertEquals(3, testDatabase.defaultCollection.count)
         assertEquals(3, db2.defaultCollection.count)
 
-        repl1.removeChangeListener(token1)
-        repl2.removeChangeListener(token2)
+        token1.remove()
+        token2.remove()
 
         db2.close()
         stopListener()
@@ -787,7 +788,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
             // separate replicator instance
             val target = URLEndpoint(url)
-            val rConfig = ReplicatorConfiguration(db, target)
+            val rConfig = ReplicatorConfiguration(listOf(CollectionConfiguration(db.defaultCollection)), target)
             rConfig.pinnedServerCertificate = listener?.tlsIdentity?.certs?.get(0)
             rConfig.run()
 
@@ -797,7 +798,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         assertEquals(targetDatabase.defaultCollection.count, notLinkLocal.size.toLong())
 
-        val q = QueryBuilder.select(SelectResult.all()).from(DataSource.database(targetDatabase))
+        val q = QueryBuilder.select(SelectResult.all()).from(DataSource.collection(targetDatabase.defaultCollection))
         val rs = q.execute()
         val result = mutableListOf<String>()
         for (res in rs.allResults()) {
@@ -829,7 +830,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     fun testMultipleReplicatorsToReadOnlyListener() {
         if (!keyChainAccessAllowed) return
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.isReadOnly = true
         startListener(config)
 
@@ -849,7 +850,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val doc1 = MutableDocument()
         testDatabase.defaultCollection.save(doc1)
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.isReadOnly = true
         startListener(config)
 
@@ -1071,7 +1072,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val identity = TLSIdentity.importIdentity(data, "123".toCharArray(), serverCertLabel)
         assertEquals(2, identity.certs.size)
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.tlsIdentity = identity
 
         try {
@@ -1198,7 +1199,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val identity = TLSIdentity.importIdentity(data, "123".toCharArray(), serverCertLabel)
         assertEquals(2, identity.certs.size)
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.tlsIdentity = identity
 
         try {
@@ -1235,7 +1236,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val identity = TLSIdentity.importIdentity(data, "123".toCharArray(), serverCertLabel)
         assertEquals(2, identity.certs.size)
 
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.tlsIdentity = identity
 
         try {
@@ -1322,7 +1323,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
     @Test
     fun testSetListenerConfigurationProperties() {
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         val basic = ListenerPasswordAuthenticator { uname, pswd ->
             uname == "username" && pswd.concatToString() == "secret"
         }
@@ -1375,7 +1376,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
     @Test
     fun testDefaultListenerConfiguration() {
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
 
         assertFalse(config.isTlsDisabled)
         assertFalse(config.isDeltaSyncEnabled)
@@ -1388,7 +1389,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
     @Test
     fun testCopyingListenerConfiguration() {
-        val config1 = URLEndpointListenerConfiguration(targetDatabase)
+        val config1 = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
 
         val basic = ListenerPasswordAuthenticator { uname, pswd ->
             uname == "username" && pswd.concatToString() == "secret"
@@ -1437,7 +1438,7 @@ val URLEndpointListener.localURL: String
         assertTrue(port != null && port!! > 0)
         val scheme = if (config.isTlsDisabled) "ws" else "wss"
         val host = "localhost"
-        val path = config.database.name
+        val path = config.collections.first().database.name
         return "$scheme://$host:$port/$path"
     }
 

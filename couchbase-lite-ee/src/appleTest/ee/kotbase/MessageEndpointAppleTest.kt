@@ -107,7 +107,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         val x1 = Mutex(true)
         val x2 = Mutex(true)
 
-        val listenerConfig = MessageEndpointListenerConfiguration(oDB, ProtocolType.MESSAGE_STREAM)
+        val listenerConfig = MessageEndpointListenerConfiguration(setOf(oDB.defaultCollection), ProtocolType.MESSAGE_STREAM)
 
         listener = MessageEndpointListener(listenerConfig)
         val token1 = listener!!.addChangeListener { change ->
@@ -145,11 +145,11 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         repl.start()
         assertTrue(x3.lockWithTimeout(10.seconds))
         repl.stop()
-        repl.removeChangeListener(token2)
+        token2.remove()
 
         listener!!.closeAll()
         assertTrue(x2.lockWithTimeout(10.seconds))
-        listener!!.removeChangeListener(token1)
+        token1.remove()
     }
 
     fun config(
@@ -157,7 +157,7 @@ class MessageEndpointAppleTest : BaseDbTest(), MultipeerConnectionDelegate {
         type: ReplicatorType,
         continuous: Boolean
     ): ReplicatorConfiguration {
-        val config = ReplicatorConfiguration(testDatabase, target)
+        val config = ReplicatorConfiguration(listOf(CollectionConfiguration(testDatabase.defaultCollection)), target)
         config.type = type
         config.isContinuous = continuous
         return config

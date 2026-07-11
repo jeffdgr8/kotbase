@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Jeff Lockhart
+ * Copyright 2026 Jeff Lockhart
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,20 @@
  */
 package kotbase
 
-/**
- * Provides details about a Database change.
- */
-@Deprecated(
-    "Use CollectionChange",
-    ReplaceWith("CollectionChange")
-)
-public expect class DatabaseChange {
+import cocoapods.CouchbaseLite.CBLKeyUsages
+import cocoapods.CouchbaseLite.kCBLKeyUsagesClientAuth
+import cocoapods.CouchbaseLite.kCBLKeyUsagesServerAuth
 
-    /**
-     * The database instance
-     */
-    public val database: Database
+public actual enum class KeyUsage {
+    SERVER_AUTH,
+    CLIENT_AUTH;
 
-    /**
-     * The list of the changed document IDs
-     */
-    public val documentIDs: List<String>
+    internal val actual: CBLKeyUsages
+        get() = when (this) {
+            SERVER_AUTH -> kCBLKeyUsagesServerAuth
+            CLIENT_AUTH -> kCBLKeyUsagesClientAuth
+        }
 }
+
+internal val Set<KeyUsage>.actual: CBLKeyUsages
+    get() = fold(0UL) { acc, usage -> acc or usage.actual }

@@ -70,7 +70,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
         listener?.stop()
 
         // Listener:
-        val config = URLEndpointListenerConfiguration(targetDatabase)
+        val config = URLEndpointListenerConfiguration(setOf(targetDatabase.defaultCollection))
         config.port = if (tls) wssPort else wsPort
         config.isTlsDisabled = !tls
         config.authenticator = auth
@@ -116,7 +116,8 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
 
         // Create client identity:
         val attrs = mapOf(kCBLCertAttrCommonName to if (isServer) "CBL-Server" else "daniel")
-        return TLSIdentity.createIdentity(false, attrs, null, label)
+        val usage = setOf(if (isServer) KeyUsage.SERVER_AUTH else KeyUsage.CLIENT_AUTH)
+        return TLSIdentity.createIdentity(usage, attrs, null, label)
     }
 
     protected fun checkCertificateEqual(cert1: ByteArray, cert2: ByteArray) {
@@ -141,7 +142,7 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
         type: ReplicatorType = ReplicatorType.PUSH_AND_PULL,
         serverCert: ByteArray? = null
     ): Replicator {
-        val config = ReplicatorConfiguration(db, target)
+        val config = ReplicatorConfiguration(listOf(CollectionConfiguration(db.defaultCollection)), target)
         config.type = type
         config.isContinuous = continuous
         config.pinnedServerCertificate = serverCert
@@ -194,7 +195,12 @@ open class URLEndpointListenerBaseTest : BaseReplicatorTest() {
         serverCert: ByteArray? = null,
         maxAttempts: Int = 0
     ): ReplicatorConfiguration {
-        return makeConfig(target, type, continuous).apply {
+        return ReplicatorConfiguration(
+            listOf(CollectionConfiguration(testDatabase.defaultCollection)),
+            target
+        ).apply {
+            this.type = type
+            isContinuous = continuous
             authenticator = auth
             pinnedServerCertificate = serverCert
             this.maxAttempts = maxAttempts

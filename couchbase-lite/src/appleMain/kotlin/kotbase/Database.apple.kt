@@ -87,7 +87,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete() {
-        mustBeOpen {
+        mustBeOpenChecked {
             wrapCBLError { error ->
                 actual.delete(error)
             }
@@ -228,7 +228,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Throws(CouchbaseLiteException::class)
     public actual fun <R> inBatch(work: Database.() -> R): R {
-        return mustBeOpen {
+        return mustBeOpenChecked {
             @Suppress("UNCHECKED_CAST")
             wrapCBLError { error ->
                 var result: R? = null
@@ -272,6 +272,19 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         return withLock {
             if (actual.isClosed()) {
                 throw CouchbaseLiteError("Attempt to perform an operation on a closed database or a deleted collection.")
+            }
+            action()
+        }
+    }
+
+    private fun <R> mustBeOpenChecked(action: () -> R): R {
+        return withLock {
+            if (actual.isClosed()) {
+                throw CouchbaseLiteException(
+                    "Attempt to perform an operation on a closed database or a deleted collection.",
+                    CBLError.Domain.CBLITE,
+                    CBLError.Code.NOT_OPEN
+                )
             }
             action()
         }
