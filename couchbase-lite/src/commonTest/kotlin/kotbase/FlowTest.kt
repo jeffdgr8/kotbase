@@ -27,55 +27,6 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 class FlowTest : BaseReplicatorTest() {
-    @Suppress("DEPRECATION")
-    @Test
-    fun testDatabaseChangeFlow() {
-        val docIds = mutableListOf<String>()
-
-        runBlocking {
-            val latch = CountDownLatch(1)
-
-            val collector = launch(Dispatchers.Default) {
-                testDatabase.databaseChangeFlow(testSerialCoroutineContext)
-                    .map {
-                        assertEquals(testDatabase, it.database, "change on wrong db")
-                        it.documentIDs
-                    }
-                    .onEach { ids ->
-                        docIds.addAll(ids)
-                        if (docIds.size >= 10) {
-                            latch.countDown()
-                        }
-                    }
-                    .catch {
-                        latch.countDown()
-                        throw it
-                    }
-                    .collect()
-            }
-
-            launch(Dispatchers.Default) {
-                // Hate this: wait until the collector starts
-                delay(100)
-
-                // make 10 db changes
-                for (i in 0..9) {
-                    val doc = MutableDocument("doc-${i}")
-                    doc.setValue("type", "demo")
-                    saveDocInCollection(doc, testDatabase.defaultCollection)
-                }
-            }
-
-            assertTrue(latch.await(1.seconds))
-            collector.cancel()
-        }
-
-        assertEquals(10, docIds.size)
-        for (i in 0..9) {
-            val id = "doc-${i}"
-            assertTrue(docIds.contains(id), "missing $id")
-        }
-    }
 
     @Test
     fun testCollectionChangeFlow() {

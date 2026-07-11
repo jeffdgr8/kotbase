@@ -48,15 +48,4 @@ internal constructor(actual: CBLDatabaseConfiguration) : DelegatedClass<CBLDatab
         set(value) {
             actual.fullSync = value
         }
-
-    public actual fun setMMapEnabled(mmapEnabled: Boolean): DatabaseConfiguration {
-        actual.mmapEnabled = mmapEnabled
-        return this
-    }
-
-    public actual var isMMapEnabled: Boolean
-        get() = actual.mmapEnabled
-        set(value) {
-            actual.mmapEnabled = value
-        }
 }

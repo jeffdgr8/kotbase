@@ -125,7 +125,7 @@ fun readJSONResource(name: String): String {
     }
 }
 
-abstract class BaseDbTest(useLegacyLogging: Boolean = false) : BaseTest(useLegacyLogging) {
+abstract class BaseDbTest : BaseTest() {
 
     protected val testDatabase: Database
         get() = testDb

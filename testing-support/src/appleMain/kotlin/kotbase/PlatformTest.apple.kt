@@ -27,22 +27,14 @@ import platform.darwin.dispatch_after
 import platform.darwin.dispatch_get_global_queue
 import platform.darwin.dispatch_time
 
-actual abstract class PlatformTest
-actual constructor(private val useLegacyLogging: Boolean) {
+actual abstract class PlatformTest {
 
     companion object {
         const val SCRATCH_DIR_NAME = "/cbl_test_scratch"
     }
 
     actual fun setupPlatform() {
-        if (!useLegacyLogging) {
-            LogSinks.console = ConsoleLogSink(LogLevel.WARNING, LogDomain.ALL)
-        } else {
-            @Suppress("DEPRECATION")
-            val console = Database.log.console
-            console.level = LogLevel.WARNING
-            console.domains = LogDomain.ALL
-        }
+        LogSinks.console = ConsoleLogSink(LogLevel.WARNING, LogDomain.ALL)
     }
 
     actual val tmpDir: String

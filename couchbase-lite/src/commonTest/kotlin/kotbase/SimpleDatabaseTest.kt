@@ -51,26 +51,6 @@ class SimpleDatabaseTest : BaseTest() {
         assertFalse(config.isFullSync)
     }
 
-    /**
-     * Steps
-     * 1. Create a DatabaseConfiguration object.
-     * 2. Get and check that the value of the mmapEnabled property is true.
-     * 3. Set the mmapEnabled property to false and verify that the value is false.
-     * 4. Set the mmapEnabled property to true, and verify that the mmap value is true.
-     */
-    @Test
-    fun testMMapConfig() {
-        val config = DatabaseConfiguration()
-
-        assertEquals(Defaults.Database.MMAP_ENABLED, config.isMMapEnabled)
-
-        config.isMMapEnabled = false
-        assertFalse(config.isMMapEnabled)
-
-        config.isMMapEnabled = true
-        assertTrue(config.isMMapEnabled)
-    }
-
     @Test
     fun testGetSetConfiguration() {
         val config =
@@ -109,13 +89,12 @@ class SimpleDatabaseTest : BaseTest() {
         } finally { db.delete() }
     }
 
-    @Suppress("DEPRECATION")
     @Test
     fun testCreateWithDefaultConfiguration() {
         val db = createDb("default_config_db")
         try {
             assertNotNull(db)
-            assertEquals(0, db.count)
+            assertEquals(0, db.defaultCollection.count)
         } finally { eraseDb(db) }
     }
 
@@ -154,7 +133,6 @@ class SimpleDatabaseTest : BaseTest() {
         finally { eraseDb(db) }
     }
 
-    @Suppress("DEPRECATION")
     @Test
     fun testCreateWithCustomDirectory() {
         val dir = getScratchDirectoryPath(getUniqueName("create-custom-dir"))
@@ -175,7 +153,7 @@ class SimpleDatabaseTest : BaseTest() {
             assertTrue(path.endsWith(DB_EXTENSION))
             assertTrue(path.contains(dir))
 
-            assertEquals(0, db.count)
+            assertEquals(0, db.defaultCollection.count)
         } finally {
             eraseDb(db)
         }

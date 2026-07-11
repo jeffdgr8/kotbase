@@ -57,7 +57,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
     ) = runBlocking {
         val mutex1 = Mutex(true)
         val mutex2 = Mutex(true)
-        val count = listener.config.database.count
+        val count = listener.config.database.defaultCollection.count
 
         // open DBs
         Database.delete("db1")
@@ -74,13 +74,13 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val doc1 = MutableDocument()
         val blob1 = Blob("image/jpg", imageData)
         doc1.setBlob("blob", blob1)
-        db1.save(doc1)
+        db1.defaultCollection.save(doc1)
 
         // DB#2
         val doc2 = MutableDocument()
         val blob2 = Blob("image/jpg", imageData)
         doc2.setBlob("blob", blob2)
-        db2.save(doc2)
+        db2.defaultCollection.save(doc2)
 
         val repl1 = createReplicator(
             db1,
@@ -115,13 +115,13 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // pushAndPull might cause race, so only checking push
         if (type == ReplicatorType.PUSH) {
-            assertEquals(count + 2, listener.config.database.count)
+            assertEquals(count + 2, listener.config.database.defaultCollection.count)
         }
 
         // pushAndPull might cause race, so only checking pull
         if (type == ReplicatorType.PULL) {
-            assertEquals(count + 1, db1.count) // existing docs + pulls one doc from db#2
-            assertEquals(count + 1, db2.count) // existing docs + pulls one doc from db#1
+            assertEquals(count + 1, db1.defaultCollection.count) // existing docs + pulls one doc from db#2
+            assertEquals(count + 1, db2.defaultCollection.count) // existing docs + pulls one doc from db#1
         }
 
         repl1.removeChangeListener(token1)
@@ -142,9 +142,9 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         val stopMutex2 = Mutex(true)
 
         val doc1 = MutableDocument("db-doc")
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
         val doc2 = MutableDocument("other-db-doc")
-        targetDatabase.save(doc2)
+        targetDatabase.defaultCollection.save(doc2)
 
         // start listener
         startListener()
@@ -217,9 +217,9 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         listener2.start()
 
         val doc1 = MutableDocument("db-doc")
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
         val doc2 = MutableDocument("other-db-doc")
-        targetDatabase.save(doc2)
+        targetDatabase.defaultCollection.save(doc2)
 
         // replicator
         val repl1 = createReplicator(
@@ -326,7 +326,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val doc = MutableDocument("doc-1")
-        targetDatabase.save(doc)
+        targetDatabase.defaultCollection.save(doc)
 
         val config = URLEndpointListenerConfiguration(targetDatabase)
         val listener = URLEndpointListener(config)
@@ -368,7 +368,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val doc = MutableDocument("doc-1")
-        targetDatabase.save(doc)
+        targetDatabase.defaultCollection.save(doc)
 
         val tls = createTLSIdentity()
         val config = URLEndpointListenerConfiguration(targetDatabase)
@@ -628,7 +628,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertEquals(0, listener!!.status!!.activeConnectionCount)
 
         val doc1 = MutableDocument()
-        targetDatabase.save(doc1)
+        targetDatabase.defaultCollection.save(doc1)
 
         var maxConnectionCount = 0
         var maxActiveCount = 0
@@ -657,7 +657,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         assertEquals(1, maxConnectionCount)
         assertEquals(1, maxActiveCount)
-        assertEquals(1, targetDatabase.count)
+        assertEquals(1, targetDatabase.defaultCollection.count)
 
         stopListener()
         assertEquals(0, listener!!.status!!.connectionCount)
@@ -675,7 +675,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         listener1.start()
         listener2.start()
 
-        testDatabase.save(MutableDocument("doc-1"))
+        testDatabase.defaultCollection.save(MutableDocument("doc-1"))
         run(
             listener1.localURLEndpoint,
             serverCert = listener1.tlsIdentity?.certs?.get(0)
@@ -684,7 +684,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         // since listener1 and listener2 are using same certificates, one listener only needs stop.
         listener2.stop()
         stopListener(listener1)
-        assertEquals(1, targetDatabase.count)
+        assertEquals(1, targetDatabase.defaultCollection.count)
     }
 
     @Test
@@ -696,12 +696,12 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         // listener
         val doc = MutableDocument()
-        targetDatabase.save(doc)
+        targetDatabase.defaultCollection.save(doc)
         startListener()
 
         // Replicator#1 (targetDatabase -> DB#1)
         val doc1 = MutableDocument()
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
         val target = DatabaseEndpoint(testDatabase)
         val repl1 = createReplicator(targetDatabase, target)
 
@@ -709,7 +709,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         Database.delete("db2")
         val db2 = Database("db2")
         val doc2 = MutableDocument()
-        db2.save(doc2)
+        db2.defaultCollection.save(doc2)
         val repl2 = createReplicator(
             db2,
             listener!!.localURLEndpoint,
@@ -720,7 +720,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             if (change.status.activityLevel == ReplicatorActivityLevel.IDLE &&
                 change.status.progress.completed == change.status.progress.total
             ) {
-                if (targetDatabase.count == 3L && testDatabase.count == 3L && db2.count == 3L) {
+                if (targetDatabase.defaultCollection.count == 3L && testDatabase.defaultCollection.count == 3L && db2.defaultCollection.count == 3L) {
                     change.replicator.stop()
                 }
             }
@@ -742,9 +742,9 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertTrue(mutex1.lockWithTimeout(10.seconds))
         assertTrue(mutex2.lockWithTimeout(10.seconds))
 
-        assertEquals(3, targetDatabase.count)
-        assertEquals(3, testDatabase.count)
-        assertEquals(3, db2.count)
+        assertEquals(3, targetDatabase.defaultCollection.count)
+        assertEquals(3, testDatabase.defaultCollection.count)
+        assertEquals(3, db2.defaultCollection.count)
 
         repl1.removeChangeListener(token1)
         repl2.removeChangeListener(token2)
@@ -783,7 +783,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             val db = Database("db-$i")
             val doc = MutableDocument()
             doc.setString("url", url)
-            db.save(doc)
+            db.defaultCollection.save(doc)
 
             // separate replicator instance
             val target = URLEndpoint(url)
@@ -795,7 +795,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             db.delete()
         }
 
-        assertEquals(targetDatabase.count, notLinkLocal.size.toLong())
+        assertEquals(targetDatabase.defaultCollection.count, notLinkLocal.size.toLong())
 
         val q = QueryBuilder.select(SelectResult.all()).from(DataSource.database(targetDatabase))
         val rs = q.execute()
@@ -817,7 +817,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         val doc = MutableDocument()
         doc.setString("species", "Tiger")
-        targetDatabase.save(doc)
+        targetDatabase.defaultCollection.save(doc)
 
         // pushAndPull can cause race; so only push is validated
         validateMultipleReplicationsTo(listener!!, ReplicatorType.PUSH)
@@ -835,7 +835,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
 
         val doc = MutableDocument()
         doc.setString("species", "Tiger")
-        targetDatabase.save(doc)
+        targetDatabase.defaultCollection.save(doc)
 
         validateMultipleReplicationsTo(listener!!, ReplicatorType.PULL)
 
@@ -847,7 +847,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val doc1 = MutableDocument()
-        testDatabase.save(doc1)
+        testDatabase.defaultCollection.save(doc1)
 
         val config = URLEndpointListenerConfiguration(targetDatabase)
         config.isReadOnly = true
@@ -1083,13 +1083,13 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         assertNotNull(listener!!.tlsIdentity)
         assertEquals(identity, listener!!.tlsIdentity!!)
 
-        testDatabase.save(MutableDocument("doc-1"))
-        assertEquals(0, targetDatabase.count)
+        testDatabase.defaultCollection.save(MutableDocument("doc-1"))
+        assertEquals(0, targetDatabase.defaultCollection.count)
         run(
             listener!!.localURLEndpoint,
             serverCert = listener!!.tlsIdentity?.certs?.get(0)
         )
-        assertEquals(1, targetDatabase.count)
+        assertEquals(1, targetDatabase.defaultCollection.count)
 
         stopListener(listener!!)
         assertNull(listener!!.tlsIdentity)
@@ -1137,7 +1137,7 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
         if (!keyChainAccessAllowed) return
 
         val doc1 = MutableDocument()
-        targetDatabase.save(doc1)
+        targetDatabase.defaultCollection.save(doc1)
 
         // Listener:
         val auth = ListenerPasswordAuthenticator { username, password ->
@@ -1244,8 +1244,8 @@ class URLEndpointListenerTest : URLEndpointListenerBaseTest() {
             // ignore
         }
 
-        testDatabase.save(MutableDocument("doc-1"))
-        assertEquals(0, targetDatabase.count)
+        testDatabase.defaultCollection.save(MutableDocument("doc-1"))
+        assertEquals(0, targetDatabase.defaultCollection.count)
 
         // Reject the server with non-self-signed cert
         run(
