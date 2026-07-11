@@ -97,6 +97,9 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual), Muta
         return this
     }
 
+    // Kotlin/Native bridges the Kotlin Number to an NSNumber; the frontend
+    // warning does not account for the interop cast conversion
+    @Suppress("UNSAFE_CAST_RELYING_ON_NULL")
     actual override fun setNumber(index: Int, value: Number?): MutableArray {
         checkIndex(index)
         actual.setNumber(value as NSNumber?, index.convert())
@@ -205,6 +208,9 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual), Muta
         return this
     }
 
+    // Kotlin/Native bridges the Kotlin Number to an NSNumber; the frontend
+    // warning does not account for the interop cast conversion
+    @Suppress("UNSAFE_CAST_RELYING_ON_NULL")
     actual override fun addNumber(value: Number?): MutableArray {
         actual.addNumber(value as NSNumber?)
         mutate()
@@ -295,6 +301,9 @@ internal constructor(override val actual: CBLMutableArray) : Array(actual), Muta
         return this
     }
 
+    // Kotlin/Native bridges the Kotlin Number to an NSNumber; the frontend
+    // warning does not account for the interop cast conversion
+    @Suppress("UNSAFE_CAST_RELYING_ON_NULL")
     actual override fun insertNumber(index: Int, value: Number?): MutableArray {
         checkInsertIndex(index)
         actual.insertNumber(value as NSNumber?, index.convert())

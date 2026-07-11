@@ -23,6 +23,9 @@ import platform.darwin.dispatch_queue_attr_t
 import platform.darwin.dispatch_queue_create
 import platform.darwin.dispatch_queue_t
 
+// DISPATCH_QUEUE_SERIAL is the null attribute; the cast to the pointer type
+// is expected to succeed only for null
+@Suppress("UNSAFE_CAST_RELYING_ON_NULL")
 internal fun CoroutineDispatcher.asDispatchQueue(): dispatch_queue_t =
     when (this) {
         Dispatchers.Main -> dispatch_get_main_queue()

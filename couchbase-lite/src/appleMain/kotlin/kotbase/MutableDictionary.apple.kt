@@ -95,6 +95,9 @@ internal constructor(override val actual: CBLMutableDictionary) : Dictionary(act
         return this
     }
 
+    // Kotlin/Native bridges the Kotlin Number to an NSNumber; the frontend
+    // warning does not account for the interop cast conversion
+    @Suppress("UNSAFE_CAST_RELYING_ON_NULL")
     actual override fun setNumber(key: String, value: Number?): MutableDictionary {
         actual.setNumber(value as NSNumber?, key)
         collectionMap.remove(key)

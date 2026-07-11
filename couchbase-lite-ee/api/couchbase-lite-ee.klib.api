@@ -1236,6 +1236,19 @@ final fun (kotbase/ReplicatorConfiguration).kotbase/setAcceptOnlySelfSignedServe
 final fun (kotbase/ReplicatorConfiguration).kotbase/setAllowReplicatingInBackground(kotlin/Boolean): kotbase/ReplicatorConfiguration // kotbase/setAllowReplicatingInBackground|setAllowReplicatingInBackground@kotbase.ReplicatorConfiguration(kotlin.Boolean){}[0]
 
 // Targets: [apple]
+final enum class kotbase/MultipeerTransport : kotlin/Enum<kotbase/MultipeerTransport> { // kotbase/MultipeerTransport|null[0]
+    enum entry BLUETOOTH // kotbase/MultipeerTransport.BLUETOOTH|null[0]
+    enum entry WIFI // kotbase/MultipeerTransport.WIFI|null[0]
+
+    final val entries // kotbase/MultipeerTransport.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<kotbase/MultipeerTransport> // kotbase/MultipeerTransport.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun toString(): kotlin/String // kotbase/MultipeerTransport.toString|toString(){}[0]
+    final fun valueOf(kotlin/String): kotbase/MultipeerTransport // kotbase/MultipeerTransport.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<kotbase/MultipeerTransport> // kotbase/MultipeerTransport.values|values#static(){}[0]
+}
+
+// Targets: [apple]
 abstract class <#A: platform.darwin/NSObject> kotbase.internal/AbstractDelegatedClass { // kotbase.internal/AbstractDelegatedClass|null[0]
     constructor <init>() // kotbase.internal/AbstractDelegatedClass.<init>|<init>(){}[0]
 
@@ -1607,6 +1620,110 @@ final class kotbase/MessagingError : kotbase.internal/DelegatedClass<cocoapods.C
 }
 
 // Targets: [apple]
+final class kotbase/MultipeerCertificateAuthenticator : kotbase/MultipeerAuthenticator { // kotbase/MultipeerCertificateAuthenticator|null[0]
+    constructor <init>(kotlin.collections/List<kotlin/ByteArray>) // kotbase/MultipeerCertificateAuthenticator.<init>|<init>(kotlin.collections.List<kotlin.ByteArray>){}[0]
+    constructor <init>(kotlin/Function2<kotbase/PeerInfo.PeerId, kotlin.collections/List<kotlin/ByteArray>, kotlin/Boolean>) // kotbase/MultipeerCertificateAuthenticator.<init>|<init>(kotlin.Function2<kotbase.PeerInfo.PeerId,kotlin.collections.List<kotlin.ByteArray>,kotlin.Boolean>){}[0]
+}
+
+// Targets: [apple]
+final class kotbase/MultipeerCollectionConfiguration { // kotbase/MultipeerCollectionConfiguration|null[0]
+    constructor <init>(kotbase/Collection) // kotbase/MultipeerCollectionConfiguration.<init>|<init>(kotbase.Collection){}[0]
+
+    final val collection // kotbase/MultipeerCollectionConfiguration.collection|{}collection[0]
+        final fun <get-collection>(): kotbase/Collection // kotbase/MultipeerCollectionConfiguration.collection.<get-collection>|<get-collection>(){}[0]
+
+    final var conflictResolver // kotbase/MultipeerCollectionConfiguration.conflictResolver|{}conflictResolver[0]
+        final fun <get-conflictResolver>(): kotlin/Function2<kotbase/PeerInfo.PeerId, kotbase/Conflict, kotbase/Document?>? // kotbase/MultipeerCollectionConfiguration.conflictResolver.<get-conflictResolver>|<get-conflictResolver>(){}[0]
+        final fun <set-conflictResolver>(kotlin/Function2<kotbase/PeerInfo.PeerId, kotbase/Conflict, kotbase/Document?>?) // kotbase/MultipeerCollectionConfiguration.conflictResolver.<set-conflictResolver>|<set-conflictResolver>(kotlin.Function2<kotbase.PeerInfo.PeerId,kotbase.Conflict,kotbase.Document?>?){}[0]
+    final var documentIDs // kotbase/MultipeerCollectionConfiguration.documentIDs|{}documentIDs[0]
+        final fun <get-documentIDs>(): kotlin.collections/List<kotlin/String>? // kotbase/MultipeerCollectionConfiguration.documentIDs.<get-documentIDs>|<get-documentIDs>(){}[0]
+        final fun <set-documentIDs>(kotlin.collections/List<kotlin/String>?) // kotbase/MultipeerCollectionConfiguration.documentIDs.<set-documentIDs>|<set-documentIDs>(kotlin.collections.List<kotlin.String>?){}[0]
+    final var pullFilter // kotbase/MultipeerCollectionConfiguration.pullFilter|{}pullFilter[0]
+        final fun <get-pullFilter>(): kotlin/Function3<kotbase/PeerInfo.PeerId, kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? // kotbase/MultipeerCollectionConfiguration.pullFilter.<get-pullFilter>|<get-pullFilter>(){}[0]
+        final fun <set-pullFilter>(kotlin/Function3<kotbase/PeerInfo.PeerId, kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?) // kotbase/MultipeerCollectionConfiguration.pullFilter.<set-pullFilter>|<set-pullFilter>(kotlin.Function3<kotbase.PeerInfo.PeerId,kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
+    final var pushFilter // kotbase/MultipeerCollectionConfiguration.pushFilter|{}pushFilter[0]
+        final fun <get-pushFilter>(): kotlin/Function3<kotbase/PeerInfo.PeerId, kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? // kotbase/MultipeerCollectionConfiguration.pushFilter.<get-pushFilter>|<get-pushFilter>(){}[0]
+        final fun <set-pushFilter>(kotlin/Function3<kotbase/PeerInfo.PeerId, kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?) // kotbase/MultipeerCollectionConfiguration.pushFilter.<set-pushFilter>|<set-pushFilter>(kotlin.Function3<kotbase.PeerInfo.PeerId,kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
+
+    final fun setConflictResolver(kotlin/Function2<kotbase/PeerInfo.PeerId, kotbase/Conflict, kotbase/Document?>?): kotbase/MultipeerCollectionConfiguration // kotbase/MultipeerCollectionConfiguration.setConflictResolver|setConflictResolver(kotlin.Function2<kotbase.PeerInfo.PeerId,kotbase.Conflict,kotbase.Document?>?){}[0]
+    final fun setDocumentIDs(kotlin.collections/List<kotlin/String>?): kotbase/MultipeerCollectionConfiguration // kotbase/MultipeerCollectionConfiguration.setDocumentIDs|setDocumentIDs(kotlin.collections.List<kotlin.String>?){}[0]
+    final fun setPullFilter(kotlin/Function3<kotbase/PeerInfo.PeerId, kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/MultipeerCollectionConfiguration // kotbase/MultipeerCollectionConfiguration.setPullFilter|setPullFilter(kotlin.Function3<kotbase.PeerInfo.PeerId,kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
+    final fun setPushFilter(kotlin/Function3<kotbase/PeerInfo.PeerId, kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>?): kotbase/MultipeerCollectionConfiguration // kotbase/MultipeerCollectionConfiguration.setPushFilter|setPushFilter(kotlin.Function3<kotbase.PeerInfo.PeerId,kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?){}[0]
+
+    final object Companion { // kotbase/MultipeerCollectionConfiguration.Companion|null[0]
+        final fun fromCollections(kotlin.collections/Collection<kotbase/Collection>): kotlin.collections/Set<kotbase/MultipeerCollectionConfiguration> // kotbase/MultipeerCollectionConfiguration.Companion.fromCollections|fromCollections(kotlin.collections.Collection<kotbase.Collection>){}[0]
+    }
+}
+
+// Targets: [apple]
+final class kotbase/MultipeerReplicator : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLMultipeerReplicator>, kotlin/AutoCloseable { // kotbase/MultipeerReplicator|null[0]
+    constructor <init>(kotbase/MultipeerReplicatorConfiguration) // kotbase/MultipeerReplicator.<init>|<init>(kotbase.MultipeerReplicatorConfiguration){}[0]
+
+    final val config // kotbase/MultipeerReplicator.config|{}config[0]
+        final fun <get-config>(): kotbase/MultipeerReplicatorConfiguration // kotbase/MultipeerReplicator.config.<get-config>|<get-config>(){}[0]
+    final val neighborPeers // kotbase/MultipeerReplicator.neighborPeers|{}neighborPeers[0]
+        final fun <get-neighborPeers>(): kotlin.collections/Set<kotbase/PeerInfo.PeerId> // kotbase/MultipeerReplicator.neighborPeers.<get-neighborPeers>|<get-neighborPeers>(){}[0]
+    final val peerId // kotbase/MultipeerReplicator.peerId|{}peerId[0]
+        final fun <get-peerId>(): kotbase/PeerInfo.PeerId // kotbase/MultipeerReplicator.peerId.<get-peerId>|<get-peerId>(){}[0]
+
+    final fun addPeerDiscoveryStatusListener(kotlin.coroutines/CoroutineContext, kotlin.coroutines/SuspendFunction1<kotbase/PeerDiscoveryStatus, kotlin/Unit>): kotbase/ListenerToken // kotbase/MultipeerReplicator.addPeerDiscoveryStatusListener|addPeerDiscoveryStatusListener(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotbase.PeerDiscoveryStatus,kotlin.Unit>){}[0]
+    final fun addPeerDiscoveryStatusListener(kotlin/Function1<kotbase/PeerDiscoveryStatus, kotlin/Unit>): kotbase/ListenerToken // kotbase/MultipeerReplicator.addPeerDiscoveryStatusListener|addPeerDiscoveryStatusListener(kotlin.Function1<kotbase.PeerDiscoveryStatus,kotlin.Unit>){}[0]
+    final fun addPeerDiscoveryStatusListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/PeerDiscoveryStatus, kotlin/Unit>) // kotbase/MultipeerReplicator.addPeerDiscoveryStatusListener|addPeerDiscoveryStatusListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.PeerDiscoveryStatus,kotlin.Unit>){}[0]
+    final fun addPeerDocumentReplicationListener(kotlin.coroutines/CoroutineContext, kotlin.coroutines/SuspendFunction1<kotbase/PeerDocumentReplication, kotlin/Unit>): kotbase/ListenerToken // kotbase/MultipeerReplicator.addPeerDocumentReplicationListener|addPeerDocumentReplicationListener(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotbase.PeerDocumentReplication,kotlin.Unit>){}[0]
+    final fun addPeerDocumentReplicationListener(kotlin/Function1<kotbase/PeerDocumentReplication, kotlin/Unit>): kotbase/ListenerToken // kotbase/MultipeerReplicator.addPeerDocumentReplicationListener|addPeerDocumentReplicationListener(kotlin.Function1<kotbase.PeerDocumentReplication,kotlin.Unit>){}[0]
+    final fun addPeerDocumentReplicationListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/PeerDocumentReplication, kotlin/Unit>) // kotbase/MultipeerReplicator.addPeerDocumentReplicationListener|addPeerDocumentReplicationListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.PeerDocumentReplication,kotlin.Unit>){}[0]
+    final fun addPeerReplicatorStatusListener(kotlin.coroutines/CoroutineContext, kotlin.coroutines/SuspendFunction1<kotbase/PeerReplicatorStatus, kotlin/Unit>): kotbase/ListenerToken // kotbase/MultipeerReplicator.addPeerReplicatorStatusListener|addPeerReplicatorStatusListener(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotbase.PeerReplicatorStatus,kotlin.Unit>){}[0]
+    final fun addPeerReplicatorStatusListener(kotlin/Function1<kotbase/PeerReplicatorStatus, kotlin/Unit>): kotbase/ListenerToken // kotbase/MultipeerReplicator.addPeerReplicatorStatusListener|addPeerReplicatorStatusListener(kotlin.Function1<kotbase.PeerReplicatorStatus,kotlin.Unit>){}[0]
+    final fun addPeerReplicatorStatusListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/PeerReplicatorStatus, kotlin/Unit>) // kotbase/MultipeerReplicator.addPeerReplicatorStatusListener|addPeerReplicatorStatusListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.PeerReplicatorStatus,kotlin.Unit>){}[0]
+    final fun addStatusListener(kotlin.coroutines/CoroutineContext, kotlin.coroutines/SuspendFunction1<kotbase/MultipeerReplicatorStatus, kotlin/Unit>): kotbase/ListenerToken // kotbase/MultipeerReplicator.addStatusListener|addStatusListener(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotbase.MultipeerReplicatorStatus,kotlin.Unit>){}[0]
+    final fun addStatusListener(kotlin/Function1<kotbase/MultipeerReplicatorStatus, kotlin/Unit>): kotbase/ListenerToken // kotbase/MultipeerReplicator.addStatusListener|addStatusListener(kotlin.Function1<kotbase.MultipeerReplicatorStatus,kotlin.Unit>){}[0]
+    final fun addStatusListener(kotlinx.coroutines/CoroutineScope, kotlin.coroutines/SuspendFunction1<kotbase/MultipeerReplicatorStatus, kotlin/Unit>) // kotbase/MultipeerReplicator.addStatusListener|addStatusListener(kotlinx.coroutines.CoroutineScope;kotlin.coroutines.SuspendFunction1<kotbase.MultipeerReplicatorStatus,kotlin.Unit>){}[0]
+    final fun close() // kotbase/MultipeerReplicator.close|close(){}[0]
+    final fun getPeerInfo(kotbase/PeerInfo.PeerId): kotbase/PeerInfo? // kotbase/MultipeerReplicator.getPeerInfo|getPeerInfo(kotbase.PeerInfo.PeerId){}[0]
+    final fun getStatus(kotbase/MultipeerTransport): kotbase/MultipeerReplicatorStatus? // kotbase/MultipeerReplicator.getStatus|getStatus(kotbase.MultipeerTransport){}[0]
+    final fun start() // kotbase/MultipeerReplicator.start|start(){}[0]
+    final fun stop() // kotbase/MultipeerReplicator.stop|stop(){}[0]
+}
+
+// Targets: [apple]
+final class kotbase/MultipeerReplicatorConfiguration { // kotbase/MultipeerReplicatorConfiguration|null[0]
+    constructor <init>(kotbase/MultipeerReplicatorConfiguration) // kotbase/MultipeerReplicatorConfiguration.<init>|<init>(kotbase.MultipeerReplicatorConfiguration){}[0]
+    constructor <init>(kotlin/String, kotbase/TLSIdentity, kotbase/MultipeerCertificateAuthenticator, kotlin.collections/Collection<kotbase/MultipeerCollectionConfiguration>, kotlin.collections/Set<kotbase/MultipeerTransport> = ...) // kotbase/MultipeerReplicatorConfiguration.<init>|<init>(kotlin.String;kotbase.TLSIdentity;kotbase.MultipeerCertificateAuthenticator;kotlin.collections.Collection<kotbase.MultipeerCollectionConfiguration>;kotlin.collections.Set<kotbase.MultipeerTransport>){}[0]
+
+    final var authenticator // kotbase/MultipeerReplicatorConfiguration.authenticator|{}authenticator[0]
+        final fun <get-authenticator>(): kotbase/MultipeerCertificateAuthenticator // kotbase/MultipeerReplicatorConfiguration.authenticator.<get-authenticator>|<get-authenticator>(){}[0]
+        final fun <set-authenticator>(kotbase/MultipeerCertificateAuthenticator) // kotbase/MultipeerReplicatorConfiguration.authenticator.<set-authenticator>|<set-authenticator>(kotbase.MultipeerCertificateAuthenticator){}[0]
+    final var collections // kotbase/MultipeerReplicatorConfiguration.collections|{}collections[0]
+        final fun <get-collections>(): kotlin.collections/Set<kotbase/MultipeerCollectionConfiguration> // kotbase/MultipeerReplicatorConfiguration.collections.<get-collections>|<get-collections>(){}[0]
+        final fun <set-collections>(kotlin.collections/Set<kotbase/MultipeerCollectionConfiguration>) // kotbase/MultipeerReplicatorConfiguration.collections.<set-collections>|<set-collections>(kotlin.collections.Set<kotbase.MultipeerCollectionConfiguration>){}[0]
+    final var identity // kotbase/MultipeerReplicatorConfiguration.identity|{}identity[0]
+        final fun <get-identity>(): kotbase/TLSIdentity // kotbase/MultipeerReplicatorConfiguration.identity.<get-identity>|<get-identity>(){}[0]
+        final fun <set-identity>(kotbase/TLSIdentity) // kotbase/MultipeerReplicatorConfiguration.identity.<set-identity>|<set-identity>(kotbase.TLSIdentity){}[0]
+    final var peerGroupID // kotbase/MultipeerReplicatorConfiguration.peerGroupID|{}peerGroupID[0]
+        final fun <get-peerGroupID>(): kotlin/String // kotbase/MultipeerReplicatorConfiguration.peerGroupID.<get-peerGroupID>|<get-peerGroupID>(){}[0]
+        final fun <set-peerGroupID>(kotlin/String) // kotbase/MultipeerReplicatorConfiguration.peerGroupID.<set-peerGroupID>|<set-peerGroupID>(kotlin.String){}[0]
+    final var transports // kotbase/MultipeerReplicatorConfiguration.transports|{}transports[0]
+        final fun <get-transports>(): kotlin.collections/Set<kotbase/MultipeerTransport> // kotbase/MultipeerReplicatorConfiguration.transports.<get-transports>|<get-transports>(){}[0]
+        final fun <set-transports>(kotlin.collections/Set<kotbase/MultipeerTransport>) // kotbase/MultipeerReplicatorConfiguration.transports.<set-transports>|<set-transports>(kotlin.collections.Set<kotbase.MultipeerTransport>){}[0]
+
+    final fun setAuthenticator(kotbase/MultipeerCertificateAuthenticator): kotbase/MultipeerReplicatorConfiguration // kotbase/MultipeerReplicatorConfiguration.setAuthenticator|setAuthenticator(kotbase.MultipeerCertificateAuthenticator){}[0]
+    final fun setCollections(kotlin.collections/Collection<kotbase/MultipeerCollectionConfiguration>): kotbase/MultipeerReplicatorConfiguration // kotbase/MultipeerReplicatorConfiguration.setCollections|setCollections(kotlin.collections.Collection<kotbase.MultipeerCollectionConfiguration>){}[0]
+    final fun setIdentity(kotbase/TLSIdentity): kotbase/MultipeerReplicatorConfiguration // kotbase/MultipeerReplicatorConfiguration.setIdentity|setIdentity(kotbase.TLSIdentity){}[0]
+    final fun setPeerGroupID(kotlin/String): kotbase/MultipeerReplicatorConfiguration // kotbase/MultipeerReplicatorConfiguration.setPeerGroupID|setPeerGroupID(kotlin.String){}[0]
+    final fun setTransports(kotlin.collections/Set<kotbase/MultipeerTransport>): kotbase/MultipeerReplicatorConfiguration // kotbase/MultipeerReplicatorConfiguration.setTransports|setTransports(kotlin.collections.Set<kotbase.MultipeerTransport>){}[0]
+}
+
+// Targets: [apple]
+final class kotbase/MultipeerReplicatorStatus : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLMultipeerReplicatorStatus> { // kotbase/MultipeerReplicatorStatus|null[0]
+    final val error // kotbase/MultipeerReplicatorStatus.error|{}error[0]
+        final fun <get-error>(): kotbase/CouchbaseLiteException? // kotbase/MultipeerReplicatorStatus.error.<get-error>|<get-error>(){}[0]
+    final val isActive // kotbase/MultipeerReplicatorStatus.isActive|{}isActive[0]
+        final fun <get-isActive>(): kotlin/Boolean // kotbase/MultipeerReplicatorStatus.isActive.<get-isActive>|<get-isActive>(){}[0]
+    final val transport // kotbase/MultipeerReplicatorStatus.transport|{}transport[0]
+        final fun <get-transport>(): kotbase/MultipeerTransport? // kotbase/MultipeerReplicatorStatus.transport.<get-transport>|<get-transport>(){}[0]
+}
+
+// Targets: [apple]
 final class kotbase/OrderBy : kotbase.internal/AbstractDelegatedClass<cocoapods.CouchbaseLite/CBLQuery>, kotbase/LimitRouter, kotbase/Query { // kotbase/OrderBy|null[0]
     final var parameters // kotbase/OrderBy.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/OrderBy.parameters.<get-parameters>|<get-parameters>(){}[0]
@@ -1639,6 +1756,68 @@ final class kotbase/Parameters : kotbase.internal/DelegatedClass<cocoapods.Couch
     final fun setNumber(kotlin/String, kotlin/Number?): kotbase/Parameters // kotbase/Parameters.setNumber|setNumber(kotlin.String;kotlin.Number?){}[0]
     final fun setString(kotlin/String, kotlin/String?): kotbase/Parameters // kotbase/Parameters.setString|setString(kotlin.String;kotlin.String?){}[0]
     final fun setValue(kotlin/String, kotlin/Any?): kotbase/Parameters // kotbase/Parameters.setValue|setValue(kotlin.String;kotlin.Any?){}[0]
+}
+
+// Targets: [apple]
+final class kotbase/PeerDiscoveryStatus : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLPeerDiscoveryStatus> { // kotbase/PeerDiscoveryStatus|null[0]
+    final val isOnline // kotbase/PeerDiscoveryStatus.isOnline|{}isOnline[0]
+        final fun <get-isOnline>(): kotlin/Boolean // kotbase/PeerDiscoveryStatus.isOnline.<get-isOnline>|<get-isOnline>(){}[0]
+    final val peer // kotbase/PeerDiscoveryStatus.peer|{}peer[0]
+        final fun <get-peer>(): kotbase/PeerInfo.PeerId // kotbase/PeerDiscoveryStatus.peer.<get-peer>|<get-peer>(){}[0]
+    final val transport // kotbase/PeerDiscoveryStatus.transport|{}transport[0]
+        final fun <get-transport>(): kotbase/MultipeerTransport // kotbase/PeerDiscoveryStatus.transport.<get-transport>|<get-transport>(){}[0]
+}
+
+// Targets: [apple]
+final class kotbase/PeerDocumentReplication : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLPeerDocumentReplication> { // kotbase/PeerDocumentReplication|null[0]
+    final val documents // kotbase/PeerDocumentReplication.documents|{}documents[0]
+        final fun <get-documents>(): kotlin.collections/List<kotbase/ReplicatedDocument> // kotbase/PeerDocumentReplication.documents.<get-documents>|<get-documents>(){}[0]
+    final val isPush // kotbase/PeerDocumentReplication.isPush|{}isPush[0]
+        final fun <get-isPush>(): kotlin/Boolean // kotbase/PeerDocumentReplication.isPush.<get-isPush>|<get-isPush>(){}[0]
+    final val peer // kotbase/PeerDocumentReplication.peer|{}peer[0]
+        final fun <get-peer>(): kotbase/PeerInfo.PeerId // kotbase/PeerDocumentReplication.peer.<get-peer>|<get-peer>(){}[0]
+    final val transport // kotbase/PeerDocumentReplication.transport|{}transport[0]
+        final fun <get-transport>(): kotbase/MultipeerTransport // kotbase/PeerDocumentReplication.transport.<get-transport>|<get-transport>(){}[0]
+}
+
+// Targets: [apple]
+final class kotbase/PeerInfo : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLPeerInfo> { // kotbase/PeerInfo|null[0]
+    final val certificate // kotbase/PeerInfo.certificate|{}certificate[0]
+        final fun <get-certificate>(): kotlin/ByteArray? // kotbase/PeerInfo.certificate.<get-certificate>|<get-certificate>(){}[0]
+    final val isOnline // kotbase/PeerInfo.isOnline|{}isOnline[0]
+        final fun <get-isOnline>(): kotlin/Boolean // kotbase/PeerInfo.isOnline.<get-isOnline>|<get-isOnline>(){}[0]
+    final val neighbors // kotbase/PeerInfo.neighbors|{}neighbors[0]
+        final fun <get-neighbors>(): kotlin.collections/Set<kotbase/PeerInfo.PeerId> // kotbase/PeerInfo.neighbors.<get-neighbors>|<get-neighbors>(){}[0]
+    final val peerId // kotbase/PeerInfo.peerId|{}peerId[0]
+        final fun <get-peerId>(): kotbase/PeerInfo.PeerId // kotbase/PeerInfo.peerId.<get-peerId>|<get-peerId>(){}[0]
+    final val replicatorStatus // kotbase/PeerInfo.replicatorStatus|{}replicatorStatus[0]
+        final fun <get-replicatorStatus>(): kotbase/ReplicatorStatus // kotbase/PeerInfo.replicatorStatus.<get-replicatorStatus>|<get-replicatorStatus>(){}[0]
+    final val replicatorTransport // kotbase/PeerInfo.replicatorTransport|{}replicatorTransport[0]
+        final fun <get-replicatorTransport>(): kotbase/MultipeerTransport? // kotbase/PeerInfo.replicatorTransport.<get-replicatorTransport>|<get-replicatorTransport>(){}[0]
+    final val transports // kotbase/PeerInfo.transports|{}transports[0]
+        final fun <get-transports>(): kotlin.collections/Set<kotbase/MultipeerTransport> // kotbase/PeerInfo.transports.<get-transports>|<get-transports>(){}[0]
+
+    final class PeerId : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLPeerID> { // kotbase/PeerInfo.PeerId|null[0]
+        final val bytes // kotbase/PeerInfo.PeerId.bytes|{}bytes[0]
+            final fun <get-bytes>(): kotlin/ByteArray // kotbase/PeerInfo.PeerId.bytes.<get-bytes>|<get-bytes>(){}[0]
+    }
+
+    final object Companion { // kotbase/PeerInfo.Companion|null[0]
+        final val PEER_ID_LENGTH // kotbase/PeerInfo.Companion.PEER_ID_LENGTH|{}PEER_ID_LENGTH[0]
+            final fun <get-PEER_ID_LENGTH>(): kotlin/Int // kotbase/PeerInfo.Companion.PEER_ID_LENGTH.<get-PEER_ID_LENGTH>|<get-PEER_ID_LENGTH>(){}[0]
+    }
+}
+
+// Targets: [apple]
+final class kotbase/PeerReplicatorStatus : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLPeerReplicatorStatus> { // kotbase/PeerReplicatorStatus|null[0]
+    final val isOutgoing // kotbase/PeerReplicatorStatus.isOutgoing|{}isOutgoing[0]
+        final fun <get-isOutgoing>(): kotlin/Boolean // kotbase/PeerReplicatorStatus.isOutgoing.<get-isOutgoing>|<get-isOutgoing>(){}[0]
+    final val peerId // kotbase/PeerReplicatorStatus.peerId|{}peerId[0]
+        final fun <get-peerId>(): kotbase/PeerInfo.PeerId // kotbase/PeerReplicatorStatus.peerId.<get-peerId>|<get-peerId>(){}[0]
+    final val status // kotbase/PeerReplicatorStatus.status|{}status[0]
+        final fun <get-status>(): kotbase/ReplicatorStatus // kotbase/PeerReplicatorStatus.status.<get-status>|<get-status>(){}[0]
+    final val transport // kotbase/PeerReplicatorStatus.transport|{}transport[0]
+        final fun <get-transport>(): kotbase/MultipeerTransport // kotbase/PeerReplicatorStatus.transport.<get-transport>|<get-transport>(){}[0]
 }
 
 // Targets: [apple]
@@ -2194,6 +2373,9 @@ sealed class kotbase/ListenerToken : kotbase.internal/DelegatedProtocol<cocoapod
 }
 
 // Targets: [apple]
+sealed class kotbase/MultipeerAuthenticator : kotbase.internal/DelegatedProtocol<cocoapods.CouchbaseLite/CBLMultipeerAuthenticatorProtocol> // kotbase/MultipeerAuthenticator|null[0]
+
+// Targets: [apple]
 sealed class kotbase/Ordering : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryOrdering> { // kotbase/Ordering|null[0]
     final class SortOrder : kotbase/Ordering { // kotbase/Ordering.SortOrder|null[0]
         final fun ascending(): kotbase/Ordering // kotbase/Ordering.SortOrder.ascending|ascending(){}[0]
@@ -2213,6 +2395,9 @@ final var kotbase/pinnedServerSecCertificate // kotbase/pinnedServerSecCertifica
 
 // Targets: [apple]
 final fun (kotbase/ReplicatorConfiguration).kotbase/setPinnedServerSecCertificate(kotlinx.cinterop/CPointer<cnames.structs/__SecCertificate>?): kotbase/ReplicatorConfiguration // kotbase/setPinnedServerSecCertificate|setPinnedServerSecCertificate@kotbase.ReplicatorConfiguration(kotlinx.cinterop.CPointer<cnames.structs.__SecCertificate>?){}[0]
+
+// Targets: [apple]
+final fun (kotbase/TLSIdentity.Companion).kotbase/createdSignedIdentityInsecure(kotlin.collections/Set<kotbase/KeyUsage>, kotlin.collections/Map<kotlin/String, kotlin/String>, kotlin/ByteArray, kotlin/ByteArray, kotlin.time/Instant?, kotlin/String): kotbase/TLSIdentity // kotbase/createdSignedIdentityInsecure|createdSignedIdentityInsecure@kotbase.TLSIdentity.Companion(kotlin.collections.Set<kotbase.KeyUsage>;kotlin.collections.Map<kotlin.String,kotlin.String>;kotlin.ByteArray;kotlin.ByteArray;kotlin.time.Instant?;kotlin.String){}[0]
 
 // Targets: [apple]
 final fun (kotlin/ByteArray).kotbase.ext/toCFData(): kotlinx.cinterop/CPointer<cnames.structs/__CFData> // kotbase.ext/toCFData|toCFData@kotlin.ByteArray(){}[0]

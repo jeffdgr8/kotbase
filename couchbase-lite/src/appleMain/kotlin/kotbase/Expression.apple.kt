@@ -37,6 +37,9 @@ internal constructor(actual: CBLQueryExpression) : DelegatedClass<CBLQueryExpres
         public actual fun string(value: String?): Expression =
             Expression(CBLQueryExpression.string(value))
 
+        // Kotlin/Native bridges the Kotlin Number to an NSNumber; the frontend
+        // warning does not account for the interop cast conversion
+        @Suppress("UNSAFE_CAST_RELYING_ON_NULL")
         public actual fun number(value: Number?): Expression =
             Expression(CBLQueryExpression.number(value as NSNumber?))
 
