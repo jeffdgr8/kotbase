@@ -22,8 +22,12 @@ import kotbase.internal.fleece.toFLString
 import kotbase.internal.wrapCBLError
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.MemScope
+import kotlinx.cinterop.cValue
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.readValue
+import kotlinx.cinterop.refTo
 import libcblite.*
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
@@ -93,6 +97,53 @@ internal constructor(actual: CPointer<CBLTLSIdentity>) {
             attributes: Map<String, String>,
             expiration: Instant? = null
         ): TLSIdentity = createTLSIdentity(usage, attributes, expiration, null)
+
+        /**
+         * Create a TLS identity from an existing RSA private key and certificate
+         * chain. The certificate chain is used as-is: the leaf certificate is not
+         * re-signed. The identity is not persisted.
+         *
+         * This allows using an identity issued by a certificate authority, e.g. as
+         * a [URLEndpointListenerConfiguration.tlsIdentity] server identity or a
+         * [ClientCertificateAuthenticator] client identity.
+         *
+         * @param privateKey the RSA private key data, in PEM or DER format
+         * @param password the private key password, or null if the key is not encrypted
+         * @param certs the certificate chain, leaf certificate first, each
+         * certificate in PEM or DER format
+         * @return the identity
+         * @throws CouchbaseLiteException on failure to create the identity
+         */
+        @Throws(CouchbaseLiteException::class)
+        public fun createIdentityWithKeyPairAndCerts(
+            privateKey: ByteArray,
+            password: CharArray?,
+            certs: List<ByteArray>
+        ): TLSIdentity {
+            require(privateKey.isNotEmpty()) { "privateKey must not be empty" }
+            require(certs.isNotEmpty()) { "certs must contain at least one certificate" }
+            val keyPair = memScoped {
+                wrapCBLError { error ->
+                    CBLKeyPair_CreateWithPrivateKeyData(
+                        privateKey.toFLSlice(this),
+                        password?.concatToString().toFLString(this),
+                        error
+                    )
+                }!!
+            }
+            try {
+                val cert = certs.toCBLCertChain()
+                try {
+                    return wrapCBLError { error ->
+                        CBLTLSIdentity_IdentityWithKeyPairAndCerts(keyPair, cert, error)
+                    }!!.asTLSIdentity()
+                } finally {
+                    CBLCert_Release(cert)
+                }
+            } finally {
+                CBLKeyPair_Release(keyPair)
+            }
+        }
     }
 }
 
@@ -208,3 +259,36 @@ internal expect fun getTLSIdentity(label: String): TLSIdentity?
  * [CouchbaseLiteException] is thrown.
  */
 internal expect fun deleteTLSIdentity(label: String)
+
+internal fun ByteArray.toFLSlice(memScope: MemScope): CValue<FLSlice> {
+    val data = this
+    return cValue {
+        buf = if (data.isEmpty()) null else data.refTo(0).getPointer(memScope)
+        size = data.size.convert()
+    }
+}
+
+internal fun ByteArray.toCBLCert(): CPointer<CBLCert> = memScoped {
+    wrapCBLError { error ->
+        CBLCert_CreateWithData(this@toCBLCert.toFLSlice(this), error)
+    }!!
+}
+
+/**
+ * Builds a single CBLCert containing all of the given certificates (each in DER or
+ * PEM format) by concatenating their PEM representations: PEM data consisting of a
+ * series of certificates produces a CBLCert chain (see CBLTLSIdentity.h).
+ */
+internal fun List<ByteArray>.toCBLCertChain(): CPointer<CBLCert> {
+    require(isNotEmpty()) { "certs must contain at least one certificate" }
+    if (size == 1) return first().toCBLCert()
+    val pem = joinToString("") { certData ->
+        val cert = certData.toCBLCert()
+        try {
+            CBLCert_Data(cert, true).toByteArray().decodeToString()
+        } finally {
+            CBLCert_Release(cert)
+        }
+    }
+    return pem.encodeToByteArray().toCBLCert()
+}
