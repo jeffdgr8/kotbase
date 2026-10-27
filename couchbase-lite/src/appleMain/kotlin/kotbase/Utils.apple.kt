@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.*
+import swiftPMImport.CouchbaseLite.*
 import kotbase.ext.toKotlinInstantMillis
 import kotbase.internal.DelegatedClass
 import kotlin.time.Instant

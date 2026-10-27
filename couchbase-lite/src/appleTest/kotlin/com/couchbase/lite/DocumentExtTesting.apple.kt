@@ -15,8 +15,8 @@
  */
 package com.couchbase.lite
 
-import cocoapods.CouchbaseLite.c4Doc
-import cocoapods.CouchbaseLite.kDocExists
+import swiftPMImport.CouchbaseLite.c4Doc
+import swiftPMImport.CouchbaseLite.kDocExists
 import kotbase.Dictionary
 import kotbase.Document
 import kotbase.MutableDictionary

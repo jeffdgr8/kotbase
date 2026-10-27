@@ -1,21 +1,9 @@
 plugins {
-    `multiplatform-convention`
-    `kotlin-native-cocoapods`
+    id("multiplatform-convention")
 }
 
 kotlin {
     android.namespace = "dev.kotbase.testingsupport"
-
-    cocoapods {
-        framework {
-            binaryOption("bundleId", "dev.kotbase.testingsupport")
-            binaryOption("bundleVersion", version.toString())
-        }
-        pod("CouchbaseLite-Enterprise") {
-            version = libs.versions.couchbase.lite.objc.get()
-            linkOnly = true
-        }
-    }
 
     linkLibcblite(projects.couchbaseLiteEe)
 

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicatorProgress
+import swiftPMImport.CouchbaseLite.CBLReplicatorProgress
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryChange
+import swiftPMImport.CouchbaseLite.CBLQueryChange
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toCouchbaseLiteException
 

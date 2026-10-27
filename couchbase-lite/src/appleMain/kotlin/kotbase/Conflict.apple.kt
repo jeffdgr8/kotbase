@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLConflict
+import swiftPMImport.CouchbaseLite.CBLConflict
 import kotbase.internal.DelegatedClass
 
 public actual class Conflict

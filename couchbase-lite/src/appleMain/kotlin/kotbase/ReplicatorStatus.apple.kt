@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicatorStatus
+import swiftPMImport.CouchbaseLite.CBLReplicatorStatus
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toCouchbaseLiteException
 

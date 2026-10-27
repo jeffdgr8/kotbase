@@ -17,7 +17,7 @@
 
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLErrorHTTPNotFound
+import swiftPMImport.CouchbaseLite.CBLErrorHTTPNotFound
 import kotbase.ext.toByteArray
 import kotbase.ext.toNSData
 import kotbase.ext.wrapError

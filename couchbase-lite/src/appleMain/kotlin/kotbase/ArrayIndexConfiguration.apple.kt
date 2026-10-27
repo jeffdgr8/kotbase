@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLArrayIndexConfiguration
+import swiftPMImport.CouchbaseLite.CBLArrayIndexConfiguration
 
 public actual class ArrayIndexConfiguration
 private constructor(override val actual: CBLArrayIndexConfiguration) : IndexConfiguration(actual) {

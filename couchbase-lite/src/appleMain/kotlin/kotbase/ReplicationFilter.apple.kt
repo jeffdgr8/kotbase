@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicationFilter
+import swiftPMImport.CouchbaseLite.CBLReplicationFilter
 
 internal fun ReplicationFilter.convert(): CBLReplicationFilter {
     return { document, flags ->

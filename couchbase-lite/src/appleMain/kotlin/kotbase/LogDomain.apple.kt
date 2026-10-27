@@ -15,14 +15,16 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.*
+import swiftPMImport.CouchbaseLite.*
 
 public actual enum class LogDomain {
     DATABASE,
     QUERY,
     REPLICATOR,
     NETWORK,
-    LISTENER;
+    LISTENER,
+    PEER_DISCOVERY,
+    MULTIPEER;
 
     internal val actual: CBLLogDomain
         get() = when (this) {
@@ -31,6 +33,8 @@ public actual enum class LogDomain {
             REPLICATOR -> kCBLLogDomainReplicator
             NETWORK -> kCBLLogDomainNetwork
             LISTENER -> kCBLLogDomainListener
+            PEER_DISCOVERY -> kCBLLogDomainPeerDiscovery
+            MULTIPEER -> kCBLLogDomainMultipeer
         }
 
     public actual companion object {
@@ -50,7 +54,11 @@ public actual enum class LogDomain {
             kCBLLogDomainReplicator -> REPLICATOR
             kCBLLogDomainNetwork -> NETWORK
             kCBLLogDomainListener -> LISTENER
-            else -> error("Unexpected CBLLogDomain ($logDomain)")
+            // mDNS logs are part of DNS-SD peer discovery
+            kCBLLogDomainPeerDiscovery, kCBLLogDomainMDNS -> PEER_DISCOVERY
+            kCBLLogDomainMultipeer -> MULTIPEER
+            // called from Couchbase Lite's logging callbacks, so don't throw for domains added in newer SDKs
+            else -> DATABASE
         }
     }
 }
@@ -72,6 +80,12 @@ internal fun CBLLogDomain.toLogDomain(): Set<LogDomain> = buildSet {
     if (domains and kCBLLogDomainListener != 0UL) {
         add(LogDomain.LISTENER)
     }
+    if (domains and (kCBLLogDomainPeerDiscovery or kCBLLogDomainMDNS) != 0UL) {
+        add(LogDomain.PEER_DISCOVERY)
+    }
+    if (domains and kCBLLogDomainMultipeer != 0UL) {
+        add(LogDomain.MULTIPEER)
+    }
 }
 
 internal fun Set<LogDomain>.toCBLLogDomain(): CBLLogDomain {
@@ -90,6 +104,12 @@ internal fun Set<LogDomain>.toCBLLogDomain(): CBLLogDomain {
     }
     if (contains(LogDomain.LISTENER)) {
         domains = domains or kCBLLogDomainListener
+    }
+    if (contains(LogDomain.PEER_DISCOVERY)) {
+        domains = domains or kCBLLogDomainPeerDiscovery or kCBLLogDomainMDNS
+    }
+    if (contains(LogDomain.MULTIPEER)) {
+        domains = domains or kCBLLogDomainMultipeer
     }
     return domains
 }

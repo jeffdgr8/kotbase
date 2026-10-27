@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMessagingError
+import swiftPMImport.CouchbaseLite.CBLMessagingError
 
 internal fun ((Boolean, CBLMessagingError?) -> Unit).convert(): MessagingCompletion {
     return { success, error ->

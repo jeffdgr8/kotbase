@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLDictionary
-import cocoapods.CouchbaseLite.CBLPredictiveModelProtocol
+import swiftPMImport.CouchbaseLite.CBLDictionary
+import swiftPMImport.CouchbaseLite.CBLPredictiveModelProtocol
 import platform.darwin.NSObject
 
 internal fun PredictiveModel.convert(): CBLPredictiveModelProtocol {

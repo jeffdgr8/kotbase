@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLSessionAuthenticator
+import swiftPMImport.CouchbaseLite.CBLSessionAuthenticator
 
 public actual class SessionAuthenticator
 internal constructor(

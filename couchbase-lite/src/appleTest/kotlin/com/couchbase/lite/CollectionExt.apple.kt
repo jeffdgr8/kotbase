@@ -15,7 +15,7 @@
  */
 package com.couchbase.lite
 
-import cocoapods.CouchbaseLite.*
+import swiftPMImport.CouchbaseLite.*
 import kotbase.Collection
 import kotbase.ext.wrapCBLError
 import kotbase.internal.DelegatedClass

@@ -15,8 +15,19 @@
  */
 package com.couchbase.lite
 
-import cocoapods.CouchbaseLite.generation
 import kotbase.Document
+import kotbase.MutableDocument
 
+// CBLDocument.generation was removed from the Objective-C SDK in 3.4,
+// derive it from the revision ID's generation prefix instead
 internal actual val Document.generation: Long
-    get() = actual.generation.toLong()
+    get() {
+        val generation = revisionID?.substringBefore('-')?.toLongOrNull() ?: 0
+        return if (this is MutableDocument) {
+            // assume MutableDocument is mutated, which expects
+            // incremented generation (good enough for tests)
+            generation + 1
+        } else {
+            generation
+        }
+    }

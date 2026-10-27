@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryExpression
+import swiftPMImport.CouchbaseLite.CBLQueryExpression
 
 public actual class PropertyExpression
 internal constructor(private val property: String) : Expression(CBLQueryExpression.property(property)) {

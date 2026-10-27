@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLFullTextIndex
+import swiftPMImport.CouchbaseLite.CBLFullTextIndex
 
 public actual class FullTextIndex
 internal constructor(override val actual: CBLFullTextIndex) : Index(actual) {

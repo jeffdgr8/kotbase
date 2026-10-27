@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicatorConnectionProtocol
+import swiftPMImport.CouchbaseLite.CBLReplicatorConnectionProtocol
 
 internal fun CBLReplicatorConnectionProtocol.convert(): ReplicatorConnection {
     return object : ReplicatorConnection {

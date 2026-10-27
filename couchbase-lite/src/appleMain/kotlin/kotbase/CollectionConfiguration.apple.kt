@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLCollectionConfiguration
+import swiftPMImport.CouchbaseLite.CBLCollectionConfiguration
 import kotbase.internal.DelegatedClass
 
 public actual class CollectionConfiguration

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLFullTextIndexItem
+import swiftPMImport.CouchbaseLite.CBLFullTextIndexItem
 import kotbase.internal.DelegatedClass
 
 public actual class FullTextIndexItem

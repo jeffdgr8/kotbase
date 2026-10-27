@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQuerySelectResult
+import swiftPMImport.CouchbaseLite.CBLQuerySelectResult
 import kotbase.internal.DelegatedClass
 
 public actual open class SelectResult

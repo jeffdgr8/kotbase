@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryExpression
-import cocoapods.CouchbaseLite.CBLQueryVariableExpression
+import swiftPMImport.CouchbaseLite.CBLQueryExpression
+import swiftPMImport.CouchbaseLite.CBLQueryVariableExpression
 
 public actual class ArrayExpressionIn
 internal constructor(

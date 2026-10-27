@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLBlob
-import cocoapods.CouchbaseLite.CBLDatabase
+import swiftPMImport.CouchbaseLite.CBLBlob
+import swiftPMImport.CouchbaseLite.CBLDatabase
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toByteArray
 import kotbase.ext.toNSData

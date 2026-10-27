@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMutableArray
+import swiftPMImport.CouchbaseLite.CBLMutableArray
 import kotbase.ext.wrapCBLError
 import kotlinx.cinterop.convert
 import kotlinx.datetime.toNSDate

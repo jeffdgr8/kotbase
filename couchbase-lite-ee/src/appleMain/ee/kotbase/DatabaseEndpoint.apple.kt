@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLDatabaseEndpoint
+import swiftPMImport.CouchbaseLite.CBLDatabaseEndpoint
 
 public actual class DatabaseEndpoint
 internal constructor(

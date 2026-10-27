@@ -112,66 +112,14 @@ kotlin {
 
 #### iOS + macOS
 
-=== "Direct Download"
-
-    1. Download the binaries from here — [binary download link](
-       https://packages.couchbase.com/releases/couchbase-lite-vector-search/{{ version_vector_search }}/couchbase-lite-vector-search_xcframework_{{ version_vector_search }}.zip).
-    2. Unpack the download zip file into your Xcode project location.
-    3. Select your target settings in Xcode and drag **CouchbaseLiteVectorSearch.xcframework** from your Finder to the
-       **Frameworks, Libraries, and Embedded Content** section.
-    4. Start using Couchbase Lite Vector Search with Kotbase in your project.
-
-=== "CocoaPods"
-
-    The [Kotlin CocoaPods Gradle plugin](
-    https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-cocoapods-overview.html) can be used to
-    generate a [Podspec](https://guides.cocoapods.org/syntax/podspec.html) for your project that includes the
-    `CouchbaseLiteVectorSearch` dependency. Use `linkOnly = true` to link the dependency without generating Kotlin
-    Objective-C interop:
-
-    ```kotlin title="build.gradle.kts"
-    plugins {
-        kotlin("multiplatform")
-        kotlin("native.cocoapods")
-    }
-    
-    kotlin {
-        cocoapods {
-            ...
-            pod("CouchbaseLiteVectorSearch", version = "{{ version_vector_search }}", linkOnly = true)
-        }
-    }
-    ```
-
-=== "Swift Package Manager"
-
-    !!! note
-    
-        Using Swift Package Manager to install `CouchbaseLiteVectorSearch` requires Xcode 12+.
-    
-    You can add `CouchbaseLiteVectorSearch` to your app using Swift Package Manger (SPM).
-    
-    1. Open the project to which you are going to `add CouchbaseLiteVectorSearch`
-    2. Open the Project Editor to add a dependency.
-        1. In _Project Navigator_:
-           **Select** your XCode project file (for example, `HostApp` in the example)
-           Xcode opens the _Project Editor_ pane
-        2. In the _Project Editor_ pane:
-           **Select Project > Swift Packages** and **[+]** to add the dependency
-           Xcode opens the _Choose Package Repository_ dialog
-        3. In the _Choose Package Repository_ dialog:
-           **Enter** the appropriate Couchbase Lite URL, **[Next]** to continue
-           For Vector Search: https://github.com/couchbase/couchbase-lite-vector-search-spm.git
-        4. **Enter** the required _Version_ ({{ version_vector_search }}) and **[Next]** to continue
-        5. **[Finish]** to close the _Choose Package Repository_ dialog
-
-    Xcode displays the name, version and URL of the added `CouchbaseLiteVectorSearch` package.
-
+No extra setup is needed. `couchbase-lite-ee` declares the [Vector Search Swift package](
+https://github.com/couchbase/couchbase-lite-vector-search-spm), so it's linked along with Couchbase Lite (see
+[iOS + macOS](platforms.md#ios-macos) platform setup).
 
 #### Linux + Mingw
 
 Before you can use Vector Search, you must [download and install the Vector Search library](
-https://docs.couchbase.com/couchbase-lite/3.2/c/gs-install.html#vs-release-1-0-0) to the location in your project where
+https://docs.couchbase.com/couchbase-lite/3.4/c/gs-install.html#downloading-vector-search) to the location in your project where
 the library can be accessed and loaded at run time. The Vector Search extension for the C platform ships with supported
 prebuilt libraries containing the required dependencies.
 

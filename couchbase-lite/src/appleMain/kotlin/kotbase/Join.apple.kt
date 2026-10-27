@@ -15,9 +15,9 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryDataSource
-import cocoapods.CouchbaseLite.CBLQueryExpression
-import cocoapods.CouchbaseLite.CBLQueryJoin
+import swiftPMImport.CouchbaseLite.CBLQueryDataSource
+import swiftPMImport.CouchbaseLite.CBLQueryExpression
+import swiftPMImport.CouchbaseLite.CBLQueryJoin
 import kotbase.internal.DelegatedClass
 
 public actual open class Join

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryFunction
+import swiftPMImport.CouchbaseLite.CBLQueryFunction
 
 public actual object Function {
 

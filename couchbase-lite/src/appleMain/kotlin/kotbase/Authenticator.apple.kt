@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLAuthenticator
+import swiftPMImport.CouchbaseLite.CBLAuthenticator
 import kotbase.internal.DelegatedClass
 
 public actual sealed class Authenticator(actual: CBLAuthenticator) : DelegatedClass<CBLAuthenticator>(actual)

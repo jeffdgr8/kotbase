@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLEndpointProtocol
+import swiftPMImport.CouchbaseLite.CBLEndpointProtocol
 import kotbase.internal.DelegatedProtocol
 
 public actual sealed class Endpoint(actual: CBLEndpointProtocol) : DelegatedProtocol<CBLEndpointProtocol>(actual)

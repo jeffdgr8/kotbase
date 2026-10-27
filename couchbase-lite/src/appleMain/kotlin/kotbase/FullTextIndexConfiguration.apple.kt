@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLFullTextIndexConfiguration
+import swiftPMImport.CouchbaseLite.CBLFullTextIndexConfiguration
 import platform.Foundation.NSLocale
 import platform.Foundation.NSLocaleLanguageCode
 import platform.Foundation.currentLocale

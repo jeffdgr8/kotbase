@@ -74,6 +74,8 @@ public class KermitCouchbaseLiteLogger(
             LogDomain.REPLICATOR -> TAG_REPLICATOR
             LogDomain.NETWORK -> TAG_NETWORK
             LogDomain.LISTENER -> TAG_LISTENER
+            LogDomain.PEER_DISCOVERY -> TAG_PEER_DISCOVERY
+            LogDomain.MULTIPEER -> TAG_MULTIPEER
             else -> TAG
         }
 
@@ -84,5 +86,7 @@ public class KermitCouchbaseLiteLogger(
         const val TAG_REPLICATOR = "$TAG-REPLICATOR"
         const val TAG_NETWORK = "$TAG-NETWORK"
         const val TAG_LISTENER = "$TAG-LISTENER"
+        const val TAG_PEER_DISCOVERY = "$TAG-PEER_DISCOVERY"
+        const val TAG_MULTIPEER = "$TAG-MULTIPEER"
     }
 }

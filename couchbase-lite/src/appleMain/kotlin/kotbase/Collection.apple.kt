@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLCollection
+import swiftPMImport.CouchbaseLite.CBLCollection
 import kotbase.ext.asDispatchQueue
 import kotbase.ext.dispatcher
 import kotbase.ext.toKotlinInstantMillis

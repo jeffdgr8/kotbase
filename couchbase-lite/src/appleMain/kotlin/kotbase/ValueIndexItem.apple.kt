@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLValueIndexItem
+import swiftPMImport.CouchbaseLite.CBLValueIndexItem
 import kotbase.internal.DelegatedClass
 
 public actual class ValueIndexItem

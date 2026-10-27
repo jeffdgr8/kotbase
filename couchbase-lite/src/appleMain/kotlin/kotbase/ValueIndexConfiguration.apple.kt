@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLValueIndexConfiguration
+import swiftPMImport.CouchbaseLite.CBLValueIndexConfiguration
 
 public actual class ValueIndexConfiguration
 private constructor(override var actual: CBLValueIndexConfiguration) : IndexConfiguration(actual) {

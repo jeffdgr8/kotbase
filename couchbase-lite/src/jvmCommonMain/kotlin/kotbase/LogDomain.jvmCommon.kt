@@ -22,7 +22,9 @@ public actual enum class LogDomain {
     QUERY,
     REPLICATOR,
     NETWORK,
-    LISTENER;
+    LISTENER,
+    PEER_DISCOVERY,
+    MULTIPEER;
 
     internal val actual: CBLLogDomain
         get() = when (this) {
@@ -31,6 +33,8 @@ public actual enum class LogDomain {
             REPLICATOR -> CBLLogDomain.REPLICATOR
             NETWORK -> CBLLogDomain.NETWORK
             LISTENER -> CBLLogDomain.LISTENER
+            PEER_DISCOVERY -> CBLLogDomain.PEER_DISCOVERY
+            MULTIPEER -> CBLLogDomain.MULTIPEER
         }
 
     public actual companion object {
@@ -50,6 +54,8 @@ public actual enum class LogDomain {
             CBLLogDomain.REPLICATOR -> REPLICATOR
             CBLLogDomain.NETWORK -> NETWORK
             CBLLogDomain.LISTENER -> LISTENER
+            CBLLogDomain.PEER_DISCOVERY -> PEER_DISCOVERY
+            CBLLogDomain.MULTIPEER -> MULTIPEER
         }
     }
 }

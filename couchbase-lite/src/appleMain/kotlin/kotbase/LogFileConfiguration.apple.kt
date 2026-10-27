@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLLogFileConfiguration
+import swiftPMImport.CouchbaseLite.CBLLogFileConfiguration
 import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
 

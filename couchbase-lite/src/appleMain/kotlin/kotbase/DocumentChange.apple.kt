@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLDocumentChange
+import swiftPMImport.CouchbaseLite.CBLDocumentChange
 import kotbase.internal.DelegatedClass
 
 public actual class DocumentChange

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMessagingError
+import swiftPMImport.CouchbaseLite.CBLMessagingError
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toNSError
 

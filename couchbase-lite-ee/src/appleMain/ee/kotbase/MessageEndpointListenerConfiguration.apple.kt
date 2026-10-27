@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMessageEndpointListenerConfiguration
+import swiftPMImport.CouchbaseLite.CBLMessageEndpointListenerConfiguration
 import kotbase.internal.DelegatedClass
 import kotbase.internal.actuals
 

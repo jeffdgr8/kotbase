@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLDocument
-import cocoapods.CouchbaseLite.CBLMutableDocument
+import swiftPMImport.CouchbaseLite.CBLDocument
+import swiftPMImport.CouchbaseLite.CBLMutableDocument
 
 internal fun ConflictHandler.convert(collection: Collection): (CBLMutableDocument?, CBLDocument?) -> Boolean {
     return { document, oldDocument ->

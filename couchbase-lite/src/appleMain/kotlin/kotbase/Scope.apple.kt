@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLCollection
-import cocoapods.CouchbaseLite.CBLScope
+import swiftPMImport.CouchbaseLite.CBLCollection
+import swiftPMImport.CouchbaseLite.CBLScope
 import kotbase.ext.wrapCBLError
 import kotbase.internal.DelegatedClass
 import kotlin.experimental.ExperimentalObjCRefinement

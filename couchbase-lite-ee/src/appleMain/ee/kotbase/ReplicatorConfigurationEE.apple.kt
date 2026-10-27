@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.acceptOnlySelfSignedServerCertificate
+import swiftPMImport.CouchbaseLite.acceptOnlySelfSignedServerCertificate
 
 public actual var ReplicatorConfiguration.isAcceptOnlySelfSignedServerCertificate: Boolean
     get() = actual.acceptOnlySelfSignedServerCertificate

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLListenerPasswordAuthenticator
+import swiftPMImport.CouchbaseLite.CBLListenerPasswordAuthenticator
 
 public actual class ListenerPasswordAuthenticator
 internal constructor(override val actual: CBLListenerPasswordAuthenticator) : ListenerAuthenticator(actual) {

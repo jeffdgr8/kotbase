@@ -15,9 +15,9 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLConflict
-import cocoapods.CouchbaseLite.CBLConflictResolverProtocol
-import cocoapods.CouchbaseLite.CBLDocument
+import swiftPMImport.CouchbaseLite.CBLConflict
+import swiftPMImport.CouchbaseLite.CBLConflictResolverProtocol
+import swiftPMImport.CouchbaseLite.CBLDocument
 import platform.darwin.NSObject
 
 internal fun ConflictResolver.convert(): CBLConflictResolverProtocol {

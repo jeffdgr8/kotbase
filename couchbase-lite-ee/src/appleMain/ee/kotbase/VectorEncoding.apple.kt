@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.*
+import swiftPMImport.CouchbaseLite.*
 import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
 

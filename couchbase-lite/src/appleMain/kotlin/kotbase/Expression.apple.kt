@@ -15,9 +15,9 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryExpression
-import cocoapods.CouchbaseLite.CBLQueryFullTextIndexExpressionProtocolProtocol
-import cocoapods.CouchbaseLite.CBLQueryIndexExpressionProtocolProtocol
+import swiftPMImport.CouchbaseLite.CBLQueryExpression
+import swiftPMImport.CouchbaseLite.CBLQueryFullTextIndexExpressionProtocolProtocol
+import swiftPMImport.CouchbaseLite.CBLQueryIndexExpressionProtocolProtocol
 import kotbase.internal.DelegatedClass
 import kotbase.internal.DelegatedProtocol
 import kotbase.internal.actuals

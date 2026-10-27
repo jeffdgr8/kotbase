@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLEncryptionKey
+import swiftPMImport.CouchbaseLite.CBLEncryptionKey
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toNSData
 

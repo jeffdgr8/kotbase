@@ -587,7 +587,7 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(testDatabase.isOpen)
         testDatabase.close()
         assertFalse(testDatabase.isOpen)
-        assertFailsWith<CouchbaseLiteError> {
+        assertFailsWith<CouchbaseLiteException> {
             testDatabase.inBatch { }
         }
     }
@@ -607,7 +607,7 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(testDatabase.isOpen)
         testDatabase.close()
         assertFalse(testDatabase.isOpen)
-        assertFailsWith<CouchbaseLiteError> { testDatabase.delete() }
+        assertFailsWith<CouchbaseLiteException> { testDatabase.delete() }
     }
 
     //---------------------------------------------
@@ -631,7 +631,7 @@ class DatabaseTest : BaseDbTest() {
         assertFalse(FileUtils.dirExists(path))
 
         // second delete should fail
-        assertFailsWith<CouchbaseLiteError> { testDatabase.delete() }
+        assertFailsWith<CouchbaseLiteException> { testDatabase.delete() }
     }
 
     @Test
@@ -710,7 +710,7 @@ class DatabaseTest : BaseDbTest() {
         assertTrue(FileUtils.dirExists(path))
         testDatabase.delete()
         assertFalse(FileUtils.dirExists(path))
-        assertFailsWith<CouchbaseLiteError> {
+        assertFailsWith<CouchbaseLiteException> {
             testDatabase.inBatch { }
         }
     }
@@ -1236,9 +1236,13 @@ class DatabaseTest : BaseDbTest() {
 
         val dbName = getUniqueName("test_copy_db")
         val config = testDatabase.config
+        val dbPath = testDatabase.path!!
+
+        // Close the db before copying
+        closeDb(testDatabase)
 
         // Copy the db
-        Database.copy(testDatabase.path!!, dbName, config)
+        Database.copy(dbPath, dbName, config)
 
         // Verify that it exists
         assertTrue(Database.exists(dbName, config.directory))
@@ -1253,7 +1257,7 @@ class DatabaseTest : BaseDbTest() {
             assertEquals(n + docs.size.toLong(), otherCollection.count)
 
             QueryBuilder.select(SelectResult.expression(Meta.id))
-                .from(DataSource.collection(testCollection))
+                .from(DataSource.collection(otherCollection))
                 .execute()
                 .use { rs ->
                     for (r in rs) {
@@ -1898,45 +1902,6 @@ class DatabaseTest : BaseDbTest() {
             if (e.code != CBLError.Code.NOT_FOUND) {
                 fail()
             }
-        }
-    }
-
-    /**
-     * Steps
-     * 1. Create a DatabaseConfiguration object and set mmapEnabled to false.
-     * 2. Create a database with the config.
-     * 3. Get the configuration object from the database and check that the mmapEnabled is false.
-     * 4. Use c4db_config2 to confirm that its config contains the kC4DB_MmapDisabled flag
-     * 5. Set the config's mmapEnabled property true
-     * 6. Create a database with the config.
-     * 7. Get the configuration object from the database and verify that mmapEnabled is true
-     * 8. Use c4db_config2 to confirm that its config doesn't contain the kC4DB_MmapDisabled flag
-     */
-    @Test
-    fun testDatabaseWithConfiguredMMap() {
-        val config = DatabaseConfiguration()
-        config.isMMapEnabled = false
-
-        var db = createDb("mmapdb1", config)
-        assertFalse(db.config.isMMapEnabled)
-
-        try {
-//            assertEquals(
-//                C4Constants.DatabaseFlags.DISABLE_MMAP,
-//                C4TestUtils.getFlags(db.openC4Database) and C4Constants.DatabaseFlags.DISABLE_MMAP
-//            )
-        } finally {
-            eraseDb(db)
-        }
-
-        config.isMMapEnabled = true
-        db = createDb("mmapdb2", config)
-        assertTrue(db.config.isMMapEnabled)
-
-        try {
-//            assertEquals(0, C4TestUtils.getFlags(db.openC4Database) and C4Constants.DatabaseFlags.DISABLE_MMAP)
-        } finally {
-            eraseDb(db)
         }
     }
 

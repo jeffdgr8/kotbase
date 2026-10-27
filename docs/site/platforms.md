@@ -64,61 +64,39 @@ Kotbase supports native iOS and macOS apps via the [Couchbase Lite Objective-C S
 https://github.com/couchbase/couchbase-lite-ios). Developers with experience using Couchbase Lite in Swift should find
 Kotbase's API in Kotlin familiar.
 
-Binaries need to link with the correct version of the `CouchbaseLite` XCFramework, which can be downloaded [here](
-https://www.couchbase.com/downloads/?family=couchbase-lite) or added via [Carthage or CocoaPods](
-https://docs.couchbase.com/couchbase-lite/current/objc/gs-install.html#lbl-install-tabs). The version should match the
-major and minor version of Kotbase, e.g. CouchbaseLite {{ version_short }}.x for Kotbase {{ version_full }}.
+Kotbase links Couchbase Lite using Kotlin's [Swift Package Manager import](
+https://kotl.in/cocoapods-to-swiftpm-migration), which requires Kotlin 2.4 or later. The `couchbase-lite` and
+`couchbase-lite-ee` artifacts declare the official [Couchbase Lite Swift package](
+https://docs.couchbase.com/couchbase-lite/current/swift/gs-install.html) for their edition as a dependency, so Gradle
+resolves the matching Couchbase Lite version for you. The Enterprise Edition also includes the Vector Search extension
+package.
 
-The [Kotlin CocoaPods Gradle plugin](
-https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-cocoapods-overview.html) can also be used to
-generate a [Podspec](https://guides.cocoapods.org/syntax/podspec.html) for your project that includes the
-`CouchbaseLite` dependency. Use `linkOnly = true` to link the dependency without generating Kotlin Objective-C interop:
+Your Xcode project needs a one-time setup to embed your Kotlin framework and link these Swift packages. Run the
+following from your project root, replacing the Xcode project path and the Gradle project of your shared module:
 
-!!! example "CocoaPods plugin"
+```shell
+XCODEPROJ_PATH='/path/to/iosApp.xcodeproj' GRADLE_PROJECT_PATH=':shared' \
+    ./gradlew :shared:integrateEmbedAndSign :shared:integrateLinkagePackage
+```
 
-    === "Enterprise Edition"
-    
-        ```kotlin title="build.gradle.kts"
-        plugins {
-            kotlin("multiplatform")
-            kotlin("native.cocoapods")
-        }
-        
-        kotlin {
-            cocoapods {
-                ...
-                pod("CouchbaseLite-Enterprise", version = "{{ version_objc }}", linkOnly = true)
-            }
-        }
-        ```
+!!! warning
 
-    === "Community Edition"
-
-        ```kotlin title="build.gradle.kts"
-        plugins {
-            kotlin("multiplatform")
-            kotlin("native.cocoapods")
-        }
-
-        kotlin {
-            cocoapods {
-                ...
-                pod("CouchbaseLite", version = "{{ version_objc }}", linkOnly = true)
-            }
-        }
-        ```
+    The [Kotlin CocoaPods Gradle plugin](
+    https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-cocoapods-overview.html) can't be used with
+    dependencies that declare Swift packages. If your project uses CocoaPods, follow the [CocoaPods to SwiftPM
+    migration guide](https://kotl.in/cocoapods-to-swiftpm-migration) first.
 
 ### iOS
 
-| Version |       x64        |      ARM64       |
+| Version |      ARM64       | Simulator ARM64  |
 |:-------:|:----------------:|:----------------:|
-|   10+   | :material-check: | :material-check: |
+|   15+   | :material-check: | :material-check: |
 
 ### macOS
 
-| Version |       x64        |      ARM64       |
-|:-------:|:----------------:|:----------------:|
-| 10.14+  | :material-check: | :material-check: |
+| Version |      ARM64       |
+|:-------:|:----------------:|
+|   13+   | :material-check: |
 
 ## Linux :fontawesome-brands-linux: + Windows :fontawesome-brands-windows:
 

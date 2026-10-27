@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLDatabaseChange
+import swiftPMImport.CouchbaseLite.CBLDatabaseChange
 import kotbase.internal.DelegatedClass
 
 @Deprecated(

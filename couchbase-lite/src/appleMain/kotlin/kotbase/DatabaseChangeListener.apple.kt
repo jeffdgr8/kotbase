@@ -17,7 +17,7 @@
 
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLDatabaseChange
+import swiftPMImport.CouchbaseLite.CBLDatabaseChange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryCollation
+import swiftPMImport.CouchbaseLite.CBLQueryCollation
 import kotbase.internal.DelegatedClass
 
 public actual sealed class Collation

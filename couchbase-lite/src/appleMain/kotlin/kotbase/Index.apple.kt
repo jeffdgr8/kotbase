@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLIndex
+import swiftPMImport.CouchbaseLite.CBLIndex
 import kotbase.internal.DelegatedClass
 
 public actual sealed class Index(actual: CBLIndex) : DelegatedClass<CBLIndex>(actual)

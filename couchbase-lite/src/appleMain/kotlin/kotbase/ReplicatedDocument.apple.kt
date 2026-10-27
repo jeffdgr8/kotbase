@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicatedDocument
+import swiftPMImport.CouchbaseLite.CBLReplicatedDocument
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toCouchbaseLiteException
 

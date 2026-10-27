@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryIndex
+import swiftPMImport.CouchbaseLite.CBLQueryIndex
 import kotbase.internal.DelegatedClass
 
 public actual class QueryIndex

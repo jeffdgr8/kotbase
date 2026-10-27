@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "couchbase-lite-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/couchbase/couchbase-lite-swift.git",
+      "state" : {
+        "revision" : "572a37c73db4a60d427bf16bf12a3e992d5e1eb8",
+        "version" : "3.4.2"
+      }
+    },
+    {
+      "identity" : "couchbase-lite-swift-ee",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/couchbase/couchbase-lite-swift-ee.git",
+      "state" : {
+        "revision" : "e619f6ec113b95557d9d34c1acf6fda453b54de8",
+        "version" : "3.4.2"
+      }
+    },
+    {
+      "identity" : "couchbase-lite-vector-search-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/couchbase/couchbase-lite-vector-search-spm.git",
+      "state" : {
+        "revision" : "0d275616008c0774c82cf39c9b9d915b37b69b78",
+        "version" : "2.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}

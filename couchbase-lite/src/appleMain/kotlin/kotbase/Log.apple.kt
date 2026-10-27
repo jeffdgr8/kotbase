@@ -17,7 +17,7 @@
 
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLLog
+import swiftPMImport.CouchbaseLite.CBLLog
 import kotbase.internal.DelegatedClass
 
 @Deprecated("Use LogSinks")

@@ -15,9 +15,9 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLCollection
-import cocoapods.CouchbaseLite.CBLDatabase
-import cocoapods.CouchbaseLite.CBLQueryDataSource
+import swiftPMImport.CouchbaseLite.CBLCollection
+import swiftPMImport.CouchbaseLite.CBLDatabase
+import swiftPMImport.CouchbaseLite.CBLQueryDataSource
 import kotbase.internal.DelegatedClass
 
 public actual open class DataSource

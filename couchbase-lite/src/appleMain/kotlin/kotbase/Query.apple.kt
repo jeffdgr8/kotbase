@@ -15,14 +15,14 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQuery
-import cocoapods.CouchbaseLite.CBLQueryBuilder
-import cocoapods.CouchbaseLite.CBLQueryDataSource
-import cocoapods.CouchbaseLite.CBLQueryExpression
-import cocoapods.CouchbaseLite.CBLQueryJoin
-import cocoapods.CouchbaseLite.CBLQueryLimit
-import cocoapods.CouchbaseLite.CBLQueryOrdering
-import cocoapods.CouchbaseLite.CBLQuerySelectResult
+import swiftPMImport.CouchbaseLite.CBLQuery
+import swiftPMImport.CouchbaseLite.CBLQueryBuilder
+import swiftPMImport.CouchbaseLite.CBLQueryDataSource
+import swiftPMImport.CouchbaseLite.CBLQueryExpression
+import swiftPMImport.CouchbaseLite.CBLQueryJoin
+import swiftPMImport.CouchbaseLite.CBLQueryLimit
+import swiftPMImport.CouchbaseLite.CBLQueryOrdering
+import swiftPMImport.CouchbaseLite.CBLQuerySelectResult
 import kotbase.internal.AbstractDelegatedClass
 import kotbase.ext.asDispatchQueue
 import kotbase.ext.dispatcher

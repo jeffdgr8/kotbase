@@ -15,9 +15,9 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMessageEndpoint
-import cocoapods.CouchbaseLite.CBLMessageEndpointConnectionProtocol
-import cocoapods.CouchbaseLite.CBLMessageEndpointDelegateProtocol
+import swiftPMImport.CouchbaseLite.CBLMessageEndpoint
+import swiftPMImport.CouchbaseLite.CBLMessageEndpointConnectionProtocol
+import swiftPMImport.CouchbaseLite.CBLMessageEndpointDelegateProtocol
 import platform.darwin.NSObject
 
 internal fun MessageEndpointDelegate.convert(

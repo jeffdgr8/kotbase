@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryPredictionFunction
+import swiftPMImport.CouchbaseLite.CBLQueryPredictionFunction
 
 public actual class PredictionFunction(
     override val actual: CBLQueryPredictionFunction

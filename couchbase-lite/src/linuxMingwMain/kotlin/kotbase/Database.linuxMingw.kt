@@ -140,7 +140,7 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete() {
-        mustBeOpen {
+        mustBeOpenOrThrowNotOpen {
             wrapCBLError { error ->
                 CBLDatabase_Delete(actual, error)
             }
@@ -275,7 +275,7 @@ internal constructor(
 
     @Throws(CouchbaseLiteException::class)
     public actual fun <R> inBatch(work: Database.() -> R): R {
-        return mustBeOpen {
+        return mustBeOpenOrThrowNotOpen {
             wrapCBLError { error ->
                 CBLDatabase_BeginTransaction(actual, error)
             }
@@ -795,11 +795,25 @@ internal constructor(
         }
     }
 
+    // Couchbase Lite 3.4 throws CouchbaseLiteException instead of CouchbaseLiteError
+    // when deleting or starting a batch on a closed database
+    private fun <R> mustBeOpenOrThrowNotOpen(action: () -> R): R {
+        return withLock {
+            if (isClosed) {
+                throw CouchbaseLiteException(
+                    "Attempt to perform an operation on a closed database or a deleted collection.",
+                    CBLError.Domain.CBLITE,
+                    CBLError.Code.NOT_OPEN
+                )
+            }
+            action()
+        }
+    }
+
     override fun toString(): String {
         return buildString {
             append("Database{@${identityHashCodeHex()}: '$name")
             if (config.isFullSync) append("!")
-            if (config.isMMapEnabled) append("*")
             append("'}")
         }
     }

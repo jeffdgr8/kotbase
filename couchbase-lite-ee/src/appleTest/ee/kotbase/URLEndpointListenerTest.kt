@@ -17,7 +17,7 @@
 
 package kotbase
 
-import cocoapods.CouchbaseLite.*
+import swiftPMImport.CouchbaseLite.*
 import kotbase.ext.toSecCertificate
 import kotbase.internal.utils.PlatformUtils
 import kotbase.test.lockWithTimeout

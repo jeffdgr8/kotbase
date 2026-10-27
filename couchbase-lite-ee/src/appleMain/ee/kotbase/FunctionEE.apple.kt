@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.*
+import swiftPMImport.CouchbaseLite.*
 
 public actual fun Function.prediction(model: String, input: Expression): PredictionFunction =
     PredictionFunction(CBLQueryFunction.predictionUsingModel(model, input.actual))

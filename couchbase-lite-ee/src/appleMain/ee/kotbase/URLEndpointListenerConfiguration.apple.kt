@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLURLEndpointListenerConfiguration
+import swiftPMImport.CouchbaseLite.CBLURLEndpointListenerConfiguration
 import kotbase.internal.DelegatedClass
 import kotbase.internal.actuals
 import kotlinx.cinterop.convert

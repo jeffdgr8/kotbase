@@ -15,7 +15,7 @@
  */
 package kotbase.logging
 
-import cocoapods.CouchbaseLite.CBLLogSinks
+import swiftPMImport.CouchbaseLite.CBLLogSinks
 
 public actual object LogSinks {
 

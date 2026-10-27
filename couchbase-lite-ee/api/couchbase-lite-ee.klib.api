@@ -1,6 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64]
-// Alias: apple => [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64]
+// Targets: [iosArm64, iosSimulatorArm64, linuxArm64, linuxX64, macosArm64, mingwX64]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64]
 // Alias: linux => [linuxArm64, linuxX64]
 // Rendering settings:
 // - Signature version: 2
@@ -33,7 +33,9 @@ final enum class kotbase/DocumentFlag : kotlin/Enum<kotbase/DocumentFlag> { // k
 final enum class kotbase/LogDomain : kotlin/Enum<kotbase/LogDomain> { // kotbase/LogDomain|null[0]
     enum entry DATABASE // kotbase/LogDomain.DATABASE|null[0]
     enum entry LISTENER // kotbase/LogDomain.LISTENER|null[0]
+    enum entry MULTIPEER // kotbase/LogDomain.MULTIPEER|null[0]
     enum entry NETWORK // kotbase/LogDomain.NETWORK|null[0]
+    enum entry PEER_DISCOVERY // kotbase/LogDomain.PEER_DISCOVERY|null[0]
     enum entry QUERY // kotbase/LogDomain.QUERY|null[0]
     enum entry REPLICATOR // kotbase/LogDomain.REPLICATOR|null[0]
 
@@ -415,7 +417,7 @@ final class kotbase/ConnectionStatus { // kotbase/ConnectionStatus|null[0]
 
 final class kotbase/CouchbaseLiteError : kotlin/IllegalStateException { // kotbase/CouchbaseLiteError|null[0]
     constructor <init>(kotlin/String) // kotbase/CouchbaseLiteError.<init>|<init>(kotlin.String){}[0]
-    constructor <init>(kotlin/String, kotlin/Exception?) // kotbase/CouchbaseLiteError.<init>|<init>(kotlin.String;kotlin.Exception?){}[0]
+    constructor <init>(kotlin/String, kotlin/Throwable?) // kotbase/CouchbaseLiteError.<init>|<init>(kotlin.String;kotlin.Throwable?){}[0]
 }
 
 final class kotbase/CouchbaseLiteException : kotlin/Exception { // kotbase/CouchbaseLiteException|null[0]
@@ -673,12 +675,12 @@ final class kotbase/PredictionFunction : kotbase/Expression { // kotbase/Predict
     final fun propertyPath(kotlin/String): kotbase/Expression // kotbase/PredictionFunction.propertyPath|propertyPath(kotlin.String){}[0]
 
     // Targets: [apple]
-    constructor <init>(cocoapods.CouchbaseLite/CBLQueryPredictionFunction) // kotbase/PredictionFunction.<init>|<init>(cocoapods.CouchbaseLite.CBLQueryPredictionFunction){}[0]
+    constructor <init>(swiftPMImport.CouchbaseLite/CBLQueryPredictionFunction) // kotbase/PredictionFunction.<init>|<init>(swiftPMImport.CouchbaseLite.CBLQueryPredictionFunction){}[0]
 }
 
 final class kotbase/PredictiveIndex : kotbase/Index { // kotbase/PredictiveIndex|null[0]
     // Targets: [apple]
-    constructor <init>(cocoapods.CouchbaseLite/CBLPredictiveIndex) // kotbase/PredictiveIndex.<init>|<init>(cocoapods.CouchbaseLite.CBLPredictiveIndex){}[0]
+    constructor <init>(swiftPMImport.CouchbaseLite/CBLPredictiveIndex) // kotbase/PredictiveIndex.<init>|<init>(swiftPMImport.CouchbaseLite.CBLPredictiveIndex){}[0]
 
     // Targets: [linux, mingwX64]
     constructor <init>() // kotbase/PredictiveIndex.<init>|<init>(){}[0]
@@ -1298,7 +1300,7 @@ final class kotbase.ext/NSErrorException : kotlin/Exception { // kotbase.ext/NSE
 }
 
 // Targets: [apple]
-final class kotbase/Blob : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLBlob> { // kotbase/Blob|null[0]
+final class kotbase/Blob : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLBlob> { // kotbase/Blob|null[0]
     constructor <init>(kotlin/String, kotlin/ByteArray) // kotbase/Blob.<init>|<init>(kotlin.String;kotlin.ByteArray){}[0]
     constructor <init>(kotlin/String, kotlin/String) // kotbase/Blob.<init>|<init>(kotlin.String;kotlin.String){}[0]
     constructor <init>(kotlin/String, kotlinx.io/Source) // kotbase/Blob.<init>|<init>(kotlin.String;kotlinx.io.Source){}[0]
@@ -1324,7 +1326,7 @@ final class kotbase/Blob : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLi
 }
 
 // Targets: [apple]
-final class kotbase/Collection : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLCollection>, kotlin/AutoCloseable { // kotbase/Collection|null[0]
+final class kotbase/Collection : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLCollection>, kotlin/AutoCloseable { // kotbase/Collection|null[0]
     final val count // kotbase/Collection.count|{}count[0]
         final fun <get-count>(): kotlin/Long // kotbase/Collection.count.<get-count>|<get-count>(){}[0]
     final val database // kotbase/Collection.database|{}database[0]
@@ -1365,7 +1367,7 @@ final class kotbase/Collection : kotbase.internal/DelegatedClass<cocoapods.Couch
 }
 
 // Targets: [apple]
-final class kotbase/CollectionChange : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLCollectionChange> { // kotbase/CollectionChange|null[0]
+final class kotbase/CollectionChange : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLCollectionChange> { // kotbase/CollectionChange|null[0]
     final val collection // kotbase/CollectionChange.collection|{}collection[0]
         final fun <get-collection>(): kotbase/Collection // kotbase/CollectionChange.collection.<get-collection>|<get-collection>(){}[0]
     final val documentIDs // kotbase/CollectionChange.documentIDs|{}documentIDs[0]
@@ -1373,7 +1375,7 @@ final class kotbase/CollectionChange : kotbase.internal/DelegatedClass<cocoapods
 }
 
 // Targets: [apple]
-final class kotbase/CollectionConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLCollectionConfiguration> { // kotbase/CollectionConfiguration|null[0]
+final class kotbase/CollectionConfiguration : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLCollectionConfiguration> { // kotbase/CollectionConfiguration|null[0]
     constructor <init>(kotlin.collections/List<kotlin/String>? = ..., kotlin.collections/List<kotlin/String>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function2<kotbase/Document, kotlin.collections/Set<kotbase/DocumentFlag>, kotlin/Boolean>? = ..., kotlin/Function1<kotbase/Conflict, kotbase/Document?>? = ...) // kotbase/CollectionConfiguration.<init>|<init>(kotlin.collections.List<kotlin.String>?;kotlin.collections.List<kotlin.String>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function2<kotbase.Document,kotlin.collections.Set<kotbase.DocumentFlag>,kotlin.Boolean>?;kotlin.Function1<kotbase.Conflict,kotbase.Document?>?){}[0]
 
     final var channels // kotbase/CollectionConfiguration.channels|{}channels[0]
@@ -1400,7 +1402,7 @@ final class kotbase/CollectionConfiguration : kotbase.internal/DelegatedClass<co
 }
 
 // Targets: [apple]
-final class kotbase/Conflict : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLConflict> { // kotbase/Conflict|null[0]
+final class kotbase/Conflict : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLConflict> { // kotbase/Conflict|null[0]
     final val documentId // kotbase/Conflict.documentId|{}documentId[0]
         final fun <get-documentId>(): kotlin/String // kotbase/Conflict.documentId.<get-documentId>|<get-documentId>(){}[0]
     final val localDocument // kotbase/Conflict.localDocument|{}localDocument[0]
@@ -1410,7 +1412,7 @@ final class kotbase/Conflict : kotbase.internal/DelegatedClass<cocoapods.Couchba
 }
 
 // Targets: [apple]
-final class kotbase/ConsoleLogger : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLConsoleLogger>, kotbase/Logger { // kotbase/ConsoleLogger|null[0]
+final class kotbase/ConsoleLogger : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLConsoleLogger>, kotbase/Logger { // kotbase/ConsoleLogger|null[0]
     final var domains // kotbase/ConsoleLogger.domains|{}domains[0]
         final fun <get-domains>(): kotlin.collections/Set<kotbase/LogDomain> // kotbase/ConsoleLogger.domains.<get-domains>|<get-domains>(){}[0]
         final fun <set-domains>(kotlin.collections/Set<kotbase/LogDomain>) // kotbase/ConsoleLogger.domains.<set-domains>|<set-domains>(kotlin.collections.Set<kotbase.LogDomain>){}[0]
@@ -1423,7 +1425,7 @@ final class kotbase/ConsoleLogger : kotbase.internal/DelegatedClass<cocoapods.Co
 }
 
 // Targets: [apple]
-final class kotbase/Database : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDatabase>, kotlin/AutoCloseable { // kotbase/Database|null[0]
+final class kotbase/Database : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLDatabase>, kotlin/AutoCloseable { // kotbase/Database|null[0]
     constructor <init>(kotlin/String) // kotbase/Database.<init>|<init>(kotlin.String){}[0]
     constructor <init>(kotlin/String, kotbase/DatabaseConfiguration) // kotbase/Database.<init>|<init>(kotlin.String;kotbase.DatabaseConfiguration){}[0]
 
@@ -1496,7 +1498,7 @@ final class kotbase/Database : kotbase.internal/DelegatedClass<cocoapods.Couchba
 }
 
 // Targets: [apple]
-final class kotbase/DatabaseChange : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDatabaseChange> { // kotbase/DatabaseChange|null[0]
+final class kotbase/DatabaseChange : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLDatabaseChange> { // kotbase/DatabaseChange|null[0]
     final val database // kotbase/DatabaseChange.database|{}database[0]
         final fun <get-database>(): kotbase/Database // kotbase/DatabaseChange.database.<get-database>|<get-database>(){}[0]
     final val documentIDs // kotbase/DatabaseChange.documentIDs|{}documentIDs[0]
@@ -1504,7 +1506,7 @@ final class kotbase/DatabaseChange : kotbase.internal/DelegatedClass<cocoapods.C
 }
 
 // Targets: [apple]
-final class kotbase/DatabaseConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDatabaseConfiguration> { // kotbase/DatabaseConfiguration|null[0]
+final class kotbase/DatabaseConfiguration : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLDatabaseConfiguration> { // kotbase/DatabaseConfiguration|null[0]
     constructor <init>() // kotbase/DatabaseConfiguration.<init>|<init>(){}[0]
     constructor <init>(kotbase/DatabaseConfiguration?) // kotbase/DatabaseConfiguration.<init>|<init>(kotbase.DatabaseConfiguration?){}[0]
 
@@ -1514,17 +1516,13 @@ final class kotbase/DatabaseConfiguration : kotbase.internal/DelegatedClass<coco
     final var isFullSync // kotbase/DatabaseConfiguration.isFullSync|{}isFullSync[0]
         final fun <get-isFullSync>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isFullSync.<get-isFullSync>|<get-isFullSync>(){}[0]
         final fun <set-isFullSync>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isFullSync.<set-isFullSync>|<set-isFullSync>(kotlin.Boolean){}[0]
-    final var isMMapEnabled // kotbase/DatabaseConfiguration.isMMapEnabled|{}isMMapEnabled[0]
-        final fun <get-isMMapEnabled>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isMMapEnabled.<get-isMMapEnabled>|<get-isMMapEnabled>(){}[0]
-        final fun <set-isMMapEnabled>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isMMapEnabled.<set-isMMapEnabled>|<set-isMMapEnabled>(kotlin.Boolean){}[0]
 
     final fun setDirectory(kotlin/String): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setDirectory|setDirectory(kotlin.String){}[0]
     final fun setFullSync(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setFullSync|setFullSync(kotlin.Boolean){}[0]
-    final fun setMMapEnabled(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setMMapEnabled|setMMapEnabled(kotlin.Boolean){}[0]
 }
 
 // Targets: [apple]
-final class kotbase/DocumentChange : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDocumentChange> { // kotbase/DocumentChange|null[0]
+final class kotbase/DocumentChange : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLDocumentChange> { // kotbase/DocumentChange|null[0]
     final val collection // kotbase/DocumentChange.collection|{}collection[0]
         final fun <get-collection>(): kotbase/Collection // kotbase/DocumentChange.collection.<get-collection>|<get-collection>(){}[0]
     final val database // kotbase/DocumentChange.database|{}database[0]
@@ -1534,7 +1532,7 @@ final class kotbase/DocumentChange : kotbase.internal/DelegatedClass<cocoapods.C
 }
 
 // Targets: [apple]
-final class kotbase/DocumentReplication : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDocumentReplication> { // kotbase/DocumentReplication|null[0]
+final class kotbase/DocumentReplication : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLDocumentReplication> { // kotbase/DocumentReplication|null[0]
     final val documents // kotbase/DocumentReplication.documents|{}documents[0]
         final fun <get-documents>(): kotlin.collections/List<kotbase/ReplicatedDocument> // kotbase/DocumentReplication.documents.<get-documents>|<get-documents>(){}[0]
     final val isPush // kotbase/DocumentReplication.isPush|{}isPush[0]
@@ -1546,13 +1544,13 @@ final class kotbase/DocumentReplication : kotbase.internal/DelegatedClass<cocoap
 }
 
 // Targets: [apple]
-final class kotbase/EncryptionKey : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLEncryptionKey> { // kotbase/EncryptionKey|null[0]
+final class kotbase/EncryptionKey : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLEncryptionKey> { // kotbase/EncryptionKey|null[0]
     constructor <init>(kotlin/ByteArray) // kotbase/EncryptionKey.<init>|<init>(kotlin.ByteArray){}[0]
     constructor <init>(kotlin/String) // kotbase/EncryptionKey.<init>|<init>(kotlin.String){}[0]
 }
 
 // Targets: [apple]
-final class kotbase/FileLogger : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLFileLogger>, kotbase/Logger { // kotbase/FileLogger|null[0]
+final class kotbase/FileLogger : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLFileLogger>, kotbase/Logger { // kotbase/FileLogger|null[0]
     final var config // kotbase/FileLogger.config|{}config[0]
         final fun <get-config>(): kotbase/LogFileConfiguration? // kotbase/FileLogger.config.<get-config>|<get-config>(){}[0]
         final fun <set-config>(kotbase/LogFileConfiguration?) // kotbase/FileLogger.config.<set-config>|<set-config>(kotbase.LogFileConfiguration?){}[0]
@@ -1564,7 +1562,7 @@ final class kotbase/FileLogger : kotbase.internal/DelegatedClass<cocoapods.Couch
 }
 
 // Targets: [apple]
-final class kotbase/From : kotbase.internal/AbstractDelegatedClass<cocoapods.CouchbaseLite/CBLQuery>, kotbase/GroupByRouter, kotbase/JoinRouter, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query, kotbase/WhereRouter { // kotbase/From|null[0]
+final class kotbase/From : kotbase.internal/AbstractDelegatedClass<swiftPMImport.CouchbaseLite/CBLQuery>, kotbase/GroupByRouter, kotbase/JoinRouter, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query, kotbase/WhereRouter { // kotbase/From|null[0]
     final var parameters // kotbase/From.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/From.parameters.<get-parameters>|<get-parameters>(){}[0]
         final fun <set-parameters>(kotbase/Parameters?) // kotbase/From.parameters.<set-parameters>|<set-parameters>(kotbase.Parameters?){}[0]
@@ -1584,14 +1582,14 @@ final class kotbase/From : kotbase.internal/AbstractDelegatedClass<cocoapods.Cou
 }
 
 // Targets: [apple]
-final class kotbase/FullTextIndexItem : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLFullTextIndexItem> { // kotbase/FullTextIndexItem|null[0]
+final class kotbase/FullTextIndexItem : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLFullTextIndexItem> { // kotbase/FullTextIndexItem|null[0]
     final object Companion { // kotbase/FullTextIndexItem.Companion|null[0]
         final fun property(kotlin/String): kotbase/FullTextIndexItem // kotbase/FullTextIndexItem.Companion.property|property(kotlin.String){}[0]
     }
 }
 
 // Targets: [apple]
-final class kotbase/GroupBy : kotbase.internal/AbstractDelegatedClass<cocoapods.CouchbaseLite/CBLQuery>, kotbase/HavingRouter, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query { // kotbase/GroupBy|null[0]
+final class kotbase/GroupBy : kotbase.internal/AbstractDelegatedClass<swiftPMImport.CouchbaseLite/CBLQuery>, kotbase/HavingRouter, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query { // kotbase/GroupBy|null[0]
     final var parameters // kotbase/GroupBy.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/GroupBy.parameters.<get-parameters>|<get-parameters>(){}[0]
         final fun <set-parameters>(kotbase/Parameters?) // kotbase/GroupBy.parameters.<set-parameters>|<set-parameters>(kotbase.Parameters?){}[0]
@@ -1609,7 +1607,7 @@ final class kotbase/GroupBy : kotbase.internal/AbstractDelegatedClass<cocoapods.
 }
 
 // Targets: [apple]
-final class kotbase/Having : kotbase.internal/AbstractDelegatedClass<cocoapods.CouchbaseLite/CBLQuery>, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query { // kotbase/Having|null[0]
+final class kotbase/Having : kotbase.internal/AbstractDelegatedClass<swiftPMImport.CouchbaseLite/CBLQuery>, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query { // kotbase/Having|null[0]
     final var parameters // kotbase/Having.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/Having.parameters.<get-parameters>|<get-parameters>(){}[0]
         final fun <set-parameters>(kotbase/Parameters?) // kotbase/Having.parameters.<set-parameters>|<set-parameters>(kotbase.Parameters?){}[0]
@@ -1626,7 +1624,7 @@ final class kotbase/Having : kotbase.internal/AbstractDelegatedClass<cocoapods.C
 }
 
 // Targets: [apple]
-final class kotbase/Joins : kotbase.internal/AbstractDelegatedClass<cocoapods.CouchbaseLite/CBLQuery>, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query, kotbase/WhereRouter { // kotbase/Joins|null[0]
+final class kotbase/Joins : kotbase.internal/AbstractDelegatedClass<swiftPMImport.CouchbaseLite/CBLQuery>, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query, kotbase/WhereRouter { // kotbase/Joins|null[0]
     final var parameters // kotbase/Joins.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/Joins.parameters.<get-parameters>|<get-parameters>(){}[0]
         final fun <set-parameters>(kotbase/Parameters?) // kotbase/Joins.parameters.<set-parameters>|<set-parameters>(kotbase.Parameters?){}[0]
@@ -1644,7 +1642,7 @@ final class kotbase/Joins : kotbase.internal/AbstractDelegatedClass<cocoapods.Co
 }
 
 // Targets: [apple]
-final class kotbase/Limit : kotbase.internal/AbstractDelegatedClass<cocoapods.CouchbaseLite/CBLQuery>, kotbase/Query { // kotbase/Limit|null[0]
+final class kotbase/Limit : kotbase.internal/AbstractDelegatedClass<swiftPMImport.CouchbaseLite/CBLQuery>, kotbase/Query { // kotbase/Limit|null[0]
     final var parameters // kotbase/Limit.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/Limit.parameters.<get-parameters>|<get-parameters>(){}[0]
         final fun <set-parameters>(kotbase/Parameters?) // kotbase/Limit.parameters.<set-parameters>|<set-parameters>(kotbase.Parameters?){}[0]
@@ -1658,7 +1656,7 @@ final class kotbase/Limit : kotbase.internal/AbstractDelegatedClass<cocoapods.Co
 }
 
 // Targets: [apple]
-final class kotbase/Log : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLLog> { // kotbase/Log|null[0]
+final class kotbase/Log : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLLog> { // kotbase/Log|null[0]
     final val console // kotbase/Log.console|{}console[0]
         final fun <get-console>(): kotbase/ConsoleLogger // kotbase/Log.console.<get-console>|<get-console>(){}[0]
     final val file // kotbase/Log.file|{}file[0]
@@ -1670,7 +1668,7 @@ final class kotbase/Log : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLit
 }
 
 // Targets: [apple]
-final class kotbase/LogFileConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLLogFileConfiguration> { // kotbase/LogFileConfiguration|null[0]
+final class kotbase/LogFileConfiguration : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLLogFileConfiguration> { // kotbase/LogFileConfiguration|null[0]
     constructor <init>(kotbase/LogFileConfiguration) // kotbase/LogFileConfiguration.<init>|<init>(kotbase.LogFileConfiguration){}[0]
     constructor <init>(kotlin/String) // kotbase/LogFileConfiguration.<init>|<init>(kotlin.String){}[0]
     constructor <init>(kotlin/String, kotbase/LogFileConfiguration?) // kotbase/LogFileConfiguration.<init>|<init>(kotlin.String;kotbase.LogFileConfiguration?){}[0]
@@ -1696,7 +1694,7 @@ final class kotbase/LogFileConfiguration : kotbase.internal/DelegatedClass<cocoa
 }
 
 // Targets: [apple]
-final class kotbase/Message : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLMessage> { // kotbase/Message|null[0]
+final class kotbase/Message : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLMessage> { // kotbase/Message|null[0]
     final fun toData(): kotlin/ByteArray // kotbase/Message.toData|toData(){}[0]
 
     final object Companion { // kotbase/Message.Companion|null[0]
@@ -1705,7 +1703,7 @@ final class kotbase/Message : kotbase.internal/DelegatedClass<cocoapods.Couchbas
 }
 
 // Targets: [apple]
-final class kotbase/MessageEndpointListener : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLMessageEndpointListener> { // kotbase/MessageEndpointListener|null[0]
+final class kotbase/MessageEndpointListener : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLMessageEndpointListener> { // kotbase/MessageEndpointListener|null[0]
     constructor <init>(kotbase/MessageEndpointListenerConfiguration) // kotbase/MessageEndpointListener.<init>|<init>(kotbase.MessageEndpointListenerConfiguration){}[0]
 
     final fun accept(kotbase/MessageEndpointConnection) // kotbase/MessageEndpointListener.accept|accept(kotbase.MessageEndpointConnection){}[0]
@@ -1718,7 +1716,7 @@ final class kotbase/MessageEndpointListener : kotbase.internal/DelegatedClass<co
 }
 
 // Targets: [apple]
-final class kotbase/MessageEndpointListenerChange : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLMessageEndpointListenerChange> { // kotbase/MessageEndpointListenerChange|null[0]
+final class kotbase/MessageEndpointListenerChange : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLMessageEndpointListenerChange> { // kotbase/MessageEndpointListenerChange|null[0]
     final val connection // kotbase/MessageEndpointListenerChange.connection|{}connection[0]
         final fun <get-connection>(): kotbase/MessageEndpointConnection // kotbase/MessageEndpointListenerChange.connection.<get-connection>|<get-connection>(){}[0]
     final val status // kotbase/MessageEndpointListenerChange.status|{}status[0]
@@ -1726,7 +1724,7 @@ final class kotbase/MessageEndpointListenerChange : kotbase.internal/DelegatedCl
 }
 
 // Targets: [apple]
-final class kotbase/MessageEndpointListenerConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLMessageEndpointListenerConfiguration> { // kotbase/MessageEndpointListenerConfiguration|null[0]
+final class kotbase/MessageEndpointListenerConfiguration : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLMessageEndpointListenerConfiguration> { // kotbase/MessageEndpointListenerConfiguration|null[0]
     constructor <init>(kotbase/Database, kotbase/ProtocolType) // kotbase/MessageEndpointListenerConfiguration.<init>|<init>(kotbase.Database;kotbase.ProtocolType){}[0]
     constructor <init>(kotlin.collections/Set<kotbase/Collection>, kotbase/ProtocolType) // kotbase/MessageEndpointListenerConfiguration.<init>|<init>(kotlin.collections.Set<kotbase.Collection>;kotbase.ProtocolType){}[0]
 
@@ -1739,7 +1737,7 @@ final class kotbase/MessageEndpointListenerConfiguration : kotbase.internal/Dele
 }
 
 // Targets: [apple]
-final class kotbase/MessagingError : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLMessagingError> { // kotbase/MessagingError|null[0]
+final class kotbase/MessagingError : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLMessagingError> { // kotbase/MessagingError|null[0]
     constructor <init>(kotlin/Exception, kotlin/Boolean) // kotbase/MessagingError.<init>|<init>(kotlin.Exception;kotlin.Boolean){}[0]
 
     final val error // kotbase/MessagingError.error|{}error[0]
@@ -1749,7 +1747,7 @@ final class kotbase/MessagingError : kotbase.internal/DelegatedClass<cocoapods.C
 }
 
 // Targets: [apple]
-final class kotbase/OrderBy : kotbase.internal/AbstractDelegatedClass<cocoapods.CouchbaseLite/CBLQuery>, kotbase/LimitRouter, kotbase/Query { // kotbase/OrderBy|null[0]
+final class kotbase/OrderBy : kotbase.internal/AbstractDelegatedClass<swiftPMImport.CouchbaseLite/CBLQuery>, kotbase/LimitRouter, kotbase/Query { // kotbase/OrderBy|null[0]
     final var parameters // kotbase/OrderBy.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/OrderBy.parameters.<get-parameters>|<get-parameters>(){}[0]
         final fun <set-parameters>(kotbase/Parameters?) // kotbase/OrderBy.parameters.<set-parameters>|<set-parameters>(kotbase.Parameters?){}[0]
@@ -1765,7 +1763,7 @@ final class kotbase/OrderBy : kotbase.internal/AbstractDelegatedClass<cocoapods.
 }
 
 // Targets: [apple]
-final class kotbase/Parameters : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryParameters> { // kotbase/Parameters|null[0]
+final class kotbase/Parameters : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryParameters> { // kotbase/Parameters|null[0]
     constructor <init>() // kotbase/Parameters.<init>|<init>(){}[0]
     constructor <init>(kotbase/Parameters?) // kotbase/Parameters.<init>|<init>(kotbase.Parameters?){}[0]
 
@@ -1785,7 +1783,7 @@ final class kotbase/Parameters : kotbase.internal/DelegatedClass<cocoapods.Couch
 }
 
 // Targets: [apple]
-final class kotbase/QueryChange : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryChange> { // kotbase/QueryChange|null[0]
+final class kotbase/QueryChange : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryChange> { // kotbase/QueryChange|null[0]
     final val error // kotbase/QueryChange.error|{}error[0]
         final fun <get-error>(): kotlin/Throwable? // kotbase/QueryChange.error.<get-error>|<get-error>(){}[0]
     final val query // kotbase/QueryChange.query|{}query[0]
@@ -1795,7 +1793,7 @@ final class kotbase/QueryChange : kotbase.internal/DelegatedClass<cocoapods.Couc
 }
 
 // Targets: [apple]
-final class kotbase/QueryIndex : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryIndex> { // kotbase/QueryIndex|null[0]
+final class kotbase/QueryIndex : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryIndex> { // kotbase/QueryIndex|null[0]
     final val collection // kotbase/QueryIndex.collection|{}collection[0]
         final fun <get-collection>(): kotbase/Collection // kotbase/QueryIndex.collection.<get-collection>|<get-collection>(){}[0]
     final val name // kotbase/QueryIndex.name|{}name[0]
@@ -1803,7 +1801,7 @@ final class kotbase/QueryIndex : kotbase.internal/DelegatedClass<cocoapods.Couch
 }
 
 // Targets: [apple]
-final class kotbase/ReplicatedDocument : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLReplicatedDocument> { // kotbase/ReplicatedDocument|null[0]
+final class kotbase/ReplicatedDocument : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLReplicatedDocument> { // kotbase/ReplicatedDocument|null[0]
     final val collection // kotbase/ReplicatedDocument.collection|{}collection[0]
         final fun <get-collection>(): kotlin/String // kotbase/ReplicatedDocument.collection.<get-collection>|<get-collection>(){}[0]
     final val error // kotbase/ReplicatedDocument.error|{}error[0]
@@ -1819,7 +1817,7 @@ final class kotbase/ReplicatedDocument : kotbase.internal/DelegatedClass<cocoapo
 }
 
 // Targets: [apple]
-final class kotbase/Replicator : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLReplicator>, kotlin/AutoCloseable { // kotbase/Replicator|null[0]
+final class kotbase/Replicator : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLReplicator>, kotlin/AutoCloseable { // kotbase/Replicator|null[0]
     constructor <init>(kotbase/ReplicatorConfiguration) // kotbase/Replicator.<init>|<init>(kotbase.ReplicatorConfiguration){}[0]
 
     final val config // kotbase/Replicator.config|{}config[0]
@@ -1851,7 +1849,7 @@ final class kotbase/Replicator : kotbase.internal/DelegatedClass<cocoapods.Couch
 }
 
 // Targets: [apple]
-final class kotbase/ReplicatorChange : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLReplicatorChange> { // kotbase/ReplicatorChange|null[0]
+final class kotbase/ReplicatorChange : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLReplicatorChange> { // kotbase/ReplicatorChange|null[0]
     final val replicator // kotbase/ReplicatorChange.replicator|{}replicator[0]
         final fun <get-replicator>(): kotbase/Replicator // kotbase/ReplicatorChange.replicator.<get-replicator>|<get-replicator>(){}[0]
     final val status // kotbase/ReplicatorChange.status|{}status[0]
@@ -1861,7 +1859,7 @@ final class kotbase/ReplicatorChange : kotbase.internal/DelegatedClass<cocoapods
 }
 
 // Targets: [apple]
-final class kotbase/ReplicatorConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLReplicatorConfiguration> { // kotbase/ReplicatorConfiguration|null[0]
+final class kotbase/ReplicatorConfiguration : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLReplicatorConfiguration> { // kotbase/ReplicatorConfiguration|null[0]
     constructor <init>(kotbase/Database, kotbase/Endpoint) // kotbase/ReplicatorConfiguration.<init>|<init>(kotbase.Database;kotbase.Endpoint){}[0]
     constructor <init>(kotbase/Endpoint) // kotbase/ReplicatorConfiguration.<init>|<init>(kotbase.Endpoint){}[0]
     constructor <init>(kotbase/ReplicatorConfiguration) // kotbase/ReplicatorConfiguration.<init>|<init>(kotbase.ReplicatorConfiguration){}[0]
@@ -1944,7 +1942,7 @@ final class kotbase/ReplicatorConfiguration : kotbase.internal/DelegatedClass<co
 }
 
 // Targets: [apple]
-final class kotbase/ReplicatorStatus : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLReplicatorStatus> { // kotbase/ReplicatorStatus|null[0]
+final class kotbase/ReplicatorStatus : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLReplicatorStatus> { // kotbase/ReplicatorStatus|null[0]
     final val activityLevel // kotbase/ReplicatorStatus.activityLevel|{}activityLevel[0]
         final fun <get-activityLevel>(): kotbase/ReplicatorActivityLevel // kotbase/ReplicatorStatus.activityLevel.<get-activityLevel>|<get-activityLevel>(){}[0]
     final val error // kotbase/ReplicatorStatus.error|{}error[0]
@@ -1956,7 +1954,7 @@ final class kotbase/ReplicatorStatus : kotbase.internal/DelegatedClass<cocoapods
 }
 
 // Targets: [apple]
-final class kotbase/Result : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryResult>, kotbase/ArrayInterface, kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Result|null[0]
+final class kotbase/Result : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryResult>, kotbase/ArrayInterface, kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Result|null[0]
     final val count // kotbase/Result.count|{}count[0]
         final fun <get-count>(): kotlin/Int // kotbase/Result.count.<get-count>|<get-count>(){}[0]
     final val keys // kotbase/Result.keys|{}keys[0]
@@ -1994,7 +1992,7 @@ final class kotbase/Result : kotbase.internal/DelegatedClass<cocoapods.Couchbase
 }
 
 // Targets: [apple]
-final class kotbase/ResultSet : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryResultSet>, kotlin.collections/Iterable<kotbase/Result>, kotlin/AutoCloseable { // kotbase/ResultSet|null[0]
+final class kotbase/ResultSet : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryResultSet>, kotlin.collections/Iterable<kotbase/Result>, kotlin/AutoCloseable { // kotbase/ResultSet|null[0]
     final fun allResults(): kotlin.collections/List<kotbase/Result> // kotbase/ResultSet.allResults|allResults(){}[0]
     final fun close() // kotbase/ResultSet.close|close(){}[0]
     final fun iterator(): kotlin.collections/Iterator<kotbase/Result> // kotbase/ResultSet.iterator|iterator(){}[0]
@@ -2002,7 +2000,7 @@ final class kotbase/ResultSet : kotbase.internal/DelegatedClass<cocoapods.Couchb
 }
 
 // Targets: [apple]
-final class kotbase/Scope : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLScope> { // kotbase/Scope|null[0]
+final class kotbase/Scope : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLScope> { // kotbase/Scope|null[0]
     final val collections // kotbase/Scope.collections|{}collections[0]
         final fun <get-collections>(): kotlin.collections/Set<kotbase/Collection> // kotbase/Scope.collections.<get-collections>|<get-collections>(){}[0]
     final val database // kotbase/Scope.database|{}database[0]
@@ -2017,7 +2015,7 @@ final class kotbase/Scope : kotbase.internal/DelegatedClass<cocoapods.CouchbaseL
 }
 
 // Targets: [apple]
-final class kotbase/Select : kotbase.internal/AbstractDelegatedClass<cocoapods.CouchbaseLite/CBLQuery>, kotbase/FromRouter, kotbase/Query { // kotbase/Select|null[0]
+final class kotbase/Select : kotbase.internal/AbstractDelegatedClass<swiftPMImport.CouchbaseLite/CBLQuery>, kotbase/FromRouter, kotbase/Query { // kotbase/Select|null[0]
     final var parameters // kotbase/Select.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/Select.parameters.<get-parameters>|<get-parameters>(){}[0]
         final fun <set-parameters>(kotbase/Parameters?) // kotbase/Select.parameters.<set-parameters>|<set-parameters>(kotbase.Parameters?){}[0]
@@ -2032,7 +2030,7 @@ final class kotbase/Select : kotbase.internal/AbstractDelegatedClass<cocoapods.C
 }
 
 // Targets: [apple]
-final class kotbase/TLSIdentity : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLTLSIdentity> { // kotbase/TLSIdentity|null[0]
+final class kotbase/TLSIdentity : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLTLSIdentity> { // kotbase/TLSIdentity|null[0]
     final val certs // kotbase/TLSIdentity.certs|{}certs[0]
         final fun <get-certs>(): kotlin.collections/List<kotlin/ByteArray> // kotbase/TLSIdentity.certs.<get-certs>|<get-certs>(){}[0]
     final val expiration // kotbase/TLSIdentity.expiration|{}expiration[0]
@@ -2048,7 +2046,7 @@ final class kotbase/TLSIdentity : kotbase.internal/DelegatedClass<cocoapods.Couc
 }
 
 // Targets: [apple]
-final class kotbase/URLEndpointListener : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLURLEndpointListener> { // kotbase/URLEndpointListener|null[0]
+final class kotbase/URLEndpointListener : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLURLEndpointListener> { // kotbase/URLEndpointListener|null[0]
     constructor <init>(kotbase/URLEndpointListenerConfiguration) // kotbase/URLEndpointListener.<init>|<init>(kotbase.URLEndpointListenerConfiguration){}[0]
 
     final val config // kotbase/URLEndpointListener.config|{}config[0]
@@ -2067,7 +2065,7 @@ final class kotbase/URLEndpointListener : kotbase.internal/DelegatedClass<cocoap
 }
 
 // Targets: [apple]
-final class kotbase/URLEndpointListenerConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLURLEndpointListenerConfiguration> { // kotbase/URLEndpointListenerConfiguration|null[0]
+final class kotbase/URLEndpointListenerConfiguration : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLURLEndpointListenerConfiguration> { // kotbase/URLEndpointListenerConfiguration|null[0]
     constructor <init>(kotbase/Database, kotlin/String? = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotbase/TLSIdentity? = ..., kotbase/ListenerAuthenticator? = ..., kotlin/Boolean = ..., kotlin/Boolean = ...) // kotbase/URLEndpointListenerConfiguration.<init>|<init>(kotbase.Database;kotlin.String?;kotlin.Int;kotlin.Boolean;kotbase.TLSIdentity?;kotbase.ListenerAuthenticator?;kotlin.Boolean;kotlin.Boolean){}[0]
     constructor <init>(kotbase/URLEndpointListenerConfiguration) // kotbase/URLEndpointListenerConfiguration.<init>|<init>(kotbase.URLEndpointListenerConfiguration){}[0]
     constructor <init>(kotlin.collections/Set<kotbase/Collection>, kotlin/String? = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotbase/TLSIdentity? = ..., kotbase/ListenerAuthenticator? = ..., kotlin/Boolean = ..., kotlin/Boolean = ...) // kotbase/URLEndpointListenerConfiguration.<init>|<init>(kotlin.collections.Set<kotbase.Collection>;kotlin.String?;kotlin.Int;kotlin.Boolean;kotbase.TLSIdentity?;kotbase.ListenerAuthenticator?;kotlin.Boolean;kotlin.Boolean){}[0]
@@ -2103,7 +2101,7 @@ final class kotbase/URLEndpointListenerConfiguration : kotbase.internal/Delegate
 }
 
 // Targets: [apple]
-final class kotbase/ValueIndexItem : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLValueIndexItem> { // kotbase/ValueIndexItem|null[0]
+final class kotbase/ValueIndexItem : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLValueIndexItem> { // kotbase/ValueIndexItem|null[0]
     final object Companion { // kotbase/ValueIndexItem.Companion|null[0]
         final fun expression(kotbase/Expression): kotbase/ValueIndexItem // kotbase/ValueIndexItem.Companion.expression|expression(kotbase.Expression){}[0]
         final fun property(kotlin/String): kotbase/ValueIndexItem // kotbase/ValueIndexItem.Companion.property|property(kotlin.String){}[0]
@@ -2111,7 +2109,7 @@ final class kotbase/ValueIndexItem : kotbase.internal/DelegatedClass<cocoapods.C
 }
 
 // Targets: [apple]
-final class kotbase/VectorEncoding : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLVectorEncoding> { // kotbase/VectorEncoding|null[0]
+final class kotbase/VectorEncoding : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLVectorEncoding> { // kotbase/VectorEncoding|null[0]
     final enum class ScalarQuantizerType : kotlin/Enum<kotbase/VectorEncoding.ScalarQuantizerType> { // kotbase/VectorEncoding.ScalarQuantizerType|null[0]
         enum entry SQ4 // kotbase/VectorEncoding.ScalarQuantizerType.SQ4|null[0]
         enum entry SQ6 // kotbase/VectorEncoding.ScalarQuantizerType.SQ6|null[0]
@@ -2132,7 +2130,7 @@ final class kotbase/VectorEncoding : kotbase.internal/DelegatedClass<cocoapods.C
 }
 
 // Targets: [apple]
-final class kotbase/Where : kotbase.internal/AbstractDelegatedClass<cocoapods.CouchbaseLite/CBLQuery>, kotbase/GroupByRouter, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query { // kotbase/Where|null[0]
+final class kotbase/Where : kotbase.internal/AbstractDelegatedClass<swiftPMImport.CouchbaseLite/CBLQuery>, kotbase/GroupByRouter, kotbase/LimitRouter, kotbase/OrderByRouter, kotbase/Query { // kotbase/Where|null[0]
     final var parameters // kotbase/Where.parameters|{}parameters[0]
         final fun <get-parameters>(): kotbase/Parameters? // kotbase/Where.parameters.<get-parameters>|<get-parameters>(){}[0]
         final fun <set-parameters>(kotbase/Parameters?) // kotbase/Where.parameters.<set-parameters>|<set-parameters>(kotbase.Parameters?){}[0]
@@ -2150,7 +2148,7 @@ final class kotbase/Where : kotbase.internal/AbstractDelegatedClass<cocoapods.Co
 }
 
 // Targets: [apple]
-open class kotbase/Array : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLArray>, kotbase/ArrayInterface, kotlin.collections/Iterable<kotlin/Any?> { // kotbase/Array|null[0]
+open class kotbase/Array : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLArray>, kotbase/ArrayInterface, kotlin.collections/Iterable<kotlin/Any?> { // kotbase/Array|null[0]
     open val count // kotbase/Array.count|{}count[0]
         open fun <get-count>(): kotlin/Int // kotbase/Array.count.<get-count>|<get-count>(){}[0]
 
@@ -2175,7 +2173,7 @@ open class kotbase/Array : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLi
 }
 
 // Targets: [apple]
-open class kotbase/DataSource : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryDataSource> { // kotbase/DataSource|null[0]
+open class kotbase/DataSource : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryDataSource> { // kotbase/DataSource|null[0]
     final class As : kotbase/DataSource { // kotbase/DataSource.As|null[0]
         final fun as(kotlin/String): kotbase/DataSource // kotbase/DataSource.As.as|as(kotlin.String){}[0]
     }
@@ -2187,7 +2185,7 @@ open class kotbase/DataSource : kotbase.internal/DelegatedClass<cocoapods.Couchb
 }
 
 // Targets: [apple]
-open class kotbase/Dictionary : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDictionary>, kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Dictionary|null[0]
+open class kotbase/Dictionary : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLDictionary>, kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Dictionary|null[0]
     open val count // kotbase/Dictionary.count|{}count[0]
         open fun <get-count>(): kotlin/Int // kotbase/Dictionary.count.<get-count>|<get-count>(){}[0]
     open val keys // kotbase/Dictionary.keys|{}keys[0]
@@ -2215,7 +2213,7 @@ open class kotbase/Dictionary : kotbase.internal/DelegatedClass<cocoapods.Couchb
 }
 
 // Targets: [apple]
-open class kotbase/Document : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLDocument>, kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Document|null[0]
+open class kotbase/Document : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLDocument>, kotbase/DictionaryInterface, kotlin.collections/Iterable<kotlin/String> { // kotbase/Document|null[0]
     final val collection // kotbase/Document.collection|{}collection[0]
         final fun <get-collection>(): kotbase/Collection? // kotbase/Document.collection.<get-collection>|<get-collection>(){}[0]
     final val id // kotbase/Document.id|{}id[0]
@@ -2250,7 +2248,7 @@ open class kotbase/Document : kotbase.internal/DelegatedClass<cocoapods.Couchbas
 }
 
 // Targets: [apple]
-open class kotbase/Expression : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryExpression> { // kotbase/Expression|null[0]
+open class kotbase/Expression : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryExpression> { // kotbase/Expression|null[0]
     final fun add(kotbase/Expression): kotbase/Expression // kotbase/Expression.add|add(kotbase.Expression){}[0]
     final fun and(kotbase/Expression): kotbase/Expression // kotbase/Expression.and|and(kotbase.Expression){}[0]
     final fun between(kotbase/Expression, kotbase/Expression): kotbase/Expression // kotbase/Expression.between|between(kotbase.Expression;kotbase.Expression){}[0]
@@ -2296,7 +2294,7 @@ open class kotbase/Expression : kotbase.internal/DelegatedClass<cocoapods.Couchb
 }
 
 // Targets: [apple]
-open class kotbase/Join : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryJoin> { // kotbase/Join|null[0]
+open class kotbase/Join : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryJoin> { // kotbase/Join|null[0]
     final class On : kotbase/Join { // kotbase/Join.On|null[0]
         final fun on(kotbase/Expression): kotbase/Join // kotbase/Join.On.on|on(kotbase.Expression){}[0]
     }
@@ -2311,7 +2309,7 @@ open class kotbase/Join : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLit
 }
 
 // Targets: [apple]
-open class kotbase/SelectResult : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQuerySelectResult> { // kotbase/SelectResult|null[0]
+open class kotbase/SelectResult : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQuerySelectResult> { // kotbase/SelectResult|null[0]
     final class As : kotbase/SelectResult { // kotbase/SelectResult.As|null[0]
         final fun as(kotlin/String): kotbase/SelectResult.As // kotbase/SelectResult.As.as|as(kotlin.String){}[0]
     }
@@ -2328,10 +2326,10 @@ open class kotbase/SelectResult : kotbase.internal/DelegatedClass<cocoapods.Couc
 }
 
 // Targets: [apple]
-sealed class kotbase/Authenticator : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLAuthenticator> // kotbase/Authenticator|null[0]
+sealed class kotbase/Authenticator : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLAuthenticator> // kotbase/Authenticator|null[0]
 
 // Targets: [apple]
-sealed class kotbase/Collation : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryCollation> { // kotbase/Collation|null[0]
+sealed class kotbase/Collation : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryCollation> { // kotbase/Collation|null[0]
     final class ASCII : kotbase/Collation { // kotbase/Collation.ASCII|null[0]
         final fun setIgnoreCase(kotlin/Boolean): kotbase/Collation.ASCII // kotbase/Collation.ASCII.setIgnoreCase|setIgnoreCase(kotlin.Boolean){}[0]
     }
@@ -2349,29 +2347,29 @@ sealed class kotbase/Collation : kotbase.internal/DelegatedClass<cocoapods.Couch
 }
 
 // Targets: [apple]
-sealed class kotbase/Endpoint : kotbase.internal/DelegatedProtocol<cocoapods.CouchbaseLite/CBLEndpointProtocol> // kotbase/Endpoint|null[0]
+sealed class kotbase/Endpoint : kotbase.internal/DelegatedProtocol<swiftPMImport.CouchbaseLite/CBLEndpointProtocol> // kotbase/Endpoint|null[0]
 
 // Targets: [apple]
-sealed class kotbase/Index : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLIndex> // kotbase/Index|null[0]
+sealed class kotbase/Index : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLIndex> // kotbase/Index|null[0]
 
 // Targets: [apple]
-sealed class kotbase/IndexConfiguration : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLIndexConfiguration> { // kotbase/IndexConfiguration|null[0]
+sealed class kotbase/IndexConfiguration : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLIndexConfiguration> { // kotbase/IndexConfiguration|null[0]
     final val expressions // kotbase/IndexConfiguration.expressions|{}expressions[0]
         final fun <get-expressions>(): kotlin.collections/List<kotlin/String> // kotbase/IndexConfiguration.expressions.<get-expressions>|<get-expressions>(){}[0]
 }
 
 // Targets: [apple]
-sealed class kotbase/ListenerAuthenticator : kotbase.internal/DelegatedProtocol<cocoapods.CouchbaseLite/CBLListenerAuthenticatorProtocol> // kotbase/ListenerAuthenticator|null[0]
+sealed class kotbase/ListenerAuthenticator : kotbase.internal/DelegatedProtocol<swiftPMImport.CouchbaseLite/CBLListenerAuthenticatorProtocol> // kotbase/ListenerAuthenticator|null[0]
 
 // Targets: [apple]
-sealed class kotbase/ListenerToken : kotbase.internal/DelegatedProtocol<cocoapods.CouchbaseLite/CBLListenerTokenProtocol>, kotlin/AutoCloseable { // kotbase/ListenerToken|null[0]
+sealed class kotbase/ListenerToken : kotbase.internal/DelegatedProtocol<swiftPMImport.CouchbaseLite/CBLListenerTokenProtocol>, kotlin/AutoCloseable { // kotbase/ListenerToken|null[0]
     final fun remove() // kotbase/ListenerToken.remove|remove(){}[0]
     open fun close() // kotbase/ListenerToken.close|close(){}[0]
     open fun removeImpl() // kotbase/ListenerToken.removeImpl|removeImpl(){}[0]
 }
 
 // Targets: [apple]
-sealed class kotbase/Ordering : kotbase.internal/DelegatedClass<cocoapods.CouchbaseLite/CBLQueryOrdering> { // kotbase/Ordering|null[0]
+sealed class kotbase/Ordering : kotbase.internal/DelegatedClass<swiftPMImport.CouchbaseLite/CBLQueryOrdering> { // kotbase/Ordering|null[0]
     final class SortOrder : kotbase/Ordering { // kotbase/Ordering.SortOrder|null[0]
         final fun ascending(): kotbase/Ordering // kotbase/Ordering.SortOrder.ascending|ascending(){}[0]
         final fun descending(): kotbase/Ordering // kotbase/Ordering.SortOrder.descending|descending(){}[0]
@@ -2641,13 +2639,9 @@ final class kotbase/DatabaseConfiguration { // kotbase/DatabaseConfiguration|nul
     final var isFullSync // kotbase/DatabaseConfiguration.isFullSync|{}isFullSync[0]
         final fun <get-isFullSync>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isFullSync.<get-isFullSync>|<get-isFullSync>(){}[0]
         final fun <set-isFullSync>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isFullSync.<set-isFullSync>|<set-isFullSync>(kotlin.Boolean){}[0]
-    final var isMMapEnabled // kotbase/DatabaseConfiguration.isMMapEnabled|{}isMMapEnabled[0]
-        final fun <get-isMMapEnabled>(): kotlin/Boolean // kotbase/DatabaseConfiguration.isMMapEnabled.<get-isMMapEnabled>|<get-isMMapEnabled>(){}[0]
-        final fun <set-isMMapEnabled>(kotlin/Boolean) // kotbase/DatabaseConfiguration.isMMapEnabled.<set-isMMapEnabled>|<set-isMMapEnabled>(kotlin.Boolean){}[0]
 
     final fun setDirectory(kotlin/String): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setDirectory|setDirectory(kotlin.String){}[0]
     final fun setFullSync(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setFullSync|setFullSync(kotlin.Boolean){}[0]
-    final fun setMMapEnabled(kotlin/Boolean): kotbase/DatabaseConfiguration // kotbase/DatabaseConfiguration.setMMapEnabled|setMMapEnabled(kotlin.Boolean){}[0]
 }
 
 // Targets: [linux, mingwX64]

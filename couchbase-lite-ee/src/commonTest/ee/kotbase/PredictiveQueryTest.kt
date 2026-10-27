@@ -324,8 +324,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
 
         verifyQuery(q, 2) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val pred = r.getDictionary(1)!!
@@ -359,8 +358,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             ).from(DataSource.collection(testCollection))
 
         verifyQuery(q, 2) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -404,8 +402,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -521,11 +518,10 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertTrue(explain.isUsingIndexNamed("SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -564,8 +560,8 @@ class PredictiveQueryTest : BaseQueryTest() {
             )
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
-        assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertTrue(explain.isUsingIndexNamed("SumIndex"))
+        assertTrue(explain.isUsingIndexNamed("AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
             assertTrue(r.getInt(0) == 15 || r.getInt(1) == 8)
@@ -602,7 +598,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             )
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumAvgIndex"))
+        assertTrue(explain.isUsingIndexNamed("SumAvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
             assertEquals(15, r.getInt(0))
@@ -636,11 +632,10 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         val explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX AggIndex"))
+        assertFalse(explain.isUsingIndexNamed("AggIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -676,11 +671,10 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertTrue(explain.isUsingIndexNamed("SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
 
             val sum = r.getInt(1)
@@ -723,8 +717,8 @@ class PredictiveQueryTest : BaseQueryTest() {
             )
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
-        assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertTrue(explain.isUsingIndexNamed("SumIndex"))
+        assertTrue(explain.isUsingIndexNamed("AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
             assertTrue(r.getInt(0) == 15 || r.getInt(1) == 8)
@@ -763,7 +757,7 @@ class PredictiveQueryTest : BaseQueryTest() {
             )
 
         val explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumAvgIndex"))
+        assertTrue(explain.isUsingIndexNamed("SumAvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
             assertEquals(r.getInt(0), 15)
@@ -798,11 +792,10 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
         var explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertTrue(explain.isUsingIndexNamed("SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(aggregateModel.numberOfCalls, 2)
@@ -817,11 +810,10 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
         explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertFalse(explain.isUsingIndexNamed("SumIndex"))
 
         val rows = verifyQueryWithEnumerator(q) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(1, rows)
@@ -866,12 +858,11 @@ class PredictiveQueryTest : BaseQueryTest() {
                 )
             )
         var explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX SumIndex"))
-        assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertTrue(explain.isUsingIndexNamed("SumIndex"))
+        assertTrue(explain.isUsingIndexNamed("AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(2, aggregateModel.numberOfCalls)
@@ -888,11 +879,10 @@ class PredictiveQueryTest : BaseQueryTest() {
             .where(prediction.propertyPath("sum").equalTo(Expression.value(15)))
 
         explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX SumIndex"))
+        assertFalse(explain.isUsingIndexNamed("SumIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(0, aggregateModel.numberOfCalls)
@@ -903,11 +893,10 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("avg").equalTo(Expression.value(8)))
         explain = q.explain()
-        assertNotEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertTrue(explain.isUsingIndexNamed("AvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(0, aggregateModel.numberOfCalls)
@@ -921,11 +910,10 @@ class PredictiveQueryTest : BaseQueryTest() {
             .from(DataSource.collection(testCollection))
             .where(prediction.propertyPath("avg").equalTo(Expression.value(8)))
         explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertFalse(explain.isUsingIndexNamed("AvgIndex"))
 
         verifyQuery(q, 1) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertEquals(0, aggregateModel.numberOfCalls)
@@ -943,12 +931,11 @@ class PredictiveQueryTest : BaseQueryTest() {
                 )
             )
         explain = q.explain()
-        assertEquals(-1, explain.indexOf("USING INDEX SumIndex"))
-        assertEquals(-1, explain.indexOf("USING INDEX AvgIndex"))
+        assertFalse(explain.isUsingIndexNamed("SumIndex"))
+        assertFalse(explain.isUsingIndexNamed("AvgIndex"))
 
         verifyQuery(q, 2) { _, r ->
-            @Suppress("UNCHECKED_CAST")
-            val numbers = r.getArray(0)!!.toList() as List<Int>
+            val numbers = r.getArray(0)!!.toList().map { (it as Number).toInt() }
             assertTrue(numbers.isNotEmpty())
         }
         assertTrue(aggregateModel.numberOfCalls > 0)
@@ -1102,13 +1089,17 @@ class EchoModel : TestPredictiveModel() {
     }
 }
 
+// SQLite may choose a covering index for the query plan
+private fun String.isUsingIndexNamed(indexName: String): Boolean =
+    contains("USING INDEX $indexName") || contains("USING COVERING INDEX $indexName")
+
 class AggregateModel : TestPredictiveModel() {
 
     override val name = NAME
 
     override fun doPredict(input: Dictionary): Dictionary? {
-        @Suppress("UNCHECKED_CAST")
-        val numbers = input.getArray("numbers")?.toList() as List<Int>? ?: return null
+        // numbers may be decoded as Int or Long, depending on platform
+        val numbers = input.getArray("numbers")?.toList()?.map { (it as Number).toInt() } ?: return null
 
         val output = MutableDictionary()
         output.setValue("sum", numbers.sum())

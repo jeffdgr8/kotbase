@@ -15,7 +15,7 @@
  */
 package kotbase.logging
 
-import cocoapods.CouchbaseLite.CBLConsoleLogSink
+import swiftPMImport.CouchbaseLite.CBLConsoleLogSink
 import kotbase.LogLevel
 import kotbase.toCBLLogDomain
 import kotbase.toLogDomain

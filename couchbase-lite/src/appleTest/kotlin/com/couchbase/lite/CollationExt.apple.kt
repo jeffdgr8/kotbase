@@ -15,7 +15,7 @@
  */
 package com.couchbase.lite
 
-import cocoapods.CouchbaseLite.asJSON
+import swiftPMImport.CouchbaseLite.asJSON
 import kotbase.Collation
 
 actual fun Collation.asJSON(): Any? =

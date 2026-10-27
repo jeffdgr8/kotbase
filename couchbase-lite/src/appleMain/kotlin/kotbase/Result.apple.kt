@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryResult
+import swiftPMImport.CouchbaseLite.CBLQueryResult
 import kotbase.internal.DelegatedClass
 import kotbase.ext.asNumber
 import kotbase.ext.toKotlinInstantMillis

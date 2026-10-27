@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLListenerAuthenticatorProtocol
+import swiftPMImport.CouchbaseLite.CBLListenerAuthenticatorProtocol
 import kotbase.internal.DelegatedProtocol
 
 public actual sealed class ListenerAuthenticator(actual: CBLListenerAuthenticatorProtocol) :

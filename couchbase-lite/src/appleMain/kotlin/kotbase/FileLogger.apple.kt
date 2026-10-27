@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLFileLogger
+import swiftPMImport.CouchbaseLite.CBLFileLogger
 import kotbase.internal.DelegatedClass
 
 @Suppress("DEPRECATION")

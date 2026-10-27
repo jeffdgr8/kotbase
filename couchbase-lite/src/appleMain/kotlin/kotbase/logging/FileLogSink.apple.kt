@@ -15,7 +15,7 @@
  */
 package kotbase.logging
 
-import cocoapods.CouchbaseLite.CBLFileLogSink
+import swiftPMImport.CouchbaseLite.CBLFileLogSink
 import kotbase.LogLevel
 
 internal fun CBLFileLogSink.asFileLogSink() = FileLogSink(

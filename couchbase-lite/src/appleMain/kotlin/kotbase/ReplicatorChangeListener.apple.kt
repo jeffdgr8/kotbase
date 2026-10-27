@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicatorChange
+import swiftPMImport.CouchbaseLite.CBLReplicatorChange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

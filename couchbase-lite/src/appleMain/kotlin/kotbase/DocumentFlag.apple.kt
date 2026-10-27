@@ -15,9 +15,9 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLDocumentFlags
-import cocoapods.CouchbaseLite.kCBLDocumentFlagsAccessRemoved
-import cocoapods.CouchbaseLite.kCBLDocumentFlagsDeleted
+import swiftPMImport.CouchbaseLite.CBLDocumentFlags
+import swiftPMImport.CouchbaseLite.kCBLDocumentFlagsAccessRemoved
+import swiftPMImport.CouchbaseLite.kCBLDocumentFlagsDeleted
 
 public actual enum class DocumentFlag {
     DELETED,

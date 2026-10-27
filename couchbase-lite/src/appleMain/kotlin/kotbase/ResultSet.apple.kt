@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryResult
-import cocoapods.CouchbaseLite.CBLQueryResultSet
+import swiftPMImport.CouchbaseLite.CBLQueryResult
+import swiftPMImport.CouchbaseLite.CBLQueryResultSet
 import kotbase.internal.DelegatedClass
 
 public actual class ResultSet

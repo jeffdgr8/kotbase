@@ -15,9 +15,9 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLProtocolType
-import cocoapods.CouchbaseLite.CBLProtocolType.kCBLProtocolTypeByteStream
-import cocoapods.CouchbaseLite.CBLProtocolType.kCBLProtocolTypeMessageStream
+import swiftPMImport.CouchbaseLite.CBLProtocolType
+import swiftPMImport.CouchbaseLite.CBLProtocolType.kCBLProtocolTypeByteStream
+import swiftPMImport.CouchbaseLite.CBLProtocolType.kCBLProtocolTypeMessageStream
 
 public actual enum class ProtocolType {
     MESSAGE_STREAM,

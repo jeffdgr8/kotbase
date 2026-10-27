@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicator
+import swiftPMImport.CouchbaseLite.CBLReplicator
 import kotbase.ext.asDispatchQueue
 import kotbase.ext.dispatcher
 import kotbase.ext.toByteArray

@@ -15,6 +15,6 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLPredictiveIndex
+import swiftPMImport.CouchbaseLite.CBLPredictiveIndex
 
 public actual class PredictiveIndex(override val actual: CBLPredictiveIndex) : Index(actual)

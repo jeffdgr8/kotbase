@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicatorChange
+import swiftPMImport.CouchbaseLite.CBLReplicatorChange
 import kotbase.internal.DelegatedClass
 
 public actual class ReplicatorChange

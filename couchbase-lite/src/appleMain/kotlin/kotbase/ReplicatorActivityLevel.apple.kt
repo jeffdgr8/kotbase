@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicatorActivityLevel
-import cocoapods.CouchbaseLite.CBLReplicatorActivityLevel.*
+import swiftPMImport.CouchbaseLite.CBLReplicatorActivityLevel
+import swiftPMImport.CouchbaseLite.CBLReplicatorActivityLevel.*
 
 public actual enum class ReplicatorActivityLevel {
     STOPPED,

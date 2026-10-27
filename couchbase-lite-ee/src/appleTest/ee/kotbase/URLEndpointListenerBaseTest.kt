@@ -17,7 +17,7 @@
 
 package kotbase
 
-import cocoapods.CouchbaseLite.kCBLCertAttrCommonName
+import swiftPMImport.CouchbaseLite.kCBLCertAttrCommonName
 import kotbase.ext.toSecCertificate
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped

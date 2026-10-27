@@ -15,9 +15,9 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLConcurrencyControl
-import cocoapods.CouchbaseLite.CBLConcurrencyControl.kCBLConcurrencyControlFailOnConflict
-import cocoapods.CouchbaseLite.CBLConcurrencyControl.kCBLConcurrencyControlLastWriteWins
+import swiftPMImport.CouchbaseLite.CBLConcurrencyControl
+import swiftPMImport.CouchbaseLite.CBLConcurrencyControl.kCBLConcurrencyControlFailOnConflict
+import swiftPMImport.CouchbaseLite.CBLConcurrencyControl.kCBLConcurrencyControlLastWriteWins
 
 public actual enum class ConcurrencyControl {
     LAST_WRITE_WINS,

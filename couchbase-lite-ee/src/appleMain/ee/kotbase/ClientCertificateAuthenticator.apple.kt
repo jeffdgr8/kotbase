@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLClientCertificateAuthenticator
+import swiftPMImport.CouchbaseLite.CBLClientCertificateAuthenticator
 
 public actual class ClientCertificateAuthenticator
 private constructor(

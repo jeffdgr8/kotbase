@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.changeEncryptionKey
+import swiftPMImport.CouchbaseLite.changeEncryptionKey
 import kotbase.ext.wrapCBLError
 
 @Throws(CouchbaseLiteException::class)

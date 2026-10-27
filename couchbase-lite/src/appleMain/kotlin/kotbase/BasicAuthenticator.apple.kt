@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLBasicAuthenticator
+import swiftPMImport.CouchbaseLite.CBLBasicAuthenticator
 
 public actual class BasicAuthenticator
 internal constructor(

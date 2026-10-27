@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMaintenanceType
-import cocoapods.CouchbaseLite.CBLMaintenanceType.*
+import swiftPMImport.CouchbaseLite.CBLMaintenanceType
+import swiftPMImport.CouchbaseLite.CBLMaintenanceType.*
 
 public actual enum class MaintenanceType {
     REINDEX,

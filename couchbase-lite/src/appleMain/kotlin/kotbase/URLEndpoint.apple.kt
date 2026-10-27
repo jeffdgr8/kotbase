@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLURLEndpoint
+import swiftPMImport.CouchbaseLite.CBLURLEndpoint
 import platform.Foundation.NSURL
 
 public actual class URLEndpoint

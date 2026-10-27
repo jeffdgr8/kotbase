@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLExtension
+import swiftPMImport.CouchbaseLite.CBLExtension
 import kotbase.ext.wrapCBLError
 
 public actual object Extension {

@@ -1,12 +1,14 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
-import org.jetbrains.kotlin.gradle.tasks.DefFileTask
 import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
-    `multiplatform-convention`
-    `library-convention`
+    id("multiplatform-convention")
+    id("library-convention")
 }
 
 description = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform"
@@ -14,30 +16,34 @@ description = "Couchbase Lite Enterprise Edition for Kotlin Multiplatform"
 kotlin {
     android.namespace = "dev.kotbase"
 
-    cocoapods {
-        framework {
-            binaryOption("bundleId", "dev.kotbase")
-            binaryOption("bundleVersion", version.toString())
-        }
-        pod("CouchbaseLite-Enterprise") {
-            version = libs.versions.couchbase.lite.objc.get()
-            moduleName = "CouchbaseLite"
-            packageName = "cocoapods.CouchbaseLite"
-            // Workaround for 'CBLQueryMeta' is going to be declared twice
-            // https://youtrack.jetbrains.com/issue/KT-41709
-            extraOpts = listOf("-compiler-option", "-DCBLQueryMeta=CBLQueryMetaUnavailable")
-        }
-        pod("CouchbaseLiteVectorSearch") {
-            version = libs.versions.couchbase.lite.vector.search.get()
-            linkOnly = true
-        }
+    swiftPMDependencies {
+        iosMinimumDeploymentTarget = "15.0"
+        macosMinimumDeploymentTarget = "13.0"
+        // Only link the official Swift package, Objective-C bindings come from the CouchbaseLite cinterop below
+        discoverClangModulesImplicitly = false
+        swiftPackage(
+            url = url("https://github.com/couchbase/couchbase-lite-swift-ee.git"),
+            version = exact(libs.versions.couchbase.lite.objc.get()),
+            products = listOf(product("CouchbaseLiteSwift")),
+            importedClangModules = emptyList(),
+        )
+        swiftPackage(
+            url = url("https://github.com/couchbase/couchbase-lite-vector-search-spm.git"),
+            version = exact(libs.versions.couchbase.lite.vector.search.get()),
+            products = listOf(product("CouchbaseLiteVectorSearch")),
+            importedClangModules = emptyList(),
+        )
     }
 
     linkLibcblite()
 
     targets.withType<KotlinNativeTarget>().configureEach {
-        if (!konanTarget.family.isAppleFamily) {
-            val main by compilations.getting
+        val main = compilations.getByName("main")
+        if (konanTarget.family.isAppleFamily) {
+            main.cinterops.create("CouchbaseLite") {
+                compilerOpts("-F$couchbaseLiteObjcFrameworkSearchPath")
+            }
+        } else {
             main.cinterops.create("libcblite") {
                 includeDirs(libcbliteIncludePath)
                 if (konanTarget.family == Family.MINGW) {
@@ -83,14 +89,6 @@ kotlin {
         all {
             kotlin.srcDir("src/$name/ee")
         }
-    }
-}
-
-// Internal headers required for tests
-tasks.named<DefFileTask>("generateDefCouchbaseLite") {
-    doLast {
-        val cblDefFile = file("src/nativeInterop/cinterop/podCouchbaseLite.def")
-        defFile.get().asFile.appendText(cblDefFile.readText())
     }
 }
 

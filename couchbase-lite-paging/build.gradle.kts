@@ -1,6 +1,6 @@
 plugins {
-    `multiplatform-convention`
-    `library-convention`
+    id("multiplatform-convention")
+    id("library-convention")
 }
 
 description = "Couchbase Lite Community Edition for Kotlin Multiplatform – AndroidX Paging Extensions"
@@ -9,17 +9,6 @@ kotlin {
     android {
         namespace = "dev.kotbase.paging"
         minSdk = 23
-    }
-
-    cocoapods {
-        framework {
-            binaryOption("bundleId", "dev.kotbase.paging")
-            binaryOption("bundleVersion", version.toString())
-        }
-        pod("CouchbaseLite") {
-            version = libs.versions.couchbase.lite.objc.get()
-            linkOnly = true
-        }
     }
 
     linkLibcblite(projects.couchbaseLite)

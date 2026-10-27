@@ -15,9 +15,9 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLLogDomain
-import cocoapods.CouchbaseLite.CBLLogLevel
-import cocoapods.CouchbaseLite.CBLLoggerProtocol
+import swiftPMImport.CouchbaseLite.CBLLogDomain
+import swiftPMImport.CouchbaseLite.CBLLogLevel
+import swiftPMImport.CouchbaseLite.CBLLoggerProtocol
 import platform.darwin.NSObject
 
 @Suppress("DEPRECATION")

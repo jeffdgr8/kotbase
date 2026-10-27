@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLListenerTokenProtocol
-import cocoapods.CouchbaseLite.CBLReplicator
+import swiftPMImport.CouchbaseLite.CBLListenerTokenProtocol
+import swiftPMImport.CouchbaseLite.CBLReplicator
 import kotbase.internal.DelegatedProtocol
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel

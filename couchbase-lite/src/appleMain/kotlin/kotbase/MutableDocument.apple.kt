@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMutableDocument
+import swiftPMImport.CouchbaseLite.CBLMutableDocument
 import kotbase.ext.wrapCBLError
 import kotlinx.cinterop.convert
 import kotlin.time.Instant

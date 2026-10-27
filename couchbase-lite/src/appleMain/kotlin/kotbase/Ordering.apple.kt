@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryOrdering
-import cocoapods.CouchbaseLite.CBLQuerySortOrder
+import swiftPMImport.CouchbaseLite.CBLQueryOrdering
+import swiftPMImport.CouchbaseLite.CBLQuerySortOrder
 import kotbase.internal.DelegatedClass
 
 public actual sealed class Ordering

@@ -15,10 +15,10 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicatorType
-import cocoapods.CouchbaseLite.kCBLReplicatorTypePull
-import cocoapods.CouchbaseLite.kCBLReplicatorTypePush
-import cocoapods.CouchbaseLite.kCBLReplicatorTypePushAndPull
+import swiftPMImport.CouchbaseLite.CBLReplicatorType
+import swiftPMImport.CouchbaseLite.kCBLReplicatorTypePull
+import swiftPMImport.CouchbaseLite.kCBLReplicatorTypePush
+import swiftPMImport.CouchbaseLite.kCBLReplicatorTypePushAndPull
 
 public actual enum class ReplicatorType {
     PUSH_AND_PULL,

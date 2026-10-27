@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLIndexBuilder
-import cocoapods.CouchbaseLite.predictiveIndexWithModel
+import swiftPMImport.CouchbaseLite.CBLIndexBuilder
+import swiftPMImport.CouchbaseLite.predictiveIndexWithModel
 
 public actual fun IndexBuilder.predictiveIndex(
     model: String,

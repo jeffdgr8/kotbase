@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMessage
+import swiftPMImport.CouchbaseLite.CBLMessage
 import kotbase.internal.DelegatedClass
 import kotbase.ext.toByteArray
 import kotbase.ext.toNSData

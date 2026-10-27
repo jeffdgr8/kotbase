@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryParameters
+import swiftPMImport.CouchbaseLite.CBLQueryParameters
 import kotbase.internal.DelegatedClass
 import kotlinx.cinterop.convert
 import kotlin.time.Instant

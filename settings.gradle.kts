@@ -7,6 +7,7 @@ include(":couchbase-lite-kermit", ":couchbase-lite-ee-kermit")
 include(":testing-support", ":testing-support-ee")
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         gradlePluginPortal()

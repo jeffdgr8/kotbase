@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLReplicatorConfiguration
-import cocoapods.CouchbaseLite.isClosed
+import swiftPMImport.CouchbaseLite.CBLReplicatorConfiguration
+import swiftPMImport.CouchbaseLite.isClosed
 import kotbase.ext.toByteArray
 import kotbase.ext.toSecCertificate
 import kotbase.internal.DelegatedClass

@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLIndexConfiguration
+import swiftPMImport.CouchbaseLite.CBLIndexConfiguration
 import kotbase.internal.DelegatedClass
 
 public actual sealed class IndexConfiguration(actual: CBLIndexConfiguration) :

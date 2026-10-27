@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQueryFullTextFunction
+import swiftPMImport.CouchbaseLite.CBLQueryFullTextFunction
 import kotbase.Expression.Companion.DelegatedIndexExpression
 
 public actual object FullTextFunction {

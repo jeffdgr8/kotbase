@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLListenerCertificateAuthenticatorBlock
+import swiftPMImport.CouchbaseLite.CBLListenerCertificateAuthenticatorBlock
 import kotbase.ext.toByteArray
 import platform.Security.SecCertificateRef
 

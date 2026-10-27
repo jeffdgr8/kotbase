@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLIndexUpdater
+import swiftPMImport.CouchbaseLite.CBLIndexUpdater
 import kotbase.ext.asNumber
 import kotbase.ext.wrapCBLError
 import kotbase.internal.DelegatedClass

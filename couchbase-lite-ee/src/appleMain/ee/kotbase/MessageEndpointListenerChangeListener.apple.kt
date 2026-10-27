@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMessageEndpointListenerChange
+import swiftPMImport.CouchbaseLite.CBLMessageEndpointListenerChange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

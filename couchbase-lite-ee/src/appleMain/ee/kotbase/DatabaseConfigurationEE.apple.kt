@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.encryptionKey
-import cocoapods.CouchbaseLite.setEncryptionKey
+import swiftPMImport.CouchbaseLite.encryptionKey
+import swiftPMImport.CouchbaseLite.setEncryptionKey
 
 public actual var DatabaseConfiguration.encryptionKey: EncryptionKey?
     get() = actual.encryptionKey?.asEncryptionKey()

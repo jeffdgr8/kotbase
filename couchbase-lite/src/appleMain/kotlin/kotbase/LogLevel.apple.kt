@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLLogLevel
-import cocoapods.CouchbaseLite.CBLLogLevel.*
+import swiftPMImport.CouchbaseLite.CBLLogLevel
+import swiftPMImport.CouchbaseLite.CBLLogLevel.*
 
 public actual enum class LogLevel {
     DEBUG,

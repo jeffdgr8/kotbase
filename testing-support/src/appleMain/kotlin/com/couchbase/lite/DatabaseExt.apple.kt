@@ -17,7 +17,7 @@
 
 package com.couchbase.lite
 
-import cocoapods.CouchbaseLite.isClosed
+import swiftPMImport.CouchbaseLite.isClosed
 import kotbase.BaseTest
 import kotbase.Database
 

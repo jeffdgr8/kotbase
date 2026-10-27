@@ -15,10 +15,10 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMessage
-import cocoapods.CouchbaseLite.CBLMessageEndpointConnectionProtocol
-import cocoapods.CouchbaseLite.CBLMessagingError
-import cocoapods.CouchbaseLite.CBLReplicatorConnectionProtocol
+import swiftPMImport.CouchbaseLite.CBLMessage
+import swiftPMImport.CouchbaseLite.CBLMessageEndpointConnectionProtocol
+import swiftPMImport.CouchbaseLite.CBLMessagingError
+import swiftPMImport.CouchbaseLite.CBLReplicatorConnectionProtocol
 import kotbase.ext.toException
 import platform.Foundation.NSError
 import platform.darwin.NSObject

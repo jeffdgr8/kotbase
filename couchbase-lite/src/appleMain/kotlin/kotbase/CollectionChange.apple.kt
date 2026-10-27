@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLCollectionChange
+import swiftPMImport.CouchbaseLite.CBLCollectionChange
 import kotbase.internal.DelegatedClass
 
 public actual class CollectionChange

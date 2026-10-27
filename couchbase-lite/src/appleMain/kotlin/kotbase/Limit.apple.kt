@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLQuery
+import swiftPMImport.CouchbaseLite.CBLQuery
 import kotbase.internal.AbstractDelegatedClass
 
 public actual class Limit

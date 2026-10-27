@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLListenerPasswordAuthenticatorBlock
+import swiftPMImport.CouchbaseLite.CBLListenerPasswordAuthenticatorBlock
 
 internal fun ListenerPasswordAuthenticatorDelegate.convert(): CBLListenerPasswordAuthenticatorBlock {
     return { username, password ->

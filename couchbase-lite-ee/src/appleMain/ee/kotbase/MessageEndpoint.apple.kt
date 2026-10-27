@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLMessageEndpoint
+import swiftPMImport.CouchbaseLite.CBLMessageEndpoint
 
 public actual class MessageEndpoint
 internal constructor(

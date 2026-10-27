@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLDatabase
-import cocoapods.CouchbaseLite.prediction
+import swiftPMImport.CouchbaseLite.CBLDatabase
+import swiftPMImport.CouchbaseLite.prediction
 
 public actual object Prediction {
 

@@ -15,8 +15,8 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.CBLDocumentReplication
-import cocoapods.CouchbaseLite.CBLReplicatedDocument
+import swiftPMImport.CouchbaseLite.CBLDocumentReplication
+import swiftPMImport.CouchbaseLite.CBLReplicatedDocument
 import kotbase.internal.DelegatedClass
 
 public actual class DocumentReplication

@@ -15,10 +15,10 @@
  */
 package kotbase.logging
 
-import cocoapods.CouchbaseLite.CBLCustomLogSink
-import cocoapods.CouchbaseLite.CBLLogDomain
-import cocoapods.CouchbaseLite.CBLLogLevel
-import cocoapods.CouchbaseLite.CBLLogSinkProtocolProtocol
+import swiftPMImport.CouchbaseLite.CBLCustomLogSink
+import swiftPMImport.CouchbaseLite.CBLLogDomain
+import swiftPMImport.CouchbaseLite.CBLLogLevel
+import swiftPMImport.CouchbaseLite.CBLLogSinkProtocolProtocol
 import kotbase.LogDomain
 import kotbase.LogLevel
 import kotbase.toCBLLogDomain

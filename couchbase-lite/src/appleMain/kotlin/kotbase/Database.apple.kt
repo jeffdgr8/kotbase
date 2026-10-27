@@ -15,7 +15,7 @@
  */
 package kotbase
 
-import cocoapods.CouchbaseLite.*
+import swiftPMImport.CouchbaseLite.*
 import kotbase.internal.DelegatedClass
 import kotbase.ext.asDispatchQueue
 import kotbase.ext.dispatcher
@@ -102,7 +102,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Throws(CouchbaseLiteException::class)
     public actual fun delete() {
-        mustBeOpen {
+        mustBeOpenOrThrowNotOpen {
             wrapCBLError { error ->
                 actual.delete(error)
             }
@@ -243,7 +243,7 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
 
     @Throws(CouchbaseLiteException::class)
     public actual fun <R> inBatch(work: Database.() -> R): R {
-        return mustBeOpen {
+        return mustBeOpenOrThrowNotOpen {
             @Suppress("UNCHECKED_CAST")
             wrapCBLError { error ->
                 var result: R? = null
@@ -633,6 +633,21 @@ internal constructor(actual: CBLDatabase) : DelegatedClass<CBLDatabase>(actual),
         return withLock {
             if (actual.isClosed()) {
                 throw CouchbaseLiteError("Attempt to perform an operation on a closed database or a deleted collection.")
+            }
+            action()
+        }
+    }
+
+    // Couchbase Lite 3.4 throws CouchbaseLiteException instead of CouchbaseLiteError
+    // when deleting or starting a batch on a closed database
+    private fun <R> mustBeOpenOrThrowNotOpen(action: () -> R): R {
+        return withLock {
+            if (actual.isClosed()) {
+                throw CouchbaseLiteException(
+                    "Attempt to perform an operation on a closed database or a deleted collection.",
+                    CBLError.Domain.CBLITE,
+                    CBLError.Code.NOT_OPEN
+                )
             }
             action()
         }
